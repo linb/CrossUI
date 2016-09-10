@@ -29,7 +29,7 @@ Class("xui.UI.Label", "xui.UI",{
             caption:{
                 ini:undefined,
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode("CAPTION").html(xui.adjustRes(v,true));
                 }
             },

@@ -1,4 +1,4 @@
-_.merge(xui.Locale.en,{
+xui.merge(xui.Locale.en,{
     app:{
         caption:'caption',
         tips:'tips',

@@ -5,12 +5,12 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 profile=self.get(0),
                 items=profile.properties.items;
             //the root
-            if(_.arr.subIndexOf(items,"id",subId)!=-1)
+            if(xui.arr.subIndexOf(items,"id",subId)!=-1)
                 arguments.callee.upper.call(self,subId,options);
             //try each sub popmenu
             else{
                 var ok=0;
-                _.each(profile.$allPops,function(o){
+                xui.each(profile.$allPops,function(o){
                     o.updateItem(subId,options);
                     ok=1;
                 });
@@ -62,11 +62,11 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         profile[all][id] = menu;
                     }
 
-                    if(_.isArr(item.sub) && item.sub.length)
+                    if(xui.isArr(item.sub) && item.sub.length)
                         callback(item.sub);
                     else if(profile.onGetPopMenu){
                         var r=profile.boxing().onGetPopMenu(profile, item, callback);
-                        if(_.isArr(r) && r.length)
+                        if(xui.isArr(r) && r.length)
                             callback(item.sub=r);
                     }
                 }
@@ -232,7 +232,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         }
                     }else{
                         if(p.autoShowTime){
-                            _.resetRun(profile.$xid+':autoShowTime', function(){
+                            xui.resetRun(profile.$xid+':autoShowTime', function(){
                                 profile.boxing()._pop(item, ns);
                             },p.autoShowTime);
                         }
@@ -257,7 +257,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                             if(p1.left>p2.left && p1.top>p2.top-add && p1.left<p2.left+size.width && p1.top<p2.top+size.height){}else
                                 pop.hide();
                         }
-                        _.resetRun(profile.$xid+':autoShowTime', null);
+                        xui.resetRun(profile.$xid+':autoShowTime', null);
                     }
                 },
                 onMousedown:function(profile, e, src){

@@ -16,7 +16,7 @@
         <script type="text/javascript">
             xui.main(function(){
                 var data=['Button','Input','ComboInput','Link','CheckBox','ProgressBar','Group'], ui=[], list=[];
-                _.arr.each(data,function(str){
+                xui.arr.each(data,function(str){
                     var ctrl= new (xui.SC.get('xui.UI.'+str));
                     ctrl.setPosition('relative');
                     ui.push(ctrl.get(0));

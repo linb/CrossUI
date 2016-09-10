@@ -1,6 +1,6 @@
 Class("xui.Template.SButton","xui.Template",{
     Constructor:function(template,properties,events,domId){
-        var self=this,arr=_.toArr(arguments);
+        var self=this,arr=xui.toArr(arguments);
         arr[0]=arr[0]||'<span [event] class="xuit-sbtn"><span class="xuit-sbtn-btn"><span class="xuit-sbtn-btni"><span class="xuit-sbtn-btnc"><a class="xuit-sbtn-focus" href="javascript:;">{caption}</a></span></span></span></span>';
         arr[2]=arr[2]||{
             "root":{
@@ -18,7 +18,7 @@ Class("xui.Template.SButton","xui.Template",{
                     xui.use(src).tagClass('-mousedown',false);
                 },
                 onClick:function(profile,e,src){
-                    _.tryF(profile.handler_onClick,arguments,profile.host||profile)
+                    xui.tryF(profile.handler_onClick,arguments,profile.host||profile)
                 }
             }
         };

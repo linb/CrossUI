@@ -463,7 +463,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             labelCaption:{
                 ini:"",
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },

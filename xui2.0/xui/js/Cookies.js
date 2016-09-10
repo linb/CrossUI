@@ -1,10 +1,10 @@
 Class("xui.Cookies", null,{
     Static:{
         set:function(name,value,days,path,domain,isSecure){
-            if(_.isHash(name)){
+            if(xui.isHash(name)){
                 for(var i in name) this.set(i, name[i],days,path,domain,isSecure);
            }else{
-	           if(typeof value !="string")value=_.serialize(value);
+	           if(typeof value !="string")value=xui.serialize(value);
     	       document.cookie = escape(name+'') + "=" + escape(value) +
     		        (days?"; expires="+(new Date((new Date()).getTime()+(24*60*60*1000*days))).toGMTString():"")+
     		        (path?"; path="+path:"")+
@@ -15,7 +15,7 @@ Class("xui.Cookies", null,{
         },
         get:function(name){
         	var i,a,s,ca = document.cookie.split( "; " ),hash={},unserialize=function(v){
-                return  /^\s*\{[\s\S]*\}$/.test(v) ? _.unserialize(v) : /^\s*\[[\s\S]*\]$/.test(v) ? _.unserialize(v) : v;
+                return  /^\s*\{[\s\S]*\}$/.test(v) ? xui.unserialize(v) : /^\s*\[[\s\S]*\]$/.test(v) ? xui.unserialize(v) : v;
             };
         	for(i=0;i<ca.length;i++){
         		a=ca[i].split("=");
@@ -30,8 +30,8 @@ Class("xui.Cookies", null,{
         	return this.set(name,"",-1).set(name,"/",-1);
         },
         clear:function(){
-            _.arr.each(document.cookie.split(";"),function(o){
-                xui.Cookies.remove(_.str.trim(o.split("=")[0]));
+            xui.arr.each(document.cookie.split(";"),function(o){
+                xui.Cookies.remove(xui.str.trim(o.split("=")[0]));
             });
         }
     }

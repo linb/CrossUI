@@ -209,30 +209,30 @@ Class('App.snip_serialize', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         },
         _button1_onclick:function (profile, e, value) {
-            this.Input1.setValue(xui.Coder.formatText(_.serialize(this.Button1)),true)
+            this.Input1.setValue(xui.Coder.formatText(xui.serialize(this.Button1)),true)
         },
         _button12_onclick:function (profile, e, value) {
             this.Block12.removeChildren();
             this.Block12.append(
-                _.unserialize(this.Input1.getUIValue())
+                xui.unserialize(this.Input1.getUIValue())
             );
         },
         _button21_onclick:function (profile, e, value) {
-            this.Input2.setValue(xui.Coder.formatText(_.serialize(this.Group7)),true)
+            this.Input2.setValue(xui.Coder.formatText(xui.serialize(this.Group7)),true)
         },
         _button31_onclick:function (profile, e, value) {
-            this.Input3.setValue(xui.Coder.formatText(_.serialize(this.Tabs1)),true)
+            this.Input3.setValue(xui.Coder.formatText(xui.serialize(this.Tabs1)),true)
         },
         _button22_onclick:function (profile, e, value) {
             this.Block22.removeChildren();
             this.Block22.append(
-                _.unserialize(this.Input2.getUIValue())
+                xui.unserialize(this.Input2.getUIValue())
             );
         },
         _button32_onclick:function (profile, e, value) {
             this.Block32.removeChildren();
             this.Block32.append(
-                _.unserialize(this.Input3.getUIValue())
+                xui.unserialize(this.Input3.getUIValue())
             );
         },
         _onready:function () {

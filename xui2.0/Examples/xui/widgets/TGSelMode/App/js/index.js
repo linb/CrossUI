@@ -105,7 +105,7 @@ Class('App', 'xui.Com',{
             this._poptg(profile,pos,'cell','multi',function(p, oldValue, newValue) {
                 newValue=newValue||'';
                 var a=[];
-                _.arr.each(newValue.split(';'),function(o){
+                xui.arr.each(newValue.split(';'),function(o){
                     var b=(o||'').split('|');
                     o=p.boxing().getCellbyRowCol(b[0],b[1]);
                     a.push(o.value);

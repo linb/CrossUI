@@ -10,14 +10,14 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                     items=profile.properties.items,
                     rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
                     nid,item,n1,n2,n3,n4,n5,t;
-                if(_.isStr(options))options={caption:options};
+                if(xui.isStr(options))options={caption:options};
 
                 if(rst.length){
                         rst=rst[0];
                         if(item=rst[0]){
                             
                         // [[modify id
-                        if(_.isSet(options.id))options.id+="";
+                        if(xui.isSet(options.id))options.id+="";
                         if(options.id && subId!==options.id){
                             nid=options.id;
                             var m2=profile.ItemIdMapSubSerialId, v;
@@ -33,7 +33,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         }
                         delete options.id;
                         // modify id only
-                        if(_.isEmpty(options))
+                        if(xui.isEmpty(options))
                             return self;
                         //]]
                     
@@ -93,7 +93,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         }
 
                         //merge options
-                        _.merge(item, options, 'all');
+                        xui.merge(item, options, 'all');
                     }
                 }
                 return self;
@@ -110,7 +110,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         },
         showGroup:function(grpId, value){
             return this.each(function(profile){
-                _.arr.each(profile.properties.items,function(o){
+                xui.arr.each(profile.properties.items,function(o){
                     if(o.id==grpId){
                         o.hidden=value===false;
                         return false;
@@ -337,25 +337,25 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             onClick:function(profile, item, group, e, src){}
         },
         _adjustItems:function(arr){
-            if(!arr)arr=[_()+''];
-            if(_.isStr(arr))arr=[arr];
+            if(!arr)arr=[xui.stamp()+''];
+            if(xui.isStr(arr))arr=[arr];
 
-            var a=_.copy(arr),m;
-            _.arr.each(a,function(o,i){
-                if(_.isArr(o)){
+            var a=xui.copy(arr),m;
+            xui.arr.each(a,function(o,i){
+                if(xui.isArr(o)){
                     o={
-                        id:_.id(),
+                        id:xui.id(),
                         sub:o
                     };
                 }
-                if(_.isHash(o)){
+                if(xui.isHash(o)){
                     //copy group
-                    a[i]=_.copy(o);
+                    a[i]=xui.copy(o);
                     a[i].sub=[];
                     //copy sub(tool item)
                     if(o.sub)
-                        _.arr.each(o.sub,function(v){
-                            a[i].sub.push(_.isHash(v)?_.copy(v):{id:v+""});
+                        xui.arr.each(o.sub,function(v){
+                            a[i].sub.push(xui.isHash(v)?xui.copy(v):{id:v+""});
                         });
                 }
             });
@@ -436,7 +436,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 oitem.grpDisplay=sitem.hidden?dn:'';
                 oitem.sub = arr;
 
-                _.arr.each(a,function(item){
+                xui.arr.each(a,function(item){
                     dataItem={id: item.id};
                     fun(profile,dataItem,item,pid,index,len,mapCache,serialId);
                     arr.push(dataItem);

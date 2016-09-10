@@ -17,7 +17,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         var self=this,
             t = self.getTemplate();
         //modify
-        _.merge(t.FRAME.BORDER,{
+        xui.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-flat xui-uibg-base",
             FILL:{
                 tagName:'div',
@@ -39,7 +39,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         //get default Appearance
         t = self.getAppearance();
         //modify
-        _.merge(t,{
+        xui.merge(t,{
             BORDER:{
                 overflow:'hidden'
             },

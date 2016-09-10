@@ -4,7 +4,7 @@ Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             return this;
         },
         _setCtrlValue:function(value){
-            if(_.isNull(value) || !_.isDefined(value))value='';
+            if(xui.isNull(value) || !xui.isDefined(value))value='';
             return this.each(function(profile){
                 profile.getSubNode('KEY').attr('value',value+"");
             });
@@ -89,7 +89,7 @@ Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
         },
         _ensureValue:function(profile, value){
             // ensure return string
-            return ""+(_.isSet(value)?value:"");
+            return ""+(xui.isSet(value)?value:"");
         }
     }
 });

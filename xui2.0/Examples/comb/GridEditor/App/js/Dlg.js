@@ -78,7 +78,7 @@ Class('App.Dlg', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         }, 
         _btnok_onclick:function (profile, e, value) {
-            _.tryF(this.events.onOK, [this.col1.getUIValue(), this.col2.getUIValue(), this.col3.getUIValue()], this.$parent);
+            xui.tryF(this.events.onOK, [this.col1.getUIValue(), this.col2.getUIValue(), this.col3.getUIValue()], this.$parent);
             this.dialog.close();
         }, 
         _dialog_beforeclose:function (profile) {

@@ -42,7 +42,7 @@ Class('App.Support', 'xui.Com',{
             var ns=this,
             items=ns.ctl_radiobox1.getItems("min"),
             arr=[];
-            _.arr.each(items,function(o){
+            xui.arr.each(items,function(o){
                 if(xui.Dom.css3Support(o)){
                     arr.push(o);
                 }

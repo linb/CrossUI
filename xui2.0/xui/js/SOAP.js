@@ -13,7 +13,7 @@ Class('xui.SOAP',null,{
             xui.Ajax(queryURL+'?wsdl',null,function(rspData){
                 rst=rspData;
             },function(){
-                _.tryF(onFail,arguments,this);
+                xui.tryF(onFail,arguments,this);
             },null,{
                 method:'GET',
                 rspType:'xml',

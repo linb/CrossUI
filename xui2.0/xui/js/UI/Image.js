@@ -65,7 +65,7 @@ Class("xui.UI.Image", "xui.UI",{
         RenderTrigger:function(){
             var self=this, pro=self.properties,
                   v=pro.src, v2=pro.activeItem;
-            if(v2 && -1!=_.arr.subIndexOf(pro.items,"id",v2)){
+            if(v2 && -1!=xui.arr.subIndexOf(pro.items,"id",v2)){
                 self.boxing().setActiveItem(v2, true);
             }else if(v)self.boxing().setSrc(v, v!=xui.ini.img_bg);
         },
@@ -144,7 +144,7 @@ Class("xui.UI.Image", "xui.UI",{
                 action:function(v){
                     var self=this;
                     if(false!==self.boxing().beforeLoad(this))
-                        _.asyRun(function(){self.getRoot().attr({width:'0',height:'0',src:xui.adjustRes(v)})});
+                        xui.asyRun(function(){self.getRoot().attr({width:'0',height:'0',src:xui.adjustRes(v)})});
                     if(!self.$inner)
                         self.properties.activeItem="";
                 }
@@ -163,7 +163,7 @@ Class("xui.UI.Image", "xui.UI",{
                 linkage:["src","alt","tips"],
                 action:function(v){
                     var items=this.properties.items,
-                        i=_.arr.subIndexOf(items,"id",""+v),
+                        i=xui.arr.subIndexOf(items,"id",""+v),
                         item,ins=this.boxing(),
                         src,alt,tips;
                     if((i!=-1) && (item=items[i])){

@@ -73,7 +73,7 @@ Class('App', 'xui.Com',{
         events:{"onRender":"_com_onrender"},
         addLog:function(txt){
             var ns=this;
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 ns.log.getSubNode("PANEL").prepend("<div>"+txt+"</div>");
             });
         },
@@ -81,67 +81,67 @@ Class('App', 'xui.Com',{
             var ns=this;
 
             ns.btn.getRoot().onMousedown(function(p,e,s){
-                ns.addLog("Mousedown event "+ _.stringify(xui.Event.getPos(e)) + " on Button");
+                ns.addLog("Mousedown event "+ xui.stringify(xui.Event.getPos(e)) + " on Button");
             }).onMouseup(function(p,e,s){
-                ns.addLog("Mouseup event "+ _.stringify(xui.Event.getPos(e)) + " on Button");
+                ns.addLog("Mouseup event "+ xui.stringify(xui.Event.getPos(e)) + " on Button");
             }).onMousemove(function(p,e,s){
-                ns.addLog("Mousemove event "+ _.stringify(xui.Event.getPos(e)) + " on Button");
+                ns.addLog("Mousemove event "+ xui.stringify(xui.Event.getPos(e)) + " on Button");
             }).onClick(function(p,e,s){
-                ns.addLog("Click event "+ _.stringify(xui.Event.getPos(e)) + " on Button");
+                ns.addLog("Click event "+ xui.stringify(xui.Event.getPos(e)) + " on Button");
             }).onDblclick(function(p,e,s){
-                ns.addLog("Dblclick event "+ _.stringify(xui.Event.getPos(e)) + " on Button");
+                ns.addLog("Dblclick event "+ xui.stringify(xui.Event.getPos(e)) + " on Button");
             });
 
             ns.div.getRoot().onMousedown(function(p,e,s){
-                ns.addLog("Mousedown event "+ _.stringify(xui.Event.getPos(e)) + " on Div");
+                ns.addLog("Mousedown event "+ xui.stringify(xui.Event.getPos(e)) + " on Div");
             }).onMouseup(function(p,e,s){
-                ns.addLog("Mouseup event "+ _.stringify(xui.Event.getPos(e)) + " on Div");
+                ns.addLog("Mouseup event "+ xui.stringify(xui.Event.getPos(e)) + " on Div");
             }).onMousemove(function(p,e,s){
-                ns.addLog("Mousemove event "+ _.stringify(xui.Event.getPos(e)) + " on Div");
+                ns.addLog("Mousemove event "+ xui.stringify(xui.Event.getPos(e)) + " on Div");
             }).onClick(function(p,e,s){
-                ns.addLog("Click event "+ _.stringify(xui.Event.getPos(e)) + " on Div");
+                ns.addLog("Click event "+ xui.stringify(xui.Event.getPos(e)) + " on Div");
             }).onDblclick(function(p,e,s){
-                ns.addLog("Dblclick event "+ _.stringify(xui.Event.getPos(e)) + " on Div");
+                ns.addLog("Dblclick event "+ xui.stringify(xui.Event.getPos(e)) + " on Div");
             });
 
             ns.input.getRoot().onMousedown(function(p,e,s){
-                ns.addLog("Mousedown event "+ _.stringify(xui.Event.getPos(e)) + " on Input");
+                ns.addLog("Mousedown event "+ xui.stringify(xui.Event.getPos(e)) + " on Input");
             }).onMouseup(function(p,e,s){
-                ns.addLog("Mouseup event "+ _.stringify(xui.Event.getPos(e)) + " on Input");
+                ns.addLog("Mouseup event "+ xui.stringify(xui.Event.getPos(e)) + " on Input");
             }).onMousemove(function(p,e,s){
-                ns.addLog("Mousemove event "+ _.stringify(xui.Event.getPos(e)) + " on Input");
+                ns.addLog("Mousemove event "+ xui.stringify(xui.Event.getPos(e)) + " on Input");
             }).onClick(function(p,e,s){
-                ns.addLog("Click event "+ _.stringify(xui.Event.getPos(e)) + " on Input");
+                ns.addLog("Click event "+ xui.stringify(xui.Event.getPos(e)) + " on Input");
             }).onDblclick(function(p,e,s){
-                ns.addLog("Dblclick event "+ _.stringify(xui.Event.getPos(e)) + " on Input");
+                ns.addLog("Dblclick event "+ xui.stringify(xui.Event.getPos(e)) + " on Input");
             }).beforeFocus(function(p,e,s){
                 ns.addLog("Focus event on Input");
             });
             
             ns.input2.getRoot().onMousedown(function(p,e,s){
-                ns.addLog("Mousedown event "+ _.stringify(xui.Event.getPos(e)) + " on Input2");
+                ns.addLog("Mousedown event "+ xui.stringify(xui.Event.getPos(e)) + " on Input2");
             }).onMouseup(function(p,e,s){
-                ns.addLog("Mouseup event "+ _.stringify(xui.Event.getPos(e)) + " on Input2");
+                ns.addLog("Mouseup event "+ xui.stringify(xui.Event.getPos(e)) + " on Input2");
             }).onMousemove(function(p,e,s){
-                ns.addLog("Mousemove event "+ _.stringify(xui.Event.getPos(e)) + " on Input2");
+                ns.addLog("Mousemove event "+ xui.stringify(xui.Event.getPos(e)) + " on Input2");
             }).onClick(function(p,e,s){
-                ns.addLog("Click event "+ _.stringify(xui.Event.getPos(e)) + " on Inpu2t");
+                ns.addLog("Click event "+ xui.stringify(xui.Event.getPos(e)) + " on Inpu2t");
             }).onDblclick(function(p,e,s){
-                ns.addLog("Dblclick event "+ _.stringify(xui.Event.getPos(e)) + " on Input2");
+                ns.addLog("Dblclick event "+ xui.stringify(xui.Event.getPos(e)) + " on Input2");
             }).beforeFocus(function(p,e,s){
                 ns.addLog("Focus event on Input2");
             });
 
             ns.textarea.getRoot().onMousedown(function(p,e,s){
-                ns.addLog("Mousedown event "+ _.stringify(xui.Event.getPos(e)) + " on Textarea");
+                ns.addLog("Mousedown event "+ xui.stringify(xui.Event.getPos(e)) + " on Textarea");
             }).onMouseup(function(p,e,s){
-                ns.addLog("Mouseup event "+ _.stringify(xui.Event.getPos(e)) + " on Input");
+                ns.addLog("Mouseup event "+ xui.stringify(xui.Event.getPos(e)) + " on Input");
             }).onMousemove(function(p,e,s){
-                ns.addLog("Mousemove event "+ _.stringify(xui.Event.getPos(e)) + " on Textarea");
+                ns.addLog("Mousemove event "+ xui.stringify(xui.Event.getPos(e)) + " on Textarea");
             }).onClick(function(p,e,s){
-                ns.addLog("Click event "+ _.stringify(xui.Event.getPos(e)) + " on Textarea");
+                ns.addLog("Click event "+ xui.stringify(xui.Event.getPos(e)) + " on Textarea");
             }).onDblclick(function(p,e,s){
-                ns.addLog("Dblclick event "+ _.stringify(xui.Event.getPos(e)) + " on Textarea");
+                ns.addLog("Dblclick event "+ xui.stringify(xui.Event.getPos(e)) + " on Textarea");
             }).beforeFocus(function(p,e,s){
                 ns.addLog("Focus event on Textarea");
             });            

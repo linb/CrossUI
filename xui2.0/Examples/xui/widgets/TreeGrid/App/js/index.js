@@ -272,7 +272,7 @@ Class('App', 'xui.Com',{
         _tg1_beforeComboPop:function(profile, cell, proEditor){
             switch(profile.box.getCellOption(profile, cell, 'type')){
                 case 'getter':
-                    proEditor.boxing().setUIValue(_());
+                    proEditor.boxing().setUIValue(xui.rand());
                 return false;
                 case 'cmdbox':
                 case 'popbox':
@@ -290,7 +290,7 @@ Class('App', 'xui.Com',{
                     ns=[],
                     name,widget,type,t;
 
-                _.arr.each(cells,function(o){
+                xui.arr.each(cells,function(o){
                     type=o.type;
                     ns.push(t=[o.caption]);
 
@@ -358,7 +358,7 @@ Class('App', 'xui.Com',{
 
                 var str='', nodes=[];
 
-                _.arr.each(ns,function(arr){
+                xui.arr.each(ns,function(arr){
                     nodes.push(arr[1]);
                 })
                 nodes=xui.UI.pack(nodes,false);
@@ -376,7 +376,7 @@ Class('App', 'xui.Com',{
             }
             var hash={};
             SPA.$curRow=row;
-            _.arr.each(row.cells,function(o){
+            xui.arr.each(row.cells,function(o){
                 hash[o._col.id]=o.value;
             });
             SPA.$dbBinder.setData(hash).updateDataToUI().getUI().setDisabled(false)
@@ -445,7 +445,7 @@ Class('App', 'xui.Com',{
             this._poptg(profile,pos,'cell','multi',function(p, oldValue, newValue) {
                 newValue=newValue||'';
                 var a=[];
-                _.arr.each(newValue.split(';'),function(o){
+                xui.arr.each(newValue.split(';'),function(o){
                     var b=(o||'').split('|');
                     o=p.boxing().getCellbyRowCol(b[0],b[1]);
                     a.push(o.value);
@@ -472,7 +472,7 @@ Class('App', 'xui.Com',{
                 if(SPA.$dbBinder.checkValid()){
                     SPA.$dbBinder.updateDataFromUI();
                     var hash=SPA.$dbBinder.getData();
-                    _.arr.each(SPA.$curRow.cells,function(cell){
+                    xui.arr.each(SPA.$curRow.cells,function(cell){
                         SPA.tg2.updateCellByRowCol(cell._row.id,cell._col.id, {value:hash[cell._col.id]});
                     });
                     SPA.tg2.resetRowValue(SPA.$curRow.id);

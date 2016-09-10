@@ -33,11 +33,11 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                     
                     switch(dataFormat){
                         case 'XMLUrl':
-                            var xml=linb.getFileSync(prop.XMLUrl);
+                            var xml=xui.getFileSync(prop.XMLUrl);
                             if(xml)fc.setXMLData(xml);
                         break;
                         case 'JSONUrl':
-                            var json=linb.getFileSync(prop.JSONUrl);
+                            var json=xui.getFileSync(prop.JSONUrl);
                             if(json)fc.setJSONData(json);
                         break;
                         case 'XMLData':
@@ -45,14 +45,14 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                         break;
                         default:
                             if(prop.XMLUrl){
-                                var xml=linb.getFileSync(prop.XMLUrl);
+                                var xml=xui.getFileSync(prop.XMLUrl);
                                 if(xml)fc.setXMLData(xml);
                             }else if(prop.JSONUrl){
-                                var json=linb.getFileSync(prop.JSONUrl);
+                                var json=xui.getFileSync(prop.JSONUrl);
                                 if(json)fc.setJSONData(json);
                             }else if(prop.XMLData){
                                 fc.setXMLData(prop.XMLData);
-                            }else if(!_.isEmpty(prop.JSONData)){
+                            }else if(!xui.isEmpty(prop.JSONData)){
                                 flag=1;
                                 fc.setJSONData(prf.box._prepareFCData(prf,prop.JSONData));
                             }
@@ -86,7 +86,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         setTransparent:function(isTransparent){
            return this.each(function(prf){
                var t;
-               _.set(prf.properties,["JSONData","chart","bgalpha"], isTransparent?"0,0":"");
+               xui.set(prf.properties,["JSONData","chart","bgalpha"], isTransparent?"0,0":"");
                if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId))){
                    t.setTransparent(isTransparent);
                }
@@ -94,11 +94,11 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         },
         getChartAttribute:function(key){
             var prf=this.get(0);
-            return _.isStr(key)?_.get(prf.properties,["JSONData","chart",key]):_.get(prf.properties,["JSONData","chart"]);
+            return xui.isStr(key)?xui.get(prf.properties,["JSONData","chart",key]):xui.get(prf.properties,["JSONData","chart"]);
         },
         setChartAttribute:function(key,value){
             var h={};
-            if(_.isStr(key)){
+            if(xui.isStr(key)){
                 h[key]=value;
             }else h=key;
                 
@@ -107,11 +107,11 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId))){
                     t.setChartAttribute(h);
                     // refresh memory in xui from real
-                    _.set(prf.properties,["JSONData","chart"], t.getChartAttribute());
+                    xui.set(prf.properties,["JSONData","chart"], t.getChartAttribute());
                 }else{
                     // reset memory in xui only 
-                    var opt=_.get(prf.properties,["JSONData","chart"]);
-                    if(opt)_.merge(opt, h, 'all');
+                    var opt=xui.get(prf.properties,["JSONData","chart"]);
+                    if(opt)xui.merge(opt, h, 'all');
                 }
             });
         },
@@ -126,8 +126,8 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         fillData:function(data,index,isLineset){
             this.each(function(prf){
                 var JSONData=prf.properties.JSONData;
-                data=_.clone(data);
-                if(_.isArr(data) && _.isArr(data[0])){
+                data=xui.clone(data);
+                if(xui.isArr(data) && xui.isArr(data[0])){
                     if(isLineset){
                         JSONData.lineset=data;
                     }else{
@@ -140,11 +140,11 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 }else{
                     if(isLineset){
                         if('lineset' in JSONData){
-                            _.set(JSONData,["lineset",index||0,"data"],data);
+                            xui.set(JSONData,["lineset",index||0,"data"],data);
                         }
                     }else{
                         if('dataset' in JSONData){
-                            _.set(JSONData,["dataset",index||0,"data"],data);
+                            xui.set(JSONData,["dataset",index||0,"data"],data);
                         }else{
                             JSONData.data=data;
                         }
@@ -170,7 +170,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         },
         callFC:function(funName, params){
             var fc;
-            if((fc=this.getFCObject())&&_.isFun(fc[funName]))
+            if((fc=this.getFCObject())&&xui.isFun(fc[funName]))
                 return fc[funName].apply(fc, params||[]);
         },
         configure:function(options){
@@ -280,17 +280,17 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 ini:{},
                 get:function(){
                     var prf=this,prop=prf.properties,fc;
-                    if(!_.isEmpty(prop.JSONData))
+                    if(!xui.isEmpty(prop.JSONData))
                         return prop.JSONData;
                     else if(fc=prf.boxing().getFCObject())
                         return prf.box._cleanData(prf,fc.getJSONData());
                 },
                 set:function(data){
                     var prf=this,prop=prf.properties;
-                    if(_.isStr(data))data=_.unserialize(data);
+                    if(xui.isStr(data))data=xui.unserialize(data);
                     if(data){
                         prop.XMLData=prop.XMLUrl=prop.JSONUrl="";
-                        prop.JSONData=_.clone(data);
+                        prop.JSONData=xui.clone(data);
 
                         if(prf.renderId){
                             prf.boxing().refreshChart('JSONData');
@@ -355,10 +355,10 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 },
                 set:function(data){
                     var JSONData=this.properties.JSONData;
-                    if(('dataset' in JSONData) || (_.isArr(data) && _.isArr(data[0])) )
-                        JSONData.dataset=_.clone(data);
+                    if(('dataset' in JSONData) || (xui.isArr(data) && xui.isArr(data[0])) )
+                        JSONData.dataset=xui.clone(data);
                     else
-                        JSONData.data=_.clone(data);
+                        JSONData.data=xui.clone(data);
 
                     var bak=JSONData.chart.animation;
                     JSONData.chart.animation='0';
@@ -372,7 +372,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
                 set:function(data){
                     var prf=this,t;
                      if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId)) && t.feedData){
-                        if(_.isFinite(data))data="value="+data;
+                        if(xui.isFinite(data))data="value="+data;
                         t.feedData(data||"");
                     }
                 }
@@ -381,25 +381,25 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         _cleanData:function(prf,data){
             var hoder="Javascript:void(0)";
             if(data.dataset){
-                _.arr.each(data.dataset,function(o,i){
-                    _.arr.each(o.dataset,function(v,j){
-                        _.arr.each(v.data,function(w,k){
+                xui.arr.each(data.dataset,function(o,i){
+                    xui.arr.each(o.dataset,function(v,j){
+                        xui.arr.each(v.data,function(w,k){
                             if(w.link==hoder)delete w.link;
                         });
                     });
-                    _.arr.each(o.data,function(v,j){
+                    xui.arr.each(o.data,function(v,j){
                         if(v.link==hoder)delete v.link;
                     });
                 });
             }else if(data.data){
-                _.arr.each(data.data,function(o,i){
+                xui.arr.each(data.data,function(o,i){
                     if(o.link==hoder)delete o.link;
                     if(o.labelLink==hoder)delete o.labelLink;
                 });                
             }
             if(data.categories){
-                _.arr.each(data.categories,function(o,i){
-                    _.arr.each(o.category,function(v,j){
+                xui.arr.each(data.categories,function(o,i){
+                    xui.arr.each(o.category,function(v,j){
                        if(v.link==hoder)delete v.link;
                     });
                 });
@@ -408,29 +408,29 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
         },
         _prepareFCData:function(prf, data){
             var id=prf.$xid;
-                data=_.clone(data),
+                data=xui.clone(data),
                 hoder="Javascript:void(0)";
             //show cursor as pointer
             if(data.dataset){
-                _.arr.each(data.dataset,function(o,i){
-                    _.arr.each(o.dataset,function(v,j){
-                        _.arr.each(v.data,function(w,k){
+                xui.arr.each(data.dataset,function(o,i){
+                    xui.arr.each(o.dataset,function(v,j){
+                        xui.arr.each(v.data,function(w,k){
                             if(!w.link)w.link=hoder;
                         });
                     });
-                    _.arr.each(o.data,function(v,j){
+                    xui.arr.each(o.data,function(v,j){
                        if(!v.link)v.link=hoder;
                     });
                 });
             }else if(data.data){
-                _.arr.each(data.data,function(o,i){
+                xui.arr.each(data.data,function(o,i){
                     if(!o.link)o.link=hoder;
                     if(!o.labelLink)o.labelLink=hoder;
                 });                
             }
             if(data.categories){
-                _.arr.each(data.categories,function(o,i){
-                    _.arr.each(o.category,function(v,j){
+                xui.arr.each(data.categories,function(o,i){
+                    xui.arr.each(o.category,function(v,j){
                        if(!v.link)v.link=hoder;
                     });
                 });
@@ -442,7 +442,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
             // give chart dom id
             prf._chartId="FC_"+prf.properties.chartType+"_"+prf.$xid;
 
-            if(!_.isEmpty(prf.properties.configure)){
+            if(!xui.isEmpty(prf.properties.configure)){
                 prf.boxing().setConfigure(prf.properties.configure, true);
             }
             if(prf.theme)
@@ -486,7 +486,7 @@ Class("xui.UI.FusionChartsXT","xui.UI",{
 
                 t;
 
-            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
+            if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=adjustunit(ww, rootfz);
                 if(height)prop.height=adjustunit(hh, rootfz);

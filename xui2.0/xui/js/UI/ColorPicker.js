@@ -866,7 +866,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
         _ensureValue:function(profile,v){
             var ns=this,me=arguments.callee,map=me.map||(me.map=(function(){
                 var h={};
-                _.arr.each(ns._C16.split(''),function(o,i){
+                xui.arr.each(ns._C16.split(''),function(o,i){
                     h[o]=1;
                 });
                 return h;

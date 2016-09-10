@@ -14,8 +14,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
         },
         resetPanelView:function(removeChildren,destroyChildren){
-            if(!_.isSet(removeChildren))removeChildren=true;
-            if(!_.isSet(destroyChildren))destroyChildren=true;
+            if(!xui.isSet(removeChildren))removeChildren=true;
+            if(!xui.isSet(destroyChildren))destroyChildren=true;
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
@@ -248,10 +248,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     if(profile.beforePop && false==profile.boxing().beforePop(profile,options,e,src))
                         return false;
 
-                    var pro = _.copy(xui.UI.Dialog.$DataStruct),
+                    var pro = xui.copy(xui.UI.Dialog.$DataStruct),
                         events={};
-                    _.merge(pro, properties, 'with');
-                    _.merge(pro,{
+                    xui.merge(pro, properties, 'with');
+                    xui.merge(pro,{
                         dock:'none',
                         width:Math.max(size.width,200),
                         height:Math.max(size.height,100),
@@ -260,18 +260,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         landBtn:true
                     },'all');
                      if(options.properties)
-                        _.merge(pro, options.properties, 'with');
+                        xui.merge(pro, options.properties, 'with');
 
                     if(options.events)
-                        _.merge(events, options.events, 'all');
+                        xui.merge(events, options.events, 'all');
 
                     var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
 
-                    if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
+                    if(xui.isFun(options.init) && false===options.init(dialog,profile,options)){
                     }else{
                         dialog.show(options.parent||xui('body'));
                         var arr=[];
-                        _.arr.each(profile.children,function(o){
+                        xui.arr.each(profile.children,function(o){
                             arr.push(o[0]);
                         });
                         if(arr.length){
@@ -301,7 +301,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 ini:undefined,
                 // ui update function when setCaption
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
                 }
             },

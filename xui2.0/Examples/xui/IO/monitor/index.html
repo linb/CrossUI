@@ -50,10 +50,10 @@
 
                 var getRequest=function(){
                     setResponse("");
-                    return _.unserialize(xui.Dom.byId('request').value);
+                    return xui.unserialize(xui.Dom.byId('request').value);
                 },
                 setResponse=function(value){
-                    xui('response').attr('value', value.data?_.serialize(value.data[0]):value);
+                    xui('response').attr('value', value.data?xui.serialize(value.data[0]):value);
                 },
                 onOK=function(response){
                     trace(this,'onSuccess');
@@ -67,7 +67,7 @@
                 },
                 trace=function(obj, eventName, clear){
                     if(clear)xui('monitor').empty();
-                    xui('monitor').append(xui.create('<p>'+obj.KEY+" ["+ eventName +'] -- Time stamp:' +_()+' </p>'));
+                    xui('monitor').append(xui.create('<p>'+obj.KEY+" ["+ eventName +'] -- Time stamp:' +xui.stamp()+' </p>'));
                 };
 
                 //use xui.Ajax get method

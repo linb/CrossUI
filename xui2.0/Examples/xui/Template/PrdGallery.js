@@ -1,7 +1,7 @@
 //defines a class here, first
 Class("xui.Template.PrdGallery","xui.Template",{
     Constructor:function(template,properties,events,domId){
-        var self=this,arr=_.toArr(arguments);
+        var self=this,arr=xui.toArr(arguments);
         arr[0]=arr[0]||{
             ""      : "<div><h3 class='gallery1-head'>{head}</h3><ul class='gallery1-ul'>{items}</ul><div style='clear:both;'></div></div>",
             items : "<li class='gallery1-li' [event]><div class='gallery1-left'><div><a href='{href}'><img src='{src}'/><p>{price}</p></a></div></div><div class='gallery1-right'><a href='{href}'><h4>{title}</h4><div>{desc}</div></a></div></li>"

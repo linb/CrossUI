@@ -227,7 +227,7 @@ Class('App.Transform', 'xui.Com',{
             };
         },
         _t_cs_afteruivalueset : function (profile){
-            _.resetRun("transform",this.setTF,0,null,this);
+            xui.resetRun("transform",this.setTF,0,null,this);
         },
         setTF:function(){
             var values = this._getValues(),

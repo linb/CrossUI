@@ -16,7 +16,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 switch(p.initPos){
                     case 'auto':
                         // all in px
-                       if(_.isHash(left)){
+                       if(xui.isHash(left)){
                             top=left.top;
                             left=left.left;
                         }else{
@@ -25,7 +25,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         }
                     break;
                     case 'center':
-                        if(_.isHash(left)){
+                        if(xui.isHash(left)){
                             top=left.top+(left.height-css.$px(p.height))/2;
                             left=left.left+(left.width-css.$px(p.width))/2;
                         }else{
@@ -60,7 +60,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     var tt=profile._$rs_args,fun=function(){
                         if(profile.onShow)profile.boxing().onShow(profile);                            
                         delete profile.inShowing;
-                        _.tryF(callback);
+                        xui.tryF(callback);
                     };
                     if(p.status=='min')
                         box._min(profile,'normal', fun, true);
@@ -145,13 +145,13 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var self=this, profile=this.get(0),ifocus;
             profile.box._active(profile,flag);
             this.getChildren(null,true).each(function(o){
-                if(_.get(o,['properties','defaultFocus'])){
-                    try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
+                if(xui.get(o,['properties','defaultFocus'])){
+                    try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
                     ifocus=1;
                     return false;
                 }
             });
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 if(flag!==false && !ifocus){
                     try{profile.getSubNode('CAPTION').focus();}catch(e){}
                 }
@@ -159,12 +159,12 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             });
         },
         isPinned:function(){
-            return !!_.get(this.get(0),['properties','pinned']);
+            return !!xui.get(this.get(0),['properties','pinned']);
         }
     },
     Initialize:function(){
         var ns=this, t=ns.getTemplate();
-        _.merge(t.FRAME.BORDER,{
+        xui.merge(t.FRAME.BORDER,{
             tabindex: '{tabindex}',
             className: 'xui-uiborder-radius',
             TABSTOP1:{$order:-1},
@@ -354,7 +354,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         var id="xui::_specialforietab";
                         if(!xui.Dom.byId(id))
                             xui('body').append("<div style='display:none;position:absolute;' id="+id+"></div>");
-                        xui.Dom.byId(id).innerHTML=_()+"";
+                        xui.Dom.byId(id).innerHTML=xui.stamp()+"";
                     }
                     var n1=profile.getSubNode("TABSTOP1").get(0),
                         n2=profile.getSubNode("TABSTOP2").get(0),
@@ -578,7 +578,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 ini:undefined,
                 // ui update function when setCaption
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
                 }
             },
@@ -761,7 +761,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var status=profile.properties.status;
             if(status=='min'||status=='max')
                 profile.$noR=1;
-            if(_.isStr(data.overflow))
+            if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;
         },
@@ -812,7 +812,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
             
             if(a&&xui.browser.ie&&xui.browser.ver<=8)
-                _.filter(a.params,function(o,i){
+                xui.filter(a.params,function(o,i){
                     return !!xui.Dom._cssfake[i];
                 });
             o.show(null,null,effectcallback,null,ignoreEffects);
@@ -856,7 +856,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
 
                 if(a&&xui.browser.ie&&xui.browser.ver<=8)
-                    _.filter(a.params,function(o,i){
+                    xui.filter(a.params,function(o,i){
                         return !!xui.Dom._cssfake[i];
                     });
                 o.show(null,null,effectcallback,null,ignoreEffects);
@@ -958,7 +958,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         p=xui(p);
                         // set widht/height first
                         cover.width(p.width()).height(p.height());
-                        _.asyRun(function(){
+                        xui.asyRun(function(){
                             cover.width(Math.max(p.width(),p.scrollWidth()));
                             cover.height(Math.max(p.height(),p.scrollHeight()));
                         });
@@ -1036,7 +1036,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     for(var j in h)
                         h[j].tabIndex=i;
                 }
-                _.breakO(profile.$focusHash,2);
+                xui.breakO(profile.$focusHash,2);
                 xui.Event.popTabOutTrigger();
                 */
                 p.setBlurTrigger(profile.$xid+"_anti");
@@ -1057,12 +1057,12 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             nr.width=adjustunit(nr.width,rootfz);
             nr.height=adjustunit(nr.height,rootfz);
 
-            return _.merge(prop, nr, function(o,i){return prop[i]!='auto'});
+            return xui.merge(prop, nr, function(o,i){return prop[i]!='auto'});
         },
 
         _adjust:function(dialog,caption, content, left, top){
             caption = caption ||'';
-            if(!_.isSet(content)){
+            if(!xui.isSet(content)){
                 content = xui.adjustRes(caption);
                 caption = "";
             }
@@ -1117,7 +1117,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     resizer:false
                 },{
                     beforeClose:function(){
-                        _.tryF(dialog._$onClose);
+                        xui.tryF(dialog._$onClose);
                         dialog._$onClose=null;
                         if(!noCache){
                             dialog.hide();
@@ -1167,10 +1167,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var size=xui.UI.Dialog._adjust(dialog,title, content);
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
-            if(!_.isSet(parent))parent=xui('body');
+            if(!xui.isSet(parent))parent=xui('body');
 
             dialog.show(parent,true, left, top);
-            _.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
+            xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn.activate();
             });
             return dialog;
@@ -1188,7 +1188,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clicked)
-                            _.tryF(dialog._$onNo,['close']);
+                            xui.tryF(dialog._$onNo,['close']);
                         else
                             delete dialog._$_clicked;
                         dialog._$onYes=dialog._$onNo=null;
@@ -1214,7 +1214,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },
                 {
                     onClick:function(){
-                        _.tryF(dialog._$onYes,['yes']);
+                        xui.tryF(dialog._$onYes,['yes']);
                         dialog._$_clicked=1;
                         dialog.close();
                     }
@@ -1227,7 +1227,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },
                 {
                     onClick:function(){
-                        _.tryF(dialog._$onNo,['no']);
+                        xui.tryF(dialog._$onNo,['no']);
                         dialog._$_clicked=1;
                         dialog.close();
                     }
@@ -1251,10 +1251,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var size=xui.UI.Dialog._adjust(dialog, title, caption);
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
-            if(!_.isSet(parent))parent=xui('body');
+            if(!xui.isSet(parent))parent=xui('body');
 
             dialog.show(parent, true, left, top);
-            _.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
+            xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn2.activate();
             });
             return dialog;
@@ -1306,11 +1306,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var size=xui.UI.Dialog._adjust(dialog, title, content);
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
-            if(!_.isSet(parent))parent=xui('body');
+            if(!xui.isSet(parent))parent=xui('body');
 
             dialog.show(parent,false,left, top);
 
-            _.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
+            xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn.activate();
             });
             return dialog;
@@ -1332,7 +1332,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
-                        _.tryF(dialog._$onNo,["no"]);
+                        xui.tryF(dialog._$onNo,["no"]);
                         else
                             delete dialog._$_clickYes;
 
@@ -1360,7 +1360,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },
                 {
                     onClick:function(){
-                        if(false!==_.tryF(dialog._$onYes,[dialog._$inp.getUIValue()])){
+                        if(false!==xui.tryF(dialog._$onYes,[dialog._$inp.getUIValue()])){
                             dialog._$_clickYes=1;
                             dialog.close();
                         }
@@ -1397,10 +1397,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             dialog.$btn2.setCaption("&nbsp;&nbsp;"+(btnCapNo || xui.wrapRes('$inline.cancel'))+"&nbsp;&nbsp;");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
-            if(!_.isSet(parent))parent=xui('body');
+            if(!xui.isSet(parent))parent=xui('body');
 
             dialog.show(parent, true, left, top);
-            _.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
+            xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog._$inp.activate();
             });
             return dialog;
@@ -1440,8 +1440,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     isize.height=height;
                 }else{
                     //force to get height
-                    h1=v1.height(true);
-                    h4=v4.height(true);
+                    h1=v1.offsetHeight(true);
+                    h4=v4.offsetHeight(true);
                     if((t=size.height-h1-h4)>0)
                         isize.height=t;
                 }

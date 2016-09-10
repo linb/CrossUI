@@ -212,11 +212,11 @@ Class('App', 'xui.Com',{
             this.apicaller_soap.invoke();
         },
         _apicaller_1_afterInvoke : function (profile, rspData) {
-            if(!_.isHash(rspData)){
+            if(!xui.isHash(rspData)){
                 alert(rspData+"");
                 return;
             }
-            var rst=_.get(rspData,["responseData","results"]);
+            var rst=xui.get(rspData,["responseData","results"]);
             return {
                 returnurls:rst.length,
                 topurl:rst[0].url

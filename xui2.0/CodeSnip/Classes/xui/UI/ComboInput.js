@@ -501,7 +501,7 @@ Class('App.xui_UI_ComboInput', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         }, 
         _comboinput13_beforeComboPop:function (profile, pos) {
-            profile.boxing().setUIValue(_());
+            profile.boxing().setUIValue(xui.rand());
             return false;
         }, 
         _comboinput14_beforeComboPop:function (profile, pos) {

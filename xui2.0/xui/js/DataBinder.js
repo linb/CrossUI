@@ -25,7 +25,7 @@ Class("xui.DataBinder","xui.absObj",{
 
             for(var i in (temp=c.$DataStruct))
                 if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?_.copy(temp[i]):temp[i];
+                    profile.properties[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
 
             //set anti-links
             profile.link(c._cache,'self').link(xui._pool,'xui');
@@ -42,7 +42,7 @@ Class("xui.DataBinder","xui.absObj",{
             this.each(function(profile){
                 var box=profile.box,name=profile.properties.name;
                 //unlink
-                _.arr.each(profile._n, function(v){if(v)box._unBind(name,v)});
+                xui.arr.each(profile._n, function(v){if(v)box._unBind(name,v)});
                 //delete from pool
                 delete box._pool[name];
                 //free profile
@@ -112,7 +112,7 @@ Class("xui.DataBinder","xui.absObj",{
             if(!key)
                 r=xui.UI.pack(this.constructor._getBoundElems(this.get(0)),false);
             else
-                _.arr.each(this.constructor._getBoundElems(this.get(0)),function(profile){
+                xui.arr.each(this.constructor._getBoundElems(this.get(0)),function(profile){
                     var p=profile.properties;
                     if((p.dataField||p.name||profile.alias)==key){
                         r=profile.boxing();
@@ -125,7 +125,7 @@ Class("xui.DataBinder","xui.absObj",{
             var ns=this,
                 prf=ns.get(0),
                 hash={};
-            _.arr.each(this.constructor._getBoundElems(prf),function(profile){
+            xui.arr.each(this.constructor._getBoundElems(prf),function(profile){
                 if(!profile.box["xui.absValue"])return;
                 var p=profile.properties,
                     b = profile.boxing(),
@@ -155,22 +155,22 @@ Class("xui.DataBinder","xui.absObj",{
             }
 
             var data=prf.properties.data;
-            return _.isSet(key)?data[key]:data;
+            return xui.isSet(key)?data[key]:data;
         },
         setData:function(key,value, force){
             var prf=this.get(0), prop=prf.properties;
 
             //clear data
             if(key===false){
-                _.each(prop.data,function(o,i){
+                xui.each(prop.data,function(o,i){
                     prop.data[i]=null;
                 });
             }
             // reset all data
-            else if(!_.isSet(key))
+            else if(!xui.isSet(key))
                 prop.data={};
             // reset all data
-            else if(_.isHash(key))
+            else if(xui.isHash(key))
                 prop.data=key;
             // reset one
             else
@@ -201,19 +201,19 @@ Class("xui.DataBinder","xui.absObj",{
                     return;
                 }
             }
-            _.merge(map,prop.data,function(v,t){
-                return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
+            xui.merge(map,prop.data,function(v,t){
+                return !dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false);
             });
-            _.arr.each(ns.constructor._getBoundElems(prf),function(profile){
+            xui.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 var p=profile.properties,
                       eh=profile.box.$EventHandlers,
                       t=p.dataField || p.name || profile.alias;
-                if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
+                if(!dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false)){
                     var b = profile.boxing(),cap,
                         // for absValue, maybe return array
-                        uv = profile.box['xui.absValue']?b.getUIValue(_.isBool(returnArr)?returnArr:profile.__returnArray):null;
+                        uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null;
                     // v and uv can be object(Date,Number)
-                    if(_.isHash(map[t])){
+                    if(xui.isHash(map[t])){
                         var pp=map[t].properties,theme=map[t].theme,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS;
 
                         if(pp)delete map[t].properties;
@@ -222,34 +222,34 @@ Class("xui.DataBinder","xui.absObj",{
                         if(cc)delete map[t].CC;
                         if(cs)delete map[t].CS;
                         // remove non-properties
-                        _.filter(map[t],function(o,i){
+                        xui.filter(map[t],function(o,i){
                             return !!(i in p);
                         });
                         // reset
-                        if(!_.isEmpty(map[t])){
-                            _.each(map[t],function(o,i){
+                        if(!xui.isEmpty(map[t])){
+                            xui.each(map[t],function(o,i){
                                 if(i in p)map[t][i]=p[i];
                             });
                         }
                         // reset pp
-                        if(_.isHash(pp)){
-                            _.filter(pp,function(o,i){
+                        if(xui.isHash(pp)){
+                            xui.filter(pp,function(o,i){
                                 return i in p && !(i in map[t]);
                             });
-                            if(!_.isEmpty(pp)){
-                                _.each(pp,function(o,i){
+                            if(!xui.isEmpty(pp)){
+                                xui.each(pp,function(o,i){
                                     if(i in p)pp[i]=p[i];
                                 });                         
                                 map[t].properties=pp
                             }
                         }
                          if(theme)map[t].theme=profile.theme;
-                        if(ca)map[t].CA=_.clone(profile.CA,true);
-                        if(cc)map[t].CC=_.clone(profile.CC,true);
-                        if(cs)map[t].CS=_.clone(profile.CS,true);
+                        if(ca)map[t].CA=xui.clone(profile.CA,true);
+                        if(cc)map[t].CC=xui.clone(profile.CC,true);
+                        if(cs)map[t].CS=xui.clone(profile.CS,true);
                         if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
                             if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
-                        if(_.isDefined(uv) && 'value' in p)
+                        if(xui.isDefined(uv) && 'value' in p)
                             if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
                     }else{
                         if(profile.box['xui.UI.ComboInput'] && (p.type=='file'||p.type=='upload')){
@@ -273,15 +273,15 @@ Class("xui.DataBinder","xui.absObj",{
 
             // adjust UI data
             if(adjustData)
-                map = _.tryF(adjustData,[map, prf],this);
+                map = xui.tryF(adjustData,[map, prf],this);
 
             if(!ignoreEvent && prf.afterUpdateDataFromUI){
                 mapb = this.afterUpdateDataFromUI(prf, map);
-                if(_.isHash(mapb))map=mapb;
+                if(xui.isHash(mapb))map=mapb;
                 mapb=null;
             }
 
-            _.merge(prf.properties.data,map,'all');
+            xui.merge(prf.properties.data,map,'all');
 
             return true;
         },
@@ -292,71 +292,71 @@ Class("xui.DataBinder","xui.absObj",{
                 prop=prf.properties,
                 map={},mapb;
 
-            _.merge(map,prop.data,function(v,t){
-                return !dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false);
+            xui.merge(map,prop.data,function(v,t){
+                return !dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false);
             });
 
             if(adjustData)
-                map = _.tryF(adjustData,[map, prf],ns);
+                map = xui.tryF(adjustData,[map, prf],ns);
 
             if(!ignoreEvent && prf.beforeUpdateDataToUI){
                 mapb = ns.beforeUpdateDataToUI(prf, map);
-                if(_.isHash(mapb))map=mapb;
+                if(xui.isHash(mapb))map=mapb;
                 mapb=null;
             }
 
-            _.arr.each(ns.constructor._getBoundElems(prf),function(profile){
+            xui.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 p=profile.properties;
                 eh=profile.box.$EventHandlers;
                 t=p.dataField || p.name || profile.alias;
-                if(!dataKeys || dataKeys===t || (_.isArr(dataKeys)?_.arr.indexOf(dataKeys,t)!=-1:false)){
+                if(!dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false)){
                     // need reset?
                     if(map && t in map){
-                        v=_.clone(map[t],null,2);
+                        v=xui.clone(map[t],null,2);
                         uv=c=null;
                         b=profile.boxing();
-                        if(_.isHash(v)){
+                        if(xui.isHash(v)){
                             if(pp=v.properties){
-                                _.filter(pp,function(o,i){
+                                xui.filter(pp,function(o,i){
                                     return i in p;
                                 });
                                 // keep value and caption at first
-                                c=_.isSet(pp.caption)?pp.caption:null;
-                                uv=_.isSet(pp.value)?pp.value:null;
+                                c=xui.isSet(pp.caption)?pp.caption:null;
+                                uv=xui.isSet(pp.value)?pp.value:null;
                                 delete pp.caption;delete pp.value;
-                                if(!_.isEmpty(pp))
+                                if(!xui.isEmpty(pp))
                                     b.setProperties(pp);
                                 delete v.properties;
                             }
                             if(pp=v.theme){if(typeof(b.setTheme)=="function")b.setTheme(pp);delete v.theme}
-                            if(pp=v.CS){if(!_.isEmpty(pp))b.setCustomStyle(pp);delete v.CS}
-                            if(pp=v.CC){if(!_.isEmpty(pp))b.setCustomClass(pp);delete v.CC}
-                            if(pp=v.CA){if(!_.isEmpty(pp))b.setCustomAttr(pp);delete v.CA}
+                            if(pp=v.CS){if(!xui.isEmpty(pp))b.setCustomStyle(pp);delete v.CS}
+                            if(pp=v.CC){if(!xui.isEmpty(pp))b.setCustomClass(pp);delete v.CC}
+                            if(pp=v.CA){if(!xui.isEmpty(pp))b.setCustomAttr(pp);delete v.CA}
 
-                            if(!_.isEmpty(v)){
-                                _.filter(v,function(o,i){
+                            if(!xui.isEmpty(v)){
+                                xui.filter(v,function(o,i){
                                     return (i in p) || (i in v);
                                 });
-                                if(!_.isEmpty(v)){
+                                if(!xui.isEmpty(v)){
                                     // keep value and caption at first
                                     // value and caption in properties have high priority
-                                    c=_.isSet(c)?c:_.isSet(v.caption)?v.caption:null;
-                                    uv=_.isSet(uv)?uv:_.isSet(v.value)?v.value:null;
+                                    c=xui.isSet(c)?c:xui.isSet(v.caption)?v.caption:null;
+                                    uv=xui.isSet(uv)?uv:xui.isSet(v.value)?v.value:null;
                                     delete v.caption;delete v.value;
                                     
-                                    if(!_.isEmpty(v))
+                                    if(!xui.isEmpty(v))
                                         b.setProperties(v);
                                 }
                             }
                         }else uv=v;
                         // set value and caption at last
-                        if(_.isDefined(uv) && _.isFun(b.resetValue)){
+                        if(xui.isDefined(uv) && xui.isFun(b.resetValue)){
                             b.resetValue(uv);
-                            profile.__returnArray=_.isArr(uv);
+                            profile.__returnArray=xui.isArr(uv);
                         }
                         // set caption
-                        if(_.isDefined(c) && _.isFun(b.setCaption))
-                            _.tryF(b.setCaption,[c,true],b);
+                        if(xui.isDefined(c) && xui.isFun(b.setCaption))
+                            xui.tryF(b.setCaption,[c,true],b);
                     }
                 }
             });
@@ -368,7 +368,7 @@ Class("xui.DataBinder","xui.absObj",{
         _pool:{},
         _objectProp:{tagVar:1,propBinder:1,data:1},
         destroyAll:function(){
-            this.pack(_.toArr(this._pool,false),false).destroy();
+            this.pack(xui.toArr(this._pool,false),false).destroy();
             this._pool={};
         },
         getFromName:function(name){
@@ -377,15 +377,15 @@ Class("xui.DataBinder","xui.absObj",{
         },
         _beforeSerialized:function(profile){
             var o={};
-            _.merge(o, profile, 'all');
-            var p = o.properties = _.clone(profile.properties,true);
+            xui.merge(o, profile, 'all');
+            var p = o.properties = xui.clone(profile.properties,true);
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             return o;
         },                
         _getBoundElems:function(prf){
             var arr=[];
-            _.arr.each(prf._n,function(profile){
+            xui.arr.each(prf._n,function(profile){
                 // for container
                 if(profile.behavior.PanelKeys){
                      xui.absValue.pack(profile.boxing().getChildren(null, true)).each(function(p){
@@ -397,7 +397,7 @@ Class("xui.DataBinder","xui.absObj",{
                     arr.push(profile);
                 }
             });
-            return _.arr.removeDuplicate(arr);
+            return xui.arr.removeDuplicate(arr);
         },
         _bind:function(name, profile){
             if(!name)return;
@@ -408,7 +408,7 @@ Class("xui.DataBinder","xui.absObj",{
                 o=b.get(0);
             }
             if(profile){
-                if(_.arr.indexOf(o._n,profile)==-1){
+                if(xui.arr.indexOf(o._n,profile)==-1){
                     //use link for 'destroy UIProfile' trigger 'auto unbind function '
                     profile.link(o._n, 'databinder.'+name);
                 }
@@ -439,7 +439,7 @@ Class("xui.DataBinder","xui.absObj",{
                     //modify name
                     if(_old && !_new && o._n.length)
                         for(var i=0,l=o._n.length;i<l;i++)
-                            _.set(o._n[i], ["properties","dataBinder"], value);
+                            xui.set(o._n[i], ["properties","dataBinder"], value);
 
                     //pointer _old the old one
                     if(_new && !_old) o._n=_new._n;

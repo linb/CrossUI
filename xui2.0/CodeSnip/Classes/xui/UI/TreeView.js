@@ -52,16 +52,16 @@ Class('App.xui_UI_TreeView', 'xui.Com',{
         _ctl_treeview1_ongetcontent : function (profile, item, callback) {
             var ns = this,
                 uictrl = profile.boxing();
-            var id=item.id,tid="temp"+_();
+            var id=item.id,tid="temp"+xui.stamp()
            
             // to simulate asyn ajax loading
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 // remove first
                 uictrl.removeItems([tid]);
                 var items=[];
                 // two files
-                items.push({id:'file_'+_.id(), caption:'file_'+_.id(),image:"img/App.gif", imagePos:"-80px -48px"});
-                items.push({id:'file_'+_.id(), caption:'file_'+_.id(),image:"img/App.gif", imagePos:"-16px -48px"});
+                items.push({id:'file_'+xui.id(), caption:'file_'+xui.id(),image:"img/App.gif", imagePos:"-80px -48px"});
+                items.push({id:'file_'+xui.id(), caption:'file_'+xui.id(),image:"img/App.gif", imagePos:"-16px -48px"});
                 // a folder
                 items.push({id:id+'_1', caption:id+'_1', sub:true});
                 items.push({id:id+'_2', caption:id+'_2', sub:true, image:"img/App.gif", imagePos:"-32px -48px"});

@@ -79,10 +79,10 @@
                 xui('loading').remove();
 
                 var getRequest=function(){
-                    return _.unserialize(xui.Dom.byId('request').value);
+                    return xui.unserialize(xui.Dom.byId('request').value);
                 },
                 setResponse=function(value){
-                    xui('response').attr('value', _.serialize(value.data[0]));
+                    xui('response').attr('value', xui.serialize(value.data[0]));
                 },
                 showErr=function(uri,qs,msg){
                     alert('request raise err in "'+uri+'"' + (qs?' with "'+qs+'"':'') + (msg?': "' + msg +'"':''));            

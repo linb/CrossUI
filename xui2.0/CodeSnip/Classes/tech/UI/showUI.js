@@ -82,7 +82,7 @@ Class('App.tech_UI_showUI', 'xui.Com',{
                 alert('Cant execute your code, check it first!');
                 return;
             }
-            alert(_.serialize(SPA.pane));
+            alert(xui.serialize(SPA.pane));
         }
     }
 });

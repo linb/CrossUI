@@ -145,7 +145,7 @@ Class('App', 'xui.Com',{
         }, 
         //to interact with server
         request:function(hash, callback, onStart, onEnd, file){
-            _.tryF(onStart);
+            xui.tryF(onStart);
             xui.Thread.observableRun(function(threadid){
                 var data={key:'DBProcess',paras:hash}, options;
                 if(file){
@@ -156,15 +156,15 @@ Class('App', 'xui.Com',{
                     var obj=rsp;
                     if(obj){
                         if(!obj.error)
-                            _.tryF(callback,[obj]);
+                            xui.tryF(callback,[obj]);
                         else
-                            SPA.popMsg(_.serialize(obj.error));
+                            SPA.popMsg(xui.serialize(obj.error));
                     }else
-                        SPA.popMsg(_.serialize(rsp));
-                    _.tryF(onEnd);
+                        SPA.popMsg(xui.serialize(rsp));
+                    xui.tryF(onEnd);
                 },function(rsp){
-                    SPA.popMsg(_.serialize(rsp));
-                    _.tryF(onEnd);
+                    SPA.popMsg(xui.serialize(rsp));
+                    xui.tryF(onEnd);
                 }, threadid,options)
              });
         }, 
@@ -249,7 +249,7 @@ Class('App', 'xui.Com',{
                 action:'getlist'
             },
                         function(obj){
-                            _.arr.each(obj.data,function(o,i){
+                            xui.arr.each(obj.data,function(o,i){
                                 obj.data[i]={cells:o,id:o[0]};
                             });
                             SPA.treegrid.setRows(obj.data);

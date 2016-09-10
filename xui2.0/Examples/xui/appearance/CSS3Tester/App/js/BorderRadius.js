@@ -224,7 +224,7 @@ Class('App.BorderRadius', 'xui.Com',{
             };
         },
         _r_cs_afteruivalueset : function (profile){
-            _.resetRun("border_radius",this.setBR,0,null,this);
+            xui.resetRun("border_radius",this.setBR,0,null,this);
         },
         setBR:function(){
             var values = this._getValues(),

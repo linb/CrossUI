@@ -109,14 +109,14 @@ Class('App', 'xui.Com',{
         _ctl_do_onclick : function (profile, e, src, value) {
             var ns = this,
                 uri = ns.ctl_url.getValue(),
-                args = _.unserialize(ns.ctl_request.getValue());
+                args = xui.unserialize(ns.ctl_request.getValue());
             if(uri && args){
                 ns.ctl_response.setValue("Asynchronous calling...");
                 xui.Thread.observableRun(function(threadid){
                     xui.request("../../../backend/test/rpc/server.php",
                         xui.XMLRPC.wrapRequest(args),
                         function(rsp){
-                            ns.ctl_response.setValue(xui.Coder.formatText(_.stringify(xui.XMLRPC.parseResponse(rsp))));
+                            ns.ctl_response.setValue(xui.Coder.formatText(xui.stringify(xui.XMLRPC.parseResponse(rsp))));
                         },
                         function(msg){
                             ns.ctl_response.setValue(msg);

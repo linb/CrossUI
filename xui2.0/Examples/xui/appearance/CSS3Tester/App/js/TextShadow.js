@@ -153,7 +153,7 @@ Class('App.TextShadow', 'xui.Com',{
             };
         },
         _t_sd_afteruivalueset : function (profile){
-            _.resetRun("textShadow",this.setTS,0,null,this);
+            xui.resetRun("textShadow",this.setTS,0,null,this);
         },
         setTS:function(){
             var values = this._getValues(),

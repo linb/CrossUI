@@ -1,6 +1,6 @@
 Class('xui.Template','xui.absProfile',{
     Constructor:function(template,properties,events,domId){
-        var upper=arguments.callee.upper, args=_.toArr(arguments);
+        var upper=arguments.callee.upper, args=xui.toArr(arguments);
         upper.apply(this,args);
         upper=null;
         
@@ -35,7 +35,7 @@ Class('xui.Template','xui.absProfile',{
             delete xui.$cache.profileMap[self.domId];
             delete xui.$cache.profileMap[self.$domId];
             self.unLinkAll();
-            _.breakO([self.properties, self.event, self], 2);
+            xui.breakO([self.properties, self.event, self], 2);
         },
         _reg0:/^\w[\w_-]*$/,
         show:function(parent){
@@ -120,7 +120,7 @@ Class('xui.Template','xui.absProfile',{
                     var i,o,j,v;
                     for(j in data){
                         o=data[j];
-                        if(_.isArr(o) && (tpl_evkey==j||tpl_evkey.indexOf((data.tpl_evkey||j)+'.')===0))
+                        if(xui.isArr(o) && (tpl_evkey==j||tpl_evkey.indexOf((data.tpl_evkey||j)+'.')===0))
                             for(i=0;v=o[i];i++){
                                 if(v.tpl_evkey==tpl_evkey&&v.id==id)return v;
                                 else if(v=f(v,tpl_evkey,id)) return v;
@@ -231,7 +231,7 @@ Class('xui.Template','xui.absProfile',{
         },
         toHtml:function(properties){
             //must copy it for giving a default tpl_evkey
-            var p=_.copy(properties||this.properties||{});
+            var p=xui.copy(properties||this.properties||{});
             p.tpl_evkey="root";
             return this._doTemplate(p);
         },
@@ -267,7 +267,7 @@ Class('xui.Template','xui.absProfile',{
         _doTemplate:function(properties, tag, result){
             if(!properties)return '';
 
-            var self=this, me=arguments.callee,s,t,n,isA = _.isArr(properties),
+            var self=this, me=arguments.callee,s,t,n,isA = xui.isArr(properties),
             template = self.$template,
             temp = template[tag||'root'],
             r = !result;
@@ -307,13 +307,13 @@ Class('xui.Template','xui.absProfile',{
         },
         serialize:function(){
             var self=this,
-                s=_.serialize,
+                s=xui.serialize,
                 t=xui.absObj.$specialChars,
-                properties = _.isEmpty(self.properties)?null:_.clone(self.properties,function(o,i){return !t[(i+'').charAt(0)]});            
+                properties = xui.isEmpty(self.properties)?null:xui.clone(self.properties,function(o,i){return !t[(i+'').charAt(0)]});            
             return 'new xui.Template(' + 
             s(self.template||null) + "," + 
             s(properties) + "," + 
-            s(_.isEmpty(self.events)?null:self.events) + "," + 
+            s(xui.isEmpty(self.events)?null:self.events) + "," + 
             s(self.$domId!=self.domId?self.domId:null) + 
             ')';
         }
@@ -324,6 +324,6 @@ Class('xui.Template','xui.absProfile',{
                 return id.boxing();
         },
         _cache:[],
-        _ctrlId : new _.id()
+        _ctrlId : new xui.id()
     }
 });

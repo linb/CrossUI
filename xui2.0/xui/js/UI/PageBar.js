@@ -22,21 +22,21 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
 
                     change = function(n,i,j,k){
                         if(i)n.attr('href',prop.uriTpl.replace('*',i));
-                        if(_.isSet(j))
+                        if(xui.isSet(j))
                             n.html(prop.textTpl.replace('*',j),false);
                         
-                        if(_.isSet(k))
+                        if(xui.isSet(k))
                             n.get(0)._real_page=k;
                     },
                     display = function(n,f){n.css('display',f?'':'none')}
                     ;
                 //change href and text
                 change(first, min, min);
-                change(prehide, '','..' + _.str.repeat('.',String(cur-1-min).length) , 1);
+                change(prehide, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1);
                 change(prev, cur-1, prop.prevMark);
                 change(current, cur, cur);
                 change(next, cur+1, prop.nextMark);
-                change(nexthide, '','..' + _.str.repeat('.',String(max-cur-1).length) , 1);
+                change(nexthide, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1);
                 change(last, max, max);
 
                 //show or hide
@@ -248,7 +248,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             caption:{
                 ini:' Page: ',
                 action:function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },

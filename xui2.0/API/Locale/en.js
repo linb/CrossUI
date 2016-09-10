@@ -1,4 +1,4 @@
-_.set(xui.Locale,["en","app"], {
+xui.set(xui.Locale,["en","app"], {
     en:'English',
     cn:'Chinese',
     apititle:"CrossUI 2.0 - API Documentation",
@@ -45,16 +45,7 @@ _.set(xui.Locale,["en","app"], {
     $links array
     $memo string
     */
-    _.set(xui.Locale,["en","doc"], {
-        Namespace:{
-            $desc:"Declares a namespace.",
-            $rtn:"Object",
-            $paras:[
-                "key [Required]: String, namespace string."
-            ],
-            $snippet:["Namespace('Test.NS'); alert(typeof Test.NS)"],
-            $memo:" Namespace naming rules: [A-Z][0-9a-zA-Z]+"
-        },
+    xui.set(xui.Locale,["en","doc"], {
         Class:{
             $desc:"Class Namespace. <br />Can be used as a function to declare a class too.",
             $rtn:"Object",
@@ -68,756 +59,12 @@ _.set(xui.Locale,["en","app"], {
             destroy:{
                 $desc:"To dstroy a Class."
             }
-        },
-        "_":{
-            $desc:"Tools functions' Namespace. <br />Can be used as a function to get local time stamp too.",
-            $rtn:"Integer",
-            $snippet:["alert(_()); xui.message(_())"],
-
-            arr:{
-                $desc:"A functions collection for Array.",
-                fastSortObject:{
-                    $desc:"The fast stable sort function for object array.",
-                    $rtn:'Array',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "byKey [Required]: Function. function to get sort key."
-                    ]
-                },
-                stableSort:{
-                    $desc:"The stable sort function.",
-                    $rtn:'Array',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "sortby [Required]: Function(x,y). sort function."
-                    ]
-                },
-                each:{
-                    $desc:"Applys a function to each element of the array in specified order.",
-                    $rtn:'Array',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "fun [Required]: Function, arguments: [array element, array index]. The function to apply to array item.",
-                        "scope [Optional]: Object, [this] pointer for [fun]. Default is [arr].",
-                        "order [Optional]: Boolean, iterate by descend order. Default is false."
-                    ],
-                    $snippet:[
-                        "_.arr.each(['a','b'], function(o,i){alert(i+':'+o);} )",
-                        "_.arr.each(['a','b'], function(o,i){alert(i+':'+o);alert(this===window);},window,true)"
-                    ]
-                },
-                indexOf:{
-                    $desc:"Returns the first index at which a given element can be found in the array, or -1 if it is not present.",
-                    $rtn:'Number',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "value [Required]: Object, element to locate in the array."
-                    ],
-                    $snippet:[
-                        "var a=[1,2,3,4];alert(_.arr.indexOf(a, 3))"
-                    ]
-                },
-                insertAny:{
-                    $desc:"Adds one or more elements to the specified position of an array.",
-                    $rtn:'Number',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "target [Required]: Object, elements to add.",
-                        "index [Optional]: Number, the specified position. Default is -1.",
-                        "flag [Optional]: Boolean, force to take [target] as a single element.  Default is false."
-                    ],
-                    $snippet:[
-                        "var a=[1,2,3]; _.arr.insertAny(a,5,1);alert(a)",
-                        "var a=[1,2,3]; _.arr.insertAny(a,[5,5],1);alert(_.serialize(a))",
-                        "var a=[1,2,3]; _.arr.insertAny(a,[5,5],1,true);alert(_.serialize(a))"
-                    ]
-                },
-                removeFrom:{
-                    $desc:"Removes a section of elements from an array.",
-                    $rtn:'Array',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "index [Required]: Number, the specified position. ",
-                        "length [Optional]: Number, how many elements to be removed. Default is 1."
-                    ],
-                    $snippet:[
-                        "var a=[1,2,3,4,5]; _.arr.removeFrom(a, 2,2 ); alert(a);"
-                    ]
-                },
-                removeDuplicate:{
-                    $desc:"Removes the dupliacte elements in an array.",
-                    $rtn:'Array',
-                    $paras: [
-                        "arr [Required] : Array, target array.",
-                        "subKey [Optional]: String, Use this sub-key to find the duplicate values (the element in Array is object)."
-                    ],
-                    $snippet:[
-                        "var a=[1,2,3,4,5,3,4,5]; _.arr.removeDuplicate(a); alert(a);",
-                        "var a=[{id:1,value:'1'},{id:1,value:'2'},{id:1,value:'3'}]; _.arr.removeDuplicate(a, 'id'); alert(_.serialize(a));"
-                    ]
-                },
-                removeValue:{
-                    $desc:"Removes a specified element from an array.",
-                    $rtn:'Array',
-                    $paras: [
-                        "arr [Required] : Array, target array.",
-                        "value: Object, element to be removed."
-                    ],
-                    $snippet:[
-                        "var a=[1,2,3,4,5]; _.arr.removeValue(a, 4); alert(a);"
-                    ]
-                },
-                subIndexOf:{
-                    $desc:"Returns the first index at which a given key and value can be found in the Object element of the array, or -1 if it is not present.",
-                    $rtn:'Number',
-                    $paras: [
-                        "arr [Required]: Array, target array.",
-                        "key [Required]: String, a specified key in the hash element.",
-                        "value [Required]: Object, a specified value in the hash element."
-                    ],
-                    $snippet:[
-                        "var a=[1,2,{k:'v'},4]; var i=_.arr.subIndexOf(a,'k','v'); alert(i);"
-                    ]
-                }
-            },
-            asyHTML:{
-                $desc:"Asynchronous html create.",
-                $rtn:"Interger",
-                $paras:[
-                    "content [Required]: String, content String.",
-                    "callback [Required]: Function, callback function.",
-                    "defer [Optional]: Number, gives the amount of milliseconds between shots passes. Default is 0.",
-                    "size [Optional]: Number, specifies the size of DOM node will create in one shot. Default is 10."
-                ]
-            },
-            asyRun:{
-                $desc:"Asynchronous Function Call.",
-                $rtn:"Interger",
-                $paras:[
-                    "fun [Required]: Function, target function.",
-                    "defer [Optional]: Number, setTimeout defer time. Default is 0",
-                    "args [Optional]: Array, arguments for fun. Default is []",
-                    "scope [Optional]: Object, [this] pointer for [fun]. Default is [window]"
-                ],
-                $snippet:[
-                    "_.asyRun(function(a,b){alert(this===window);alert(a+b)}, 300, ['a','b'], window)"
-                ]
-            },
-            breakO:{
-                $desc:"Breaks Object reference[for memory release].",
-                $paras:[
-                    "target [Required]: Object, target Object to break.",
-                    "depth [Optional]: Number, depth value. Default is 1."
-                ],
-                $snippet:[
-                    "var a={b:1}, o={a:a}; _.breakO(o); alert(a && a.b);",
-                    "var a={b:1}, o={a:a}; _.breakO(o,2); alert(a && a.b);"
-                ]
-            },
-            toFixedNumber:{
-                $desc:"Formats a number to use a specified number of trailing decimals. Returns number.",
-                $paras:[
-                    "number [Required]: Number, the target number.",
-                    "digits [Optional]: Number, the number of digits after the decimal point. Default is 2."
-                ],
-                $snippet:[
-                    "var a=0.3+0.3+0.3; alert(a); alert(_.toFixedNumber(a, 10));",
-                    "var a=0.1*0.2; alert(a); alert(_.toFixedNumber(a, 10));"
-                ]
-            },
-            toNumeric:{
-                $desc:"Gets a number from string. Returns number.",
-                $paras:[
-                    "value [Required]: String,  the target number.",
-                    "precision [Optional]: Number, the number of digits after the decimal point. Default is 2.",
-                    "groupingSeparator[Optional]: String, thousands separator. Default is  ','.",
-                    "decimalSeparator[Optional]: String, decimal separator. Default is  '.'."
-                ]
-            },
-            formatNumeric:{
-                $desc:"Formats a number to string. Returns number.",
-                $paras:[
-                    "value [Required]: Number,  the target number.",
-                    "precision [Optional]: Number, the number of digits after the decimal point. Default is 2.",
-                    "groupingSeparator[Optional]: String, thousands separator. Default is  ','.",
-                    "decimalSeparator[Optional]: String, decimal separator. Default is  '.'.",
-                    "forceFillZero[Optional]: Boolean, forces to fill zeros for precision or doesn't. Default is [true]"
-                ]
-            },
-            clone:{
-                $desc:"Clones Object, deep copy.",
-                $rtn:"Object",
-                $paras:[
-                    "hash [Required]: Object, target Object to clone.",
-                    "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it clones certain item. Or [true], means to neglect those items which key starts with '_'.",
-                    "deep [Optional]: Number, Default is 100."
-                ],
-                $snippet:[
-                    "var a=1, b='s'; alert(_.clone(a)); alert(_.clone(b));",
-                    "var o={a:1,b:{b:{c:2}}}; alert(_.serialize(_.clone(o))); alert(_.serialize(_.clone(o,function(o,i){return i!='c'}))); ",
-                    "var o={a:1,_b:2,$c:3}; alert(_.serialize(_.clone(o,true)));",
-                    "var o=['1','2','3']; alert(_.serialize(_.clone(o))); alert(_.serialize(_.clone(o,function(o){return o!='2'}))); "
-                ]
-            },
-            copy:{
-                $desc:"Shadow copy, just clones the fist layer of Object.",
-                $rtn:"Object",
-                $paras:[
-                    "hash [Required]: Object, target Object to copy.",
-                    "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it copy certain item. Or [true], means to neglect those items which key starts with '_'."
-                ],
-                $memo:"Sees <a href='#_.clone'>_.clone</a>"
-            },
-            each:{
-                $desc:"Loops through each element of the Object, and apply fun.",
-                $rtn:"Object",
-                $paras:[
-                    "hash [Required]: Object, Object to loop.",
-                    "fun [Required]: Function, arguments: [hash value, hash key]. The Function for apply.",
-                    "scope [Optional]: Object, [this] pointer for [fun]."
-                ],
-                $snippet:[
-                    "var h={a:1,b:2}; _.each(h,function(o,i){alert(i+':'+o)})"
-                ]
-            },
-            'exec':{
-                $desc:"Executes script string.",
-                $rtn:"Object",
-                $paras:[
-                    "script [Required]: String, script string."
-                ],
-                $snippet:[
-                    "_.exec('alert(\"a\")')"
-                ]
-            },
-            isDefined:{
-                $desc:"Equals to [target===undefined].",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: Object, target Object."
-                ],
-                $snippet:[
-                    "alert(_.isDefined(window.aaaa))"
-                ]
-            },
-            filter:{
-                $desc:"Filters items out of a Object({} or []).",
-                $rtn:"Object",
-                $paras:[
-                    "obj [Required]: Object, Object to filter.",
-                    "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it keeps certain item. Or [true], means to filter those items which key starts with '_'.",
-                    "force [Optional]: Boolean, force to take [obj] as a {}. Default is false."
-                ],
-                $snippet:[
-                    "var o={a:1,b:2}; _.filter(o,function(o,i){return i!='b'}); alert(_.serialize(o))",
-                    "var o={a:1,_b:2}; _.filter(o,true); alert(_.serialize(o))",
-                    "var o=[1,2,3]; _.filter(o,function(o,i){return o!=2}); alert(_.serialize(o))"
-                ]
-            },
-            fun:{
-                $desc:"A functions collection for Function. <br />Can be used as a function to get an empty function too.",
-                $rtn:"Function",
-                $snippet:[
-                    "alert(_.serialize(_.fun()));"
-                ],
-                args:{
-                    $desc:"Gets function arguments.",
-                    $rtn:"Array",
-                    $paras:[
-                        "fun [Required]: Function, target function."
-                    ],
-                    $snippet:[
-                        "alert(_.fun.args(function(a,b,c){var body=1;}))"
-                    ]
-                },
-                body:{
-                    $desc:"Gets function body.",
-                    $rtn:"String",
-                    $paras:[
-                        "fun [Required]: Function, target function."
-                    ],
-                    $snippet:[
-                        "alert(_.fun.body(function(a,b,c){var body=1;}))"
-                    ]
-                },
-                clone:{
-                    $desc:"Clones function.",
-                    $rtn:"Function",
-                    $paras:[
-                        "fun [Required]: Function, target function."
-                    ],
-                    $snippet:[
-                        "var fun=function(a,b,c){var body=1;}, fun_cloned =  _.fun.clone(fun); alert(_.fun.args(fun_cloned));alert(_.fun.body(fun_cloned));alert(fun_cloned.toString()); alert(fun==fun_cloned); "
-                    ]
-                }
-            },
-            get:{
-                $desc:"Gets something from deep hash.",
-                $rtn:"Object",
-                $paras:[
-                    "hash [Required]: Object, deep hash Object.",
-                    "arr [Required]: Array, path array, ['a','b','c'] => {a:{b:{c:[variable]}}}."
-                ],
-                $snippet:[
-                    "alert(_.get({a:{b:{c:1}}},'a'))",
-                    "alert(_.get({a:{b:{c:1}}},['a','b']))",
-                    "alert(_.get({a:{b:{c:1}}},['a','b','c']))",
-                    "alert(_.get({a:{b:{c:1}}},['a','b','c','d']))"
-                ]
-            },
-            "id":{
-                $desc:"Gets unique system id string. 26 chars: /a-z/. It can be used as a class too.",
-                $rtn:"String",
-                $snippet:[
-                    "alert('system id: ' + _.id());",
-                    "var test=new _.id(); var out=[]; for(var i=0;i<100;i++){out.push(test.next())}; alert(out);"
-                ]
-            },
-            isArr :{
-                $desc:"To determine whether or not the target is Array.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isArr('s')+':'+_.isArr(new RegExp())+':'+_.isArr(function(){})+':'+_.isArr(1)+':'+_.isArr(NaN)+':'+_.isArr({})+':'+_.isArr(new Date)+':'+_.isArr(null)+':'+_.isArr(undefined)+':'+_.isArr(true)+':'+_.isArr([]));"
-                ]
-            },
-            isBool :{
-                $desc:"To determine whether or not the target is Boolean.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isBool('s')+':'+_.isBool(new RegExp())+':'+_.isBool(function(){})+':'+_.isBool(1)+':'+_.isBool(NaN)+':'+_.isBool({})+':'+_.isBool(new Date)+':'+_.isBool(null)+':'+_.isBool(undefined)+':'+_.isBool(true)+':'+_.isBool([]));"
-                ]
-            },
-            isDate :{
-                $desc:"To determine whether or not the target is Date.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isDate('s')+':'+_.isDate(new RegExp())+':'+_.isDate(function(){})+':'+_.isDate(1)+':'+_.isDate(NaN)+':'+_.isDate({})+':'+_.isDate(new Date)+':'+_.isDate(null)+':'+_.isDate(undefined)+':'+_.isDate(true)+':'+_.isDate([]));"
-                ]
-            },
-            isEmpty :{
-                $desc:"To determine whether or not the target is empty Object.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isEmpty('s')+':'+_.isEmpty(new RegExp())+':'+_.isEmpty(function(){})+':'+_.isEmpty(1)+':'+_.isEmpty(NaN)+':'+_.isEmpty({})+':'+_.isEmpty(new Date)+':'+_.isEmpty(null)+':'+_.isEmpty(undefined)+':'+_.isEmpty(true)+':'+_.isEmpty([]));"
-                ],
-                $memo:"It's only for hash Object"
-            },
-            isFun :{
-                $desc:"To determine whether or not the target is a Function.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isFun('s')+':'+_.isFun(new RegExp())+':'+_.isFun(function(){})+':'+_.isFun(1)+':'+_.isFun(NaN)+':'+_.isFun({})+':'+_.isFun(new Date)+':'+_.isFun(null)+':'+_.isFun(undefined)+':'+_.isFun(true)+':'+_.isFun([]));"
-                ]
-            },
-            isArguments:{
-                $desc:"To determine whether or not the target is an arguments Object.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "(function(){alert(_.isArguments(arguments));alert(_.isArguments({}));alert(_.isArguments([]));}())"
-                ]
-            },
-            isHash:{
-                $desc:"To determine whether or not the target is a hash Object.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isHash('s')+':'+_.isHash(new RegExp())+':'+_.isHash(function(){})+':'+_.isHash()+':'+_.isHash(1)+':'+_.isHash(NaN)+':'+_.isHash({})+':'+_.isHash(new Date)+':'+_.isHash(null)+':'+_.isHash(undefined)+':'+_.isHash(true)+':'+_.isHash([]));"
-                ]
-            },
-            isNull:{
-                $desc:"To determine whether or not the target is null.",
-                $rtn:"Boolean",
-                $paras:[
-                    "targe [Required]t: any"
-                ],
-                $snippet:[
-                    "alert(_.isNull('s')+':'+_.isNull(new RegExp())+':'+_.isNull(function(){})+':'+_.isNull(1)+':'+_.isNull(NaN)+':'+_.isNull({})+':'+_.isNull(new Date)+':'+_.isNull(null)+':'+_.isNull(undefined)+':'+_.isNull(true)+':'+_.isNull([]));"
-                ]
-            },
-            isFinite:{
-                $desc:"To determine whether or not the target is an valid number.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isFinite('s')+':'+_.isFinite(new RegExp())+':'+_.isFinite(function(){})+':'+_.isFinite(1)+':'+_.isFinite(NaN)+':'+_.isFinite({})+':'+_.isFinite(new Date)+':'+_.isFinite(null)+':'+_.isFinite(undefined)+':'+_.isFinite(true)+':'+_.isFinite([]));"
-                ]
-            },
-            isNumb:{
-                $desc:"To determine whether or not the target is Number.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isNumb('s')+':'+_.isNumb(new RegExp())+':'+_.isNumb(function(){})+':'+_.isNumb(1)+':'+_.isNumb(NaN)+':'+_.isNumb({})+':'+_.isNumb(new Date)+':'+_.isNumb(null)+':'+_.isNumb(undefined)+':'+_.isNumb(true)+':'+_.isNumb([]));"
-                ]
-            },
-            isObj :{
-                $desc:"To determine whether or not the target is Object.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isObj('s')+':'+_.isObj(new RegExp())+':'+_.isObj(function(){})+':'+_.isObj(1)+':'+_.isObj(NaN)+':'+_.isObj({})+':'+_.isObj(new Date)+':'+_.isObj(null)+':'+_.isObj(undefined)+':'+_.isObj(true)+':'+_.isObj([]));"
-                ]
-            },
-            isReg :{
-                $desc:"To determine whether or not the target is regular expression.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isReg('s')+':'+_.isReg(new RegExp())+':'+_.isReg(function(){})+':'+_.isReg(1)+':'+_.isReg(NaN)+':'+_.isReg({})+':'+_.isReg(new Date)+':'+_.isReg(null)+':'+_.isReg(undefined)+':'+_.isReg(true)+':'+_.isReg([]));"
-                ]
-            },
-            isSet:{
-                $desc:"To determine whether or not the target is set.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isSet('s')+':'+_.isSet(new RegExp())+':'+_.isSet(function(){})+':'+_.isSet(1)+':'+_.isSet(NaN)+':'+_.isSet({})+':'+_.isSet(new Date)+':'+_.isSet(null)+':'+_.isSet(undefined)+':'+_.isSet(true)+':'+_.isSet([]));"
-                ]
-            },
-            isElem:{
-                $desc:"To determine whether or not the target is DOM element.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ]
-            },
-            "isNaN":{
-                $desc:"To determine whether or not the target is NaN.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ]
-            },
-            isStr :{
-                $desc:"To determine whether or not the target is String.",
-                $rtn:"Boolean",
-                $paras:[
-                    "target [Required]: any"
-                ],
-                $snippet:[
-                    "alert(_.isStr('s')+':'+_.isStr(new RegExp())+':'+_.isStr(function(){})+':'+_.isStr(1)+':'+_.isStr(NaN)+':'+_.isStr({})+':'+_.isStr(new Date)+':'+_.isStr(null)+':'+_.isStr(undefined)+':'+_.isStr(true)+':'+_.isStr([]));"
-                ]
-            },
-            merge:{
-                $desc:"Merges hash from source to target.",
-                $rtn:"Object",
-                $paras:[
-                    "target [Required]: Object, target hash Object.",
-                    "source [Required]: Object, source hash Object.",
-                    "type [Optional]: String/Function,arguments: [hash value, hash key]. one of 'all', 'with', 'without'[default], or function."
-                ],
-                $snippet:[
-                    "var a={a:1},b={b:1}; alert(_.serialize(_.merge(a,b)))",
-                    "var a={a:1},b={a:2,b:1}; alert(_.serialize(_.merge(a,b,'with')))",
-                    "var a={a:1},b={a:2,b:1}; alert(_.serialize(_.merge(a,b,'all')))",
-                    "var a={a:1},b={a:2,b:1}; alert(_.serialize(_.merge(a,b,function(o,i){return o!=1})))"
-                ]
-            },
-            resetRun:{
-                $desc:"This will always run the newer function in asynchronous mode.",
-                $paras:[
-                    "key [Required]: String, Key for identify.",
-                    "fun [Required]: Function, Function to run.",
-                    "defer [Optional]: Number,. Timeout defer time. Default is 0",
-                    "args [Optional]: Array, Arguments for fun.",
-                    "scope [Optional]: Object, [this] pointer for [fun]."
-                ],
-                $snippet:[
-                    "_.resetRun('id',function(){alert(1)},200);_.resetRun('id',function(){alert(2)},200);_.resetRun('id',function(){alert(3)},200);"
-                ],
-                $memo:"_.resetRun.exists(id): To determine whether a specified asynchronous function exists or not."
-            },
-            observableRun:{
-                $desc:"Wraps a function/a set of functions to an UI-Observable thread and executes it. ",
-                $paras:[
-                    "tasks [Required]: Funtion or Array, A single task(function) or a set of tasks(functions).",
-                    "onEnd [Optional]: Function, 'on end' callback function.",
-                    "threadid [Optional]: Stirng, thread id. If this thread exists, all [tasks] will be insert into this thread."
-                ],
-                $snippet:[
-                    "_.observableRun(_.fun());",
-                    "//To keep the busy UI 1 second: \n"+
-                    "_.observableRun(function(threadid){xui.Thread(threadid).suspend(); _.asyRun(function(){xui.Thread(threadid).resume();},1000)});"
-                ]
-            },
-            stringify:{
-                $desc: "To stringify Object to JSON string (Doesn't force to convert to UTF8).",
-                $rtn: "String",
-                $paras:[
-                    "obj [Required]: Object, target Object. ",
-                     "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it serializes certain item. Or [true], means to neglect those items which key starts with '_'.",
-                    "dateformat  [Optional]: String, 'utc' or 'gmt'. Force to stringify all the [Date]in the target Object into ISO UTC string, ISO GMT string, or the default format( new Date(yyyy,mm,dd,hh,nn,ss,ms) )."
-                ],
-                $snippet:[
-                    "alert(_.stringify('a'));"+
-                    "alert(_.stringify({a:1}));"+
-                    "alert(_.stringify([1,2,{a:1}]));"+
-                    "alert(_.stringify([1,2,{_a:1}],true));"+
-                    "alert(_.stringify({d:new Date}));"+
-                    "alert(_.stringify({d:new Date},'utc'))",
-                    "alert(_.stringify({d:new Date},'gmt'))",
-                    "alert(_.stringify(xui('btnLang')))",
-                    "alert(_.stringify(xui.Dom.byId('btnLang')))",
-                    "alert(_.stringify(xui.UIProfile.getFromDom('btnLang')))",
-                    "alert(_.stringify(xui.UIProfile.getFromDom('btnLang').boxing()))"
-                ]
-            },
-            serialize:{
-                $desc: "To serialize Object to JSON string (Force to convert to UTF8).",
-                $rtn: "String",
-                $paras:[
-                    "obj [Required]: Object, target Object. ",
-                     "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it serializes certain item. Or [true], means to neglect those items which key starts with '_'.",
-                    "dateformat  [Optional]: String, 'utc' or 'gmt'. Force to serialize all the [Date]in the target Object into ISO UTC string, ISO GMT string, or the default format( new Date(yyyy,mm,dd,hh,nn,ss,ms) )."
-                ],
-                $snippet:[
-                    "alert(_.serialize('a'));"+
-                    "alert(_.serialize({a:1}));"+
-                    "alert(_.serialize([1,2,{a:1}]));"+
-                    "alert(_.serialize([1,2,{_a:1}],true));"+
-                    "alert(_.serialize({d:new Date}));"+
-                    "alert(_.serialize({d:new Date},'utc'))",
-                    "alert(_.serialize({d:new Date},'gmt'))",
-                    "alert(_.serialize(xui('btnLang')))",
-                    "alert(_.serialize(xui.Dom.byId('btnLang')))",
-                    "alert(_.serialize(xui.UIProfile.getFromDom('btnLang')))",
-                    "alert(_.serialize(xui.UIProfile.getFromDom('btnLang').boxing()))"
-                ]
-            },
-            set:{
-                $desc:"Sets/Unsets something to deep hash.",
-                $rtn:"Object",
-                $paras:[
-                    "hash [Required]: Object, deep hash Object.",
-                    "arr [Required]: Array, path array, ['a','b','c'] => {a:{b:{c:[variable]}}}.",
-                    "value [Optional]: any, value to set. Default is undefined => Unsets value."
-                ],
-                $snippet:[
-                    "var o={}; _.set(o,['a','b','c'], 1); alert(_.serialize(o)); _.set(o,['a','b','c']); alert(_.serialize(o));"
-                ]
-            },
-            toUTF8:{
-                $desc:"Converts a string to UTF8 string.",
-                $rtn:"String",
-                $paras:[
-                    "str [Required] : String."
-                ],
-                $snippet:[
-                    "alert(_.toUTF8('\u6C49\u5B57'));",
-                    "alert(_.fromUTF8(_.toUTF8('\u6C49\u5B57')));"
-                ]
-            },
-            fromUTF8:{
-                $desc:"Converts a UTF8 string back.",
-                $rtn:"String",
-                $paras:[
-                    "str [Required] : String."
-                ],
-                $snippet:[
-                    "alert(_.toUTF8('\u6C49\u5B57'));",
-                    "alert(_.fromUTF8(_.toUTF8('\u6C49\u5B57')));"
-                ]
-            },
-            urlEncode:{
-                $desc:"Converts a key/value pairs Object to URL query string.",
-                $rtn:"String",
-                $paras:[
-                    "hash [Required] : a key/value pairs Object."
-                ],
-                $snippet:[
-                    "alert(_.urlEncode({a:1,b:2}));"+
-                    "alert(_.urlEncode({a:1,b:{b1:1,b2:2}}));"+
-                    "alert(_.serialize(_.urlDecode(_.urlEncode({a:1,b:{b1:1,b2:2}}))))"
-                ]
-            },
-            urlDecode:{
-                $desc:"Gets a value from a given query string.",
-                $rtn:"Object",
-                $paras:[
-                    "str [Required] : String, query string.",
-                    "key [Optional] : String."
-                ],
-                $snippet:[
-                    "var qs='a=1&b=2&c=3'; alert(_.serialize(_.urlDecode(qs)));alert(_.urlDecode(qs,'a'));"
-                ]
-            },
-            str:{
-                $desc:"A functions collection for String.",
-                endWith :{
-                    $desc:"Tests if this string ends with the specified str.",
-                    $rtn:'Boolean',
-                    $paras:[
-                        "str [Required]: String, target string.",
-                        "eStr [Required]: String, test string."
-                    ],
-                    $snippet:[
-                        "alert(_.str.endWith('abc','c'))"
-                    ]
-                },
-                initial:{
-                    $desc:"Makes Initial letter of the specified string to capital letter.",
-                    $rtn:'String',
-                    $paras:[
-                        "str [Required]: String, target string."
-                    ],
-                    $snippet:[
-                        "alert(_.str.initial('abc'))"
-                    ]
-                },
-                ltrim :{
-                    $desc:"Returns a copy of the string, with leading whitespace omitted.",
-                    $rtn:'String',
-                    $paras:[
-                        "str [Required]: String, target string."
-                    ],
-                    $snippet:[
-                        "alert(_.str.ltrim(' abc ').length)"
-                    ]
-                },
-                repeat:{
-                    $desc:"To repeat the specified string with specified times, and returns the result.",
-                    $rtn:'String',
-                    $paras:[
-                        "str [Required]: String, target string.",
-                        "times [Required]: repeat time"
-                    ],
-                    $snippet:[
-                        "alert(_.str.repeat('abc',3))"
-                    ]
-                },
-                rtrim :{
-                    $desc:"Returns a copy of the string, with trailing whitespace omitted.",
-                    $rtn:'String',
-                    $paras:[
-                        "str [Required]: String, target string."
-                    ],
-                    $snippet:[
-                        "alert(_.str.rtrim(' abc ').length)"
-                    ]
-                },
-                startWith :{
-                        $desc:"Tests if this string starts with the specified str.",
-                        $rtn:'Boolean',
-                        $paras:[
-                            "str [Required]: String, target string.",
-                            "sStr [Required]: String, test string."
-                        ],
-                        $snippet:[
-                            "alert(_.str.startWith('abc','a'))"
-                        ]
-                },
-                toDom:{
-                    $desc:"To create Element based on the specified string.",
-                    $rtn:'xui.Dom',
-                    $paras:[
-                        "str [Required]: String, target string."
-                    ],
-                    $snippet:[
-                        "var node = _.str.toDom('<div>a</div>'); alert(node.outerHTML())"
-                    ]
-                },
-                trim :{
-                    $desc:"Returns a copy of the string, with leading and trailing whitespace omitted.",
-                    $rtn:'String',
-                    $paras:[
-                        "str [Required]: String, target string."
-                    ],
-                    $snippet:[
-                        "alert(_.str.trim(' abc ').length)"
-                    ]
-                }
-            },
-            toArr:{
-                $desc:"Makes an Array Object from input value.",
-                $rtn:"Array",
-                $paras:[
-                    "value [Required]: Object, target Object.",
-                    "force [Optional]: Boolean , char, or [undefined]. [undefined] for trans arguments to Array, char for trans String to Arry, Boolean for trans hash Object to Array. Default is [undefined]."
-                ],
-                $snippet:[
-                    "var s='a,b,c', a=_.toArr(s); alert(_.serialize(a));",
-                    "var s='a:b:c', a=_.toArr(s,':'); alert(_.serialize(a));",
-                    "var f=function(a,b,c){ var a=_.toArr(arguments);alert(_.serialize(a));}; f(1,2,3); ",
-                    "var hash={a:1,b:2}, a=_.toArr(hash,true); alert(_.serialize(a));",
-                    "var hash={a:1,b:2}, a=_.toArr(hash,false); alert(_.serialize(a));"
-                ]
-            },
-            tryF:{
-                $desc:"To try to run a function.",
-                $rtn:"Object",
-                $paras:[
-                    "fun [Required]: Function, Function to run.",
-                    "args [Optional]: Array, Arguments for fun.",
-                    "scope [Optional]: Object, [this] pointer for [fun].",
-                    "df [Optional]: Object, Default return value of fun( if [fun] is not a Function)"
-                ],
-                $snippet:[
-                    "alert(_.tryF()); alert(_.tryF('s')); alert(_.tryF(4,null,null,true)); ",
-                    "var f=function(){return 'a';}; alert(_.tryF(f));",
-                    "var f=function(v){alert(v);return this.a;}, o={a:true}; alert(_.tryF(f,['parameter'],o));"
-                ]
-            },
-            unserialize:{
-                $desc:"To unserialize JSON string to a javascript Object.",
-                $rtn:"Object",
-                $paras:[
-                    "str [Required]: String, string to unserialize.",
-                    "dateformat [Optional]: String, To determine unserialize Date string representing or not."
-                ],
-                $snippet:[
-                    "var o={a:[1,{k:1}],s:'s',d:new Date},str; alert(str=_.serialize(o)); var o2=_.unserialize(str); alert(o2.d)",
-                    "var o={a:[1,,{k:1}],s:'s',d:new Date},str; alert(str=_.serialize(o)); var o2=_.unserialize(str, true); alert(o2.d)",
-                    "alert(typeof _.unserialize(_.serialize(xui('btnLang'))))",
-                    "alert(typeof _.unserialize(_.serialize(xui.Dom.byId('btnLang'))))",
-                    "alert(typeof _.unserialize(_.serialize(xui.UIProfile.getFromDom('btnLang'))))",
-                    "alert(typeof _.unserialize(_.serialize(xui.UIProfile.getFromDom('btnLang').boxing())))"
-                ]
-            },
-            preLoadImage:{
-                $desc:"preLoad Image(s).",
-                $rtn:"Integer",
-                $paras:[
-                    "src [Required]: String, image's url address, or an Array of url address.",
-                    "onSuccess [Optional]: Function, function(img), callback function for image loaded successfully. ",
-                    "onFail [Optional]: Function, function(img), callback function for image loaded ."
-                ]
-            }
-         }
+        }
     });
 
     var $me=xui.Locale.en.doc;
 
-    _.set(xui.Locale,["en","doc","xui"], {
+    xui.set(xui.Locale,["en","doc","xui"], {
         $desc:"Base Namespace for xui. <br />Can be used as a function to create a xui.Dom Object to wrap a set of Elements too.",
         $rtn:"xui.Dom",
         $paras:[
@@ -835,6 +82,763 @@ _.set(xui.Locale,["en","app"], {
             "//Input a xid string \n var xid=xui.getId('btnLang'), n=xui(xid); alert(xid);alert(n.get(0).id);",
             "//Input a xid string array\n var xid=xui.getId('btnLang'), n=xui([xid],false); alert(xid);alert(n.get(0).id);"
         ],
+        Namespace:{
+            $desc:"Declares a namespace.",
+            $rtn:"Object",
+            $paras:[
+                "key [Required]: String, namespace string."
+            ],
+            $snippet:["xui.Namespace('Test.NS'); alert(typeof Test.NS)"],
+            $memo:" Namespace naming rules: [A-Z][0-9a-zA-Z]+"
+        },
+        //Tools functions' Namespace..",
+        stamp:{
+            $desc:"To get local time stamp.",
+            $rtn:"Number"
+        },
+        rand:{
+            $desc:"To create a random string.",
+            $rtn:"String"
+        },
+        arr:{
+            $desc:"A functions collection for Array.",
+            fastSortObject:{
+                $desc:"The fast stable sort function for object array.",
+                $rtn:'Array',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "byKey [Required]: Function. function to get sort key."
+                ]
+            },
+            stableSort:{
+                $desc:"The stable sort function.",
+                $rtn:'Array',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "sortby [Required]: Function(x,y). sort function."
+                ]
+            },
+            each:{
+                $desc:"Applys a function to each element of the array in specified order.",
+                $rtn:'Array',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "fun [Required]: Function, arguments: [array element, array index]. The function to apply to array item.",
+                    "scope [Optional]: Object, [this] pointer for [fun]. Default is [arr].",
+                    "order [Optional]: Boolean, iterate by descend order. Default is false."
+                ],
+                $snippet:[
+                    "xui.arr.each(['a','b'], function(o,i){alert(i+':'+o);} )",
+                    "xui.arr.each(['a','b'], function(o,i){alert(i+':'+o);alert(this===window);},window,true)"
+                ]
+            },
+            indexOf:{
+                $desc:"Returns the first index at which a given element can be found in the array, or -1 if it is not present.",
+                $rtn:'Number',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "value [Required]: Object, element to locate in the array."
+                ],
+                $snippet:[
+                    "var a=[1,2,3,4];alert(xui.arr.indexOf(a, 3))"
+                ]
+            },
+            insertAny:{
+                $desc:"Adds one or more elements to the specified position of an array.",
+                $rtn:'Number',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "target [Required]: Object, elements to add.",
+                    "index [Optional]: Number, the specified position. Default is -1.",
+                    "flag [Optional]: Boolean, force to take [target] as a single element.  Default is false."
+                ],
+                $snippet:[
+                    "var a=[1,2,3]; xui.arr.insertAny(a,5,1);alert(a)",
+                    "var a=[1,2,3]; xui.arr.insertAny(a,[5,5],1);alert(xui.serialize(a))",
+                    "var a=[1,2,3]; xui.arr.insertAny(a,[5,5],1,true);alert(xui.serialize(a))"
+                ]
+            },
+            removeFrom:{
+                $desc:"Removes a section of elements from an array.",
+                $rtn:'Array',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "index [Required]: Number, the specified position. ",
+                    "length [Optional]: Number, how many elements to be removed. Default is 1."
+                ],
+                $snippet:[
+                    "var a=[1,2,3,4,5]; xui.arr.removeFrom(a, 2,2 ); alert(a);"
+                ]
+            },
+            removeDuplicate:{
+                $desc:"Removes the dupliacte elements in an array.",
+                $rtn:'Array',
+                $paras: [
+                    "arr [Required] : Array, target array.",
+                    "subKey [Optional]: String, Use this sub-key to find the duplicate values (the element in Array is object)."
+                ],
+                $snippet:[
+                    "var a=[1,2,3,4,5,3,4,5]; xui.arr.removeDuplicate(a); alert(a);",
+                    "var a=[{id:1,value:'1'},{id:1,value:'2'},{id:1,value:'3'}]; xui.arr.removeDuplicate(a, 'id'); alert(xui.serialize(a));"
+                ]
+            },
+            removeValue:{
+                $desc:"Removes a specified element from an array.",
+                $rtn:'Array',
+                $paras: [
+                    "arr [Required] : Array, target array.",
+                    "value: Object, element to be removed."
+                ],
+                $snippet:[
+                    "var a=[1,2,3,4,5]; xui.arr.removeValue(a, 4); alert(a);"
+                ]
+            },
+            subIndexOf:{
+                $desc:"Returns the first index at which a given key and value can be found in the Object element of the array, or -1 if it is not present.",
+                $rtn:'Number',
+                $paras: [
+                    "arr [Required]: Array, target array.",
+                    "key [Required]: String, a specified key in the hash element.",
+                    "value [Required]: Object, a specified value in the hash element."
+                ],
+                $snippet:[
+                    "var a=[1,2,{k:'v'},4]; var i=xui.arr.subIndexOf(a,'k','v'); alert(i);"
+                ]
+            }
+        },
+        asyHTML:{
+            $desc:"Asynchronous html create.",
+            $rtn:"Interger",
+            $paras:[
+                "content [Required]: String, content String.",
+                "callback [Required]: Function, callback function.",
+                "defer [Optional]: Number, gives the amount of milliseconds between shots passes. Default is 0.",
+                "size [Optional]: Number, specifies the size of DOM node will create in one shot. Default is 10."
+            ]
+        },
+        asyRun:{
+            $desc:"Asynchronous Function Call.",
+            $rtn:"Interger",
+            $paras:[
+                "fun [Required]: Function, target function.",
+                "defer [Optional]: Number, setTimeout defer time. Default is 0",
+                "args [Optional]: Array, arguments for fun. Default is []",
+                "scope [Optional]: Object, [this] pointer for [fun]. Default is [window]"
+            ],
+            $snippet:[
+                "xui.asyRun(function(a,b){alert(this===window);alert(a+b)}, 300, ['a','b'], window)"
+            ]
+        },
+        breakO:{
+            $desc:"Breaks Object reference[for memory release].",
+            $paras:[
+                "target [Required]: Object, target Object to break.",
+                "depth [Optional]: Number, depth value. Default is 1."
+            ],
+            $snippet:[
+                "var a={b:1}, o={a:a}; xui.breakO(o); alert(a && a.b);",
+                "var a={b:1}, o={a:a}; xui.breakO(o,2); alert(a && a.b);"
+            ]
+        },
+        toFixedNumber:{
+            $desc:"Formats a number to use a specified number of trailing decimals. Returns number.",
+            $paras:[
+                "number [Required]: Number, the target number.",
+                "digits [Optional]: Number, the number of digits after the decimal point. Default is 2."
+            ],
+            $snippet:[
+                "var a=0.3+0.3+0.3; alert(a); alert(xui.toFixedNumber(a, 10));",
+                "var a=0.1*0.2; alert(a); alert(xui.toFixedNumber(a, 10));"
+            ]
+        },
+        toNumeric:{
+            $desc:"Gets a number from string. Returns number.",
+            $paras:[
+                "value [Required]: String,  the target number.",
+                "precision [Optional]: Number, the number of digits after the decimal point. Default is 2.",
+                "groupingSeparator[Optional]: String, thousands separator. Default is  ','.",
+                "decimalSeparator[Optional]: String, decimal separator. Default is  '.'."
+            ]
+        },
+        formatNumeric:{
+            $desc:"Formats a number to string. Returns number.",
+            $paras:[
+                "value [Required]: Number,  the target number.",
+                "precision [Optional]: Number, the number of digits after the decimal point. Default is 2.",
+                "groupingSeparator[Optional]: String, thousands separator. Default is  ','.",
+                "decimalSeparator[Optional]: String, decimal separator. Default is  '.'.",
+                "forceFillZero[Optional]: Boolean, forces to fill zeros for precision or doesn't. Default is [true]"
+            ]
+        },
+        clone:{
+            $desc:"Clones Object, deep copy.",
+            $rtn:"Object",
+            $paras:[
+                "hash [Required]: Object, target Object to clone.",
+                "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it clones certain item. Or [true], means to neglect those items which key starts with '_'.",
+                "deep [Optional]: Number, Default is 100."
+            ],
+            $snippet:[
+                "var a=1, b='s'; alert(xui.clone(a)); alert(xui.clone(b));",
+                "var o={a:1,b:{b:{c:2}}}; alert(xui.serialize(xui.clone(o))); alert(xui.serialize(xui.clone(o,function(o,i){return i!='c'}))); ",
+                "var o={a:1,_b:2,$c:3}; alert(xui.serialize(xui.clone(o,true)));",
+                "var o=['1','2','3']; alert(xui.serialize(xui.clone(o))); alert(xui.serialize(xui.clone(o,function(o){return o!='2'}))); "
+            ]
+        },
+        copy:{
+            $desc:"Shadow copy, just clones the fist layer of Object.",
+            $rtn:"Object",
+            $paras:[
+                "hash [Required]: Object, target Object to copy.",
+                "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it copy certain item. Or [true], means to neglect those items which key starts with '_'."
+            ],
+            $memo:"Sees <a href='#xui.clone'>xui.clone</a>"
+        },
+        each:{
+            $desc:"Loops through each element of the Object, and apply fun.",
+            $rtn:"Object",
+            $paras:[
+                "hash [Required]: Object, Object to loop.",
+                "fun [Required]: Function, arguments: [hash value, hash key]. The Function for apply.",
+                "scope [Optional]: Object, [this] pointer for [fun]."
+            ],
+            $snippet:[
+                "var h={a:1,b:2}; xui.each(h,function(o,i){alert(i+':'+o)})"
+            ]
+        },
+        'exec':{
+            $desc:"Executes script string.",
+            $rtn:"Object",
+            $paras:[
+                "script [Required]: String, script string."
+            ],
+            $snippet:[
+                "xui.exec('alert(\"a\")')"
+            ]
+        },
+        isDefined:{
+            $desc:"Equals to [target===undefined].",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: Object, target Object."
+            ],
+            $snippet:[
+                "alert(xui.isDefined(window.aaaa))"
+            ]
+        },
+        filter:{
+            $desc:"Filters items out of a Object({} or []).",
+            $rtn:"Object",
+            $paras:[
+                "obj [Required]: Object, Object to filter.",
+                "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it keeps certain item. Or [true], means to filter those items which key starts with '_'.",
+                "force [Optional]: Boolean, force to take [obj] as a {}. Default is false."
+            ],
+            $snippet:[
+                "var o={a:1,b:2}; xui.filter(o,function(o,i){return i!='b'}); alert(xui.serialize(o))",
+                "var o={a:1,_b:2}; xui.filter(o,true); alert(xui.serialize(o))",
+                "var o=[1,2,3]; xui.filter(o,function(o,i){return o!=2}); alert(xui.serialize(o))"
+            ]
+        },
+        fun:{
+            $desc:"A functions collection for Function. <br />Can be used as a function to get an empty function too.",
+            $rtn:"Function",
+            $snippet:[
+                "alert(xui.serialize(xui.fun()));"
+            ],
+            args:{
+                $desc:"Gets function arguments.",
+                $rtn:"Array",
+                $paras:[
+                    "fun [Required]: Function, target function."
+                ],
+                $snippet:[
+                    "alert(xui.fun.args(function(a,b,c){var body=1;}))"
+                ]
+            },
+            body:{
+                $desc:"Gets function body.",
+                $rtn:"String",
+                $paras:[
+                    "fun [Required]: Function, target function."
+                ],
+                $snippet:[
+                    "alert(xui.fun.body(function(a,b,c){var body=1;}))"
+                ]
+            },
+            clone:{
+                $desc:"Clones function.",
+                $rtn:"Function",
+                $paras:[
+                    "fun [Required]: Function, target function."
+                ],
+                $snippet:[
+                    "var fun=function(a,b,c){var body=1;}, fun_cloned =  xui.fun.clone(fun); alert(xui.fun.args(fun_cloned));alert(xui.fun.body(fun_cloned));alert(fun_cloned.toString()); alert(fun==fun_cloned); "
+                ]
+            }
+        },
+        get:{
+            $desc:"Gets something from deep hash.",
+            $rtn:"Object",
+            $paras:[
+                "hash [Required]: Object, deep hash Object.",
+                "arr [Required]: Array, path array, ['a','b','c'] => {a:{b:{c:[variable]}}}."
+            ],
+            $snippet:[
+                "alert(xui.get({a:{b:{c:1}}},'a'))",
+                "alert(xui.get({a:{b:{c:1}}},['a','b']))",
+                "alert(xui.get({a:{b:{c:1}}},['a','b','c']))",
+                "alert(xui.get({a:{b:{c:1}}},['a','b','c','d']))"
+            ]
+        },
+        "id":{
+            $desc:"Gets unique system id string. 26 chars: /a-z/. It can be used as a class too.",
+            $rtn:"String",
+            $snippet:[
+                "alert('system id: ' + xui.id());",
+                "var test=new xui.id(); var out=[]; for(var i=0;i<100;i++){out.push(test.next())}; alert(out);"
+            ]
+        },
+        isArr :{
+            $desc:"To determine whether or not the target is Array.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isArr('s')+':'+xui.isArr(new RegExp())+':'+xui.isArr(function(){})+':'+xui.isArr(1)+':'+xui.isArr(NaN)+':'+xui.isArr({})+':'+xui.isArr(new Date)+':'+xui.isArr(null)+':'+xui.isArr(undefined)+':'+xui.isArr(true)+':'+xui.isArr([]));"
+            ]
+        },
+        isBool :{
+            $desc:"To determine whether or not the target is Boolean.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isBool('s')+':'+xui.isBool(new RegExp())+':'+xui.isBool(function(){})+':'+xui.isBool(1)+':'+xui.isBool(NaN)+':'+xui.isBool({})+':'+xui.isBool(new Date)+':'+xui.isBool(null)+':'+xui.isBool(undefined)+':'+xui.isBool(true)+':'+xui.isBool([]));"
+            ]
+        },
+        isDate :{
+            $desc:"To determine whether or not the target is Date.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isDate('s')+':'+xui.isDate(new RegExp())+':'+xui.isDate(function(){})+':'+xui.isDate(1)+':'+xui.isDate(NaN)+':'+xui.isDate({})+':'+xui.isDate(new Date)+':'+xui.isDate(null)+':'+xui.isDate(undefined)+':'+xui.isDate(true)+':'+xui.isDate([]));"
+            ]
+        },
+        isEmpty :{
+            $desc:"To determine whether or not the target is empty Object.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isEmpty('s')+':'+xui.isEmpty(new RegExp())+':'+xui.isEmpty(function(){})+':'+xui.isEmpty(1)+':'+xui.isEmpty(NaN)+':'+xui.isEmpty({})+':'+xui.isEmpty(new Date)+':'+xui.isEmpty(null)+':'+xui.isEmpty(undefined)+':'+xui.isEmpty(true)+':'+xui.isEmpty([]));"
+            ],
+            $memo:"It's only for hash Object"
+        },
+        isFun :{
+            $desc:"To determine whether or not the target is a Function.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isFun('s')+':'+xui.isFun(new RegExp())+':'+xui.isFun(function(){})+':'+xui.isFun(1)+':'+xui.isFun(NaN)+':'+xui.isFun({})+':'+xui.isFun(new Date)+':'+xui.isFun(null)+':'+xui.isFun(undefined)+':'+xui.isFun(true)+':'+xui.isFun([]));"
+            ]
+        },
+        isArguments:{
+            $desc:"To determine whether or not the target is an arguments Object.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "(function(){alert(xui.isArguments(arguments));alert(xui.isArguments({}));alert(xui.isArguments([]));}())"
+            ]
+        },
+        isHash:{
+            $desc:"To determine whether or not the target is a hash Object.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isHash('s')+':'+xui.isHash(new RegExp())+':'+xui.isHash(function(){})+':'+xui.isHash()+':'+xui.isHash(1)+':'+xui.isHash(NaN)+':'+xui.isHash({})+':'+xui.isHash(new Date)+':'+xui.isHash(null)+':'+xui.isHash(undefined)+':'+xui.isHash(true)+':'+xui.isHash([]));"
+            ]
+        },
+        isNull:{
+            $desc:"To determine whether or not the target is null.",
+            $rtn:"Boolean",
+            $paras:[
+                "targe [Required]t: any"
+            ],
+            $snippet:[
+                "alert(xui.isNull('s')+':'+xui.isNull(new RegExp())+':'+xui.isNull(function(){})+':'+xui.isNull(1)+':'+xui.isNull(NaN)+':'+xui.isNull({})+':'+xui.isNull(new Date)+':'+xui.isNull(null)+':'+xui.isNull(undefined)+':'+xui.isNull(true)+':'+xui.isNull([]));"
+            ]
+        },
+        isFinite:{
+            $desc:"To determine whether or not the target is an valid number.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isFinite('s')+':'+xui.isFinite(new RegExp())+':'+xui.isFinite(function(){})+':'+xui.isFinite(1)+':'+xui.isFinite(NaN)+':'+xui.isFinite({})+':'+xui.isFinite(new Date)+':'+xui.isFinite(null)+':'+xui.isFinite(undefined)+':'+xui.isFinite(true)+':'+xui.isFinite([]));"
+            ]
+        },
+        isNumb:{
+            $desc:"To determine whether or not the target is Number.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isNumb('s')+':'+xui.isNumb(new RegExp())+':'+xui.isNumb(function(){})+':'+xui.isNumb(1)+':'+xui.isNumb(NaN)+':'+xui.isNumb({})+':'+xui.isNumb(new Date)+':'+xui.isNumb(null)+':'+xui.isNumb(undefined)+':'+xui.isNumb(true)+':'+xui.isNumb([]));"
+            ]
+        },
+        isObj :{
+            $desc:"To determine whether or not the target is Object.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isObj('s')+':'+xui.isObj(new RegExp())+':'+xui.isObj(function(){})+':'+xui.isObj(1)+':'+xui.isObj(NaN)+':'+xui.isObj({})+':'+xui.isObj(new Date)+':'+xui.isObj(null)+':'+xui.isObj(undefined)+':'+xui.isObj(true)+':'+xui.isObj([]));"
+            ]
+        },
+        isReg :{
+            $desc:"To determine whether or not the target is regular expression.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isReg('s')+':'+xui.isReg(new RegExp())+':'+xui.isReg(function(){})+':'+xui.isReg(1)+':'+xui.isReg(NaN)+':'+xui.isReg({})+':'+xui.isReg(new Date)+':'+xui.isReg(null)+':'+xui.isReg(undefined)+':'+xui.isReg(true)+':'+xui.isReg([]));"
+            ]
+        },
+        isSet:{
+            $desc:"To determine whether or not the target is set.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isSet('s')+':'+xui.isSet(new RegExp())+':'+xui.isSet(function(){})+':'+xui.isSet(1)+':'+xui.isSet(NaN)+':'+xui.isSet({})+':'+xui.isSet(new Date)+':'+xui.isSet(null)+':'+xui.isSet(undefined)+':'+xui.isSet(true)+':'+xui.isSet([]));"
+            ]
+        },
+        isElem:{
+            $desc:"To determine whether or not the target is DOM element.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ]
+        },
+        "isNaN":{
+            $desc:"To determine whether or not the target is NaN.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ]
+        },
+        isStr :{
+            $desc:"To determine whether or not the target is String.",
+            $rtn:"Boolean",
+            $paras:[
+                "target [Required]: any"
+            ],
+            $snippet:[
+                "alert(xui.isStr('s')+':'+xui.isStr(new RegExp())+':'+xui.isStr(function(){})+':'+xui.isStr(1)+':'+xui.isStr(NaN)+':'+xui.isStr({})+':'+xui.isStr(new Date)+':'+xui.isStr(null)+':'+xui.isStr(undefined)+':'+xui.isStr(true)+':'+xui.isStr([]));"
+            ]
+        },
+        merge:{
+            $desc:"Merges hash from source to target.",
+            $rtn:"Object",
+            $paras:[
+                "target [Required]: Object, target hash Object.",
+                "source [Required]: Object, source hash Object.",
+                "type [Optional]: String/Function,arguments: [hash value, hash key]. one of 'all', 'with', 'without'[default], or function."
+            ],
+            $snippet:[
+                "var a={a:1},b={b:1}; alert(xui.serialize(xui.merge(a,b)))",
+                "var a={a:1},b={a:2,b:1}; alert(xui.serialize(xui.merge(a,b,'with')))",
+                "var a={a:1},b={a:2,b:1}; alert(xui.serialize(xui.merge(a,b,'all')))",
+                "var a={a:1},b={a:2,b:1}; alert(xui.serialize(xui.merge(a,b,function(o,i){return o!=1})))"
+            ]
+        },
+        resetRun:{
+            $desc:"This will always run the newer function in asynchronous mode.",
+            $paras:[
+                "key [Required]: String, Key for identify.",
+                "fun [Required]: Function, Function to run.",
+                "defer [Optional]: Number,. Timeout defer time. Default is 0",
+                "args [Optional]: Array, Arguments for fun.",
+                "scope [Optional]: Object, [this] pointer for [fun]."
+            ],
+            $snippet:[
+                "xui.resetRun('id',function(){alert(1)},200);xui.resetRun('id',function(){alert(2)},200);xui.resetRun('id',function(){alert(3)},200);"
+            ],
+            $memo:"xui.resetRun.exists(id): To determine whether a specified asynchronous function exists or not."
+        },
+        observableRun:{
+            $desc:"Wraps a function/a set of functions to an UI-Observable thread and executes it. ",
+            $paras:[
+                "tasks [Required]: Funtion or Array, A single task(function) or a set of tasks(functions).",
+                "onEnd [Optional]: Function, 'on end' callback function.",
+                "threadid [Optional]: Stirng, thread id. If this thread exists, all [tasks] will be insert into this thread."
+            ],
+            $snippet:[
+                "xui.observableRun(xui.fun());",
+                "//To keep the busy UI 1 second: \n"+
+                "xui.observableRun(function(threadid){xui.Thread(threadid).suspend(); xui.asyRun(function(){xui.Thread(threadid).resume();},1000)});"
+            ]
+        },
+        stringify:{
+            $desc: "To stringify Object to JSON string (Doesn't force to convert to UTF8).",
+            $rtn: "String",
+            $paras:[
+                "obj [Required]: Object, target Object. ",
+                 "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it serializes certain item. Or [true], means to neglect those items which key starts with '_'.",
+                "dateformat  [Optional]: String, 'utc' or 'gmt'. Force to stringify all the [Date]in the target Object into ISO UTC string, ISO GMT string, or the default format( new Date(yyyy,mm,dd,hh,nn,ss,ms) )."
+            ],
+            $snippet:[
+                "alert(xui.stringify('a'));"+
+                "alert(xui.stringify({a:1}));"+
+                "alert(xui.stringify([1,2,{a:1}]));"+
+                "alert(xui.stringify([1,2,{_a:1}],true));"+
+                "alert(xui.stringify({d:new Date}));"+
+                "alert(xui.stringify({d:new Date},'utc'))",
+                "alert(xui.stringify({d:new Date},'gmt'))",
+                "alert(xui.stringify(xui('btnLang')))",
+                "alert(xui.stringify(xui.Dom.byId('btnLang')))",
+                "alert(xui.stringify(xui.UIProfile.getFromDom('btnLang')))",
+                "alert(xui.stringify(xui.UIProfile.getFromDom('btnLang').boxing()))"
+            ]
+        },
+        serialize:{
+            $desc: "To serialize Object to JSON string (Force to convert to UTF8).",
+            $rtn: "String",
+            $paras:[
+                "obj [Required]: Object, target Object. ",
+                 "filter [Optional]: Function, arguments: [hash value, hash key]. To determine whether or not it serializes certain item. Or [true], means to neglect those items which key starts with '_'.",
+                "dateformat  [Optional]: String, 'utc' or 'gmt'. Force to serialize all the [Date]in the target Object into ISO UTC string, ISO GMT string, or the default format( new Date(yyyy,mm,dd,hh,nn,ss,ms) )."
+            ],
+            $snippet:[
+                "alert(xui.serialize('a'));"+
+                "alert(xui.serialize({a:1}));"+
+                "alert(xui.serialize([1,2,{a:1}]));"+
+                "alert(xui.serialize([1,2,{_a:1}],true));"+
+                "alert(xui.serialize({d:new Date}));"+
+                "alert(xui.serialize({d:new Date},'utc'))",
+                "alert(xui.serialize({d:new Date},'gmt'))",
+                "alert(xui.serialize(xui('btnLang')))",
+                "alert(xui.serialize(xui.Dom.byId('btnLang')))",
+                "alert(xui.serialize(xui.UIProfile.getFromDom('btnLang')))",
+                "alert(xui.serialize(xui.UIProfile.getFromDom('btnLang').boxing()))"
+            ]
+        },
+        set:{
+            $desc:"Sets/Unsets something to deep hash.",
+            $rtn:"Object",
+            $paras:[
+                "hash [Required]: Object, deep hash Object.",
+                "arr [Required]: Array, path array, ['a','b','c'] => {a:{b:{c:[variable]}}}.",
+                "value [Optional]: any, value to set. Default is undefined => Unsets value."
+            ],
+            $snippet:[
+                "var o={}; xui.set(o,['a','b','c'], 1); alert(xui.serialize(o)); xui.set(o,['a','b','c']); alert(xui.serialize(o));"
+            ]
+        },
+        toUTF8:{
+            $desc:"Converts a string to UTF8 string.",
+            $rtn:"String",
+            $paras:[
+                "str [Required] : String."
+            ],
+            $snippet:[
+                "alert(xui.toUTF8('\u6C49\u5B57'));",
+                "alert(xui.fromUTF8(xui.toUTF8('\u6C49\u5B57')));"
+            ]
+        },
+        fromUTF8:{
+            $desc:"Converts a UTF8 string back.",
+            $rtn:"String",
+            $paras:[
+                "str [Required] : String."
+            ],
+            $snippet:[
+                "alert(xui.toUTF8('\u6C49\u5B57'));",
+                "alert(xui.fromUTF8(xui.toUTF8('\u6C49\u5B57')));"
+            ]
+        },
+        urlEncode:{
+            $desc:"Converts a key/value pairs Object to URL query string.",
+            $rtn:"String",
+            $paras:[
+                "hash [Required] : a key/value pairs Object."
+            ],
+            $snippet:[
+                "alert(xui.urlEncode({a:1,b:2}));"+
+                "alert(xui.urlEncode({a:1,b:{b1:1,b2:2}}));"+
+                "alert(xui.serialize(xui.urlDecode(xui.urlEncode({a:1,b:{b1:1,b2:2}}))))"
+            ]
+        },
+        urlDecode:{
+            $desc:"Gets a value from a given query string.",
+            $rtn:"Object",
+            $paras:[
+                "str [Required] : String, query string.",
+                "key [Optional] : String."
+            ],
+            $snippet:[
+                "var qs='a=1&b=2&c=3'; alert(xui.serialize(xui.urlDecode(qs)));alert(xui.urlDecode(qs,'a'));"
+            ]
+        },
+        str:{
+            $desc:"A functions collection for String.",
+            endWith :{
+                $desc:"Tests if this string ends with the specified str.",
+                $rtn:'Boolean',
+                $paras:[
+                    "str [Required]: String, target string.",
+                    "eStr [Required]: String, test string."
+                ],
+                $snippet:[
+                    "alert(xui.str.endWith('abc','c'))"
+                ]
+            },
+            initial:{
+                $desc:"Makes Initial letter of the specified string to capital letter.",
+                $rtn:'String',
+                $paras:[
+                    "str [Required]: String, target string."
+                ],
+                $snippet:[
+                    "alert(xui.str.initial('abc'))"
+                ]
+            },
+            ltrim :{
+                $desc:"Returns a copy of the string, with leading whitespace omitted.",
+                $rtn:'String',
+                $paras:[
+                    "str [Required]: String, target string."
+                ],
+                $snippet:[
+                    "alert(xui.str.ltrim(' abc ').length)"
+                ]
+            },
+            repeat:{
+                $desc:"To repeat the specified string with specified times, and returns the result.",
+                $rtn:'String',
+                $paras:[
+                    "str [Required]: String, target string.",
+                    "times [Required]: repeat time"
+                ],
+                $snippet:[
+                    "alert(xui.str.repeat('abc',3))"
+                ]
+            },
+            rtrim :{
+                $desc:"Returns a copy of the string, with trailing whitespace omitted.",
+                $rtn:'String',
+                $paras:[
+                    "str [Required]: String, target string."
+                ],
+                $snippet:[
+                    "alert(xui.str.rtrim(' abc ').length)"
+                ]
+            },
+            startWith :{
+                    $desc:"Tests if this string starts with the specified str.",
+                    $rtn:'Boolean',
+                    $paras:[
+                        "str [Required]: String, target string.",
+                        "sStr [Required]: String, test string."
+                    ],
+                    $snippet:[
+                        "alert(xui.str.startWith('abc','a'))"
+                    ]
+            },
+            toDom:{
+                $desc:"To create Element based on the specified string.",
+                $rtn:'xui.Dom',
+                $paras:[
+                    "str [Required]: String, target string."
+                ],
+                $snippet:[
+                    "var node = xui.str.toDom('<div>a</div>'); alert(node.outerHTML())"
+                ]
+            },
+            trim :{
+                $desc:"Returns a copy of the string, with leading and trailing whitespace omitted.",
+                $rtn:'String',
+                $paras:[
+                    "str [Required]: String, target string."
+                ],
+                $snippet:[
+                    "alert(xui.str.trim(' abc ').length)"
+                ]
+            }
+        },
+        toArr:{
+            $desc:"Makes an Array Object from input value.",
+            $rtn:"Array",
+            $paras:[
+                "value [Required]: Object, target Object.",
+                "force [Optional]: Boolean , char, or [undefined]. [undefined] for trans arguments to Array, char for trans String to Arry, Boolean for trans hash Object to Array. Default is [undefined]."
+            ],
+            $snippet:[
+                "var s='a,b,c', a=xui.toArr(s); alert(xui.serialize(a));",
+                "var s='a:b:c', a=xui.toArr(s,':'); alert(xui.serialize(a));",
+                "var f=function(a,b,c){ var a=xui.toArr(arguments);alert(xui.serialize(a));}; f(1,2,3); ",
+                "var hash={a:1,b:2}, a=xui.toArr(hash,true); alert(xui.serialize(a));",
+                "var hash={a:1,b:2}, a=xui.toArr(hash,false); alert(xui.serialize(a));"
+            ]
+        },
+        tryF:{
+            $desc:"To try to run a function.",
+            $rtn:"Object",
+            $paras:[
+                "fun [Required]: Function, Function to run.",
+                "args [Optional]: Array, Arguments for fun.",
+                "scope [Optional]: Object, [this] pointer for [fun].",
+                "df [Optional]: Object, Default return value of fun( if [fun] is not a Function)"
+            ],
+            $snippet:[
+                "alert(xui.tryF()); alert(xui.tryF('s')); alert(xui.tryF(4,null,null,true)); ",
+                "var f=function(){return 'a';}; alert(xui.tryF(f));",
+                "var f=function(v){alert(v);return this.a;}, o={a:true}; alert(xui.tryF(f,['parameter'],o));"
+            ]
+        },
+        unserialize:{
+            $desc:"To unserialize JSON string to a javascript Object.",
+            $rtn:"Object",
+            $paras:[
+                "str [Required]: String, string to unserialize.",
+                "dateformat [Optional]: String, To determine unserialize Date string representing or not."
+            ],
+            $snippet:[
+                "var o={a:[1,{k:1}],s:'s',d:new Date},str; alert(str=xui.serialize(o)); var o2=xui.unserialize(str); alert(o2.d)",
+                "var o={a:[1,,{k:1}],s:'s',d:new Date},str; alert(str=xui.serialize(o)); var o2=xui.unserialize(str, true); alert(o2.d)",
+                "alert(typeof xui.unserialize(xui.serialize(xui('btnLang'))))",
+                "alert(typeof xui.unserialize(xui.serialize(xui.Dom.byId('btnLang'))))",
+                "alert(typeof xui.unserialize(xui.serialize(xui.UIProfile.getFromDom('btnLang'))))",
+                "alert(typeof xui.unserialize(xui.serialize(xui.UIProfile.getFromDom('btnLang').boxing())))"
+            ]
+        },
+        preLoadImage:{
+            $desc:"preLoad Image(s).",
+            $rtn:"Integer",
+            $paras:[
+                "src [Required]: String, image's url address, or an Array of url address.",
+                "onSuccess [Optional]: Function, function(img), callback function for image loaded successfully. ",
+                "onFail [Optional]: Function, function(img), callback function for image loaded ."
+            ]
+        },
+
         SERIALIZEMAXLAYER:{
              $desc:"The max layers for serialize"
         },
@@ -906,7 +910,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"xui.Locale is an hash Object for locale related info.",
             $rtn:"Object",
             $snippet:[
-                "_.each(xui.Locale.en,function(o,i){alert(i+':'+o)})"
+                "xui.each(xui.Locale.en,function(o,i){alert(i+':'+o)})"
             ],
             $memo:"Use xui.getRes([resource key]) to get Locale value"
         },
@@ -914,14 +918,14 @@ _.set(xui.Locale,["en","app"], {
             $desc:"xui.browser is an hash Object for browser related info.",
             $rtn:"Object",
             $snippet:[
-                "alert(_.serialize(xui.browser))"
+                "alert(xui.serialize(xui.browser))"
             ]
         },
         ini:{
             $desc:"xui.ini is an hash Object collection for CrossUI path, application path and other path name. And, CrossUI will merge customized [xui_ini](You must declare [xui_ini] before CrossUI lib is loaded.) Object into [xui.ini] too.",
             $rtn:"Object",
             $snippet:[
-                "alert(_.serialize(xui.ini))"
+                "alert(xui.serialize(xui.ini))"
             ]
         },
         win:{
@@ -1335,17 +1339,17 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Gets the Date object's serialize format.",
             $rtn:"String",
             $snippet:[
-                "xui.setDateFormat('default'); alert(xui.getDateFormat()); alert(_.serialize(new Date));",
-                "xui.setDateFormat('gmt'); alert(xui.getDateFormat()); alert(_.serialize(new Date));",
-                "xui.setDateFormat('utc'); alert(xui.getDateFormat()); alert(_.serialize(new Date));"
+                "xui.setDateFormat('default'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
+                "xui.setDateFormat('gmt'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
+                "xui.setDateFormat('utc'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));"
             ]
         },
         setDateFormat:{
             $desc:"Sets the Date object's serialize format. 'gmt', 'utc' or 'default'.",
             $snippet:[
-                "xui.setDateFormat('default'); alert(xui.getDateFormat()); alert(_.serialize(new Date));",
-                "xui.setDateFormat('gmt'); alert(xui.getDateFormat()); alert(_.serialize(new Date));",
-                "xui.setDateFormat('utc'); alert(xui.getDateFormat()); alert(_.serialize(new Date));"
+                "xui.setDateFormat('default'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
+                "xui.setDateFormat('gmt'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));",
+                "xui.setDateFormat('utc'); alert(xui.getDateFormat()); alert(xui.serialize(new Date));"
             ]
         },
         getAppLangKey:{
@@ -1407,7 +1411,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Thread"], {
+    xui.set(xui.Locale,["en","doc","xui","Thread"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Thread Class.  Execution model: <strong>[onStart function]--delay 1-->[task function 1][callback function 1]--delay 2-->[task function 2][callback function 2]--delay 3-->[task function ...n][callback function ...n][onEnd function]</strong>",
         $rtn:"xui.Thread",
@@ -1505,7 +1509,7 @@ _.set(xui.Locale,["en","app"], {
                 "id [Required]: String, thread id."
             ],
             $snippet:[
-                "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread.suspend('_bb');_.asyRun(function(){xui.Thread.resume('_bb')},3000)},function(){xui.message(2)}]).start();"
+                "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread.suspend('_bb');xui.asyRun(function(){xui.Thread.resume('_bb')},3000)},function(){xui.message(2)}]).start();"
             ]
         },
         getStatus:{
@@ -1517,7 +1521,7 @@ _.set(xui.Locale,["en","app"], {
                 "id [Required]: String, thread id."
             ],
             $snippet:[
-                "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread.suspend('_bb');_.asyRun(function(){xui.Thread.resume('_bb')},3000)},function(){xui.message(2)}]).start();"
+                "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread.suspend('_bb');xui.asyRun(function(){xui.Thread.resume('_bb')},3000)},function(){xui.message(2)}]).start();"
             ]
         },
         start:{
@@ -1560,7 +1564,7 @@ _.set(xui.Locale,["en","app"], {
                     "time [Optional]: Number: Resumes to execute the next task after [time]ms. If it was not specified, suspend only, won't resume."
                 ],
                 $snippet:[
-                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();xui.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
                 ]
             },
             resume:{
@@ -1574,7 +1578,7 @@ _.set(xui.Locale,["en","app"], {
                     "undefined: Resumes to execute the next task after [the remaining time]. <br> "
                 ],
                 $snippet:[
-                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();_.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
+                    "xui.Thread('_bb',[function(){xui.message(1)},function(){xui.Thread('_bb').suspend();xui.asyRun(function(){xui.Thread('_bb').resume();},3000)},function(){xui.message(2)}]).start();"
                 ]
             },
             start:{
@@ -1622,7 +1626,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absIO"], {
+    xui.set(xui.Locale,["en","doc","xui","absIO"], {
         /*buildQS:{
             $desc:"To build query string.",
             $rtn:"String",
@@ -1711,7 +1715,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","MessageService"], {
+    xui.set(xui.Locale,["en","doc","xui","MessageService"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.MessageService Class",
         prototype:{
@@ -1763,7 +1767,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","XML"], {
+    xui.set(xui.Locale,["en","doc","xui","XML"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.XML Class(static)",
         json2xml:{
@@ -1782,7 +1786,7 @@ _.set(xui.Locale,["en","app"], {
                 "kf [Optional]: Function, filter function for key String.",
                 "vf [Optional]: Function, filter function for value String."
             ],
-            $snippet:["alert(_.serialize(xui.XML.xml2json(xui.XML.parseXML('<a attr=\"1\"><b>v</b></a>'))))"]
+            $snippet:["alert(xui.serialize(xui.XML.xml2json(xui.XML.parseXML('<a attr=\"1\"><b>v</b></a>'))))"]
         },
         parseXML:{
             $desc:"Parses XML text to XML Object",
@@ -1790,12 +1794,12 @@ _.set(xui.Locale,["en","app"], {
             $paras:[
                 "xmlText [Required] : String, XML text"
             ],
-            $snippet:["alert(_.serialize(xui.XML.xml2json(xui.XML.parseXML('<a attr=\"1\"><b>v</b></a>'))))"]
+            $snippet:["alert(xui.serialize(xui.XML.xml2json(xui.XML.parseXML('<a attr=\"1\"><b>v</b></a>'))))"]
         }
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","XMLRPC"], {
+    xui.set(xui.Locale,["en","doc","xui","XMLRPC"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.XMLRPC Class(static)",
         wrapRequest:{
@@ -1815,7 +1819,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","SOAP"], {
+    xui.set(xui.Locale,["en","doc","xui","SOAP"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.SOAP Class(static)",
         RESULT_NODE_NAME:{
@@ -1857,7 +1861,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Ajax"], {
+    xui.set(xui.Locale,["en","doc","xui","Ajax"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Ajax Class. It can handle same domain GET/POST request, and it can handle synchronous request.</strong>",
         $rtn:"xui.Ajax",
@@ -1957,7 +1961,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","JSONP"], {
+    xui.set(xui.Locale,["en","doc","xui","JSONP"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.JSONP Class. It can handle cross domain GET/POST request.</strong>.",
         $rtn:"xui.JSONP",
@@ -2056,7 +2060,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","XDMI"], {
+    xui.set(xui.Locale,["en","doc","xui","XDMI"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.XDMI Class. It can handle cross domain GET/POST request, and can upload/download file.",
         $rtn:"xui.XDMI",
@@ -2163,7 +2167,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","SC"], {
+    xui.set(xui.Locale,["en","doc","xui","SC"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Ajax Class(static).<br />Call function : Straight Call. Uses path name to call a specified class/Object. If the target class/Object exists, returns it directly, but if the target class/Object does not exist, loads it from code(in memory or in the remote file[xui.Ajax/xui.JSONP]) first, returns it, and executes the callback function(if it exists).",
         $rtn:"Object, class/Object[in synchronous mode], undefined[in asynchronous mode]",
@@ -2182,13 +2186,13 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Gets value from an Object according to a path name.",
             $rtn:"Object",
             $paras:[
-                "path [Required]: String, path name (e.g. 'xui.SC.get', '_.isArr', 'xui.ini.path').",
+                "path [Required]: String, path name (e.g. 'xui.SC.get', 'xui.isArr', 'xui.ini.path').",
                 "obj [Optional]: Object, target Object. Default is [window]."
             ],
             $snippet:[
-                "alert(xui.SC.get('xui.ini.path')); alert(_.get(window,'xui.ini.path'.split('.'))); "
+                "alert(xui.SC.get('xui.ini.path')); alert(xui.get(window,'xui.ini.path'.split('.'))); "
             ],
-            $memo:"It's a wrap of [_.get]."
+            $memo:"It's a wrap of [xui.get]."
         },
         groupCall:{
             $desc:"To group a set of path names to load code snippet and execute them in parallel.",
@@ -2246,7 +2250,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Event"], {
+    xui.set(xui.Locale,["en","doc","xui","Event"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Event Class",
         isSupported:{
@@ -2283,7 +2287,7 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var id='xui.temp.e2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">click here ' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                "xui(id).onClick(function(p,e){xui('btnLang').onClick(null); alert(_.serialize(xui.Event.getEventPara(e)));});"+
+                "xui(id).onClick(function(p,e){xui('btnLang').onClick(null); alert(xui.serialize(xui.Event.getEventPara(e)));});"+
                 "}"
             ]
         },
@@ -2316,7 +2320,7 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var id='xui.temp.e4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">click here ' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                "xui(id).onClick(function(p,e){xui('btnLang').onClick(null); alert(_.serialize(xui.Event.getPos(e)));});"+
+                "xui(id).onClick(function(p,e){xui('btnLang').onClick(null); alert(xui.serialize(xui.Event.getPos(e)));});"+
                 "}"
             ]
         },
@@ -2380,7 +2384,7 @@ _.set(xui.Locale,["en","app"], {
                 "trigger [Required] : Function, arguments[boundary DOM element]. The trigger funtion whenever user uses 'TAB' keyboard to go out the 'boundary DOM element'. "
             ],
             $snippet:[
-                "if(!xui.Dom.byId('xui.temp.out')){this.prepend(xui.create('<div><div id=\"xui.temp.out\" style=\"border:solid 1px;padding:10px;\">xui.temp.out<input id=\"xui.temp.out.first\"><input /><input /><input /><div id=\"xui.temp.in\"  style=\"border:solid 1px;padding:10px;\">xui.temp.in<input id=\"xui.temp.in.first\" /><input /><input /><input /><input /></div></div><div><button onclick=\"_.arr.each(xui.Event._tabHookStack,function(o){alert(o[0])})\">Click here to show inner stack content!</button><br /><br /><button onclick=\"xui.Event.popTabOutTrigger();\">popTabOutTrigger</button><br /><br /></div><div><button onclick=\"xui.Event.popTabOutTrigger(1);xui(this).parent(2).remove();\">remove this example</button></div></div>'));\n"+
+                "if(!xui.Dom.byId('xui.temp.out')){this.prepend(xui.create('<div><div id=\"xui.temp.out\" style=\"border:solid 1px;padding:10px;\">xui.temp.out<input id=\"xui.temp.out.first\"><input /><input /><input /><div id=\"xui.temp.in\"  style=\"border:solid 1px;padding:10px;\">xui.temp.in<input id=\"xui.temp.in.first\" /><input /><input /><input /><input /></div></div><div><button onclick=\"xui.arr.each(xui.Event._tabHookStack,function(o){alert(o[0])})\">Click here to show inner stack content!</button><br /><br /><button onclick=\"xui.Event.popTabOutTrigger();\">popTabOutTrigger</button><br /><br /></div><div><button onclick=\"xui.Event.popTabOutTrigger(1);xui(this).parent(2).remove();\">remove this example</button></div></div>'));\n"+
                 "xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.out'),function(){document.getElementById('xui.temp.out.first').focus();});"+"xui.Event.pushTabOutTrigger(document.getElementById('xui.temp.in'),function(){document.getElementById('xui.temp.in.first').focus();});}"
             ]
         },
@@ -2404,7 +2408,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absBox"],{
+    xui.set(xui.Locale,["en","doc","xui","absBox"],{
         pack:{
             $desc: "To create a [xui.absBox] Object, and pack a set of value to this Object. ",
             $rtn: "xui.absBox",
@@ -2484,7 +2488,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Dom"], {
+    xui.set(xui.Locale,["en","doc","xui","Dom"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Dom Class",
         constructor:{
@@ -2532,8 +2536,8 @@ _.set(xui.Locale,["en","app"], {
                 "busyMsg [Optional] : String, the busy message will be showed. "
             ],
             $snippet:[
-                "xui.Thread(null,[_.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
-                "xui.Thread(null,[function(){xui.Dom.busy('b');xui.message('Changes [label] to \\\'b\\\' ')}, function(){xui.Dom.free();xui.message('Still busy')},function(){xui.Dom.free('a');xui.message('Still busy')},_.fun()],1000,null,function(){xui.Dom.busy('a')},function(){xui.Dom.free('b');xui.message('free now')}).start()"
+                "xui.Thread(null,[xui.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
+                "xui.Thread(null,[function(){xui.Dom.busy('b');xui.message('Changes [label] to \\\'b\\\' ')}, function(){xui.Dom.free();xui.message('Still busy')},function(){xui.Dom.free('a');xui.message('Still busy')},xui.fun()],1000,null,function(){xui.Dom.busy('a')},function(){xui.Dom.free('b');xui.message('free now')}).start()"
             ]
         },
         free:{
@@ -2605,7 +2609,7 @@ _.set(xui.Locale,["en","app"], {
                 "value [Required] : String, the css property value to be set."
             ],
             $snippet:[
-                "var n=xui.Dom.byId('btnLang'); xui.Dom.setStyle(n,'top', '100px'); _.asyRun(function(){xui.Dom.setStyle(n,'top', '0px')}, 2000)"
+                "var n=xui.Dom.byId('btnLang'); xui.Dom.setStyle(n,'top', '100px'); xui.asyRun(function(){xui.Dom.setStyle(n,'top', '0px')}, 2000)"
             ]
         },
         setCover:{
@@ -2615,10 +2619,10 @@ _.set(xui.Locale,["en","app"], {
                 "label [Optional] : String, the busy label. "
             ],
             $snippet:[
-                "xui.Dom.setCover(true); _.asyRun(function(){xui.Dom.setCover(false)},2000);",
-                "xui.Dom.setCover('a'); _.asyRun(function(){xui.Dom.setCover('b')},1000); _.asyRun(function(){xui.Dom.setCover('c')},2000); _.asyRun(function(){xui.Dom.setCover(false)},3000);",
-                "xui.Dom.setCover('<div style=\\\'font-weight:bold;padding:5px;border:solid 1px;background:#CCC;\\\'> Loading... </div>'); _.asyRun(function(){xui.Dom.setCover(false)},2000);",
-                "xui.Dom.setCover(true,'key'); _.asyRun(function(){xui.message('The cover is still visible');xui.Dom.setCover(false)},1000); _.asyRun(function(){xui.message('The cover is hidded.');xui.Dom.setCover(false,'key')},5000);"
+                "xui.Dom.setCover(true); xui.asyRun(function(){xui.Dom.setCover(false)},2000);",
+                "xui.Dom.setCover('a'); xui.asyRun(function(){xui.Dom.setCover('b')},1000); xui.asyRun(function(){xui.Dom.setCover('c')},2000); xui.asyRun(function(){xui.Dom.setCover(false)},3000);",
+                "xui.Dom.setCover('<div style=\\\'font-weight:bold;padding:5px;border:solid 1px;background:#CCC;\\\'> Loading... </div>'); xui.asyRun(function(){xui.Dom.setCover(false)},2000);",
+                "xui.Dom.setCover(true,'key'); xui.asyRun(function(){xui.message('The cover is still visible');xui.Dom.setCover(false)},1000); xui.asyRun(function(){xui.message('The cover is hidded.');xui.Dom.setCover(false,'key')},5000);"
             ]
         },
         css3Support:{
@@ -2630,8 +2634,8 @@ _.set(xui.Locale,["en","app"], {
             $snippet:[
                 "var arr='opacity,textShadow,animationName,columnCount,flexWrap,boxDirection,backgroundSize,perspective,boxShadow,borderImage,borderRadius,boxReflect,transform,transition,generatedContent,fontFace,rgba,hsla,multiplebgs,gradient,transform3d'.split(',');"+
                 "var hash={};\n"+
-                "_.arr.each(arr,function(o){hash[o]=linb.Dom.css3Support(o);});\n"+
-                "alert(_.stringify(hash));"
+                "xui.arr.each(arr,function(o){hash[o]=xui.Dom.css3Support(o);});\n"+
+                "alert(xui.stringify(hash));"
             ]
         },
         submit:{
@@ -2677,8 +2681,8 @@ _.set(xui.Locale,["en","app"], {
                     "properties [Optional] : key/value pairs, the properties of border. The most common usage: {borderActive: [Boolean]}."
                 ],
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});_.asyRun(function(){div.remove();},5000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addBorder();},1000);xui.asyRun(function(){div.removeBorder();},2000);xui.asyRun(function(){div.remove();},3000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});xui.asyRun(function(){div.remove();},5000);"
                 ],
                 $memo:"Dependencies: xui.UI.Border."
             },
@@ -2686,7 +2690,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To remove an existing border from the first element. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addBorder();},1000);_.asyRun(function(){div.removeBorder();},2000);_.asyRun(function(){div.remove();},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addBorder();},1000);xui.asyRun(function(){div.removeBorder();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependencies: xui.UI.Border."
             },
@@ -2700,8 +2704,8 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();_.asyRun(function(){div.remove();},10000);",
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});_.asyRun(function(){div.remove();},10000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();xui.asyRun(function(){div.remove();},10000);",
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});xui.asyRun(function(){div.remove();},10000);"
                 ],
                 $memo:"Dependencies: xui.UI.Resizer."
             },
@@ -2709,7 +2713,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To remove an existing resizer from the first element. ",
                 $rtn:"[self]",
                 $snippet:[
-                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);_.asyRun(function(){div.addResizer({forceVisible:true})},1000);_.asyRun(function(){div.removeResizer();},2000);_.asyRun(function(){div.remove();},3000);"
+                    "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addResizer({forceVisible:true})},1000);xui.asyRun(function(){div.removeResizer();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
                 $memo:"Dependencies: xui.UI.Resizer."
             },
@@ -2836,8 +2840,8 @@ _.set(xui.Locale,["en","app"], {
                     "boundary [Optional] : the boundary (DOM element or document.body). Default is document.body."
                 ],
                 $snippet:[
-                    "alert(_.serialize(xui(this).offset()));alert(_.serialize(xui(this).offset()));",
-                    "var n=xui(this),pos=n.offset(); pos.top+=20; n.css('position','relative').offset(pos); _.asyRun(function(){n.css({top:'',position:''})},1000)"
+                    "alert(xui.serialize(xui(this).offset()));alert(xui.serialize(xui(this).offset()));",
+                    "var n=xui(this),pos=n.offset(); pos.top+=20; n.css('position','relative').offset(pos); xui.asyRun(function(){n.css({top:'',position:''})},1000)"
                 ]
             },
             cssPos:{
@@ -2848,7 +2852,7 @@ _.set(xui.Locale,["en","app"], {
                     "flag [Optional] : Boolean, to trigger element onMove event. Default is false."
                 ],
                 $snippet:[
-                    "var n=xui(this),pos=n.cssPos(); pos.top+=20;pos.left+=20; n.css('position','relative').cssPos(pos); n.onMove(function(){xui.message('Fired onMove event')});pos.top+=20;pos.left+=20; n.cssPos(pos,true); _.asyRun(function(){n.css({top:'',position:''}).onMove(null)},1000)"
+                    "var n=xui(this),pos=n.cssPos(); pos.top+=20;pos.left+=20; n.css('position','relative').cssPos(pos); n.onMove(function(){xui.message('Fired onMove event')});pos.top+=20;pos.left+=20; n.cssPos(pos,true); xui.asyRun(function(){n.css({top:'',position:''}).onMove(null)},1000)"
                 ]
             },
             animate:{
@@ -2883,7 +2887,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var n=xui('btnLang'); alert(n.attr('style')); alert(n.attr('tagName')); alert(n.attr('className'));",
                     "var n=xui('btnLang'); n.attr('abc','abc'); alert(n.attr('abc')); n.attr('abc',null);  n.attr('tagName',null); alert(n.attr('abc'));",
-                    "var n=xui('btnLang'); n.attr('onclick',function(){alert('hi')}); _.asyRun(function(){n.attr('onclick',null)},5000); ",
+                    "var n=xui('btnLang'); n.attr('onclick',function(){alert('hi')}); xui.asyRun(function(){n.attr('onclick',null)},5000); ",
                     "var n=xui('btnLang'); n.attr({a:'a',b:'b'}); alert(n.attr('a')); n.attr({a:null,b:null}); alert(n.attr('a'));"
                 ]
             },
@@ -2896,7 +2900,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.caret'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\">' + '<input id='+id+'1 value=0123456789/><'+'textarea id='+id+'2></'+'textarea><br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "xui(id+'2').attr('value','1111\\n2222\\n3333\\n4444');_.asyRun(function(){xui(id+'1').caret(2,6);alert(xui(id+'1').caret());xui(id+'2').caret(2,16);alert(xui(id+'2').caret());},1000)"+
+                    "xui(id+'2').attr('value','1111\\n2222\\n3333\\n4444');xui.asyRun(function(){xui(id+'1').caret(2,6);alert(xui(id+'1').caret());xui(id+'2').caret(2,16);alert(xui(id+'2').caret());},1000)"+
                     "}"
                 ]
             },
@@ -3070,8 +3074,8 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var n=xui('btnLang'); alert(n.css('background')); alert(n.css('overflow')); alert(n.css('top'));",
-                    "var n=xui('btnLang'); n.css('right','30px'); _.asyRun(function(){n.css('right','0')},1000)",
-                    "var n=xui('btnLang'); n.css({top:'30px',right:'30px'}); _.asyRun(function(){n.css({top:0,right:0})},1000)"
+                    "var n=xui('btnLang'); n.css('right','30px'); xui.asyRun(function(){n.css('right','0')},1000)",
+                    "var n=xui('btnLang'); n.css({top:'30px',right:'30px'}); xui.asyRun(function(){n.css({top:0,right:0})},1000)"
                 ]
             },
             cssPos:{
@@ -3083,7 +3087,7 @@ _.set(xui.Locale,["en","app"], {
 
                 ],
                 $snippet:[
-                    "var n=xui('btnLang'); n.cssPos({left:100,top:100}); alert(_.serialize(n.cssPos())); n.cssPos({left:'auto',top:'auto'})"
+                    "var n=xui('btnLang'); n.cssPos({left:100,top:100}); alert(xui.serialize(n.cssPos())); n.cssPos({left:'auto',top:'auto'})"
                 ]
             },
             cssSize:{
@@ -3094,7 +3098,7 @@ _.set(xui.Locale,["en","app"], {
                     "triggerEvent [Optional] : Boolean, indicates if the 'set' action trigger related event or not."
                 ],
                 $snippet:[
-                    "var n=xui('btnLang'), bak=n.cssSize(); n.cssSize({width:50,height:50}); alert(_.serialize(n.cssSize())); n.cssSize(bak)"
+                    "var n=xui('btnLang'), bak=n.cssSize(); n.cssSize({width:50,height:50}); alert(xui.serialize(n.cssSize())); n.cssSize(bak)"
                 ]
             },
             cssRegion:{
@@ -3105,7 +3109,7 @@ _.set(xui.Locale,["en","app"], {
                     "triggerEvent [Optional] : Boolean, indicates if the 'set' action trigger related event or not."
                 ],
                 $snippet:[
-                    "var n=xui('btnLang'),bak=n.cssRegion(); n.cssRegion({left:100,top:100,width:50,height:50}); alert(_.serialize(n.cssRegion())); bak.left=bak.top='auto'; n.cssRegion(bak);"
+                    "var n=xui('btnLang'),bak=n.cssRegion(); n.cssRegion({left:100,top:100,width:50,height:50}); alert(xui.serialize(n.cssRegion())); bak.left=bak.top='auto'; n.cssRegion(bak);"
                 ]
             },
             query:{
@@ -3209,7 +3213,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.replace'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"border:solid 1px;padding:10px;\"><div id='+id+' style=\"border:solid 1px;padding:5px;\"></div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){ xui(id).replace(xui.create('a<input value=b />c<input value=d />e')) },1000)"+
+                    "xui.asyRun(function(){ xui(id).replace(xui.create('a<input value=b />c<input value=d />e')) },1000)"+
                     "}"
                 ]
             },
@@ -3221,7 +3225,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.replace'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div  style=\"border:solid 1px;padding:10px;\"><div id='+id+'1  style=\"border:solid 1px;padding:5px;\">1</div><div id='+id+'2 style=\"border:solid 1px;padding:5px;\">2</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){ xui(id+'1').swap( xui(id+'2') ) },1000);_.asyRun(function(){ xui(id+'1').swap( xui(id+'2') ) },2000);"+
+                    "xui.asyRun(function(){ xui(id+'1').swap( xui(id+'2') ) },1000);xui.asyRun(function(){ xui(id+'1').swap( xui(id+'2') ) },2000);"+
                     "}"
                 ]
             },
@@ -3230,7 +3234,7 @@ _.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $snippet:[
                     "var id='xui.temp.sib'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div  style=\"border:solid 1px;padding:10px;\"><div id='+id+'  style=\"border:solid 1px;padding:5px;\">1</div>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){ xui(id).setInlineBlock()  },1000);_.asyRun(function(){ xui(id).css('display','') },2000);"+
+                    "xui.asyRun(function(){ xui(id).setInlineBlock()  },1000);xui.asyRun(function(){ xui(id).css('display','') },2000);"+
                     "}"
                 ]
             },
@@ -3327,7 +3331,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.leftBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).leftBy(10)},500);_.asyRun(function(){xui(id).leftBy(10)},1000); _.asyRun(function(){xui(id).leftBy(10)},1500);_.asyRun(function(){xui(id).leftBy(10)},2000);"+
+                    "xui.asyRun(function(){xui(id).leftBy(10)},500);xui.asyRun(function(){xui(id).leftBy(10)},1000); xui.asyRun(function(){xui(id).leftBy(10)},1500);xui.asyRun(function(){xui(id).leftBy(10)},2000);"+
                     "}"
                 ]
             },
@@ -3340,7 +3344,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.topBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).topBy(10)},500);_.asyRun(function(){xui(id).topBy(10)},1000); _.asyRun(function(){xui(id).topBy(10)},1500);_.asyRun(function(){xui(id).topBy(10)},2000);"+
+                    "xui.asyRun(function(){xui(id).topBy(10)},500);xui.asyRun(function(){xui(id).topBy(10)},1000); xui.asyRun(function(){xui(id).topBy(10)},1500);xui.asyRun(function(){xui(id).topBy(10)},2000);"+
                     "}"
                 ]
             },
@@ -3353,7 +3357,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.widthBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).widthBy(10)},500);_.asyRun(function(){xui(id).widthBy(10)},1000); _.asyRun(function(){xui(id).widthBy(10)},1500);_.asyRun(function(){xui(id).widthBy(10)},2000);"+
+                    "xui.asyRun(function(){xui(id).widthBy(10)},500);xui.asyRun(function(){xui(id).widthBy(10)},1000); xui.asyRun(function(){xui(id).widthBy(10)},1500);xui.asyRun(function(){xui(id).widthBy(10)},2000);"+
                     "}"
                 ]
             },
@@ -3366,7 +3370,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.heightBy'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).heightBy(10)},500);_.asyRun(function(){xui(id).heightBy(10)},1000); _.asyRun(function(){xui(id).heightBy(10)},1500);_.asyRun(function(){xui(id).heightBy(10)},2000);"+
+                    "xui.asyRun(function(){xui(id).heightBy(10)},500);xui.asyRun(function(){xui(id).heightBy(10)},1000); xui.asyRun(function(){xui(id).heightBy(10)},1500);xui.asyRun(function(){xui(id).heightBy(10)},2000);"+
                     "}"
                 ]
             },
@@ -3374,7 +3378,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To hide the set of elements.",
                 $rtn:"[self]",
                 $snippet:[
-                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show();},1000);"
+                    "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             show:{
@@ -3385,7 +3389,7 @@ _.set(xui.Locale,["en","app"], {
                     "top [Optional] : Number, the css top value."
                 ],
                 $snippet:[
-                    "xui('btnLang').hide(); _.asyRun(function(){xui('btnLang').show();},1000);"
+                    "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
             text:{
@@ -3547,7 +3551,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.left'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).left(10)},1000);_.asyRun(function(){xui(id).left(20)},2000); _.asyRun(function(){xui(id).left(30)},3000);"+
+                    "xui.asyRun(function(){xui(id).left(10)},1000);xui.asyRun(function(){xui(id).left(20)},2000); xui.asyRun(function(){xui(id).left(30)},3000);"+
                     "}"
                 ]
             },
@@ -3559,7 +3563,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.top'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input style=\"position:absolute;left:0;top:0;\" id='+id+' />' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).top(10)},1000);_.asyRun(function(){xui(id).top(20)},2000); _.asyRun(function(){xui(id).top(30)},3000);"+
+                    "xui.asyRun(function(){xui(id).top(10)},1000);xui.asyRun(function(){xui(id).top(20)},2000); xui.asyRun(function(){xui(id).top(30)},3000);"+
                     "}"
                 ]
             },
@@ -3573,7 +3577,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.nextFocus'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative;height:50px;border:solid 1px;padding:10px;\"><input value=upwards /><input id='+id+' /><button>downwards</button>' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){xui(id).nextFocus();},1000);_.asyRun(function(){xui(id).nextFocus(false)},2000);"+
+                    "xui.asyRun(function(){xui(id).nextFocus();},1000);xui.asyRun(function(){xui(id).nextFocus(false)},2000);"+
                     "}"
                 ]
             },
@@ -3626,10 +3630,10 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var id='xui.temp.p2p'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div style=\"position:relative; border:solid 1px;padding:10px;\"><button id='+id+' style=\"height:100px;width:100px;\">downwards</button>' + '<br /><br /><br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "_.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#ccc;width:50px;height:50px;\">type 1</div>')).popToTop(xui(id),1,xui(id).parent());},500);"+
-                    "_.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#aaa;width:50px;height:50px;\">type 2</div>')).popToTop(xui(id),2,xui(id).parent());},1000);"+
-                    "_.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#888;width:50px;height:50px;\">type 3</div>')).popToTop(xui(id),3,xui(id).parent());},1500);"+
-                    "_.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#666;width:50px;height:50px;\">type 4</div>')).popToTop(xui(id),4,xui(id).parent());},2000);"+
+                    "xui.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#ccc;width:50px;height:50px;\">type 1</div>')).popToTop(xui(id),1,xui(id).parent());},500);"+
+                    "xui.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#aaa;width:50px;height:50px;\">type 2</div>')).popToTop(xui(id),2,xui(id).parent());},1000);"+
+                    "xui.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#888;width:50px;height:50px;\">type 3</div>')).popToTop(xui(id),3,xui(id).parent());},1500);"+
+                    "xui.asyRun(function(){if(xui.Dom.byId(id))xui(xui.create('<div style=\"border:solid 1px;background:#666;width:50px;height:50px;\">type 4</div>')).popToTop(xui(id),4,xui(id).parent());},2000);"+
                     "}"
                 ]
             },
@@ -3768,7 +3772,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","DragDrop"], {
+    xui.set(xui.Locale,["en","doc","xui","DragDrop"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.DragDrop Class(static)",
         abort:{
@@ -3784,7 +3788,7 @@ _.set(xui.Locale,["en","app"], {
             $rtn:"Object",
             $snippet:[
                 "var id='xui.temp.ddo2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">draggable</div>' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">droppable</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.Coder.formatText(_.serialize(xui.DragDrop.getProfile())))})"+
+                "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.Coder.formatText(xui.serialize(xui.DragDrop.getProfile())))})"+
                 "}"
             ]
         },
@@ -3811,7 +3815,7 @@ _.set(xui.Locale,["en","app"], {
                 "var id='xui.temp.ddo4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:150px;\">' + '<div style=\"position:absolute;border:solid 1px;padding:20px;left:10px;top:30px;\">draggable</div>' +'<div style=\"position:absolute;border:solid 1px;left:160px;top:30px;width:100px;height:100px;\">droppable</div>' + ' <button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                 "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1');"+
                 "n=n.first().next();"+
-                "n.onDrop(function(){this.style.background='#fff';alert(xui.Coder.formatText(_.serialize(xui.DragDrop.getProfile())))});"+
+                "n.onDrop(function(){this.style.background='#fff';alert(xui.Coder.formatText(xui.serialize(xui.DragDrop.getProfile())))});"+
                 "\n//Must use 'before' here \n n.beforeMouseover(function(){xui.DragDrop.setDropElement(this);this.style.background='#ccc';}).beforeMouseout(function(){xui.DragDrop.setDropElement(null);this.style.background='#fff';});"+
                 "}"
             ]
@@ -3891,7 +3895,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","CSS"], {
+    xui.set(xui.Locale,["en","doc","xui","CSS"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.CSS Class(static)",
         resetCSS:{
@@ -3973,7 +3977,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","History"], {
+    xui.set(xui.Locale,["en","doc","xui","History"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.History Class(static)",
         setCallback:{
@@ -4009,7 +4013,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Cookies"], {
+    xui.set(xui.Locale,["en","doc","xui","Cookies"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Cookies Class(static)",
         get:{
@@ -4051,7 +4055,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Removes all cookie."
         }
     });
-    _.set(xui.Locale,["en","doc","xui","Debugger"], {
+    xui.set(xui.Locale,["en","doc","xui","Debugger"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Debugger Class(static)",
         'log':{
@@ -4078,7 +4082,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Date"], {
+    xui.set(xui.Locale,["en","doc","xui","Date"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Date Class(static)",
         add:{
@@ -4091,17 +4095,17 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var date=xui.Date,d=date.parse('1/1/2000'),arr=[];"+
-                "arr.push(_.serialize(date.add(d, 'ms', 600)));"+
-                "arr.push(_.serialize(date.add(d, 's', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'n', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'h', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'd', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'ww', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'm', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'q', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'y', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'de', 1)));"+
-                "arr.push(_.serialize(date.add(d, 'c', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'ms', 600)));"+
+                "arr.push(xui.serialize(date.add(d, 's', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'n', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'h', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'd', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'ww', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'm', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'q', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'y', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'de', 1)));"+
+                "arr.push(xui.serialize(date.add(d, 'c', 1)));"+
                 "alert(arr.join('\\n'))"
             ]
         },
@@ -4116,17 +4120,17 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var date=xui.Date,sd=date.parse('1/1/2000'),ed=new Date,arr=[];"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'ms')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 's')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'n')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'h')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'd')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'ww')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'm')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'q')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'y')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'de')));"+
-                "arr.push(_.serialize(date.diff(sd, ed, 'c')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'ms')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 's')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'n')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'h')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'd')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'ww')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'm')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'q')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'y')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'de')));"+
+                "arr.push(xui.serialize(date.diff(sd, ed, 'c')));"+
                 "alert(arr.join('\\n'))"
             ]
         },
@@ -4165,18 +4169,18 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var date=xui.Date,d=new Date,arr=[];"+
-                "arr.push(_.serialize(d));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'ms')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 's')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'n')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'h')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'd')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'ww')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'm')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'q')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'y')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'de')));"+
-                "arr.push(_.serialize(date.getTimSpanStart(d, 'c')));"+
+                "arr.push(xui.serialize(d));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'ms')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 's')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'n')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'h')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'd')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'ww')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'm')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'q')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'y')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'de')));"+
+                "arr.push(xui.serialize(date.getTimSpanStart(d, 'c')));"+
                 "alert(arr.join('\\n'))"
             ]
         },
@@ -4191,18 +4195,18 @@ _.set(xui.Locale,["en","app"], {
             ],
             $snippet:[
                 "var date=xui.Date,d=new Date,arr=[];"+
-                "arr.push(_.serialize(d));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'ms')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 's')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'n')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'h')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'd')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'ww')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'm')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'q')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'y')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'de')));"+
-                "arr.push(_.serialize(date.getTimSpanEnd(d, 'c')));"+
+                "arr.push(xui.serialize(d));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'ms')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 's')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'n')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'h')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'd')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'ww')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'm')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'q')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'y')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'de')));"+
+                "arr.push(xui.serialize(date.getTimSpanEnd(d, 'c')));"+
                 "alert(arr.join('\\n'))"
             ]
         },
@@ -4323,7 +4327,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absObj"], {
+    xui.set(xui.Locale,["en","doc","xui","absObj"], {
         getAll:{
             $desc:"Gets all instances of the current Class.",
             $rtn:"xui.absObj, the current Class Object",
@@ -4366,7 +4370,7 @@ _.set(xui.Locale,["en","app"], {
                 "keepSerialId [Optional] : Boolean, to keep serila id or not. Default is [false]."
             ],
             $snippet:[
-                "var s=xui.UIProfile.getFromDom('btnLang').boxing().serialize(false); alert(_.serialize(s)); alert(xui.UI.unserialize(s))"
+                "var s=xui.UIProfile.getFromDom('btnLang').boxing().serialize(false); alert(xui.serialize(s)); alert(xui.UI.unserialize(s))"
             ]
         },
         prototype:{
@@ -4416,7 +4420,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Collects all the event(or a specified event) functions from the first Profile, and returns it.",
                 $rtn:"Object",
                 $snippet:[
-                    "var p=xui.UIProfile.getFromDom('btnLang'); p.setEvents({onA:_.fun(), onShowTips:function(){return false}}); alert(_.serialize(p.getEvents()))"
+                    "var p=xui.UIProfile.getFromDom('btnLang'); p.setEvents({onA:xui.fun(), onShowTips:function(){return false}}); alert(xui.serialize(p.getEvents()))"
                 ]
             },
             setEvents:{
@@ -4427,7 +4431,7 @@ _.set(xui.Locale,["en","app"], {
                     "value [Optional] : Object, a property value."
                 ],
                 $snippet:[
-                    "var p=xui.UIProfile.getFromDom('btnLang'); p.setEvents({onA:_.fun(), onShowTips:function(){return false}}); alert(_.serialize(p.getEvents()))"
+                    "var p=xui.UIProfile.getFromDom('btnLang'); p.setEvents({onA:xui.fun(), onShowTips:function(){return false}}); alert(xui.serialize(p.getEvents()))"
                 ]
             },
             getAlias:{
@@ -4479,7 +4483,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "xui.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
                     "}"
                 ]
             },
@@ -4493,7 +4497,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
+                    "xui.asyRun(function(){btn.setTag('tag'); alert(btn.getTag())},1000)"+
                     "}"
                 ]
             },
@@ -4522,7 +4526,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "xui.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
                     "}"
                 ]
             },
@@ -4536,7 +4540,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui43'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
+                    "xui.asyRun(function(){btn.setTagVar([1,2]); alert(btn.getTagVar())},1000)"+
                     "}"
                 ]
             },
@@ -4555,7 +4559,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absProfile"], {
+    xui.set(xui.Locale,["en","doc","xui","absProfile"], {
         prototype:{
             getId:{
                 $desc:"Gets the unique id.",
@@ -4600,7 +4604,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Profile"], {
+    xui.set(xui.Locale,["en","doc","xui","Profile"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Profile Class",
         constructor:{
@@ -4658,7 +4662,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UIProfile"], {
+    xui.set(xui.Locale,["en","doc","xui","UIProfile"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UIProfile Class",
         constructor:{
@@ -4772,7 +4776,7 @@ _.set(xui.Locale,["en","app"], {
                     "src [Required] : DOM element or id string."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemByDom('xui.UI.TreeBar-ITEM:a:a') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(xui.serialize( pro.getItemByDom('xui.UI.TreeBar-ITEM:a:a') ))"
                 ],
                 $memo:"For those [xui.absList] profiles only. Usually, we use this function in event callback function."
             },
@@ -4783,7 +4787,7 @@ _.set(xui.Locale,["en","app"], {
                     "src [Required] : DOM element or id string."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemIdByDom('xui.UI.TreeBar-ITEM:a:a') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(xui.serialize( pro.getItemIdByDom('xui.UI.TreeBar-ITEM:a:a') ))"
                 ],
                 $memo:"For those [xui.absList] profiles only. Usually, we use this function in event callback function."
             },
@@ -4794,7 +4798,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(_.serialize( pro.getItemByItemId('Class') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:');alert(xui.serialize( pro.getItemByItemId('Class') ))"
                 ],
                 $memo:"For those [xui.absList] profiles in only"
             },
@@ -4914,7 +4918,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Template"], {
+    xui.set(xui.Locale,["en","doc","xui","Template"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Template Class",
         getFromDom:{
@@ -4963,7 +4967,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                 "var id='xui.temp.0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var t=new xui.Template({'':'<div>{caption}</div>'},{id:'1',caption:'cap'}); t.setDomId('t_2'); xui(id).append(t); "+
-                    "_.asyRun(function(){t.setProperties({id:'2',caption:'cap2'});t.refresh();},1000);"+
+                    "xui.asyRun(function(){t.setProperties({id:'2',caption:'cap2'});t.refresh();},1000);"+
                 "}"
                 ]
             },
@@ -4984,7 +4988,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                 "var id='xui.temp.0.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                "var t=new xui.Template({'':'<div>{items}</div>','items':'<span onclick=[$e]>{con}</span>'},{items:[{id:'a',con:'a'},{id:'b',con:'b'}]},{items:{onClick:function(p,e,src){alert(_.serialize(p.getItem(src)))}}}); t.setDomId('t_3'); xui(id).append(t);"+
+                "var t=new xui.Template({'':'<div>{items}</div>','items':'<span onclick=[$e]>{con}</span>'},{items:[{id:'a',con:'a'},{id:'b',con:'b'}]},{items:{onClick:function(p,e,src){alert(xui.serialize(p.getItem(src)))}}}); t.setDomId('t_3'); xui(id).append(t);"+
                 "}"
                 ]
             },
@@ -5092,7 +5096,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Module"], {
+    xui.set(xui.Locale,["en","doc","xui","Module"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Module Class",
         constructor:{
@@ -5300,7 +5304,7 @@ _.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                  "Class('Temp.Demo', 'xui.Module',{Instance:{trigger:function(){this.fireEvent('onCall',['a','b','c'])}}});"+
-                 "xui.ModuleFactory.getModule('Temp.Demo',function(){this.setEvents('onCall',function(){alert(_.toArr(arguments))});this.trigger();});"
+                 "xui.ModuleFactory.getModule('Temp.Demo',function(){this.setEvents('onCall',function(){alert(xui.toArr(arguments))});this.trigger();});"
                 ]
             },
             render:{
@@ -5452,8 +5456,8 @@ _.set(xui.Locale,["en","app"], {
                     "key [Optional] : String"
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getEvents()))});},false);",
-                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getEvents('onReady')))});},false);"
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(xui.serialize(module.getEvents()))});},false);",
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(xui.serialize(module.getEvents('onReady')))});},false);"
                 ]
             },
             setEvents:{
@@ -5549,7 +5553,7 @@ _.set(xui.Locale,["en","app"], {
                     "key [Optional] : String"
                 ],
                 $snippet:[
-                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(_.serialize(module.getProperties()))});},false);",
+                    "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(xui.serialize(module.getProperties()))});},false);",
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert(module.getProperties('p1'))});},false);"
                 ]
             },
@@ -5692,7 +5696,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","ModuleFactory"], {
+    xui.set(xui.Locale,["en","doc","xui","ModuleFactory"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.ModuleFactory Class(static)",
         setProfile:{
@@ -5707,7 +5711,7 @@ _.set(xui.Locale,["en","app"], {
                 "xui.ModuleFactory.setProfile('test1','App.Test1');"+
                 "xui.ModuleFactory.setProfile({test1:{cls:'App.Test1'},test2:{cls:'App.Test2'}});"+
                 "xui.ModuleFactory.setProfile('test1',{cls:'App.Test1',properties:{dlgCaption:'dialog caption'}});"+
-                "alert(_.serialize(xui.ModuleFactory.getProfile()));"+
+                "alert(xui.serialize(xui.ModuleFactory.getProfile()));"+
                 "alert(xui.ModuleFactory.getProfile('test1'));"
             ]
         },
@@ -5817,16 +5821,16 @@ _.set(xui.Locale,["en","app"], {
             $snippet:[
                 "xui.ModuleFactory.destroyAll();"+
                 "xui.ModuleFactory.setProfile('test1',{cls:'App.Test1',properties:{dlgCaption:'dialog caption'}});"+
-                "xui.ModuleFactory.getModule('test1',function(){ this.showDlg(); _.asyRun(function(){xui.ModuleFactory.storeModule('test1')},1000); });"
+                "xui.ModuleFactory.getModule('test1',function(){ this.showDlg(); xui.asyRun(function(){xui.ModuleFactory.storeModule('test1')},1000); });"
             ]
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","DomProfile"], {
+    xui.set(xui.Locale,["en","doc","xui","DomProfile"], {
         KEY:{$desc:"Class Name"}
     });
 
-    _.set(xui.Locale,["en","doc","xui","Timer"], {
+    xui.set(xui.Locale,["en","doc","xui","Timer"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Timer Class",
         constructor:{
@@ -5880,7 +5884,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    _.set(xui.Locale,["en","doc","xui","APICaller"], {
+    xui.set(xui.Locale,["en","doc","xui","APICaller"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.APICaller Class",
         WDSLCache:{
@@ -6180,7 +6184,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","DataBinder"], {
+    xui.set(xui.Locale,["en","doc","xui","DataBinder"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.DataBinder Class",
         constructor:{
@@ -6325,7 +6329,7 @@ _.set(xui.Locale,["en","app"], {
             }
         }
     });
-    _.set(xui.Locale,["en","doc","xui","Tips"], {
+    xui.set(xui.Locale,["en","doc","xui","Tips"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Tips Class(static)",
         AUTOHIDETIME:{
@@ -6374,7 +6378,7 @@ _.set(xui.Locale,["en","app"], {
         hide:{
             $desc:"To hide the tooltips.",
             $snippet:[
-                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide();},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide();},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide();},5000);"
+                "xui.Tips.show({left:100,top:100}, 'a string'); xui.asyRun(function(){xui.Tips.hide();},1000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); xui.asyRun(function(){xui.Tips.hide();},3000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);xui.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         },
         show:{
@@ -6385,12 +6389,12 @@ _.set(xui.Locale,["en","app"], {
                 "key [Optional] : String, the tips key. Default is 'tips'."
             ],
             $snippet:[
-                "xui.Tips.show({left:100,top:100}, 'a string'); _.asyRun(function(){xui.Tips.hide();},1000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); _.asyRun(function(){xui.Tips.hide();},3000); _.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);_.asyRun(function(){xui.Tips.hide();},5000);"
+                "xui.Tips.show({left:100,top:100}, 'a string'); xui.asyRun(function(){xui.Tips.hide();},1000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {tips:'an Object with a \\\'tips\\\' key'})},2000); xui.asyRun(function(){xui.Tips.hide();},3000); xui.asyRun(function(){xui.Tips.show({left:100,top:100}, {any:'an Object with a customizable key'},'any')},4000);xui.asyRun(function(){xui.Tips.hide();},5000);"
             ]
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","Coder"], {
+    xui.set(xui.Locale,["en","doc","xui","Coder"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.Coder Class(static)",
         isSafeJSON:{
@@ -6482,7 +6486,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","absList"], {
+    xui.set(xui.Locale,["en","doc","xui","absList"], {
         prototype:{
             fireItemClickEvent:{
                 $desc:"To fires the click event on the specified item.",
@@ -6493,7 +6497,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.fireItemClickEvent('b')},1000);"+
+                    "xui.asyRun(function(){o.fireItemClickEvent('b')},1000);"+
                     "}"
                 ]
             },
@@ -6508,7 +6512,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.absl0-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeBar({width:'auto',iniFold:true,height:'auto',dock:'none',position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c',sub:[{id:'cz',caption:'cz'}]}]});"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.updateItem('b',{caption:'bbb', image:'img/img.gif', imagePos:'left -16px'})},1000);" +
+                    "xui.asyRun(function(){o.updateItem('b',{caption:'bbb', image:'img/img.gif', imagePos:'left -16px'})},1000);" +
                     "}"
                 ]
             },
@@ -6532,7 +6536,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absl1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}))"+
-                    "_.asyRun(function(){alert(_.serialize(o.getItems()))});"+
+                    "xui.asyRun(function(){alert(xui.serialize(o.getItems()))});"+
                     "}"
                 ]
             },
@@ -6546,7 +6550,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}))"+
-                    "_.asyRun(function(){o.setItems([{id:'aaa',caption:'bbb'}])});"+
+                    "xui.asyRun(function(){o.setItems([{id:'aaa',caption:'bbb'}])});"+
                     "}"
                 ]
             },
@@ -6561,11 +6565,11 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.insertItems([{id:'a1',caption:'a1'}],'b',true)},1000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'c1',caption:'c1'}],'c',false)},2000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'a0',caption:'a0'}],null,true)},3000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'c2',caption:'c2'}],null,false)},4000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'h',caption:'h'},{id:'i',caption:'i'}])},5000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'a1',caption:'a1'}],'b',true)},1000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'c1',caption:'c1'}],'c',false)},2000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'a0',caption:'a0'}],null,true)},3000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'c2',caption:'c2'}],null,false)},4000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'h',caption:'h'},{id:'i',caption:'i'}])},5000);"+
                     "}"
                 ]
             },
@@ -6578,7 +6582,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.removeItems(['a','b'])},1000);"+
+                    "xui.asyRun(function(){o.removeItems(['a','b'])},1000);"+
                     "}"
                 ]
             },
@@ -6591,7 +6595,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.clearItems();},1000);"+
+                    "xui.asyRun(function(){o.clearItems();},1000);"+
                     "}"
                 ]
             },
@@ -6611,7 +6615,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.UI.cacheData('test',[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui.UI.cacheData('test2',[{id:'aa',caption:'aa'},{id:'bb',caption:'bb'},{id:'cc',caption:'cc'}]);"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',listKey:'test'}));"+
-                    "_.asyRun(function(){alert(o.getListKey())});"+
+                    "xui.asyRun(function(){alert(o.getListKey())});"+
                     "}"
                 ]
             },
@@ -6627,7 +6631,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.UI.cacheData('test',[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui.UI.cacheData('test2',[{id:'aa',caption:'aa'},{id:'bb',caption:'bb'},{id:'cc',caption:'cc'}]);"+
                     "var o;xui(id).prepend(o=new xui.UI.List({position:'relative',listKey:'test'}));"+
-                    "_.asyRun(function(){o.setListKey('test2')},1000);"+
+                    "xui.asyRun(function(){o.setListKey('test2')},1000);"+
                     "}"
                 ]
             },
@@ -6638,7 +6642,7 @@ _.set(xui.Locale,["en","app"], {
                     "itemId [Required] :String, item id."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(_.serialize( pro.getItemByItemId('Class') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(xui.serialize( pro.getItemByItemId('Class') ))"
                 ]
             },
             getItemByDom:{
@@ -6648,7 +6652,7 @@ _.set(xui.Locale,["en","app"], {
                     "src [Required] : DOM element or id string."
                 ],
                 $snippet:[
-                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(_.serialize( pro.getItemByDom('xui.UI.TreeBar-ITEM:a:a') ))"
+                    "var pro=xui.UIProfile.getFromDom('xui.UI.TreeBar:a:').boxing();alert(xui.serialize( pro.getItemByDom('xui.UI.TreeBar-ITEM:a:a') ))"
                 ]
             },
             getSubIdByItemId:{
@@ -6709,7 +6713,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absValue"], {
+    xui.set(xui.Locale,["en","doc","xui","absValue"], {
         prototype:{
             getReadonly:{
                 $desc:"Gets the readonly property",
@@ -6761,7 +6765,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
+                    "xui.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
                     "}"
                 ]
             },
@@ -6775,7 +6779,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
+                    "xui.asyRun(function(){o.setDataBinder('db1'); alert(o.getDataBinder())},1000)"+
                     "}"
                 ]
             },
@@ -6785,7 +6789,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
+                    "xui.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
                     "}"
                 ]
             },
@@ -6799,7 +6803,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
+                    "xui.asyRun(function(){o.setDataField('field1'); alert(o.getDataField())},1000)"+
                     "}"
                 ]
             },
@@ -6813,7 +6817,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "_.asyRun(function(){alert(o.getUIValue())},1000)"+
+                    "xui.asyRun(function(){alert(o.getUIValue())},1000)"+
                     "}"
                 ]
             },
@@ -6827,7 +6831,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "_.asyRun(function(){o.setUIValue('ini2'); alert(o.getUIValue());},1000)"+
+                    "xui.asyRun(function(){o.setUIValue('ini2'); alert(o.getUIValue());},1000)"+
                     "}"
                 ],
                 $memo:"There are two events will be triggered in this action: beforeUIValueSet and afterUIValueSet."
@@ -6839,7 +6843,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv82'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "_.asyRun(function(){o.setUIValue('ini2').updateValue(); alert(o.getValue());},1000)"+
+                    "xui.asyRun(function(){o.setUIValue('ini2').updateValue(); alert(o.getValue());},1000)"+
                     "}"
                 ]
             },
@@ -6852,7 +6856,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "_.asyRun(function(){alert(o.getValue())},1000)"+
+                    "xui.asyRun(function(){alert(o.getValue())},1000)"+
                     "}"
                 ]
             },
@@ -6866,7 +6870,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "_.asyRun(function(){o.setValue('ini2'); alert(o.getValue());},1000)"+
+                    "xui.asyRun(function(){o.setValue('ini2'); alert(o.getValue());},1000)"+
                     "}"
                 ],
                 $memo:"There are two events will be triggered in this action: beforeValueSet and afterValueSet."
@@ -6880,7 +6884,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini',valueFormat:'^-?\\\\d\\\\d*$'}));"+
-                    "_.asyRun(function(){alert(o.checkValid());},1000)"+
+                    "xui.asyRun(function(){alert(o.checkValid());},1000)"+
                     "}"
                 ]
             },
@@ -6890,7 +6894,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "_.asyRun(function(){o.setUIValue('ini2');alert(o.isDirtied());},1000)"+
+                    "xui.asyRun(function(){o.setUIValue('ini2');alert(o.isDirtied());},1000)"+
                     "}"
                 ]
             },
@@ -6903,7 +6907,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.absv14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
-                    "o.setUIValue('ini2');_.asyRun(function(){o.resetValue('ini2');},1000)"+
+                    "o.setUIValue('ini2');xui.asyRun(function(){o.resetValue('ini2');},1000)"+
                     "}"
                 ]
             },
@@ -6922,9 +6926,9 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
                     "var arr=[];"+
                     "o.beforeUIValueSet(function(p,o,v){arr.push('beforeUIValueSet: '+o+'->'+v)}).afterUIValueSet(function(p,o,v){arr.push('afterUIValueSet: '+o+'->'+v)}).beforeValueSet(function(p,o,v){arr.push('beforeValueSet: '+o+'->'+v)}).afterValueSet(function(p,o,v){arr.push('afterValueSet: '+o+'->'+v)});"+
-                    "_.asyRun(function(){o.setUIValue('ini2');},100);"+
-                    "_.asyRun(function(){o.setValue('ini3');},200);"+
-                    "_.asyRun(function(){alert(arr.join('\\n'));},220);"+
+                    "xui.asyRun(function(){o.setUIValue('ini2');},100);"+
+                    "xui.asyRun(function(){o.setValue('ini3');},200);"+
+                    "xui.asyRun(function(){alert(arr.join('\\n'));},220);"+
                     "}"
                 ]
             },
@@ -6942,9 +6946,9 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
                     "var arr=[];"+
                     "o.beforeUIValueSet(function(p,o,v){arr.push('beforeUIValueSet: '+o+'->'+v)}).afterUIValueSet(function(p,o,v){arr.push('afterUIValueSet: '+o+'->'+v)}).beforeValueSet(function(p,o,v){arr.push('beforeValueSet: '+o+'->'+v)}).afterValueSet(function(p,o,v){arr.push('afterValueSet: '+o+'->'+v)});"+
-                    "_.asyRun(function(){o.setUIValue('ini2');},100);"+
-                    "_.asyRun(function(){o.setValue('ini3');},200);"+
-                   "_.asyRun(function(){alert(arr.join('\\n'));},220);"+
+                    "xui.asyRun(function(){o.setUIValue('ini2');},100);"+
+                    "xui.asyRun(function(){o.setValue('ini3');},200);"+
+                   "xui.asyRun(function(){alert(arr.join('\\n'));},220);"+
                     "}"
                 ]
             },
@@ -6982,9 +6986,9 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
                     "var arr=[];"+
                     "o.beforeUIValueSet(function(p,o,v){arr.push('beforeUIValueSet: '+o+'->'+v)}).afterUIValueSet(function(p,o,v){arr.push('afterUIValueSet: '+o+'->'+v)}).beforeValueSet(function(p,o,v){arr.push('beforeValueSet: '+o+'->'+v)}).afterValueSet(function(p,o,v){arr.push('afterValueSet: '+o+'->'+v)});"+
-                    "_.asyRun(function(){o.setUIValue('ini2');},100);"+
-                    "_.asyRun(function(){o.setValue('ini3');},200);"+
-                   "_.asyRun(function(){alert(arr.join('\\n'));},220);"+
+                    "xui.asyRun(function(){o.setUIValue('ini2');},100);"+
+                    "xui.asyRun(function(){o.setValue('ini3');},200);"+
+                   "xui.asyRun(function(){alert(arr.join('\\n'));},220);"+
                     "}"
                 ]
             },
@@ -7002,9 +7006,9 @@ _.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.Input({value:'ini'}));"+
                     "var arr=[];"+
                     "o.beforeUIValueSet(function(p,o,v){arr.push('beforeUIValueSet: '+o+'->'+v)}).afterUIValueSet(function(p,o,v){arr.push('afterUIValueSet: '+o+'->'+v)}).beforeValueSet(function(p,o,v){arr.push('beforeValueSet: '+o+'->'+v)}).afterValueSet(function(p,o,v){arr.push('afterValueSet: '+o+'->'+v)});"+
-                    "_.asyRun(function(){o.setUIValue('ini2');},100);"+
-                    "_.asyRun(function(){o.setValue('ini3');},200);"+
-                   "_.asyRun(function(){alert(arr.join('\\n'));},220);"+
+                    "xui.asyRun(function(){o.setUIValue('ini2');},100);"+
+                    "xui.asyRun(function(){o.setValue('ini3');},200);"+
+                   "xui.asyRun(function(){alert(arr.join('\\n'));},220);"+
                     "}"
                 ]
             },
@@ -7020,15 +7024,15 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.absv19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.Input({value:'111',position:'relative'})).prepend(o2=new xui.UI.Input({value:'111',position:'relative'}));"+
                     "o1.beforeDirtyMark(function(p,dirty){p.getSubNode('INPUT').css('background',dirty?'#00ff00':'');return false;});"+
-                    "_.asyRun(function(){o1.setUIValue('ini');o2.setUIValue('ini');},1000);"+
-                    "_.asyRun(function(){o1.setUIValue('111');o2.setUIValue('111');},2000);"+
+                    "xui.asyRun(function(){o1.setUIValue('ini');o2.setUIValue('ini');},1000);"+
+                    "xui.asyRun(function(){o1.setUIValue('111');o2.setUIValue('111');},2000);"+
                     "}"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","absContainer"], {
+    xui.set(xui.Locale,["en","doc","xui","absContainer"], {
         prototype:{
             getDragKey:{
                 $desc:"Gets the dragKey property value on the first UIProfile",
@@ -7036,7 +7040,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.d1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setDragKey('a'); alert(btn.getDragKey())},1000)"+
+                    "xui.asyRun(function(){btn.setDragKey('a'); alert(btn.getDragKey())},1000)"+
                     "}"
                 ]
             },
@@ -7046,7 +7050,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.d2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setDragKey('a'); alert(btn.getDragKey())},1000)"+
+                    "xui.asyRun(function(){btn.setDragKey('a'); alert(btn.getDragKey())},1000)"+
                     "}"
                 ]
             },
@@ -7056,7 +7060,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.d3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Block({position:'relative',border:true}));"+
-                    "_.asyRun(function(){btn.setDropKeys('a:b'); alert(btn.getDropKeys())},1000)"+
+                    "xui.asyRun(function(){btn.setDropKeys('a:b'); alert(btn.getDropKeys())},1000)"+
                     "}"
                 ]
             },
@@ -7066,7 +7070,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.d4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Block({position:'relative',border:true}));"+
-                    "_.asyRun(function(){btn.setDropKeys('a:b'); alert(btn.getDropKeys())},1000)"+
+                    "xui.asyRun(function(){btn.setDropKeys('a:b'); alert(btn.getDropKeys())},1000)"+
                     "}"
                 ]
             },
@@ -7083,7 +7087,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -7102,7 +7106,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -7115,7 +7119,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -7128,7 +7132,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -7650,7 +7654,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI"], {
+    xui.set(xui.Locale,["en","doc","xui","UI"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI Class",
         getFromDom:{
@@ -7690,7 +7694,7 @@ _.set(xui.Locale,["en","app"], {
                 "hashOut [Optional] : key/value pairs, the out data."
             ],
             $snippet:[
-                "alert(_.serialize(xui.UI.adjustData(null, {a:1,b:2,c:'$date.MS',d:'@xui.ini.path',renderer:function(){return 'cap';}})))"
+                "alert(xui.serialize(xui.UI.adjustData(null, {a:1,b:2,c:'$date.MS',d:'@xui.ini.path',renderer:function(){return 'cap';}})))"
             ]
         },
         addTemplateKeys:{
@@ -7700,7 +7704,7 @@ _.set(xui.Locale,["en","app"], {
                 "arr [Required] : Array, a set of keys."
             ],
             $snippet:[
-                "alert(_.serialize(xui.UI.Div.$Keys)); alert(_.serialize(xui.UI.Div.addTemplateKeys(['A','B']).$Keys))"
+                "alert(xui.serialize(xui.UI.Div.$Keys)); alert(xui.serialize(xui.UI.Div.addTemplateKeys(['A','B']).$Keys))"
             ],
             $memo:"Generally, you don't need to use this function manually in the normal project."
         },
@@ -7708,7 +7712,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Gets the appearance Object.",
             $rtn:'Object',
             $snippet:[
-                "alert(_.serialize(xui.UI.Div.getAppearance()))"
+                "alert(xui.serialize(xui.UI.Div.getAppearance()))"
             ],
             $memo:"Generally, you don't need to use this function manually in the normal project."
         },
@@ -7719,7 +7723,7 @@ _.set(xui.Locale,["en","app"], {
                 "cacheId [Optional] : String."
             ],
             $snippet:[
-                "alert(_.serialize(xui.UI.Div.getTemplate()))"
+                "alert(xui.serialize(xui.UI.Div.getTemplate()))"
             ],
             $memo:"Generally, you don't need to use this function manually in the normal project."
         },
@@ -7727,7 +7731,7 @@ _.set(xui.Locale,["en","app"], {
             $desc:"Gets behavior Object.",
             $rtn:'Object',
             $snippet:[
-                "alert(_.serialize(xui.UI.Link.getBehavior()))"
+                "alert(xui.serialize(xui.UI.Link.getBehavior()))"
             ],
             $memo:"Generally, you don't need to use this function manually in the normal project."
         },
@@ -7889,7 +7893,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui-1e'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var tabs;xui(id).prepend(tabs=xui.create({key:'xui.UI.Tabs',properties:{dock:'none',width:200,height:100,position:'relative',items:['a','b','c'],value:'a'},children:[[{key:'xui.UI.Button'},'a'],[{key:'xui.UI.Button'},'b'],[{key:'xui.UI.Button'},'c']]}));"+
-                    "_.asyRun(function(){alert(tabs.getChildren().get().length);alert(tabs.getChildren('a').get().length);},1000);"+
+                    "xui.asyRun(function(){alert(tabs.getChildren().get().length);alert(tabs.getChildren('a').get().length);},1000);"+
                     "}"
                 ]
             },
@@ -7908,7 +7912,7 @@ _.set(xui.Locale,["en","app"], {
                     "var link=new xui.UI.Link({position:'relative'});"+
                     "link.setRenderer(function(item){return '['+item.caption+']'});"+
                     "xui(id).prepend(link);"+
-                    "_.asyRun(function(){alert(link.getRenderer());},1000);"+
+                    "xui.asyRun(function(){alert(link.getRenderer());},1000);"+
                     "}"
                 ]
             },
@@ -7924,7 +7928,7 @@ _.set(xui.Locale,["en","app"], {
                     "var link=new xui.UI.Link({position:'relative'});"+
                     "link.setRenderer(function(item){return '<span style=\"width:15px;height:15px;background:url(img/img.gif)\"></span> ['+item.caption+']'});"+
                     "xui(id).prepend(link);"+
-                    "_.asyRun(function(){alert(link.getRenderer());},1000);"+
+                    "xui.asyRun(function(){alert(link.getRenderer());},1000);"+
                     "}"
                 ]
             },
@@ -7975,7 +7979,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block,btn1,btn2;xui(id).prepend(block=new xui.UI.Block({border:true}));"+
                     "block.append(btn1=new xui.UI.Button({position:'relative'})).append(btn2=new xui.UI.Button({position:'relative'}), false);"+
-                    "_.asyRun(function(){block.removeChildren();},1000)"+
+                    "xui.asyRun(function(){block.removeChildren();},1000)"+
                     "}"
                 ]
             },
@@ -7996,7 +8000,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var block;xui(id).prepend(block=new xui.UI.Block({position:'relative',border:true}));"+
-                    "_.asyRun(function(){block.destroy();},1000);"+
+                    "xui.asyRun(function(){block.destroy();},1000);"+
                     "}"
                 ]
             },
@@ -8027,7 +8031,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setLeft(20); alert(btn.getLeft())},1000)"+
+                    "xui.asyRun(function(){btn.setLeft(20); alert(btn.getLeft())},1000)"+
                     "}"
                 ]
             },
@@ -8041,7 +8045,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setLeft(20); alert(btn.getLeft())},1000)"+
+                    "xui.asyRun(function(){btn.setLeft(20); alert(btn.getLeft())},1000)"+
                     "}"
                 ]
             },
@@ -8051,7 +8055,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setRight(20); alert(btn.getRight())},1000)"+
+                    "xui.asyRun(function(){btn.setRight(20); alert(btn.getRight())},1000)"+
                     "}"
                 ]
             },
@@ -8065,7 +8069,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setRight(20); alert(btn.getRight())},1000)"+
+                    "xui.asyRun(function(){btn.setRight(20); alert(btn.getRight())},1000)"+
                     "}"
                 ]
             },
@@ -8075,7 +8079,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTop(20); alert(btn.getTop())},1000)"+
+                    "xui.asyRun(function(){btn.setTop(20); alert(btn.getTop())},1000)"+
                     "}"
                 ]
             },
@@ -8089,7 +8093,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTop(20); alert(btn.getTop())},1000)"+
+                    "xui.asyRun(function(){btn.setTop(20); alert(btn.getTop())},1000)"+
                     "}"
                 ]
             },
@@ -8099,7 +8103,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTop('auto').setBottom(20); alert(btn.getBottom())},1000)"+
+                    "xui.asyRun(function(){btn.setTop('auto').setBottom(20); alert(btn.getBottom())},1000)"+
                     "}"
                 ]
             },
@@ -8113,7 +8117,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTop('auto').setBottom(20); alert(btn.getBottom())},1000)"+
+                    "xui.asyRun(function(){btn.setTop('auto').setBottom(20); alert(btn.getBottom())},1000)"+
                     "}"
                 ]
             },
@@ -8123,7 +8127,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setWidth(100); alert(btn.getWidth())},1000)"+
+                    "xui.asyRun(function(){btn.setWidth(100); alert(btn.getWidth())},1000)"+
                     "}"
                 ]
             },
@@ -8137,7 +8141,7 @@ _.set(xui.Locale,["en","app"], {
                $snippet:[
                     "var id='xui.temp.ui19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setWidth(100); alert(btn.getWidth())},1000)"+
+                    "xui.asyRun(function(){btn.setWidth(100); alert(btn.getWidth())},1000)"+
                     "}"
                 ]
             },
@@ -8147,7 +8151,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setHeight(100); alert(btn.getHeight())},1000)"+
+                    "xui.asyRun(function(){btn.setHeight(100); alert(btn.getHeight())},1000)"+
                     "}"
                 ]
             },
@@ -8161,7 +8165,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setHeight(100); alert(btn.getHeight())},1000)"+
+                    "xui.asyRun(function(){btn.setHeight(100); alert(btn.getHeight())},1000)"+
                     "}"
                 ]
             },
@@ -8171,7 +8175,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui22'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setDisplay('none'); alert(btn.getDisplay())},1000)"+
+                    "xui.asyRun(function(){btn.setDisplay('none'); alert(btn.getDisplay())},1000)"+
                     "}"
                 ]
             },
@@ -8185,7 +8189,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui23'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setDisplay('none'); alert(btn.getDisplay())},1000)"+
+                    "xui.asyRun(function(){btn.setDisplay('none'); alert(btn.getDisplay())},1000)"+
                     "}"
                 ]
             },
@@ -8195,7 +8199,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui24'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setVisibility('hidden'); alert(btn.getVisibility())},1000)"+
+                    "xui.asyRun(function(){btn.setVisibility('hidden'); alert(btn.getVisibility())},1000)"+
                     "}"
                 ]
             },
@@ -8209,7 +8213,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setVisibility('hidden'); alert(btn.getVisibility())},1000)"+
+                    "xui.asyRun(function(){btn.setVisibility('hidden'); alert(btn.getVisibility())},1000)"+
                     "}"
                 ]
             },
@@ -8219,7 +8223,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui26'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button).prepend(new xui.UI.Button({zIndex:10}));"+
-                    "_.asyRun(function(){btn.setZIndex(20); alert(btn.getZIndex())},1000)"+
+                    "xui.asyRun(function(){btn.setZIndex(20); alert(btn.getZIndex())},1000)"+
                     "}"
                 ]
             },
@@ -8233,7 +8237,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui27'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button).prepend(new xui.UI.Button({zIndex:10}));"+
-                    "_.asyRun(function(){btn.setZIndex(20); alert(btn.getZIndex())},1000)"+
+                    "xui.asyRun(function(){btn.setZIndex(20); alert(btn.getZIndex())},1000)"+
                     "}"
                 ]
             },
@@ -8255,7 +8259,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui25'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setPosition('static'); alert(btn.getPosition())},1000)"+
+                    "xui.asyRun(function(){btn.setPosition('static'); alert(btn.getPosition())},1000)"+
                     "}"
                 ]
             },
@@ -8269,7 +8273,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui28'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setPosition('static'); alert(btn.getPosition())},1000)"+
+                    "xui.asyRun(function(){btn.setPosition('static'); alert(btn.getPosition())},1000)"+
                     "}"
                 ]
             },
@@ -8279,7 +8283,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui29'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTabindex('10'); alert(btn.getTabindex())},1000)"+
+                    "xui.asyRun(function(){btn.setTabindex('10'); alert(btn.getTabindex())},1000)"+
                     "}"
                 ]
             },
@@ -8293,7 +8297,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui30'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTabindex('10'); alert(btn.getTabindex())},1000)"+
+                    "xui.asyRun(function(){btn.setTabindex('10'); alert(btn.getTabindex())},1000)"+
                     "}"
                 ]
             },
@@ -8303,7 +8307,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui44'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTips('a b c d'); alert(btn.getTips())},1000)"+
+                    "xui.asyRun(function(){btn.setTips('a b c d'); alert(btn.getTips())},1000)"+
                     "}"
                 ]
             },
@@ -8317,7 +8321,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui45'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setTips('a b c d'); alert(btn.getTips())},1000)"+
+                    "xui.asyRun(function(){btn.setTips('a b c d'); alert(btn.getTips())},1000)"+
                     "}"
                 ]
             },
@@ -8363,7 +8367,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui46'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
+                    "xui.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
                     "}"
                 ]
             },
@@ -8377,7 +8381,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui47'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
+                    "xui.asyRun(function(){btn.setDisabled(true); alert(btn.getDisabled())},1000)"+
                     "}"
                 ]
             },
@@ -8492,7 +8496,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui60'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "alert(_.serialize(btn.getDockMargin()))"+
+                    "alert(xui.serialize(btn.getDockMargin()))"+
                     "}"
                 ]
             },
@@ -8540,7 +8544,7 @@ _.set(xui.Locale,["en","app"], {
                     "var div1,btn2;xui(id).prepend(div1=new xui.UI.Div({dock:'top',height:20})).prepend(btn2=new xui.UI.Button({zIndex:10}));"+
                     "div1.setDockOrder(1).setDock('top').setCustomStyle({KEY:'background:#00ff00'});"+
                     "btn2.setDockOrder(2).setDock('top');"+
-                    "_.asyRun(function(){div1.setDockOrder(3)},1000)"+
+                    "xui.asyRun(function(){div1.setDockOrder(3)},1000)"+
                     "}"
                 ]
             },
@@ -8564,9 +8568,9 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui76'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'fill'}));"+
-                    "_.asyRun(function(){xui(id).width(200);},1000);"+
-                    "_.asyRun(function(){btn.setDockIgnore(true);xui(id).width(300);},2000);"+
-                    "_.asyRun(function(){btn.setDockIgnore(false);xui(id).width(400);},3000);"+
+                    "xui.asyRun(function(){xui(id).width(200);},1000);"+
+                    "xui.asyRun(function(){btn.setDockIgnore(true);xui(id).width(300);},2000);"+
+                    "xui.asyRun(function(){btn.setDockIgnore(false);xui(id).width(400);},3000);"+
                     "}"
                 ]
             },
@@ -8631,8 +8635,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui81'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"overflow:visible;border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'height'}));"+
-                    "_.asyRun(function(){btn.setDockMinH(100);xui(id).height(80);},1000);"+
-                    "_.asyRun(function(){btn.setDockMinH(50);xui(id).height(50);},2000);"+
+                    "xui.asyRun(function(){btn.setDockMinH(100);xui(id).height(80);},1000);"+
+                    "xui.asyRun(function(){btn.setDockMinH(50);xui(id).height(50);},2000);"+
                     "}"
                 ]
             },
@@ -8668,8 +8672,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ui82'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'width'}));"+
-                    "_.asyRun(function(){btn.setDockMinW(300);xui(id).width(200);},1000);"+
-                    "_.asyRun(function(){btn.setDockMinW(50);xui(id).width(100);},2000);"+
+                    "xui.asyRun(function(){btn.setDockMinW(300);xui(id).width(200);},1000);"+
+                    "xui.asyRun(function(){btn.setDockMinW(50);xui(id).width(100);},2000);"+
                     "}"
                 ]
             },
@@ -8756,7 +8760,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To hide the set of UIProfile.",
                 $rtn:"[self]",
                 $snippet:[
-                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show();},1000);"
+                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
                 ]
             },
             show:{
@@ -8769,7 +8773,7 @@ _.set(xui.Locale,["en","app"], {
                     "top [Optional] : Number, the css top value."
                 ],
                 $snippet:[
-                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); _.asyRun(function(){logo.show();},1000);"
+                    "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
                 ]
             },
             refresh:{
@@ -8779,7 +8783,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.ui91'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'width'}));"+
                     "btn.get(0).properties.caption='new caption';"+
-                    "_.asyRun(function(){btn.refresh();},1000);"+
+                    "xui.asyRun(function(){btn.refresh();},1000);"+
                     "}"
                 ]
             },
@@ -8826,10 +8830,10 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.a2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setCustomStyle('BORDER','background:#666')},1000);"+
-                    "_.asyRun(function(){btn.setCustomStyle({BORDER:null,KEY:'border:solid 2px',CAPTION:'font-size:14px'})},2000);"+
-                    "_.asyRun(function(){btn.setCustomStyle('KEY',null)},3000);"+
-                    "_.asyRun(function(){btn.setCustomStyle(null)},4000);"+
+                    "xui.asyRun(function(){btn.setCustomStyle('BORDER','background:#666')},1000);"+
+                    "xui.asyRun(function(){btn.setCustomStyle({BORDER:null,KEY:'border:solid 2px',CAPTION:'font-size:14px'})},2000);"+
+                    "xui.asyRun(function(){btn.setCustomStyle('KEY',null)},3000);"+
+                    "xui.asyRun(function(){btn.setCustomStyle(null)},4000);"+
                     "}"
                 ]
             },
@@ -8844,11 +8848,11 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.a4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui.CSS.setStyleRules('.a-1',{background:'#666'}).setStyleRules('.a-2',{border:'solid 2px'}).setStyleRules('.a-3',{'font-size':'14px'});"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setCustomClass('BORDER','a-1')},1000);"+
-                    "_.asyRun(function(){btn.setCustomClass({BORDER:null,KEY:'a-2',CAPTION:'a-3'})},2000);"+
-                    "_.asyRun(function(){btn.setCustomClass('KEY',null)},3000);"+
-                    "_.asyRun(function(){btn.setCustomClass(null);},4000);"+
-                    "_.asyRun(function(){xui.CSS.setStyleRules('.a-1').setStyleRules('.a-2').setStyleRules('.a-3');},5000);"+
+                    "xui.asyRun(function(){btn.setCustomClass('BORDER','a-1')},1000);"+
+                    "xui.asyRun(function(){btn.setCustomClass({BORDER:null,KEY:'a-2',CAPTION:'a-3'})},2000);"+
+                    "xui.asyRun(function(){btn.setCustomClass('KEY',null)},3000);"+
+                    "xui.asyRun(function(){btn.setCustomClass(null);},4000);"+
+                    "xui.asyRun(function(){xui.CSS.setStyleRules('.a-1').setStyleRules('.a-2').setStyleRules('.a-3');},5000);"+
                     "}"
                 ]
             },
@@ -8895,7 +8899,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.b1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "btn.beforeDestroy(function(profile){alert('cancelled');return false});"+
-                    "_.asyRun(function(){btn.destroy();},1000)"+
+                    "xui.asyRun(function(){btn.destroy();},1000)"+
                     "}"
                 ]
             },
@@ -8914,7 +8918,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.b2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "btn.onDestroy(function(profile){alert('onDestroy');});"+
-                    "_.asyRun(function(){btn.destroy();},1000)"+
+                    "xui.asyRun(function(){btn.destroy();},1000)"+
                     "}"
                 ]
             },
@@ -8948,7 +8952,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.b3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn=new xui.UI.Button;"+
                     "btn.onRender(function(profile){alert('onRender')});"+
-                    "_.asyRun(function(){xui(id).prepend(btn)},1000)"+
+                    "xui.asyRun(function(){xui(id).prepend(btn)},1000)"+
                     "}"
                 ]
             },
@@ -8962,8 +8966,8 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button;"+
                     "btn.onLayout(function(profile){alert('onLayout')});"+
                     "xui(id).prepend(btn);"+
-                    "_.asyRun(function(){xui(id+'1').prepend(btn)},1000);"+
-                    "_.asyRun(function(){xui(id+'2').prepend(btn)},2000);"+
+                    "xui.asyRun(function(){xui(id+'1').prepend(btn)},1000);"+
+                    "xui.asyRun(function(){xui(id+'2').prepend(btn)},2000);"+
                     "}"
                 ]
             },
@@ -8979,7 +8983,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button;"+
                     "btn.onResize(function(profile,width,height){xui.message('onResize:'+width+':'+height)});"+
                     "xui(id).prepend(btn);"+
-                    "_.asyRun(function(){btn.setWidth(50).setHeight(50)},1000);"+
+                    "xui.asyRun(function(){btn.setWidth(50).setHeight(50)},1000);"+
                     "}"
                 ]
             },
@@ -8997,7 +9001,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button;"+
                     "btn.onMove(function(profile,left,top){xui.message('onMove:'+left+':'+top)});"+
                     "xui(id).prepend(btn);"+
-                    "_.asyRun(function(){btn.setLeft(50).setTop(50)},1000);"+
+                    "xui.asyRun(function(){btn.setLeft(50).setTop(50)},1000);"+
                     "}"
                 ]
             },
@@ -9010,9 +9014,9 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.b3-c'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn=new xui.UI.Button({dock:'fill'}); var pane=new xui.UI.Pane({position:'relative'});"+
-                    "btn.onDock(function(profile,region){xui.message('onDock:'+_.serialize(region))});"+
+                    "btn.onDock(function(profile,region){xui.message('onDock:'+xui.serialize(region))});"+
                     "xui(id).prepend(pane.append(btn));"+
-                    "_.asyRun(function(){pane.setWidth(50).setHeight(50)},1000);"+
+                    "xui.asyRun(function(){pane.setWidth(50).setHeight(50)},1000);"+
                     "}"
                 ]
             },
@@ -9029,7 +9033,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button;"+
                     "btn.beforePropertyChanged(function(profile,name,value){if(profile.renderId)return false;});"+
                     "xui(id).prepend(btn);"+
-                    "_.asyRun(function(){btn.setCaption('updated')},1000);"+
+                    "xui.asyRun(function(){btn.setCaption('updated')},1000);"+
                     "}"
                 ]
             },
@@ -9046,7 +9050,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button;"+
                     "btn.afterPropertyChanged(function(profile,name,v,ov){xui.message(name+':'+ov+'->'+v)});"+
                     "xui(id).prepend(btn);"+
-                    "_.asyRun(function(){btn.setCaption('updated')},1000);"+
+                    "xui.asyRun(function(){btn.setCaption('updated')},1000);"+
                     "}"
                 ]
             },
@@ -9061,7 +9065,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button(); var pane=new xui.UI.Pane({position:'relative'});"+
                     "pane.beforeAppend(function(){return false;});"+
                     "xui(id).prepend(pane);"+
-                    "_.asyRun(function(){pane.append(btn)},1000);"+
+                    "xui.asyRun(function(){pane.append(btn)},1000);"+
                     "}"
                 ]
             },
@@ -9076,7 +9080,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button(); var pane=new xui.UI.Pane({position:'relative'});"+
                     "pane.afterAppend(function(p,c){xui.message(c.getAlias() + ' was added')});"+
                     "xui(id).prepend(pane);"+
-                    "_.asyRun(function(){pane.append(btn)},1000);"+
+                    "xui.asyRun(function(){pane.append(btn)},1000);"+
                     "}"
                 ]
             },
@@ -9093,7 +9097,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button(); var pane=new xui.UI.Pane({position:'relative'});"+
                     "pane.beforeRemove(function(){return false;});"+
                     "xui(id).prepend(pane.append(btn));"+
-                    "_.asyRun(function(){pane.removeChildren(btn,true)},1000);"+
+                    "xui.asyRun(function(){pane.removeChildren(btn,true)},1000);"+
                     "}"
                 ]
             },
@@ -9110,7 +9114,7 @@ _.set(xui.Locale,["en","app"], {
                     "var btn=new xui.UI.Button(); var pane=new xui.UI.Pane({position:'relative'});"+
                     "pane.afterRemove(function(p,c){xui.message(c.alias+' was removed!');});"+
                     "xui(id).prepend(pane.append(btn));"+
-                    "_.asyRun(function(){pane.removeChildren(btn,true)},1000);"+
+                    "xui.asyRun(function(){pane.removeChildren(btn,true)},1000);"+
                     "}"
                 ]
             },
@@ -9131,7 +9135,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","CSSBox"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","CSSBox"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.CSSBox Class",
         constructor:{
@@ -9202,7 +9206,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Widget"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Widget"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Widget Class",
         constructor:{
@@ -9216,7 +9220,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.w1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Widget()));"+
-                    "_.asyRun(function(){alert(o.getBorder())});"+
+                    "xui.asyRun(function(){alert(o.getBorder())});"+
                     "}"
                 ]
             },
@@ -9230,7 +9234,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.w2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Widget()));"+
-                    "_.asyRun(function(){alert(o.getBorder())});"+
+                    "xui.asyRun(function(){alert(o.getBorder())});"+
                     "}"
                 ]
             },
@@ -9240,7 +9244,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.w3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Widget()).setShadow(true));"+
-                    "_.asyRun(function(){alert(o.getShadow())});"+
+                    "xui.asyRun(function(){alert(o.getShadow())});"+
                     "}"
                 ]
             },
@@ -9254,7 +9258,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.w4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Widget()).setShadow(true));"+
-                    "_.asyRun(function(){alert(o.getShadow())});"+
+                    "xui.asyRun(function(){alert(o.getShadow())});"+
                     "}"
                 ]
             },
@@ -9264,7 +9268,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.w5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Widget()).setCustomStyle('KEY','background:#ccc').setResizer(true));"+
-                    "_.asyRun(function(){alert(o.getResizer())});"+
+                    "xui.asyRun(function(){alert(o.getResizer())});"+
                     "}"
                 ]
             },
@@ -9278,7 +9282,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.w6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Widget()).setCustomStyle('KEY','background:#ccc').setResizer(true));"+
-                    "_.asyRun(function(){alert(o.getResizer())});"+
+                    "xui.asyRun(function(){alert(o.getResizer())});"+
                     "}"
                 ]
             },
@@ -9297,7 +9301,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Div"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Div"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Div Class",
         constructor:{
@@ -9335,7 +9339,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.div1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Div({height:'auto',html:'<span>a</span>'}));"+
-                    "_.asyRun(function(){alert(o.getHtml())});"+
+                    "xui.asyRun(function(){alert(o.getHtml())});"+
                     "}"
                 ]
             },
@@ -9349,7 +9353,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.div2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Div).setHeight('auto').setHtml('<span>a</span>'));"+
-                    "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
+                    "xui.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
             },
@@ -9376,7 +9380,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Pane"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Pane"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Pane Class",
         constructor:{
@@ -9384,7 +9388,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Link"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Link"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Link Class",
         constructor:{
@@ -9398,7 +9402,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.link1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Link()).setCaption('cap'));"+
-                    "_.asyRun(function(){alert(o.getCaption())});"+
+                    "xui.asyRun(function(){alert(o.getCaption())});"+
                     "}"
                 ]
             },
@@ -9412,7 +9416,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.link2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Link()).setCaption('cap'));"+
-                    "_.asyRun(function(){alert(o.getCaption())});"+
+                    "xui.asyRun(function(){alert(o.getCaption())});"+
                     "}"
                 ]
             },
@@ -9422,7 +9426,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.link3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Link()).setTarget('_top'));"+
-                    "_.asyRun(function(){alert(o.getTarget())});"+
+                    "xui.asyRun(function(){alert(o.getTarget())});"+
                     "}"
                 ]
             },
@@ -9436,7 +9440,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.link4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Link()).setTarget('_top'));"+
-                    "_.asyRun(function(){alert(o.getTarget())});"+
+                    "xui.asyRun(function(){alert(o.getTarget())});"+
                     "}"
                 ]
             },
@@ -9446,7 +9450,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.link5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Link()).setHref('#'));"+
-                    "_.asyRun(function(){alert(o.getHref())});"+
+                    "xui.asyRun(function(){alert(o.getHref())});"+
                     "}"
                 ]
             },
@@ -9460,7 +9464,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.link6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Link()).setHref('#'));"+
-                    "_.asyRun(function(){alert(o.getHref())});"+
+                    "xui.asyRun(function(){alert(o.getHref())});"+
                     "}"
                 ]
             },
@@ -9481,13 +9485,13 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Border"], {$desc:"xui.UI.Border Class",KEY:{$desc:"Class Name"}});
+    xui.set(xui.Locale,["en","doc","xui","UI","Border"], {$desc:"xui.UI.Border Class",KEY:{$desc:"Class Name"}});
 
-    _.set(xui.Locale,["en","doc","xui","UI","Shadow"], {$desc:"xui.UI.Shadow Class",KEY:{$desc:"Class Name"}});
+    xui.set(xui.Locale,["en","doc","xui","UI","Shadow"], {$desc:"xui.UI.Shadow Class",KEY:{$desc:"Class Name"}});
 
-    _.set(xui.Locale,["en","doc","xui","UI","Resizer"], {$desc:"xui.UI.Resizer Class",KEY:{$desc:"Class Name"}});
+    xui.set(xui.Locale,["en","doc","xui","UI","Resizer"], {$desc:"xui.UI.Resizer Class",KEY:{$desc:"Class Name"}});
 
-    _.set(xui.Locale,["en","doc","xui","UI","Resizer"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Resizer"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Resizer Class",
         constructor:{
@@ -9501,7 +9505,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Block({border:true,html:'<span>a</span>'}));"+
-                    "_.asyRun(function(){alert(o.getHtml())});"+
+                    "xui.asyRun(function(){alert(o.getHtml())});"+
                     "}"
                 ]
             },
@@ -9515,7 +9519,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setHtml('<span>a</span>'));"+
-                    "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
+                    "xui.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
             },
@@ -9525,7 +9529,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBackground('red'));"+
-                    "_.asyRun(function(){alert(o.getBackground())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBackground())},1000);"+
                     "}"
                 ]
             },
@@ -9539,7 +9543,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBackground('red'));"+
-                    "_.asyRun(function(){alert(o.getBackground())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBackground())},1000);"+
                     "}"
                 ]
             },
@@ -9549,7 +9553,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('inset'));"+
-                    "_.asyRun(function(){alert(o.getBorderType())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
                 ]
             },
@@ -9563,14 +9567,14 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('groove'));"+
-                    "_.asyRun(function(){alert(o.getBorderType())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Block"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Block"], {
 
         $desc:"xui.UI.Block Class",
         constructor:{
@@ -9608,7 +9612,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Block({border:true,html:'<span>a</span>'}));"+
-                    "_.asyRun(function(){alert(o.getHtml())});"+
+                    "xui.asyRun(function(){alert(o.getHtml())});"+
                     "}"
                 ]
             },
@@ -9622,7 +9626,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setHtml('<span>a</span>'));"+
-                    "_.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
+                    "xui.asyRun(function(){o.setHtml('<span>b</span>')},1000);"+
                     "}"
                 ]
             },
@@ -9632,7 +9636,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBackground('red'));"+
-                    "_.asyRun(function(){alert(o.getBackground())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBackground())},1000);"+
                     "}"
                 ]
             },
@@ -9646,7 +9650,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBackground('red'));"+
-                    "_.asyRun(function(){alert(o.getBackground())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBackground())},1000);"+
                     "}"
                 ]
             },
@@ -9656,7 +9660,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('inset'));"+
-                    "_.asyRun(function(){alert(o.getBorderType())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
                 ]
             },
@@ -9670,7 +9674,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.blk6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('groove'));"+
-                    "_.asyRun(function(){alert(o.getBorderType())},1000);"+
+                    "xui.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
                 ]
             },
@@ -9685,7 +9689,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","ProgressBar"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","ProgressBar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.ProgressBar Class",
         constructor:{
@@ -9711,8 +9715,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb1-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ProgressBar({value:'20'}));"+
-                    "_.asyRun(function(){o.setCaptionTpl('ongoing {value}%')},1000);"+
-                    "_.asyRun(function(){alert(o.getCaptionTpl())},2000);"+
+                    "xui.asyRun(function(){o.setCaptionTpl('ongoing {value}%')},1000);"+
+                    "xui.asyRun(function(){alert(o.getCaptionTpl())},2000);"+
                     "}"
                 ]
             },
@@ -9726,8 +9730,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb1-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ProgressBar({value:'20'}));"+
-                    "_.asyRun(function(){o.setCaptionTpl('ongoing {value}%')},1000);"+
-                    "_.asyRun(function(){alert(o.getCaptionTpl())},2000);"+
+                    "xui.asyRun(function(){o.setCaptionTpl('ongoing {value}%')},1000);"+
+                    "xui.asyRun(function(){alert(o.getCaptionTpl())},2000);"+
                     "}"
                 ]
             },
@@ -9737,8 +9741,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ProgressBar({value:'20'}));"+
-                    "_.asyRun(function(){o.setFillBG('#00ff00')},1000);"+
-                    "_.asyRun(function(){alert(o.getFillBG())},1000);"+
+                    "xui.asyRun(function(){o.setFillBG('#00ff00')},1000);"+
+                    "xui.asyRun(function(){alert(o.getFillBG())},1000);"+
                     "}"
                 ]
             },
@@ -9752,15 +9756,15 @@ _.set(xui.Locale,["en","app"], {
                $snippet:[
                     "var id='xui.temp.pb3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ProgressBar({value:'20'}));"+
-                    "_.asyRun(function(){o.setFillBG('#00ff00')},1000);"+
-                    "_.asyRun(function(){alert(o.getFillBG())},1000);"+
+                    "xui.asyRun(function(){o.setFillBG('#00ff00')},1000);"+
+                    "xui.asyRun(function(){alert(o.getFillBG())},1000);"+
                     "}"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Label"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Label"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Label Class",
         constructor:{
@@ -9774,7 +9778,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.Label1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -9788,7 +9792,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.Label2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -9798,7 +9802,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.Label7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label({border:true,width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
+                    "xui.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
                     "}"
                 ]
             },
@@ -9812,7 +9816,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.Label8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label({border:true,width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
+                    "xui.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
                     "}"
                 ]
             },
@@ -9822,7 +9826,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -9836,7 +9840,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -9846,7 +9850,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -9860,7 +9864,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },            
@@ -9882,7 +9886,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "_.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
+                    "xui.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
                     "}"
                 ]
             },
@@ -9896,7 +9900,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "_.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
+                    "xui.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
                     "}"
                 ]
             },
@@ -9906,7 +9910,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "_.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
+                    "xui.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
                     "}"
                 ]
             },
@@ -9920,7 +9924,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lbl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "_.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
+                    "xui.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
                     "}"
                 ]
             },            
@@ -9935,7 +9939,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","RichEditor"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","RichEditor"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.RichEditor Class",
         constructor:{
@@ -9985,7 +9989,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.rich'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:300px;width:400px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var rich;xui(id).prepend(rich=new xui.UI.RichEditor);"+
-                    "_.asyRun(function(){rich.setCmdList('font1;font2;font3;font4'); alert(rich.getCmdList ())},1000)"+
+                    "xui.asyRun(function(){rich.setCmdList('font1;font2;font3;font4'); alert(rich.getCmdList ())},1000)"+
                     "}"
                 ]
             },
@@ -9999,7 +10003,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.rich'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:300px;width:400px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var rich;xui(id).prepend(rich=new xui.UI.RichEditor);"+
-                    "_.asyRun(function(){rich.setCmdList('font1;font2;font3;font4'); alert(rich.getCmdList ())},1000)"+
+                    "xui.asyRun(function(){rich.setCmdList('font1;font2;font3;font4'); alert(rich.getCmdList ())},1000)"+
                     "}"
                 ]
             },
@@ -10113,7 +10117,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","CheckBox"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","CheckBox"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.CheckBox Class",
         constructor:{
@@ -10127,7 +10131,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.scbtn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.CheckBox);"+
-                    "_.asyRun(function(){btn.activate();},1000);"+
+                    "xui.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -10137,7 +10141,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.Scbtn1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.CheckBox);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -10151,7 +10155,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.Scbtn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.CheckBox);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -10195,7 +10199,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Button"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Button"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Button Class",
         constructor:{
@@ -10224,7 +10228,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.activate();},1000);"+
+                    "xui.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
             },
@@ -10234,7 +10238,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -10248,7 +10252,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -10258,7 +10262,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setType('drop'); alert(btn.getType ())},1000)"+
+                    "xui.asyRun(function(){btn.setType('drop'); alert(btn.getType ())},1000)"+
                     "}"
                 ]
             },
@@ -10272,7 +10276,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
-                    "_.asyRun(function(){btn.setType('drop'); alert(btn.getType ())},1000)"+
+                    "xui.asyRun(function(){btn.setType('drop'); alert(btn.getType ())},1000)"+
                     "}"
                 ]
             },
@@ -10282,7 +10286,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({border:true,height:'50',width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
+                    "xui.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
                     "}"
                 ]
             },
@@ -10296,7 +10300,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({border:true,height:'50',width:'100'}));"+
-                    "_.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
+                    "xui.asyRun(function(){btn.setHAlign('center'); alert(btn.getHAlign())},1000)"+
                     "}"
                 ]
             },
@@ -10306,7 +10310,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({border:true,height:'50',width:'100'}));"+
-                    "_.asyRun(function(){btn.setVAlign('bottom'); alert(btn.getVAlign())},1000)"+
+                    "xui.asyRun(function(){btn.setVAlign('bottom'); alert(btn.getVAlign())},1000)"+
                     "}"
                 ]
             },
@@ -10320,7 +10324,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({border:true,height:'50',width:'100'}));"+
-                    "_.asyRun(function(){btn.setVAlign('bottom'); alert(btn.getVAlign())},1000)"+
+                    "xui.asyRun(function(){btn.setVAlign('bottom'); alert(btn.getVAlign())},1000)"+
                     "}"
                 ]
             },
@@ -10330,7 +10334,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button());"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -10344,7 +10348,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button());"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -10354,7 +10358,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button());"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -10368,7 +10372,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.btn16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Button());"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -10417,7 +10421,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Input"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Input"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Input Class",
         constructor:{
@@ -10431,7 +10435,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.input0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Input);"+
-                    "_.asyRun(function(){o.activate();},1000)"+
+                    "xui.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10878,7 +10882,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Group"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Group"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Group Class",
         constructor:{
@@ -10904,7 +10908,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.activate();},1000)"+
+                    "xui.asyRun(function(){btn.activate();},1000)"+
                     "}"
                 ]
             },
@@ -10914,7 +10918,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -10928,7 +10932,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -10950,7 +10954,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -10964,7 +10968,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -10974,7 +10978,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -10988,7 +10992,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.grp6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -10998,7 +11002,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fs3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
+                    "xui.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
                     "}"
                 ]
             },
@@ -11012,7 +11016,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fs4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
+                    "xui.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
                     "}"
                 ]
             },
@@ -11022,7 +11026,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fs3-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.setToggleBtn(false); alert(btn.getToggleBtn())},1000)"+
+                    "xui.asyRun(function(){btn.setToggleBtn(false); alert(btn.getToggleBtn())},1000)"+
                     "}"
                 ]
             },
@@ -11036,7 +11040,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.fs4-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Group);"+
-                    "_.asyRun(function(){btn.setToggleBtn(false); alert(btn.getToggleBtn())},1000)"+
+                    "xui.asyRun(function(){btn.setToggleBtn(false); alert(btn.getToggleBtn())},1000)"+
                     "}"
                 ]
             },
@@ -11098,7 +11102,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","ComboInput"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","ComboInput"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.ComboInput Class",
         constructor:{
@@ -11137,7 +11141,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({type:'listbox',items:[{id:'id1',caption:'show1'},{id:'id2',caption:'show2'}]}));"+
-                    "o.setValue('id2'); _.asyRun(function(){ alert(o.getValue() + '->' + o.getShowValue()) },1000)"+
+                    "o.setValue('id2'); xui.asyRun(function(){ alert(o.getValue() + '->' + o.getShowValue()) },1000)"+
                     "}"
                 ]
             },
@@ -11150,7 +11154,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({value:'ini'}));"+
-                    "o.setUIValue('ini2');_.asyRun(function(){o.resetValue('ini2');},1000)"+
+                    "o.setUIValue('ini2');xui.asyRun(function(){o.resetValue('ini2');},1000)"+
                     "}"
                 ]
             },
@@ -11202,7 +11206,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){alert(_.serialize(o.getItems()))});"+
+                    "xui.asyRun(function(){alert(xui.serialize(o.getItems()))});"+
                     "}"
                 ]
             },
@@ -11216,7 +11220,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]}));"+
-                    "_.asyRun(function(){o.setItems([{id:'aaa',caption:'bbb'}])});"+
+                    "xui.asyRun(function(){o.setItems([{id:'aaa',caption:'bbb'}])});"+
                     "}"
                 ]
             },
@@ -11252,7 +11256,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.UI.cacheData('test',[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui.UI.cacheData('test2',[{id:'aa',caption:'aa'},{id:'bb',caption:'bb'},{id:'cc',caption:'cc'}]);"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({position:'relative',listKey:'test'}));"+
-                    "_.asyRun(function(){alert(o.getListKey())});"+
+                    "xui.asyRun(function(){alert(o.getListKey())});"+
                     "}"
                 ]
             },
@@ -11268,7 +11272,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.UI.cacheData('test',[{id:'a',caption:'a'},{id:'b',caption:'b'},{id:'c',caption:'c'}]);"+
                     "xui.UI.cacheData('test2',[{id:'aa',caption:'aa'},{id:'bb',caption:'bb'},{id:'cc',caption:'cc'}]);"+
                     "var o;xui(id).prepend(o=new xui.UI.ComboInput({position:'relative',listKey:'test'}));"+
-                    "_.asyRun(function(){o.setListKey('test2')},1000);"+
+                    "xui.asyRun(function(){o.setListKey('test2')},1000);"+
                     "}"
                 ]
             },
@@ -11392,7 +11396,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative'})).prepend(o2=new xui.UI.ComboInput({position:'relative',type:'none'}));"+
-                    "_.asyRun(function(){o1.setCommandBtn('save');o2.setCommandBtn('add'); alert(o1.getCommandBtn())},1000)"+
+                    "xui.asyRun(function(){o1.setCommandBtn('save');o2.setCommandBtn('add'); alert(o1.getCommandBtn())},1000)"+
                     "}"
                 ]
             },
@@ -11406,7 +11410,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative'})).prepend(o2=new xui.UI.ComboInput({position:'relative',type:'none'}));"+
-                    "_.asyRun(function(){o1.setCommandBtn('remove');o2.setCommandBtn('delete'); alert(o1.getCommandBtn())},1000)"+
+                    "xui.asyRun(function(){o1.setCommandBtn('remove');o2.setCommandBtn('delete'); alert(o1.getCommandBtn())},1000)"+
                     "}"
                 ]
             },
@@ -11416,7 +11420,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setPrecision(2);alert(o1.getPrecision())},1000)"+
+                    "xui.asyRun(function(){o1.setPrecision(2);alert(o1.getPrecision())},1000)"+
                     "}"
                 ]
             },
@@ -11430,7 +11434,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setPrecision(2);alert(o1.getPrecision())},1000)"+
+                    "xui.asyRun(function(){o1.setPrecision(2);alert(o1.getPrecision())},1000)"+
                     "}"
                 ]
             },
@@ -11440,7 +11444,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setIncrement(0.02);alert(o1.getIncrement())},1000)"+
+                    "xui.asyRun(function(){o1.setIncrement(0.02);alert(o1.getIncrement())},1000)"+
                     "}"
                 ]
             },
@@ -11454,7 +11458,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setIncrement(0.02);alert(o1.getIncrement())},1000)"+
+                    "xui.asyRun(function(){o1.setIncrement(0.02);alert(o1.getIncrement())},1000)"+
                     "}"
                 ]
             },
@@ -11464,7 +11468,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setMin(-2);alert(o1.getMin())},1000)"+
+                    "xui.asyRun(function(){o1.setMin(-2);alert(o1.getMin())},1000)"+
                     "}"
                 ]
             },
@@ -11478,7 +11482,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setMin(-2);alert(o1.getMin())},1000)"+
+                    "xui.asyRun(function(){o1.setMin(-2);alert(o1.getMin())},1000)"+
                     "}"
                 ]
             },
@@ -11488,7 +11492,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setMax(2);alert(o1.getMax())},1000)"+
+                    "xui.asyRun(function(){o1.setMax(2);alert(o1.getMax())},1000)"+
                     "}"
                 ]
             },
@@ -11502,7 +11506,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1,o2;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'spin'}));"+
-                    "_.asyRun(function(){o1.setMax(2);alert(o1.getMax())},1000)"+
+                    "xui.asyRun(function(){o1.setMax(2);alert(o1.getMax())},1000)"+
                     "}"
                 ]
             },
@@ -11512,7 +11516,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "_.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
+                    "xui.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
                     "}"
                 ]
             },
@@ -11526,7 +11530,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "_.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
+                    "xui.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
                     "}"
                 ]
             },
@@ -11536,7 +11540,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "_.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
+                    "xui.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -11550,7 +11554,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ci21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "_.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
+                    "xui.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -11629,7 +11633,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","UI","Stacks"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Stacks"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Stacks Class",
         constructor:{
@@ -11637,7 +11641,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","ButtonViews"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","ButtonViews"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.ButtonViews Class",
         constructor:{
@@ -11681,7 +11685,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.setBarHAlign('right'); alert(o.getBarHAlign());},1000);"+
+                    "xui.asyRun(function(){o.setBarHAlign('right'); alert(o.getBarHAlign());},1000);"+
                     "}"
                 ]
             },
@@ -11691,7 +11695,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.bv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.setBarHAlign('right'); alert(o.getBarHAlign());},1000);"+
+                    "xui.asyRun(function(){o.setBarHAlign('right'); alert(o.getBarHAlign());},1000);"+
                     "}"
                 ]
             },
@@ -11705,7 +11709,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.setBarVAlign('bottom'); alert(o.getBarVAlign());},1000);"+
+                    "xui.asyRun(function(){o.setBarVAlign('bottom'); alert(o.getBarVAlign());},1000);"+
                     "}"
                 ]
             },
@@ -11715,7 +11719,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.bv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.setBarVAlign('bottom'); alert(o.getBarVAlign());},1000);"+
+                    "xui.asyRun(function(){o.setBarVAlign('bottom'); alert(o.getBarVAlign());},1000);"+
                     "}"
                 ]
             },
@@ -11729,7 +11733,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.bv3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.setBarSize(30); alert(o.getBarSize());},1000);"+
+                    "xui.asyRun(function(){o.setBarSize(30); alert(o.getBarSize());},1000);"+
                     "}"
                 ]
             },
@@ -11739,14 +11743,14 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.bv4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.setBarSize(30); alert(o.getBarSize());},1000);"+
+                    "xui.asyRun(function(){o.setBarSize(30); alert(o.getBarSize());},1000);"+
                     "}"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","RadioBox"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","RadioBox"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.RadioBox Class",
         constructor:{
@@ -11854,7 +11858,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","UI","ColorPicker"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","ColorPicker"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.ColorPicker Class",
         constructor:{
@@ -11938,7 +11942,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ColorPicker({position:'relative',closeBtn:false}));"+
-                    "_.asyRun(function(){o.setAdvance(true);alert(o.getAdvance())},1000);"+
+                    "xui.asyRun(function(){o.setAdvance(true);alert(o.getAdvance())},1000);"+
                     "}"
                 ]
             },
@@ -11948,7 +11952,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.clr2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ColorPicker({position:'relative',closeBtn:false}));"+
-                    "_.asyRun(function(){o.setAdvance(true);alert(o.getAdvance())},1000);"+
+                    "xui.asyRun(function(){o.setAdvance(true);alert(o.getAdvance())},1000);"+
                     "}"
                 ]
             },
@@ -11958,7 +11962,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.clr3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ColorPicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
+                    "xui.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
                     "}"
                 ]
             },
@@ -11968,7 +11972,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.clr4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ColorPicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
+                    "xui.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
                     "}"
                 ]
             },
@@ -11978,7 +11982,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.clr5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ColorPicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setBarDisplay(false);alert(o.getBarDisplay())},1000);"+
+                    "xui.asyRun(function(){o.setBarDisplay(false);alert(o.getBarDisplay())},1000);"+
                     "}"
                 ]
             },
@@ -11988,7 +11992,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.clr6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.ColorPicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setBarDisplay(false);alert(o.getBarDisplay())},1000);"+
+                    "xui.asyRun(function(){o.setBarDisplay(false);alert(o.getBarDisplay())},1000);"+
                     "}"
                 ]
             },
@@ -12008,7 +12012,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","DatePicker"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","DatePicker"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.DatePicker Class",
         constructor:{
@@ -12086,7 +12090,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.dp1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.DatePicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
+                    "xui.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
                     "}"
                 ]
             },
@@ -12096,7 +12100,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.dp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.DatePicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
+                    "xui.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
                     "}"
                 ]
             },
@@ -12106,7 +12110,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.dp2-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.DatePicker({position:'relative'}));"+
-                    "_.asyRun(function(){alert(o.getDateFrom())},1000);"+
+                    "xui.asyRun(function(){alert(o.getDateFrom())},1000);"+
                     "}"
                 ]
             },
@@ -12126,7 +12130,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","TimePicker"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","TimePicker"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.TimePicker Class",
         constructor:{
@@ -12144,7 +12148,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tp1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.TimePicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
+                    "xui.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
                     "}"
                 ]
             },
@@ -12154,7 +12158,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tp2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.TimePicker({position:'relative'}));"+
-                    "_.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
+                    "xui.asyRun(function(){o.setCloseBtn(false);alert(o.getCloseBtn())},1000);"+
                     "}"
                 ]
             },
@@ -12173,7 +12177,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Slider"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Slider"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Slider Class",
         constructor:{
@@ -12187,7 +12191,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setType('horizontal'); alert(o.getType())},1000);"+
+                    "xui.asyRun(function(){o.setType('horizontal'); alert(o.getType())},1000);"+
                     "}"
                 ]
             },
@@ -12201,7 +12205,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider({width:50,height:150})));"+
-                    "_.asyRun(function(){o.setType('vertical'); alert(o.getType())},1000);"+
+                    "xui.asyRun(function(){o.setType('vertical'); alert(o.getType())},1000);"+
                     "}"
                 ]
             },
@@ -12211,7 +12215,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setSteps(10).setUIValue('2:5'); alert(o.getSteps()); },1000);"+
+                    "xui.asyRun(function(){o.setSteps(10).setUIValue('2:5'); alert(o.getSteps()); },1000);"+
                     "}"
                 ]
             },
@@ -12225,7 +12229,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setSteps(10).setUIValue('2:5'); alert(o.getSteps()); },1000);"+
+                    "xui.asyRun(function(){o.setSteps(10).setUIValue('2:5'); alert(o.getSteps()); },1000);"+
                     "}"
                 ]
             },
@@ -12235,7 +12239,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setShowIncreaseHandle(false); alert(o.getShowIncreaseHandle()); },1000);"+
+                    "xui.asyRun(function(){o.setShowIncreaseHandle(false); alert(o.getShowIncreaseHandle()); },1000);"+
                     "}"
                 ]
             },
@@ -12249,7 +12253,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setShowIncreaseHandle(false); alert(o.getShowIncreaseHandle()); },1000);"+
+                    "xui.asyRun(function(){o.setShowIncreaseHandle(false); alert(o.getShowIncreaseHandle()); },1000);"+
                     "}"
                 ]
             },
@@ -12259,7 +12263,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setShowDecreaseHandle(false); alert(o.getShowDecreaseHandle()); },1000);"+
+                    "xui.asyRun(function(){o.setShowDecreaseHandle(false); alert(o.getShowDecreaseHandle()); },1000);"+
                     "}"
                 ]
             },
@@ -12273,7 +12277,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setShowDecreaseHandle(false); alert(o.getShowDecreaseHandle()); },1000);"+
+                    "xui.asyRun(function(){o.setShowDecreaseHandle(false); alert(o.getShowDecreaseHandle()); },1000);"+
                     "}"
                 ]
             },
@@ -12283,7 +12287,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setIsRange(false); alert(o.getIsRange()); },1000);"+
+                    "xui.asyRun(function(){o.setIsRange(false); alert(o.getIsRange()); },1000);"+
                     "}"
                 ]
             },
@@ -12297,7 +12301,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.sl11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Slider()));"+
-                    "_.asyRun(function(){o.setIsRange(false); alert(o.getIsRange()); },1000);"+
+                    "xui.asyRun(function(){o.setIsRange(false); alert(o.getIsRange()); },1000);"+
                     "}"
                 ]
             },
@@ -12388,7 +12392,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","List"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","List"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.List Class",
         constructor:{
@@ -12402,7 +12406,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list00'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "o.setValue('b'); _.asyRun(function(){ alert(o.getValue() + '->' + o.getShowValue()) },1000)"+
+                    "o.setValue('b'); xui.asyRun(function(){ alert(o.getValue() + '->' + o.getShowValue()) },1000)"+
                     "}"
                 ]
             },
@@ -12412,7 +12416,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.activate();},1000)"+
+                    "xui.asyRun(function(){o.activate();},1000)"+
                     "}"
                 ]
             },
@@ -12422,7 +12426,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){o.adjustSize();},1000)"+
+                    "xui.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12432,7 +12436,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize();},1000)"+
+                    "alert(o.setMaxHeight(40).getMaxHeight());xui.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12446,7 +12450,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "alert(o.setMaxHeight(40).getMaxHeight());_.asyRun(function(){o.adjustSize();},1000)"+
+                    "alert(o.setMaxHeight(40).getMaxHeight());xui.asyRun(function(){o.adjustSize();},1000)"+
                     "}"
                 ]
             },
@@ -12456,7 +12460,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setSelMode('multi').getSelMode());},1000)"+
+                    "xui.asyRun(function(){alert(o.setSelMode('multi').getSelMode());},1000)"+
                     "}"
                 ]
             },
@@ -12470,7 +12474,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.list7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.List({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setSelMode('multi').getSelMode());},1000)"+
+                    "xui.asyRun(function(){alert(o.setSelMode('multi').getSelMode());},1000)"+
                     "}"
                 ]
             },
@@ -12698,7 +12702,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","StatusButtons"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","StatusButtons"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.StatusButtons Class",
         constructor:{
@@ -12712,7 +12716,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.llist1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.StatusButtons({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -12726,7 +12730,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.llist2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.StatusButtons({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -12861,7 +12865,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Gallery"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Gallery"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Gallery Class",
         constructor:{
@@ -12878,8 +12882,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.getStatus('c'));});"+
-                    "_.asyRun(function(){alert(o.getStatus('c'));},3000);"+
+                    "xui.asyRun(function(){alert(o.getStatus('c'));});"+
+                    "xui.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
                 ]
             },
@@ -12925,7 +12929,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemHeight(40).setImgHeight(30).getImgHeight());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemHeight(40).setImgHeight(30).getImgHeight());},1000)"+
                     "}"
                 ]
             },
@@ -12939,7 +12943,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemHeight(40).setImgHeight(30).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemHeight(40).setImgHeight(30).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -12949,7 +12953,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemWidth(40).setImgWidth(40).getImgWidth());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemWidth(40).setImgWidth(40).getImgWidth());},1000)"+
                     "}"
                 ]
             },
@@ -12963,7 +12967,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.da4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemWidth(40).setImgWidth(40).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemWidth(40).setImgWidth(40).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -12973,7 +12977,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
                     "}"
                 ]
             },
@@ -12987,7 +12991,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemWidth(40).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemWidth(40).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -12997,7 +13001,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
                     "}"
                 ]
             },
@@ -13011,7 +13015,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemHeight(40).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemHeight(40).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -13021,7 +13025,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -13035,7 +13039,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -13045,7 +13049,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
                     "}"
                 ]
             },
@@ -13059,14 +13063,14 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Gallery({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
                     "}"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","IconList"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","IconList"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.IconList Class",
         constructor:{
@@ -13083,8 +13087,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.getStatus('c'));});"+
-                    "_.asyRun(function(){alert(o.getStatus('c'));},3000);"+
+                    "xui.asyRun(function(){alert(o.getStatus('c'));});"+
+                    "xui.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
                 ]
             },
@@ -13118,7 +13122,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
                     "}"
                 ]
             },
@@ -13132,7 +13136,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
                     "}"
                 ]
             },
@@ -13142,7 +13146,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
                     "}"
                 ]
             },
@@ -13156,7 +13160,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
                     "}"
                 ]
             },
@@ -13166,7 +13170,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -13180,7 +13184,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
             },
@@ -13190,7 +13194,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
                     "}"
                 ]
             },
@@ -13204,14 +13208,14 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "_.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
+                    "xui.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
                     "}"
                 ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Panel"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Panel"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Panel Class",
         constructor:{
@@ -13240,7 +13244,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel01'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.activate();},500); _.asyRun(function(){btn.activate(false);},1000);"+
+                    "xui.asyRun(function(){btn.activate();},500); xui.asyRun(function(){btn.activate(false);},1000);"+
                     "}"
                 ]
             },
@@ -13250,7 +13254,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setCloseBtn(true); alert(btn.getCloseBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setCloseBtn(true); alert(btn.getCloseBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13264,7 +13268,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setCloseBtn(true); alert(btn.getCloseBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setCloseBtn(true); alert(btn.getCloseBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13286,7 +13290,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel37'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setPopBtn(true); alert(btn.getPopBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setPopBtn(true); alert(btn.getPopBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13300,7 +13304,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel38'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setPopBtn(true); alert(btn.getPopBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setPopBtn(true); alert(btn.getPopBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13310,7 +13314,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel39'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setOptBtn(true); alert(btn.getOptBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setOptBtn(true); alert(btn.getOptBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13324,7 +13328,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel40'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setOptBtn(true); alert(btn.getOptBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setOptBtn(true); alert(btn.getOptBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13358,7 +13362,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel41'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setToggleBtn(true); alert(btn.getToggleBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setToggleBtn(true); alert(btn.getToggleBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13372,7 +13376,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel42'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setToggleBtn(true); alert(btn.getToggleBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setToggleBtn(true); alert(btn.getToggleBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -13382,7 +13386,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -13396,7 +13400,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "_.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
+                    "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
             },
@@ -13406,7 +13410,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -13420,7 +13424,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif'); alert(btn.getImage())},1000)"+
                     "}"
                 ]
             },
@@ -13430,7 +13434,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -13444,7 +13448,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel({height:50}));"+
-                    "_.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
+                    "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
             },
@@ -13454,7 +13458,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel({html:'content'}));"+
-                    "_.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
+                    "xui.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
                     "}"
                 ]
             },
@@ -13468,7 +13472,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.panel8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel({html:'content'}));"+
-                    "_.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
+                    "xui.asyRun(function(){btn.setToggle(false); alert(btn.getToggle ())},1000)"+
                     "}"
                 ]
             },
@@ -13601,7 +13605,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","PageBar"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","PageBar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.PageBar Class",
         constructor:{
@@ -13618,7 +13622,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})));"+
-                    "_.asyRun(function(){o.setPage(100);},1000);"+
+                    "xui.asyRun(function(){o.setPage(100);},1000);"+
                     "}"
                 ]
             },
@@ -13628,7 +13632,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setCaption('Page =>'));"+
-                    "_.asyRun(function(){alert(o.getCaption())});"+
+                    "xui.asyRun(function(){alert(o.getCaption())});"+
                     "}"
                 ]
             },
@@ -13642,7 +13646,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setCaption('Page =>'));"+
-                    "_.asyRun(function(){alert(o.getCaption())});"+
+                    "xui.asyRun(function(){alert(o.getCaption())});"+
                     "}"
                 ]
             },
@@ -13652,7 +13656,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setNextMark('next'));"+
-                    "_.asyRun(function(){alert(o.getNextMark())});"+
+                    "xui.asyRun(function(){alert(o.getNextMark())});"+
                     "}"
                 ]
             },
@@ -13666,7 +13670,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setNextMark('next'));"+
-                    "_.asyRun(function(){alert(o.getNextMark())});"+
+                    "xui.asyRun(function(){alert(o.getNextMark())});"+
                     "}"
                 ]
             },
@@ -13676,7 +13680,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setPrevMark('prev'));"+
-                    "_.asyRun(function(){alert(o.getPrevMark('{'))});"+
+                    "xui.asyRun(function(){alert(o.getPrevMark('{'))});"+
                     "}"
                 ]
             },
@@ -13690,7 +13694,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setPrevMark('prev'));"+
-                    "_.asyRun(function(){alert(o.getPrevMark())});"+
+                    "xui.asyRun(function(){alert(o.getPrevMark())});"+
                     "}"
                 ]
             },
@@ -13700,7 +13704,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setTextTpl('[*]'));"+
-                    "_.asyRun(function(){alert(o.getTextTpl())});"+
+                    "xui.asyRun(function(){alert(o.getTextTpl())});"+
                     "}"
                 ]
             },
@@ -13714,7 +13718,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setTextTpl('[*]'));"+
-                    "_.asyRun(function(){alert(o.getTextTpl())});"+
+                    "xui.asyRun(function(){alert(o.getTextTpl())});"+
                     "}"
                 ]
             },
@@ -13724,7 +13728,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setUriTpl('#aaa=*'));"+
-                    "_.asyRun(function(){alert(o.getUriTpl())});"+
+                    "xui.asyRun(function(){alert(o.getUriTpl())});"+
                     "}"
                 ]
             },
@@ -13738,7 +13742,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pb10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})).setUriTpl('#aaa=*'));"+
-                    "_.asyRun(function(){alert(o.getUriTpl())});"+
+                    "xui.asyRun(function(){alert(o.getUriTpl())});"+
                     "}"
                 ]
             },
@@ -13767,7 +13771,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Layout"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Layout"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Layout Class",
         constructor:{
@@ -13785,7 +13789,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',size:50}]})));"+
-                    "_.asyRun(function(){o.append(new xui.UI.Button,'after');},1000);"+
+                    "xui.asyRun(function(){o.append(new xui.UI.Button,'after');},1000);"+
                     "}"
                 ]
             },
@@ -13798,7 +13802,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',size:50}]})));"+
-                    "_.asyRun(function(){o.getPanel('after').append(xui.create('<button>afgter</button>'));},1000);"+
+                    "xui.asyRun(function(){o.getPanel('after').append(xui.create('<button>afgter</button>'));},1000);"+
                     "}"
                 ]
             },
@@ -13808,7 +13812,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',size:50}]})));"+
-                    "_.asyRun(function(){o.append(new xui.UI.Button).setType('horizontal'); alert(o.getType())},1000);"+
+                    "xui.asyRun(function(){o.append(new xui.UI.Button).setType('horizontal'); alert(o.getType())},1000);"+
                     "}"
                 ]
             },
@@ -13822,7 +13826,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',size:50}]})));"+
-                    "_.asyRun(function(){o.append(new xui.UI.Button).setType('horizontal'); alert(o.getType())},1000);"+
+                    "xui.asyRun(function(){o.append(new xui.UI.Button).setType('horizontal'); alert(o.getType())},1000);"+
                     "}"
                 ]
             },
@@ -13837,10 +13841,10 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo3-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',size:50}]})));"+
-                    "_.asyRun(function(){o.insertItems([{id:'a1',size:30}],'main',true)},1000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'c1',size:30,cmd:false}],'main',false)},2000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'a0',size:30, folded:true}],'after',true)},3000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'c2',size:30}],'after',false)},4000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'a1',size:30}],'main',true)},1000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'c1',size:30,cmd:false}],'main',false)},2000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'a0',size:30, folded:true}],'after',true)},3000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'c2',size:30}],'after',false)},4000);"+
                     "}"
                 ]
             },
@@ -13854,11 +13858,11 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo3-2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',size:50}]})));"+
-                    "_.asyRun(function(){o.updateItem('after',{size:30})},1000);"+
-                    "_.asyRun(function(){o.updateItem('after',{folded:true})},2000);"+
-                    "_.asyRun(function(){o.updateItem('after',{folded:false,cmd:false})},3000);"+
-                    "_.asyRun(function(){o.updateItem('after',{hidden:true})},4000);"+
-                    "_.asyRun(function(){o.updateItem('after',{folded:false,size:50,cmd:true,hidden:false})},5000);"+
+                    "xui.asyRun(function(){o.updateItem('after',{size:30})},1000);"+
+                    "xui.asyRun(function(){o.updateItem('after',{folded:true})},2000);"+
+                    "xui.asyRun(function(){o.updateItem('after',{folded:false,cmd:false})},3000);"+
+                    "xui.asyRun(function(){o.updateItem('after',{hidden:true})},4000);"+
+                    "xui.asyRun(function(){o.updateItem('after',{folded:false,size:50,cmd:true,hidden:false})},5000);"+
                     "}"
                 ]
             },
@@ -13872,7 +13876,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.lo4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'before',size:50},{id:'after',size:50}]})));"+
                     "o.append(new xui.UI.Button).append(new xui.UI.Link, 'before').append(new xui.UI.Input, 'after');"+
-                    "_.asyRun(function(){o.setType('horizontal').setItems([{id:'before', pos:'before', 'size':50, min:50, max:200}, {id:'main', min:10}, {id:'after', pos:'after', size:50}, {id:'c', pos:'after', cmd:true, size:50}])},1000);"+
+                    "xui.asyRun(function(){o.setType('horizontal').setItems([{id:'before', pos:'before', 'size':50, min:50, max:200}, {id:'main', min:10}, {id:'after', pos:'after', size:50}, {id:'c', pos:'after', cmd:true, size:50}])},1000);"+
                     "}"
                 ]
             },
@@ -13885,7 +13889,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.lo6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Layout({items:[{id:'main'},{id:'after',cmd:true, size:50}]})));"+
-                    "_.asyRun(function(){o.fireCmdClickEvent('after'); },1000);"+
+                    "xui.asyRun(function(){o.fireCmdClickEvent('after'); },1000);"+
                     "}"
                 ]
             },
@@ -13901,7 +13905,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Tabs"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Tabs"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Tabs Class",
         constructor:{
@@ -13928,7 +13932,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}],value:'a'})));"+
-                    "_.asyRun(function(){o.append(new xui.UI.Button,'a');},1000);"+
+                    "xui.asyRun(function(){o.append(new xui.UI.Button,'a');},1000);"+
                     "}"
                 ]
             },
@@ -13941,7 +13945,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs004'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.fireItemClickEvent('a')},1000);"+
+                    "xui.asyRun(function(){o.fireItemClickEvent('a')},1000);"+
                     "}"
                 ]
             },
@@ -13970,7 +13974,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto'})));"+
-                    "_.asyRun(function(){o.setItems([{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}])},1000);"+
+                    "xui.asyRun(function(){o.setItems([{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}])},1000);"+
                     "}"
                 ]
             },
@@ -13983,7 +13987,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.removeItems(['a','b'])},1000);"+
+                    "xui.asyRun(function(){o.removeItems(['a','b'])},1000);"+
                     "}"
                 ]
             },
@@ -13996,7 +14000,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.clearItems();},1000);"+
+                    "xui.asyRun(function(){o.clearItems();},1000);"+
                     "}"
                 ]
             },
@@ -14006,7 +14010,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "alert(o.getHAlign());_.asyRun(function(){o.setHAlign('center')},1000);"+
+                    "alert(o.getHAlign());xui.asyRun(function(){o.setHAlign('center')},1000);"+
                     "}"
                 ]
             },
@@ -14020,7 +14024,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "alert(o.getHAlign());_.asyRun(function(){o.setHAlign('right')},1000);"+
+                    "alert(o.getHAlign());xui.asyRun(function(){o.setHAlign('right')},1000);"+
                     "}"
                 ]
             },
@@ -14066,7 +14070,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "alert(o.getNoPanel());_.asyRun(function(){o.setNoPanel(false)},1000);"+
+                    "alert(o.getNoPanel());xui.asyRun(function(){o.setNoPanel(false)},1000);"+
                     "}"
                 ]
             },
@@ -14080,7 +14084,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "alert(o.getNoPanel());_.asyRun(function(){o.setNoPanel(true)},1000);"+
+                    "alert(o.getNoPanel());xui.asyRun(function(){o.setNoPanel(true)},1000);"+
                     "}"
                 ]
             },
@@ -14102,7 +14106,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.setDropKeysPanel('drap key for panel');alert(o.getDropKeysPanel());},1000);"+
+                    "xui.asyRun(function(){o.setDropKeysPanel('drap key for panel');alert(o.getDropKeysPanel());},1000);"+
                     "}"
                 ]
             },
@@ -14116,7 +14120,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.setDropKeysPanel('drap key for panel');alert(o.getDropKeysPanel());},1000);"+
+                    "xui.asyRun(function(){o.setDropKeysPanel('drap key for panel');alert(o.getDropKeysPanel());},1000);"+
                     "}"
                 ]
             },
@@ -14126,7 +14130,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}],value:'a'})));"+
-                    "_.asyRun(function(){alert(o.getCurPanel().id())},1000);"+
+                    "xui.asyRun(function(){alert(o.getCurPanel().id())},1000);"+
                     "}"
                 ]
             },
@@ -14139,7 +14143,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){alert(o.getPanel('b').id())},1000);"+
+                    "xui.asyRun(function(){alert(o.getPanel('b').id())},1000);"+
                     "}"
                 ]
             },
@@ -14154,7 +14158,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tabs15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.Tabs({height:'auto',dock:'none',items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]})));"+
-                    "_.asyRun(function(){o.markItemCaption('b',true)},1000);"+
+                    "xui.asyRun(function(){o.markItemCaption('b',true)},1000);"+
                     "}"
                 ]
             },
@@ -14184,7 +14188,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -14198,7 +14202,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.tabs17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var tabs;"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.removePanel(tabs.getSubNode('ITEM','b').id())},1000);"+
+                    "xui.asyRun(function(){tabs.removePanel(tabs.getSubNode('ITEM','b').id())},1000);"+
                     "}"
                 ]
             },
@@ -14211,7 +14215,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -14224,7 +14228,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui(id).prepend(panel=new xui.UI.Panel({height:100,width:100,dock:'none',position:'relative'}));"+
                     "panel.append(new xui.UI.Button);"+
                     "xui(id).prepend(tabs=new xui.UI.Tabs({position:'relative',width:200, height:100, dock:'none',items:[{id:'a',caption:'a'},{id:'b',caption:'b'}]}));"+
-                    "_.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
+                    "xui.asyRun(function(){tabs.addPanel(panel.getPanelPara(), panel.getPanelChildren()); panel.removePanel();},1000);"+
                     "}"
                 ]
             },
@@ -14336,7 +14340,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","FoldingTabs"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","FoldingTabs"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.FoldingTabs Class",
         constructor:{
@@ -14344,7 +14348,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","ToolBar"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","ToolBar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.ToolBar Class",
         constructor:{
@@ -14362,7 +14366,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool01'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'ga', sub:[{id:'ga1',caption:'ga1'},{id:'ga2',caption:'ga2'}]},{id:'gb',sub:[{id:'gb1',caption:'gb1'},{id:'gb2',Object:new xui.UI.ComboInput({type:'color'})}]}]})));"+
-                    "_.asyRun(function(){o.updateItem('ga1',{caption:'updated'})},1000);"+
+                    "xui.asyRun(function(){o.updateItem('ga1',{caption:'updated'})},1000);"+
                     "}"
                 ]
             },
@@ -14372,7 +14376,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'ga', sub:[{id:'ga1',caption:'ga1'},{id:'ga2',caption:'ga2'}]},{id:'gb',sub:[{id:'gb1',caption:'gb1'},{id:'gb2',Object:new xui.UI.ComboInput({type:'color'})}]}]})));"+
-                    "alert(o.getHAlign());_.asyRun(function(){o.setHAlign('right')},1000);"+
+                    "alert(o.getHAlign());xui.asyRun(function(){o.setHAlign('right')},1000);"+
                     "}"
                 ]
             },
@@ -14386,7 +14390,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',Object:new xui.UI.ComboInput({type:'color'})}]})));"+
-                    "alert(o.getHAlign());_.asyRun(function(){o.setHAlign('right')},1000);"+
+                    "alert(o.getHAlign());xui.asyRun(function(){o.setHAlign('right')},1000);"+
                     "}"
                 ]
             },
@@ -14396,7 +14400,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'ga', sub:[{id:'ga1',caption:'ga1'},{id:'ga2',caption:'ga2'}]},{id:'gb',sub:[{id:'gb1',caption:'gb1'},{id:'gb2',Object:new xui.UI.ComboInput({type:'time'})}]}]})));"+
-                    "alert(o.getHandler());_.asyRun(function(){o.setHandler(false)},1000);"+
+                    "alert(o.getHandler());xui.asyRun(function(){o.setHandler(false)},1000);"+
                     "}"
                 ]
             },
@@ -14410,7 +14414,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'ga', sub:[{id:'ga1',caption:'ga1'},{id:'ga2',caption:'ga2'}]},{id:'gb',sub:[{id:'gb1',caption:'gb1'},{id:'gb2',Object:new xui.UI.ComboInput({type:'time'})}]}]})));"+
-                    "alert(o.getHandler());_.asyRun(function(){o.setHandler(false)},1000);"+
+                    "alert(o.getHandler());xui.asyRun(function(){o.setHandler(false)},1000);"+
                     "}"
                 ]
             },
@@ -14424,7 +14428,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'ga', sub:[{id:'ga1',caption:'ga1'},{id:'ga2',caption:'ga2'}]},{id:'gb',sub:[{id:'gb1',caption:'gb1'},{id:'gb2',Object:new xui.UI.ComboInput({type:'time'})}]}]})));"+
-                    "_.asyRun(function(){o.showGroup('ga',false)},1000);"+
+                    "xui.asyRun(function(){o.showGroup('ga',false)},1000);"+
                     "}"
                 ]
             },
@@ -14438,7 +14442,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.tool7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.ToolBar({items:[{id:'ga', sub:[{id:'ga1',caption:'ga1'},{id:'ga2',caption:'ga2'}]}]})));"+
-                    "_.asyRun(function(){o.showItem('ga2',false)},1000);"+
+                    "xui.asyRun(function(){o.showItem('ga2',false)},1000);"+
                     "}"
                 ]
 
@@ -14463,7 +14467,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","PopMenu"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","PopMenu"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.PopMenu Class",
         constructor:{
@@ -14499,7 +14503,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.pm1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">Click blank to pop up menu.' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.PopMenu({items:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}));"+
-                    "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); _.asyRun(function(){o.hide();},3000);})"+
+                    "xui(id).onClick(function(p,e,s){var p1=xui.Event.getPos(e), p2=xui([s]).offset(), pos={left:p1.left-p2.left,top:p1.top-p2.top}o.pop(pos,null,s); xui.asyRun(function(){o.hide();},3000);})"+
                     "}"
                 ]
             },
@@ -14625,7 +14629,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","MenuBar"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","MenuBar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.MenuBar Class",
         constructor:{
@@ -14659,7 +14663,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=(new xui.UI.MenuBar({items:[{id:'id',caption:'menu',sub:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}]}));"+
                     "xui(id).prepend(o);"+
                     "alert(o.getAutoShowTime());"+
-                    "_.asyRun(function(){o.setAutoShowTime(0)});"+
+                    "xui.asyRun(function(){o.setAutoShowTime(0)});"+
                     "}"
                 ]
             },
@@ -14675,7 +14679,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=(new xui.UI.MenuBar({items:[{id:'id',caption:'menu',sub:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}]}));"+
                     "xui(id).prepend(o);"+
                     "alert(o.getAutoShowTime());"+
-                    "_.asyRun(function(){o.setAutoShowTime(1000)});"+
+                    "xui.asyRun(function(){o.setAutoShowTime(1000)});"+
                     "}"
                 ]
             },
@@ -14687,7 +14691,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=(new xui.UI.MenuBar({items:[{id:'id',caption:'menu',sub:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}]}));"+
                     "xui(id).prepend(o);"+
                     "alert(o.getHandler());"+
-                    "_.asyRun(function(){o.setHandler(false)});"+
+                    "xui.asyRun(function(){o.setHandler(false)});"+
                     "}"
                 ]
             },
@@ -14702,7 +14706,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.menu4-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=(new xui.UI.MenuBar({items:[{id:'id',caption:'menu',sub:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}]}));"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.updateItem('a',{caption:'item udpated'})});"+
+                    "xui.asyRun(function(){o.updateItem('a',{caption:'item udpated'})});"+
                     "}"
                 ]
             },
@@ -14718,7 +14722,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=(new xui.UI.MenuBar({items:[{id:'id',caption:'menu',sub:[{id:'a',caption:'item a',tips:'item a'},{id:'b',image:'img/img.gif',caption:'itemb',tips:'item b',sub:[{id:'ba',caption:'item ba',tips:'item ba'},{id:'bb',caption:'item bb',tips:'item bb',sub:[{id:'bba',caption:'item bba',tips:'item bba'}]}]},{id:'c',caption:'item c',type:'checkbox',value:false},{id:'d',caption:'item d',type:'checkbox',value:true,add:'[Esc]'}]}]}));"+
                     "xui(id).prepend(o);"+
                     "alert(o.getHandler());"+
-                    "_.asyRun(function(){o.setHandler(false)});"+
+                    "xui.asyRun(function(){o.setHandler(false)});"+
                     "}"
                 ]
             },
@@ -14787,7 +14791,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Dialog"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Dialog"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Dialog Class",
         constructor:{
@@ -14880,7 +14884,7 @@ _.set(xui.Locale,["en","app"], {
                     "flag [Optional] : Boolean, false represents deactive."
                 ],
                 $snippet:[
-                    "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); _.asyRun(function(){dlg1.activate();},500); _.asyRun(function(){dlg2.activate();},1000);_.asyRun(function(){dlg2.activate(false)},1500);"
+                    "var dlg1=(new xui.UI.Dialog({html:'dlg1'})).show(), dlg2=(new xui.UI.Dialog({html:'dlg2',left:100,top:100})).show(); xui.asyRun(function(){dlg1.activate();},500); xui.asyRun(function(){dlg2.activate();},1000);xui.asyRun(function(){dlg2.activate(false)},1500);"
                 ]
             },
             isPinned:{
@@ -14894,7 +14898,7 @@ _.set(xui.Locale,["en","app"], {
                     "triggerEvent [Optional] : Boolean, indicates if the function trigger beforeClose event or not. Defalut is [true]"
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.close();},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.close();},1000);"
                 ]
             },
             showModal:{
@@ -14931,7 +14935,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To hide the dialog.",
                 $rtn:"[self]",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.hide();},1000); _.asyRun(function(){dlg.show();},2000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.hide();},1000); xui.asyRun(function(){dlg.show();},2000);"
                 ]
             },
             getIframeAutoLoad:{
@@ -14962,7 +14966,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"Gets the Caption property value on the first UIProfile",
                 $rtn:"String",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());_.asyRun(function(){dlg.setCaption('c cc c');},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());xui.asyRun(function(){dlg.setCaption('c cc c');},1000);"
                 ]
             },
             setCaption:{
@@ -14973,14 +14977,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());_.asyRun(function(){dlg.setCaption('c cc c');},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());xui.asyRun(function(){dlg.setCaption('c cc c');},1000);"
                 ]
             },
             getCloseBtn:{
                 $desc:"To determine whether this control has a close button",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCloseBtn());_.asyRun(function(){dlg.setCloseBtn(false);},1000); _.asyRun(function(){dlg.close();},2000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCloseBtn());xui.asyRun(function(){dlg.setCloseBtn(false);},1000); xui.asyRun(function(){dlg.close();},2000);"
                 ]
             },
             setCloseBtn:{
@@ -14991,7 +14995,7 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCloseBtn());_.asyRun(function(){dlg.setCloseBtn(false);},1000);_.asyRun(function(){dlg.close();},2000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCloseBtn());xui.asyRun(function(){dlg.setCloseBtn(false);},1000);xui.asyRun(function(){dlg.close();},2000);"
                 ]
             },
             getInitPos:{
@@ -15008,7 +15012,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To determine whether this control has a min button",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());_.asyRun(function(){dlg.setMinBtn(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());xui.asyRun(function(){dlg.setMinBtn(false);},1000);"
                 ]
             },
             setMinBtn:{
@@ -15019,7 +15023,7 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());_.asyRun(function(){dlg.setMinBtn(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMinBtn());xui.asyRun(function(){dlg.setMinBtn(false);},1000);"
                 ]
             },
             getRestoreBtn:{
@@ -15038,7 +15042,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To determine whether this control has a max button",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMaxBtn());_.asyRun(function(){dlg.setMaxBtn(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMaxBtn());xui.asyRun(function(){dlg.setMaxBtn(false);},1000);"
                 ]
             },
             setMaxBtn:{
@@ -15049,14 +15053,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMaxBtn());_.asyRun(function(){dlg.setMaxBtn(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMaxBtn());xui.asyRun(function(){dlg.setMaxBtn(false);},1000);"
                 ]
             },
             getPinBtn:{
                 $desc:"To determine whether this control has a pin button",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());_.asyRun(function(){dlg.setPinBtn(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());xui.asyRun(function(){dlg.setPinBtn(false);},1000);"
                 ]
             },
             setPinBtn:{
@@ -15067,7 +15071,7 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());_.asyRun(function(){dlg.setPinBtn(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getPinBtn());xui.asyRun(function(){dlg.setPinBtn(false);},1000);"
                 ]
             },
             getModal:{
@@ -15086,7 +15090,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To determine whether this control has a landing button",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getLandBtn());_.asyRun(function(){dlg.setLandBtn(true);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getLandBtn());xui.asyRun(function(){dlg.setLandBtn(true);},1000);"
                 ]
             },
             setLandBtn:{
@@ -15097,14 +15101,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getLandBtn());_.asyRun(function(){dlg.setLandBtn(true);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getLandBtn());xui.asyRun(function(){dlg.setLandBtn(true);},1000);"
                 ]
             },
             getOptBtn:{
                 $desc:"To determine whether this control has an option button",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getOptBtn());_.asyRun(function(){dlg.setOptBtn(true);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getOptBtn());xui.asyRun(function(){dlg.setOptBtn(true);},1000);"
                 ]
             },
             setOptBtn:{
@@ -15115,7 +15119,7 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getOptBtn());_.asyRun(function(){dlg.setOptBtn(true);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getOptBtn());xui.asyRun(function(){dlg.setOptBtn(true);},1000);"
                 ]
             },
             getInfoBtn :{
@@ -15146,7 +15150,7 @@ _.set(xui.Locale,["en","app"], {
                 $desc:"To determine whether end user can move this dialog by drag and drop.",
                 $rtn:"Boolean",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());_.asyRun(function(){dlg.setMovable(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());xui.asyRun(function(){dlg.setMovable(false);},1000);"
                 ]
             },
             setMovable:{
@@ -15157,14 +15161,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());_.asyRun(function(){dlg.setMovable(false);},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getMovable());xui.asyRun(function(){dlg.setMovable(false);},1000);"
                 ]
             },
             getImage :{
                 $desc:"Gets image url.",
                 $rtn:"String",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());_.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());xui.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
                 ]
             },
             setImage :{
@@ -15175,14 +15179,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());_.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImage());xui.asyRun(function(){dlg.setImage('img/img.gif');},1000);"
                 ]
             },
             getImagePos :{
                 $desc:"Gets image position",
                 $rtn:"String",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());_.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());xui.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
                 ]
             },
             setImagePos :{
@@ -15193,14 +15197,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());_.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());xui.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
                 ]
             },
             getHtml:{
                 $desc:"Gets dialog inside html",
                 $rtn:"String",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
                 ]
             },
             setHtml:{
@@ -15211,14 +15215,14 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.setHtml('<p>content</p>');alert(dlg.getHtml());},1000);"
                 ]
             },
             getStatus:{
                 $desc:"Gets dialog status. Could be 'normal', 'min' or 'max'.",
                 $rtn:"String",
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setStatus('min');alert(dlg.getStatus());},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.setStatus('min');alert(dlg.getStatus());},1000);"
                 ]
             },
             setStatus:{
@@ -15229,7 +15233,7 @@ _.set(xui.Locale,["en","app"], {
                     $force
                 ],
                 $snippet:[
-                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); _.asyRun(function(){dlg.setStatus('max');alert(dlg.getStatus());},1000);"
+                    "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); xui.asyRun(function(){dlg.setStatus('max');alert(dlg.getStatus());},1000);"
                 ]
             },
             getMinHeight:{
@@ -15282,7 +15286,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var dl=(new xui.UI.Dialog);"+
                     "dl.setFromRegion({left:0,top:0,width:10,height:10});"+
-                    "alert(_.serialize(dl.getFromRegion()));"+
+                    "alert(xui.serialize(dl.getFromRegion()));"+
                     "dl.show(null,false, 200,200);"
                 ]
             },
@@ -15296,7 +15300,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var dl=(new xui.UI.Dialog);"+
                     "dl.setFromRegion({left:0,top:0,width:10,height:10});"+
-                    "alert(_.serialize(dl.getFromRegion()));"+
+                    "alert(xui.serialize(dl.getFromRegion()));"+
                     "dl.show(null,false, 200,200);"
                 ]
             },
@@ -15320,7 +15324,7 @@ _.set(xui.Locale,["en","app"], {
                     "var dlg=new xui.UI.Dialog; "+
                     "dlg.beforeClose(function(){return false;});"+
                     "dlg.show(null,false, 100,100);"+
-                    "_.asyRun(function(){dlg.close();},3000);"
+                    "xui.asyRun(function(){dlg.close();},3000);"
                 ]
             },
             onShowInfo:{
@@ -15396,7 +15400,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Element"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Element"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Element Class",
         constructor:{
@@ -15451,7 +15455,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","HTMLButton"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","HTMLButton"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.HTMLButton Class",
         constructor:{
@@ -15462,7 +15466,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Span"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Span"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Span Class",
         constructor:{
@@ -15505,7 +15509,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Image"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Image"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Image Class",
         constructor:{
@@ -15591,7 +15595,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.img5-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Image({position:'relative',src:'img/logo.gif'}));"+
-                    "_.asyRun(function(){alert(o.setAlt('picture').getAlt())},1000);" +
+                    "xui.asyRun(function(){alert(o.setAlt('picture').getAlt())},1000);" +
                     "}"
                 ]
             },
@@ -15605,7 +15609,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.img6-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Image({position:'relative',src:'img/logo.gif'}));"+
-                    "_.asyRun(function(){alert(o.setAlt('picture').getAlt())},1000);" +
+                    "xui.asyRun(function(){alert(o.setAlt('picture').getAlt())},1000);" +
                     "}"
                 ]
             },
@@ -15615,8 +15619,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.img5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Image({position:'relative',src:'img/logo.gif'}));"+
-                    "_.asyRun(function(){alert(o.setSrc('img/xui.box.gif').getSrc())},1000);"+
-                    "_.asyRun(function(){o.setMaxHeight(200)},1500);"+
+                    "xui.asyRun(function(){alert(o.setSrc('img/xui.box.gif').getSrc())},1000);"+
+                    "xui.asyRun(function(){o.setMaxHeight(200)},1500);"+
                     "}"
                 ]
             },
@@ -15630,8 +15634,8 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.img6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Image({position:'relative',src:'img/logo.gif'}));"+
-                    "_.asyRun(function(){alert(o.setSrc('img/xui.box.gif').getSrc())},1000);"+
-                    "_.asyRun(function(){o.setMaxHeight(200)},1500);"+
+                    "xui.asyRun(function(){alert(o.setSrc('img/xui.box.gif').getSrc())},1000);"+
+                    "xui.asyRun(function(){o.setMaxHeight(200)},1500);"+
                     "}"
                 ]
             },
@@ -15653,7 +15657,7 @@ _.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var id='xui.temp.img7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=new xui.UI.Image({position:'relative',src:'img/xui.box.gif',maxHeight:200}));"+
-                    "_.asyRun(function(){alert(o.getRate())},1000);"+
+                    "xui.asyRun(function(){alert(o.getRate())},1000);"+
                     "}"
                 ]
             },
@@ -15720,7 +15724,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","FoldingList"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","FoldingList"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.FoldingList Class",
         constructor:{
@@ -15764,7 +15768,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.fl7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',title:'title 1',caption:'cap a'},{id:'b',title:'title b', caption:'cap b'},{id:'c',caption:'c'}]});"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.toggle('a')},1000)"+
+                    "xui.asyRun(function(){o.toggle('a')},1000)"+
                     "}"
                 ]
             },
@@ -15779,8 +15783,8 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.fl8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.FoldingList({width:'auto',height:'auto',position:'relative',items:[{id:'a',caption:'a1',tips:'a1 tips',text:'text1'},{id:'b',caption:'a2',text:'text2',tips:'a2 tips'}]});"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.toggle('a')},1000);"+
-                    "_.asyRun(function(){o.fillContent('a', new xui.UI.Button({position:'relative'}))},1200);"+
+                    "xui.asyRun(function(){o.toggle('a')},1000);"+
+                    "xui.asyRun(function(){o.fillContent('a', new xui.UI.Button({position:'relative'}))},1200);"+
                     "}"
                 ]
             },
@@ -15820,7 +15824,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","TreeBar"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","TreeBar"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.TreeBar Class",
         constructor:{
@@ -16065,10 +16069,10 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.tb13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeBar({width:'auto',iniFold:false,height:'auto',dock:'none',position:'relative',items:[{id:'a',caption:'cap a'},{id:'b',caption:'cap b',sub:[{id:'bz',caption:'bz'}]},{id:'c',caption:'c',sub:[{id:'cz',caption:'cz'}]}]});"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.insertItems([{id: 'ba',caption:'caption'},{id:'bb',caption:'caption'}],'b',null,true)},1000);"+
-                    "_.asyRun(function(){o.insertItems([{id: 'ca',caption:'caption'},{id:'cb',caption:'caption'}],'c',null,false)},2000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'aaa',caption:'a0'}],null,'b',false)},3000);"+
-                    "_.asyRun(function(){o.insertItems([{id:'bbb',caption:'b0'}],null,'b',true)},4000);"+
+                    "xui.asyRun(function(){o.insertItems([{id: 'ba',caption:'caption'},{id:'bb',caption:'caption'}],'b',null,true)},1000);"+
+                    "xui.asyRun(function(){o.insertItems([{id: 'ca',caption:'caption'},{id:'cb',caption:'caption'}],'c',null,false)},2000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'aaa',caption:'a0'}],null,'b',false)},3000);"+
+                    "xui.asyRun(function(){o.insertItems([{id:'bbb',caption:'b0'}],null,'b',true)},4000);"+
                     "}"
                 ]
             },
@@ -16082,7 +16086,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.tb14'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeBar({width:'auto',iniFold:true,height:'auto',dock:'none',position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b',sub:[{id:'bb',caption:'bb',sub:[{id: 'bba',caption:'bba'},{id:'bbb',caption:'bbb',sub:[{id:'bbba',caption:'bbba'}]}]}]},{id:'c',caption:'c',sub:[{id:'cz',caption:'cz'}]}]});"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.openToNode('bbba')},1000);"+
+                    "xui.asyRun(function(){o.openToNode('bbba')},1000);"+
                     "}"
                 ]
             },
@@ -16098,9 +16102,9 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.tb17'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeBar({width:'auto',iniFold:true,height:'auto',dock:'none',position:'relative',items:[{id:'a',caption:'a'},{id:'b',caption:'b',sub:[{id:'bb',caption:'bb',sub:[{id: 'bba',caption:'bba'},{id:'bbb',caption:'bbb',sub:[{id:'bbba',caption:'bbba'}]}]}]},{id:'c',caption:'c',sub:[{id:'cz',caption:'cz'}]}]});"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.toggleNode('b',true,true)},1000);"+
-                    "_.asyRun(function(){o.toggleNode('bb',false,true)},2000);"+
-                    "_.asyRun(function(){o.toggleNode('bb',true,false)},3000);"+
+                    "xui.asyRun(function(){o.toggleNode('b',true,true)},1000);"+
+                    "xui.asyRun(function(){o.toggleNode('bb',false,true)},2000);"+
+                    "xui.asyRun(function(){o.toggleNode('bb',true,false)},3000);"+
                     "}"
                 ]
             },
@@ -16216,7 +16220,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","TreeView"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","TreeView"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.TreeView Class",
         constructor:{
@@ -16239,7 +16243,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","UI","TreeGrid"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","TreeGrid"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.TreeGrid Class",
         constructor:{
@@ -16351,7 +16355,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.editCellbyRowCol('row2','col2')},1000);"+
+                    "xui.asyRun(function(){o.editCellbyRowCol('row2','col2')},1000);"+
                     "}"
                 ]
             },
@@ -16915,10 +16919,10 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,iniFold:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.insertRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}],'row4',null,true)},1000);"+
-                    "_.asyRun(function(){o.insertRows([{id : 'row_2',cells:['cell_2',1,true,'label1']}],'row4',null,false)},2000);"+
-                    "_.asyRun(function(){o.insertRows([{id : 'row_3',cells:['cell_3',1,true,'label1']}],null,'row2',false)},3000);"+
-                    "_.asyRun(function(){o.insertRows([{id : 'row_4',cells:['cell_4',1,true,'label1']}],null,'row2',true)},4000);"+
+                    "xui.asyRun(function(){o.insertRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}],'row4',null,true)},1000);"+
+                    "xui.asyRun(function(){o.insertRows([{id : 'row_2',cells:['cell_2',1,true,'label1']}],'row4',null,false)},2000);"+
+                    "xui.asyRun(function(){o.insertRows([{id : 'row_3',cells:['cell_3',1,true,'label1']}],null,'row2',false)},3000);"+
+                    "xui.asyRun(function(){o.insertRows([{id : 'row_4',cells:['cell_4',1,true,'label1']}],null,'row2',true)},4000);"+
                     "}"
                 ]
             },
@@ -16933,7 +16937,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.toggleRow('row4',true)},1000);"+
+                    "xui.asyRun(function(){o.toggleRow('row4',true)},1000);"+
                     "}"
                 ]
             },
@@ -16949,7 +16953,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.updateRow('row1',{caption:'new row1',height:100,sub:[]})},1000);"+
+                    "xui.asyRun(function(){o.updateRow('row1',{caption:'new row1',height:100,sub:[]})},1000);"+
                     "}"
                 ]
             },
@@ -16966,7 +16970,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.updateCell('c_a',{value:'a a a a'})},1000);"+
+                    "xui.asyRun(function(){o.updateCell('c_a',{value:'a a a a'})},1000);"+
                     "}"
                 ]
             },
@@ -16995,7 +16999,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.updateCellByRowCol('row1','col1',{value:'b b b b'})},1000);"+
+                    "xui.asyRun(function(){o.updateCellByRowCol('row1','col1',{value:'b b b b'})},1000);"+
                     "}"
                 ]
             },
@@ -17007,8 +17011,8 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.setActiveRow('row1')},1000);"+
-                    "_.asyRun(function(){alert(o.getActiveRow().id)},1500);"+
+                    "xui.asyRun(function(){o.setActiveRow('row1')},1000);"+
+                    "xui.asyRun(function(){alert(o.getActiveRow().id)},1500);"+
                     "}"
                 ]
             },
@@ -17023,8 +17027,8 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.setActiveRow('row1')},1000);"+
-                    "_.asyRun(function(){alert(o.getActiveRow().id)},1500);"+
+                    "xui.asyRun(function(){o.setActiveRow('row1')},1000);"+
+                    "xui.asyRun(function(){alert(o.getActiveRow().id)},1500);"+
                     "}"
                 ]
             },
@@ -17036,8 +17040,8 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative',activeMode:'cell'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.setActiveCell('row1','col1')},1000);"+
-                    "_.asyRun(function(){alert(o.getActiveCell().value)},1500);"+
+                    "xui.asyRun(function(){o.setActiveCell('row1','col1')},1000);"+
+                    "xui.asyRun(function(){alert(o.getActiveCell().value)},1500);"+
                     "}"
                 ]
             },
@@ -17053,8 +17057,8 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative',activeMode:'cell'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.setActiveCell('row1','col1')},1000);"+
-                    "_.asyRun(function(){alert(o.getActiveCell().value)},1500);"+
+                    "xui.asyRun(function(){o.setActiveCell('row1','col1')},1000);"+
+                    "xui.asyRun(function(){alert(o.getActiveCell().value)},1500);"+
                     "}"
                 ]
             },
@@ -17096,7 +17100,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.grid32'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false, position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                    "_.asyRun(function(){o.setRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}]); alert(o.getRows().length); alert(_.serialize(o.getRows('data'))); alert(_.serialize(o.getRows('min')))});"+
+                    "xui.asyRun(function(){o.setRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}]); alert(o.getRows().length); alert(xui.serialize(o.getRows('data'))); alert(xui.serialize(o.getRows('min')))});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -17112,7 +17116,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.grid33'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                    "_.asyRun(function(){o.setRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}]); alert(o.getRows().length)});"+
+                    "xui.asyRun(function(){o.setRows([{id : 'row_1',cells:['cell_1',1,true,'label1']},{id : 'row_11',cells:['cell_11',1,true,'label1']}]); alert(o.getRows().length)});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -17139,9 +17143,9 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.grid34'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false, position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                    "_.asyRun(function(){alert(o.getHeader().length)});"+
-                    "_.asyRun(function(){alert(_.serialize(o.getHeader('data')))});"+
-                    "_.asyRun(function(){alert(_.serialize(o.getHeader('min')))});"+
+                    "xui.asyRun(function(){alert(o.getHeader().length)});"+
+                    "xui.asyRun(function(){alert(xui.serialize(o.getHeader('data')))});"+
+                    "xui.asyRun(function(){alert(xui.serialize(o.getHeader('min')))});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -17157,7 +17161,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.grid35'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                    "_.asyRun(function(){alert(o.getHeader().length)});"+
+                    "xui.asyRun(function(){alert(o.getHeader().length)});"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -17197,7 +17201,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.grid35-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                    "_.asyRun(function(){alert(o.getHeaderByColId('col1').id)},1000);"+
+                    "xui.asyRun(function(){alert(o.getHeaderByColId('col1').id)},1000);"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -17213,7 +17217,7 @@ _.set(xui.Locale,["en","app"], {
                     "var id='xui.temp.grid35-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
-                    "_.asyRun(function(){o.updateHeader('col1',{caption:'updated',width:100})},1000);"+
+                    "xui.asyRun(function(){o.updateHeader('col1',{caption:'updated',width:100})},1000);"+
                     "xui(id).prepend(o);"+
                     "}"
                 ]
@@ -17251,7 +17255,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(o.getRowbyRowId('row2'))});"+
+                    "xui.asyRun(function(){alert(o.getRowbyRowId('row2'))});"+
                     "}"
                 ]
             },
@@ -17291,10 +17295,10 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){alert(o.getSubNodeInGrid('ROW').get().length)});"+
-                    "_.asyRun(function(){alert(o.getSubNodeInGrid('ROW','row1').get().length)});"+
-                    "_.asyRun(function(){alert(o.getSubNodeInGrid('CELL').get().length)});"+
-                    "_.asyRun(function(){alert(o.getSubNodeInGrid('CELL','row1','col1').get().length)});"+
+                    "xui.asyRun(function(){alert(o.getSubNodeInGrid('ROW').get().length)});"+
+                    "xui.asyRun(function(){alert(o.getSubNodeInGrid('ROW','row1').get().length)});"+
+                    "xui.asyRun(function(){alert(o.getSubNodeInGrid('CELL').get().length)});"+
+                    "xui.asyRun(function(){alert(o.getSubNodeInGrid('CELL','row1','col1').get().length)});"+
                     "}"
                 ]
             },
@@ -17462,7 +17466,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "_.asyRun(function(){o.resetGridValue();},1000);"+
+                    "xui.asyRun(function(){o.resetGridValue();},1000);"+
                     "}"
                 ]
             },
@@ -17485,7 +17489,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "_.asyRun(function(){o.resetRowValue('row1')},1000);"+
+                    "xui.asyRun(function(){o.resetRowValue('row1')},1000);"+
                     "}"
                 ]
             },
@@ -17501,8 +17505,8 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.showColumn('col1',false)},1000);"+
-                    "_.asyRun(function(){o.showColumn('col1')},2000);"+
+                    "xui.asyRun(function(){o.showColumn('col1',false)},1000);"+
+                    "xui.asyRun(function(){o.showColumn('col1')},2000);"+
                     "}"
                 ]
             },
@@ -17523,7 +17527,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.removeAllRows();},1000);"+
+                    "xui.asyRun(function(){o.removeAllRows();},1000);"+
                     "}"
                 ]
             },
@@ -17545,7 +17549,7 @@ _.set(xui.Locale,["en","app"], {
                     "var o=new xui.UI.TreeGrid({editable:false,position:'relative'});"+
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
-                    "_.asyRun(function(){o.removeRows(['row1','row2'])},1000);" +
+                    "xui.asyRun(function(){o.removeRows(['row1','row2'])},1000);" +
                     "}"
                 ]
             },
@@ -18067,7 +18071,7 @@ _.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.beforeCellUpdated(function(){xui.message('Cant update cell!');return false;});" +
-                    "_.asyRun(function(){o.updateCellByRowCol('row1','col1','abc')},1000);"+
+                    "xui.asyRun(function(){o.updateCellByRowCol('row1','col1','abc')},1000);"+
                     "}"
                ]
             },
@@ -18085,15 +18089,15 @@ _.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.afterCellUpdated(function(p,cell,hash){xui.message('cell updated!');});" +
-                    "_.asyRun(function(){o.updateCellByRowCol('row1','col1','abc')},1000);"+
-                    "_.asyRun(function(){o.updateCellByRowCol('row1','col2',{type:'checkbox',value:false})},2000);"+
+                    "xui.asyRun(function(){o.updateCellByRowCol('row1','col1','abc')},1000);"+
+                    "xui.asyRun(function(){o.updateCellByRowCol('row1','col2',{type:'checkbox',value:false})},2000);"+
                     "}"
                ]
             }
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","Flash"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","Flash"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Flash Class",
         constructor:{
@@ -18163,7 +18167,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","UI","FusionChartsXT"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","FusionChartsXT"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.FusionChartsXT Class",
         constructor:{
@@ -18356,7 +18360,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
 
-    _.set(xui.Locale,["en","doc","xui","UI","SVGPaper"], {
+    xui.set(xui.Locale,["en","doc","xui","UI","SVGPaper"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.SVGPaper Class",
         constructor:{
@@ -18391,7 +18395,7 @@ _.set(xui.Locale,["en","app"], {
     });
 
     //svg
-    _.set(xui.Locale,["en","doc","xui","svg"], {
+    xui.set(xui.Locale,["en","doc","xui","svg"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg Class",
         constructor:{
@@ -18525,7 +18529,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","circle"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","circle"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.circle Class",
         constructor:{
@@ -18535,7 +18539,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","ellipse"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","ellipse"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.ellipse Class",
         constructor:{
@@ -18545,7 +18549,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","rect"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","rect"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.rect Class",
         constructor:{
@@ -18555,7 +18559,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","image"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","image"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.image Class",
         constructor:{
@@ -18565,7 +18569,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","text"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","text"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.text Class",
         constructor:{
@@ -18575,7 +18579,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","path"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","path"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.path Class",
         constructor:{
@@ -18589,7 +18593,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","absComb"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","absComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.absComb Class",
         constructor:{
@@ -18656,7 +18660,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","rectComb"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","rectComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.rectComb Class",
         constructor:{
@@ -18666,7 +18670,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","circleComb"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","circleComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.circleComb Class",
         constructor:{
@@ -18676,7 +18680,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","ellipseComb"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","ellipseComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.ellipseComb Class",
         constructor:{
@@ -18686,7 +18690,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","pathComb"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","pathComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.pathComb Class",
         constructor:{
@@ -18696,7 +18700,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","imageComb"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","imageComb"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.imageComb Class",
         constructor:{
@@ -18706,7 +18710,7 @@ _.set(xui.Locale,["en","app"], {
         }
     });
 
-    _.set(xui.Locale,["en","doc","xui","svg","connector"], {
+    xui.set(xui.Locale,["en","doc","xui","svg","connector"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.svg.connector Class",
         constructor:{

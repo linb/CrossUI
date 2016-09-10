@@ -321,7 +321,7 @@ Class('App', 'xui.Com',{
             xui.message(this.databinder_1.checkValid()?"All inputs is valid!":"Invalid input exists!");
         },
         _ctl_getdirtied_onclick : function (profile, e, src, value) {
-            xui.message("Dirtied values : "+_.stringify(this.databinder_1.getDirtied(true)));
+            xui.message("Dirtied values : "+xui.stringify(this.databinder_1.getDirtied(true)));
         },
         _ctl_updatedatafromui_onclick : function (profile, e, src, value) {
             this.databinder_1.updateDataFromUI(true, true, true, function(data){
@@ -330,7 +330,7 @@ Class('App', 'xui.Com',{
                 }
                 return data;
             });
-            xui.message("Values in DataBinder : "+_.stringify(this.databinder_1.getData()));
+            xui.message("Values in DataBinder : "+xui.stringify(this.databinder_1.getData()));
         },
         _ctl_updatedatatoui_onclick : function (profile, e, src, value) {
             this.databinder_1.updateDataToUI(
@@ -343,13 +343,13 @@ Class('App', 'xui.Com',{
             });
         },
         _ctl_getdata_onclick : function (profile, e, src, value) {
-            xui.message("Values in DataBinder : "+_.stringify(this.databinder_1.getData()));
+            xui.message("Values in DataBinder : "+xui.stringify(this.databinder_1.getData()));
         },
         _ctl_setdata_onclick : function (profile, e, src, value) {
             var data={Name:"Jack Lee - lyb", Gender:"male", Memo:"The author of CrossUI Framework"};
             this.databinder_1.setData(data);
-            this.innerData.setValue(_.stringify(data),true);
-            xui.message("Values in DataBinder : "+_.stringify(this.databinder_1.getData()));
+            this.innerData.setValue(xui.stringify(data),true);
+            xui.message("Values in DataBinder : "+xui.stringify(this.databinder_1.getData()));
         },
         _ctl_read_onclick : function (profile, e, src, value) {
             this.databinder_1.read(function(data){
@@ -370,7 +370,7 @@ Class('App', 'xui.Com',{
             });
         },
         _databinder_1_afterupdatedatafromui : function (profile, dataFromUI){
-            this.innerData.setValue(_.stringify(dataFromUI),true);
+            this.innerData.setValue(xui.stringify(dataFromUI),true);
         },
         _xui_ui_sbutton31_onclick:function (profile, e, src){
             this.databinder_1.checkRequired();

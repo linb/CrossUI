@@ -9,10 +9,10 @@ Class('xui.ModuleFactory',null,{
         };
         xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
             return ns.getModule(cls, function(err, module, threadid){
-                if(!err && false!==_.tryF(beforeShow, [module, threadid], module)){
+                if(!err && false!==xui.tryF(beforeShow, [module, threadid], module)){
                     this.show.apply(module, [onEnd,parent,subId,threadid,left,top]);
                 }else{
-                    _.tryF(onEnd, [err, module, threadid], module);
+                    xui.tryF(onEnd, [err, module, threadid], module);
                 }
             }, threadid, cached, properties, events);
         };
@@ -41,13 +41,13 @@ Class('xui.ModuleFactory',null,{
         setProfile:function(key, value){
             if(typeof key=='string')
                 this._pro[key]=value;
-            else if(_.isHash(key))
+            else if(xui.isHash(key))
                 this._pro=key;
             return this;
         },
         destroyAll:function(){
-            _.each(this._cache,function(o){
-                _.tryF(o.destroy,[],o);
+            xui.each(this._cache,function(o){
+                xui.tryF(o.destroy,[],o);
             });
             this._cache={};
         },
@@ -71,7 +71,7 @@ Class('xui.ModuleFactory',null,{
         getModule:function(id, onEnd, threadid, cached, properties, events){
             if(!id){
                 var e=new Error("No id");
-                _.tryF(onEnd,[e,null,threadid]);
+                xui.tryF(onEnd,[e,null,threadid]);
                 if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                 throw e;
                 return;
@@ -83,7 +83,7 @@ Class('xui.ModuleFactory',null,{
                 clsPath;
 
             if(cached && c[id] && !c[id].destroyed){
-                _.tryF(onEnd, [null,c[id],threadid], c[id]);
+                xui.tryF(onEnd, [null,c[id],threadid], c[id]);
                 return c[id];
             }else{
                 // if no configure
@@ -101,14 +101,14 @@ Class('xui.ModuleFactory',null,{
                 var self=arguments.callee, 
                     me=this,
                     task=function(cls,config,threadid){
-                        if(!_.isFun(cls))
+                        if(!xui.isFun(cls))
                             throw "'"+clsPath+"' is not a constructor";
                         var o = new cls();
 
                         if(config.properties)
-                            _.merge(o.properties,config.properties,'all');
+                            xui.merge(o.properties,config.properties,'all');
                         if(config.events)
-                            _.merge(o.events,config.events,'all');
+                            xui.merge(o.events,config.events,'all');
                         if(config.cached!==false)
                             xui.ModuleFactory.setModule(id, o);
 
@@ -116,10 +116,10 @@ Class('xui.ModuleFactory',null,{
                             var arr = module.getUIComponents().get(),
                                 fun=function(arr,subcfg,firstlayer){
                                     var self1 = arguments.callee;
-                                    _.arr.each(arr,function(v,i){
+                                    xui.arr.each(arr,function(v,i){
                                         if(v.children){
                                             var a=[];
-                                            _.arr.each(v.children,function(o){
+                                            xui.arr.each(v.children,function(o){
                                                 a[a.length]=o[0];
                                             });
                                             self1(a, subcfg);
@@ -139,7 +139,7 @@ Class('xui.ModuleFactory',null,{
                                 scope:o
                             });
                         //latter
-                        _.tryF(o[config.iniMethod ||'create'], args, o);
+                        xui.tryF(o[config.iniMethod ||'create'], args, o);
                     };
                 xui.Thread.observableRun(function(threadid){
                     var f=function(threadid){
@@ -153,7 +153,7 @@ Class('xui.ModuleFactory',null,{
                             });
                         }else{
                             var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
-                            _.tryF(onEnd,[e,null,threadid]);
+                            xui.tryF(onEnd,[e,null,threadid]);
                             if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                             throw e;
                         }
@@ -163,14 +163,14 @@ Class('xui.ModuleFactory',null,{
                             f.call(this, threadid);
                         else{
                             var e=new Error("No class name");
-                            _.tryF(onEnd,[e,null, threadid]);
+                            xui.tryF(onEnd,[e,null, threadid]);
                             if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
                             throw e;
                         }
                     }, true,threadid,{
                         retry:0,
                         onFail:function(e){
-                            _.tryF(onEnd,[e,null,threadid]);
+                            xui.tryF(onEnd,[e,null,threadid]);
                         }
                     });
                 },null,threadid);
@@ -197,7 +197,7 @@ Class('xui.ModuleFactory',null,{
         },
         prepareModules:function(arr){
             var self=this,funs=[];
-            _.arr.each(arr, function(i){
+            xui.arr.each(arr, function(i){
                 funs.push(function(){
                     self.getModule(i);
                 });

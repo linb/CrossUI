@@ -127,7 +127,7 @@ Class('App', 'xui.Com',{
         },
         _com_onready : function (com, threadid) {
             var ns=this;
-            var items=_.copy(examplesSetting);
+            var items=xui.copy(examplesSetting);
             items.push({id:"custom"});
             ns.ctl_list.setItems(items);
         },
@@ -138,7 +138,7 @@ Class('App', 'xui.Com',{
             ns.ctl_url.setReadonly(item.id!="custom");
             
             ns.ctl_url.setValue(item.url || "http://");
-            ns.ctl_request.setValue(item.args ? _.stringify(item.args) : "");
+            ns.ctl_request.setValue(item.args ? xui.stringify(item.args) : "");
             ns.ctl_do.setDisabled(false);
             
             ns.ctl_response.setValue("");
@@ -146,12 +146,12 @@ Class('App', 'xui.Com',{
         _ctl_do_onclick : function (profile, e, src, value) {
             var ns = this,
                 uri = ns.ctl_url.getValue(),
-                args = _.unserialize(ns.ctl_request.getValue());
+                args = xui.unserialize(ns.ctl_request.getValue());
             if(uri && args){
                 ns.ctl_response.setValue("Asynchronous calling...");
                 xui.Thread.observableRun(function(threadid){
                     xui.request(uri, args, function(rsp){
-                        ns.ctl_response.setValue(xui.Coder.formatText(_.stringify(rsp)));
+                        ns.ctl_response.setValue(xui.Coder.formatText(xui.stringify(rsp)));
                     }, function(msg){
                         ns.ctl_response.setValue(msg);
                     }, threadid);

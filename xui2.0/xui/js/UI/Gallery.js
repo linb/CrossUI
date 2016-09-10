@@ -245,8 +245,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             var p = profile.properties,t,
                 css=xui.CSS;
 
-            _.arr.each(_.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
-                item[i] = _.isSet(item[i])?item[i]:p[i];
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+                item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
             if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
             if(t=item.itemPadding)item.itemPadding=css.$forceu(t);

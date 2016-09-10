@@ -137,7 +137,7 @@ Class("xui.CSS", null,{
                 if(id)
                     e.id=id;
                 e.media = 'all';
-                _.each(attr,function(o,i){
+                xui.each(attr,function(o,i){
                     e.setAttribute(i,o);
                 });
             }
@@ -166,7 +166,7 @@ Class("xui.CSS", null,{
         },
         _build:function(selector, value, flag){
             var t='';
-            _.each(value,function(o,i){
+            xui.each(value,function(o,i){
                 t += i.replace(/([A-Z])/g,"-$1").toLowerCase() + ":" + o +";";
             });
             return flag?t:selector+"{" + t + "}";
@@ -178,12 +178,12 @@ Class("xui.CSS", null,{
                 add=true,
                 ds=document.styleSheets,
                 target, target2, selectorText, bak, h, e, t, _t;
-            selector = _.str.trim(selector.replace(/\s+/g,' '));
+            selector = xui.str.trim(selector.replace(/\s+/g,' '));
             if(!(value&&force)){
                 bak=selector.toLowerCase();
-                _.arr.each(_.toArr(ds),function(o){
+                xui.arr.each(xui.toArr(ds),function(o){
                     try{o[ns._r]}catch(e){return}
-                    _.arr.each(_.toArr(o[ns._r]),function(v,i){
+                    xui.arr.each(xui.toArr(o[ns._r]),function(v,i){
                         if(!v.selectorText)return;
                         if(v.disabled)return;
                         selectorText = ns._rep(v.selectorText);
@@ -192,8 +192,8 @@ Class("xui.CSS", null,{
                         //null=>remove
                         if(!value){
                             add=false;
-                            if(_.arr.indexOf(_t,bak)!=-1 && _t.length>1){
-                                _t=_.arr.removeFrom(_t,_.arr.indexOf(_t,bak)).join(',');
+                            if(xui.arr.indexOf(_t,bak)!=-1 && _t.length>1){
+                                _t=xui.arr.removeFrom(_t,xui.arr.indexOf(_t,bak)).join(',');
                                 t=v.cssText.slice(v.cssText.indexOf("{")+1,v.cssText.lastIndexOf("}"));
                                 if(o.insertRule)
                                     o.insertRule(_t+"{" + t + "}", o[ns._r].length);
@@ -218,13 +218,13 @@ Class("xui.CSS", null,{
                             //for single css exp, (all single css exp in IE)
                             if(selectorText==bak){target=v;return false}
                             //for multi css exps, not in IE
-                            if(_.arr.indexOf(_t,bak)!=-1){target2=v;return false}
+                            if(xui.arr.indexOf(_t,bak)!=-1){target2=v;return false}
                         }
                     },null,true);
                     if(target){
                         add=false;
                         try{
-                            _.each(value,function(o,i){
+                            xui.each(value,function(o,i){
                                 i=i.replace(/(-[a-z])/gi, function(m,a){return a.charAt(1).toUpperCase()});
                                 target.style[i]= typeof o=='function'?o(target.style[i]):o;
                             })
@@ -253,7 +253,7 @@ Class("xui.CSS", null,{
                 ds=document.styleSheets,
                 l=ds.length,m, o,v,i,j,
                 selectorText;
-            selector=_.str.trim(selector.replace(/\s+/g,' '));
+            selector=xui.str.trim(selector.replace(/\s+/g,' '));
             for(i=l-1; i>=0; i--){
                 try{
                     //firefox cracker
@@ -264,7 +264,7 @@ Class("xui.CSS", null,{
                     for(j=m-1; j>=0; j--){
                         if((v=o[j]).selectorText && !v.disabled){
                             selectorText = ns._rep(v.selectorText);
-                            if(_.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
+                            if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
                                 if(!cssValue){
                                     // replace is crack for opera
                                     return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
@@ -358,26 +358,26 @@ Class("xui.CSS", null,{
             delete xui.CSS._dftEm;
         },
         $isEm:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit=='em' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(_.str.trim(value+''));
+            return (!value||value=='auto')? xui.SpaceUnit=='em' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
         },
         $isPx:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(_.str.trim(value+''));
+            return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
         },
 
         $em2px:function(value, node, force){
-            value = (!value||value=='auto')?value:(_.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
+            value = (!value||value=='auto')?value:(xui.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
             return force?Math.round(parseFloat(value)||0):value;
         },
         $px2em:function(value, node){
-            return (!value||value=='auto')?value:(_.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?_.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
+            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
         },
 
         $px:function(value, node, force){
-            value = ((!_.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+            value = ((!xui.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
             return force?Math.round(parseFloat(value)||0):value;
         },
         $em:function(value, node){
-            return ((_.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
@@ -388,7 +388,7 @@ Class("xui.CSS", null,{
             }
         },
         $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
-        $addu:function(v){return v=='auto'?v:(_.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
+        $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
         $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
     },
     Initialize:function(){

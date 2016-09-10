@@ -207,10 +207,10 @@ Class('App.snip_animator', 'xui.Com',{
                 if(ns.cskewX.getUIValue())args.skewX=[0,180];
                 if(ns.cskewY.getUIValue())args.skewY=[0,180];
 
-                if(!_.isEmpty(args) && type){
+                if(!xui.isEmpty(args) && type){
                     var args2={}, target = ns.divDemo,
                         node=target.getRoot();
-                    _.each(args,function(o,i){
+                    xui.each(args,function(o,i){
                         if(o[1])
                             args2[i]=[o[1],o[0]];
                         else
@@ -218,11 +218,11 @@ Class('App.snip_animator', 'xui.Com',{
                     });
                     node.animate(args,null,function(){
                         if(ns.cReverse.getUIValue()){
-                            _.asyRun(function(){
+                            xui.asyRun(function(){
                                 node.animate(args2,null,null,300,0, type).start();
                             },300);
                         }else{
-                            _.asyRun(function(){
+                            xui.asyRun(function(){
                                 if(ns.divDemo)
                                 ns.divDemo.refresh();
                             },1000);

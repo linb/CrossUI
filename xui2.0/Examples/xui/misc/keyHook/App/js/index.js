@@ -1,12 +1,12 @@
 Class('App', 'xui.Com',{
     Instance:{
         _input3_onhotkey:function (profile, kb, e) {
-            this.treegrid2.insertRows([{id:_.id(), cells:[
+            this.treegrid2.insertRows([{id:xui.id(), cells:[
                 e.type, e.keyCode,  e.charCode, kb.key, kb.ctrlKey, kb.shiftKey, kb.altKey
             ]}],'','',true);
         },
         _input3_onhotkey2:function (profile, kb, e) {
-            this.treegrid2.insertRows([{id:_.id(), cells:[
+            this.treegrid2.insertRows([{id:xui.id(), cells:[
                 e.type, e.keyCode,  e.charCode, kb.key, kb.ctrlKey, kb.shiftKey, kb.altKey
             ]}],'','',true);
         },

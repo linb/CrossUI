@@ -275,8 +275,8 @@ Class("xui.svg", "xui.UI",{
             image:{src:1,x:1,y:1,width:1,height:1},
             path:{path:1}
         };
-        _.each(this.$attr,function(o) {
-            _.merge(o,attr);
+        xui.each(this.$attr,function(o) {
+            xui.merge(o,attr);
         });
 
         var o=this.$attr.text;
@@ -311,8 +311,8 @@ Class("xui.svg", "xui.UI",{
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
                                     var attf=node.attr();
-                                    _.filter(attf,function(o,i){
-                                        if(i=='transform' && _.isArr(o) && o.length===0)o="";
+                                    xui.filter(attf,function(o,i){
+                                        if(i=='transform' && xui.isArr(o) && o.length===0)o="";
                                         // get the simple transform string
                                         if(i=='transform' && o)
                                             o=node.matrix.toTransformString();
@@ -341,7 +341,7 @@ Class("xui.svg", "xui.UI",{
             return prf.box.ISCOMBO? (key?attr[key]:attr) :attr.KEY;
         },
         setAttr:function(key, attr, reset, notify){
-            if(_.isHash(key))attr=key;
+            if(xui.isHash(key))attr=key;
             else{
                 var h={};
                 h[key]=attr;
@@ -356,12 +356,12 @@ Class("xui.svg", "xui.UI",{
                     attr2=prf.box._adjustAttr(attr);
                 if(reset){
                     // add dft attr to reset the old attr
-                    _.each(oAttr,function(o,i){
+                    xui.each(oAttr,function(o,i){
                         if(!(i in attr2)){
                             attr2[i]={};
                         }
 
-                        _.each(o,function(o1,i1){
+                        xui.each(o,function(o1,i1){
                             if(!(i1 in attr2[i])){
                                 attr2[i][i1]=dftAttr[i1];
                                 // special for text
@@ -387,12 +387,12 @@ Class("xui.svg", "xui.UI",{
                 if(prf._elset){
                     prf._elset.forEach(function(el){
                         var key1=el.type,tag=prf.getKey(el.node.id,true);
-                        if(_.isHash(key) || key===tag){
+                        if(xui.isHash(key) || key===tag){
                             node=el.node;
                             if(node&&('raphaelid' in node)){
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
-                                    var rattr=_.copy(attr2[tag]);
+                                    var rattr=xui.copy(attr2[tag]);
                                     if('src' in rattr)
                                         rattr.src = xui.adjustRes(rattr.src);
                                     node.attr(rattr);
@@ -429,21 +429,21 @@ Class("xui.svg", "xui.UI",{
 
                 // set to attr property
                 if(prf.box.ISCOMBO){
-                    prop.attr=_.merge(prop.attr,attr2,function(o,i){
+                    prop.attr=xui.merge(prop.attr,attr2,function(o,i){
                         if(typeof o=='object'){
                             if(i in prop.attr)
-                                _.merge(prop.attr[i], o, 'all');
+                                xui.merge(prop.attr[i], o, 'all');
                             else
-                                prop.attr[i]=_.copy(o);
+                                prop.attr[i]=xui.copy(o);
                         }else{
                             return true;
                         }
                     });
 
                     // filter default setting
-                    _.each(prop.attr,function(o,i){
-                        _.filter(o,function(o1,i1){
-                            if(i1=='transform' && _.isArr(dftAttr[i1]) && dftAttr[i1].length===0)dftAttr[i1]="";
+                    xui.each(prop.attr,function(o,i){
+                        xui.filter(o,function(o1,i1){
+                            if(i1=='transform' && xui.isArr(dftAttr[i1]) && dftAttr[i1].length===0)dftAttr[i1]="";
                             // special for text
                             if((prf.box.$tagName[i]|| i.split("_")[0].toLowerCase())=='text'){
                                 if(i1=='stroke') return o1!="none";
@@ -455,11 +455,11 @@ Class("xui.svg", "xui.UI",{
                         });
                     });
                 }else{
-                    _.merge(prop.attr, attr2.KEY, 'all');
+                    xui.merge(prop.attr, attr2.KEY, 'all');
 
                     // filter default setting
-                    _.filter(prop.attr,function(o1,i1){
-                        if(i1=='transform' && _.isArr(dftAttr[i1]) && dftAttr[i1].length===0)dftAttr[i1]="";
+                    xui.filter(prop.attr,function(o1,i1){
+                        if(i1=='transform' && xui.isArr(dftAttr[i1]) && dftAttr[i1].length===0)dftAttr[i1]="";
                         // special for text
                         if((prf.box.$tagName.KEY|| i.split("_")[0].toLowerCase())=='text'){
                             if(i1=='stroke') return o1!="none";
@@ -474,12 +474,12 @@ Class("xui.svg", "xui.UI",{
             return this.each(function(prf){
                 if(prf._shadow)prf._shadow.toFront();
                 if(prf._elset)
-                    _.arr.each(prf._elset.items,function(el){
+                    xui.arr.each(prf._elset.items,function(el){
                         el.toFront();
                     });
-                var arr=_.get(prf,['parent','children']);
+                var arr=xui.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.subIndexOf(arr,"0",prf),o;
+                    var index=xui.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
                         arr.splice(index,1);
@@ -491,13 +491,13 @@ Class("xui.svg", "xui.UI",{
         toBack:function(){
             return this.each(function(prf){
                 if(prf._elset)
-                    _.arr.each(prf._elset.items,function(el){
+                    xui.arr.each(prf._elset.items,function(el){
                         el.toBack();
                     },null,true);
                 if(prf._shadow)prf._shadow.toBack();
-                var arr=_.get(prf,['parent','children']);
+                var arr=xui.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.subIndexOf(arr,"0",prf),o;
+                    var index=xui.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
                         arr.splice(index,1);
@@ -560,7 +560,7 @@ Class("xui.svg", "xui.UI",{
             if((el=prf._elset)&&el.length){
                 el[0]._.dirty=1;
                 bbox={};
-                _.merge(bbox,el[0]._getBBox(withTransform!==false),'all',true);
+                xui.merge(bbox,el[0]._getBBox(withTransform!==false),'all',true);
                 for(var i=1,l=el.length,t;i<l;i++){
                    if(!(el[i].type=='text' && ('hAlign' in prf.box.$DataModel))){
                         el[i]._.dirty=1;
@@ -585,8 +585,8 @@ Class("xui.svg", "xui.UI",{
         _getConnectAnchors:function(){
             var prf=this.get(0),rst;
             if(prf){
-                if(_.get(prf._pathCached,['_connAnchors']))
-                    return _.get(prf._pathCached,['_connAnchors']);
+                if(xui.get(prf._pathCached,['_connAnchors']))
+                    return xui.get(prf._pathCached,['_connAnchors']);
 
                 var ss=prf._elset;
                 if(ss&&ss[0]){
@@ -626,7 +626,7 @@ Class("xui.svg", "xui.UI",{
                         "bottom":{x:x4, y:y4,alpha:r4, solid:1}
                     }
 
-                    if(prf._pathCached)_.set(prf._pathCached,['_connAnchors'], rst);
+                    if(prf._pathCached)xui.set(prf._pathCached,['_connAnchors'], rst);
 
                     return rst;
                 }
@@ -635,8 +635,8 @@ Class("xui.svg", "xui.UI",{
         _getConnectPath:function(){
             var prf=this.get(0),ss;
 
-            if(_.get(prf._pathCached,['_connPath']))
-                return _.get(prf._pathCached,['_connPath']);
+            if(xui.get(prf._pathCached,['_connPath']))
+                return xui.get(prf._pathCached,['_connPath']);
 
             if(prf && (ss=prf._elset) && ss[0]){
                 var tf=Raphael.parseTransformString(ss[0].transform()),
@@ -649,7 +649,7 @@ Class("xui.svg", "xui.UI",{
                     path=Raphael.mapPath(path,matrix);
                 }
 
-                if(prf._pathCached)_.set(prf._pathCached,['_connPath'], path);
+                if(prf._pathCached)xui.set(prf._pathCached,['_connPath'], path);
 
                 return path;
             }
@@ -658,8 +658,8 @@ Class("xui.svg", "xui.UI",{
             if(anchor){
                 var prf=this.get(0),rst;
 
-                if(_.get(prf._pathCached,['_connPoint',anchor]))
-                    return _.get(prf._pathCached,['_connPoint',anchor]);
+                if(xui.get(prf._pathCached,['_connPoint',anchor]))
+                    return xui.get(prf._pathCached,['_connPoint',anchor]);
 
                 if(/^[1-9][0-9]*:((1([.][0]+)?)|(0\.[0-9]+))$/.test(anchor)){
                     var arr=anchor.split(":");
@@ -679,7 +679,7 @@ Class("xui.svg", "xui.UI",{
                     rst = hash && hash[anchor];
                 }
 
-                if(prf._pathCached)_.set(prf._pathCached,['_connPoint',anchor],rst);
+                if(prf._pathCached)xui.set(prf._pathCached,['_connPoint',anchor],rst);
 
                 return rst;
             }
@@ -771,7 +771,7 @@ Class("xui.svg", "xui.UI",{
                                     el.attr(nshape);
 
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
 
                                     moveFun(handler.dot1, x,y,ax,ay);
                                     moveFun(handler.dot2, x,y,ax,ay);
@@ -793,7 +793,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={x:attr.x,y:attr.y,width:attr.width,height:attr.height};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
 
                                     handler.dot.attr({cx:attr.x+attr.width/2, cy:attr.y+attr.height/2});
 
@@ -801,7 +801,7 @@ Class("xui.svg", "xui.UI",{
                                     if(el.attr("r")>m){
                                         el.attr("r",attr.r=m);
                                         if(el._shape)el._shape.attr("r",m);
-                                        _.tryF(el.onShapeChanged,[{r:m}]);
+                                        xui.tryF(el.onShapeChanged,[{r:m}]);
                                     }
                                     handler.dot3.attr({
                                         cx:el.attr("x")+el.attr("width")-el.attr("r"),
@@ -821,7 +821,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={width:attr.width, height:attr.height};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
 
                                     handler.dot.attr({cx:attr.x+attr.width/2, cy:attr.y+attr.height/2});
 
@@ -829,7 +829,7 @@ Class("xui.svg", "xui.UI",{
                                     if(el.attr("r")>m){
                                         el.attr("r",attr.r=m);
                                         if(el._shape)el._shape.attr("r",m);
-                                        _.tryF(el.onShapeChanged,[{r:m}]);
+                                        xui.tryF(el.onShapeChanged,[{r:m}]);
                                     }
                                     handler.dot3.attr({
                                         cx:el.attr("x")+el.attr("width")-el.attr("r"),
@@ -845,7 +845,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={r:attr.width-(pos.cx-attr.x)};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'r');
@@ -864,7 +864,7 @@ Class("xui.svg", "xui.UI",{
                                     attr.cy=pos.cy;
                                     el.attr(pos);
                                     if(el._shape)el._shape.attr(pos);
-                                    _.tryF(el.onShapeChanged,[pos]);
+                                    xui.tryF(el.onShapeChanged,[pos]);
 
                                     pos.cx += el.attr("r");
                                     handler.dotr.attr(pos);
@@ -878,7 +878,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={r:attr.r};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'r');
@@ -897,7 +897,7 @@ Class("xui.svg", "xui.UI",{
                                     attr.cy=pos.cy;
                                     el.attr(pos);
                                     if(el._shape)el._shape.attr(pos);
-                                    _.tryF(el.onShapeChanged,[pos]);
+                                    xui.tryF(el.onShapeChanged,[pos]);
 
                                     handler.dotrx.attr({cx:pos.cx+el.attr("rx"),cy:pos.cy});
                                     handler.dotry.attr({cy:pos.cy-el.attr("ry"),cx:pos.cx});
@@ -911,7 +911,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={rx:attr.rx};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'rx');
                             handler.dotry = createDDElem(r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
@@ -923,7 +923,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={ry:attr.ry};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    _.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape]);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'ry');
@@ -951,13 +951,13 @@ Class("xui.svg", "xui.UI",{
                                         var paper=el.paper,
                                             ox = this.attr('cx'),
                                             oy = this.attr('cy'),
-                                            X = _.isSet(ix)?ix:(ox + x),
-                                            Y = _.isSet(iy)?iy:(oy + y),
+                                            X = xui.isSet(ix)?ix:(ox + x),
+                                            Y = xui.isSet(iy)?iy:(oy + y),
                                             pos,anchorPos;
-                                        if(_.isSet(ix)){
+                                        if(xui.isSet(ix)){
                                             x=X-ox;
                                         }
-                                        if(_.isSet(iy)){
+                                        if(xui.isSet(iy)){
                                             y=Y-oy;
                                         }
                                         // for connector
@@ -969,7 +969,7 @@ Class("xui.svg", "xui.UI",{
                                             this.hide();
                                             prf._elset.hide();
                                             el._shape.hide();
-                                            _.arr.each(handlers,function(o,i){
+                                            xui.arr.each(handlers,function(o,i){
                                                 if(i=o.dot)i.hide();
                                                 if(i=o.dot1)i.hide();
                                                 if(i=o.dot2)i.hide();
@@ -985,7 +985,7 @@ Class("xui.svg", "xui.UI",{
                                             this.show();
                                             prf._elset.show();
                                             el._shape.show();
-                                            _.arr.each(handlers,function(o,i){
+                                            xui.arr.each(handlers,function(o,i){
                                                 if(i=o.dot)i.show();
                                                 if(i=o.dot1)i.show();
                                                 if(i=o.dot2)i.show();
@@ -1039,10 +1039,10 @@ Class("xui.svg", "xui.UI",{
                                                             anchorPath=tobj.boxing()._getConnectPath();
                                                             if(anchorPath){
                                                                 var anchorBBox;
-                                                                if(anchorBBox=_.get(tobj._pathCached,['_connBBox'])){
+                                                                if(anchorBBox=xui.get(tobj._pathCached,['_connBBox'])){
                                                                 }else{
                                                                     anchorBBox=Raphael.pathBBox(anchorPath);
-                                                                    _.set(tobj._pathCached,['_connBBox'], anchorBBox);
+                                                                    xui.set(tobj._pathCached,['_connBBox'], anchorBBox);
                                                                 }
                                                                 centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
                                                             }
@@ -1216,7 +1216,7 @@ Class("xui.svg", "xui.UI",{
                                         // normal move function
                                         var pathModified,
                                             pos = {cx: X, cy: Y};
-                                        if(beForced || false!==_.tryF(manualPathModify,[index,paths,X,Y,this,pos])){
+                                        if(beForced || false!==xui.tryF(manualPathModify,[index,paths,X,Y,this,pos])){
                                             var i=this._handlerIndex,
                                                 l=paths[i].length,
                                                 data=handlers[i],
@@ -1314,7 +1314,7 @@ Class("xui.svg", "xui.UI",{
                                             var nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            _.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape]);
                                         }
 
                                         // adjust angle for connector
@@ -1357,7 +1357,7 @@ Class("xui.svg", "xui.UI",{
                                             nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            _.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape]);
                                         },'path2',index);
                                 },
                                 addBezierAnchor1DD=function(r,el,x,y,index,conType,prf){
@@ -1382,17 +1382,17 @@ Class("xui.svg", "xui.UI",{
                                             nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            _.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape]);
                                         },'path1',index);
                                 },
                                 type1=1,type2=1,type3=0,prevtype2=1,
                                 handlers=[];
-                            if(_.isStr(paths))paths=Raphael.parsePathString(paths);
+                            if(xui.isStr(paths))paths=Raphael.parsePathString(paths);
                             // connector [type=flowchart] show two point only when dd
                             if(isConnector && connType=="flowchart"){
                                 prf._ddstartFun=function(prf,index,dot){
                                     if(index===0 || index===prf._pathHandler.handlers.length-1)
-                                        _.arr.each(prf._pathHandler.handlers,function(o,i){
+                                        xui.arr.each(prf._pathHandler.handlers,function(o,i){
                                             if(i!==0 && i!==prf._pathHandler.handlers.length-1)
                                                 o.dot.attr({opacity:0,r:0});
                                         });
@@ -1410,7 +1410,7 @@ Class("xui.svg", "xui.UI",{
 
                                         // renew paths
                                         paths.length=0;
-                                        _.arr.each(np,function(p){
+                                        xui.arr.each(np,function(p){
                                             paths.push(p);
                                         });
                                         // stop default path modifing
@@ -1582,7 +1582,7 @@ Class("xui.svg", "xui.UI",{
                             t._obbox=Raphael.pathBBox(t._opath);
 
                             // get prf
-                            if(prf._ddstartFun)_.tryF(prf._ddstartFun,[prf, this._handlerIndex,this]);
+                            if(prf._ddstartFun)xui.tryF(prf._ddstartFun,[prf, this._handlerIndex,this]);
                         }
 
                         if(callback)callback(this, event, 'dragstart', this._attached);
@@ -1606,10 +1606,10 @@ Class("xui.svg", "xui.UI",{
 
                             var attr=t.attr();
                             if(isCombo){
-                                _.merge(prf.properties.attr.KEY,attr,'all');
+                                xui.merge(prf.properties.attr.KEY,attr,'all');
                                 attr=prf.properties.attr.KEY;
                             }else{
-                                _.merge(prf.properties.attr,attr,'all');
+                                xui.merge(prf.properties.attr,attr,'all');
                                 attr=prf.properties.attr;
                             }
                             if(attr.path)
@@ -1619,7 +1619,7 @@ Class("xui.svg", "xui.UI",{
 
 
                             // get prf
-                            if(prf._ddendFun)_.tryF(prf._ddendFun,[prf,this._handlerIndex,this]);
+                            if(prf._ddendFun)xui.tryF(prf._ddendFun,[prf,this._handlerIndex,this]);
 
                         }
                         if(t=paper._anchorShadow){
@@ -1704,7 +1704,7 @@ Class("xui.svg", "xui.UI",{
                                 nshape={path: paths};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                _.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape]);
                                 break;
                             }
                             case 'circle':{
@@ -1733,7 +1733,7 @@ Class("xui.svg", "xui.UI",{
                                 rst={cx: X, cy: Y, rx:x, ry:y};
                                 el.attr(rst);
                                 if(el._shape)el._shape.attr(rst);
-                                _.tryF(el.onShapeChanged,[rst]);
+                                xui.tryF(el.onShapeChanged,[rst]);
                                 rst.dx=ax-lx;
                                 rst.dy=ay-ly;
                                 return rst;
@@ -1744,7 +1744,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={cx: X, cy: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                _.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape]);
                                 break;
                             }
                             case 'rect':{
@@ -1753,7 +1753,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={x: X, y: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                _.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape]);
                                 break;
                             }
                             case 'text':{
@@ -1762,7 +1762,7 @@ Class("xui.svg", "xui.UI",{
                                     nshape={x: X, y: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                _.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape]);
                                 break;
                             }
                         }
@@ -1854,11 +1854,11 @@ Class("xui.svg", "xui.UI",{
         },
         _beforeSerialized:function(profile){
             var o = arguments.callee.upper.call(this,profile),prop=o.properties;
-            prop.attr=_.clone(prop.attr,true);
-            _.filter(prop.attr,function(o,i){
+            prop.attr=xui.clone(prop.attr,true);
+            xui.filter(prop.attr,function(o,i){
                 if(i=='transform'&&(!o||o.length<1))return false;
                 if(i=='href'||i=='target')return false;
-                if(i=='path' && _.isArr(prop.attr.path))prop.attr.path=o.join('');
+                if(i=='path' && xui.isArr(prop.attr.path))prop.attr.path=o.join('');
             });
             return o;
         },
@@ -1896,10 +1896,10 @@ Class("xui.svg", "xui.UI",{
                 attr2={},
                 attr3=xui.svg.$attr;
             // get valid attr
-            _.each(attr,function(o,i){
-                if(/^[A-Z_]+(_[0-9]+)?$/.test(i) && _.isHash(o) && ((i.indexOf("_")!=-1)||( i in ns.$tagName))){
+            xui.each(attr,function(o,i){
+                if(/^[A-Z_]+(_[0-9]+)?$/.test(i) && xui.isHash(o) && ((i.indexOf("_")!=-1)||( i in ns.$tagName))){
                     attr2[i]=attr2[i]||{};
-                    _.each(o,function(o1,i1){
+                    xui.each(o,function(o1,i1){
                         if(attr3[ns.$tagName[i]|| i.split("_")[0].toLowerCase()][i1])
                             attr2[i][i1]=o1;
                     });
@@ -1922,9 +1922,9 @@ Class("xui.svg", "xui.UI",{
         $adjustBB:function(key,value){
             var bb=typeof(key)=='object'?key:{},keys="left,top,right,bottom,x,y,x2,y2,width,height".split(",");
             if(typeof(key)=="string")bb[key]=value;
-            _.filter(bb,function(v,k){
-                if(_.arr.indexOf(keys,k)==-1 || v==='auto' || v==='')return false;
-                if(!_.isNumb(v)){
+            xui.filter(bb,function(v,k){
+                if(xui.arr.indexOf(keys,k)==-1 || v==='auto' || v==='')return false;
+                if(!xui.isNumb(v)){
                     bb[k]=xui.CSS.$px(v);
                     return false;
                 }
@@ -1951,7 +1951,7 @@ Class("xui.svg", "xui.UI",{
             return bb;
         },
         $transform:function(opath,trans){
-            if(!_.isStr(opath))opath=opath.join('');
+            if(!xui.isStr(opath))opath=opath.join('');
             if(/[mlhvcsqtaz]/.test(opath)){
                 opath = Raphael._pathToAbsolute(opath);
             }else{
@@ -2013,34 +2013,34 @@ Class("xui.svg", "xui.UI",{
                 copy=function(o){var a={};for(var i in o)a[i]=o[i];return a;};
             switch(type){
                 case 'circle':{
-                    if(_.isNumb(bbox.width))
+                    if(xui.isNumb(bbox.width))
                         h.r=bbox.width/2;
-                    if(_.isNumb(bbox.height)){
-                        if(bbox.height/2>=attr.r && (_.isSet(h.r)?h.r>=attr.r:1))
-                            h.r=_.isSet(h.r)?Math.max(h.r,bbox.height/2):(bbox.height/2);
+                    if(xui.isNumb(bbox.height)){
+                        if(bbox.height/2>=attr.r && (xui.isSet(h.r)?h.r>=attr.r:1))
+                            h.r=xui.isSet(h.r)?Math.max(h.r,bbox.height/2):(bbox.height/2);
                         else
-                            h.r=_.isSet(h.r)?Math.min(h.r,bbox.height/2):(bbox.height/2);
+                            h.r=xui.isSet(h.r)?Math.min(h.r,bbox.height/2):(bbox.height/2);
                     }
-                    h.cx=_.isNumb(bbox.x)?(bbox.x+(_.isSet(h.r)?h.r:attr.r)):(attr.cx+(_.isSet(h.r)?(h.r-attr.r):0));
-                    h.cy=_.isNumb(bbox.y)?(bbox.y+(_.isSet(h.r)?h.r:attr.r)):(attr.cy+(_.isSet(h.r)?(h.r-attr.r):0));
+                    h.cx=xui.isNumb(bbox.x)?(bbox.x+(xui.isSet(h.r)?h.r:attr.r)):(attr.cx+(xui.isSet(h.r)?(h.r-attr.r):0));
+                    h.cy=xui.isNumb(bbox.y)?(bbox.y+(xui.isSet(h.r)?h.r:attr.r)):(attr.cy+(xui.isSet(h.r)?(h.r-attr.r):0));
                 }break;
                 case 'ellipse':{
-                    if(_.isNumb(bbox.width))
+                    if(xui.isNumb(bbox.width))
                         h.rx=bbox.width/2;
-                    if(_.isNumb(bbox.height))
+                    if(xui.isNumb(bbox.height))
                         h.ry=bbox.height/2;
-                    h.cx=_.isNumb(bbox.x)?(bbox.x+(_.isSet(h.rx)?h.rx:attr.rx)):(attr.cx+(_.isSet(h.rx)?(h.rx-attr.rx):0));
-                    h.cy=_.isNumb(bbox.y)?(bbox.y+(_.isSet(h.ry)?h.ry:attr.ry)):(attr.cy+(_.isSet(h.ry)?(h.ry-attr.ry):0));
+                    h.cx=xui.isNumb(bbox.x)?(bbox.x+(xui.isSet(h.rx)?h.rx:attr.rx)):(attr.cx+(xui.isSet(h.rx)?(h.rx-attr.rx):0));
+                    h.cy=xui.isNumb(bbox.y)?(bbox.y+(xui.isSet(h.ry)?h.ry:attr.ry)):(attr.cy+(xui.isSet(h.ry)?(h.ry-attr.ry):0));
                 }break;
                 case 'rect':
                 case 'image':{
-                    if(_.isNumb(bbox.x))
+                    if(xui.isNumb(bbox.x))
                         h.x=bbox.x;
-                    if(_.isNumb(bbox.y))
+                    if(xui.isNumb(bbox.y))
                         h.y=bbox.y;
-                    if(_.isNumb(bbox.width))
+                    if(xui.isNumb(bbox.width))
                         h.width=bbox.width;
-                    if(_.isNumb(bbox.height))
+                    if(xui.isNumb(bbox.height))
                         h.height=bbox.height;
                 }break;
                 case 'text':{
@@ -2061,9 +2061,9 @@ Class("xui.svg", "xui.UI",{
                        div.empty();
                     }
                     
-                    if(_.isNumb(bbox.x))
+                    if(xui.isNumb(bbox.x))
                         obbox.x=bbox.x;
-                    if(_.isNumb(bbox.y))
+                    if(xui.isNumb(bbox.y))
                         obbox.y=bbox.y;
                         
                     //if('hAlign' in prf.box.$DataModel){
@@ -2071,9 +2071,9 @@ Class("xui.svg", "xui.UI",{
                             va=attr.vAlign||'middle',
                             offsetx=obbox?(textAnchor=='start'?-obbox.width/2:textAnchor=='middle'?0:obbox.width/2):0;
     
-                        if(_.isNumb(bbox.x)){
+                        if(xui.isNumb(bbox.x)){
                             if(ha=='center'){
-                                if(_.isNumb(bbox.width)){
+                                if(xui.isNumb(bbox.width)){
                                     h.x=bbox.x + bbox.width/2;
                                 }else{
                                     h.x=bbox.x+(obbox?(obbox.width/2):0);
@@ -2083,19 +2083,19 @@ Class("xui.svg", "xui.UI",{
                             }else if(ha=='outterleft'){
                                 h.x=bbox.x-(obbox?(obbox.width/2):0);
                             }else if(ha=='right'){
-                                if(_.isNumb(bbox.width)){
+                                if(xui.isNumb(bbox.width)){
                                     h.x=bbox.x+bbox.width-(obbox?(obbox.width/2):0);
                                 }else{
                                     //
                                 }
                             }else if(ha=='outterright'){
-                                if(_.isNumb(bbox.width)){
+                                if(xui.isNumb(bbox.width)){
                                     h.x=bbox.x+bbox.width+(obbox?(obbox.width/2):0);
                                 }else{
                                     //
                                 }
                             }else{
-                                if(_.isNumb(bbox.width)){
+                                if(xui.isNumb(bbox.width)){
                                     h.x=bbox.x+bbox.width*parseFloat(ha)/100;
                                 }else{
                                     h.x=bbox.x+(obbox?(obbox.width*parseFloat(ha)/100):0);
@@ -2104,9 +2104,9 @@ Class("xui.svg", "xui.UI",{
                             h.x += offsetx;
                         }
     
-                        if(_.isNumb(bbox.y)){
+                        if(xui.isNumb(bbox.y)){
                             if(va=='middle'){
-                                if(_.isNumb(bbox.height)){
+                                if(xui.isNumb(bbox.height)){
                                     h.y=bbox.y+bbox.height/2;
                                 }else{
                                     h.y=bbox.y+(obbox?(obbox.height/2):0);
@@ -2116,19 +2116,19 @@ Class("xui.svg", "xui.UI",{
                             }else if(va=='outtertop'){
                                 h.y=bbox.y-(obbox?(obbox.height/2):0);
                             }else if(va=='bottom'){
-                                if(_.isNumb(bbox.height)){
+                                if(xui.isNumb(bbox.height)){
                                     h.y=bbox.y+bbox.height-(obbox?(obbox.height/2):0);
                                 }else{
                                     //
                                 }
                             }else if(va=='outterbottom'){
-                                if(_.isNumb(bbox.height)){
+                                if(xui.isNumb(bbox.height)){
                                     h.y=bbox.y+bbox.height+(obbox?(obbox.height/2):0);
                                 }else{
                                     //
                                 }
                             }else{
-                                if(_.isNumb(bbox.height)){
+                                if(xui.isNumb(bbox.height)){
                                     h.y=bbox.y+bbox.height*parseFloat(va)/100;
                                 }else{
                                     h.y=bbox.y+(obbox?(obbox.height*parseFloat(va)/100):0);
@@ -2136,13 +2136,13 @@ Class("xui.svg", "xui.UI",{
                             }
                         }
                     /*}else{
-                        if(_.isNumb(obbox.x))
+                        if(xui.isNumb(obbox.x))
                             h.x=obbox.x;
-                        if(_.isNumb(obbox.y))
+                        if(xui.isNumb(obbox.y))
                             h.y=obbox.y;
-                        if(_.isNumb(obbox.width))
+                        if(xui.isNumb(obbox.width))
                             h.width=obbox.width;
-                        if(_.isNumb(obbox.height))
+                        if(xui.isNumb(obbox.height))
                             h.height=obbox.height;
                     }*/
                 }break;
@@ -2166,13 +2166,13 @@ Class("xui.svg", "xui.UI",{
                     //if(obbox.width===0 || obbox.height===0)
                     //    return;
 
-                    if(_.isNumb(bbox.x))
+                    if(xui.isNumb(bbox.x))
                         h.x=bbox.x;
-                    if(_.isNumb(bbox.y))
+                    if(xui.isNumb(bbox.y))
                         h.y=bbox.y;
-                    if(_.isNumb(bbox.width))
+                    if(xui.isNumb(bbox.width))
                         h.width=bbox.width;
-                    if(_.isNumb(bbox.height))
+                    if(xui.isNumb(bbox.height))
                         h.height=bbox.height;
 
                     if(('x' in h && obbox.x!==h.x)||('y' in h && obbox.y!==h.y)){
@@ -2236,21 +2236,21 @@ Class("xui.svg", "xui.UI",{
                         var ww=('width' in h)?h.width:null,
                             hh=('height' in h)?h.height:null,
                             opath= h.path ||attr.path,
-                            npath=xui.svg.$transform(opath, "s"+((_.isSet(ww)&&ww!==obbox2.width)?(obbox2.width===0?(ww>=0?1.1:0.9):ww/obbox2.width):"1")+","+((_.isSet(hh)&&hh!==obbox2.height)?(obbox2.height===0?(hh>=0?1.1:0.9):hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
+                            npath=xui.svg.$transform(opath, "s"+((xui.isSet(ww)&&ww!==obbox2.width)?(obbox2.width===0?(ww>=0?1.1:0.9):ww/obbox2.width):"1")+","+((xui.isSet(hh)&&hh!==obbox2.height)?(obbox2.height===0?(hh>=0?1.1:0.9):hh/obbox2.height):"1")+","+obbox.x+","+obbox.y);
                         h.path=npath;
                     }
                 }break;
             }
 
             var attr2=xui.svg.$attr[type];
-            _.filter(h,function(o,i){
-                if(_.isSet(o) && (i in attr2)){
+            xui.filter(h,function(o,i){
+                if(xui.isSet(o) && (i in attr2)){
                     attr[i]=o;
                 }else{
                     return false;
                 }
             });
-            if(el && (!_.isEmpty(h))){
+            if(el && (!xui.isEmpty(h))){
                 // keep transfrom
                 var ts=Raphael.parseTransformString(el.transform()),withTransform;
                 if(ts && ts.length){
@@ -2277,7 +2277,7 @@ Class("xui.svg", "xui.UI",{
                         ts[it][2]-=ts2[0][2];
                         
                         if(!ts[it][1] && !ts[it][2]){
-                            _.arr.removeFrom(ts, it);
+                            xui.arr.removeFrom(ts, it);
                         }
                     }
                 }
@@ -2317,16 +2317,16 @@ Class("xui.svg", "xui.UI",{
             // redraw those connectors
             if(prf.parent.key!=="xui.UI.SVGPaper")return;
 
-            var children=_.get(prf,['parent','children']),
+            var children=xui.get(prf,['parent','children']),
                 alias=prf.alias;
             if(children&&children.length){
-                _.arr.each(children,function(o,i){
+                xui.arr.each(children,function(o,i){
                     if(!o[0].destroyed && prf.renderCompleted && o[0].renderCompleted && o[0].key==="xui.svg.connector"){
-                        if(alias===_.get(o[0],['properties','fromObj'])){
+                        if(alias===xui.get(o[0],['properties','fromObj'])){
                             // redraw from point
                             o[0].box._reconnect(o[0],prf);
                         }
-                        if(alias===_.get(o[0],['properties','toObj'])){
+                        if(alias===xui.get(o[0],['properties','toObj'])){
                             // redraw to point
                             o[0].box._reconnect(o[0],null,prf);
                         }
@@ -2336,15 +2336,15 @@ Class("xui.svg", "xui.UI",{
         },
         _syncAlias:function(prf,oa,na){
             // find all connectors connected on me, sync alias
-            var children=_.get(prf,['parent','children']);
+            var children=xui.get(prf,['parent','children']);
             if(children&&children.length){
-                _.arr.each(children,function(o,i){
+                xui.arr.each(children,function(o,i){
                     if(o[0].key==="xui.svg.connector"){
-                        if(oa===_.get(o[0],['properties','fromObj'])){
-                            _.set(o[0],['properties','fromObj'],na);
+                        if(oa===xui.get(o[0],['properties','fromObj'])){
+                            xui.set(o[0],['properties','fromObj'],na);
                         }
-                        if(oa===_.get(o[0],['properties','toObj'])){
-                            _.set(o[0],['properties','toObj'],na);
+                        if(oa===xui.get(o[0],['properties','toObj'])){
+                            xui.set(o[0],['properties','toObj'],na);
                         }
                     }
                 });
@@ -2530,7 +2530,7 @@ Class("xui.svg.absComb", "xui.svg",{
 
                 if(prf.renderId && ss&&ss[0]){
                     if(prop.attr.TEXT&&prop.attr.TEXT.text){
-                        var attr=_.copy(prop.attr.TEXT||{}),att2=ss[0]._getBBox(true);
+                        var attr=xui.copy(prop.attr.TEXT||{}),att2=ss[0]._getBBox(true);
                         attr.hAlign=prop.hAlign;
                         attr.vAlign=prop.vAlign;
                         if(!('x' in bb))bb.x=att2.x;
@@ -2547,7 +2547,7 @@ Class("xui.svg.absComb", "xui.svg",{
                 var prop=prf.properties, ss=prf._elset;
                 if(prf.renderId && ss && ss[0]){
                     if(prop.attr.TEXT && prop.attr.TEXT.text){
-                        var attr=_.copy(prop.attr.TEXT||{}),att2=ss[0]._getBBox(true);
+                        var attr=xui.copy(prop.attr.TEXT||{}),att2=ss[0]._getBBox(true);
                         attr.hAlign=prop.hAlign;
                         attr.vAlign=prop.vAlign;
                         xui.svg.$setBB(prf,"text", att2, attr, ss[1], false);
@@ -2557,7 +2557,7 @@ Class("xui.svg.absComb", "xui.svg",{
         },
         setAttr:function(key, value, reset, notify){
             var h;
-            if(_.isHash(key))h=key;
+            if(xui.isHash(key))h=key;
             else{
                 h={};
                 h[key]=value;
@@ -2577,14 +2577,14 @@ Class("xui.svg.absComb", "xui.svg",{
         ISCOMBO:1,
         _beforeSerialized:function(profile){
             var o = arguments.callee.upper.call(this,profile),prop=o.properties;
-            prop.attr=_.clone(prop.attr,true);
-            _.filter(prop.attr.KEY,function(o,i){
+            prop.attr=xui.clone(prop.attr,true);
+            xui.filter(prop.attr.KEY,function(o,i){
                 if(i=='transform'&&(!o||o.length<1))return false;
                 if(i=='href'||i=='target')return false;
-                if(i=='path' && _.isArr(prop.attr.KEY.path))prop.attr.KEY.path=o.join('');
+                if(i=='path' && xui.isArr(prop.attr.KEY.path))prop.attr.KEY.path=o.join('');
             });
             if(prop.attr.TEXT){
-                _.filter(prop.attr.TEXT,function(o,i){
+                xui.filter(prop.attr.TEXT,function(o,i){
                     // TEXT's transform is from KEY
                     if(i=='transform')return false;
                     // TEXT's postition is caculated from KEY
@@ -2685,7 +2685,7 @@ Class("xui.svg.absComb", "xui.svg",{
             }
         },
         _syncAttr:function(prf,options,shapeChanged){
-            var upper=arguments.callee.upper, args=_.toArr(arguments);
+            var upper=arguments.callee.upper, args=xui.toArr(arguments);
             upper.apply(this,args);
             upper=null;
             if(shapeChanged){
@@ -2796,9 +2796,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
                     prf[1].toFront();
                     prf[0].toFront();
                 }
-                var arr=_.get(prf,['parent','children']);
+                var arr=xui.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.subIndexOf(arr,"0",prf),o;
+                    var index=xui.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
                         arr.splice(index,1);
@@ -2813,9 +2813,9 @@ Class("xui.svg.connector","xui.svg.absComb",{
                     prf[0].toBack();
                     prf[1].toBack();
                 }
-                var arr=_.get(prf,['parent','children']);
+                var arr=xui.get(prf,['parent','children']);
                 if(arr && arr.length){
-                    var index=_.arr.subIndexOf(arr,"0",prf),o;
+                    var index=xui.arr.subIndexOf(arr,"0",prf),o;
                     if(index!=-1){
                         o=arr[index];
                         arr.splice(index,1);
@@ -2927,7 +2927,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
             return s;
         },
         _syncAttr:function(prf,options,shapeChanged){
-            var upper=arguments.callee.upper,args=_.toArr(arguments);
+            var upper=arguments.callee.upper,args=xui.toArr(arguments);
             upper.apply(this,args);
             upper=null;
             prf._pathCached={};
@@ -2957,7 +2957,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
 
             if(('bBox' in options) && prf.parent){
                 if(prop.fromObj&&prop.fromPoint){
-                    _.arr.each(prf.parent.children,function(o){
+                    xui.arr.each(prf.parent.children,function(o){
                         if(o[0].alias==prop.fromObj){
                             ns._reconnect(prf,o[0]);
                             return false;
@@ -2965,7 +2965,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
                     });
                 }
                 if(prop.toObj&&prop.toPoint){
-                    _.arr.each(prf.parent.children,function(o){
+                    xui.arr.each(prf.parent.children,function(o){
                         if(o[0].alias==prop.toObj){
                             ns._reconnect(prf,null,o[0]);
                             return false;
@@ -2994,7 +2994,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
                             if(np){
                                 // renew paths
                                 path.length=0;
-                                _.arr.each(np,function(p){
+                                xui.arr.each(np,function(p){
                                     path.push(p);
                                 });
                             }
@@ -3028,7 +3028,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
                             if(np){
                                 // renew paths
                                 path.length=0;
-                                _.arr.each(np,function(p){
+                                xui.arr.each(np,function(p){
                                     path.push(p);
                                 });
                             }
@@ -3071,17 +3071,17 @@ Class("xui.svg.connector","xui.svg.absComb",{
             if(startConn){
                 ins=null;
                 //startPoints 3
-                _.arr.each(prf.parent.children,function(p){
+                xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.fromObj){
                         ins=p[0].boxing();
                         sPoint=ins._getConnectPoint(prop.fromPoint);
                         if(sPoint){
                             sPath=ins._getConnectPath();
 
-                            if(sBox=_.get(p[0]._pathCached,['_connBBox'])){
+                            if(sBox=xui.get(p[0]._pathCached,['_connBBox'])){
                             }else{
                                 sBox=Raphael.pathBBox(sPath);
-                                _.set(p[0]._pathCached,['_connBBox'], sBox)
+                                xui.set(p[0]._pathCached,['_connBBox'], sBox)
                             }
 
                             if(sPoint.solid){
@@ -3105,17 +3105,17 @@ Class("xui.svg.connector","xui.svg.absComb",{
             if(endConn){
                 ins=null;
                 //endPoints 3
-                _.arr.each(prf.parent.children,function(p){
+                xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.toObj){
                         ins=p[0].boxing();
                         ePoint=ins._getConnectPoint(prop.toPoint);
                         if(ePoint){
                             ePath=ins._getConnectPath();
 
-                            if(eBox=_.get(p[0]._pathCached,['_connBBox'])){
+                            if(eBox=xui.get(p[0]._pathCached,['_connBBox'])){
                             }else{
                                 eBox=Raphael.pathBBox(ePath);
-                                _.set(p[0]._pathCached,['_connBBox'], eBox)
+                                xui.set(p[0]._pathCached,['_connBBox'], eBox)
                             }
 
                             if(ePoint.solid){
@@ -3272,7 +3272,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
                     endPoints=[{x:x,y:y}];
                 }else{
                     var p={x:opath[0][1],y:opath[0][2]};
-                    _.arr.each(opath,function(o){
+                    xui.arr.each(opath,function(o){
                         if(o[0]=='H')p.x=o[1];
                         else p.y=o[1];
                     });
@@ -3284,10 +3284,10 @@ Class("xui.svg.connector","xui.svg.absComb",{
 
             // Collect all possible paths
             var paths=[],path,inter;
-            _.arr.each(startPoints,function(sp,i){
-                _.arr.each(endPoints,function(ep,j){
+            xui.arr.each(startPoints,function(sp,i){
+                xui.arr.each(endPoints,function(ep,j){
                     for(var k=0;k<=1;k++){
-                        path=_.clone(startPath[i],true);
+                        path=xui.clone(startPath[i],true);
                         if(k===0){
                             if(ep.x!==sp.x)path.push(['H',ep.x]);
                             if(ep.y!==sp.y)path.push(['V',ep.y]);
@@ -3295,7 +3295,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
                             if(ep.y!==sp.y)path.push(['V',ep.y]);
                             if(ep.x!==sp.x)path.push(['H',ep.x]);
                         }
-                        if(endPath[j] && endPath[j].length)_.arr.insertAny(path, endPath[j]);
+                        if(endPath[j] && endPath[j].length)xui.arr.insertAny(path, endPath[j]);
 
                         paths.push({
                             path:path,
@@ -3308,7 +3308,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
 
             // filter repeat segments
             var arr=[];
-            _.filter(paths,function(o){
+            xui.filter(paths,function(o){
                 var ox=o.path[0][1],
                     oy=o.path[0][2],
                     xdir,ydir,
@@ -3353,12 +3353,12 @@ Class("xui.svg.connector","xui.svg.absComb",{
             });
 
             // caculate cross count
-            _.arr.each(paths,function(o){
+            xui.arr.each(paths,function(o){
                 inter=0;
                 var cx,cy;
                 if(sBox||eBox){
                     cx=o.path[0][1];cy=o.path[0][2];
-                    _.arr.each(o.path,function(p,i){
+                    xui.arr.each(o.path,function(p,i){
                         if(i!==0){
                             if(p[0]=='H'){
                                 if(sBox && cy>=sBox.y && cy<=sBox.y2 && Math.max(cx,p[1])>Math.min(sBox.x,sBox.x2) && Math.min(cx,p[1])<Math.max(sBox.x,sBox.x2))inter++;
@@ -3377,7 +3377,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
 
             // Sort paths by path length
 			// < 22, stable sort
-            _.arr.stableSort(paths,function(x,y){
+            xui.arr.stableSort(paths,function(x,y){
                 return x.inter>y.inter?1:
                        x.inter<y.inter?-1:
                        x.len>y.len?1:
@@ -3414,7 +3414,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
                             attr.y=bbn.y;
                             el.attr(bbn);
                         }else{
-                            _.merge(bbn, el._getBBox(true),'all',true);
+                            xui.merge(bbn, el._getBBox(true),'all',true);
                             if('x' in bb)bbn.x+=bb.x-bbo.x;
                             if('y' in bb)bbn.y+=bb.y-bbo.y;
                             if('width' in bb)bbn.width+=bb.width-bbo.width;
@@ -3424,7 +3424,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
                     });
                 }else{
                     if(!prf._init_bbox)prf._init_bbox={};
-                    _.merge(prf._init_bbox,bb,'all',true);
+                    xui.merge(prf._init_bbox,bb,'all',true);
                 }
             });
         }
@@ -3433,25 +3433,25 @@ Class("xui.svg.group", "xui.svg.absComb",{
         ISCOMBO:1,
         _beforeSerialized:function(profile){
             var o = arguments.callee.upper.call(this,profile),prop=o.properties;
-            var attrs=prop.attr=_.clone(prop.attr,true);
+            var attrs=prop.attr=xui.clone(prop.attr,true);
             
-            _.filter(attrs.KEY,function(o,i){
+            xui.filter(attrs.KEY,function(o,i){
                 if(i=='transform'&&(!o||o.length<1))return false;
                 if(i=='href'||i=='target')return false;
-                if(i=='path' && _.isArr(prop.attr.KEY.path))prop.attr.KEY.path=o.join('');
+                if(i=='path' && xui.isArr(prop.attr.KEY.path))prop.attr.KEY.path=o.join('');
             });
             // other elements
-            _.each(attrs,function(attr,key){
+            xui.each(attrs,function(attr,key){
                 if(key=="KEY")return;
-                _.filter(attr,function(o,i){
+                xui.filter(attr,function(o,i){
                     // transform is from KEY
                     if(i=='transform')return false;
                 });
                 
                 var type=key.split("_")[0];
                 if(type=="path"){
-                    _.each(attr,function(o,i){
-                        if(i=='path' && _.isArr(o))attr.path=o.join('');
+                    xui.each(attr,function(o,i){
+                        if(i=='path' && xui.isArr(o))attr.path=o.join('');
                     });
                 }
             });
@@ -3488,7 +3488,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
             el.node.id=prf.box.KEY+":"+prf.serialId+":";
             s.push(el);
             // other elements
-            _.each(attrs,function(attr,key){
+            xui.each(attrs,function(attr,key){
                 if(key=="KEY")return;
                 
                 var type=key.split("_")[0].toLowerCase();

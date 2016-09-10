@@ -121,23 +121,24 @@ Class('App', 'xui.Com',{
             if(!data)
                 alert('Ensure all the fields are valid first!');
             else
-                SPA.input13.setValue(_.serialize(data),true);
+                SPA.input13.setValue(xui.serialize(data),true);
         },
         _onready:function () {
             SPA=this;
         },
         _button29_onclick:function (profile, e, value) {
-            SPA.databinder.setData( _.unserialize(SPA.input13.getUIValue())).updateDataToUI();
+            SPA.databinder.setData( xui.unserialize(SPA.input13.getUIValue()));
+            SPA.databinder.updateDataToUI();
         },
         _databinder_afterupdatedatafromui : function (profile, dataFromUI) {
-            _.each(dataFromUI,function(o,i){
+            xui.each(dataFromUI,function(o,i){
                 if(i=="Name")
                     dataFromUI[i]="["+o+"]";
             });
             return dataFromUI;
         },
         _databinder_beforeupdatedatatoui : function (profile, dataToUI) {
-            _.each(dataToUI,function(o,i){
+            xui.each(dataToUI,function(o,i){
                 if(i=="Name")
                     dataToUI[i]=o.replace(/[\[\]]/g,"");
             });

@@ -40,9 +40,9 @@ Class('App.Table', 'xui.Com',{
 
                 var header = me.treegrid3.getHeader(),arr=[],a=[],b,rows=[];
 
-                _.arr.each(data,function(o){
+                xui.arr.each(data,function(o){
                     a=[];
-                    _.each(o,function(v,i){
+                    xui.each(o,function(v,i){
                         if(!b)arr.push(i);
                         a.push(v);
                     });

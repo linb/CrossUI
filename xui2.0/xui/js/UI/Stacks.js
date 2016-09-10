@@ -148,7 +148,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             if(height){
                 height-=bw;
                 t2=t1=0;
-                _.arr.each(prop.items,function(o){
+                xui.arr.each(prop.items,function(o){
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
@@ -157,7 +157,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     t1 += off
                     if(o.id == key)return false;
                 });
-                _.arr.each(prop.items,function(o){
+                xui.arr.each(prop.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
                     obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});

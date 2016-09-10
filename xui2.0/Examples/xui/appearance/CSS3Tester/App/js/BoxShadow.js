@@ -164,7 +164,7 @@ Class('App.BoxShadow', 'xui.Com',{
             };
         },
         _t_sd_afteruivalueset : function (profile){
-            _.resetRun("boxShadow",this.setTS,0,null,this);
+            xui.resetRun("boxShadow",this.setTS,0,null,this);
         },
         setTS:function(){
             var values = this._getValues(),

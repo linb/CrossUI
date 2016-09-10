@@ -62,7 +62,7 @@ Class('xui.Event',null,{
                 type="mousewheel";
             //for setBlurTrigger
             if(type=='mousedown' || type=="mousewheel")
-                _.tryF(xui.Dom._blurTrigger,[obj,event]);
+                xui.tryF(xui.Dom._blurTrigger,[obj,event]);
             //for resize
             else if(type=="resize"){
                 type='size';
@@ -110,7 +110,7 @@ Class('xui.Event',null,{
             r = f(event, src.$xid);
             // add a patch for resize
             if(w===src && type=="size"){
-                _.asyRun(function(){
+                xui.asyRun(function(){
                     f(event, src.$xid);
                     f.tasks.length=0;
                     delete f.tasks;
@@ -149,7 +149,7 @@ Class('xui.Event',null,{
                 //set _preDroppable flag, for parent node is droppable too
                 if('mouseout'==type && !dragdrop._dropElement && pre && pre==src.$xid){
                     self._preDroppable=id;
-                    _.asyRun(function(){delete xui.Event._preDroppable});
+                    xui.asyRun(function(){delete xui.Event._preDroppable});
                 }
 
                 //if fire dd, prevent to fire parent dd
@@ -191,7 +191,7 @@ Class('xui.Event',null,{
         simulateEvent : function(target, type, options, fromtype) {
             options = options || {};
             if(target[0])target = target[0];
-            _.tryF(xui.Event.$eventsforSimulation[fromtype||type],[target, type, options]);
+            xui.tryF(xui.Event.$eventsforSimulation[fromtype||type],[target, type, options]);
         },
         _getEventName:function(name,pos){
             return (name=this._map1[name]) && ((pos===0||pos==1||pos==2) ? name[pos] : name);
@@ -221,7 +221,7 @@ Class('xui.Event',null,{
                 }
             }while(node && (node=node.parentNode) && node!==document && node!==window)
 
-            r=_.tryF(target[1],[target[0],tabindex],src);
+            r=xui.tryF(target[1],[target[0],tabindex],src);
             node=src=null;
             return false;
         },
@@ -307,8 +307,8 @@ Class('xui.Event',null,{
                 return {left:event.pageX, top:event.pageY};
             else{
     			var d=document, doc = d.documentElement, body = d.body,t,
-    			_L = (_.isSet(t=doc && doc.scrollLeft)?t:_.isSet(t=body && body.scrollLeft)?t:0) - (_.isSet(t=doc.clientLeft)?t:0),
-    			_T = (_.isSet(t=doc && doc.scrollTop)?t:_.isSet(t=body && body.scrollTop)?t:0) - (_.isSet(t=doc.clientTop)?t:0);
+    			_L = (xui.isSet(t=doc && doc.scrollLeft)?t:xui.isSet(t=body && body.scrollLeft)?t:0) - (xui.isSet(t=doc.clientLeft)?t:0),
+    			_T = (xui.isSet(t=doc && doc.scrollTop)?t:xui.isSet(t=body && body.scrollTop)?t:0) - (xui.isSet(t=doc.clientTop)?t:0);
                 return {left:event.clientX+_L, top:event.clientY+_T};
             }
         },
@@ -510,7 +510,7 @@ Class('xui.Event',null,{
                 // use custom event to avoid affecting system or 3rd lib
                 // it will fire xui beforeMousedown event group only
                 // Needs delay to allow the browser to determine if the user is performing another gesture (etc. double-tap zooming)
-                E._xuitouchdowntime=_.setTimeout(function(){
+                E._xuitouchdowntime=xui.setTimeout(function(){
                     E._xuitouchdowntime=0;
                     E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
                 },100);
@@ -525,7 +525,7 @@ Class('xui.Event',null,{
                 interval=_now-E.$lastMouseupTime,
                 touches = event.changedTouches, first = touches[0];
             if(E._xuitouchdowntime){
-                _.clearTimeout(E._xuitouchdowntime);
+                xui.clearTimeout(E._xuitouchdowntime);
             }
             E.__simulatedMouseupNode=first.target;
             if(!E.isSupported("mouseup")){
@@ -539,7 +539,7 @@ Class('xui.Event',null,{
                 }
                 // doubleclick for touch event
                 if(interval<=E.$dblcInterval){
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                         // disalbe next one
                         E.$lastMouseupTime=0;
                         E.simulateEvent(first.target,"dblclick",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY});
@@ -581,15 +581,15 @@ Class('xui.Event',null,{
         t1,t2,s;
         
         t1=ns._map1={};
-        _.arr.each(ns._events,function(o){
-            s=_.str.initial(o);
+        xui.arr.each(ns._events,function(o){
+            s=xui.str.initial(o);
             t1[o]=[a1[0]+s, a1[1]+s, a1[2]+s];
         });
         
         t1=ns._eventMap={};
         t2=ns._eventHandler={};
-        _.arr.each(ns._events,function(o){
-            s=_.str.initial(o);
+        xui.arr.each(ns._events,function(o){
+            s=xui.str.initial(o);
             t1[o]=t1[a1[1]+o]=t1[a1[0]+s]=t1[a1[1]+s]=t1[a1[2]+s]= o;
             t2[o]=t2[a1[1]+o]=t2[a1[0]+s]=t2[a1[1]+s]=t2[a1[2]+s]= (o in m1)?m1[o]:('on'+o);
         });
@@ -638,7 +638,7 @@ Class('xui.Event',null,{
                 case "keypress":
                     break;
             }
-           _.merge(options,{
+           xui.merge(options,{
                 bubbles :true,
                 cancelable:true,
                 view:w,
@@ -706,7 +706,7 @@ Class('xui.Event',null,{
         },
         mouseEvent=function(target, type , options){
            options=options||{};
-           _.merge(options,{
+           xui.merge(options,{
                 bubbles :true,
                 cancelable:true,
                 view:w,
@@ -813,7 +813,7 @@ Class('xui.Event',null,{
             }
         },
         UIEvent=function(target, type , options){    
-           _.merge(options,{
+           xui.merge(options,{
                 bubbles : true,
                 cancelable:(type === "submit"),
                 view:w,
@@ -845,7 +845,7 @@ Class('xui.Event',null,{
         },
         // for ios v2.0+
         gestureEvent=function(target, type , options){
-           _.merge(options,{
+           xui.merge(options,{
                 bubbles :true,
                 cancelable:true,
                 detail:2,
@@ -886,7 +886,7 @@ Class('xui.Event',null,{
                     throw 'No touch object in changedTouches.';
                 }
             }
-           _.merge(options,{
+           xui.merge(options,{
                 bubbles :true,
                 cancelable:(type !== "touchcancel"),
                 detail:1,

@@ -298,10 +298,10 @@ Class('App.Transition', 'xui.Com',{
             };
         },
         _ctl_sbutton12_onclick : function (profile){
-            _.resetRun("transform2",this.setTF,0,null,this);
+            xui.resetRun("transform2",this.setTF,0,null,this);
         },
         _t_cs2_afteruivalueset : function (profile){
-            _.resetRun("transition",this.setTS,0,null,this);
+            xui.resetRun("transition",this.setTS,0,null,this);
         },
         setTS:function(){
             var ns=this,

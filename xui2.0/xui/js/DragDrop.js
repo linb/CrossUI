@@ -217,7 +217,7 @@ Class('xui.DragDrop',null,{
         _reset:function(){
             var d=this,NULL=null,FALSE=false;
             //reset
-            _.tryF(d.$reset);
+            xui.tryF(d.$reset);
             d.setDropFace();
             d._resetProxy();
 
@@ -243,7 +243,7 @@ Class('xui.DragDrop',null,{
             //reset profile
             d._profile={
                 // the unqiue id for dd
-                $id:_()+"",
+                $id:xui.rand(),
 
                 dragType:'shape',
                 dragCursor:'move',
@@ -331,7 +331,7 @@ Class('xui.DragDrop',null,{
             d._profile.isWorking=true;
             d.__touchingfordd = e.type=="xuitouchdown";
 
-            profile=_.isHash(profile)?profile:{};
+            profile=xui.isHash(profile)?profile:{};
             e = e || win.event;
             // not left button
             if(xui.Event.getBtn(e) !== 'left')
@@ -346,7 +346,7 @@ Class('xui.DragDrop',null,{
             }
 
             //must set here
-            d._defer = profile.dragDefer = _.isNumb(profile.dragDefer) ? profile.dragDefer : 0;
+            d._defer = profile.dragDefer = xui.isNumb(profile.dragDefer) ? profile.dragDefer : 0;
             if(true===profile.dragCursor)profile.dragCursor=d._cursor;
             if(typeof profile.dragIcon == 'string') profile.dragType="icon";
 
@@ -371,7 +371,7 @@ Class('xui.DragDrop',null,{
             //                  try{
                 var p=d._profile;
                 //set profile
-                _.merge(p, profile, "with");
+                xui.merge(p, profile, "with");
 
                 //call event, you can call abort(set _stoop)
                 d._source.beforeDragbegin();
@@ -405,7 +405,7 @@ Class('xui.DragDrop',null,{
                 }
                 //avoid setcapture
                 if(xui.browser.ie)
-                    _.setTimeout(function(){if(fromN.releaseCapture)fromN.releaseCapture()});
+                    xui.setTimeout(function(){if(fromN.releaseCapture)fromN.releaseCapture()});
 
                 //back up
                 doc[mm] = d.$onDrag;
@@ -427,7 +427,7 @@ Class('xui.DragDrop',null,{
                 if(xui.browser.isTouch && d.__touchingfordd){
                     d._c_droppable=[];
                     var cdata=xui.$cache.droppable[p.dragKey],purge=[];
-                    _.arr.each(cdata,function(i){
+                    xui.arr.each(cdata,function(i){
                         if(!xui.use(i).get(0)){
                             purge.push(i);
                             return;
@@ -441,8 +441,8 @@ Class('xui.DragDrop',null,{
                     });
                     // self clear
                     if(purge.length){
-                        _.arr.each(purge,function(key){
-                            _.arr.removeValue(cdata,key);
+                        xui.arr.each(purge,function(key){
+                            xui.arr.removeValue(cdata,key);
                         });
                     }
                 }
@@ -461,14 +461,14 @@ Class('xui.DragDrop',null,{
                 xui(doc).onMousedown(true, xui.Event.getEventPara(e, _pos));
 
             if(profile.dragDefer<1){
-                _.tryF(d._start,[e],d);
+                xui.tryF(d._start,[e],d);
                 return false;
             }else{
                 //for mouseup before drag
                 d.$mouseup = doc[mu];
                 doc[mu] = function(e){
                     xui.DragDrop._end()._reset();
-                    return _.tryF(document.onmouseup,[e],null,true);
+                    return xui.tryF(document.onmouseup,[e],null,true);
                 };
                 if(xui.browser.isTouch){
                     d.$touchend = doc[mu2];
@@ -620,7 +620,7 @@ Class('xui.DragDrop',null,{
 //                }catch(a){}finally{
                 d._reset();
                 evt.stopBubble(e);
-                _.tryF(document.onmouseup,[e]);
+                xui.tryF(document.onmouseup,[e]);
                 return !!r;
 //                }
         },
@@ -678,7 +678,7 @@ Class('xui.DragDrop',null,{
         },
         setDragIcon:function(key){
             //avoid other droppable targetNode's setDropFace disturbing.
-            _.resetRun('setDropFace', null);
+            xui.resetRun('setDropFace', null);
             var d=this,p=d._profile,i=p.proxyNode,ic=d._Icons;
             if(i && p.dragType=='icon')
                 i.first(4).css(typeof key=='object'?key:{backgroundPosition: (ic[key]||key)});
@@ -752,8 +752,8 @@ Class('xui.DragDrop',null,{
                 case 'deep_copy':
                 case 'copy':
                    var t;
-                    size.width =  _.isNumb(p.targetWidth)? p.targetWidth:(targetNode.cssSize().width||0);
-                    size.height = _.isNumb(p.targetHeight)?p.targetHeight:(targetNode.cssSize().height||0);
+                    size.width =  xui.isNumb(p.targetWidth)? p.targetWidth:(targetNode.cssSize().width||0);
+                    size.height = xui.isNumb(p.targetHeight)?p.targetHeight:(targetNode.cssSize().height||0);
                     var n=targetNode.clone(p.dragType=='deep_copy')
                         .css({position:'relative',margin:'0',left:'0',top:'0',right:'',bottom:'',cursor:p.dragCursor,'cssFloat':'none'})
                         .cssSize(size)
@@ -781,9 +781,9 @@ Class('xui.DragDrop',null,{
                     target = d._setProxy(null,pos);
                     break;
                 case 'icon':
-                    pos.left=_.isNumb(p.targetLeft)?p.targetLeft:(mousePos.left /*- xui.win.scrollLeft()*/ + 16);
-                    pos.top=_.isNumb(p.targetTop)?p.targetTop:(mousePos.top /*- xui.win.scrollTop()*/ + 16);
-                    t='<table border="0" class="xui-node xui-node-table"><tr><td valign="top"><span class="xui-node xui-node-span" style="background:url('+p.dragIcon+') no-repeat left top;width:'+(_.isNumb(p.targetWidth)?p.targetWidth:16)+'px;height:'+(_.isNumb(p.targetHeight)?p.targetHeight:16)+'px;" ></span></td><td id="xui:dd:shadow" '+(p.shadowFrom?'style="border:solid 1px #e5e5e5;background:#fff;font-size:12px;line-height:14px;"':'')+'>'+(p.shadowFrom?
+                    pos.left=xui.isNumb(p.targetLeft)?p.targetLeft:(mousePos.left /*- xui.win.scrollLeft()*/ + 16);
+                    pos.top=xui.isNumb(p.targetTop)?p.targetTop:(mousePos.top /*- xui.win.scrollTop()*/ + 16);
+                    t='<table border="0" class="xui-node xui-node-table"><tr><td valign="top"><span class="xui-node xui-node-span" style="background:url('+p.dragIcon+') no-repeat left top;width:'+(xui.isNumb(p.targetWidth)?p.targetWidth:16)+'px;height:'+(xui.isNumb(p.targetHeight)?p.targetHeight:16)+'px;" ></span></td><td id="xui:dd:shadow" '+(p.shadowFrom?'style="border:solid 1px #e5e5e5;background:#fff;font-size:12px;line-height:14px;"':'')+'>'+(p.shadowFrom?
 
                     xui(p.shadowFrom).clone(true)
                     .css({left:'auto',top:'auto', position:'relative'})
@@ -830,7 +830,7 @@ Class('xui.DragDrop',null,{
             if(o)
                 for(var i in o)
                     if(c[i])
-                        _.arr.removeValue(c[i],node.$xid);
+                        xui.arr.removeValue(c[i],node.$xid);
 
             xui.setNodeData(node.$xid, ['_dropKeys']);
         },
@@ -844,7 +844,7 @@ Class('xui.DragDrop',null,{
                         t._onDragover=null;
                         xui.use(i).onDragenter(true);
                         if(t._dropElement)
-                            _.resetRun('setDropFace', t.setDropFace, 0, [i], t);
+                            xui.resetRun('setDropFace', t.setDropFace, 0, [i], t);
                     }
                 }, eh)
                 .beforeMouseout(function(p,e,i){
@@ -853,7 +853,7 @@ Class('xui.DragDrop',null,{
                         xui.use(i).onDragleave(true);
                         if(t._dropElement==i){
                             t.setDropElement(t._onDragover=null);
-                            _.resetRun('setDropFace', t.setDropFace, 0, [null], t);
+                            xui.resetRun('setDropFace', t.setDropFace, 0, [null], t);
                         }
                     }
                 }, eh)
@@ -876,7 +876,7 @@ Class('xui.DragDrop',null,{
             if(o)
                 for(var i in o)
                     if(c[i])
-                        _.arr.removeValue(c[i],node.$xid);
+                        xui.arr.removeValue(c[i],node.$xid);
 
             var h={},a=key.split(/[^\w-]+/)
             for(var i=0,l=a.length;i<l;i++){
@@ -891,14 +891,14 @@ Class('xui.DragDrop',null,{
     After:function(){
         this._reset();
         //add dom dd functions
-        _.each({
+        xui.each({
             startDrag:function(e, profile, dragKey, dragData){
                 xui.DragDrop.startDrag(e, this.get(0), profile, dragKey||'', dragData||null);
                 return this;
             },
             draggable:function(flag, profile, dragKey, dragData, target){
                 var self=this,
-                    target=target?typeof(target)=="function"?_.tryF(getTarget,[],this):xui(target):null, 
+                    target=target?typeof(target)=="function"?xui.tryF(getTarget,[],this):xui(target):null, 
                     dd=xui.DragDrop;
                 if(!target || !target.get(0)){
                     target=self;

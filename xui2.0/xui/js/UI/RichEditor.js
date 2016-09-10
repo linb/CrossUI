@@ -14,7 +14,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             return doc && (doc.body||doc.documentElement);
         },
         _setCtrlValue:function(value){
-            if(!_.isSet(value))value='';
+            if(!xui.isSet(value))value='';
             return this.each(function(profile){
                 var sp=window['/'];
                 if(sp && sp.indexOf(':/')!=-1)
@@ -162,7 +162,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             labelCaption:{
                 ini:"",
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },
@@ -365,7 +365,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
                             var etype = e.type; 
                             if(etype !== "mouseover" && etype !== "mouseout"){
-                                _.resetRun('RichEditor:'+domId, function(){
+                                xui.resetRun('RichEditor:'+domId, function(){
                                     // destroyed
                                     if(!kprf.box)return;
                                     xui.UI.RichEditor._updateToolbar(domId, false,etype)
@@ -389,7 +389,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
                             if(kprf.onInnerEvent){
                                 var etype=e.type;
-                                _.resetRun(kprf.$xid+":frmInnerAsyEvent", function(){
+                                xui.resetRun(kprf.$xid+":frmInnerAsyEvent", function(){
                                     if(kprf && !kprf.destroyed)
                                         kprf.boxing().onInnerEvent(kprf, etype, xui.Event.getSrc(e), e);
                                 });
@@ -404,7 +404,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             if(!kprf)return;
                             if(kprf.properties.disabled||kprf.properties.readonly)return;
                             
-                            _.resetRun('RichEditor:'+domId, function(){
+                            xui.resetRun('RichEditor:'+domId, function(){
                                 // destroyed
                                 if(!kprf.box)return;
                                 xui.UI.RichEditor._updateToolbar(domId, true, 'blur')
@@ -425,7 +425,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             // to fix firefox appendChid's bug: refresh iframe's document
                             if(kprf){
                                 var ins=kprf.boxing();
-                                _.asyRun(function(){
+                                xui.asyRun(function(){
                                     // destroyed
                                     if(!kprf.box)return;
                                     ins.refresh(); 
@@ -434,7 +434,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         },
                         doc,win,
                         checkF = function(){
-                            _.setTimeout(function(){
+                            xui.setTimeout(function(){
                                 // removed from DOM already
                                 if(!frames[id])return;
                                 // not ready
@@ -695,12 +695,12 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     imageClass=self.getClass('TOOLBARBTN'),
                     arr=pro.cmdList.split(/[\s,;]+/),
                     h={};
-                _.arr.each(arr,function(i){
+                xui.arr.each(arr,function(i){
                     //filter
                     if((o=self.box.$cmds[i]) && !h[i]){
                         h[i]=1;
-                        _.filter(o,function(v){
-                            if(_.arr.indexOf(cmdFilter,v.id)!==-1)return false;
+                        xui.filter(o,function(v){
+                            if(xui.arr.indexOf(cmdFilter,v.id)!==-1)return false;
                             if(v.imagePos)
                                 v.imageClass=imageClass;
                             v.tips=xui.wrapRes('editor.'+v.id);
@@ -767,7 +767,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                 items = items.split(';');
                                 items2=[];
                                 var t;
-                                _.arr.each(items,function(o){
+                                xui.arr.each(items,function(o){
                                     o=o.split(',');
                                     t=o[0]=='...'?'1':o[0];
                                     items2.push({id:o[0], caption:'<font size="'+o[0]+'" '+xui.$IEUNSELECTABLE()+'>'+o[1]+'</font>'});
@@ -783,7 +783,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                 items = items.split(';');
                                 items2=[];
                                 var t;
-                                _.arr.each(items,function(o){
+                                xui.arr.each(items,function(o){
                                     t=o=='...'?'':o;
                                     items2.push({id:o, caption:'<span style="font-family:'+o+'" '+xui.$IEUNSELECTABLE()+'>'+o+'</span>'});
                                 });
@@ -798,7 +798,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                 items = items.split(';');
                                 items2=[];
                                 var t;
-                                _.arr.each(items,function(o){
+                                xui.arr.each(items,function(o){
                                     o=o.split(',');
                                     t=o[0]=='...'?'span':o[0];
                                     items2.push({id:o[0], caption:'<'+t+' style="display:inline;padding:0;margin:0" '+xui.$IEUNSELECTABLE()+'>'+o[1]+'</'+t+'>'});
@@ -824,7 +824,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         editor.getSubNode('POOL').append(o.getRoot());
                         node.setBlurTrigger(editor.$xid);
                         xui.Event.keyboardHook('esc');
-                        _.asyRun(function(){
+                        xui.asyRun(function(){
                             // destroyed
                             if(!editor||!editor.$win)return;
                             editor.$win.focus()
@@ -846,7 +846,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     if(first && xui.browser.ie)
                         o.getSubNode('BOX').query('*').attr('unselectable','on');
                     
-                    _.tryF(o.activate,[],o);
+                    xui.tryF(o.activate,[],o);
 
                     //for on blur disappear
                     node.setBlurTrigger(editor.$xid, function(){
@@ -1004,7 +1004,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         },
         _ensureValue:function(profile, value){
             var p=xui.$getGhostDiv();
-            p.innerHTML=(_.isSet(value)?value:'')+"";
+            p.innerHTML=(xui.isSet(value)?value:'')+"";
             value=p.innerHTML;
             p.innerHTML="";
             return value;
@@ -1050,7 +1050,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                     });
                 }
-                _.asyRun(function(){
+                xui.asyRun(function(){
                     if(!profile.renderId)return;
 
                     // calculate toolbar's height

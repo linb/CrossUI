@@ -68,7 +68,7 @@ Class('App', 'xui.Com',{
         },
         //to interact with server
         request:function(hash, callback, onStart, onEnd, file){
-            _.tryF(onStart);
+            xui.tryF(onStart);
             xui.Thread.observableRun(function(threadid){
                 var data={key:'DBProcess',paras:hash}, options;
                 if(file){
@@ -80,15 +80,15 @@ Class('App', 'xui.Com',{
 
                     if(obj){
                         if(!obj.error)
-                            _.tryF(callback,[obj]);
+                            xui.tryF(callback,[obj]);
                         else
-                            SPA.popMsg(_.serialize(obj.error));
+                            SPA.popMsg(xui.serialize(obj.error));
                     }else
-                        SPA.popMsg(_.serialize(rsp));
-                    _.tryF(onEnd);
+                        SPA.popMsg(xui.serialize(rsp));
+                    xui.tryF(onEnd);
                 },function(rsp){
-                    SPA.popMsg(_.serialize(rsp));
-                    _.tryF(onEnd);
+                    SPA.popMsg(xui.serialize(rsp));
+                    xui.tryF(onEnd);
                 }, threadid,options)
             });
         },
@@ -96,7 +96,7 @@ Class('App', 'xui.Com',{
             if(item.tag=='link'){
                 SPA.request({action:'listdbs'},function(rsp){
                     var arr=[];
-                    _.arr.each(rsp.data,function(o){
+                    xui.arr.each(rsp.data,function(o){
                         arr.push({id:o[0],caption:o[0],group:true,sub:true,tag:'db'});
                     });
                     callback(arr);
@@ -104,7 +104,7 @@ Class('App', 'xui.Com',{
             }else if(item.tag=='db'){
                 SPA.request({action:'listtables', dbname:item.id},function(rsp){
                     var arr=[];
-                    _.arr.each(rsp.data,function(o){
+                    xui.arr.each(rsp.data,function(o){
                         arr.push({id:o[0],caption:o[0],group:true,tag:'table',_dbname:item.id});
                     });
                     callback(arr);

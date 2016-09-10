@@ -70,7 +70,7 @@ Class('App.xui_UI_ProgressBar', 'xui.Com',{
         }, 
         _process:function(alias, inteval, step){
             var ns=this;
-            xui.Thread(null,[_.fun()],inteval,function(threadid){
+            xui.Thread(null,[xui.fun()],inteval,function(threadid){
                 var pb=ns[alias],
                     value=pb.getValue();
                 value+=step;

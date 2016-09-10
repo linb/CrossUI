@@ -50,7 +50,7 @@
                             //get the second service uri from the first request
                             onSuccess: function(obj,type,threadid){
                                 trace('the first onSuccess',this.threadid);
-                                xui.Dom.byId('response').value += _.stringify(obj) + "\n";
+                                xui.Dom.byId('response').value += xui.stringify(obj) + "\n";
 
                                 xui.Ajax({
                                     uri:obj.nexturi,
@@ -59,7 +59,7 @@
                                     //get the thrid service uri from the second request
                                     onSuccess:function(obj){
                                         trace('the second onSuccess',this.threadid);
-                                        xui.Dom.byId('response').value += _.stringify(obj) + '\n';
+                                        xui.Dom.byId('response').value += xui.stringify(obj) + '\n';
 
                                         xui.Thread.suspend(threadid);
                                         trace('--thread' + threadid +' is suspended here.');
@@ -69,7 +69,7 @@
                                                 threadid:threadid,
                                                 onSuccess:function(obj){
                                                     trace('the third onSuccess',this.threadid);
-                                                    xui.Dom.byId('response').value += _.stringify(obj) +'\n';
+                                                    xui.Dom.byId('response').value += xui.stringify(obj) +'\n';
                                                 },
                                                 onStart:function(){trace('the third onStart',this.threadid)},
                                                 onEnd:function(){trace('the third onEnd',this.threadid)}
@@ -79,7 +79,7 @@
                                                 threadid:threadid,
                                                 onSuccess:function(obj){
                                                     trace('the fourth onSuccess',this.threadid);
-                                                    xui.Dom.byId('response').value += _.stringify(obj) +'\n';
+                                                    xui.Dom.byId('response').value += xui.stringify(obj) +'\n';
                                                 },
                                                 onStart:function(){trace('the fourth onStart',this.threadid)},
                                                 onEnd:function(){trace('the fourth onEnd',this.threadid)}

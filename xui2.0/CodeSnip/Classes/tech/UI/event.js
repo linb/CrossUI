@@ -57,7 +57,7 @@ Class('App.tech_UI_event', 'xui.Com',{
             var holder = this.panelbar2 && this.panelbar2.getSubNode('PANEL');
             if(holder && !holder.isEmpty()){
                 if(this.arr.length){
-                    _.arr.each(this.arr,function(o){
+                    xui.arr.each(this.arr,function(o){
                         holder.prepend( xui.create('<p>'+o[0]+' -> ' + o[1] + '</p>'));
                     });
                     this.arr.length=0;

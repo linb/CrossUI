@@ -11,6 +11,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     var border = profile.getSubNode('BORDER'),
                         box = profile.getSubNode('BOX'),
                         items = profile.getSubNode('ITEMS'),
+                        nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
                         css=xui.CSS,
                         useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
@@ -21,9 +22,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                        items.cssSize({width:'auto',height:'auto'});
  
                         hh = items.height() + 2/*border*/;
-                        if(hh%2==1)hh+=1;
+                        if(xui.browser.ie67 && hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
-                        items.children().each(function(n){
+                        nodes.each(function(n){
                             ww=Math.max(ww, n.offsetWidth);
                         });
                         if(ww%2==1)ww+=1;
@@ -92,7 +93,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }else{
                         profile.getSubNode('TOP').css('display','block');
                         if(profile.$scrollTobottom)
-                            _.asyRun(arguments.callee, 0, [profile], this);
+                            xui.asyRun(arguments.callee, 0, [profile], this);
                     }
                 }
             });
@@ -122,7 +123,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }else{
                         profile.getSubNode('BOTTOM').css('display','block');
                         if(profile.$scrollToTop)
-                            _.asyRun(arguments.callee, 0, [profile], this);
+                            xui.asyRun(arguments.callee, 0, [profile], this);
                     }
                 }
             });
@@ -210,7 +211,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     if(t=profile.$parentPopMenu)t[sms]=null;
 
                     if(profile.$popGrp)
-                        _.arr.removeValue(profile.$popGrp,root._get(0));
+                        xui.arr.removeValue(profile.$popGrp,root._get(0));
 
                     if(false!==triggerEvent)
                         profile.boxing().onHide(profile);
@@ -230,7 +231,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();
-        _.merge(t.FRAME.BORDER,{
+        xui.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-outset",
              TOP:{
                 className:'xuifont',
@@ -382,7 +383,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 position:'relative',
                 top:0,
                 left:0,
-                overflow:'hidden'
+                overflow:'hidden',
+                'white-space':'nowrap'
             },
             BOXBGBAR:{
                 'z-index':-1,
@@ -480,7 +482,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     //if sub pop menu showed
                     if(t=profile[sms]){
                         //if the showed menu is self
-                        if(t == _.get(profile,[all,itemId]))
+                        if(t == xui.get(profile,[all,itemId]))
                             Cancel=true;
                         else{
                             t.hide();
@@ -498,7 +500,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     if(!Cancel && item.sub){
                         // if no sub arrays
-                        if(!(_.isArr(item.sub) && item.sub.length)){
+                        if(!(xui.isArr(item.sub) && item.sub.length)){
                             if(profile.onShowSubMenu){
                                 var r=profile['$sub:'+item.id];
                                 if(r && r['xui.UI'] && !r.isEmpty()){}
@@ -519,14 +521,14 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     return;
                                 }
                                 // return items array
-                                else if(r && _.isArr(r) && r.length){
+                                else if(r && xui.isArr(r) && r.length){
                                     item.sub=r;
                                 }
                             }
                         }
 
                         // show items
-                        if(_.isArr(item.sub) && item.sub.length){
+                        if(xui.isArr(item.sub) && item.sub.length){
                             profile[all] = profile[all] || {};
 
                             //no create
@@ -599,7 +601,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             profile.getSubNodeByItemId('CHECKBOX',item.id).tagClass('-checked', item.value = !item.value);
                         else if(item.type=='radiobox'){
                             profile.getSubNode('RADIOBOX',true).tagClass('-checked', false);
-                            _.arr.each(prop.items,function(o){
+                            xui.arr.each(prop.items,function(o){
                                 if(o.type=='radiobox')
                                     o.value=false;
                             });
@@ -611,7 +613,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         if(prop.hideAfterClick){
                             xui.use(src).tagClass('-mouseover',false);
                             //hide all parent pop
-                            _.asyRun(function(){
+                            xui.asyRun(function(){
                                 var p=profile,q;
                                 if(!p.renderId)return;
                                 while(p){
@@ -651,7 +653,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         case 'up':
                             r=true;
                             flag=false;
-                            _.arr.each(items,function(o,i){
+                            xui.arr.each(items,function(o,i){
                                 if(o.type == 'split')return;
                                 if(flag){
                                     tid=o.id;
@@ -666,7 +668,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         case 'down':
                             r=true;
                             flag=false;
-                            _.arr.each(items,function(o,i){
+                            xui.arr.each(items,function(o,i){
                                 if(o.type == 'split')return;
                                 if(flag){
                                     tid=o.id;
@@ -795,7 +797,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             if(profile.properties.autoHide){
                 var p1=xui.Event.getPos(e),
                     size, p2, b;
-                _.arr.each(profile.$popGrp,function(o){
+                xui.arr.each(profile.$popGrp,function(o){
                     o=xui([o]);
                     p2=o.offset();
                     size=o.cssSize();

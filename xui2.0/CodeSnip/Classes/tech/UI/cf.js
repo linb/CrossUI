@@ -2,7 +2,7 @@ Class('App.tech_UI_cf', 'xui.Com',{
     Instance:{
         _button21_onclick:function (profile, e, value) {
             if(profile.CF.click){
-                _.tryF(profile.CF.click);
+                xui.tryF(profile.CF.click);
             }else
                 xui.message('click fired in normal onclick event')
         },

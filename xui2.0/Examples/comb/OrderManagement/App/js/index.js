@@ -613,7 +613,8 @@ Class('App', 'xui.Com',{
             var idx = parseInt(SPA.tgd_orders_details.getTag())-1;
             SPA.tgd_orders_details.setRows(obj[idx].order_details);
 
-            SPA.dbOrder.setData(obj[idx]).updateDataToUI();
+            SPA.dbOrder.setData(obj[idx]);
+            SPA.dbOrder.updateDataToUI();
 
             SPA._calculateTotal(obj[idx]);
         }, 
@@ -699,7 +700,8 @@ Class('App', 'xui.Com',{
                 var idx = parseInt(a[1]);
                 SPA.tgd_orders_details.setRows(SPA.global_data_id[idx].order_details);
 
-                SPA.dbOrder.setData(SPA.global_data_customer[idx]).updateDataToUI();
+                SPA.dbOrder.setData(SPA.global_data_customer[idx]);
+                SPA.dbOrder.updateDataToUI();
 
                 this._calculateTotal(SPA.global_data_customer[idx]);
             }else{

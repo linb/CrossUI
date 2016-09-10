@@ -42,10 +42,10 @@
             var xuiService='http://localhost:9090/xuiService/demo';
 
             var getRequest=function(){
-                return _.unserialize(xui.Dom.byId('request').value);
+                return xui.unserialize(xui.Dom.byId('request').value);
             },
             setResponse=function(value){
-                xui('response').attr('value', _.serialize(value));
+                xui('response').attr('value', xui.serialize(value));
             },
             showErr=function(uri,qs,msg){
                 alert('request raise err in "'+uri+'"' + (qs?' with "'+qs+'"':'') + (msg?': "' + msg +'"':''));            

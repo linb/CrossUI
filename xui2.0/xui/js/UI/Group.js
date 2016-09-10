@@ -6,8 +6,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
             return this;
         },
         resetPanelView:function(removeChildren,destroyChildren){
-            if(!_.isSet(removeChildren))removeChildren=true;
-            if(!_.isSet(destroyChildren))destroyChildren=true;
+            if(!xui.isSet(removeChildren))removeChildren=true;
+            if(!xui.isSet(destroyChildren))destroyChildren=true;
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
@@ -147,7 +147,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 ini:undefined,
                 // ui update function when setCaption
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
                 }
             },

@@ -318,7 +318,7 @@ Class('App.Gradients', 'xui.Com',{
             return  arr;
         },
         _t_sd_afteruivalueset : function (profile){
-            _.resetRun("Gradients",this.setTS,0,null,this);
+            xui.resetRun("Gradients",this.setTS,0,null,this);
         },
         setTS:function(){
             var ns=this,

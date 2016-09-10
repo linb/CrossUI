@@ -86,7 +86,7 @@ Class('App', 'xui.Com',{
 
                         //for listbox
                         var items=xui.UI.getCachedData('demo'),
-                            index=_.arr.subIndexOf(items,'id',hash.col7);
+                            index=xui.arr.subIndexOf(items,'id',hash.col7);
                         hash.col7={
                             value:hash.col7.value,
                             caption:items[index].caption
@@ -94,7 +94,7 @@ Class('App', 'xui.Com',{
                         //for slider
                         hash.col11 =Math.round(hash.col11)/100;
 
-                        _.arr.each(SPA.$curRow.cells,function(cell){
+                        xui.arr.each(SPA.$curRow.cells,function(cell){
                             t=hash[cell._col.id];
                             SPA.tg2.updateCellByRowCol(cell._row.id,cell._col.id,  typeof t=='object'?t:{value:t} );
                         });
@@ -116,7 +116,7 @@ Class('App', 'xui.Com',{
                     ns=[],
                     name,widget,type,t;
 
-                _.arr.each(cells,function(o){
+                xui.arr.each(cells,function(o){
                     type=o.type;
                     ns.push(t=[o.caption]);
 
@@ -183,7 +183,7 @@ Class('App', 'xui.Com',{
 
                 var str='', nodes=[];
 
-                _.arr.each(ns,function(arr){
+                xui.arr.each(ns,function(arr){
                     nodes.push(arr[1]);
                 })
                 nodes=xui.UI.pack(nodes,false);
@@ -201,7 +201,7 @@ Class('App', 'xui.Com',{
             }
             var hash={};
             SPA.$curRow=row;
-            _.arr.each(row.cells,function(o){
+            xui.arr.each(row.cells,function(o){
                 hash[o._col.id]=o.value;
             });
             //for slider

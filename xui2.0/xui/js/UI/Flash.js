@@ -3,7 +3,7 @@ Class("xui.UI.Flash", "xui.UI",{
         refreshFlash:function(){
             var html='', cls=this.constructor;
             return this.each(function(profile){
-                _.resetRun(profile.domId,function(){
+                xui.resetRun(profile.domId,function(){
                     // clear first
                     cls._clearMemory(profile);
     
@@ -112,12 +112,12 @@ Class("xui.UI.Flash", "xui.UI",{
           return '0,0,0';
         },
         _getSWF:function(profile){
-            var id= _.isStr(profile)?profile:(this._idtag + profile.serialId);
+            var id= xui.isStr(profile)?profile:(this._idtag + profile.serialId);
             return (xui.browser.ie ? window[id] : ((document.embeds && document.embeds[id])||window.document[id])) || document.getElementById(id);
         }, 
         _clearMemory:function(profile){
             var id=this._idtag + profile.serialId;
-            var _e=_.fun(), chart = profile.box._getSWF(profile);
+            var _e=xui.fun(), chart = profile.box._getSWF(profile);
             if(chart){
                 chart.style.display = 'none';
                 if(xui.browser.ie){
@@ -141,7 +141,7 @@ Class("xui.UI.Flash", "xui.UI",{
                 serialId=profile.serialId,
                 src=xui.adjustRes(prop.src),
                 parameters=prop.parameters,
-                options = _.copy(prop.flashvars),
+                options = xui.copy(prop.flashvars),
                 xml="";
 
             options.DOMId = profile.box._idtag + profile.serialId;
@@ -149,18 +149,18 @@ Class("xui.UI.Flash", "xui.UI",{
             options.chartHeight=prop.height;
 
             if(navigator.plugins&&navigator.mimeTypes&&navigator.mimeTypes.length){
-                xml += '<embed type="application/x-shockwave-flash" src="'+ src +'?'+_.urlEncode(parameters)+'" ';
+                xml += '<embed type="application/x-shockwave-flash" src="'+ src +'?'+xui.urlEncode(parameters)+'" ';
                 xml += 'width="'+prop.width+'" height="'+prop.height+'" ';
                 xml += 'id="'+ options.DOMId +'" name="'+ options.DOMId +'" ';
                 xml += 'wmode="opaque" ';
-                xml += 'flashvars="'+ _.urlEncode(options) +'" ';
+                xml += 'flashvars="'+ xui.urlEncode(options) +'" ';
                 xml +=  '/>';
             }else{
                 xml += '<object id="'+ options.DOMId +'" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" '
                 xml += 'width="'+prop.width+'" height="'+prop.height+'">';
-                xml += '<param name="movie" value="'+ src +'?'+_.urlEncode(parameters)+'" />';
+                xml += '<param name="movie" value="'+ src +'?'+xui.urlEncode(parameters)+'" />';
                 xml += '<param name="wmode" value="opaque" />';
-                xml += '<param name="flashvars" value="'+ _.urlEncode(options) +'" />';
+                xml += '<param name="flashvars" value="'+ xui.urlEncode(options) +'" />';
                 xml += '</object>';
             }
             profile.getSubNode('BOX').html(xml, false);
@@ -179,7 +179,7 @@ Class("xui.UI.Flash", "xui.UI",{
                 ww=width?css.$px(width, rootfz):width, 
                 hh=height?css.$px(height, rootfz):height;
 
-            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
+            if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width)prop.width=adjustunit(ww,rootfz);
                 if(height)prop.height=adjustunit(hh,rootfz);

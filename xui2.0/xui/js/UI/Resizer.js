@@ -32,12 +32,12 @@ Class("xui.UI.Resizer","xui.UI",{
     },
     Initialize:function(){
         this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','ROTATE','L','R','T','B','LT','RT','LB','RB','REGION']);
-        _.each({
+        xui.each({
             // add resizer to xui.Dom plugin
             addResizer:function(properties, onUpdate, onChange){
                 var target=xui([this.get(0)]);
                 properties=properties||{};
-                _.merge(properties,{
+                xui.merge(properties,{
                     _attached:true
                 });
 
@@ -50,7 +50,7 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             removeResizer:function(){
                 var s = this.id();
-                _.arr.each(xui.UI.Resizer._cache,function(o){
+                xui.arr.each(xui.UI.Resizer._cache,function(o){
                     if(o && o.$resizeId==s)
                         o.boxing().destroy(true);
                 });
@@ -58,7 +58,7 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             $getResizer:function(){
                 var s = this.id(), b;
-                _.arr.each(xui.UI.Resizer._cache,function(o){
+                xui.arr.each(xui.UI.Resizer._cache,function(o){
                     if(o && o.$resizeId==s){b=o;return false;}
                 });
                 return b && b.boxing();
@@ -68,7 +68,7 @@ Class("xui.UI.Resizer","xui.UI",{
         });
 
         //for xui.UI.Widget
-        _.each({
+        xui.each({
             _resizer:function(key, args){
                 return this.each(function(o){
                     var target = o.getSubNode('BORDER'),
@@ -144,15 +144,15 @@ Class("xui.UI.Resizer","xui.UI",{
                     if(v){
                         var t = this.properties,
                             arg={};
-                        _.each('minHeight,minWidth,maxHeight,maxWidth'.split(','),function(i){
+                        xui.each('minHeight,minWidth,maxHeight,maxWidth'.split(','),function(i){
                             if(i in t)arg[i]=t[i];
                         });
                         
-                        if(t.resizerProp && !_.isEmpty(t.resizerProp)){
-                            _.merge(arg,t.resizerProp,'all');
+                        if(t.resizerProp && !xui.isEmpty(t.resizerProp)){
+                            xui.merge(arg,t.resizerProp,'all');
                         }
                         if(t.tagVar.resizerProp){
-                            _.merge(arg,t.tagVar.resizerProp,'all');
+                            xui.merge(arg,t.tagVar.resizerProp,'all');
                         }
                         b._resizer(v,arg);
                     }else
@@ -571,7 +571,7 @@ Class("xui.UI.Resizer","xui.UI",{
             // set template dynamic
             if(!template){
                 var t,n;
-                template = _.clone(profile.box.getTemplate());
+                template = xui.clone(profile.box.getTemplate());
 
                 // cover or not?
                 t = pro._cover?map.cover:map;
@@ -684,7 +684,7 @@ Class("xui.UI.Resizer","xui.UI",{
                     if(t.top=='auto'&&(Math.round(parseFloat(t.bottom))>=0)){}else
                     target.topBy(cssPos.top);
                 }
-                if(_.isDefined(rotate)){
+                if(xui.isDefined(rotate)){
                     target.rotate(rotate);
                 }
             }
@@ -695,7 +695,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 axisArray = ["n", "ne", "e", "se", "s", "sw", "w", "nw"],
                 // 0 .. 7
                 octant = Math.round(a /45),
-                oindex = _.arr.indexOf(axisArray, axis),
+                oindex = xui.arr.indexOf(axisArray, axis),
                 index = oindex + octant,
                 naxis = axisArray[index % 8];
             if(dir4 && index%2 == 1){
@@ -711,7 +711,7 @@ Class("xui.UI.Resizer","xui.UI",{
                var a = (profile.getRoot().rotate() + 360 ) % 360,
                     f = this._switchAxis,
                     hash = {T:"n", RT:"ne", R:"e", RB:"se", B:"s", LB:"sw", L:"w", LT:"nw"},n;
-                _.each(hash,function(k,i){
+                xui.each(hash,function(k,i){
                     if((n=profile.getSubNode(i)).get(0)){
                         n.css('cursor', f(k, a)+"-resize");
                     }
@@ -747,7 +747,7 @@ Class("xui.UI.Resizer","xui.UI",{
             var ddparas=this._getDDParas(0, axis);
             if(xui.Event.getBtn(e)!="left")return;
             var puip=profile.$parentUIProfile;
-            if(puip && puip['xui.UIProfile'] && puip.beforeResizerDrag && false=== _.tryF(puip.beforeResizerDrag,[puip,profile,ddparas],puip.boxing()))
+            if(puip && puip['xui.UIProfile'] && puip.beforeResizerDrag && false=== xui.tryF(puip.beforeResizerDrag,[puip,profile,ddparas],puip.boxing()))
                 return;
 
             var pos=xui.Event.getPos(e);
@@ -866,12 +866,12 @@ Class("xui.UI.Resizer","xui.UI",{
                     w=t.maxWidth;
                     x= profile.o_w+sp.left - w;
                 }
-                _.merge(data,{width:w,left:x});
+                xui.merge(data,{width:w,left:x});
             }else if(args.right){
                 w = profile.o_w + dx;
                 if(w<t.minWidth)w=t.minWidth;
                 else if(w>t.maxWidth)w=t.maxWidth;
-                _.merge(data,{width:w});
+                xui.merge(data,{width:w});
             }
             if(args.top){
                 h = profile.o_h - dy;
@@ -883,12 +883,12 @@ Class("xui.UI.Resizer","xui.UI",{
                     h=t.maxHeight;
                     y=profile.o_h+sp.top - h;
                 }
-                _.merge(data,{height:h,top:y});
+                xui.merge(data,{height:h,top:y});
             }else if(args.bottom){
                 h= profile.o_h + dy;
                 if(h<t.minHeight)h=t.minHeight;
                 else if(h>t.maxHeight)h=t.maxHeight;
-                _.merge(data,{height:h});
+                xui.merge(data,{height:h});
             }
 
             if(elemAngle && !(args.move || args.rotate)){
@@ -1000,16 +1000,16 @@ Class("xui.UI.Resizer","xui.UI",{
             if(args.move){
                 x = sp.left + dx;
                 y = sp.top + dy;
-                _.merge(data,{top:y,left:x});
+                xui.merge(data,{top:y,left:x});
             }
             if(args.rotate){
                 rotate =  (180 - Math.atan2( dd.x - profile.o_center.x, dd.y - profile.o_center.y ) * 180 / Math.PI );
                 if(rotate<0)rotate+=360;
-                _.merge(data,{rotate:rotate});
+                xui.merge(data,{rotate:rotate});
             }
             
-            if(!_.isEmpty(data)){
-                _.each(data,function(o,i){
+            if(!xui.isEmpty(data)){
+                xui.each(data,function(o,i){
                     data[i]=Math.round(parseFloat(o))+'px';
                 });
                 profile.proxy.css(data);

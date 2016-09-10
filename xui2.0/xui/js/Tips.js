@@ -27,7 +27,7 @@ Class("xui.Tips", null,{
             if(dd.isWorking)return;
             var event=xui.Event,p,n;
 
-            if((p=_.resetRun.$cache) && p['$Tips']){
+            if((p=xui.resetRun.$cache) && p['$Tips']){
                 tips._pos=event.getPos(e);
             }
 
@@ -35,7 +35,7 @@ Class("xui.Tips", null,{
             if(tips._from){
                 tips._pos=event.getPos(e);
                 tips._showF();
-                _.resetRun('$Tips3');
+                xui.resetRun('$Tips3');
             //after show, before hide
             }else if(tips._showed && tips.MOVABLE){
                 p=event.getPos(e);
@@ -105,11 +105,11 @@ Class("xui.Tips", null,{
                     tips._enode=id;
                     tips._showF();
                 }else
-                    _.resetRun('$Tips', function(){
+                    xui.resetRun('$Tips', function(){
                         tips._from=_from;
                         tips._enode=id;
                         // if mouse stop move
-                        _.resetRun('$Tips3', function(){
+                        xui.resetRun('$Tips3', function(){
                             if(tips._from)
                                 tips._showF();
                         });
@@ -297,7 +297,7 @@ Class("xui.Tips", null,{
                 self.hide();
             }else {
                 if(!self.MOVABLE)
-                    _.resetRun('$Tips2', self.hide,self.AUTOHIDETIME,null,self);
+                    xui.resetRun('$Tips2', self.hide,self.AUTOHIDETIME,null,self);
             }
             node=pos=_from=null;
         },
@@ -350,8 +350,8 @@ Class("xui.Tips", null,{
                 if(self._showed){
                     self.hide();
                 }else{
-                    _.resetRun('$Tips');
-                    _.resetRun('$Tips3');
+                    xui.resetRun('$Tips');
+                    xui.resetRun('$Tips3');
                     self._clear();
                 }
             }

@@ -321,7 +321,7 @@ Class('App', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         }, 
         _comboinput13_beforeComboPop:function (profile, pos) {
-            profile.boxing().setUIValue(_());
+            profile.boxing().setUIValue(xui.stamp());
             return false;
         }, 
         _comboinput14_beforeComboPop:function (profile, pos) {

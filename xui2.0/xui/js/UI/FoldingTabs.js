@@ -53,12 +53,12 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     uiv = uiv?uiv.split(prop.valueSeparator):[];
                     value = value?value.split(prop.valueSeparator):[];
 
-                    _.arr.each(uiv,function(key){
-                        if(_.arr.indexOf(value,key)==-1)
+                    xui.arr.each(uiv,function(key){
+                        if(xui.arr.indexOf(value,key)==-1)
                             fold(key, arr1);
                     });
-                    _.arr.each(value,function(key){
-                        if(_.arr.indexOf(uiv,key)==-1)
+                    xui.arr.each(value,function(key){
+                        if(xui.arr.indexOf(uiv,key)==-1)
                             expand(key, arr2);
                     });
                 }else{
@@ -365,8 +365,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
 
                         if(arr.length){
                             //for select
-                            if(_.arr.indexOf(arr,item.id)!=-1){
-                                _.arr.removeValue(arr,item.id);
+                            if(xui.arr.indexOf(arr,item.id)!=-1){
+                                xui.arr.removeValue(arr,item.id);
                                 checktype=-1
                             }else
                                 arr.push(item.id);

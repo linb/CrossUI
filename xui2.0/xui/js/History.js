@@ -46,7 +46,7 @@ Class("xui.History",null,{
             }
             switch(self._type){
                 case "iframe":
-                    if(_.isSet(hash))
+                    if(xui.isSet(hash))
                         location.hash=hash;
                 case 'event':
                 case 'timer':
@@ -81,7 +81,7 @@ Class("xui.History",null,{
                 case 'timer':
                     location.hash = self._lastFI = decodeURIComponent(fi);
                 if(triggerCallback!==false)
-                    _.tryF(self._callback,[decodeURIComponent(fi.replace(/^#!/,''))]);
+                    xui.tryF(self._callback,[decodeURIComponent(fi.replace(/^#!/,''))]);
                 break;
             }
 

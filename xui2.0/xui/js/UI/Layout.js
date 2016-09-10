@@ -20,7 +20,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 box=profile.box;
                 items = profile.properties.items;
                 if(!all){
-                    index = _.arr.subIndexOf(items,'id',base);
+                    index = xui.arr.subIndexOf(items,'id',base);
                     if(index==-1){
                         pos=before?'before':'after';
                     }else{
@@ -37,9 +37,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 //must be here
                 if(index==-1)
-                    _.arr.insertAny(items,arr2, before?0:-1);
+                    xui.arr.insertAny(items,arr2, before?0:-1);
                 else
-                    _.arr.insertAny(items,arr2, before?index:index+1);
+                    xui.arr.insertAny(items,arr2, before?index:index+1);
 
                 //if in dom, create it now
                 if(profile.renderId){
@@ -81,7 +81,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     item=rst[0];
 
                 // [[modify id
-                if(_.isSet(options.id))options.id+="";
+                if(xui.isSet(options.id))options.id+="";
                 if(options.id && subId!==options.id){
                     nid=options.id;
                     var m2=profile.ItemIdMapSubSerialId, v;
@@ -97,7 +97,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 }
                 delete options.id;
                 // modify id only
-                if(_.isEmpty(options))
+                if(xui.isEmpty(options))
                     return self;
                 //]]
 
@@ -154,23 +154,23 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         var v=options.overflow;
                         if(v){
                             if(v.indexOf(':')!=-1){
-                                _.arr.each(v.split(/\s*;\s*/g),function(s){
+                                xui.arr.each(v.split(/\s*;\s*/g),function(s){
                                     var a=s.split(/\s*:\s*/g);
                                     if(a.length>1){
-                                        hash[_.str.trim(a[0])]=_.str.trim(a[1]||'');
+                                        hash[xui.str.trim(a[0])]=xui.str.trim(a[1]||'');
                                     }
                                 });
                             }
                         }
                         hash.overflow=v||"";
                     }
-                    if(!_.isEmpty(hash)){
+                    if(!xui.isEmpty(hash)){
                         profile.getSubNodeByItemId('PANEL',subId).css(hash);
                     }
                 }
 
                 //merge options
-                _.merge(item, options, 'all');
+                xui.merge(item, options, 'all');
 
                 if(bResize){
                     var t=profile.getRootNode().style;
@@ -635,11 +635,11 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         var box = o.boxing(),
                             temp = xui.$getGhostDiv(),
                             //keep children
-                            children = _.copy(o.children),
+                            children = xui.copy(o.children),
                             p,vv
                         ;
                         o.children.length=0;
-                        _.arr.each(children,function(o){
+                        xui.arr.each(children,function(o){
                             //for flush dock
                             delete o[0].$dockParent;
                             //keep it in dom
@@ -658,7 +658,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         box._insertItems(vv,null,null,true);
 
                         //restore children
-                        _.arr.each(children,function(v){
+                        xui.arr.each(children,function(v){
                             box.append.apply(box,v);
                         });
 
@@ -670,7 +670,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         var size = o.getRoot().cssSize();
                         xui.UI.$tryResize(o, size.width, size.height,true);
                     }else
-                        o.properties.items = _.copy(value);
+                        o.properties.items = xui.copy(value);
                 }
             }
         },
@@ -680,16 +680,16 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         _adjustItems2:function(items, pos){
             var arr=[];
             //arrage items
-            _.arr.each(items,function(o){
+            xui.arr.each(items,function(o){
                 if(o.id!='main'){
-                    arr.push(o=_.isHash(o)?o:{id:''+o});
+                    arr.push(o=xui.isHash(o)?o:{id:''+o});
                     o.pos=pos;
                 }
             });
 
             //set the items to default value
-            _.arr.each(arr,function(o){
-                o.id = _.isStr(o.id)?o.id:_.id();
+            xui.arr.each(arr,function(o){
+                o.id = xui.isStr(o.id)?o.id:xui.id();
                 o.min = o.min || 10;
                 o._size = o.size = Math.round(parseFloat(o.size)) || 80;
                 o.locked= typeof o.locked=='boolean'?o.locked:false;
@@ -703,8 +703,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var main, before=[], after=[];
 
             //arrage items
-            _.arr.each(items,function(o){
-                o=_.copy(o);
+            xui.arr.each(items,function(o){
+                o=xui.copy(o);
                 if(o.id=='main'){
                     main=o;
                 }else{
@@ -725,16 +725,16 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
             //reset items
             items.length = 0;
-            _.arr.insertAny(items, this._adjustItems2(before,'before'));
-            _.arr.insertAny(items, main);
-            _.arr.insertAny(items, this._adjustItems2(after,'after'));
+            xui.arr.insertAny(items, this._adjustItems2(before,'before'));
+            xui.arr.insertAny(items, main);
+            xui.arr.insertAny(items, this._adjustItems2(after,'after'));
 
             return items;
         },
         _prepareData:function(profile){
             var prop=profile.properties;
-            if(!prop.items || !_.isArr(prop.items))
-                prop.items = _.clone([
+            if(!prop.items || !xui.isArr(prop.items))
+                prop.items = xui.clone([
                     {id:'before', pos:'before', locked:false, size:60, min: 50, max:200},
                     {id:'after',pos:'after', locked:false, size:60, min: 50, max:200}
                 ]);
@@ -744,7 +744,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         },
         _prepareItems:function(profile, items){
             var data = arguments.callee.upper.apply(this, arguments);
-            _.arr.each(items,function(o){
+            xui.arr.each(items,function(o){
                 delete o.caption;
             });
             return data;
@@ -793,14 +793,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data._bginfo+="background-repeat:"+t+";";
             if(t=data.panelBgImgAttachment||p.panelBgImgAttachment)
                 data._bginfo+="background-attachment:"+t+";";
-            if(_.isStr(data.overflow))
+            if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
-            else if(_.isStr(p.overflow))
+            else if(xui.isStr(p.overflow))
                 data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
         },
         RenderTrigger:function(){
             var t, profile=this;
-            _.arr.each(profile.properties.items,function(item){
+            xui.arr.each(profile.properties.items,function(item){
                 if(item.id!='main'){
                     if(item.folded && (t=profile.getSubIdByItemId(item.id))){
                             item.folded=false;
@@ -832,7 +832,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var obj={}, obj2={};
             // **keep the original size
             //,obj3={};
-            _.arr.each(t.items,function(o){
+            xui.arr.each(t.items,function(o){
                 itemId = profile.getSubIdByItemId(o.id);
                 obj[itemId] = {};
                 obj2[itemId] = {};
@@ -843,7 +843,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var fun=function(prop,w,width,left,right,offset,forceoffset){
                 var _t,m,m1,itemId, temp1=0,temp2=0,temp=0,blocknumb=0,offsetbak=offset;
 
-                _.arr.each(prop.items,function(o){
+                xui.arr.each(prop.items,function(o){
                     if(o.id=='main')return;
                     if(o.pos=='before'){
                         itemId = profile.getSubIdByItemId(o.id);
@@ -873,7 +873,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         mainmin+=_handlerSize;
                     }
                 });
-                _.arr.each(prop.items,function(o){
+                xui.arr.each(prop.items,function(o){
                     if(o.id=='main')return;
                     if(o.pos=='after'){
                         itemId = profile.getSubIdByItemId(o.id);
@@ -911,7 +911,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     obj2[_t][width]=obj[_t][width]=w-temp;
                     obj2[_t][left]=temp1;
                 }else{
-                    var args=_.toArr(arguments);
+                    var args=xui.toArr(arguments);
                     // second time only
                     if(!offsetbak){
                         args[args.length-2]=(mainmin-(w-temp))/blocknumb;
@@ -927,43 +927,43 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             };
 
             if(t.type!='vertical'){
-                if(!_.isNull(width)){
+                if(!xui.isNull(width)){
                     //get left
                     fun(t,width,'width','left','right',0,0);
-//                    _.each(obj2,function(o,i){
+//                    xui.each(obj2,function(o,i){
 //                       if(o.width && !obj3[i].folded)obj3[i]._size=o.width;
 //                    });
                  }
-                if(!_.isNull(height)){
-                    _.each(obj,function(o,id){
+                if(!xui.isNull(height)){
+                    xui.each(obj,function(o,id){
                         obj2[id].height=o.height=height;
                     });
                 }
             }else{
-                if(!_.isNull(height)){
+                if(!xui.isNull(height)){
                     //get left
                     fun(t,height,'height','top','bottom',0,0);
-//                    _.each(obj2,function(o,i){
+//                    xui.each(obj2,function(o,i){
 //                        if(o.height  && !obj3[i].folded)obj3[i]._size=o.height;
 //                    });
                 }
-                if(!_.isNull(width)){
-                    _.each(obj,function(o,id){
+                if(!xui.isNull(width)){
+                    xui.each(obj,function(o,id){
                         obj2[id].width=o.width=width;
                     });
                 }
             }
             var ff_w=function(o, emRate){
-               _.arr.each("left,width,right".split(','),function(t){
+               xui.arr.each("left,width,right".split(','),function(t){
                    if(t in o)o[t]=css.$forceu(o[t],'em',emRate);
                });
             }, ff_h=function(o, emRate){
-               _.arr.each("top,height,bottom".split(','),function(t){
+               xui.arr.each("top,height,bottom".split(','),function(t){
                     if(t in o)o[t]=css.$forceu(o[t],'em',emRate);
                });
             };
             //collect width/height in size
-            _.each(obj2, function(o, id){
+            xui.each(obj2, function(o, id){
                 var p=profile.getSubNode('PANEL', id),
                     i=profile.getSubNode('ITEM', id);
                 

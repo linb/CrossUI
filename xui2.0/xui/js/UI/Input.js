@@ -35,7 +35,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             return this;
         },
         _setCtrlValue:function(value){
-            if(_.isNull(value) || !_.isDefined(value))value='';
+            if(xui.isNull(value) || !xui.isDefined(value))value='';
             return this.each(function(profile){
                 if(profile.$Mask && !value){
                     value=profile.$Mask;
@@ -106,7 +106,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();
-        _.merge(t.FRAME.BORDER,{
+        xui.merge(t.FRAME.BORDER,{
             style:'',
             LABEL:{
                 className:'{_required}',
@@ -315,13 +315,13 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 },
                 onMousedown:function(profile, e, src){
                     profile._mousedownmark=1;
-                    _.asyRun(function(){if(profile)delete profile._mousedownmark;});
+                    xui.asyRun(function(){if(profile)delete profile._mousedownmark;});
                 },
                 onMouseup:function(profile, e, src){
                     if(profile.properties.selectOnFocus && profile._justFocus){
                         var node=xui.use(src).get(0);
                         if(!node.readOnly && node.select){
-                            profile.$mouseupDelayFun=_.asyRun(function(){
+                            profile.$mouseupDelayFun=xui.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
                                 if(!xui.browser.isTouch){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
@@ -348,7 +348,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(p.mask){
                         var value=node.value;
                         if(!value){
-                            profile.$focusDelayFun=_.asyRun(function(){
+                            profile.$focusDelayFun=xui.asyRun(function(){
                                 // destroyed
                                 if(!profile.box)return;
                                 delete profile.$focusDelayFun;
@@ -361,7 +361,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     }
                     if(p.selectOnFocus && !node.readOnly && node.select){
                         if(xui.browser.kde){
-                            profile.$focusDelayFun2=_.asyRun(function(){
+                            profile.$focusDelayFun2=xui.asyRun(function(){
                                 delete profile.$focusDelayFun2;
                                 if(!xui.browser.isTouch){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
@@ -381,10 +381,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     b._asyCheck(profile);
                 },
                 onBlur:function(profile, e, src){
-                    _.resetRun(profile.$xid+":asycheck");
-                    if(profile.$focusDelayFun)_.clearTimeout(profile.$focusDelayFun);
-                    if(profile.$focusDelayFun2)_.clearTimeout(profile.$focusDelayFun2);
-                    if(profile.$focusDelayFun2)_.clearTimeout(profile.$mouseupDelayFun);
+                    xui.resetRun(profile.$xid+":asycheck");
+                    if(profile.$focusDelayFun)xui.clearTimeout(profile.$focusDelayFun);
+                    if(profile.$focusDelayFun2)xui.clearTimeout(profile.$focusDelayFun2);
+                    if(profile.$focusDelayFun2)xui.clearTimeout(profile.$mouseupDelayFun);
 
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;                    
@@ -448,7 +448,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             labelCaption:{
                 ini:"",
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },
@@ -485,20 +485,20 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(value){
                         ns.$MaskFormat=function(ns, v){
                             var m=ns._maskMap,a=[],r=/[A-Za-z0-9]/;
-                            _.arr.each(v.split(''),function(o,i){
+                            xui.arr.each(v.split(''),function(o,i){
                                 a.push(m[o]||(r.test(o)?"":"\\")+o)
                             });
                             return '^'+a.join('')+'$';
                         }(b, value);
                         ns.$Mask = function(ns, v){
                             var m=ns._maskMap,a=[],s=ns._maskSpace;
-                            _.arr.each(v.split(''),function(o,i){
+                            xui.arr.each(v.split(''),function(o,i){
                                 a.push(m[o]?s:o);
                             });
                             return  a.join('');
                         }(b,value);
                         var uiv=ns.properties.$UIvalue;
-                        uiv=_.isSet(uiv)?(uiv+""):"";
+                        uiv=xui.isSet(uiv)?(uiv+""):"";
                         //visibility mask string
                         ns.boxing()._setCtrlValue(uiv + ns.$Mask.slice(uiv.length));
                    }else{
@@ -635,7 +635,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
             // set template dynamic
             if(!template){
-                template = _.clone(profile.box.getTemplate());
+                template = xui.clone(profile.box.getTemplate());
                 if(properties.multiLines){
                     t=template.FRAME.BORDER.BOX.WRAP.INPUT;
                     t.tagName='textarea';
@@ -649,11 +649,11 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         _ensureValue:function(profile, value){
             // ensure return string
-            return ""+(_.isSet(value)?value:"");
+            return ""+(xui.isSet(value)?value:"");
         },
         RenderTrigger:function(){
             var ns=this,p=ns.properties;
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 if(ns.box)
                     ns.boxing()._setTB(1);
             });
@@ -758,7 +758,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
     
                     //get corret string according to maskTxt
                     var a=[];
-                    _.arr.each(maskTxt.split(''),function(o,i){
+                    xui.arr.each(maskTxt.split(''),function(o,i){
                         a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
                     });
     
@@ -774,10 +774,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     if(xui.browser.opr){
                         //delete
                         if(dir===undefined)
-                            _.arr.insertAny(a,ms,i);
+                            xui.arr.insertAny(a,ms,i);
                         //backspace
                         if(dir===false)
-                            _.arr.insertAny(a,ms,i++);
+                            xui.arr.insertAny(a,ms,i++);
                     }
                     value=a.join('');
                     src.value=value;
@@ -794,7 +794,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     t=src.value,
                     a=[];
                 //get corret string according to maskTxt
-                _.arr.each(maskTxt.split(''),function(o,i){
+                xui.arr.each(maskTxt.split(''),function(o,i){
                     a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
                 });
                 value=a.join('');
@@ -837,7 +837,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             if(profile.destroyed)return;
             if(!profile.properties.dynCheck && !profile.properties.mask)return;
 
-            _.resetRun(profile.$xid+":asycheck",function(){
+            xui.resetRun(profile.$xid+":asycheck",function(){
                 if(!profile.renderId)return;
 
                 var input=profile.getSubNode("INPUT"),

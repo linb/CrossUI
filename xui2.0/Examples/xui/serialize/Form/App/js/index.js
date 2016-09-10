@@ -71,7 +71,7 @@ Class('App', 'xui.Com',{
             if(!data)
                 alert('Ensure all the fields are valid first!');
             else
-                alert(_.serialize(data));
+                alert(xui.serialize(data));
         },
         _onready:function () {
             SPA=this;
@@ -80,7 +80,7 @@ Class('App', 'xui.Com',{
         _button29_onclick:function (profile, e, value) {
             var code=this.inCode.getUIValue();
             try{
-                code=_.unserialize(code);
+                code=xui.unserialize(code);
             }catch(e){
                 alert(e);
                 return;
@@ -90,8 +90,8 @@ Class('App', 'xui.Com',{
         },
         buildForm:function(form, parent, cols){
             var widget, type, ns=[], nodes=[], t, strA=[],
-                idc=new _.id;
-                databinder = form.dbbinder|| (form.dbbinder='db'+_()),
+                idc=new xui.id;
+                databinder = form.dbbinder|| (form.dbbinder='db'+xui.stamp()),
                 cols=cols||form.cols||2;
                 parent=parent?xui(parent):xui('body');
 
@@ -99,7 +99,7 @@ Class('App', 'xui.Com',{
             var dtbd=xui.DataBinder.getFromName(databinder);
             if(dtbd)dtbd.setData();
 
-            _.each(form.ctrls,function(o){
+            xui.each(form.ctrls,function(o){
                 if(!o.id)o.id=idc.next();
 
                 type=o.type||'input';
@@ -190,7 +190,7 @@ Class('App', 'xui.Com',{
             });
 
 
-            _.arr.each(ns,function(arr){
+            xui.arr.each(ns,function(arr){
                 nodes.push(arr[1]);
             });
             nodes=xui.UI.pack(nodes,false);

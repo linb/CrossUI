@@ -500,7 +500,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             var a,b=[];
             if(value&& typeof value == 'string')
                 a=value.split(':')
-            else if(value && typeof value=='object' && _.isArr(value))
+            else if(value && typeof value=='object' && xui.isArr(value))
                 a=value;
             else a=[];
 

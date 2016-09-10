@@ -1,3 +1,5 @@
-1)Don't support IE6/7 anymore 
-2)Removed Some advanced widgets( Range/Poll/TagEditor/ColLayout/Calendar/TimeLine ) 
+1)Remove 'linb' namespace;
+2)Move 'NameSpace' to xui.NameSpace;
+3)Merge '_' to 'xui';
+4)Removed Some advanced widgets: Range/Poll/TagEditor/ColLayout/Calendar/TimeLine;
 

@@ -8,39 +8,33 @@
 */
 // speed up references
 undefined;
-// global 1: tools
-_=function(){return +new Date()};
-// global 2: namespace
-Namespace=function(key){
-    var a=key.split('.'),w=window;
-    return _.get(w, a) || _.set(w, a, {});
-};
+
 // global 3: class
 Class=function(key, pkey, obj){
     var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
         _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
     obj=obj||{};
     //exists?
-    if(!self._ignoreNSCache && (t=_.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
+    if(!self._ignoreNSCache && (t=xui.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
     //clear SC
-    if(t=_.get(w,['xui','$cache','SC']))delete t[key];
+    if(t=xui.get(w,['xui','$cache','SC']))delete t[key];
 
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
     for(i=0; t=pkey[i]; i++)
-        if(!(_parent[i]=(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
+        if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
             throw 'errNoParent--'+ t;
     if(obj.Dependencies){
         if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
         for(i=0; t=obj.Dependencies[i]; i++)
-            if(!(_.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
+            if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
                 throw 'errNoDependency--'+ t;
     }
     parent0=_parent[0];
 
     // Give a change to modify the original object
     var $Start = obj.$Start || (parent0&&parent0.$Start);
-    _.tryF($Start, [], obj);
+    xui.tryF($Start, [], obj);
 
     // collect items
     _Static=obj.Static||{};
@@ -76,10 +70,10 @@ Class=function(key, pkey, obj){
     }
 
     //collect parent items, keep the last one
-    _t=_.fun();
+    _t=xui.fun();
     for(i=_parent.length-1; t=_parent[i--];){
-        _.merge(_t,t);
-        _.merge(_t.prototype,t.prototype);
+        xui.merge(_t,t);
+        xui.merge(_t.prototype,t.prototype);
     }
     //set keys
     _this.KEY=_this.$key=_this.prototype.KEY=_this.prototype.$key=key;
@@ -95,7 +89,7 @@ Class=function(key, pkey, obj){
     _t=null;
 
     //exe before functoin
-    if(_.tryF(_this.Before, arguments, _this)===false)
+    if(xui.tryF(_this.Before, arguments, _this)===false)
         return false;
 
     //add child key to parents
@@ -121,18 +115,18 @@ Class=function(key, pkey, obj){
     _this[key] = _this.prototype[key] = true;
 
     //allow load App.Sub first
-    _t=t=_.get(w, key.split('.'));
-    _.set(w, key.split('.'), _this);
+    _t=t=xui.get(w, key.split('.'));
+    xui.set(w, key.split('.'), _this);
     if(Object.prototype.toString.call(_t)=='[object Object]')
         for(i in _t)_this[i]=_t[i];
 
     //exe after function
-    _.tryF(_this.After, [], _this);
+    xui.tryF(_this.After, [], _this);
     //exe ini function
-    _.tryF(obj.Initialize, [], _this);
-    _.tryF(_this.$End, [], _this);
+    xui.tryF(obj.Initialize, [], _this);
+    xui.tryF(_this.$End, [], _this);
 
-    _.breakO([obj.Static, obj.Instance, obj],2);
+    xui.breakO([obj.Static, obj.Instance, obj],2);
     
     if(!(key in _c)){
         _c[key]=_c.length;
@@ -143,8 +137,13 @@ Class=function(key, pkey, obj){
     return self._last=_this;
 };
 // global 4: xui
-linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
+xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
 
+// namespace
+xui.Namespace=function(key){
+    var a=key.split('.'),w=window;
+    return xui.get(w, a) || xui.set(w, a, {});
+};
 
 
 //window.onerror will be redefined in xui.Debugger
@@ -156,7 +155,7 @@ linb=xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)};
   type:'all', 'with', 'without'[default], or function <return true will trigger merge>
   return: merged target
 */
-_.merge=function(target, source, type, force){
+xui.merge=function(target, source, type, force){
     var i,f;
     if(typeof type == "function"){
         f=type;
@@ -195,580 +194,579 @@ new function(){
     if (!w.cancelAnimationFrame)
         w.cancelAnimationFrame = function(id){clearTimeout(id)};
 };
-
-_.merge(_,{
-    rand:function(){
-        return parseInt(_()*Math.random(),10).toString(36);
-    },
-    setTimeout:function(callback,delay){
-        return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
-    },
-    clearTimeout:function(id){
-        if(id>=0)cancelAnimationFrame(id);
-        else clearTimeout(Math.abs(id));
-    },
-    fun:function(){return function(){}},
-    exec:function(script, id){
-        var me=this,
-            d=document,
-            h=d.getElementsByTagName("head")[0] || d.documentElement,
-            s=d.createElement("script"),n;
-        s.type = "text/javascript";
-        if(id){
-            if((n=d.getElementById(id))&&n.parentNode==h){
-                h.removeChild(n);
+new function(){
+    var _to = Object.prototype.toString;
+    xui.merge(xui,{
+        stamp:function(){return +new Date()},
+        rand:function(){
+            return parseInt(xui.stamp()*Math.random(),10).toString(36);
+        },
+        setTimeout:function(callback,delay){
+            return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
+        },
+        clearTimeout:function(id){
+            if(id>=0)cancelAnimationFrame(id);
+            else clearTimeout(Math.abs(id));
+        },
+        fun:function(){return function(){}},
+        exec:function(script, id){
+            var me=this,
+                d=document,
+                h=d.getElementsByTagName("head")[0] || d.documentElement,
+                s=d.createElement("script"),n;
+            s.type = "text/javascript";
+            if(id){
+                if((n=d.getElementById(id))&&n.parentNode==h){
+                    h.removeChild(n);
+                }
+                s.id=id;
             }
-            s.id=id;
-        }
-        if(xui.browser.ie)
-            s.text=script;
-        else
-            s.appendChild(d.createTextNode(script));
-        h.appendChild(s);
-        s.disalbed=true;
-        s.disabled=false;
-        if(!id){
-            h.removeChild(s);
-        }
-        return s;
-    },
-    /*
-    get something from deep hash
-    hash:target hash
-    arr:path array,
-    example:
-    _.get({a:{b:{c:1}}},['a','b']) => {c:1};
-        _.get({a:{b:{c:1}}},['a','b','c']) => 1;
-        _.get({a:{b:{c:1}}},['a','b','c','d']) => undefined;
-    */
-    get:function(hash,path){
-        if(!path) return hash;
-        if(!_.isSet(hash))return undefined;
-        else if(typeof path=='string') return hash[path];
-        else{
-            for(var i=0,l=path.length,t;i<l;){
-                if(!(t=path[i++]+''))continue;
-                if(!hash || (hash=t!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
-            }
-            return hash;
-        }
-    },
-    /*
-    set/unset a value to deep hash
-    example:
-        _.set({a:{b:{c:1}}},['a','b','c'],2) => {a:{b:{c:2}}}
-        _.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
-    */
-    set:function(hash,path,value){
-        if(!hash)return;
-        if(typeof path!='string'){
-            var v,i=0,m,last=path.length-1;
-            for(;i<last;){
-                v=path[i++];
-                if(hash[v]&&((m=typeof hash[v])=='object' || m=='function')) hash=hash[v];
-                else hash=hash[v]={};
-            }
-            path=path[last];
-        }
-        // the last one can be a [set] function
-        if(path!=(path=(path+"").replace("()","")) ){
-            if(typeof(hash[path])=="function"){
-                hash[path](value);
-                return value;
-            }
-        }else{
-            if(value===undefined){
-                if(hash.hasOwnProperty && hash.hasOwnProperty(path))
-                    delete hash[path];
-                else hash[path]=undefined;
-            }else{
-                return hash[path]=value;
-            }
-        }
-    },
-    /* try to excute a function
-    fun:target function
-    args:arguments for fun
-    scope:[this] pointer for fun
-    df:default return vale
-    */
-    tryF:function(fun, args, scope, df){
-        return (fun && typeof fun=='function') ? fun.apply(scope||{}, args||[]) : df
-    },
-    /*asynchronous run function
-    fun:target function
-    defer: setTimeout defer time
-    args: arguments for fun
-    scope: [this] pointer for fun
-    */
-    asyRun:function(fun, defer, args, scope){
-        //defer must set in opera
-        return _.setTimeout(typeof fun=='string' ? function(){_.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
-    },
-    asyHTML:function(content, callback, defer, size){
-        var div = document.createElement('div'),
-            fragment = document.createDocumentFragment();
-        div.innerHTML = content;
-        (function(){
-            var i=size||10;
-            while(--i && div.firstChild)
-                fragment.appendChild(div.firstChild);
-            if(div.firstChild)
-                _.setTimeout(arguments.callee, defer||0);
+            if(xui.browser.ie)
+                s.text=script;
             else
-                callback(fragment);
-        })();
-    },
-    isEmpty:function(hash){
-        if (hash==null) return true;
-        if (_.isNumb(hash)) return false;
-        if (_.isArr(hash) || _.isStr(hash) || _.isArguments(hash)) return hash.length === 0;
-        for(var i in hash)if(_._has.call(hash, i))return false;
-        return true;
-    },
-
-    /*
-    this will always run newer function
-    key: for identify
-    fun: to run
-    defer: setTimeout defer time
-    args: arguments for fun
-    scope: 'this' for fun
-    */
-    resetRun:function(key, fun, defer ,args, scope){
-        var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
-        if(cache[k]){_.clearTimeout(cache[k])}
-        if(typeof fun=='function')
-            cache[k] = _.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
-        else delete cache[k];
-    },
-    //Dependencies: xui.Dom xui.Thread
-    observableRun:function(tasks,onEnd,threadid,busyMsg){
-        xui.Thread.observableRun(tasks,onEnd,threadid,busyMsg);
-    },
-
-    /*break object memory link
-    target: target object
-    n: depth, default 1
-    */
-    breakO:function(target,depth){
-        var n=depth||1, l=1+(arguments[2]||0), self=arguments.callee, _t='___gc_', i;
-        if(target && (typeof target=='object' || typeof target=='function') && target!==window&&target!==document&&target.nodeType!==1){
-            try{if(target.hasOwnProperty(_t))return; else target[_t]=null}catch(e){return}
-            try{for(i in target){
-                if(target.hasOwnProperty(i) && target[i]){
-                    if(typeof target[i]=='object' || typeof target[i]=='function')
-                        if(l<n)
-                            self(target[i],n,l);
-                    try{target[i]=null}catch(e){}
-                }
-            }}catch(e){return}
-            if(target.length)target.length=0;
-            delete target[_t];
-        }
-    },
-
-    /*each function for hash
-    fun: fun to exec, if return false, stop the $iterator
-    scope: 'this' pointer;
-    */
-    each:function(hash,fun,scope){
-        scope = scope||hash;
-        for(var i in hash)
-            if(false===fun.call(scope, hash[i], i, hash))
-                break;
-        return hash;
-    },
-    compareNumber:function(a,b,digits){
-        return _.toFixedNumber(a,digits) === _.toFixedNumber(b,digits);
-    },
-    toFixedNumber:function(number,digits) {
-        if(!_.isSet(digits))digits=2;
-        var m=Math.abs(number),
-            s=''+Math.round(m * Math.pow(10, digits)),
-            v, t, start, end;
-        if(/\D/.test(s)){
-          v = ""+m;
-        }else{
-            while(s.length<1+digits)s='0'+s;
-            start=s.substring(0, t=(s.length-digits));
-            end=s.substring(t);
-            if(end)end="."+end;
-            v=start+end;
-        }
-        return parseFloat((number<0?"-":"")+v);
-    },
-    toNumeric:function(value, precision, groupingSeparator, decimalSeparator){
-        if(!_.isNumb(value))
-            value=parseFloat((value+"").replace(/\s*(e\+|[^0-9])/g, function(a,b,c){return b=='e+'||b=='E+'||(c==0&&b=='-')?b:b==decimalSeparator?'.':''}))||0;
-        if(_.isSet(precision) && precision>=0)
-             value=_.toFixedNumber(value,precision);
-        return value;
-    },
-    formatNumeric:function(value, precision, groupingSeparator, decimalSeparator, forceFillZero){
-        if(_.isSet(precision))precision=parseInt(precision,10);
-        precision=(precision||precision===0)?precision:0;
-        groupingSeparator=_.isSet(groupingSeparator)?groupingSeparator:",";
-        decimalSeparator=decimalSeparator||".";
-        value=""+parseFloat(value);
-        if(value.indexOf('e')==-1){
-            value=_.toFixedNumber(value,precision) + "";
-            value= value.split(".");
-            if(forceFillZero!==false){
-                if((value[1]?value[1].length:0)<precision)value[1]=(value[1]||"")+_.str.repeat('0',precision-(value[1]?value[1].length:0));
+                s.appendChild(d.createTextNode(script));
+            h.appendChild(s);
+            s.disalbed=true;
+            s.disabled=false;
+            if(!id){
+                h.removeChild(s);
             }
-            value[0] = value[0].split("").reverse().join("").replace(/(\d{3})(?=\d)/g, "$1"+groupingSeparator).split("").reverse().join("");
-            return value.join(decimalSeparator);
-        }else
-            return value;
-    },
-    /*shadow copy for hash/array
-    * var a=[]; a.b='b'; a.b will not be copied
-    */
-    copy:function(hash,filter){
-        return _.clone(hash,filter,1);
-    },
-    /*deep copy for hash/array, and hash/array only
-    * var a=[]; a.b='b'; a.b will not be cloned
-    *be careful for dead lock
-    */
-    clone:function(hash,filter,deep){
-        var layer=arguments[3]||0;
-        if(hash && (_.isHash(hash)||_.isArr(hash))){
-            if(_.isObj(hash)){                var me=arguments.callee,
-                    isArr=_.isArr(hash),
-                    h=isArr?[]:{},
-                    i=0,v,l;
-                if(!deep){
-                    if(deep<=0)return hash;
-                    else deep=100;
+            return s;
+        },
+        /*
+        get something from deep hash
+        hash:target hash
+        arr:path array,
+        example:
+        xui.get({a:{b:{c:1}}},['a','b']) => {c:1};
+            xui.get({a:{b:{c:1}}},['a','b','c']) => 1;
+            xui.get({a:{b:{c:1}}},['a','b','c','d']) => undefined;
+        */
+        get:function(hash,path){
+            if(!path) return hash;
+            if(!xui.isSet(hash))return undefined;
+            else if(typeof path=='string') return hash[path];
+            else{
+                for(var i=0,l=path.length,t;i<l;){
+                    if(!(t=path[i++]+''))continue;
+                    if(!hash || (hash=t!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
                 }
-                if(isArr){
-                    l=hash.length;
-                    for(;i<l;i++){
-                        if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
-                        h[h.length]=((v=hash[i]) && deep && (_.isHash(v)||_.isArr(v)))?me(v,filter,deep-1,layer+1):v;
-                    }
+                return hash;
+            }
+        },
+        /*
+        set/unset a value to deep hash
+        example:
+            xui.set({a:{b:{c:1}}},['a','b','c'],2) => {a:{b:{c:2}}}
+            xui.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
+        */
+        set:function(hash,path,value){
+            if(!hash)return;
+            if(typeof path!='string'){
+                var v,i=0,m,last=path.length-1;
+                for(;i<last;){
+                    v=path[i++];
+                    if(hash[v]&&((m=typeof hash[v])=='object' || m=='function')) hash=hash[v];
+                    else hash=hash[v]={};
+                }
+                path=path[last];
+            }
+            // the last one can be a [set] function
+            if(path!=(path=(path+"").replace("()","")) ){
+                if(typeof(hash[path])=="function"){
+                    hash[path](value);
+                    return value;
+                }
+            }else{
+                if(value===undefined){
+                    if(hash.hasOwnProperty && hash.hasOwnProperty(path))
+                        delete hash[path];
+                    else hash[path]=undefined;
                 }else{
-                    for(i in hash){
-                        if(filter===true?i.charAt(0)=='_':
-                            filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
-                            typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
-                            continue;
-                        h[i]=((v=hash[i]) && deep && (_.isHash(v)||_.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                    return hash[path]=value;
+                }
+            }
+        },
+        /* try to excute a function
+        fun:target function
+        args:arguments for fun
+        scope:[this] pointer for fun
+        df:default return vale
+        */
+        tryF:function(fun, args, scope, df){
+            return (fun && typeof fun=='function') ? fun.apply(scope||{}, args||[]) : df
+        },
+        /*asynchronous run function
+        fun:target function
+        defer: setTimeout defer time
+        args: arguments for fun
+        scope: [this] pointer for fun
+        */
+        asyRun:function(fun, defer, args, scope){
+            //defer must set in opera
+            return xui.setTimeout(typeof fun=='string' ? function(){xui.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
+        },
+        asyHTML:function(content, callback, defer, size){
+            var div = document.createElement('div'),
+                fragment = document.createDocumentFragment();
+            div.innerHTML = content;
+            (function(){
+                var i=size||10;
+                while(--i && div.firstChild)
+                    fragment.appendChild(div.firstChild);
+                if(div.firstChild)
+                    xui.setTimeout(arguments.callee, defer||0);
+                else
+                    callback(fragment);
+            })();
+        },
+        isEmpty:function(hash){
+            if (hash==null) return true;
+            if (xui.isNumb(hash)) return false;
+            if (xui.isArr(hash) || xui.isStr(hash) || xui.isArguments(hash)) return hash.length === 0;
+            for(var i in hash)if(Object.prototype.hasOwnProperty.call(hash, i))return false;
+            return true;
+        },
+
+        /*
+        this will always run newer function
+        key: for identify
+        fun: to run
+        defer: setTimeout defer time
+        args: arguments for fun
+        scope: 'this' for fun
+        */
+        resetRun:function(key, fun, defer ,args, scope){
+            var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
+            if(cache[k]){xui.clearTimeout(cache[k])}
+            if(typeof fun=='function')
+                cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
+            else delete cache[k];
+        },
+        //Dependencies: xui.Dom xui.Thread
+        observableRun:function(tasks,onEnd,threadid,busyMsg){
+            xui.Thread.observableRun(tasks,onEnd,threadid,busyMsg);
+        },
+
+        /*break object memory link
+        target: target object
+        n: depth, default 1
+        */
+        breakO:function(target,depth){
+            var n=depth||1, l=1+(arguments[2]||0), self=arguments.callee, _t='___gc_', i;
+            if(target && (typeof target=='object' || typeof target=='function') && target!==window&&target!==document&&target.nodeType!==1){
+                try{if(target.hasOwnProperty(_t))return; else target[_t]=null}catch(e){return}
+                try{for(i in target){
+                    if(target.hasOwnProperty(i) && target[i]){
+                        if(typeof target[i]=='object' || typeof target[i]=='function')
+                            if(l<n)
+                                self(target[i],n,l);
+                        try{target[i]=null}catch(e){}
                     }
-                }
-                return h;
-            }else return hash;
-        }else return hash;
-    },
-    /*filter hash/array
-    filter: filter function(will delete "return false")
-    */
-    filter:function(obj, filter, force){
-        if(!force && obj && _.isArr(obj)){
-            var i,l,v,a=[],o;
-            for(i=0, l=obj.length; i<l; i++)a[a.length]=obj[i];
-            obj.length=0;
-            for(i=0, l=a.length; i<l; i++)
-                if(typeof filter=='function'?false!==filter.call(a,a[i],i):1)
-                    obj[obj.length]=a[i];
-        }else{
-            var i, bak={};
-            for(i in obj)
-                if(filter===true?i.charAt(0)=='_':
-                    filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
-                    typeof filter=='function'?false===filter.call(obj,obj[i],i):0)
-                    bak[i]=1;
-
-            for(i in bak)
-                delete obj[i];
-        }
-        return obj;
-    },
-    /*convert iterator to Array
-    value: something can be iteratorred
-    _.toArr({a:1},true) => [a];
-    _.toArr({a:1},false) => [1];
-    _.toArr('a,b') => ['a','b'];
-    _.toArr('a;b',';') => ['a','b'];
-    */
-    toArr:function(value, flag){
-        if(!value)return [];
-        var arr=[];
-        //hash
-        if(typeof flag == 'boolean')
-            for(var i in value)
-                arr[arr.length]=flag?i:value[i];
-        //other like arguments
-        else{
-            if(_.isHash(value)){
-                for(var i in value){
-                    arr.push({key:i,value:value[i]});
-                }
-            }else if(typeof value=='string')
-                arr=value.split(flag||',');
-            else
-                for(var i=0,l=value.length; i<l; ++i)
-                    arr[i]=value[i];
-        }
-        return arr;
-    },
-    toUTF8:function(str){
-        return str.replace(/[^\x00-\xff]/g, function(a,b) {
-            return '\\u' + ((b=a.charCodeAt())<16?'000':b<256?'00':b<4096?'0':'')+b.toString(16)
-        })
-    },
-    fromUTF8:function(str){
-        return str.replace(/\\u([0-9a-f]{3})([0-9a-f])/g,function(a,b,c){return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
-    },
-    urlEncode:function(hash){
-        var a=[],i,o;
-        for(i in hash)
-            if(_.isDefined(o=hash[i]))
-                a.push(encodeURIComponent(i)+'='+encodeURIComponent(typeof o=='string'?o:_.serialize(o)));
-        return a.join('&');
-    },
-    urlDecode:function(str, key){
-        if(!str)return key?'':{};
-        var arr,hash={},a=str.split('&'),o;
-        for(var i=0,l=a.length;i<l;i++){
-            o=a[i];
-            arr=o.split('=');
-            try{
-                hash[decodeURIComponent(arr[0])]=decodeURIComponent(arr[1]);
-            }catch(e){
-                hash[arr[0]]=arr[1];
+                }}catch(e){return}
+                if(target.length)target.length=0;
+                delete target[_t];
             }
-        }
-        return key?hash[key]:hash;
-    },
-    preLoadImage:function(src, onSuccess, onFail) {
-        if(_.isArr(src)){
-            for(var i=0, l=arr.length; i<l; i++)
-                _.preLoadImage(src[i], onSuccess, onFail);
-            return l;
-        }
-        var img = document.createElement("img");
-        img.style.cssText = "position:absolute;left:-999px;top:-999px";
-        img.width=img.height=2;
-        img.onload = function () {
-            if(typeof onSuccess=='function')onSuccess.call(this);
-            this.onload = this.onerror = null;
-            document.body.removeChild(this);
-        };
-        img.onerror = function () {
-            if(typeof onFail=='function')onFail.call(this);
-            this.onload = this.onerror = null;
-            document.body.removeChild(this);
-        };
-        document.body.appendChild(img);
-        img.src = src;
-    return 1;
-    },
-    // type detection
-    _to:Object.prototype.toString,
-    _has: Object.prototype.hasOwnProperty,
-    _ht:/^\s*function\s+Object\(\s*\)/,
-    isDefined:function(target)  {return target!==undefined},
-    isNull:function(target)  {return target===null},
-    isSet:function(target)   {return target!==undefined && target!==null && target!==NaN},
-    // including : object array function
-    isObj:function(target)   {return !!target  && (typeof target == 'object' || typeof target == 'function')},
-    isHash:function(target)  {return !!target && _._to.call(target)=='[object Object]' && target.constructor && _._ht.test(target.constructor.toString()) && !_._has.call(target,"callee")},
-    isBool:function(target)  {return typeof target == 'boolean'},
-    isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
-    isFinite:function(target)  {return (target||target===0) && isFinite(target) && !isNaN(parseFloat(target))},
-    isDate:function(target)  {return _._to.call(target)==='[object Date]' && isFinite(+target)},
-    isFun:function(target)   {return _._to.call(target)==='[object Function]'},
-    isArr:function(target)   {return _._to.call(target)==='[object Array]'},
-    isReg:function(target)   {return _._to.call(target)==='[object RegExp]'},
-    isStr:function(target)   {return _._to.call(target)==='[object String]'},
-    isArguments:function(target)   {return target && (_._to.call(target)==='[object Arguments]' || _._has.call(target,"callee"))},
-    isElem:function(target) {return !!(target && target.nodeType === 1)},
-    isNaN:function(target) {return typeof target == 'number' && target != +target;},
-    //for handling String
-    str:{
-        startWith:function(str,sStr){
-            return str.indexOf(sStr) === 0;
         },
-        endWith:function (str,eStr) {
-            var l=str.length-eStr.length;
-            return l>=0 && str.lastIndexOf(eStr) === l;
-        },
-        repeat:function(str,times){
-            return new Array(times+1).join(str);
-        },
-        initial:function(str){
-            return str.charAt(0).toUpperCase() + str.substring(1);
-        },
-        trim:function(str){
-            return str?str.replace(/^(\s|\uFEFF|\xA0)+|(\s|\uFEFF|\xA0)+$/g, ''):str;
-        },
-        ltrim:function(str){
-            return str?str.replace(/^(\s|\uFEFF|\xA0)+/,''):str;
-        },
-        rtrim:function(str){
-            return str?str.replace(/(\s|\uFEFF|\xA0)+$/,''):str;
-        },
-        /*
-        blen : function(s){
-            var _t=s.match(/[^\x00-\xff]/ig);
-            return s.length+(null===_t?0:_t.length);
-        },
+
+        /*each function for hash
+        fun: fun to exec, if return false, stop the $iterator
+        scope: 'this' pointer;
         */
-        //Dependencies: xui.Dom
-        toDom:function(str){
-            var p=xui.$getGhostDiv(), r=[];
-            p.innerHTML=str;
-            for(var i=0,t=p.childNodes,l=t.length;i<l;i++)r[r.length]=t[i];
-            p=null;
-            return xui(r);
-        }
-    },
-    //for handling Array
-    arr:{
-        fastSortObject:function(arr, getKey){
-            if(!arr||arr.length<2)return arr;
-
-            var ll=arr.length,
-                zero=[],
-                len=(ll+"").length,
-                p=Object.prototype,
-                o,s,c,t;
-            for(var i=0;i<len;i++)zero[i]=new Array(len-i).join("0");
-            for(var j=0;j<ll;j++){
-                s=j+'';
-                c=arr[j];
-                if(typeof c=="object")c._xui_$s$=(_.isSet(t=getKey.call(c,j))?t:'') + zero[s.length-1] + s;
-            }
-            try{
-                o=p.toString;
-                p.toString=function(){return this.hasOwnProperty('_xui_$s$')?(this._xui_$s$):(o.call(this));};
-                arr.sort();
-            }finally{
-                p.toString=o;
-                for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$;
-            }
-            return arr;
+        each:function(hash,fun,scope){
+            scope = scope||hash;
+            for(var i in hash)
+                if(false===fun.call(scope, hash[i], i, hash))
+                    break;
+            return hash;
         },
-        stableSort:function(arr,sortby){
-            if(arr && arr.length > 1){
-                for(var i=0,l=arr.length,a=[],b=[];i<l;i++)b[i]=arr[a[i]=i];
-                if(_.isFun(sortby))
-                    a.sort(function(x,y){
-                        return sortby.call(arr,arr[x],arr[y]) || (x>y?1:-1);
-                    });
-                else
-                    a.sort(function(x,y){
-                        return arr[x]>arr[y]?1:arr[x]<arr[y]?-1:x>y?1:-1;
-                    });
-                for(i=0;i<l;i++)arr[i]=b[a[i]];
-                a.length=b.length=0;
-            }
-            return arr;
+        compareNumber:function(a,b,digits){
+            return xui.toFixedNumber(a,digits) === xui.toFixedNumber(b,digits);
         },
-        subIndexOf:function(arr,key,value){
-            if(value===undefined)return -1;
-            for(var i=0, l=arr.length; i<l; i++)
-                if(arr[i] && arr[i][key] === value)
-                    return i;
-            return -1;
-        },
-        removeFrom:function(arr, index,length){
-            arr.splice(index, length || 1);
-            return arr;
-        },
-        removeValue:function(arr, value){
-            for(var l=arr.length,i=l-1; i>=0; i--)
-                if(arr[i]===value)
-                    arr.splice(i,1);
-            return arr;
-        },
-        /*
-         insert something to array
-         arr: any
-         index:default is length-1
-         flag: is add array
-
-         For example:
-         [1,2].insertAny(3)
-            will return [1,2,3]
-         [1,2].insertAny(3,0)
-            will return [3,1,2]
-         [1,2].insertAny([3,4])
-            will return [1,2,3,4]
-         [1,2].insertAny([3,4],3,true)
-            will return [1,2,[3,4]]
-        */
-        insertAny:function (arr, target,index, flag) {
-            var l=arr.length;
-            flag=(!_.isArr(target)) || flag;
-            if(index===0){
-                if(flag)
-                    arr.unshift(target);
-                else
-                    arr.unshift.apply(arr, target);
+        toFixedNumber:function(number,digits) {
+            if(!xui.isSet(digits))digits=2;
+            var m=Math.abs(number),
+                s=''+Math.round(m * Math.pow(10, digits)),
+                v, t, start, end;
+            if(/\D/.test(s)){
+              v = ""+m;
             }else{
-                var a;
-                if(!index || index<0 || index>l)index=l;
-                if(index!=l)
-                    a=arr.splice(index,l-index);
-                if(flag)
-                    arr[arr.length]=target;
-                else
-                    arr.push.apply(arr, target);
-                if(a)
-                    arr.push.apply(arr, a);
+                while(s.length<1+digits)s='0'+s;
+                start=s.substring(0, t=(s.length-digits));
+                end=s.substring(t);
+                if(end)end="."+end;
+                v=start+end;
             }
-            return index;
+            return parseFloat((number<0?"-":"")+v);
         },
-        indexOf:function(arr, value) {
-            for(var i=0, l=arr.length; i<l; i++)
-                if(arr[i] === value)
-                    return i;
-            return -1;
+        toNumeric:function(value, precision, groupingSeparator, decimalSeparator){
+            if(!xui.isNumb(value))
+                value=parseFloat((value+"").replace(/\s*(e\+|[^0-9])/g, function(a,b,c){return b=='e+'||b=='E+'||(c==0&&b=='-')?b:b==decimalSeparator?'.':''}))||0;
+            if(xui.isSet(precision) && precision>=0)
+                 value=xui.toFixedNumber(value,precision);
+            return value;
         },
-        /*
-        fun: fun to apply
-        desc: true - max to min , or min to max
-        atarget: for this
-        */
-        each:function(arr,fun,scope,desc){
-            var i, l, a=arr;
-            if(!a)return a;
-            if(!_.isArr(a)){
-                if(!_.isArr(a._nodes))
-                    return a;
-                a=a._nodes;
-                if(desc===undefined)
-                    desc=1;
-            }
-            l=a.length;
-            scope = scope||arr;
-            if(!desc){
-                for(i=0; i<l; i++)
-                    if(fun.call(scope, a[i], i, a)===false)
-                        break;
+        formatNumeric:function(value, precision, groupingSeparator, decimalSeparator, forceFillZero){
+            if(xui.isSet(precision))precision=parseInt(precision,10);
+            precision=(precision||precision===0)?precision:0;
+            groupingSeparator=xui.isSet(groupingSeparator)?groupingSeparator:",";
+            decimalSeparator=decimalSeparator||".";
+            value=""+parseFloat(value);
+            if(value.indexOf('e')==-1){
+                value=xui.toFixedNumber(value,precision) + "";
+                value= value.split(".");
+                if(forceFillZero!==false){
+                    if((value[1]?value[1].length:0)<precision)value[1]=(value[1]||"")+xui.str.repeat('0',precision-(value[1]?value[1].length:0));
+                }
+                value[0] = value[0].split("").reverse().join("").replace(/(\d{3})(?=\d)/g, "$1"+groupingSeparator).split("").reverse().join("");
+                return value.join(decimalSeparator);
             }else
-                for(i=l-1; i>=0; i--)
-                    if(fun.call(scope, a[i], i, a)===false)
-                        break;
+                return value;
+        },
+        /*shadow copy for hash/array
+        * var a=[]; a.b='b'; a.b will not be copied
+        */
+        copy:function(hash,filter){
+            return xui.clone(hash,filter,1);
+        },
+        /*deep copy for hash/array, and hash/array only
+        * var a=[]; a.b='b'; a.b will not be cloned
+        *be careful for dead lock
+        */
+        clone:function(hash,filter,deep){
+            var layer=arguments[3]||0;
+            if(hash && (xui.isHash(hash)||xui.isArr(hash))){
+                if(xui.isObj(hash)){                var me=arguments.callee,
+                        isArr=xui.isArr(hash),
+                        h=isArr?[]:{},
+                        i=0,v,l;
+                    if(!deep){
+                        if(deep<=0)return hash;
+                        else deep=100;
+                    }
+                    if(isArr){
+                        l=hash.length;
+                        for(;i<l;i++){
+                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
+                            h[h.length]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                        }
+                    }else{
+                        for(i in hash){
+                            if(filter===true?i.charAt(0)=='_':
+                                filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
+                                typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
+                                continue;
+                            h[i]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                        }
+                    }
+                    return h;
+                }else return hash;
+            }else return hash;
+        },
+        /*filter hash/array
+        filter: filter function(will delete "return false")
+        */
+        filter:function(obj, filter, force){
+            if(!force && obj && xui.isArr(obj)){
+                var i,l,v,a=[],o;
+                for(i=0, l=obj.length; i<l; i++)a[a.length]=obj[i];
+                obj.length=0;
+                for(i=0, l=a.length; i<l; i++)
+                    if(typeof filter=='function'?false!==filter.call(a,a[i],i):1)
+                        obj[obj.length]=a[i];
+            }else{
+                var i, bak={};
+                for(i in obj)
+                    if(filter===true?i.charAt(0)=='_':
+                        filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
+                        typeof filter=='function'?false===filter.call(obj,obj[i],i):0)
+                        bak[i]=1;
+
+                for(i in bak)
+                    delete obj[i];
+            }
+            return obj;
+        },
+        /*convert iterator to Array
+        value: something can be iteratorred
+        xui.toArr({a:1},true) => [a];
+        xui.toArr({a:1},false) => [1];
+        xui.toArr('a,b') => ['a','b'];
+        xui.toArr('a;b',';') => ['a','b'];
+        */
+        toArr:function(value, flag){
+            if(!value)return [];
+            var arr=[];
+            //hash
+            if(typeof flag == 'boolean')
+                for(var i in value)
+                    arr[arr.length]=flag?i:value[i];
+            //other like arguments
+            else{
+                if(xui.isHash(value)){
+                    for(var i in value){
+                        arr.push({key:i,value:value[i]});
+                    }
+                }else if(typeof value=='string')
+                    arr=value.split(flag||',');
+                else
+                    for(var i=0,l=value.length; i<l; ++i)
+                        arr[i]=value[i];
+            }
             return arr;
         },
-        removeDuplicate:function(arr,subKey){
-            var l=arr.length,a=arr.concat();
-            arr.length=0;
-            for(var i=l-1;i>=0;i--){
-                if(subKey? this.subIndexOf(a, subKey, a[i][subKey])===i: this.indexOf(a, a[i])===i)
-                    arr.push(a[i]);
+        toUTF8:function(str){
+            return str.replace(/[^\x00-\xff]/g, function(a,b) {
+                return '\\u' + ((b=a.charCodeAt())<16?'000':b<256?'00':b<4096?'0':'')+b.toString(16)
+            })
+        },
+        fromUTF8:function(str){
+            return str.replace(/\\u([0-9a-f]{3})([0-9a-f])/g,function(a,b,c){return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
+        },
+        urlEncode:function(hash){
+            var a=[],i,o;
+            for(i in hash)
+                if(xui.isDefined(o=hash[i]))
+                    a.push(encodeURIComponent(i)+'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+            return a.join('&');
+        },
+        urlDecode:function(str, key){
+            if(!str)return key?'':{};
+            var arr,hash={},a=str.split('&'),o;
+            for(var i=0,l=a.length;i<l;i++){
+                o=a[i];
+                arr=o.split('=');
+                try{
+                    hash[decodeURIComponent(arr[0])]=decodeURIComponent(arr[1]);
+                }catch(e){
+                    hash[arr[0]]=arr[1];
+                }
             }
-            return arr.reverse();
-        }
-    }
-});
+            return key?hash[key]:hash;
+        },
+        preLoadImage:function(src, onSuccess, onFail) {
+            if(xui.isArr(src)){
+                for(var i=0, l=arr.length; i<l; i++)
+                    xui.preLoadImage(src[i], onSuccess, onFail);
+                return l;
+            }
+            var img = document.createElement("img");
+            img.style.cssText = "position:absolute;left:-999px;top:-999px";
+            img.width=img.height=2;
+            img.onload = function () {
+                if(typeof onSuccess=='function')onSuccess.call(this);
+                this.onload = this.onerror = null;
+                document.body.removeChild(this);
+            };
+            img.onerror = function () {
+                if(typeof onFail=='function')onFail.call(this);
+                this.onload = this.onerror = null;
+                document.body.removeChild(this);
+            };
+            document.body.appendChild(img);
+            img.src = src;
+        return 1;
+        },
+        // type detection
+        isDefined:function(target)  {return target!==undefined},
+        isNull:function(target)  {return target===null},
+        isSet:function(target)   {return target!==undefined && target!==null && target!==NaN},
+        // including : object array function
+        isObj:function(target)   {return !!target  && (typeof target == 'object' || typeof target == 'function')},
+        isHash:function(target)  {return !!target && _to.call(target)=='[object Object]' && target.constructor && /^\s*function\s+Object\(\s*\)/.test(target.constructor.toString()) && !Object.prototype.hasOwnProperty.call(target,"callee")},
+        isBool:function(target)  {return typeof target == 'boolean'},
+        isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
+        isFinite:function(target)  {return (target||target===0) && isFinite(target) && !isNaN(parseFloat(target))},
+        isDate:function(target)  {return _to.call(target)==='[object Date]' && isFinite(+target)},
+        isFun:function(target)   {return _to.call(target)==='[object Function]'},
+        isArr:function(target)   {return _to.call(target)==='[object Array]'},
+        isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
+        isStr:function(target)   {return _to.call(target)==='[object String]'},
+        isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
+        isElem:function(target) {return !!(target && target.nodeType === 1)},
+        isNaN:function(target) {return typeof target == 'number' && target != +target;},
+        //for handling String
+        str:{
+            startWith:function(str,sStr){
+                return str.indexOf(sStr) === 0;
+            },
+            endWith:function (str,eStr) {
+                var l=str.length-eStr.length;
+                return l>=0 && str.lastIndexOf(eStr) === l;
+            },
+            repeat:function(str,times){
+                return new Array(times+1).join(str);
+            },
+            initial:function(str){
+                return str.charAt(0).toUpperCase() + str.substring(1);
+            },
+            trim:function(str){
+                return str?str.replace(/^(\s|\uFEFF|\xA0)+|(\s|\uFEFF|\xA0)+$/g, ''):str;
+            },
+            ltrim:function(str){
+                return str?str.replace(/^(\s|\uFEFF|\xA0)+/,''):str;
+            },
+            rtrim:function(str){
+                return str?str.replace(/(\s|\uFEFF|\xA0)+$/,''):str;
+            },
+            /*
+            blen : function(s){
+                var _t=s.match(/[^\x00-\xff]/ig);
+                return s.length+(null===_t?0:_t.length);
+            },
+            */
+            //Dependencies: xui.Dom
+            toDom:function(str){
+                var p=xui.$getGhostDiv(), r=[];
+                p.innerHTML=str;
+                for(var i=0,t=p.childNodes,l=t.length;i<l;i++)r[r.length]=t[i];
+                p=null;
+                return xui(r);
+            }
+        },
+        //for handling Array
+        arr:{
+            fastSortObject:function(arr, getKey){
+                if(!arr||arr.length<2)return arr;
 
-_.merge(_.fun,{
+                var ll=arr.length,
+                    zero=[],
+                    len=(ll+"").length,
+                    p=Object.prototype,
+                    o,s,c,t;
+                for(var i=0;i<len;i++)zero[i]=new Array(len-i).join("0");
+                for(var j=0;j<ll;j++){
+                    s=j+'';
+                    c=arr[j];
+                    if(typeof c=="object")c._xui_$s$=(xui.isSet(t=getKey.call(c,j))?t:'') + zero[s.length-1] + s;
+                }
+                try{
+                    o=p.toString;
+                    p.toString=function(){return this.hasOwnProperty('_xui_$s$')?(this._xui_$s$):(o.call(this));};
+                    arr.sort();
+                }finally{
+                    p.toString=o;
+                    for(var j=0;j<ll;j++)if(typeof arr[j]=="object")delete arr[j]._xui_$s$;
+                }
+                return arr;
+            },
+            stableSort:function(arr,sortby){
+                if(arr && arr.length > 1){
+                    for(var i=0,l=arr.length,a=[],b=[];i<l;i++)b[i]=arr[a[i]=i];
+                    if(xui.isFun(sortby))
+                        a.sort(function(x,y){
+                            return sortby.call(arr,arr[x],arr[y]) || (x>y?1:-1);
+                        });
+                    else
+                        a.sort(function(x,y){
+                            return arr[x]>arr[y]?1:arr[x]<arr[y]?-1:x>y?1:-1;
+                        });
+                    for(i=0;i<l;i++)arr[i]=b[a[i]];
+                    a.length=b.length=0;
+                }
+                return arr;
+            },
+            subIndexOf:function(arr,key,value){
+                if(value===undefined)return -1;
+                for(var i=0, l=arr.length; i<l; i++)
+                    if(arr[i] && arr[i][key] === value)
+                        return i;
+                return -1;
+            },
+            removeFrom:function(arr, index,length){
+                arr.splice(index, length || 1);
+                return arr;
+            },
+            removeValue:function(arr, value){
+                for(var l=arr.length,i=l-1; i>=0; i--)
+                    if(arr[i]===value)
+                        arr.splice(i,1);
+                return arr;
+            },
+            /*
+             insert something to array
+             arr: any
+             index:default is length-1
+             flag: is add array
+
+             For example:
+             [1,2].insertAny(3)
+                will return [1,2,3]
+             [1,2].insertAny(3,0)
+                will return [3,1,2]
+             [1,2].insertAny([3,4])
+                will return [1,2,3,4]
+             [1,2].insertAny([3,4],3,true)
+                will return [1,2,[3,4]]
+            */
+            insertAny:function (arr, target,index, flag) {
+                var l=arr.length;
+                flag=(!xui.isArr(target)) || flag;
+                if(index===0){
+                    if(flag)
+                        arr.unshift(target);
+                    else
+                        arr.unshift.apply(arr, target);
+                }else{
+                    var a;
+                    if(!index || index<0 || index>l)index=l;
+                    if(index!=l)
+                        a=arr.splice(index,l-index);
+                    if(flag)
+                        arr[arr.length]=target;
+                    else
+                        arr.push.apply(arr, target);
+                    if(a)
+                        arr.push.apply(arr, a);
+                }
+                return index;
+            },
+            indexOf:function(arr, value) {
+                for(var i=0, l=arr.length; i<l; i++)
+                    if(arr[i] === value)
+                        return i;
+                return -1;
+            },
+            /*
+            fun: fun to apply
+            desc: true - max to min , or min to max
+            atarget: for this
+            */
+            each:function(arr,fun,scope,desc){
+                var i, l, a=arr;
+                if(!a)return a;
+                if(!xui.isArr(a)){
+                    if(!xui.isArr(a._nodes))
+                        return a;
+                    a=a._nodes;
+                    if(desc===undefined)
+                        desc=1;
+                }
+                l=a.length;
+                scope = scope||arr;
+                if(!desc){
+                    for(i=0; i<l; i++)
+                        if(fun.call(scope, a[i], i, a)===false)
+                            break;
+                }else
+                    for(i=l-1; i>=0; i--)
+                        if(fun.call(scope, a[i], i, a)===false)
+                            break;
+                return arr;
+            },
+            removeDuplicate:function(arr,subKey){
+                var l=arr.length,a=arr.concat();
+                arr.length=0;
+                for(var i=l-1;i>=0;i--){
+                    if(subKey? this.subIndexOf(a, subKey, a[i][subKey])===i: this.indexOf(a, a[i])===i)
+                        arr.push(a[i]);
+                }
+                return arr.reverse();
+            }
+        }
+    });
+};
+xui.merge(xui.fun,{
     body:function(fun){
         var s=""+fun;
         s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});        
@@ -781,11 +779,11 @@ _.merge(_.fun,{
         return s[0]&&s;
     },
     clone:function(fun){
-        return new Function(_.fun.args(fun),_.fun.body(fun));
+        return new Function(xui.fun.args(fun),xui.fun.body(fun));
     }
 });
 
-_.merge(Class, {
+xui.merge(Class, {
     _reg:{$key:1,$parent:1,$children:1,KEY:1,Static:1,Instance:1,Constructor:1,Initialize:1},
     // give nodeType to avoid breakO
     _reg2:{'nodeType':1,'constructor':1,'prototype':1,'toString':1,'valueOf':1,'hasOwnProperty':1,'isPrototypeOf':1,'propertyIsEnumerable':1,'toLocaleString':1},
@@ -839,10 +837,10 @@ _.merge(Class, {
             return;
         }
         if(typeof key=='object')key=key.KEY||"";
-        var t = _.get(window, key.split('.')),s,i,j;
+        var t = xui.get(window, key.split('.')),s,i,j;
         if(t){
             //remove from SC cache
-            if(s=_.get(window,['xui','$cache','SC']))delete s[key];
+            if(s=xui.get(window,['xui','$cache','SC']))delete s[key];
 
             //remove parent link
             if(t.$parent)
@@ -853,7 +851,7 @@ _.merge(Class, {
             if(s=t.$children){
                 //destroy children
                 for(var i=0,o; o=s[i];i++)
-                    if(o=_.get(window,o.split('.')))
+                    if(o=xui.get(window,o.split('.')))
                         o.__gc();
                 s.length=0;
             }
@@ -864,7 +862,7 @@ _.merge(Class, {
                     for(j in t[i])
                         if(t[i].hasOwnProperty(j))
                            delete t[i][j];
-            _.breakO(t);
+            xui.breakO(t);
 
             t=t.prototype;
             for(i in t)
@@ -872,10 +870,10 @@ _.merge(Class, {
                     for(j in t[i])
                         if(t[i].hasOwnProperty(j))
                             delete t[i][j];
-            _.breakO(t);
+            xui.breakO(t);
 
             //remove it out of window
-            _.set(window, key.split('.'));
+            xui.set(window, key.split('.'));
         }
 
         _c.splice(_c[key],1);
@@ -885,7 +883,7 @@ _.merge(Class, {
 });
 
 //function Dependencies: xui.Dom xui.Thread
-_.merge(xui,{
+xui.merge(xui,{
     version:1.4,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
@@ -934,8 +932,8 @@ _.merge(xui,{
         if(topic===null||topic===undefined||subscriber===null||subscriber===undefined||typeof receiver!='function')return;
         var c=xui.$cache.subscribes,i;
         c[topic]=c[topic]||[];
-        i=_.arr.subIndexOf(c[topic],"id",subscriber);
-        if(i!=-1)_.arr.removeFrom(c[topic],i);
+        i=xui.arr.subIndexOf(c[topic],"id",subscriber);
+        if(i!=-1)xui.arr.removeFrom(c[topic],i);
         return c[topic].push({id:subscriber,receiver:receiver,asy:!!asy});
     },
     unsubscribe:function(topic, subscriber){
@@ -946,30 +944,30 @@ _.merge(xui,{
             else
                 delete c[topic];
         }else if(c[topic]){
-            i=_.arr.subIndexOf(c[topic],"id",subscriber);
-            if(i!=-1)_.arr.removeFrom(c[topic],i);
+            i=xui.arr.subIndexOf(c[topic],"id",subscriber);
+            if(i!=-1)xui.arr.removeFrom(c[topic],i);
         }
     },
     publish:function(topic, args, subscribers, scope){
         var c=xui.$cache.subscribes;
         if(topic===null||topic===undefined){
             for(var topic in c){
-                _.arr.each(c[topic],function(o){
-                    if(!subscribers || subscribers===o.id || (_.isArr(subscribers)&&_.arr.indexOf(subscribers,o.id)!=-1)){
+                xui.arr.each(c[topic],function(o){
+                    if(!subscribers || subscribers===o.id || (xui.isArr(subscribers)&&xui.arr.indexOf(subscribers,o.id)!=-1)){
                         if(o.asy)
-                            _.asyRun(o.receiver, 0, args, scope);
+                            xui.asyRun(o.receiver, 0, args, scope);
                         else
-                            return _.tryF(o.receiver, args, scope, true);
+                            return xui.tryF(o.receiver, args, scope, true);
                     }
                 });
             }
         }else if(c[topic]){
-            _.arr.each(c[topic],function(o){
-                if(!subscribers || subscribers===o.id || (_.isArr(subscribers)&&_.arr.indexOf(subscribers,o.id)!=-1)){
+            xui.arr.each(c[topic],function(o){
+                if(!subscribers || subscribers===o.id || (xui.isArr(subscribers)&&xui.arr.indexOf(subscribers,o.id)!=-1)){
                     if(o.asy)
-                        _.asyRun(o.receiver, 0, args, scope);
+                        xui.asyRun(o.receiver, 0, args, scope);
                     else
-                        return _.tryF(o.receiver, args, scope, true);
+                        return xui.tryF(o.receiver, args, scope, true);
                 }
             });
         }
@@ -997,8 +995,8 @@ _.merge(xui,{
                     if(t.className && typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
-                    _.setTimeout(arguments.callee,0);
-                _.tryF(callback,[a.length,l]);
+                    xui.setTimeout(arguments.callee,0);
+                xui.tryF(callback,[a.length,l]);
             }())
         },
         z = 'xui.Locale.' + key,
@@ -1034,7 +1032,7 @@ _.merge(xui,{
                     xui.$CSSCACHE={};
                     if(xui.UI)xui.UI.getAll().reLayout(true);
                  }
-                _.tryF(onSucess);
+                xui.tryF(onSucess);
             };
             if(key=='default'){
                 onend(onSucess);
@@ -1043,7 +1041,7 @@ _.merge(xui,{
                     var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
                 }catch(e){}finally{
                     if(tkey==key){
-                        _.tryF(onSucess);
+                        xui.tryF(onSucess);
                         return;
                     }else{
                         xui.CSS.includeLink(xui.getPath('xui.appearance.'+key,'/theme.css'),'theme:'+key);
@@ -1052,7 +1050,7 @@ _.merge(xui,{
                         // timeout: 21 seconds
                         if(count++>20){
                             fun=count=null;
-                            if(false!==_.tryF(onFail))
+                            if(false!==xui.tryF(onFail))
                                 throw 'errLoadTheme:'+key;
                             return;
                         }
@@ -1064,14 +1062,14 @@ _.merge(xui,{
                                 onend(onSucess);
                                 fun=count=null;
                             }else{
-                                _.asyRun(fun,100*count);
+                                xui.asyRun(fun,100*count);
                             }
                         }
                     };fun();
                 }
             }
         }else{
-            _.tryF(onSucess);
+            xui.tryF(onSucess);
         }
     },
     reLayout:function(){
@@ -1102,25 +1100,25 @@ _.merge(xui,{
     //tset2: xui.getRes( ["a","b","c $0 $1 ($- $. $$) end"],1,2) => "c 1 2 (- . $) end"
     getRes:function(path){
         var arr,conf,tmp,params=arguments,rtn;
-        if(_.isStr(path)){
+        if(xui.isStr(path)){
             path=path.replace(/\$([$.-])/g,function(a,b){return xui._escapeMap[b]||a;});
             if(path.charAt(0)=='$')path=path.slice(1);
             if(path.indexOf('-')!=-1){
                 tmp=path.split('-');
                 path=tmp[0];
                 params=tmp;
-            }else if(_.isArr(params[1])){
+            }else if(xui.isArr(params[1])){
                 params=params[1];
                 params.unshift(path);
             }
             arr=path.split(".");
             arr[arr.length-1]=arr[arr.length-1].replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
-        }else if(_.isArr(path)){
+        }else if(xui.isArr(path)){
             arr=path;
         }else{
             return path;
         }
-        conf=_.get(xui.Locale[xui.$localeKey], arr);
+        conf=xui.get(xui.Locale[xui.$localeKey], arr);
         if((tmp=typeof conf)=='function'){
            return conf.apply(null,params) ;
         }else if(tmp=='object'){
@@ -1132,7 +1130,7 @@ _.merge(xui,{
         }
     },
     wrapRes:function(id){
-        if(!_.isStr(id))return id;
+        if(!xui.isStr(id))return id;
         var i=id, s,r;
         if(i.charAt(0)=='$')arguments[0]=i.substr(1,i.length-1);
         s=id;
@@ -1142,7 +1140,7 @@ _.merge(xui,{
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
     adjustRes:function(str, wrap, onlyBraces, onlyVars, params, scope){
-        if(!_.isStr(str))return str;
+        if(!xui.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
         str=xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
@@ -1155,7 +1153,7 @@ _.merge(xui,{
                     // $a
                     l=='$' ? onlyVars?a:wrap(m,params) :
                     // variable: @a@ @a.b.c@ {a.b.c}
-                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x,scope)) || (_.isSet(z)?z:""))
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x,scope)) || (xui.isSet(z)?z:""))
                      : a;
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
@@ -1185,7 +1183,7 @@ _.merge(xui,{
         : (t=="iajax"||t=="xdmi") ? xui.XDMI 
         : (t=="ajax") ? xui.Ajax
         // include a file => XDMI
-        : (typeof query=='object' && ((function(d){if(!_.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
+        : (typeof query=='object' && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
         // post: crossdomain => XDMI, else Ajax
         : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
         // get : crossdomain => JSONP, else Ajax
@@ -1220,26 +1218,26 @@ _.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, rspType, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui.$rand+"="+_.rand(),onSuccess,onFail, null, _.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, rspType, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.$rand+"="+_.rand(),onSuccess, onFail,threadid, _.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
-            _.tryF(onSuccess);
+            xui.tryF(onSuccess);
         else{
             options=typeof options=='object'?options:{};
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.JSONP(path,xui.$rand+"="+_.rand(),onSuccess,onFail,0,options).start()
+                xui.JSONP(path,xui.$rand+"="+xui.rand(),onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui.$rand+"="+_.rand(),function(rsp){
-                    try{_.exec(rsp,id)}
-                    catch(e){_.tryF(onFail,[e.name + ": " + e.message])}
-                    _.tryF(onSuccess);
+                xui.Ajax(path,xui.$rand+"="+xui.rand(),function(rsp){
+                    try{xui.exec(rsp,id)}
+                    catch(e){xui.tryF(onFail,[e.name + ": " + e.message])}
+                    xui.tryF(onSuccess);
                 },onFail,0,options).start();
                 }
         }
@@ -1267,23 +1265,23 @@ _.merge(xui,{
              uri=xui.getPath(uri,'.js','js',options);
          }
         if(!force && (isPath?((t=c[uri]) && t.$xui$):(t=xui.SC.get(cls))))
-            _.tryF(onSuccess,[uri,cls],t);
+            xui.tryF(onSuccess,[uri,cls],t);
         else{
             // For fetching one class multiple times
             if(!f[uri]){
                 f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
                 if(xui.absIO.isCrossDomain(uri)){
                     Class._ignoreNSCache=1;Class._last=null;
-                    xui.JSONP(uri,xui.$rand+"="+_.rand(),function(){
+                    xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
                         if(Class._last)t=c[uri]=Class._last;
                         Class._ignoreNSCache=Class._last=null;
-                        if(t){for(var i in onSuccess)_.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i in onFail)_.tryF(onFail[i],  _.toArr(arguments));}
+                        if(t){for(var i in onSuccess)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i in onFail)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         var s=xui.getClassName(uri);
                         if(t&&t.KEY!=s){
                             var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i in onAlert)_.tryF(onAlert[i], [msg, uri, s, t.KEY]);
-                            _.asyRun(function(){
+                            for(var i in onAlert)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
+                            xui.asyRun(function(){
                                 throw msg;
                             });
                         }
@@ -1292,26 +1290,26 @@ _.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         Class._ignoreNSCache=1;Class._last=null;
-                        for(var i in onFail)_.tryF(onFail[i], _.toArr(arguments));
+                        for(var i in onFail)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'script'}).start();
                 }else{
-                    xui.Ajax(uri,xui.$rand+"="+_.rand(),function(rsp){
+                    xui.Ajax(uri,xui.$rand+"="+xui.rand(),function(rsp){
                         Class._ignoreNSCache=1;Class._last=null;
                         var scriptnode;
                         var s=xui.getClassName(uri);
-                        try{scriptnode=_.exec(rsp, s)}
-                        catch(e){for(var i in onFail)_.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
+                        try{scriptnode=xui.exec(rsp, s)}
+                        catch(e){for(var i in onFail)xui.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
                         if(Class._last)t=c[uri]=Class._last;
                         Class._last=null;
-                        if(t){for(var i in onSuccess)_.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i in onFail)_.tryF(onFail[i],  _.toArr(arguments));}
+                        if(t){for(var i in onSuccess)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i in onFail)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         if(t&&t.KEY!=s){
                             var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i in onAlert)_.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
-                            _.asyRun(function(){
+                            for(var i in onAlert)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
+                            xui.asyRun(function(){
                                 throw msg;
                             });
                         }
@@ -1320,7 +1318,7 @@ _.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         Class._ignoreNSCache=Class._last=null;
-                        for(var i in onFail)_.tryF(onFail[i], _.toArr(arguments));
+                        for(var i in onFail)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
@@ -1347,13 +1345,13 @@ _.merge(xui,{
         return xui.Thread.group(null, hash, null, function(){
             xui.Thread(threadid).suspend();
         }, function(){
-            _.tryF(onEnd,arguments,this);
+            xui.tryF(onEnd,arguments,this);
             xui.Thread(threadid).resume();
         }).start();
     },
     // Recursive require
     require:function(clsArr, onEnd, onSuccess, onFail, onAlert,force, threadid, options){
-        if(_.isStr(clsArr))clsArr=[clsArr];
+        if(xui.isStr(clsArr))clsArr=[clsArr];
         var fun=function(paths, tid){
             xui.fetchClasses(paths,function(){ 
                 var a2=[], t, r;
@@ -1367,7 +1365,7 @@ _.merge(xui,{
                     }
                     // if it's module, collect required class in iniComponents
                     if(t && t['xui.Module'] && (t=t.prototype&&t.prototype.iniComponents)){
-                        _.fun.body(t).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                        xui.fun.body(t).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                             if(!(a=xui.SC.get(b))){
                                 a2.push(b);
                                 a=null;
@@ -1400,7 +1398,7 @@ _.merge(xui,{
     */
     _m:[],
     main:function(fun){
-        if(_.arr.indexOf(xui._m, fun)==-1)
+        if(xui.arr.indexOf(xui._m, fun)==-1)
             xui._m.push(fun);
         // run it now
         if(xui.isDomReady){
@@ -1443,7 +1441,7 @@ _.merge(xui,{
         return pre + key.join('\/') + (tag||'\/');
     },
     getClassName:function(uri){
-        if(uri&&_.isStr(uri)){
+        if(uri&&xui.isStr(uri)){
             var a=uri.split(/\/js\//g),
                 b,c,n=a.length;
             if(n>=2){
@@ -1455,9 +1453,9 @@ _.merge(xui,{
             }
         }
     },
-    log:_.fun(),
-    echo:_.fun(),
-    message:_.fun(),
+    log:xui.fun(),
+    echo:xui.fun(),
+    message:xui.fun(),
 
     //profile object cache
     _pool:[],
@@ -1506,17 +1504,17 @@ _.merge(xui,{
     },
     getNodeData:function(node,path){
         if(!node)return;
-        return _.get(xui.$cache.domPurgeData[typeof node=='string'?node:xui.getId(node)],path);
+        return xui.get(xui.$cache.domPurgeData[typeof node=='string'?node:xui.getId(node)],path);
     },
     setData:function(path,value){
-        return _.set(xui.$cache.data,path,value);
+        return xui.set(xui.$cache.data,path,value);
     },
     getData:function(path){
-        return _.get(xui.$cache.data,path);
+        return xui.get(xui.$cache.data,path);
     },
     setNodeData:function(node,path,value){
         if(!node)return;
-        return _.set(xui.$cache.domPurgeData[typeof node=='string'?node:xui.getId(node)],path,value);
+        return xui.set(xui.$cache.domPurgeData[typeof node=='string'?node:xui.getId(node)],path,value);
     },
     $purgeChildren:function(node){
         var cache=xui.$cache,
@@ -1619,11 +1617,11 @@ _.merge(xui,{
                 }
             //from HTML string
             }else if(r1.test(tag)){
-                o = _.str.toDom(tag);
+                o = xui.str.toDom(tag);
             //from HTML element tagName
             }else{
                 o=document.createElement(tag);
-                o.id = typeof id=='string'?id:_.id();
+                o.id = typeof id=='string'?id:xui.id();
                 o=xui(o);
             }
         //Any class inherited from xui.absBox
@@ -1704,14 +1702,14 @@ new function(){
 
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
 
-    _.filter(b,function(o){return !!o});
+    xui.filter(b,function(o){return !!o});
     if(b.newie){
         b["newie"+(b.ver=dm)]=true;
         b.cssTag1="-ms-";
         b.cssTag2="ms";
     }else if(b.ie){
         // IE 8+
-        if(_.isNumb(dm))
+        if(xui.isNumb(dm))
             b["ie"+(b.ver=dm)]=true;
         else
             b[v('ie','msie ')]=true;
@@ -1766,7 +1764,7 @@ new function(){
     var ini=xui.ini={};
     //special var
     if(window.xui_ini)
-        _.merge(ini,window.xui_ini);
+        xui.merge(ini,window.xui_ini);
 
     if(!ini.path){
         var s,arr = document.getElementsByTagName('script'), reg = /js\/xui(-[\w]+)?\.js$/,l=arr.length;
@@ -1778,7 +1776,7 @@ new function(){
             }
         }
     }
-    _.merge(ini,{
+    xui.merge(ini,{
         appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
         dummy_tag:'$_dummy_$'
     },'without');
@@ -1792,7 +1790,7 @@ new function(){
         var path=xui.ini.path+"appearance/_oldbrowser/";
         if(this.width != 1 || this.height != 1){
             document.documentElement.className += " xui-nodatauri";
-            _.merge(xui.ini,{
+            xui.merge(xui.ini,{
                 img_dd: path+'ondrag.gif',
                 img_busy: path+'busy.gif',
                 img_icon: path+'icon.png',
@@ -1805,7 +1803,7 @@ new function(){
         data.onload = data.onerror = null;
     };
     data.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-    _.merge(xui.ini,{
+    xui.merge(xui.ini,{
         img_dd:     "data:image/gif;base64,R0lGODlhEABAAPcAAAAAAAEBAQICAgMDAwUFBAUFBQcHBwgICAkJCQwMDA8PDx4eHiQkJDAwMD8/P0JCQl1dXf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAQAEAAAAj/AP8JHPigQQMHAxMOTAAAgIABAgAkUPgPQsMABAoQCNAQAISEFw0cMMCxI4CFAAIY+Eey4b+LCgSmXCnzpECVBf49AEBgJEWVBwg8WCCgQMuEQEkuYDBgo8uBIlsyeCCgJMWWAB68fPpP5cCOAhm6TLpV4teQI0tyrTgzrcmPChNoVIuAYsKCB+3qtQsgQt+/fgPb/Ce4MOCvEfb6HbhYb1/Eigc35ptYZmW7kw1rRgy48+S9oEOLHk26tGnRnlMzTl0Yst7Mgyk+tnzWpO3JfSPo3q274eXcfjv21rxbeHDBwE32VphbeHPmvYEvBzmc9+eXxa3Hxm69OHPbtk2zNO68WvNh2q8lb6fuuix434Ola5/Nvbt53tLhH8/unXpw49vlhx90/E2HmH3XyTcgSO91FBAAOw==",
         img_busy:  "data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7",
         img_icon:   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACmwAAApsBm2pmsgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJgSURBVDiNZZNfSNNRFMc/s8gaizkXgrM2sicFIVJ7Cx82qsmaxAz7I/5QEyGGfxiWaJCRT1rQQxkR1KPQU5CWShiYuAedPtSmsOeI3GJsut0X3elhbv5W53Lhcrif7+V87zkGESEf1QaD4wq8scKpDZieFZkEMLgNGufpYpcdlhmUDYkWIBEpbB9MZUEEJAxpN4zjxs8SCeRg3eatnjmKLlLwaxc4CdSC8YKDoYUA2f1LHAdgD1Ck9Aw2G3afjxdOJyNAWRcsKpBXdsTyqfCusI8QYA0rNpzOEVpbX2Kz2entZS6bRVIpRNNYAKwN1WxZZovhEz38xMIZNG2eVErIZgW/f4HRUdbzJSmFtLWzzkddzftIYzvyrYRMWVNTGKUODRgbC9HczFA4TFovcq2LOIkc3NCObJfkjH1vNKpjExNxRIRIRNHS8gARwe1m/D+RbmL0sXrjCMvJg5/Ji5QODMTwep9ILivgpqf2Dr9//EDpRTo6WKSz80uF1/snoRNZhbQXHuV66Cq3WCKOILV9xPMiiQRScdcbQylBKflXJAzpFhiEYb4WDMsiddeJrqyQLsB5w0KhdGNl5abSiTyGNbjHBwRhD+E+K1g4XdrR9r0IDoeVw1MXAcq7YHEHJAvihzlwcBYf7/DwHCOVdHd/LoIjEeX018SVQjSNeaDsMjz0wVQ12ItmAZdrmGTyMLG1lbmo1cTzV5JJxOViWM+UFPW12VyFyZQ7R6MZAoGn1u3N15EIGQCTCcxmqvRI0TARDE7Q33+O8vIKQqFpmZl5BuDxGBL19dyMx4kFg0zqkb+vwqjwTYPW6AAAAABJRU5ErkJggg==",
@@ -1828,18 +1826,18 @@ new function(){
         }
       }
         try{
-            if(xui.ini.customStyle&&!_.isEmpty(xui.ini.customStyle)){
+            if(xui.ini.customStyle&&!xui.isEmpty(xui.ini.customStyle)){
                 var arr=[],style=xui.ini.customStyle,txt;
-                _.each(style,function(v,k){arr.push(k+" : "+v+";")});
+                xui.each(style,function(v,k){arr.push(k+" : "+v+";")});
                 txt=".xui-custom{\r\n"+arr.join("\r\n")+"\r\n}";
                 xui.CSS.addStyleSheet(txt,"xui:css:custom",1);
             };
             for(var i=0,l=xui._m.length;i<l;i++)
-                _.tryF(xui._m[i])
+                xui.tryF(xui._m[i])
             xui._m.length=0;
             xui.isDomReady=true;
         }catch(e){
-            _.asyRun(function(){throw e})
+            xui.asyRun(function(){throw e})
         }
     };
 
@@ -1858,12 +1856,12 @@ new function(){
                 //for ie7 iframe(doScroll is always ok)
                 d.activeElement.id;
                 d.documentElement.doScroll('left');f()
-            }catch(e){_.setTimeout(arguments.callee,9)}
+            }catch(e){xui.setTimeout(arguments.callee,9)}
         })();
     }
 
     // to ensure
-    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?_.setTimeout(arguments.callee,9):f()})();
+    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(arguments.callee,9):f()})();
 };
 
 // for loction url info
@@ -1890,16 +1888,16 @@ new function(){
                     "global":xui.$cache.data
                 },
                 comparevars=function(x,y,s){
-                    switch(_.str.trim(s)){
+                    switch(xui.str.trim(s)){
                         case '=':
                             return x===y;
                         case '<>':
                         case '!=':
                             return x!==y;
                         case 'empty':
-                            return _.isEmpty(x);
+                            return xui.isEmpty(x);
                         case 'non-empty':
-                            return !_.isEmpty(x);
+                            return !xui.isEmpty(x);
                         case '>':
                             return parseFloat(x)>parseFloat(y);
                         case '<':
@@ -1921,13 +1919,13 @@ new function(){
                         case "objnokey":
                             return typeof(x)=="object"?!(y in x):false;
                         case "arrhasvalue":
-                            return _.isArr(x)?_.arr.indexOf(x,y)!==-1:false;
+                            return xui.isArr(x)?xui.arr.indexOf(x,y)!==-1:false;
                         case "arrnovalue":
-                            return _.isArr(x)?_.arr.indexOf(x,y)==-1:false;
+                            return xui.isArr(x)?xui.arr.indexOf(x,y)==-1:false;
                         case "objarrhaskey":
-                            return _.isArr(x)?_.arr.subIndexOf(x,'id',y)!==-1:false;                        
+                            return xui.isArr(x)?xui.arr.subIndexOf(x,'id',y)!==-1:false;                        
                         case "objarrnokey":
-                            return _.isArr(x)?_.arr.subIndexOf(x,'id',y)==-1:false;                        
+                            return xui.isArr(x)?xui.arr.subIndexOf(x,'id',y)==-1:false;                        
                         default:
                             return false;
                     }
@@ -1935,18 +1933,18 @@ new function(){
                 adjustparam=function(o){
                     if(typeof(o)=="string"){
                         var rpc;
-                        if(_.str.startWith(o,"[data]")){
+                        if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
                             rpc=1;
                         }
                         o=xui.adjustVar(o, _ns);
                         // for file
                         if(rpc && typeof(o)=="string")
-                            o=_.unserialize(xui.getFileSync(o));
-                    }else if(_.isHash(o)){
+                            o=xui.unserialize(xui.getFileSync(o));
+                    }else if(xui.isHash(o)){
                         // one layer
                         for(var i in o)o[i]=adjustparam(o[i]);
-                    }else if(_.isArr(o)){
+                    }else if(xui.isArr(o)){
                         // one layer
                         for(var i=0,l=o.length;i<l;i++)o[i]=adjustparam(o[i]);
                     }
@@ -1954,11 +1952,11 @@ new function(){
                 },
                 target=conf.target,
                 method=(conf.method+"").split("-")[0],
-                iparams=_.clone(conf.params)||[],
+                iparams=xui.clone(conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=conf.adjust||null,
                 iconditions=[],
-                timeout=_.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+                timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             // handle conditions
             // currently, support and only
             // TODO: complex conditions
@@ -1987,7 +1985,7 @@ new function(){
                                 if(!xui.History._callback){
                                     xui.History.setCallback(function(fi,init){
                                        if(init)return;
-                                       var ar=_.urlDecode(fi||"");
+                                       var ar=xui.urlDecode(fi||"");
                                        if(!ar.xuicom){
                                             ar.xuicom="App";
                                             ar.cache=true;
@@ -2009,7 +2007,7 @@ new function(){
                                 return;
                             }
                             // try to get module
-                            var cls=_.get(window,target.split(".")),ins;
+                            var cls=xui.get(window,target.split(".")),ins;
                             // get first one
                             if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
 
@@ -2026,38 +2024,38 @@ new function(){
                                 // handle other methods
                                 var ff=function(err,ins){
                                     if(err)return;
-                                    if(_.isFun(t=ins.show))t.apply(ins, iparams);
+                                    if(xui.isFun(t=ins.show))t.apply(ins, iparams);
                                 };
                                 if(!ins)xui.getModule(target,ff);  else ff(null, ins);
                             }else{
-                                if(ins && _.isFun(t=_.get(ins,[method])))t.apply(ins,iparams)
+                                if(ins && xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams)
                                 return;
                             }
                             break;
                         case 'control':
                         case 'module':
                             if(method=="pop"){
-                                 t=_.get(scope,[target]);
+                                 t=xui.get(scope,[target]);
                                  if((t=t.getRoot())&&(t=t.get(0)))
                                     xui(t).pop(iparams[1]||_ns.args[0]);
                             }else{
                                 if(method=="setProperties"){
                                     if(m=iparams[0]){
                                         if(m.CA){
-                                            if(_.isFun(t=_.get(scope,[target,"setCustomAttr"])))t.apply(scope[target],[m.CA]);
+                                            if(xui.isFun(t=xui.get(scope,[target,"setCustomAttr"])))t.apply(scope[target],[m.CA]);
                                             delete m.CA;
                                         }
                                         if(m.CC){
-                                            if(_.isFun(t=_.get(scope,[target,"setCustomClass"])))t.apply(scope[target],[m.CC]);
+                                            if(xui.isFun(t=xui.get(scope,[target,"setCustomClass"])))t.apply(scope[target],[m.CC]);
                                             delete m.CC;
                                         }
                                         if(m.CS){
-                                            if(_.isFun(t=_.get(scope,[target,"setCustomStyle"])))t.apply(scope[target],[m.CS]);
+                                            if(xui.isFun(t=xui.get(scope,[target,"setCustomStyle"])))t.apply(scope[target],[m.CS]);
                                             delete m.CS;
                                         }
                                     }
                                 }
-                                if(_.isFun(t=_.get(scope,[target,method])))t.apply(scope[target],iparams);
+                                if(xui.isFun(t=xui.get(scope,[target,method])))t.apply(scope[target],iparams);
                             }
                             break;
                         case 'other':
@@ -2077,9 +2075,9 @@ new function(){
                                 break;
                                 case 'msg':
                                     if(method=="busy"||method=="free"){
-                                        if(_.isFun(t=_.get(xui.Dom,[method])))t.apply(xui.Dom,iparams);
-                                    }else if(method=="console" && _.isDefined(window.console) && (typeof console.log=="function"))console.log.apply(console,iparams);
-                                     else if(_.isFun(t=_.get(xui,[method]))) t.apply(xui,iparams);
+                                        if(xui.isFun(t=xui.get(xui.Dom,[method])))t.apply(xui.Dom,iparams);
+                                    }else if(method=="console" && xui.isDefined(window.console) && (typeof console.log=="function"))console.log.apply(console,iparams);
+                                     else if(xui.isFun(t=xui.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
                                 case "var":
                                     if(method=="cookie"){
@@ -2088,50 +2086,50 @@ new function(){
                                         if(adjust){
                                             switch(adjust){
                                                 case "serialize":
-                                                    iparams[1]=_.serialize(iparams[1]);
+                                                    iparams[1]=xui.serialize(iparams[1]);
                                                 break;
                                                 case "unserialize":
-                                                    iparams[1]=_.unserialize(iparams[1]);
+                                                    iparams[1]=xui.unserialize(iparams[1]);
                                                 break;
                                                 case "stringify":
-                                                    iparams[1]=_.stringify(iparams[1]);
+                                                    iparams[1]=xui.stringify(iparams[1]);
                                                 break;
                                                 default:
-                                                    if(typeof(adjust=_.get(adjust))=="function")
+                                                    if(typeof(adjust=xui.get(adjust))=="function")
                                                         iparams[1]=adjust(iparams[1]);
                                                 break;
                                             }
                                         }
-                                        _.set(_ns, (method+"."+_.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
+                                        xui.set(_ns, (method+"."+xui.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
                                     }
                                 break;
                                 case "callback":
                                     switch(method){
                                         case "set":
                                             t=iparams[1];
-                                            if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
+                                            if(xui.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
                                                 m=t.pop().replace(/[()}\s]/g,'');
                                                 t=xui.adjustVar(t.join(".")+"}", _ns);
-                                                if(t && _.isFun(t[m]))
+                                                if(t && xui.isFun(t[m]))
                                                     xui.$cache.callback[iparams[0]]=[t,m];
                                             }
                                             break;
                                         case "call":
                                             var args=iparams.slice(3), doit;
                                             t=iparams[0];
-                                            if(_.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
+                                            if(xui.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
                                                 m=t.pop().replace(/[()}\s]/g,'');
                                                 t=t.join(".")+"}";
                                                 t=xui.adjustVar(t, _ns) || xui.adjustVar(t);
-                                                doit=t&&t[m]&&_.isFun(t[m]);
-                                            }else if(_.isStr(t=iparams[0])&&_.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
+                                                doit=t&&t[m]&&xui.isFun(t[m]);
+                                            }else if(xui.isStr(t=iparams[0])&&xui.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
                                                 doit=1;
                                             }
                                             if(doit){
                                                 t=t[m].apply(t,args);
-                                                if(iparams[1]&&iparams[2]&&_.get(_ns,iparams[1].split(/\s*\.\s*/)))_.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
+                                                if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
                                            }
                                            break;
                                      }
@@ -2141,7 +2139,7 @@ new function(){
                     }
                 };
                 // asy
-                if(timeout!==null)_.asyRun(fun,timeout);
+                if(timeout!==null)xui.asyRun(fun,timeout);
                 else fun();
             }
             return conf["return"];
@@ -2180,7 +2178,7 @@ new function(){
                     n+=m.getTimezoneOffset();
                     if(n)m.setTime(m.getTime()+n*60000);
                     t[i]=m;
-                }else if(a=='object' && t[i] && (_.isObj(t[i]) || _.isArr(t[i]))) E(t[i]);
+                }else if(a=='object' && t[i] && (xui.isObj(t[i]) || xui.isArr(t[i]))) E(t[i]);
             return t;
         },
 
@@ -2222,24 +2220,24 @@ new function(){
             if(x===window)return "window";
             if(x===document)return "document";
             //for ie alien
-            if((typeof x==O || typeof x==F) && !_.isFun(x.constructor))
+            if((typeof x==O || typeof x==F) && !xui.isFun(x.constructor))
                 return x.nodeType? "document.getElementById('"+x.id+"')" :"$alien";
-            else if(_.isArr(x)){
+            else if(xui.isArr(x)){
                 a[0] = '[';
                 l = x.length;
                 for(i=0;i<l;++i){
                     if(typeof filter=='function' && false==filter.call(x,x[i],i))continue;
                     
-                    if(_.isNaN(v=x[i]))b[b.length]="NaN";
-                    else if(_.isNull(v))b[b.length]="null";
-                    else if(!_.isDefined(v))b[b.length]="undefined";
+                    if(xui.isNaN(v=x[i]))b[b.length]="NaN";
+                    else if(xui.isNull(v))b[b.length]="null";
+                    else if(!xui.isDefined(v))b[b.length]="undefined";
                     else if(f=T[typeof v]){
                         if(typeof (v=f(v,filter,dateformat,deep+1,max))==S)
                             b[b.length]=v;
                     }
                 }
                 a[2]=']';
-            }else if(_.isDate(x)){
+            }else if(xui.isDate(x)){
                 if(dateformat=='utc')
                     return '"'+ PS(x.getUTCFullYear(),4) + '-' +
                          PS(x.getUTCMonth() + 1,2) + '-' +
@@ -2260,7 +2258,7 @@ new function(){
                          Z+'"';
                 else
                     return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
-            }else if(_.isReg(x)){
+            }else if(xui.isReg(x)){
                 return String(x);
             }else{
                 if(typeof x.serialize == F)
@@ -2274,9 +2272,9 @@ new function(){
                             if(map[i] ||
                                 (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i):0))
                                 continue;
-                            if(_.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
-                            else if(_.isNull(v))b[b.length]=T.string(i) + ':' + "null";
-                            else if(!_.isDefined(v))b[b.length]=T.string(i) + ':' + "undefined";
+                            if(xui.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
+                            else if(xui.isNull(v))b[b.length]=T.string(i) + ':' + "null";
+                            else if(!xui.isDefined(v))b[b.length]=T.string(i) + ':' + "undefined";
                             else if (f=T[typeof v]){
                                 if (typeof (v=f(v,filter,dateformat,deep+1,max))==S)
                                     b[b.length] = T.string(i) + ':' + v;
@@ -2294,19 +2292,19 @@ new function(){
     T[F]=function(x){return x.$path?x.$path:String(x)};
 
     //serialize object to string (bool/string/number/array/hash/simple function)
-    _.serialize = function (obj,filter,dateformat){
-        return _.isNaN(obj) ? "NaN" : 
-                    _.isNull(obj) ? "null" : 
-                    !_.isDefined(obj) ? "undefined" :
+    xui.serialize = function (obj,filter,dateformat){
+        return xui.isNaN(obj) ? "NaN" : 
+                    xui.isNull(obj) ? "null" : 
+                    !xui.isDefined(obj) ? "undefined" :
                     T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat))||'';
     };
-    _.stringify = function(obj,filter,dateformat){
-        return _.fromUTF8(_.serialize(obj,filter,dateformat));
+    xui.stringify = function(obj,filter,dateformat){
+        return xui.fromUTF8(xui.serialize(obj,filter,dateformat));
     };
     // for safe global
     var safeW;
     //unserialize string to object
-    _.unserialize = function(str, dateformat){
+    xui.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
         if(!str)return false;
         try{
@@ -2332,7 +2330,7 @@ new function(){
 /*26 based id, some number id can crash opera9
 */
 new function(){
-    _.id=function(){
+    xui.id=function(){
         var self=this, me=arguments.callee;
         if(self.constructor!==me || self.a)
             return (me._ || (me._= new me)).next();
@@ -2340,8 +2338,8 @@ new function(){
         self.b=[''];
         self.value='';
     };
-    _.id.prototype = {
-        constructor:_.id,
+    xui.id.prototype = {
+        constructor:xui.id,
         _chars  :"abcdefghijklmnopqrstuvwxyz".split(''),
         next : function(i){
             with(this){
@@ -2428,7 +2426,7 @@ Class('xui.Thread',null,{
         });
     },
     Instance:{
-        _fun:_.fun(),
+        _fun:xui.fun(),
         __gc:function(){
             var m=xui.$cache.thread,t=m[this.id];
             if(t){
@@ -2466,11 +2464,11 @@ Class('xui.Thread',null,{
 
             // to next pointer
             p.index++;
-            p.time=_();
+            p.time=xui.stamp();
 
             // the real task
             if(typeof t.task=='function'){
-                r = _.tryF(t.task, t.args || [p.id], t.scope||self, null);
+                r = xui.tryF(t.task, t.args || [p.id], t.scope||self, null);
             }
 
             // maybe abort called in abover task
@@ -2482,7 +2480,7 @@ Class('xui.Thread',null,{
                 p.cache[t.id] = r;
 
             // if callback return false, stop.
-            if(t.callback && false===_.tryF(t.callback, [p.id], self, true))
+            if(t.callback && false===xui.tryF(t.callback, [p.id], self, true))
                 return self.abort('callback');
             // if set suspend at t.task or t.callback , stop continue running
             if(p.status!=="run")
@@ -2494,7 +2492,7 @@ Class('xui.Thread',null,{
             var self=this, p=self.profile, task,delay;
 
             if(p.__delaycb){
-                _.tryF(p.__delaycb,[p.id],self);
+                xui.tryF(p.__delaycb,[p.id],self);
                 delete p.__delaycb;
             }
             if(delaycb){
@@ -2505,12 +2503,12 @@ Class('xui.Thread',null,{
                 p._start=true;
                 //call onstart
                 if(p.onStart){
-                    var r=_.tryF(p.onStart,[p.id],self);
+                    var r=xui.tryF(p.onStart,[p.id],self);
                     if(false===r){
                         return self.abort('start');
                     }else if(true===r){
                         return;
-                    }else if(_.isNumb(r)){
+                    }else if(xui.isNumb(r)){
                         self.suspend(r);
                         return;
                     }
@@ -2535,10 +2533,10 @@ Class('xui.Thread',null,{
 
             // clear the mistake trigger task
             if(p._asy!=0.1)
-                _.clearTimeout(p._asy);
+                xui.clearTimeout(p._asy);
 
-            p._asy = _.asyRun(self._task, p._left, [], self);
-            p.time=_();
+            p._asy = xui.asyRun(self._task, p._left, [], self);
+            p.time=xui.stamp();
             return self;
         },
         suspend:function(time,delaycb){
@@ -2546,10 +2544,10 @@ Class('xui.Thread',null,{
             if(p.status=="pause")return;
             p.status="pause";
             if(p._asy!==0.1){
-                _.clearTimeout(p._asy);
+                xui.clearTimeout(p._asy);
                 if(p.index>0)p.index--;
             }
-            n=p._left-(_() - p.time);
+            n=p._left-(xui.stamp() - p.time);
 
             p._left=(n>=0?n:0);
 
@@ -2580,18 +2578,18 @@ Class('xui.Thread',null,{
         abort:function(flag){
             var t=this.profile;
             t.status="stop";
-            _.clearTimeout(t._asy);
-            _.tryF(t.onEnd, [t.id,flag]);
+            xui.clearTimeout(t._asy);
+            xui.tryF(t.onEnd, [t.id,flag]);
             this.__gc();
         },
         links:function(thread){
             var p=this.profile, onEnd=p.onEnd, id=p.id;
-            p.onEnd=function(){_.tryF(onEnd,[id]); thread.start()};
+            p.onEnd=function(){xui.tryF(onEnd,[id]); thread.start()};
             return this;
         },
         insert:function(arr, index){
             var self=this,o=self.profile.tasks,l=o.length,a;
-            if(!_.isArr(arr))arr=[arr];
+            if(!xui.isArr(arr))arr=[arr];
             index= index || self.profile.index;
             if(index<0)index=-1;
             if(index==-1){
@@ -2644,7 +2642,7 @@ Class('xui.Thread',null,{
         //Dependencies: xui.Dom
         observableRun:function(tasks,onEnd,threadid,busyMsg){
             var thread=xui.Thread, dom=xui.Dom;
-            if(!_.isArr(tasks))tasks=[tasks];
+            if(!xui.isArr(tasks))tasks=[tasks];
             //if thread exists, just inset task to the next positiong
             if(xui.$cache.thread[threadid]){
                 if(typeof onEnd=='function')
@@ -2660,7 +2658,7 @@ Class('xui.Thread',null,{
                     },
                     //set free status to UI
                     function(threadid){
-                        _.tryF(onEnd,arguments,this);
+                        xui.tryF(onEnd,arguments,this);
                         if(dom)dom.free(threadid);
                     }
                 ).start();
@@ -2680,12 +2678,12 @@ Class('xui.Thread',null,{
                     if(o){
                         var f = function(){
                             var me=arguments.callee;
-                            _.tryF(me.onEnd,arguments,this);
+                            xui.tryF(me.onEnd,arguments,this);
                             me.onEnd=null;
                             delete bak[i];
                             //call callback here
-                            _.tryF(callback,[i, threadid],this);
-                            if(_.isEmpty(bak))
+                            xui.tryF(callback,[i, threadid],this);
+                            if(xui.isEmpty(bak))
                                 thread.resume(threadid);
                         };
                         f.onEnd = o.profile.onEnd;
@@ -2695,7 +2693,7 @@ Class('xui.Thread',null,{
                 };
             for(var i in group)bak[i]=1;
             return thread(id, [function(threadid){
-                if(!_.isEmpty(group)){
+                if(!xui.isEmpty(group)){
                     thread.suspend(threadid);
                     for(var i in group)f(group[i],i, threadid);
                 }
@@ -2726,7 +2724,7 @@ Class('xui.absIO',null,{
             options=uri;
         else{
             options=options||{};
-            _.merge(options, {
+            xui.merge(options, {
                 uri:uri,
                 query:query,
                 onSuccess:onSuccess,
@@ -2740,7 +2738,7 @@ Class('xui.absIO',null,{
             return new me(options);
 
         //give defalut value to those members
-        _.merge(options,{
+        xui.merge(options,{
             id : options.id || (''+(con._id++)),
             uid: (''+(con.uid++)),
             uri : options.uri?xui.adjustRes(options.uri,0,1,1):'',
@@ -2762,27 +2760,27 @@ Class('xui.absIO',null,{
                 options[a[i]]=options[a[i]].toLowerCase();
         }
 
-        _.merge(self, options, 'all');
+        xui.merge(self, options, 'all');
 
         if(self.reqType=='xml')
             self.method="POST";
 
         if(con.events)
-            _.merge(self, con.events);
+            xui.merge(self, con.events);
 
         self.query = self.customQS(self.query);
 
         // remove all undifiend item
         if(typeof self.query=='object' && self.reqType!="xml")
-            self.query=_.copy(self.query, function(o){return o!==undefined});
+            self.query=xui.copy(self.query, function(o){return o!==undefined});
 
-        if(!self._useForm && _.isHash(self.query) && self.reqType!="xml")
+        if(!self._useForm && xui.isHash(self.query) && self.reqType!="xml")
             self.query = con._buildQS(self.query, self.reqType=="json",self.method=='POST');
 
         return self;
     },
     Instance:{
-        _fun:_.fun(),
+        _fun:xui.fun(),
         _flag:0,
         _response:false,
         _txtresponse:'',
@@ -2793,10 +2791,10 @@ Class('xui.absIO',null,{
             self._clear();
             if (self._retryNo < self.retry) {
                 self._retryNo++;
-                _.tryF(self.onRetry,[self._retryNo],self);
+                xui.tryF(self.onRetry,[self._retryNo],self);
                 self.start();
             }else{
-                if(false!==_.tryF(self.onTimeout,[],self))
+                if(false!==xui.tryF(self.onTimeout,[],self))
                     self._onError(new Error("Request timeout"));
             }
         },
@@ -2805,31 +2803,31 @@ Class('xui.absIO',null,{
             if(!self._end){
                 self._end=true;
                 if(self._flag>0){
-                    _.clearTimeout(self._flag);
+                    xui.clearTimeout(self._flag);
                     self._flag=0
                 }
                 xui.Thread.resume(self.threadid);
-                _.tryF(self.$onEnd,[],self);
-                _.tryF(self.onEnd,[],self);
+                xui.tryF(self.$onEnd,[],self);
+                xui.tryF(self.onEnd,[],self);
                 self._clear();
             }
         },
         _onStart:function(){
             var self=this;
             xui.Thread.suspend(self.threadid);
-            _.tryF(self.$onStart,[],self);
-            _.tryF(self.onStart,[],self);
+            xui.tryF(self.$onStart,[],self);
+            xui.tryF(self.onStart,[],self);
         },
         _onResponse:function(){
             var self=this;
-            if(false!==_.tryF(self.beforeSuccess,[self._response, self.rspType, self.threadid], self))
-                _.tryF(self.onSuccess,[self._response, self.rspType, self.threadid], self);
+            if(false!==xui.tryF(self.beforeSuccess,[self._response, self.rspType, self.threadid], self))
+                xui.tryF(self.onSuccess,[self._response, self.rspType, self.threadid], self);
             self._onEnd();
         },
         _onError:function(e){
             var self=this;
-            if(false!==_.tryF(self.beforeFail,[e, self.threadid],self))
-                _.tryF(self.onFail,[e.name?( e.name + ": " + e.message):e, self.rspType, self.threadid, e], self);
+            if(false!==xui.tryF(self.beforeFail,[e, self.threadid],self))
+                xui.tryF(self.onFail,[e.name?( e.name + ": " + e.message):e, self.rspType, self.threadid, e], self);
             self._onEnd();
         },
         isAlive:function(){
@@ -2866,8 +2864,8 @@ Class('xui.absIO',null,{
         callback:'callback',
 
         _buildQS:function(hash, flag, post){
-            hash=_.clone(hash,function(o,i){return !(_.isNaN(o)||!_.isDefined(o))});
-            return flag?((flag=_.serialize(hash))&&(post?flag:encodeURIComponent(flag))):_.urlEncode(hash);
+            hash=xui.clone(hash,function(o,i){return !(xui.isNaN(o)||!xui.isDefined(o))});
+            return flag?((flag=xui.serialize(hash))&&(post?flag:encodeURIComponent(flag))):xui.urlEncode(hash);
         },
         customQS:function(obj){
             return obj;
@@ -2907,9 +2905,9 @@ Class('xui.absIO',null,{
             for(i in hash)f(hash[i],i,hash);
             return xui.Thread.group(null, hash, callback, function(){
                 xui.Thread(threadid).suspend();
-                _.tryF(onStart,arguments,this);
+                xui.tryF(onStart,arguments,this);
             }, function(){
-                _.tryF(onEnd,arguments,this);
+                xui.tryF(onEnd,arguments,this);
                 xui.Thread(threadid).resume();
             }).start();
         }
@@ -2921,7 +2919,7 @@ Class('xui.Ajax','xui.absIO',{
         _XML:null,
         _unsafeHeader:"Accept-Charset,Accept-Encoding,Access-Control-Request-Headers,Access-Control-Request-Method,Connection,Content-Length,Cookie,Cookie2,Date,DNT,Expect,Host,Keep-Alive,Origin,Referer,TE,Trailer,Transfer-Encoding,Upgrade,User-Agent,Via".toLowerCase().split(","),
         _isunsafe:function(k){
-            return xui.browser.isWebKit && (_.str.startWith("Proxy-",k)||_.str.startWith("Sec-",k)||_.arr.indexOf(this._unsafeHeader,k.toLowerCase())!==-1);
+            return xui.browser.isWebKit && (xui.str.startWith("Proxy-",k)||xui.str.startWith("Sec-",k)||xui.arr.indexOf(this._unsafeHeader,k.toLowerCase())!==-1);
         },
         _header:function(n,v){
             if(!this._isunsafe(n)){
@@ -2930,7 +2928,7 @@ Class('xui.Ajax','xui.absIO',{
         },
         start:function() {
             var self=this;
-            if(false===_.tryF(self.beforeStart,[],self)){
+            if(false===xui.tryF(self.beforeStart,[],self)){
                 self._onEnd();
                 return;
             }
@@ -2981,13 +2979,13 @@ Class('xui.Ajax','xui.absIO',{
                         } catch(e) {}
                     }
                     try {
-                        if(_.isHash(header))
-                            _.each(header,function(o,i){
+                        if(xui.isHash(header))
+                            xui.each(header,function(o,i){
                                 self._header(i, o);
                             });
                     } catch(e) {}
 
-                    if(false===_.tryF(self.beforeSend,[self._XML],self)){
+                    if(false===xui.tryF(self.beforeSend,[self._XML],self)){
                         self._onEnd();
                         return;
                     }
@@ -2997,7 +2995,7 @@ Class('xui.Ajax','xui.absIO',{
 
                     if(asy){
                       if(self._XML&&timeout > 0)
-                        _flag = _.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+                        _flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
                     }else
                         return _complete();
                 }
@@ -3028,7 +3026,7 @@ Class('xui.Ajax','xui.absIO',{
                 var ns=this,obj,status = ns._XML.status;
                 _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
                 // try to get js object, or the original
-                _response=rspType=="json"?((obj=_.unserialize(_txtresponse))===false?_txtresponse:obj):_txtresponse;
+                _response=rspType=="json"?((obj=xui.unserialize(_txtresponse))===false?_txtresponse:obj):_txtresponse;
 
                 // crack for some local case ( OK but status is 0 in no-IE browser)
                 if(!status && xui._localReg.test(xui._localParts[1])){
@@ -3058,7 +3056,7 @@ Class('xui.JSONP','xui.absIO',{
     Instance:{
         start:function(){
             var self=this,id,c=self.constructor, t, n, ok=false;
-            if(false===_.tryF(self.beforeStart,[],self)){
+            if(false===xui.tryF(self.beforeStart,[],self)){
                 self._onEnd();
                 return;
             }
@@ -3085,8 +3083,8 @@ Class('xui.JSONP','xui.absIO',{
                         ok=true;
                         if(self.rspType=='script'){
                             if(typeof self.checkKey=='string')
-                                _.asyRun(function(){
-                                    _.exec("if(xui.SC.get('"+self.checkKey+"'))xui.JSONP._pool['"+id+"'][0]._onResponse();" +
+                                xui.asyRun(function(){
+                                    xui.exec("if(xui.SC.get('"+self.checkKey+"'))xui.JSONP._pool['"+id+"'][0]._onResponse();" +
                                         "else xui.JSONP._pool['"+id+"'][0]._loaded();");
                                 });
                             else
@@ -3138,7 +3136,7 @@ Class('xui.JSONP','xui.absIO',{
 
             //set timeout
             if(self.timeout > 0)
-                self._flag = _.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+                self._flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
         },
         _clear:function(){
             var self=this, n=self.node, c=self.constructor,id=self.id,_pool=c._pool;
@@ -3156,21 +3154,21 @@ Class('xui.JSONP','xui.absIO',{
                 //so, always clear it later
                 div.appendChild(n.parentNode&&n.parentNode.removeChild(n)||n);
                 if(xui.browser.ie)
-                    _.asyRun(function(){div.innerHTML=n.outerHTML='';if(_.isEmpty(_pool))c._id=1;_pool=c=n=div=null;});
+                    xui.asyRun(function(){div.innerHTML=n.outerHTML='';if(xui.isEmpty(_pool))c._id=1;_pool=c=n=div=null;});
                 else{
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                         div.innerHTML='';
                         n=div=null;
-                        if(_.isEmpty(_pool))c._id=1;
+                        if(xui.isEmpty(_pool))c._id=1;
                     });
                 }
             }else{
-                if(_.isEmpty(_pool))c._id=1;
+                if(xui.isEmpty(_pool))c._id=1;
             }
         },
         _loaded:function(){
             var self=this;
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 if(self.id && self.constructor._pool[self.id])
                     self._onError(new Error("JSONP return script doesn't match"));
             },500);
@@ -3209,7 +3207,7 @@ Class('xui.XDMI','xui.absIO',{
         _useForm:true,
         start:function(){
             var self=this,w=window,c=self.constructor, i, id, t, n, k, o, b, form,onload;
-            if(false===_.tryF(self.beforeStart,[],self)){
+            if(false===xui.tryF(self.beforeStart,[],self)){
                 self._onEnd();
                 return;
             }
@@ -3241,7 +3239,7 @@ Class('xui.XDMI','xui.absIO',{
                     }
                     e=e.data;
                     if(self.rspType=="json"){
-                        e = _.unserialize(e) || e;
+                        e = xui.unserialize(e) || e;
                     }
                     if(e && (t=c._pool[self.id])){
                         for(var i=0,l=t.length;i<l;i++){
@@ -3281,7 +3279,7 @@ Class('xui.XDMI','xui.absIO',{
                         var flag=0;
                         try{if(w.name===undefined)flag=1}catch(e){flag=1}
                         if(flag){
-                            return _.asyRun(arguments.callee);
+                            return xui.asyRun(arguments.callee);
                         }
 
                         var data;
@@ -3294,7 +3292,7 @@ Class('xui.XDMI','xui.absIO',{
                             data=w.name;
                         }
 
-                        if(data && (o=_.unserialize(data)) && (t=c._pool[self.id]) ){
+                        if(data && (o=xui.unserialize(data)) && (t=c._pool[self.id]) ){
                             for(var i=0,l=t.length;i<l;i++){
                                 t[i]._response=o;
                                 t[i]._onResponse();
@@ -3331,10 +3329,10 @@ Class('xui.XDMI','xui.absIO',{
                     form.appendChild(k[i]);
                     b=true;
                 }else{
-                    if(_.isDefined(k[i])){
+                    if(xui.isDefined(k[i])){
                         t=document.createElement('textarea');
                         t.id=t.name=i;
-                        t.value= typeof k[i]=='string'?k[i]:_.serialize(k[i],function(o){return o!==undefined});
+                        t.value= typeof k[i]=='string'?k[i]:xui.serialize(k[i],function(o){return o!==undefined});
                         form.appendChild(t);
                     }
                 }
@@ -3349,7 +3347,7 @@ Class('xui.XDMI','xui.absIO',{
             form.submit();
             
             if(files.length){
-                _.arr.each(files,function(o,i){
+                xui.arr.each(files,function(o,i){
                     if(i=xui.getObject(o.id)){
                         if(i['xui.UIProfile'] && i.boxing() && i.boxing().setUploadObj){
                             i.boxing().setUploadObj(o.file);
@@ -3361,7 +3359,7 @@ Class('xui.XDMI','xui.absIO',{
             t=form=null;
             //set timeout
             if(self.timeout > 0)
-                self._flag = _.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+                self._flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
         },
         _clear:function(){
             var self=this, n=self.node,f=self.form, c=self.constructor, w=window, div=document.createElement('div'),id=self.id,_pool=c._pool;
@@ -3380,7 +3378,7 @@ Class('xui.XDMI','xui.absIO',{
             if(n)div.appendChild(n.parentNode.removeChild(n));
             if(f)div.appendChild(f.parentNode.removeChild(f));
             div.innerHTML='';
-            if(_.isEmpty(_pool))c._id=1;
+            if(xui.isEmpty(_pool))c._id=1;
             f=div=null;
         }
     },
@@ -3390,7 +3388,7 @@ Class('xui.XDMI','xui.absIO',{
         _pool:{},
         _o:function(id){
             var self=this,p=self._pool[id],o=p[p.length-1];
-            _.tryF(o._onload);
+            xui.tryF(o._onload);
         },
         _getDummy:function(win){
             win=win||window;
@@ -3467,8 +3465,8 @@ Class('xui.SC',null,{
         if(upper)upper.call(this);
         upper=null;
         var p = xui.$cache.SC,r;
-        if(r=p[path]||(p[path]=_.get(window,path.split('.'))))
-            _.tryF(callback,[path,null,threadid],r);
+        if(r=p[path]||(p[path]=xui.get(window,path.split('.'))))
+            xui.tryF(callback,[path,null,threadid],r);
         else{
             options=options||{};
             options.$cb=callback;
@@ -3486,7 +3484,7 @@ Class('xui.SC',null,{
         //get object from obj string
         get:function (path, obj){
             // a[1][2].b[3] => a,1,2,b,3
-            return _.get(obj||window,(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/));
+            return xui.get(obj||window,(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/));
         },
         /* function for "Straight Call"
         *   asy     loadSnips use
@@ -3508,22 +3506,22 @@ Class('xui.SC',null,{
                             (self.$cache || ct)[self.$tag]=text;
                         else
                             //for sy xmlhttp ajax
-                            try{_.exec(text,s)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
+                            try{xui.exec(text,s)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
                 t=Class._last;
                 Class._ignoreNSCache=Class._last=null;
                 // specified class must be in the first, maybe multi classes in code
                 // and give a change to load the last class in code, if specified class doesn't exist
-                _.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
+                xui.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
                 if(!ep(s)&&t&&t.KEY!=s)
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                             throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
                     });
             },fe=function(text){
                 var self=this;
                 //for loadSnips resume with error too
-                _.tryF(self.$cb,[null,null,self.threadid],self);
+                xui.tryF(self.$cb,[null,null,self.threadid],self);
             };
             //get from object first
             if(force || !(r=ep(s))){
@@ -3551,7 +3549,7 @@ Class('xui.SC',null,{
                         ajax=xui.Ajax;
                     }
                     //get text from sy ajax
-                    ajax(o, xui.$rand+"="+_.rand(), f, fe, null, options).start();
+                    ajax(o, xui.$rand+"="+xui.rand(), f, fe, null, options).start();
                     //for asy once only
                     if(!isAsy)
                         r=ep(s);
@@ -3567,20 +3565,20 @@ Class('xui.SC',null,{
         */
         loadSnips:function(pathArr,cache,callback,onEnd,threadid,options,isAsy){
             if(!pathArr || !pathArr.length){
-                _.tryF(onEnd,[threadid]);
+                xui.tryF(onEnd,[threadid]);
                 return;
             }
-            var bak={}, options=_.merge(options||{}, {$p:1,$cache:cache||xui.$cache.snipScript});
+            var bak={}, options=xui.merge(options||{}, {$p:1,$cache:cache||xui.$cache.snipScript});
             for(var i=0,l=pathArr.length;i<l;i++)
                 bak[pathArr[i]]=1;
 
             if(callback||onEnd){
                 options.$cb=function(path){
                     //give callback call
-                    if(callback)_.tryF(callback,arguments,this);
+                    if(callback)xui.tryF(callback,arguments,this);
                     delete bak[path||this.$tag];
-                    if(_.isEmpty(bak)){
-                        _.tryF(onEnd,[threadid]);
+                    if(xui.isEmpty(bak)){
+                        xui.tryF(onEnd,[threadid]);
                         onEnd=null;
                         xui.Thread.resume(threadid);
                     }
@@ -3588,7 +3586,7 @@ Class('xui.SC',null,{
             }
             xui.Thread.suspend(threadid);
             for(var i=0,s; s=pathArr[i++];)
-                this._call(s, _.merge({$tag:s},options,isAsy), true);
+                this._call(s, xui.merge({$tag:s},options,isAsy), true);
         },
         runInBG:function(pathArr, callback, onStart, onEnd){
             var i=0,j,t,self=this,fun=function(threadid){
@@ -3605,7 +3603,7 @@ Class('xui.SC',null,{
         execSnips:function(cache){
             var i,h=cache||xui.$cache.snipScript;
             for(i in h)
-                try{_.exec(h[i],i)}catch(e){throw e}
+                try{xui.exec(h[i],i)}catch(e){throw e}
             h={};
         },
         //asy load multi js file, whatever Dependencies
@@ -3625,12 +3623,12 @@ Class('xui.SC',null,{
                 xui.Thread.suspend(threadid);
                 self.loadSnips(pathArr, 0, callback, function(){
                     self.execSnips();
-                    _.tryF(onEnd,[threadid]);
+                    xui.tryF(onEnd,[threadid]);
                     onEnd=null;
                     xui.Thread.resume(threadid);
                 },null,options,isAsy);
             }else
-                _.tryF(onEnd,[threadid]);
+                xui.tryF(onEnd,[threadid]);
         }
     }
 });
@@ -3651,13 +3649,13 @@ Class('xui.absBox',null, {
     Instance:{
         __gc:function(){
             this.each(function(profile){
-                _.tryF(profile.__gc);
+                xui.tryF(profile.__gc);
             });
             this._nodes=0;
         },
         _get:function(index){
             var t=this._nodes;
-            return  _.isNumb(index)?t[index]:t;
+            return  xui.isNumb(index)?t[index]:t;
         },
         _empty:function(){
             this._nodes.length=0;
@@ -3716,12 +3714,12 @@ Class('xui.absBox',null, {
             o._nodes =  !arr
                             ? []
                             : ensureValue===false
-                            ? _.isArr(arr)
+                            ? xui.isArr(arr)
                                 ? arr
                                 : [arr]
                             : typeof this._ensureValues=='function'
                                 ? this._ensureValues(arr)
-                                : _.isArr(arr)
+                                : xui.isArr(arr)
                                     ? arr
                                     : [arr];
             o.n0=o._nodes[0];
@@ -3770,8 +3768,8 @@ Class('xui.absProfile',null,{
 
             //double link
             obj[uid]=target;
-            if(_.isArr(obj))
-                _.arr.insertAny(obj,target,index,true);
+            if(xui.isArr(obj))
+                xui.arr.insertAny(obj,target,index,true);
 
             //antilink track
             self._links[id]=obj;
@@ -3788,10 +3786,10 @@ Class('xui.absProfile',null,{
             if(!(o=self._links[id]))return;
 
             //remove from target
-            if(_.isArr(o)){
-                index = _.arr.indexOf(o,o[uid]);
+            if(xui.isArr(o)){
+                index = xui.arr.indexOf(o,o[uid]);
                 if(index!=-1){
-                    _.arr.removeFrom(o, index);
+                    xui.arr.removeFrom(o, index);
                 }
             }delete o[uid];
 
@@ -3809,7 +3807,7 @@ Class('xui.absProfile',null,{
                 o,i;
             for(i in l){
                 o=l[i];
-                if(_.isArr(o))_.arr.removeValue(o,o[id]);
+                if(xui.isArr(o))xui.arr.removeValue(o,o[id]);
                 delete o[id];
             }
             self._links={};
@@ -3843,23 +3841,23 @@ Class('xui.absProfile',null,{
         }
     },
     Static:{
-        $xid:new _.id,
+        $xid:new xui.id,
         $abstract:true
     }
 });
 
 Class('xui.Profile','xui.absProfile',{
     Constructor:function(host,key,alias,box,properties,events,options){
-        var upper=arguments.callee.upper,args=_.toArr(arguments);
+        var upper=arguments.callee.upper,args=xui.toArr(arguments);
         upper.apply(this,args);
         upper=null;
         var self=this;
-        _.merge(self,options);
+        xui.merge(self,options);
 
         self.key=key||self.key||'';
         self.alias=alias||self.alias||'',
-        self.properties=properties?_.copy(properties):(self.properties||{});
-        self.events=events?_.copy(events):(self.events||{});
+        self.properties=properties?xui.copy(properties):(self.properties||{});
+        self.events=events?xui.copy(events):(self.events||{});
         self.host=host||self.host||self;
         self.Class=self.constructor;
         self.box=box||self.box;
@@ -3872,8 +3870,8 @@ Class('xui.Profile','xui.absProfile',{
     Instance:{
         setEvents:function(key, value){
             var evs=this.box.$EventHandlers;
-            if(_.isHash(key)){
-                return _.merge(this,key,'all',function(o,i){return evs[i]});
+            if(xui.isHash(key)){
+                return xui.merge(this,key,'all',function(o,i){return evs[i]});
             }else{
                 if(evs[key])
                     this[key]=value;
@@ -3884,7 +3882,7 @@ Class('xui.Profile','xui.absProfile',{
                 return this[key];
             }else{
                 var self=this, t,hash={};
-                _.each(self.box.$EventHandlers,function(o,i){
+                xui.each(self.box.$EventHandlers,function(o,i){
                     if(self[i])hash[i]=self[i];
                 });
                 return hash;
@@ -3893,13 +3891,13 @@ Class('xui.Profile','xui.absProfile',{
         getProperties:function(key){
             if(this._getProperties)this.properties=this._getProperties();
             var prop=this.properties;
-            return key?prop[key]:_.copy(prop);
+            return key?prop[key]:xui.copy(prop);
         },
         setProperties:function(key, value){
-            if(_.isHash(key)){
-                _.merge(key, this.box.$DataStruct, function(o,i){
+            if(xui.isHash(key)){
+                xui.merge(key, this.box.$DataStruct, function(o,i){
                     if(!(i in key)){
-                        key[i] = _.isObj(o)?_.clone(o):o;
+                        key[i] = xui.isObj(o)?xui.clone(o):o;
                     }
                 });
                 this.properties=key;
@@ -3913,12 +3911,12 @@ Class('xui.Profile','xui.absProfile',{
         __gc:function(){
             var ns=this;
             if(ns.$beforeDestroy){
-                _.each(ns.$beforeDestroy,function(f){
-                    _.tryF(f,[],ns);
+                xui.each(ns.$beforeDestroy,function(f){
+                    xui.tryF(f,[],ns);
                 });
                 delete ns.$beforeDestroy;
             }
-            _.tryF(ns.$ondestory,[],ns);
+            xui.tryF(ns.$ondestory,[],ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
 
@@ -3929,21 +3927,21 @@ Class('xui.Profile','xui.absProfile',{
             }
 
             ns.unLinkAll();
-            _.tryF(ns.clearCache,[],ns);
-            var o=_.get(ns,['box','_namePool']);
+            xui.tryF(ns.clearCache,[],ns);
+            var o=xui.get(ns,['box','_namePool']);
             if(o)delete o[ns.alias];
 
             //set once
             ns.destroyed=true;
             //afterDestroy
             if(ns.$afterDestroy){
-                _.each(ns.$afterDestroy,function(f){
-                    _.tryF(f,[],ns);
+                xui.each(ns.$afterDestroy,function(f){
+                    xui.tryF(f,[],ns);
                 });
                 delete ns.$afterDestroy;
             }
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
-            _.breakO([ns.properties, ns.events, ns],2);
+            xui.breakO([ns.properties, ns.events, ns],2);
             //set again
             ns.destroyed=true;
         },
@@ -3977,17 +3975,17 @@ Class('xui.Profile','xui.absProfile',{
 
             //properties
             var c={}, p=o.box.$DataStruct, map=xui.absObj.$specialChars;
-            _.merge(c,o.properties, function(o,i){return (i in p) &&  p[i]!==o && !map[i.charAt(0)]});
-            if(!_.isEmpty(c))r.properties=c;
+            xui.merge(c,o.properties, function(o,i){return (i in p) &&  p[i]!==o && !map[i.charAt(0)]});
+            if(!xui.isEmpty(c))r.properties=c;
 
             //events
-            if(!_.isEmpty(t=this.getEvents()))r.events=t;
+            if(!xui.isEmpty(t=this.getEvents()))r.events=t;
             var eh = o.box.$EventHandlers;
-            _.filter(r.events, function(o,i){
+            xui.filter(r.events, function(o,i){
                 return o!=eh[i];
             });
-            if(_.isEmpty(r.events))delete r.events;
-            return rtnString===false?r:_.serialize(r);
+            if(xui.isEmpty(r.events))delete r.events;
+            return rtnString===false?r:xui.serialize(r);
         }
     }
 });
@@ -3995,7 +3993,7 @@ Class('xui.Profile','xui.absProfile',{
 Class('xui.absObj',"xui.absBox",{
     //properties, events, host
     Constructor:function(){
-        var upper=arguments.callee.upper,args=_.toArr(arguments);
+        var upper=arguments.callee.upper,args=xui.toArr(arguments);
         upper.apply(this,args);
         upper=null;
         //for pack function
@@ -4013,12 +4011,12 @@ Class('xui.absObj',"xui.absBox",{
         self._namePool={};
         self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
         self._cache=[];
-        m=me.a1 || (me.a1=_.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
+        m=me.a1 || (me.a1=xui.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){
             k={};
             if((t=self.$parent) && (i=t.length))
                 while(i--)
-                    _.merge(k, t[i][v]);
+                    xui.merge(k, t[i][v]);
             self[v]=k;
         }
 
@@ -4028,7 +4026,7 @@ Class('xui.absObj',"xui.absBox",{
         self.setEventHandlers(self.EventHandlers);
         delete self.EventHandlers;
 
-        m=me.a5 || (me.a5=_.toArr('RenderTrigger,LayoutTrigger'));
+        m=me.a5 || (me.a5=xui.toArr('RenderTrigger,LayoutTrigger'));
         for(j=0;v=m[j++];){
             temp=[];
              if((t=self.$parent) && (l=t.length))
@@ -4041,7 +4039,7 @@ Class('xui.absObj',"xui.absBox",{
                 temp.push(self[v]);
             
             // sort sub node
-            _.arr.stableSort(temp,function(x,y){
+            xui.arr.stableSort(temp,function(x,y){
                 x=x.$order||0;y=y.$order||0;
                 return x>y?1:x==y?0:-1;
             });
@@ -4111,7 +4109,7 @@ Class('xui.absObj',"xui.absBox",{
                 if(!dm[i])dm[i]={};
                 o=hash[i];
                 if(null===o || undefined===o){
-                    r=_.str.initial(i);
+                    r=xui.str.initial(i);
                     delete ds[i];
                     delete dm[i]
                     if(ps[j='get'+r]&&ps[j].$auto$)delete ps[j];
@@ -4131,9 +4129,9 @@ Class('xui.absObj',"xui.absBox",{
                 }
             }
 
-            _.each(hash,function(o,i){
+            xui.each(hash,function(o,i){
                 if(null===o || undefined===o || sc[i.charAt(0)])return;
-                r=_.str.initial(i);
+                r=xui.str.initial(i);
                 n = 'set'+r;
                 //readonly properties
                 if(o.set!==null && !(o && (o.readonly || o.inner))){
@@ -4148,7 +4146,7 @@ Class('xui.absObj',"xui.absBox",{
                             // *** force to em
                             if((v.properties.spaceUnit||xui.SpaceUnit)=='em'){
                                 if(dm[i] && dm[i]['$spaceunit'])
-                                    if(value!='auto'&&(_.isFinite(value )||xui.CSS.$isPx(value)))
+                                    if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value)))
                                         // only have root dom node
                                         if(v.getRootNode && (t=v.getRootNode())){
                                             if(!nfz)nfz=xui(t)._getEmSize();
@@ -4176,14 +4174,14 @@ Class('xui.absObj',"xui.absBox",{
                                 if(typeof $set=='function'){
                                     $set.call(v,value,force,tag,tag2);
                                 }else{
-                                    var m = _.get(v.box.$DataModel, [i, 'action']);
+                                    var m = xui.get(v.box.$DataModel, [i, 'action']);
                                     v.properties[i] = value;
                                     if(typeof m == 'function' && v._applySetAction(m, value, ovalue, force, tag, tag2) === false)
                                         v.properties[i] = ovalue;
                                 }
 
                                 if(v.afterPropertyChanged)v.boxing().afterPropertyChanged(v,i,value,ovalue);
-                                if(v.$afterPropertyChanged) _.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
+                                if(v.$afterPropertyChanged) xui.tryF(v.$afterPropertyChanged,[v,i,value,ovalue],v);
                             }
                         });
                     },n,self.KEY,null,'instance');
@@ -4211,7 +4209,7 @@ Class('xui.absObj',"xui.absBox",{
         },
         setEventHandlers:function(hash){
             var self=this;
-            _.each(hash,function(o,i){
+            xui.each(hash,function(o,i){
                 if(null===o){
                     delete self.$EventHandlers[i];
                     delete self.prototype[i];
@@ -4219,7 +4217,7 @@ Class('xui.absObj',"xui.absBox",{
                     self.$EventHandlers[i]=o;
                     var f=function(fun){
                         var l=arguments.length;
-                        if(l==1 && (typeof fun == 'function' || typeof fun == 'string' || _.isHash(fun) || _.isArr(fun)))
+                        if(l==1 && (typeof fun == 'function' || typeof fun == 'string' || xui.isHash(fun) || xui.isArr(fun)))
                             return this.each(function(v){
                                 if(v.renderId)
                                     v.clearCache();
@@ -4236,25 +4234,25 @@ Class('xui.absObj',"xui.absBox",{
                             var args=[], v=this.get(0);
                             if(v){
                                 var t=v[i], host=v.host || v,j,o,r;
-                                if(t && (!_.isArr(t) || t.length)){
+                                if(t && (!xui.isArr(t) || t.length)){
                                     if(v.$inDesign)return;
                                     if(arguments[0]!=v)args[0]=v;
                                     for(j=0;j<l;j++)args[args.length]=arguments[j];
                                     v.$lastEvent=i;
-                                    if(!_.isArr(t))t=[t];
+                                    if(!xui.isArr(t))t=[t];
                                     l=t.length;
-                                    if(_.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                                    if(xui.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
                                     var temp={};
                                     var n=0,fun=function(data){
                                         // set prompt's global var
-                                        if(_.isStr(this))temp[this+""]=data||"";
+                                        if(xui.isStr(this))temp[this+""]=data||"";
                                         //callback from [n]
                                         for(j=n;j<l;j++){
                                             n=j+1;
                                             o=t[j];
                                             if(typeof o=='string')o=host[o];
-                                            if(typeof o=='function')r=_.tryF(o, args, host);
-                                            else if(_.isHash(o)){
+                                            if(typeof o=='function')r=xui.tryF(o, args, host);
+                                            else if(xui.isHash(o)){
                                                 if('onOK' in o ||'onKO' in o){
                                                     var resume=function(key,args){
                                                         if(fun)fun.apply(key,args);
@@ -4294,13 +4292,13 @@ Class('xui.absObj',"xui.absBox",{
             return self;
         },
         unserialize:function(target,keepSerialId){
-            if(typeof target=='string')target=_.unserialize(target);
+            if(typeof target=='string')target=xui.unserialize(target);
             var f=function(o){
-                if(_.isArr(o))o=o[0];
+                if(xui.isArr(o))o=o[0];
                 delete o.serialId;
-                if(o.children)_.arr.each(o.children,f);
+                if(o.children)xui.arr.each(o.children,f);
             }, a=[];
-            _.arr.each(target,function(o){
+            xui.arr.each(target,function(o){
                 if(!keepSerialId)f(o);
                 a.push((new (xui.SC(o.key))(o)).get(0));
             });
@@ -4330,17 +4328,17 @@ Class('xui.absObj',"xui.absBox",{
             this.each(function(o){
                 a[a.length]=o.serialize(false, keepHost);
             });
-            return rtnString===false?a:a.length==1?" new "+a[0].key+"("+_.serialize(a[0])+")":"xui.UI.unserialize("+_.serialize(a)+")";
+            return rtnString===false?a:a.length==1?" new "+a[0].key+"("+xui.serialize(a[0])+")":"xui.UI.unserialize("+xui.serialize(a)+")";
         },
         getProperties:function(key){
             var h={},prf=this.get(0),prop=prf.properties,funName;
             if(key===true)
-                return _.copy(prop);
+                return xui.copy(prop);
             else if(typeof key=='string')
                 return prop[key];
             else{
                 for(var k in prop){
-                    funName="get"+_.str.initial(k);
+                    funName="get"+xui.str.initial(k);
                     if(typeof this[funName]=='function')
                         h[k]=this[funName].call(this);
                 }
@@ -4354,8 +4352,8 @@ Class('xui.absObj',"xui.absBox",{
                 key=h;
             }
             return this.each(function(o){
-                _.each(key, function(v,k){
-                    var funName="set"+_.str.initial(k),ins=o.boxing();
+                xui.each(key, function(v,k){
+                    var funName="set"+xui.str.initial(k),ins=o.boxing();
                     if(ins && typeof ins[funName]=='function'){
                         ins[funName].call(ins, v, !!force);
                     }
@@ -4377,7 +4375,7 @@ Class('xui.absObj',"xui.absBox",{
             }
             return this.each(function(o){
                 var ins=o.boxing();
-                _.each(key, function(v,k){
+                xui.each(key, function(v,k){
                     if(typeof ins[k]=='function')
                         ins[k].call(ins, v);
                 });
@@ -4434,10 +4432,10 @@ Class('xui.absObj',"xui.absBox",{
                 fun=function(){
                     ns.each(function(prf){
                         prop=prf.properties;
-                        if(prop.propBinder && !_.isEmpty(prop.propBinder)){
+                        if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
                             ins=prf.boxing();
-                            _.each(prop.propBinder, function(fun,key){
-                                if(_.isFun(fun)){
+                            xui.each(prop.propBinder, function(fun,key){
+                                if(xui.isFun(fun)){
                                     r=fun(prf);
                                     if(key=="CA")
                                         ins.setCustomAttr(r);
@@ -4445,7 +4443,7 @@ Class('xui.absObj',"xui.absBox",{
                                         ins.setCustomClass(r);
                                     else if(key=="CS")
                                         ins.setCustomStyle(r);
-                                    else if(_.isFun(ins[fn='set'+_.str.initial(key)]))
+                                    else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
                                         ins[fn](r,true);
                                 }
                             });
@@ -4494,7 +4492,7 @@ Class("xui.Timer","xui.absObj",{
 
             for(var i in (temp=c.$DataStruct))
                 if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?_.copy(temp[i]):temp[i];
+                    profile.properties[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
 
             //set anti-links
             profile.link(c._cache,'self').link(xui._pool,'xui');
@@ -4503,7 +4501,7 @@ Class("xui.Timer","xui.absObj",{
             profile.Instace=self;
             self.n0=profile;
 
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 if(profile&&profile.box)profile.boxing().start();
             });
             return self;
@@ -4547,11 +4545,11 @@ Class("xui.Timer","xui.absObj",{
         _objectProp:{tagVar:1,propBinder:1},
         _beforeSerialized:function(profile){
             var o={};
-            _.merge(o, profile, 'all');
-            var p = o.properties = _.clone(profile.properties,true);
+            xui.merge(o, profile, 'all');
+            var p = o.properties = xui.clone(profile.properties,true);
             if(profile.box._objectProp){
                 for(var i in profile.box._objectProp)
-                    if((i in p) && p[i] && _.isHash(p[i]) && _.isEmpty(p[i]))delete p[i];
+                    if((i in p) && p[i] && xui.isHash(p[i]) && xui.isEmpty(p[i]))delete p[i];
             }
             return o;
         },

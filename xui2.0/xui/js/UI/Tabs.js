@@ -55,12 +55,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     prop.selMode=="multi"){
 
                     uiv = uiv?uiv.split(prop.valueSeparator):[];
-                    _.arr.each(uiv,function(key){
+                    xui.arr.each(uiv,function(key){
                         fold(key, arr1);
                     });
                     value = value?value.split(prop.valueSeparator):[];
                     var lastV="";
-                    _.arr.each(value,function(key){
+                    xui.arr.each(value,function(key){
                         var l=arr2.length;
                         expand(key, arr2);
                         // the last one
@@ -69,13 +69,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
 
                     if(!prop.noHandler && lastV)
-                        _.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
+                        xui.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
                 }else{
                     fold(uiv, arr1);
                     expand(value, arr2);
                     
                     if(!prop.noHandler && arr2.length)
-                        _.tryF(profile.box._adjustScroll,[profile,value],profile.box);
+                        xui.tryF(profile.box._adjustScroll,[profile,value],profile.box);
                 }
 
                 if(arr1.length){
@@ -115,14 +115,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items = this.getItems(),
                 id2=paras.id||paras.tag;
             if(items.length){
-                if(-1!=_.arr.subIndexOf(items,'id',id2))
+                if(-1!=xui.arr.subIndexOf(items,'id',id2))
                     return false;
 
                 if(!id)
                     id = items[items.length-1].id;
             }
 
-            _.merge(i, {
+            xui.merge(i, {
                 caption:paras.caption,
                 image:paras.image,
                 closeBtn:paras.closeBtn || false,
@@ -131,12 +131,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 imagePos:paras.imagePos,
                 dragKey:paras.dragKey,
                 dropKeys:paras.dropKeys,
-                id : paras.id || paras.tag || _.id()
+                id : paras.id || paras.tag || xui.id()
             });
 
             this.insertItems([i], id);
             var arr=[];
-            _.arr.each(children,function(o){
+            xui.arr.each(children,function(o){
                 arr.push(o[0]);
             });
             this.append(xui.UI.pack(arr,false), i.id);
@@ -152,7 +152,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var profile=this.get(0),
                 pp=profile.properties,
                 item = profile.getItemByDom(domId),
-                paras = _.clone(item,false);
+                paras = xui.clone(item,false);
             if(!paras.dragKey)paras.dragKey=pp.dragKey;
             if(!paras.dropKeys)paras.dropKeys=pp.dropKeys;
             return paras;
@@ -162,19 +162,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 id = profile.getItemIdByDom(domId),
                 arr=[];
             if(id)
-                _.arr.each(profile.children,function(o){
+                xui.arr.each(profile.children,function(o){
                     if(o[1]==id)arr.push(o);
                 });
             return arr;
         },
 
         resetPanelView:function(subId, removeChildren, destroyChildren){
-            if(!_.isSet(removeChildren))removeChildren=true;
-            if(!_.isSet(destroyChildren))destroyChildren=true;
+            if(!xui.isSet(removeChildren))removeChildren=true;
+            if(!xui.isSet(destroyChildren))destroyChildren=true;
             var ins,item;
             return this.each(function(profile){
                 if(profile.renderId){
-                    _.arr.each(profile.properties.items,function(o){
+                    xui.arr.each(profile.properties.items,function(o){
                         if(subId===true || (subId+'')===o.id)
                             delete o._$ini;
                     });
@@ -190,7 +190,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         profile.box._forIniPanelView(profile, subId);
                     }
                 }else{
-                    _.arr.each(profile.properties.items,function(item){
+                    xui.arr.each(profile.properties.items,function(item){
                         profile.box._forIniPanelView(profile, item);
                     });
                 }
@@ -236,9 +236,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 p,obj,serialId;
             self.each(function(profile){
                 var p=profile.properties;
-                arr = _.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
+                arr = xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
-                    _.arr.each(arr,function(o){
+                    xui.arr.each(arr,function(o){
                         // get ui serial id
                         serialId=profile.getSubIdByItemId(o+"");
                         if(serialId && !(obj = profile.getSubNode('PANEL', serialId) ).isEmpty() ){
@@ -251,7 +251,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             self.each(function(profile){
                 if(!profile.boxing().getUIValue()){
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                         if(!profile || !profile.renderId || !profile.properties || !profile.properties.items.length)return;
                         var i;
                         profile.boxing().fireItemClickEvent((i=profile.properties.items[0]) && i.id);
@@ -302,7 +302,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     flag=false;
                 }else{
                     if(asy!==false && node.nextSibling)
-                        profile.$scrollTobottom=_.asyRun(arguments.callee, 1000, [node.nextSibling], this);
+                        profile.$scrollTobottom=xui.asyRun(arguments.callee, 1000, [node.nextSibling], this);
                 }
                 profile.getSubNode('LEFT').css('display','block');
                 return flag;
@@ -320,7 +320,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     flag=false;
                 }else{
                     if(asy!==false && node.previousSibling)
-                        profile.$scrollToTop=_.asyRun(arguments.callee, 1000, [node.previousSibling], this);
+                        profile.$scrollToTop=xui.asyRun(arguments.callee, 1000, [node.previousSibling], this);
                 }
                 profile.getSubNode('RIGHT').css('display','block');
             }
@@ -603,8 +603,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         // for multi selection
                         if(arr.length){
                             //for select
-                            if(_.arr.indexOf(arr,item.id)!=-1){
-                                _.arr.removeValue(arr,item.id);
+                            if(xui.arr.indexOf(arr,item.id)!=-1){
+                                xui.arr.removeValue(arr,item.id);
                                 checktype=-1
                             }else
                                 arr.push(item.id);
@@ -702,12 +702,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     if(false===instance.beforePageClose(profile, item, src)) return;
 
-                    bak=_.copy(item);
+                    bak=xui.copy(item);
 
                     // if the current item is selected, select the next or the pre one item
                     if(uiv && uiv==item.id){
                         var items=properties.items,
-                        index=_.arr.subIndexOf(items,"id",item.id),
+                        index=xui.arr.subIndexOf(items,"id",item.id),
                         t,
                         nuiv=(t=items[index+1])?t.id:(t=items[index-1])?t.id:(t=items[0])?t.id:null;
                         if(nuiv && nuiv!=uiv){
@@ -741,11 +741,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     var panel = profile.boxing().getPanel(id),
                         pos = profile.getRoot().offset(),
                         size=profile.getRoot().cssSize(),
-                        pro = _.copy(xui.UI.Dialog.$DataStruct),
+                        pro = xui.copy(xui.UI.Dialog.$DataStruct),
                         events={};
                     
-                    _.merge(pro, item, 'with');
-                    _.merge(pro,{
+                    xui.merge(pro, item, 'with');
+                    xui.merge(pro,{
                         dragKey: item.dragkey || properties.dragKey ,
                         dock:'none',
                         tag:item.tag||item.id,
@@ -756,18 +756,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         landBtn:true
                     },'all');
                     if(options.properties)
-                        _.merge(pro, options.properties, 'with');
+                        xui.merge(pro, options.properties, 'with');
                     
                     if(options.events)
-                        _.merge(events, options.events, 'all');
+                        xui.merge(events, options.events, 'all');
 
                     var dialog = new xui.UI.Dialog(pro,events,options.host||profile.host,options.CS||null,options.CC||null,options.CB||null,options.CF||null);
 
-                    if(_.isFun(options.init) && false===options.init(dialog,profile,options)){
+                    if(xui.isFun(options.init) && false===options.init(dialog,profile,options)){
                     }else{
                         dialog.show(options.parent||xui('body'));    
                         var arr=[];
-                        _.arr.each(profile.children,function(o){
+                        xui.arr.each(profile.children,function(o){
                             if(o[1]==id){
                                 arr.push(o[0]);
                             }
@@ -819,7 +819,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                      xui(src).css('display','block');
                 },
                 onMouseout:function(profile, e, src){
-                    _.clearTimeout(profile.$scrollToTop);
+                    xui.clearTimeout(profile.$scrollToTop);
                 },
                 onClick:function(profile, e, src){
                     xui(src).css('display','none');
@@ -830,7 +830,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                      xui(src).css('display','block');
                      if(pnode=pnode.get(0)){
                         if(pnode.previousSibling)pnode=pnode.previousSibling;
-                        _.clearTimeout(profile.$scrollToTop);
+                        xui.clearTimeout(profile.$scrollToTop);
                         profile.boxing()._scrollToTop(pnode,false);
                      }
                 }
@@ -850,7 +850,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                      }
                 },
                 onMouseout:function(profile, e, src){
-                    _.clearTimeout(profile.$scrollTobottom);
+                    xui.clearTimeout(profile.$scrollTobottom);
                 },
                 onClick:function(profile, e, src){
                      xui(src).css('display','none');
@@ -861,7 +861,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                      xui(src).css('display','block');
                      if(pnode=pnode.get(0)){
                         if(pnode.nextSibling)pnode=pnode.nextSibling;
-                         _.clearTimeout(profile.$scrollTobottom);
+                         xui.clearTimeout(profile.$scrollTobottom);
                         profile.boxing()._scrollToBottom(pnode,false);
                      }
                 }
@@ -880,11 +880,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         ll=Math.ceil(l/10);
                         for(var i=0;i<ll;i++)
                             nitems.push({caption:(i*10+1) + " - " + Math.min(l,((i+1)*10+1)), sub:[]});
-                        _.arr.each(items,function(item,i){
-                            nitems[parseInt(i/10)].sub.push(_.clone(item,false,1));
+                        xui.arr.each(items,function(item,i){
+                            nitems[parseInt(i/10)].sub.push(xui.clone(item,false,1));
                         });
                     }else{
-                        nitems=_.clone(items,false,2);
+                        nitems=xui.clone(items,false,2);
                     }
                     //POPMENU
                     menu=profile._droppopmenu=new xui.UI.PopMenu({
@@ -1028,7 +1028,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             item._opt = item.optBtn?'':dpn;
             item._itemDisplay = item.hidden?dpn:'';
             if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth="width:"+t+(_.isFinite(t)?"px":"");
+                item.itemWidth="width:"+t+(xui.isFinite(t)?"px":"");
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;
 
@@ -1044,9 +1044,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
                 item._bginfo+="background-attachment:"+t+";";
                 
-            if(_.isStr(item.overflow))
+            if(xui.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
-            else if(_.isStr(p.overflow))
+            else if(xui.isStr(p.overflow))
                 item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
         },
         getDropKeys:function(profile,node){
@@ -1057,7 +1057,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             //dynamic render
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];
-                _.arr.each(arr,function(o){
+                xui.arr.each(arr,function(o){
                     if(o[1]==value && 
                         // not rendered, or node not in
                         (!o[0].renderId || xui.UIProfile.getFromDom(xui(o[0].renderId).parent().id())!=profile )
@@ -1079,14 +1079,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 arr=profile.exchildren;
                 if(arr && arr.length){
                     a=[];
-                    _.filter(arr,function(o){
+                    xui.filter(arr,function(o){
                         if(o[1]==value){
                             a.push(o[0]);
                             return false;
                         }
                     });
                     if(a.length)
-                        _.arr.each(a,function(o){
+                        xui.arr.each(a,function(o){
                             box.append(xui(o),value);
                         });
                 }
@@ -1094,14 +1094,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 arr=profile.excoms;
                 if(arr && arr.length){
                     a=[];
-                    _.filter(arr,function(o){
+                    xui.filter(arr,function(o){
                         if(o[1]==value){
                             a.push(o[0]);
                             return false;
                         }
                     });
                     if(a.length)
-                        _.arr.each(a,function(o){
+                        xui.arr.each(a,function(o){
                             o.show(null, box, value, false);
                         });
                 }
@@ -1115,19 +1115,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(profile.onIniPanelView)box.onIniPanelView(profile,item);
                 if(item.iframeAutoLoad){
                     box.getPanel(item.id).css('overflow','hidden');
-                    var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:_.clone(item.iframeAutoLoad,true),
-                        id="diframe_"+_(),
+                    var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:xui.clone(item.iframeAutoLoad,true),
+                        id="diframe_"+xui.rand(),
                         e=xui.browser.ie && xui.browser.ver<9,
                         ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
 
                     _if.url=xui.adjustRes(_if.url,false,true);
 
                     ifr.id=ifr.name=id;
-                    if(_.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
+                    if(xui.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
                     item._frameName=id;
 
                     if(!_if.query)_if.query={};
-                    _if.query._rand=_();
+                    _if.query._rand=xui.rand();
                     ifr.frameBorder='0';
                     ifr.marginWidth='0';
                     ifr.marginHeight='0';
@@ -1143,11 +1143,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     else
                         ifr.src=_if.url;
                 }else if(item.ajaxAutoLoad){
-                    var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:_.clone(item.ajaxAutoLoad,true),
+                    var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:xui.clone(item.ajaxAutoLoad,true),
                         options={rspType:"text"};
-                    _.merge(options, _ajax.options);
+                    xui.merge(options, _ajax.options);
                     if(!_ajax.query)_ajax.query={};
-                    _ajax.query._rand=_();
+                    _ajax.query._rand=xui.rand();
                     box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
                     var node=box.getPanel(item.id);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
@@ -1166,13 +1166,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 return profile.boxing().onShowTips(profile, node, pos);
             if(!xui.Tips)return;
             var id=node.id,pid,ppid,ks=profile.keys;
-            pid=_.get(node,["parentNode","id"])||"";
-            ppid=_.get(node,["parentNode","parentNode","id"])||"";
+            pid=xui.get(node,["parentNode","id"])||"";
+            ppid=xui.get(node,["parentNode","parentNode","id"])||"";
             if(id.indexOf(ks.ITEM)===0||pid.indexOf(ks.ITEM)===0||ppid.indexOf(ks.ITEM)===0||
                 id.indexOf(ks.HANDLE)===0||pid.indexOf(ks.HANDLE)===0||ppid.indexOf(ks.HANDLE)===0||
                 id.indexOf(ks.CMDS)===0||pid.indexOf(ks.CMDS)===0||ppid.indexOf(ks.CMDS)===0){
                 var upper=arguments.callee.upper,
-                    rtn=upper.apply(this,_.toArr(arguments));
+                    rtn=upper.apply(this,xui.toArr(arguments));
                 upper=null;
                 return rtn;
             }

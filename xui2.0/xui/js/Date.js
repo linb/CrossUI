@@ -976,7 +976,7 @@ Class('xui.Date',null,{
         _validUnit:function(datepart){
             return this.$UNIT[datepart]?datepart:'d';
         },
-        _date:function(value,df){return _.isDate(value) ? value : ((value || value===0)&&isFinite(value)) ? new Date(parseInt(value,10)) : _.isDate(df) ? df : new Date},
+        _date:function(value,df){return xui.isDate(value) ? value : ((value || value===0)&&isFinite(value)) ? new Date(parseInt(value,10)) : xui.isDate(df) ? df : new Date},
         _isNumb:function(target)  {return typeof target == 'number' && isFinite(target)},
         _numb:function(value,df){return this._isNumb(value)?value:this._isNumb(df)?df:0},
         //time Zone like: -8
@@ -1264,7 +1264,7 @@ Class('xui.Date',null,{
         },
         parse:function(str, format){
             var rtn;
-            if(_.isDate(str)){
+            if(xui.isDate(str)){
                 rtn=str;
             }else{
                 // avoid null

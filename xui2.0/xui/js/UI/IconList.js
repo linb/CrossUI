@@ -149,8 +149,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
         },
         _prepareItem:function(profile, item){
             var p = profile.properties,t;
-            _.arr.each(_.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
-                item[i] = _.isSet(item[i])?item[i]:p[i];
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+                item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
             if(t=item.itemMargin)item.itemMargin=xui.CSS.$forceu(t);
             if(t=item.itemPadding)item.itemPadding=xui.CSS.$forceu(t);

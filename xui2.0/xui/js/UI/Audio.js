@@ -134,7 +134,7 @@ Class("xui.UI.Audio", "xui.UI",{
                 ww=width?css.$px(width, rootfz):width, 
                 hh=height?css.$px(height, rootfz):height;
 
-            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
+            if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width){
                     prop.width=adjustunit(ww,rootfz);

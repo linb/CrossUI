@@ -101,7 +101,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             caption:{
                 ini:undefined,
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
                 }
             }

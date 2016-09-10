@@ -496,10 +496,10 @@ Class('App', 'xui.Com',{
             this.div8.setHtml(this.treegrid.getColSortable());
         }, 
         _sbutton53_onclick:function (profile, e, src, value) {
-            alert(_.serialize(this.treegrid.getHeader('min')))
+            alert(xui.serialize(this.treegrid.getHeader('min')))
         }, 
         _sbutton54_onclick:function (profile, e, src, value) {
-            alert(_.serialize(this.treegrid.getRows('min')))
+            alert(xui.serialize(this.treegrid.getRows('min')))
         }, 
         _sbutton67_onclick:function (profile, e, src, value) {
             var rows=this.treegrid.getRows();

@@ -4,7 +4,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
     },
     Instance:{
         append:function(target, pre, base){
-            if(_.isHash(target) || _.isStr(target))
+            if(xui.isHash(target) || xui.isStr(target))
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
@@ -26,10 +26,10 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
             return this;
         },
         getPaper:function(){
-            return _.get(this.get(0), ["_paper"]);
+            return xui.get(this.get(0), ["_paper"]);
         },
         getSVGString:function(){
-            var paper = _.get(this.get(0), ["_paper"]);
+            var paper = xui.get(this.get(0), ["_paper"]);
             return paper?paper.toSVG():"";
         }
     },
@@ -71,14 +71,14 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
 
             // contents
             var a=[];
-            _.arr.each(profile.children,function(o){
+            xui.arr.each(profile.children,function(o){
                 if(o[0].box["xui.svg"])a.push(o[0]);
             });
             if(a.length){
                 profile.boxing().append(xui.svg.pack(a));
                 // for IE
                 if(!Raphael.svg){
-                    _.setTimeout(function(){
+                    xui.setTimeout(function(){
                         if(profile && !profile.destroyed){
                         	  // readd again in IE
                             profile.boxing().append(xui.svg.pack(a));
@@ -87,7 +87,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                 }
             }
             if(profile._paper){
-            	  _.setTimeout(function(){
+            	  xui.setTimeout(function(){
             	        if(profile && !profile.destroyed){
             	  	    // ensure right position
             	  	    if(profile.$designerRoot)
@@ -129,7 +129,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                     }
                     args.height=height;
                     
-                    if((!_.isEmpty(args)) && xui.Dom.$hasEventHandler(node.get(0),'onsize'))
+                    if((!xui.isEmpty(args)) && xui.Dom.$hasEventHandler(node.get(0),'onsize'))
                         node.onSize(true, args);
                     
                     if(profile.$inDesign && profile._frame){
@@ -183,7 +183,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                                         break;
                                         case 'path':
                                             hash={
-                                                path:Raphael.transformPath(_.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
+                                                path:Raphael.transformPath(xui.isArr(attr.path)?attr.path.join(""):attr.path, "s"+wr+","+hr+",0,0")
                                             };
                                         break;
                                     }

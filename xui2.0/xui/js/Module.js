@@ -38,7 +38,7 @@ Class('xui.Module','xui.absProfile',{
     },
     After:function(){
         var self=this,k, e, t, b, i;
-        _.arr.each(['$DataModel','$EventHandlers'],function(v){
+        xui.arr.each(['$DataModel','$EventHandlers'],function(v){
             k=self[v]||{};
             if((t=self.$parent) && (e=t.length)){
                 while(e--){
@@ -57,9 +57,9 @@ Class('xui.Module','xui.absProfile',{
             t = e._pevents = e._pevents||{};
             for(i in b){
                 if(t[i]){
-                    if(!_.isArr(t[i]))t[i]=[t[i]];
-                    _.arr.insertAny(t[i],b[i]);
-                }else t[i]=_.clone(b[i]);
+                    if(!xui.isArr(t[i]))t[i]=[t[i]];
+                    xui.arr.insertAny(t[i],b[i]);
+                }else t[i]=xui.clone(b[i]);
             }
             e._events=null;
         }
@@ -106,8 +106,8 @@ Class('xui.Module','xui.absProfile',{
 	             alias = opt.alias;
 	             host = opt.host;
 	        }else{
-	            properties = properties || (self.properties?_.clone(self.properties):{});
-	            events = events || (self.events?_.clone(self.events):{});
+	            properties = properties || (self.properties?xui.clone(self.properties):{});
+	            events = events || (self.events?xui.clone(self.events):{});
 	        }
 	    }
         
@@ -117,8 +117,8 @@ Class('xui.Module','xui.absProfile',{
         self.key=self.KEY;
 
         if(!alias)alias =self.constructor.pickAlias();
-        if(!_.isEmpty(self.constructor.$DataModel)){
-            _.merge( properties, _.clone(self.constructor.$DataModel),'without');
+        if(!xui.isEmpty(self.constructor.$DataModel)){
+            xui.merge( properties, xui.clone(self.constructor.$DataModel),'without');
         }
         //
         self._links={};
@@ -135,8 +135,8 @@ Class('xui.Module','xui.absProfile',{
         self._ctrlpool={};
         self.events=events;
         self.properties={};
-        if(self._events) self._events = _.clone(self._events);
-        if(self._pevents) self._pevents = _.clone(self._pevents);
+        if(self._events) self._events = xui.clone(self._events);
+        if(self._pevents) self._pevents = xui.clone(self._pevents);
 
         self.setProperties(properties);
 
@@ -150,7 +150,7 @@ Class('xui.Module','xui.absProfile',{
 
         // [[[ fake boxing
         get:function(index){
-            return  _.isNumb(index)?this:[this];
+            return  xui.isNumb(index)?this:[this];
         },
         size:function(){
             return 1;
@@ -272,11 +272,11 @@ Class('xui.Module','xui.absProfile',{
                 self.properties={};
             else if(typeof key=='string')
                 self.properties[key]=value;
-            else if(_.isHash(key)){
+            else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.properties = _.clone(key);
+                    self.properties = xui.clone(key);
                 }else{
-                    _.merge(self.properties, key, 'all');
+                    xui.merge(self.properties, key, 'all');
                 }
             }
 
@@ -303,11 +303,11 @@ Class('xui.Module','xui.absProfile',{
                 self.events={};
             else if(typeof key=='string')
                 self.events[key]=value;
-            else if(_.isHash(key)){
+            else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.events = _.clone(key);            
+                    self.events = xui.clone(key);            
                 }else{
-                    _.merge(self.events, key, 'all');
+                    xui.merge(self.events, key, 'all');
                 }
             }
             return self;
@@ -336,22 +336,22 @@ Class('xui.Module','xui.absProfile',{
             }
             //properties
             var c={}, p=o.box.$DataModel;
-            _.merge(c,o.properties, function(o,i){return p[i]!==o});
-            if(!_.isEmpty(c))r.properties=c;
+            xui.merge(c,o.properties, function(o,i){return p[i]!==o});
+            if(!xui.isEmpty(c))r.properties=c;
 
             //events
-            if(!_.isEmpty(t=this.getEvents()))r.events=t;
+            if(!xui.isEmpty(t=this.getEvents()))r.events=t;
             var eh = o.box.$EventHandlers;
-            _.filter(r.events, function(o,i){
+            xui.filter(r.events, function(o,i){
                 return o!==eh[i];
             });
-            if(_.isEmpty(r.properties))delete r.properties;
+            if(xui.isEmpty(r.properties))delete r.properties;
 
             //events
-            if(!_.isEmpty(t=this.getEvents()))r.events=t;
-            if(_.isEmpty(r.events))delete r.events;
+            if(!xui.isEmpty(t=this.getEvents()))r.events=t;
+            if(xui.isEmpty(r.events))delete r.events;
 
-            return rtnString===false?r:_.serialize(r);
+            return rtnString===false?r:xui.serialize(r);
         },
         clone:function(){
             var ns=this.serialize(false,true);
@@ -367,20 +367,20 @@ Class('xui.Module','xui.absProfile',{
                 t = self.events && self.events[name],
                 applyEvents=function(self, events, host, args){
                     args=args||[];
-                    if(!_.isArr(events))events=[events];
+                    if(!xui.isArr(events))events=[events];
                     l=events.length;
-                    if(_.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                    if(xui.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
                     var temp={};
                     var n=0,fun=function(data){
                         // set prompt's global var
-                        if(_.isStr(this))temp[this+""]=data||"";
+                        if(xui.isStr(this))temp[this+""]=data||"";
                         //callback from [n]
                         for(j=n;j<l;j++){
                             n=j+1;
                             o=events[j];
                             if(typeof o=='string')o=host[o];
-                            if(typeof o=='function')r=_.tryF(o, args, host);
-                            else if(_.isHash(o)){
+                            if(typeof o=='function')r=xui.tryF(o, args, host);
+                            else if(xui.isHash(o)){
                                 if('onOK' in o ||'onKO' in o){
                                     // onOK
                                     if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
@@ -405,9 +405,9 @@ Class('xui.Module','xui.absProfile',{
                     return fun();
                 },
                 host = host||self.host||self;
-            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
-            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
-            if(t && (!_.isArr(t) || events.t))r = applyEvents(self, t, host, args);
+            if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
+            if(ti && (!xui.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
+            if(t && (!xui.isArr(t) || events.t))r = applyEvents(self, t, host, args);
             return r;
         },
         // for inner events
@@ -421,25 +421,25 @@ Class('xui.Module','xui.absProfile',{
                     self.$lastEvent=name;
                     args=args||[];
                     args.splice(0,0,self,self.threadid);
-                    if(!_.isArr(events))events=[events];
+                    if(!xui.isArr(events))events=[events];
                     l=events.length;
                     for(var i=0;i<l;i++){
                         o=events[i];
                         if(typeof o=='string')o=host[o];
                         if(typeof o=='function')r=o.apply(host, args);
-                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,self);
+                        else if(xui.isHash(o))r=xui.pseudocode.exec(o,args,self);
                     }
 
                 },
                 host = self.host||self;
-            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
-            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
-            if(t && (!_.isArr(t) || events.t))r = applyEvents(self, t, host, args);
+            if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
+            if(ti && (!xui.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
+            if(t && (!xui.isArr(t) || events.t))r = applyEvents(self, t, host, args);
             return r;
         },
         _innerCall:function(name){
             var self=this;
-            return _.tryF(self[name],[self, self.threadid],self);
+            return xui.tryF(self[name],[self, self.threadid],self);
         },
         customAppend:function(parent,subId,left,top,threadid){
             return false;
@@ -452,9 +452,9 @@ Class('xui.Module','xui.absProfile',{
 
             var self=this,f=function(){
                 var style=self.customStyle;
-                if(style && !_.isEmpty(style)){
+                if(style && !xui.isEmpty(style)){
                     var arr=[];
-                    _.each(style,function(v,k){
+                    xui.each(style,function(v,k){
                         arr.push(k+" : "+v+";");
                     });
                     var txt=".xui-module-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
@@ -462,26 +462,26 @@ Class('xui.Module','xui.absProfile',{
                 }
                 // no UI control in module
                 if(self.getUIComponents().isEmpty()){
-                    _.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    _.tryF(onEnd,[null, self, threadid],self.host);
+                    xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
+                    xui.tryF(onEnd,[null, self, threadid],self.host);
                 }else{
                     // if parent is an ui object without rendered, dont render the module
                     if(!(parent && parent['xui.UI'] && !parent.get(0).renderId))
                         self.render();
 
-                    if(false===_.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
+                    if(false===xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
                         //append only
                         parent.append(self.getUIComponents(false),subId);
                         // append and show
                         self.getUIComponents(true).each(function(o){
                             o.boxing().show(parent, subId);
-                            if(o.KEY=='xui.UIProfile' && _.get(o,['properties','defaultFocus'])){
-                               try{_.asyRun(function(){o.boxing().activate()})}catch(e){}
+                            if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                               try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
                             }
                         });
                     }
                     self.renderId='ok';
-                    _.tryF(onEnd,[null, self, threadid],self.host);
+                    xui.tryF(onEnd,[null, self, threadid],self.host);
                 }
                 self._showed=1;
                 self._fireEvent('afterShow');
@@ -537,7 +537,7 @@ Class('xui.Module','xui.absProfile',{
             s = o.serialize(false, true);
             o.destroy(true, true, true);
             //set back
-            _.merge(o,s,'all');
+            xui.merge(o,s,'all');
             // notice: remove destroyed here
             delete o.destroyed;
             o.$xid=$xid;
@@ -553,7 +553,7 @@ Class('xui.Module','xui.absProfile',{
             	var f=function(t,m){
 	                //for functions like: UI refresh itself
 	                if(rt)rt.call(rt.target, o);
-                    if(callback)_.tryF(callback);
+                    if(callback)xui.tryF(callback);
             	};
                 //add to parent, and trigger RenderTrigger
                 if(b)o.show(f,p,childId);
@@ -578,7 +578,7 @@ Class('xui.Module','xui.absProfile',{
             var self=this;
 
             if(self.created){
-                _.tryF(onEnd,[null, self, threadid],self.host);
+                xui.tryF(onEnd,[null, self, threadid],self.host);
                 return;
             }
 
@@ -599,9 +599,9 @@ Class('xui.Module','xui.absProfile',{
                     xui.require(self.Dependencies,null,function(uir,key){
                         self._fireEvent('onLoadBaseClass', [uri,key]);
                     },function(){
-                        self._fireEvent('onLoadBaseClassErr', _.toArr(arguments));
+                        self._fireEvent('onLoadBaseClassErr', xui.toArr(arguments));
                     },function(){
-                        self._fireEvent('onLoadBaseClassErr',  _.toArr(arguments));
+                        self._fireEvent('onLoadBaseClassErr',  xui.toArr(arguments));
                     },false, threadid);
                 });
             if(self.iniComponents){
@@ -612,7 +612,7 @@ Class('xui.Module','xui.absProfile',{
                     });
                 }catch(e){}
                 if(arr.length){
-                    if(self.Required&&_.isArr(self.Required)){
+                    if(self.Required&&xui.isArr(self.Required)){
                         self.Required.concat(arr);
                     }else{
                         self.Required=arr;
@@ -625,9 +625,9 @@ Class('xui.Module','xui.absProfile',{
                     xui.require(self.Required,null,function(uri,key){
                         self._fireEvent('onLoadRequiredClass', [uri,key]);
                     },function(){
-                        self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
+                        self._fireEvent('onLoadRequiredClassErr',  xui.toArr(arguments));
                     },function(msg){
-                        self._fireEvent('onLoadRequiredClassErr',  _.toArr(arguments));
+                        self._fireEvent('onLoadRequiredClassErr',  xui.toArr(arguments));
                     },false, threadid);
                 });
             //inner components
@@ -659,10 +659,10 @@ Class('xui.Module','xui.absProfile',{
             });
             funs.push(function(threadid){
                 self.created=true;
-                _.tryF(onEnd,[null, self, threadid],self.host);
+                xui.tryF(onEnd,[null, self, threadid],self.host);
             });
             if(threadid===false){
-                _.arr.each(funs,function(fun){
+                xui.arr.each(funs,function(fun){
                     fun.call();
                 });
             }else{
@@ -703,7 +703,7 @@ Class('xui.Module','xui.absProfile',{
             if(false===self._fireEvent('beforeIniComponents'))return;
             Array.prototype.push.apply(self._nodes, self._innerCall('iniComponents')||[]);
 
-            _.arr.each(self._nodes,function(o){
+            xui.arr.each(self._nodes,function(o){
                 xui.Module.$attachModuleInfo(self,o);
                 //Recursive call
                 if(o['xui.Module'])o._createInnerModules();
@@ -711,7 +711,7 @@ Class('xui.Module','xui.absProfile',{
             // attach destroy to the first UI control
             var autoDestroy = self.autoDestroy || self.properties.autoDestroy;
             if(autoDestroy)
-                _.arr.each(self._nodes,function(o){
+                xui.arr.each(self._nodes,function(o){
                     if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudluePlaceHolder"] && !o.box.$initRootHidden){
                         (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(){
                             if(autoDestroy && !self.destroyed && !self.$ignoreAutoDestroy)
@@ -730,7 +730,7 @@ Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             var hash={};
-            _.each(this._ctrlpool, function(prf){
+            xui.each(this._ctrlpool, function(prf){
                 hash[prf.alias]=prf.serialize(false,false,false);
                 delete hash[prf.alias].key;
                 delete hash[prf.alias].alias;
@@ -742,16 +742,16 @@ Class('xui.Module','xui.absProfile',{
         setProfile:function(profiles){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-             _.each(this._ctrlpool, function(prf,i){
+             xui.each(this._ctrlpool, function(prf,i){
                 if(prf.alias in profiles){
                     i=profiles[prf.alias];
                     var ins=prf.boxing();
-                    if(i && _.isHash(i) && !_.isEmpty(i)){
+                    if(i && xui.isHash(i) && !xui.isEmpty(i)){
                         if(i.theme&&typeof(ins.setTheme)=="function")ins.setTheme(i.theme);
-                        if(i.properties &&!_.isEmpty(i.properties))ins.setProperties(i.properties);
-                        if(i.CA&&!_.isEmpty(i.CA))ins.setCustomAttr(i.CA);
-                        if(i.CC&&!_.isEmpty(i.CC))ins.setCustomClass(i.CC);
-                        if(i.CS&&!_.isEmpty(i.CS))ins.setCustomStyle(i.CS);
+                        if(i.properties &&!xui.isEmpty(i.properties))ins.setProperties(i.properties);
+                        if(i.CA&&!xui.isEmpty(i.CA))ins.setCustomAttr(i.CA);
+                        if(i.CC&&!xui.isEmpty(i.CC))ins.setCustomClass(i.CC);
+                        if(i.CS&&!xui.isEmpty(i.CS))ins.setCustomStyle(i.CS);
                     }else{
                         ins.setValue(i);
                     }
@@ -773,15 +773,15 @@ Class('xui.Module','xui.absProfile',{
                 }
             };
             try{
-                 _.each(this._ctrlpool, function(prf){
+                 xui.each(this._ctrlpool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
-                        _.each(prop.propBinder,function(fun,key){
-                            if((key in prop) && _.isFun(fun))fun();
+                        xui.each(prop.propBinder,function(fun,key){
+                            if((key in prop) && xui.isFun(fun))fun();
                         });
                 });
             }catch(e){}finally{window.get=bak}
-            return _.toArr(hash,true);
+            return xui.toArr(hash,true);
         },
         reBindProp:function(dataMap){
             if(!this._innerModulesCreated)this._createInnerModules();
@@ -790,7 +790,7 @@ Class('xui.Module','xui.absProfile',{
             if(window.get)bak=get;
             window.get=function(k){return xui.SC.get(k,dataMap)};
             try{
-                 _.each(this._ctrlpool, function(prf){
+                 xui.each(this._ctrlpool, function(prf){
                     prf.boxing().reBindProp(dataMap,true);
                 });
             }catch(e){window.get=bak}
@@ -800,16 +800,16 @@ Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             var hash={};
-             _.each(this._ctrlpool, function(prf){
+             xui.each(this._ctrlpool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),
                     ih=hash[prf.alias]={};
-                _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","name",'labelCaption'],function(k){
+                xui.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","name",'labelCaption'],function(k){
                     if(k in prop)ih[k]=prop[k];
                 });
                 if(withValue)
                     if('value' in prop)ih.value=prop.value;
-                if('caption' in prop && _.isSet(prop.caption)){
+                if('caption' in prop && xui.isSet(prop.caption)){
                     ih.caption=typeof(ins.getCaption)=="function"?ins.getCaption():prop.caption;
                 }
             });
@@ -818,14 +818,14 @@ Class('xui.Module','xui.absProfile',{
         setData:function(data){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-             _.each(this._ctrlpool, function(prf){
+             xui.each(this._ctrlpool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),ih;
                if(prf.alias in data){
                     ih=data[prf.alias];
-                    if(ih && _.isHash(ih) && !_.isEmpty(ih)){
-                        _.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","name","value",'labelCaption',"caption"],function(k){
-                            if(k in prop && k in ih)ins['set'+_.str.initial(k)](ih[k]);
+                    if(ih && xui.isHash(ih) && !xui.isEmpty(ih)){
+                        xui.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","name","value",'labelCaption',"caption"],function(k){
+                            if(k in prop && k in ih)ins['set'+xui.str.initial(k)](ih[k]);
                         });
                     }else
                         ins.setValue(ih);
@@ -840,9 +840,9 @@ Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var hash={}, cap, uv;
-                 _.each(this._ctrlpool, function(prf){
+                 xui.each(this._ctrlpool, function(prf){
                     if('value' in prf.properties){
-                        if(_.isSet(prf.properties.caption)){
+                        if(xui.isSet(prf.properties.caption)){
                             cap = prf.properties.caption;
                             uv = prf.properties.value;
 
@@ -866,10 +866,10 @@ Class('xui.Module','xui.absProfile',{
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
 
-                if(!_.isEmpty(values)){
-                     _.each(this._ctrlpool, function(prf){
+                if(!xui.isEmpty(values)){
+                     xui.each(this._ctrlpool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
-                            var v=values[prf.alias],b=_.isHash(v) ;
+                            var v=values[prf.alias],b=xui.isHash(v) ;
                             prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
                             if(typeof(prf.boxing().setCaption)=="function" &&  b  && 'caption' in v)
                                 prf.boxing().setCaption(v.caption, null, true,'module');
@@ -886,7 +886,7 @@ Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var hash={};
-                 _.each(this._ctrlpool, function(prf){
+                 xui.each(this._ctrlpool, function(prf){
                     if('$UIValue' in prf.properties)
                         hash[prf.alias]=prf.properties.$UIValue;
                 });
@@ -899,10 +899,10 @@ Class('xui.Module','xui.absProfile',{
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
 
-                if(!_.isEmpty(values)){
-                     _.each(this._ctrlpool, function(prf){
+                if(!xui.isEmpty(values)){
+                     xui.each(this._ctrlpool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
-                            var v=values[prf.alias],b=_.isHash(v) ;
+                            var v=values[prf.alias],b=xui.isHash(v) ;
                             prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'module');
                             if(typeof(prf.boxing().setCaption)=="function" && b &&  'caption' in v)
                                 prf.boxing().setCaption(v.caption, null, true,'module');
@@ -917,7 +917,7 @@ Class('xui.Module','xui.absProfile',{
         resetValue:function(innerUI){
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
-                _.each(this._ctrlpool, function(prf){
+                xui.each(this._ctrlpool, function(prf){
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
@@ -928,7 +928,7 @@ Class('xui.Module','xui.absProfile',{
         updateValue:function(innerUI){
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
-                _.each(this._ctrlpool, function(prf){
+                xui.each(this._ctrlpool, function(prf){
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
@@ -941,7 +941,7 @@ Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var dirtied=false;
-                _.each(this._ctrlpool, function(prf){
+                xui.each(this._ctrlpool, function(prf){
                     if(prf.boxing().isDirtied){
                         if(prf.boxing().isDirtied()){
                             return false;
@@ -957,7 +957,7 @@ Class('xui.Module','xui.absProfile',{
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
 
-                  _.each(this._ctrlpool, function(prf){
+                  xui.each(this._ctrlpool, function(prf){
                      if(prf.boxing().checkValid){
                          if(!prf.boxing().checkValid()){
                              return false;
@@ -972,8 +972,8 @@ Class('xui.Module','xui.absProfile',{
         getDataBinders:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
             
-            var nodes = _.copy(this._nodes),t,k='xui.DataBinder';
-            _.filter(nodes,function(o){
+            var nodes = xui.copy(this._nodes),t,k='xui.DataBinder';
+            xui.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
             return nodes;
@@ -981,8 +981,8 @@ Class('xui.Module','xui.absProfile',{
         getForms:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
             
-            var nodes = _.copy(this._ctrlpool),t,k='xui.absContainer';
-            _.filter(nodes,function(o){
+            var nodes = xui.copy(this._ctrlpool),t,k='xui.absContainer';
+            xui.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
             return nodes;
@@ -993,7 +993,7 @@ Class('xui.Module','xui.absProfile',{
             var nodes=[];
             var fun = function(m){
                     if(m["xui.Module"]){
-                        _.each(m._ctrlpool,function(o){
+                        xui.each(m._ctrlpool,function(o){
                             if(o["xui.Module"])fun(o);
                             else nodes.push(o);
                         });
@@ -1008,7 +1008,7 @@ Class('xui.Module','xui.absProfile',{
             var nodes = [];
             var fun = function(m){
                 if(m["xui.Module"]){
-                    _.arr.each(m._nodes,function(o){
+                    xui.arr.each(m._nodes,function(o){
                         if(o["xui.Module"])fun(o);
                         else nodes.push(o);
                     });
@@ -1024,29 +1024,29 @@ Class('xui.Module','xui.absProfile',{
         getUIComponents:function(flag){
             var nodes = this.getComponents().get(),
                 k='xui.UI', n='$initRootHidden';
-            _.filter(nodes,function(o){
+            xui.filter(nodes,function(o){
                 return !!(o && o.box &&o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
             });
             return xui.UI.pack(nodes, false);
         },
         setComponents:function(obj){
             var self=this,t;
-            _.arr.each(self._nodes,function(o){
+            xui.arr.each(self._nodes,function(o){
                 if((t=self[o.alias]) &&t.get(0)==o)
                     delete self[o.alias];
             });
-            _.arr.each(self._nodes=obj.get(),function(o){
+            xui.arr.each(self._nodes=obj.get(),function(o){
                 // set host
                 o.boxing().setHost(self, o.alias);
             });
-            _.arr.each(self._nodes,function(o){
+            xui.arr.each(self._nodes,function(o){
                 xui.Module.$attachModuleInfo(self,o);
             });
             return self;
         },
         AddComponents:function(obj){
             var self=this;
-            _.arr.each(obj.get(),function(o){
+            xui.arr.each(obj.get(),function(o){
                 o.boxing().setHost(self, o.alias);
                 self._nodes.push(o);
                 xui.Module.$attachModuleInfo(self,o);
@@ -1068,7 +1068,7 @@ Class('xui.Module','xui.absProfile',{
             //set once
         	self.destroyed=true;
             if(ns && ns.length)
-                _.arr.each(ns, function(o){
+                xui.arr.each(ns, function(o){
                     if(o && o.box)
                         o.boxing().destroy(ignoreEffects, purgeNow);
                 },null,true);
@@ -1081,7 +1081,7 @@ Class('xui.Module','xui.absProfile',{
             self.unLinkAll();
 
             if(!keepStructure){
-	            _.breakO(self);
+	            xui.breakO(self);
 	        }else{
                 // for refresh itself
                 delete self.renderId;
@@ -1090,10 +1090,10 @@ Class('xui.Module','xui.absProfile',{
             }
             //afterDestroy
             if(self.$afterDestroy){
-                _.each(self.$afterDestroy,function(f){
-                    _.tryF(f,[],self);
+                xui.each(self.$afterDestroy,function(f){
+                    xui.tryF(f,[],self);
                 });
-                _.breakO(self.$afterDestroy,2);
+                xui.breakO(self.$afterDestroy,2);
             }
             //set again
         	self.destroyed=true;
@@ -1113,22 +1113,22 @@ Class('xui.Module','xui.absProfile',{
             path=key.split("."),
             n;
             // clear cache
-            if(s=_.get(window,['xui','$cache','SC']))delete s[key];
-            _.set(window, path);
+            if(s=xui.get(window,['xui','$cache','SC']))delete s[key];
+            xui.set(window, path);
             // rebuild
-            _.exec(code);
+            xui.exec(code);
             // the new one
-            n=_.get(window, path);
+            n=xui.get(window, path);
             // merge new to old
-            _.merge(m,n,function(o,i){return n.hasOwnProperty(i);});
-            _.merge(m.prototype, n.prototype,function(o,i){return n.prototype.hasOwnProperty(i);});
+            xui.merge(m,n,function(o,i){return n.hasOwnProperty(i);});
+            xui.merge(m.prototype, n.prototype,function(o,i){return n.prototype.hasOwnProperty(i);});
             // restore those
-            _.merge(m,keep,'all');
+            xui.merge(m,keep,'all');
             // break new
-            _.breakO(n.prototype,1);
-            _.breakO(n,1);
+            xui.breakO(n.prototype,1);
+            xui.breakO(n,1);
             // restore namespace
-            _.set(window, path, m);
+            xui.set(window, path, m);
             return m;
         },
         pickAlias:function(){
@@ -1141,11 +1141,11 @@ Class('xui.Module','xui.absProfile',{
             }
         },
         getClsFromDom:function(id){
-            return _.get(this.getFromDom(id),["KEY"]);
+            return xui.get(this.getFromDom(id),["KEY"]);
         },
         getAllInstance:function(){
             var hash={};
-            _.arr.each(this._cache,function(o){
+            xui.arr.each(this._cache,function(o){
                 hash[o.$xid]=o;
             });
             return hash;
@@ -1167,17 +1167,17 @@ Class('xui.Module','xui.absProfile',{
             }
             var c=m._cache;
             for(var i in c)
-                if(_.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
+                if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
         destroyAll:function(ignoreEffects, purgeNow){
-            _.arr.each(this._cache,function(o){
+            xui.arr.each(this._cache,function(o){
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
         load:function(cls, onEnd, lang, theme, showUI){
             if(!cls){
                 var e=new Error("No cls");
-                _.tryF(onEnd,[e,null]);
+                xui.tryF(onEnd,[e,null]);
                 throw e;
             }
             // compitable
@@ -1187,31 +1187,31 @@ Class('xui.Module','xui.absProfile',{
                 var ifun=function(path){
                     //if successes
                     if(path){
-                        if(this.viewStyles && _.isHash(this.viewStyles)){
+                        if(this.viewStyles && xui.isHash(this.viewStyles)){
                             try{
                                 if(this.viewStyles.theme){
                                     theme=this.viewStyles.theme;
                                     delete this.viewStyles.theme;
                                 }
-                                _.each(this.viewStyles,function(v,k){
+                                xui.each(this.viewStyles,function(v,k){
                                     xui('html').css(k, xui.adjustRes(v));
                                 });
                             }catch(e){}
                         }
                         var a=this,f=function(){
-                            if(!_.isFun(a)){
+                            if(!xui.isFun(a)){
                                 var e=new Error( "'"+cls+"' is not a constructor");
-                                _.tryF(onEnd,[e,null]);
+                                xui.tryF(onEnd,[e,null]);
                                 throw e;
                             }else{
                                 var o=new a();
                                 // record it
                                 a._callfrom=cls;
     
-                                _.set(xui.ModuleFactory,["_cache",cls],o);
+                                xui.set(xui.ModuleFactory,["_cache",cls],o);
     
                                 if(showUI!==false)o.show(onEnd);
-                                else _.tryF(onEnd,[null,o],o);
+                                else xui.tryF(onEnd,[null,o],o);
                             }
                         };
                         if(theme&&theme!="default"){
@@ -1227,7 +1227,7 @@ Class('xui.Module','xui.absProfile',{
                         }
                     }else{
                         var e=new Error("No class name");
-                        _.tryF(onEnd,[e,null]);
+                        xui.tryF(onEnd,[e,null]);
                         throw e;
                     }
                 };
@@ -1238,14 +1238,14 @@ Class('xui.Module','xui.absProfile',{
                 if(/\.js$/i.test(cls)){
                     xui.fetchClass(cls,ifun,
                         function(e){
-                            _.tryF(onEnd,[e,null]);
+                            xui.tryF(onEnd,[e,null]);
                         });
                 }else
                     //get app class
                     xui.SC(cls,ifun,true,null,{
                         retry:0,
                         onFail:function(e){
-                            _.tryF(onEnd,[e,null]);
+                            xui.tryF(onEnd,[e,null]);
                         }
                     });
             };
@@ -1271,7 +1271,7 @@ Class('xui.Module','xui.absProfile',{
 
             prf.moduleClass=module.KEY;
             prf.moduleXid=module.$xid;
-            _.arr.each(prf.children,function(v){
+            xui.arr.each(prf.children,function(v){
                xui.Module.$attachModuleInfo(module, v[0]);
             });
         },

@@ -31,7 +31,7 @@ Class('xui.Dom','xui.absBox',{
     Instance:{
         get:function(index){
             var purge=xui.$cache.domPurgeData,t=this._nodes,s;
-            if(_.isNumb(index))
+            if(xui.isNumb(index))
                 return (s=t[index]) && (s=purge[s]) && s.element;
             else{
                 var a=[],l=t.length;
@@ -94,7 +94,7 @@ Class('xui.Dom','xui.absBox',{
             this.each(function(o){
                 r=fun.apply(o, args||[]);
                 if(r){
-                    if(_.isArr(r))
+                    if(xui.isArr(r))
                         for(i=0;o=r[i];i++)
                             arr[arr.length]=o;
                     else
@@ -107,7 +107,7 @@ Class('xui.Dom','xui.absBox',{
         */
         children:function(){
             return this.$sum(function(){
-                return _.toArr(this.childNodes)
+                return xui.toArr(this.childNodes)
             });
         },
         /* clone
@@ -153,7 +153,7 @@ Class('xui.Dom','xui.absBox',{
                     else if(type=='y')
                         n= dir ? self.call(dir===1?n.lastChild:n.firstChild, 'x',(dir!==1), true, 0, top) : n.parentNode;
                     else{
-                        inn=_.isBool(inn)?inn:true;
+                        inn=xui.isBool(inn)?inn:true;
                         m=null;
                         n= dir ?
                                  (t = inn && n.firstChild ) ? t
@@ -218,7 +218,7 @@ Class('xui.Dom','xui.absBox',{
                         arr[arr.length]=o;
                 return arr;
             }),f4=me.f4||(me.f4=function(tag){
-                return _.toArr(this[f](tag));
+                return xui.toArr(this[f](tag));
             }),f5=me.f5||(me.f5=function(tag, attr){
                 var all = this[f](tag), arr=[];
                 if(attr(this))
@@ -228,16 +228,16 @@ Class('xui.Dom','xui.absBox',{
                         arr[arr.length]=o;
                 return arr;
             });
-            return this.$sum(property?typeof property=='function'?f5:expr?_.isReg(expr)?f1:f2:f3:f4, [tagName, property, expr]);
+            return this.$sum(property?typeof property=='function'?f5:expr?xui.isReg(expr)?f1:f2:f3:f4, [tagName, property, expr]);
         },
         querySelector:function(selectors){
             return this.$sum(function(){
-                return _.toArr(this.querySelector(selectors));
+                return xui.toArr(this.querySelector(selectors));
             });
         },
         querySelectorAll:function(selectors){
             return this.$sum(function(){
-                return _.toArr(this.querySelectorAll(selectors));
+                return xui.toArr(this.querySelectorAll(selectors));
             });
         },
         /*
@@ -245,7 +245,7 @@ Class('xui.Dom','xui.absBox',{
         for addPrev prepend addNext append
         */
         $add:function(fun,target,reversed){
-            if(_.isHash(target) || _.isStr(target))
+            if(xui.isHash(target) || xui.isStr(target))
                 target=xui.create(target);
             if(reversed){
                 reversed=xui(target);
@@ -317,7 +317,7 @@ Class('xui.Dom','xui.absBox',{
 
         //flag: false => no remove this from momery(IE)
         replace:function(target, triggerGC){
-            if(_.isHash(target) || _.isStr(target))
+            if(xui.isHash(target) || xui.isStr(target))
                 target=xui.create(target);
             target=xui(target);
             var v,i,c=this.get(0),ns=target.get(),l=ns.length;
@@ -335,7 +335,7 @@ Class('xui.Dom','xui.absBox',{
         swap:function(target){
             var self=this,t = xui.Dom.getEmptyDiv().html('*',false);
 
-            if(_.isHash(target) || _.isStr(target))
+            if(xui.isHash(target) || xui.isStr(target))
                 target=xui.create(target);
             target=xui(target);
 
@@ -366,7 +366,7 @@ Class('xui.Dom','xui.absBox',{
                     c=null;
                 };
                 // for performance
-                if(purgeNow)f();else _.asyRun(f);
+                if(purgeNow)f();else xui.asyRun(f);
             }
             return this;
         },
@@ -403,7 +403,7 @@ Class('xui.Dom','xui.absBox',{
                                 c=null;
                             };
                             // for performance
-                            if(purgeNow)f();else _.asyRun(f);                            
+                            if(purgeNow)f();else xui.asyRun(f);                            
                          }
 
                          var scripts;
@@ -427,11 +427,11 @@ Class('xui.Dom','xui.absBox',{
 
                         o.innerHTML=content;
                         if(scripts && scripts.length>0){
-                            _.arr.each(scripts,function(s){
+                            xui.arr.each(scripts,function(s){
                                 if(s[0]==1)
                                     xui.include(null,s[1]);
                                 else
-                                    _.exec(s[1]);
+                                    xui.exec(s[1]);
                             });
                         }
 
@@ -453,20 +453,20 @@ Class('xui.Dom','xui.absBox',{
         loadHtml:function(options, onStart, onEnd){
             var ns=this;
             if(typeof options=='string')options={url:options};
-            _.tryF(onStart);
+            xui.tryF(onStart);
             xui.Ajax(options.url, options.query, function(rsp){
                 var n=xui.create("div");
                 n.html(rsp,false,true);
                 ns.append(n.children());
-                _.tryF(onEnd);
+                xui.tryF(onEnd);
             }, function(err){
                 ns.append("<div>"+err+"</div>");
-                _.tryF(onEnd);
+                xui.tryF(onEnd);
             }, null, options.options).start();
         },
         loadIframe:function(options, domId){
             if(typeof options=='string')options={url:options};
-            var id=domId||("aiframe_"+_()),t;
+            var id=domId||("aiframe_"+xui.stamp()),t;
             if(t=xui.Dom.byId(domId)){
                 xui(t).remove();
             }
@@ -488,7 +488,7 @@ Class('xui.Dom','xui.absBox',{
         outerHTML:function(content, triggerGC){
             var self=this, t,s='', o=self.get(0),id=o.id;
             if(content!==undefined){
-                var n=self.replace(_.str.toDom(content),false);
+                var n=self.replace(xui.str.toDom(content),false);
                 self._nodes[0]=n._nodes[0];
 
                 //avoid inner nodes memory leak
@@ -689,7 +689,7 @@ Class('xui.Dom','xui.absBox',{
             return parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true));
         },
         rotate:function(v){
-            if(_.isSet(v)){
+            if(xui.isSet(v)){
                 v=parseFloat(v)||0;
                 v=v%360;
                 if(v<0)v=v+360;
@@ -713,7 +713,7 @@ Class('xui.Dom','xui.absBox',{
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
                             // for format
                             o=o.transform();
-                            if(_.isArr(o)){
+                            if(xui.isArr(o)){
                                 if(!o.length) o="";
                                 else o=o.join();
                             }else{
@@ -734,13 +734,13 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         scaleX:function(v){
-            if(_.isSet(v)){
+            if(xui.isSet(v)){
                 return this.each(function(o){
                      if(o.raphael&&o.id){
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
                                 t[0][1]=v;
@@ -764,7 +764,7 @@ Class('xui.Dom','xui.absBox',{
                     v=1;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[1];
                         });
                     }
@@ -780,13 +780,13 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         scaleY:function(v){
-            if(_.isSet(v)){
+            if(xui.isSet(v)){
                 return this.each(function(o){
                     if(o.raphael&&o.id){
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
                                 t[0][2]=v;
@@ -810,7 +810,7 @@ Class('xui.Dom','xui.absBox',{
                    v=1;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[2];
                         });
                     }
@@ -826,14 +826,14 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         translateX:function(v){
-            if(_.isSet(v)){
+            if(xui.isSet(v)){
                 return this.each(function(o){
                      if(o.raphael&&o.id){
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id),t;
                         // modify the last 't'
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][1]=v;
                             }else{
@@ -856,7 +856,7 @@ Class('xui.Dom','xui.absBox',{
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[1];
                         });
                     }
@@ -868,13 +868,13 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         translateY:function(v){
-            if(_.isSet(v)){
+            if(xui.isSet(v)){
                 return this.each(function(o){
                      if(o.raphael&&o.id){
                         v=parseFloat(v);
                         var prf=xui.Event._getProfile(o.id);
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=_.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
                             // modify the last 't'
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][2]=v;
@@ -898,7 +898,7 @@ Class('xui.Dom','xui.absBox',{
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         _.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[2];
                         });
                     }
@@ -910,8 +910,8 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         skewX:function(v){
-            if(_.isSet(v)){
-                if(_.isFinite(v))v+='deg';
+            if(xui.isSet(v)){
+                if(xui.isFinite(v))v+='deg';
                 return this.each(function(o){
                     var transform=o.style.transform||"";
                     if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1'+v+',$3');
@@ -924,8 +924,8 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         skewY:function(v){
-            if(_.isSet(v)){
-                 if(_.isFinite(v))v+='deg';
+            if(xui.isSet(v)){
+                 if(xui.isFinite(v))v+='deg';
                 return this.each(function(o){
                     var transform=o.style.transform||"";
                     if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1$2,'+v);
@@ -1026,8 +1026,8 @@ Class('xui.Dom','xui.absBox',{
                     if(style.visibility!='visible')style.visibility='visible';
                     vv._xuihide=0;
                 }
-                if(_.isSet(left))style.left=left;
-                if(_.isSet(top))style.top=top;
+                if(xui.isSet(left))style.left=left;
+                if(xui.isSet(top))style.top=top;
                 //force to visible
 //                if(style.visibility!='visible')style.visibility='visible';
 //                if(style.display=='none')style.display='';
@@ -1035,11 +1035,11 @@ Class('xui.Dom','xui.absBox',{
                 //ie6 bug
               /*  if(xui.browser.ie&&xui.browser.ver<=6){
                     t=style.wordWrap=='normal';
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                         style.wordWrap=t?'break-word':'normal'
                     })
                 }*/
-                showEffects=ignoreEffects?null:showEffects?showEffects:_.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
+                showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
                 if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
                 if(showEffects)xui.Dom._vAnimate(o,true,showEffects,callback);else if(callback)callback();
             });
@@ -1070,7 +1070,7 @@ Class('xui.Dom','xui.absBox',{
 
                     if(callback)callback();
                 };
-                hideEffects=ignoreEffects?null:hideEffects?hideEffects:_.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
+                hideEffects=ignoreEffects?null:hideEffects?hideEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
                if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
                 if(hideEffects)xui.Dom._vAnimate(o,false,hideEffects,fun);else fun();
             });
@@ -1227,7 +1227,7 @@ Class('xui.Dom','xui.absBox',{
         },
 //class and src
         hasClass:function(name){
-            var i,l,isReg=_.isReg(name), arr = xui.Dom._getClass(this.get(0)).split(/\s+/);
+            var i,l,isReg=xui.isReg(name), arr = xui.Dom._getClass(this.get(0)).split(/\s+/);
             if(isReg){
                 for(i=0,l=arr.length;i<l;i++){
                     if(name.test(arr[i])){
@@ -1235,7 +1235,7 @@ Class('xui.Dom','xui.absBox',{
                     }
                 }
             }else{
-                return _.arr.indexOf(arr, name+"")!=-1;
+                return xui.arr.indexOf(arr, name+"")!=-1;
             }
             return false;
         },
@@ -1250,7 +1250,7 @@ Class('xui.Dom','xui.absBox',{
                 t=[];
                 for(i=0,l=arr.length;i<l;i++)if(arr[i])t.push(arr[i]);
                 for(i=0,l=arr2.length;i<l;i++){
-                    if(arr2[i] && _.arr.indexOf(arr, arr2[i])==-1){
+                    if(arr2[i] && xui.arr.indexOf(arr, arr2[i])==-1){
                         ok=1;
                         t.push(arr2[i]);
                     }
@@ -1259,7 +1259,7 @@ Class('xui.Dom','xui.absBox',{
             });
         },
         removeClass:function(name){
-            var arr, i,l, isReg=_.isReg(name), me=arguments.callee,reg=(me.reg||(me.reg=/\s+/)),ok,
+            var arr, i,l, isReg=xui.isReg(name), me=arguments.callee,reg=(me.reg||(me.reg=/\s+/)),ok,
                   arr2;
             if(!isReg){
                 arr2=(name+"").split(reg);
@@ -1270,13 +1270,13 @@ Class('xui.Dom','xui.absBox',{
                 arr = xui.Dom._getClass(o).split(reg);
                 if(!isReg){
                     for(i=0,l=arr2.length;i<l;i++){
-                        if(_.arr.indexOf(arr,arr2[i])!=-1){
+                        if(xui.arr.indexOf(arr,arr2[i])!=-1){
                             ok=1;
-                            _.arr.removeValue(arr, arr2[i]);
+                            xui.arr.removeValue(arr, arr2[i]);
                         }
                     }
                 }else{
-                    _.filter(arr,function(o,i){
+                    xui.filter(arr,function(o,i){
                         if(name.test(o)){
                             ok=1;
                             return false;
@@ -1306,8 +1306,8 @@ Class('xui.Dom','xui.absBox',{
             if(xui.__iefix2 && (tag=="-checked"||tag=="-fold"||tag=="-expand")){
                 this.each(function(n){
                     var arr = xui.Dom._getClass(n).split(/\s+/);
-                    if(_.arr.indexOf(arr,'xuifont')!=-1 || _.arr.indexOf(arr,'xuicon')!=-1){
-                        _.arr.each(arr,function(s){
+                    if(xui.arr.indexOf(arr,'xuifont')!=-1 || xui.arr.indexOf(arr,'xuicon')!=-1){
+                        xui.arr.each(arr,function(s){
                             //It has 'xxxx' and 'xxxx-checked'
                             if(xui.__iefix2[s+(isAdd?'':tag)] && xui.__iefix2[isAdd?s.replace(new RegExp(tag+'$'),''):s] ){
                                 xui(n).html(xui.__iefix2[s.replace(new RegExp(tag+'$'),'')+(isAdd?tag:'')]);
@@ -1391,8 +1391,8 @@ Class('xui.Dom','xui.absBox',{
         $addEvent:function(name, fun, label, index){
             var self=this,
                 event=xui.Event,
-                arv=_.arr.removeValue,
-                ari=_.arr.insertAny,
+                arv=xui.arr.removeValue,
+                ari=xui.arr.insertAny,
                 id,c,t,m;
 
             if(!index && index!==0)index=-1;
@@ -1450,15 +1450,15 @@ Class('xui.Dom','xui.absBox',{
                 if(!(c=dom[id]))return;
                 if(!(t=c.events))return;
                 if(bAll)
-                    _.arr.each(event._getEventName(type),function(o){
+                    xui.arr.each(event._getEventName(type),function(o){
                         delete t[o];
                     });
                 else{
                     if(typeof label == 'string'){
                         label='$'+label;
                         if(k=t[name]){
-                            if(_.arr.indexOf(k,label)!=-1)
-                                _.arr.removeValue(k,label);
+                            if(xui.arr.indexOf(k,label)!=-1)
+                                xui.arr.removeValue(k,label);
                             delete k[label];
                         }
                     }else
@@ -1476,10 +1476,10 @@ Class('xui.Dom','xui.absBox',{
             if(!(id=xui.Event.getId(this.get(0))))return;
 
             if(label)
-                return _.get(xui.$cache.profileMap,[id,'events',name,'$' + label]);
+                return xui.get(xui.$cache.profileMap,[id,'events',name,'$' + label]);
             else{
-                var r=[],arr = _.get(xui.$cache.profileMap,[id,'events',name]);
-                _.arr.each(arr,function(o,i){
+                var r=[],arr = xui.get(xui.$cache.profileMap,[id,'events',name]);
+                xui.arr.each(arr,function(o,i){
                     r[r.length]={o:arr[o]};
                 });
                 return r;
@@ -1489,10 +1489,10 @@ Class('xui.Dom','xui.absBox',{
             return this.each(function(o,i){
                 if(!(i=xui.Event.getId(o)))return;
                 if(!(i=xui.$cache.profileMap[i]))return;
-                _.breakO(i.events,2);
+                xui.breakO(i.events,2);
                 delete i.events;
 
-                _.arr.each(xui.Event._events,function(s){
+                xui.arr.each(xui.Event._events,function(s){
                    if(o["on"+s])o["on"+s]=null;
                 });
             });
@@ -1511,8 +1511,8 @@ Class('xui.Dom','xui.absBox',{
                 if('blur'==type || 'focus'==type){
                     try{o[type]()}catch(e){}
                 }else{
-                      hash=_.copy(args);
-                      _.merge(hash,{
+                      hash=xui.copy(args);
+                      xui.merge(hash,{
                         type: type,
                         target: o,
                         button : 1,
@@ -1607,7 +1607,7 @@ Class('xui.Dom','xui.absBox',{
         set:true for give focus
         */
         nextFocus:function(downwards, includeChild, setFocus, pattern){
-            downwards=_.isBool(downwards)?downwards:true;
+            downwards=xui.isBool(downwards)?downwards:true;
             var self=this.get(0),node = this.$iterator('',downwards,includeChild,function(node){return node!==self && (!pattern || (node.id&&pattern.test(node.id))) && xui([node]).$canFocus()});
             if(!node.isEmpty() && setFocus!==false)node.focus();
             self=null;
@@ -1690,12 +1690,12 @@ Class('xui.Dom','xui.absBox',{
                     return '#' + f3(from,to, curvalue, 'red') + f3(from,to, curvalue, 'green') + f3(from,to, curvalue, 'blue');
                 });
             if(!params){
-                if(onEnd)_.tryF(onEnd);
+                if(onEnd)xui.tryF(onEnd);
                 return;
             }
             var parmsBak=params;
             // clone it now
-            params=_.clone(params);
+            params=xui.clone(params);
             
             // Estimate duration by steps
             if((step||0)>0)
@@ -1706,20 +1706,20 @@ Class('xui.Dom','xui.absBox',{
             type = (type in tween)?type:'circIn';
 
             var starttime, node=this.get(0), self=this, fun=function(threadid){
-                var offtime=_() - starttime, curvalue,u,eu,su,s,e;
+                var offtime=xui.stamp() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
-                _.each(params,function(o,i){
+                xui.each(params,function(o,i){
                     s=o[0];e=o[1];u=o[2];
                     curvalue = tween[type](duration, offtime);
                     if(typeof o == 'function') o.call(self, curvalue);
                     else{
-                        if(_.str.endWith(i.toLowerCase(),'color')){
+                        if(xui.str.endWith(i.toLowerCase(),'color')){
                             curvalue = color(s, e, curvalue);
                         }else{
-                            if(!_.isFinite(e)){
+                            if(!xui.isFinite(e)){
                                 u=e.replace(/[-\d.]*/,'');
                                 eu=u||'px';
-                                if(!_.isFinite(s)){
+                                if(!xui.isFinite(s)){
                                     su=s.replace(/[-\d.]*/,'')||'px';
                                     if(su!=eu){
                                         if(su=='em'&&eu=='px'){
@@ -1732,7 +1732,7 @@ Class('xui.Dom','xui.absBox',{
                             }
                             s=parseFloat(s);
                             e=parseFloat(e);
-                            curvalue = _.toFixedNumber(s + (e-s)*curvalue, 6);
+                            curvalue = xui.toFixedNumber(s + (e-s)*curvalue, 6);
                         }
                         curvalue+=u||unit||'';
                         (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
@@ -1740,16 +1740,16 @@ Class('xui.Dom','xui.absBox',{
                 });
                 if(offtime==duration){
                     if(returned&&!_goback){
-                        starttime=_();
+                        starttime=xui.stamp();
                         _goback=1;
-                        _.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                        xui.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
                     }else{
                         if(times==-1||times>0){
-                            starttime=_();
+                            starttime=xui.stamp();
                             if(times>0)times-=1;
                             if(_goback){
                                 _goback=0;
-                                _.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                                xui.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
                             }
                         }
                     }
@@ -1771,18 +1771,18 @@ Class('xui.Dom','xui.absBox',{
                 xui.setNodeData(node,'_animationreset',null);
             }
 
-            return xui.Thread(threadid||_.id(), funs, 0, null, function(tid){
+            return xui.Thread(threadid||xui.id(), funs, 0, null, function(tid){
                 xui.setNodeData(node,'_inthread',tid);
-                starttime=_();
+                starttime=xui.stamp();
                 xui.setNodeData(node,'_animationreset',function(){
-                    _.merge(params,parmsBak,'all');
-                    starttime=_();
+                    xui.merge(params,parmsBak,'all');
+                    starttime=xui.stamp();
                     fun();
                 });
-                return _.tryF(onStart,arguments,this);
+                return xui.tryF(onStart,arguments,this);
             }, function(tid,flag){
                 if('force'!=flag)
-                    _.tryF(onEnd,arguments,this);
+                    xui.tryF(onEnd,arguments,this);
                 //maybe destroyed
                 if(node&&node.$xid){
                     xui.setNodeData(node,'_inthread',null);
@@ -1791,9 +1791,9 @@ Class('xui.Dom','xui.absBox',{
             },true);
         },
         pop : function(pos, type, parent, trigger, group){
-            var ns=this,id=_()+":"+ns.xid();
+            var ns=this,id=xui.stamp()+":"+ns.xid();
             ns.popToTop(pos, type||"outer",parent).setBlurTrigger(id, function(){
-                if(typeof(trigger)=="function")_.tryF(trigger);
+                if(typeof(trigger)=="function")xui.tryF(trigger);
                 else ns.hide();
             });
             return id;
@@ -1991,7 +1991,7 @@ type:4
             //show
             target.cssPos(pos).css({visibility:'visible'});
 
-            showEffects=ignoreEffects?null:showEffects?showEffects:_.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
+            showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
             return this;
@@ -2000,12 +2000,12 @@ type:4
             node=xui(node);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
-            if(!_.isDefined(type))type='outer';
+            if(!xui.isDefined(type))type='outer';
 
             var aysid=groupid || (this.xid()+":"+node.xid()),self=this;
             this.onMouseover(type===null?null:function(prf, e, src){
                 if(e.$force)return;
-                _.resetRun(aysid,null);
+                xui.resetRun(aysid,null);
                 var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                 && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                 if(!ignore){
@@ -2022,7 +2022,7 @@ type:4
                 }
             },aysid).onMouseout(type===null?null:function(prf, e, src){
                 if(e.$force)return;
-                _.resetRun(aysid,function(){
+                xui.resetRun(aysid,function(){
                     xui.setData([aysid,'$ui.hover.pop']);
                     xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                     if(!beforeHide || false!==beforeHide(prf, node,e, src,'host')){
@@ -2034,10 +2034,10 @@ type:4
             if(node){
                 node.onMouseover(type===null?null:function(e){
                     if(e.$force)return;
-                     _.resetRun(aysid,null);
+                     xui.resetRun(aysid,null);
                 },aysid).onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
-                    _.resetRun(aysid,function(){
+                    xui.resetRun(aysid,function(){
                         xui.setData([aysid,'$ui.hover.pop']);
                         xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                         if(!beforeHide || false!==beforeHide(prf, node,e, src, 'pop')){
@@ -2060,10 +2060,10 @@ type:4
                     var p=xui.Event.getPos(e),
                         arr=arguments.callee.arr,
                         srcN=xui.Event.getSrc(e),
-                        a=_.copy(arr),
+                        a=xui.copy(arr),
                         b, pos, w, h, v;
                     //filter first
-                    _.arr.each(a,function(i){
+                    xui.arr.each(a,function(i){
                         b=true;
                         if(!(v=arr[i].target))b=false;
                         else
@@ -2072,12 +2072,12 @@ type:4
                                     return b=false;
                             });
                         if(!b){
-                            _.arr.removeValue(arr,i);
+                            xui.arr.removeValue(arr,i);
                             delete arr[i];
                         };
                     });
-                    a=_.copy(arr);
-                    _.arr.each(a,function(i){
+                    a=xui.copy(arr);
+                    xui.arr.each(a,function(i){
                         v=arr[i];
                         if(!v)return;
 
@@ -2085,7 +2085,7 @@ type:4
                         var isChild=function(){
                             var nds=v.target.get();
                             while (srcN && srcN.nodeName && srcN.nodeName!="BODY" && srcN.nodeName!="HTML"){
-                                if(_.arr.indexOf(nds,srcN)!=-1)
+                                if(xui.arr.indexOf(nds,srcN)!=-1)
                                     return true;
                                 srcN = srcN.parentNode;
                             }
@@ -2104,13 +2104,13 @@ type:4
                         isChild=null;
 
                         // anti trigger
-                        if(!b && !_.isFun(v.trigger))
+                        if(!b && !xui.isFun(v.trigger))
                             return false;
 
                         if(b){
-                            _.arr.removeValue(arr,i);
+                            xui.arr.removeValue(arr,i);
                             delete arr[i];
-                            _.tryF(v.trigger,[p,e],v.target);
+                            xui.tryF(v.trigger,[p,e],v.target);
                             v=null;
                         }else if(v.stopNext){
                             //if the top layer popwnd cant be triggerred, prevent the other layer popwnd trigger
@@ -2126,10 +2126,10 @@ type:4
             // remove this trigger first
             if(arr[id]){
                 if(trigger===true){
-                    _.tryF(arr[id].trigger);
+                    xui.tryF(arr[id].trigger);
                     trigger=false;
                 }
-                _.arr.removeValue(arr,id);
+                xui.arr.removeValue(arr,id);
                 delete arr[id];
             }
             // add trigger
@@ -2138,7 +2138,7 @@ type:4
                     //keep the original refrence
                     if(group['xui.Dom'])
                         target=group;
-                    else if(_.isArr(group)){
+                    else if(xui.isArr(group)){
                         target=xui();
                         target._nodes=group;
                     }
@@ -2168,18 +2168,18 @@ type:4
             if(!xui.browser.gek2)return this;
             var ns=this;
             ns.css('overflow','hidden');
-            _.asyRun(function(){ns.css('overflow','auto')});
+            xui.asyRun(function(){ns.css('overflow','auto')});
             return ns;
         },
         //IE not trigger dimension change, when change height only in overflow=visible.
         ieRemedy:function(){
             if(xui.browser.ie&&xui.browser.ver<=6){
                 var a1=this.get(),a2=[],a3=[],l=a1.length;
-                //_.asyRun(function(){                    
+                //xui.asyRun(function(){                    
                     for(var i=0;i<l;i++){
                         // allow once
-                        if(!_.isSet(a1[i].$ieRemedy)){
-                            if(_.isSet(a1[i].style.width)){
+                        if(!xui.isSet(a1[i].$ieRemedy)){
+                            if(xui.isSet(a1[i].style.width)){
                                 a1[i].$ieRemedy=a1[i].style.width;
                                 a1[i].style.width=((xui.CSS.$px(a1[i].$ieRemedy,a1[i])||0)+1)+"px";
                             }
@@ -2191,9 +2191,9 @@ type:4
                             a1[i].style.WordWrap='break-word';
                         */
                     }
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                         for(var i=0;i<l;i++){
-                            if(_.isSet(a1[i].$ieRemedy)){
+                            if(xui.isSet(a1[i].$ieRemedy)){
                                 a1[i].style.width=a1[i].$ieRemedy;
                                 a1[i].removeAttribute('$ieRemedy');
                             }
@@ -2221,12 +2221,12 @@ type:4
         HIDE_VALUE : '-10000px',
         TOP_ZINDEX:10000,
 
-        _boxArr:_.toArr('width,height,left,top,right,bottom'),
+        _boxArr:xui.toArr('width,height,left,top,right,bottom'),
         _cursor:{},
 
         _pickDomId:function(){
             var id;
-            do{id='xui_'+_.id()}while(document.getElementById(id))
+            do{id='xui_'+xui.id()}while(document.getElementById(id))
             return id;
         },
         _map:{
@@ -2264,10 +2264,10 @@ type:4
                     ? ['!window']
                     : obj===document
                     ? ['!document']
-                    : _.isArr(obj)
+                    : xui.isArr(obj)
                     ? obj
                     :(obj=='[object NodeList]' || obj=='[object HTMLCollection]')
-                    ? _.toArr(obj)
+                    ? xui.toArr(obj)
                     : obj['xui.Dom']
                     ? obj._nodes
                     : obj._toDomElems
@@ -2347,7 +2347,7 @@ type:4
                 if(n1.indexOf("border")===0){
                     n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
                 }
-                if(_.arr.indexOf(css3prop,n1)!=-1){
+                if(xui.arr.indexOf(css3prop,n1)!=-1){
                     if(!ns.css3Support(name)){
                         return '';
                     }else{
@@ -2399,12 +2399,12 @@ type:4
                         //create new matrix
                         matrix = function(m11, m12, m21, m22, dx, dy){
                             var m = {};
-                            m.m11 = _.isSet(m11)?parseFloat(m11):1;
-                            m.m12 = _.isSet(m12)?parseFloat(m12):0;
-                            m.m21 = _.isSet(m21)?parseFloat(m21):0;
-                            m.m22 = _.isSet(m22)?parseFloat(m22):1;
-                            m.dx = _.isSet(dx)?parseFloat(dx):0;
-                            m.dy = _.isSet(dy)?parseFloat(dy):0;
+                            m.m11 = xui.isSet(m11)?parseFloat(m11):1;
+                            m.m12 = xui.isSet(m12)?parseFloat(m12):0;
+                            m.m21 = xui.isSet(m21)?parseFloat(m21):0;
+                            m.m22 = xui.isSet(m22)?parseFloat(m22):1;
+                            m.dx = xui.isSet(dx)?parseFloat(dx):0;
+                            m.dy = xui.isSet(dy)?parseFloat(dy):0;
                             return m;
                         },
                         //multiply matrices
@@ -2432,7 +2432,7 @@ type:4
 
                     //rotate transformation
                     this.rotate = function(deg){
-                        var rad = _.isSet(deg)?parseFloat(deg2rad(parseFloat(deg))):0;
+                        var rad = xui.isSet(deg)?parseFloat(deg2rad(parseFloat(deg))):0;
                         var m = matrix(Math.cos(rad), -Math.sin(rad), Math.sin(rad), Math.cos(rad), 0, 0);
                         current = multiply(m, current);
                     };
@@ -2449,7 +2449,7 @@ type:4
                     };
                     //scaling transformations
                     this.scale = function(x,y){
-                        var m = matrix(_.isSet(x)?parseFloat(x):1, 0, 0, _.isSet(y)?parseFloat(y):1, 0, 0);
+                        var m = matrix(xui.isSet(x)?parseFloat(x):1, 0, 0, xui.isSet(y)?parseFloat(y):1, 0, 0);
                         current = multiply(m, current);
                     };
                     this.scaleX = function(x){
@@ -2460,8 +2460,8 @@ type:4
                     };
                     //skew transformations
                     this.skew = function(xAng, yAng){
-                        xAng = _.isSet(xAng)?parseFloat(deg2rad(parseFloat(xAng))):0;
-                        yAng = _.isSet(yAng)?parseFloat(deg2rad(parseFloat(yAng))):0;
+                        xAng = xui.isSet(xAng)?parseFloat(deg2rad(parseFloat(xAng))):0;
+                        yAng = xui.isSet(yAng)?parseFloat(deg2rad(parseFloat(yAng))):0;
                         var m = matrix(1, Math.tan(xAng), Math.tan(yAng), 1, 0, 0);
                         current = multiply(m, current);
                     };
@@ -2685,7 +2685,7 @@ type:4
                         aw=ah=Math.min(aw,ah);
 
                     var l=-aw/2,t=-ah/2,w=aw,h=ah;
-                    if(_.isObj(orient)){
+                    if(xui.isObj(orient)){
                         l=orient.left||(Math.round(parseFloat(l))+'px');
                         t=orient.top||(Math.round(parseFloat(t))+'px');
                     }else{
@@ -2902,10 +2902,10 @@ type:4
                     node.style.backgroundImage="";
                 }else{
                     rate=rate||1;
-                    var id='svg:'+_.id(),
+                    var id='svg:'+xui.id(),
                         cx='0%',cy='0%',
                         r=rate*100+"%";
-                    if(_.isObj(orient)){
+                    if(xui.isObj(orient)){
                         cx=orient.left||cx;
                         cy=orient.left||cy;
                     }else{
@@ -2953,7 +2953,7 @@ type:4
                     +'<radialGradient id="'+id+'" gradientUnits="userSpaceOnUse" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';
 
                     for(var i=0,l=stops.length;i<l;i++){
-                        svg += '<stop stop-color="'+stops[i].clr+'" offset="'+stops[i].pos+'" '+(_.isSet(stops[i].opacity)?(' stop-opacity="'+stops[i].opacity+'"'):'')+' />';
+                        svg += '<stop stop-color="'+stops[i].clr+'" offset="'+stops[i].pos+'" '+(xui.isSet(stops[i].opacity)?(' stop-opacity="'+stops[i].opacity+'"'):'')+' />';
                     }
 
                     svg += '</radialGradient>'
@@ -2967,7 +2967,7 @@ type:4
                 if(!orient){
                     node.style.backgroundImage='';
                 }else{
-                    var id='svg'+_.id(),x1='0%',y1='0%',x2='0%',y2='100%';
+                    var id='svg'+xui.id(),x1='0%',y1='0%',x2='0%',y2='100%';
 
                     switch(orient){
                         case "T":
@@ -3010,7 +3010,7 @@ type:4
                     +'<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'">';
 
                     for(var i=0,l=stops.length;i<l;i++){
-                        svg += '<stop stop-color="'+stops[i].clr+'" offset="'+stops[i].pos+'" '+(_.isSet(stops[i].opacity)?(' stop-opacity="'+stops[i].opacity+'"'):'')+'/>';
+                        svg += '<stop stop-color="'+stops[i].clr+'" offset="'+stops[i].pos+'" '+(xui.isSet(stops[i].opacity)?(' stop-opacity="'+stops[i].opacity+'"'):'')+'/>';
                     }
 
                     svg += '</linearGradient>'
@@ -3022,9 +3022,9 @@ type:4
             },
             css1=function(node,orient,stops, shape, size, rate){
                 var arr1=[],arr2=[],style=node.style;
-                _.arr.each(stops,function(o){
+                xui.arr.each(stops,function(o){
                     var clr=o.clr;
-                    if(_.isSet(o.opacity) && clr.charAt(0)=='#'){
+                    if(xui.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
                         clr="rgba("+_to255(clr.substr(0, 2))+","+_to255(clr.substr(2, 2))+","+_to255(clr.substr(4, 2))+","+parseFloat(o.opacity)+")";
                     }
@@ -3038,7 +3038,7 @@ type:4
                     style.backgroundImage="";
                 }else{
                     var position;
-                    if(_.isObj(orient)){
+                    if(xui.isObj(orient)){
                         position = orient.left + " " + orient.top;
                     }else{
                         switch(orient){
@@ -3069,9 +3069,9 @@ type:4
             },
             css2=function(node,orient,stops){
                 var arr1=[],arr2=[],style=node.style;
-                _.arr.each(stops,function(o){
+                xui.arr.each(stops,function(o){
                     var clr=o.clr;
-                    if(_.isSet(o.opacity) && clr.charAt(0)=='#'){
+                    if(xui.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
                         clr="rgba("+_to255(clr.substr(0, 2))+","+_to255(clr.substr(2, 2))+","+_to255(clr.substr(4, 2))+","+parseFloat(o.opacity)+")";
                     }
@@ -3156,7 +3156,7 @@ type:4
 
             if(stops){
                 if(stops.length>1){
-                    _.arr.stableSort(stops,function(x,y){
+                    xui.arr.stableSort(stops,function(x,y){
                         x=parseFloat(x.pos);
                         y=parseFloat(y.pos);
                         return x>y?1:x==y?0:-1;
@@ -3190,20 +3190,20 @@ type:4
             }
         },
         _vAnimate:function(node,isIn,setting,callback){
-            if(!setting || !setting.params || _.isEmpty(setting.params)){
-                if(callback)_.tryF(callback);
+            if(!setting || !setting.params || xui.isEmpty(setting.params)){
+                if(callback)xui.tryF(callback);
                 return;
             }
 
             var params=setting.params,reset={};
             node=xui(node);
-            _.each(params,function(o,i){reset[i]=o[0]});
+            xui.each(params,function(o,i){reset[i]=o[0]});
 
             node.animate(params, function(threadid){
                 if(isIn)node.css(reset);
             },function(threadid){
                 if(!isIn)node.css(reset);
-                if(callback)_.tryF(callback);
+                if(callback)xui.tryF(callback);
             },setting.duration,0,setting.type).start();
         },
         $adjustCss:function(hash,returnStr){
@@ -3213,7 +3213,7 @@ type:4
                 var arr=[];
                 if(xui.browser.ie&&xui.browser.ver==8&&fack.style.filter)
                     fack.style["-ms-filter"]=fack.style.filter;
-                _.each(fack.style,function(o,i){
+                xui.each(fack.style,function(o,i){
                     arr.push(i.replace(/([A-Z])/g, "-$1" ).toLowerCase()+":"+o);
                 });
                 return arr.join(';').replace(/[;]+/g,';');
@@ -3252,7 +3252,7 @@ type:4
                     if(name=="$gradient"){
                         return ns.$setGradients(node,value);
                     }else if(name=='opacity'){
-                        value=_.isFinite(value)?
+                        value=xui.isFinite(value)?
                                 parseFloat(value)>1?
                                     1
                                     :parseFloat(value)<=0?
@@ -3271,20 +3271,20 @@ type:4
                             name="filter";
                             if(xb.ver==8)name2="msfilter";
                         }
-                    }else if(_.arr.indexOf(css3prop,n1)!=-1){
+                    }else if(xui.arr.indexOf(css3prop,n1)!=-1){
                         if(!ns.css3Support(name)){
                             if(xb.ie && xb.ver<9){
                                 switch(name){
                                     case "transform":
-                                    linb.Dom.$transformIE(node,value);
+                                    xui.Dom.$transformIE(node,value);
                                     break;
                                     case "boxShadow":
-                                    linb.Dom.$textShadowIE(node,value, true);
+                                    xui.Dom.$textShadowIE(node,value, true);
                                     break;
                                 }
                             }
                             if(name=="textShadow" && xb.ie && xb.ver<10){
-                                linb.Dom.$textShadowIE(node,value);
+                                xui.Dom.$textShadowIE(node,value);
                             }
                             return this;
                         }else{
@@ -3334,7 +3334,7 @@ type:4
                     }
                     return false;
                 };
-            n.id="xui_css3_"+_();
+            n.id="xui_css3_"+xui.stamp();
 
             if(key.indexOf("border")===0){
                 key=key.replace(/[-]?(left|top|right|bottom)/ig,'');
@@ -3345,12 +3345,12 @@ type:4
                     rt = s[key]==='';
                 }break;
                 case "generatedContent":{
-                    var id="tmp_css3_test"+_.id(),
+                    var id="tmp_css3_test"+xui.id(),
                         css='#'+n.id+'{line-height:auto;margin:0;padding:0;border:0;font:0/0 a}#'+n.id+':after{content:\'a\';visibility:hidden;line-height:auto;margin:0;padding:0;border:0;font:3px/1 a}';
-                    linb.CSS.addStyleSheet(css,id);
+                    xui.CSS.addStyleSheet(css,id);
                     xui('body').append(n);
                     var v=n.offsetHeight;
-                    linb.CSS.remove("id",id);
+                    xui.CSS.remove("id",id);
                     xui(n.id).remove(n);
                     rt = v>=3;
                 }break;
@@ -3358,14 +3358,14 @@ type:4
                     if(xb.ie && xb.ver>=6){
                         rt=true;
                     }else{
-                        var id="tmp_css3_test"+_.id(),
+                        var id="tmp_css3_test"+xui.id(),
                             css='@font-face{font-family:"font";src:url("https://")}',
-                            s=linb.CSS.addStyleSheet(css,id),
+                            s=xui.CSS.addStyleSheet(css,id),
                             sh=s.sheet || s.styleSheet,
                             ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'';
 
                         rt=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
-                        linb.CSS.remove("id",id);
+                        xui.CSS.remove("id",id);
                     }
                 }break;
                 case "rgba":{
@@ -3399,12 +3399,12 @@ type:4
                 case "transform3d":{
                     var r=f("perspective");
                     if(r && 'webkitPerspective' in document.documentElement.style){
-                        var id="tmp_css3_test"+_.id(),
+                        var id="tmp_css3_test"+xui.id(),
                             css='@media (transform-3d),(-webkit-transform-3d){#'+n.id+'{font:0/0;line-height:0;margin:0;padding:0;border:0;left:9px;position:absolute;height:3px;}}';
-                        linb.CSS.addStyleSheet(css,id);
+                        xui.CSS.addStyleSheet(css,id);
                         xui('body').append(n);
                         var v1=n.offsetLeft,v2=n.offsetHeight;
-                        linb.CSS.remove("id",id);
+                        xui.CSS.remove("id",id);
                         xui(n.id).remove(n);
                         rt = v1===9&&v2===3;
                     }
@@ -3464,7 +3464,7 @@ type:4
                     key=key?isIn?key[0]:key[1]:null;
                 }
                 if(key &&xui.browser.ie&&xui.browser.ver<=8){
-                    _.filter(key,function(o,i){
+                    xui.filter(key,function(o,i){
                         return !!xui.Dom._cssfake[i];
                     });
                 }
@@ -3573,15 +3573,15 @@ type:4
         target: uri target: _blank etc.
         */
         submit:function(action, data, method, target, enctype){
-            data=_.isHash(data)?data:{};
-            data=_.clone(data, function(o){return o!==undefined});
+            data=xui.isHash(data)?data:{};
+            data=xui.clone(data, function(o){return o!==undefined});
 
             action=action||'';
             target=target||(action.substring(0,6).toLowerCase()=='mailto'?'_self':'_blank');
             var _t=[];
-            if(!_.isEmpty(data)){
+            if(!xui.isEmpty(data)){
                 var file,files=[];
-                _.each(data,function(o,i){
+                xui.each(data,function(o,i){
                     if(o && o['xui.UIProfile'] && o.$xuiFileCtrl){
                         if(file=o.boxing().getUploadObj()){
                             files.push({id:o.$xid, file:file});
@@ -3594,18 +3594,18 @@ type:4
                 method=method||(file?'post':'get');
 
                 if(method.toLowerCase()=='get'){
-                    window.open(action + "?" + _.urlEncode(data),target);
+                    window.open(action + "?" + xui.urlEncode(data),target);
                 }else{
-                    _.each(data,function(o,i){
-                        if(_.isDefined(o) && !_.isElem(o))
-                            _t.push('<textarea name="'+i+'">'+(typeof o=='object'?_.serialize(o):o)+'</textarea>');
+                    xui.each(data,function(o,i){
+                        if(xui.isDefined(o) && !xui.isElem(o))
+                            _t.push('<textarea name="'+i+'">'+(typeof o=='object'?xui.serialize(o):o)+'</textarea>');
                     });
-                    _t.push('<input type="hidden" name="rnd" value="'+_()+'">');
-                    _t=_.str.toDom('<form target="'+target+'" action="'+action+'" method="'+method  + (enctype?'" enctype="' +enctype:'') +  '">'+_t.join('')+'</form>');
+                    _t.push('<input type="hidden" name="rnd" value="'+xui.rand()+'">');
+                    _t=xui.str.toDom('<form target="'+target+'" action="'+action+'" method="'+method  + (enctype?'" enctype="' +enctype:'') +  '">'+_t.join('')+'</form>');
                     xui.Dom.getEmptyDiv().append(_t);
                     // 1. add files
                     if(files.length){
-                        _.arr.each(files,function(o,i){
+                        xui.arr.each(files,function(o,i){
                             _t.append(o.file);
                         });
                     }
@@ -3616,7 +3616,7 @@ type:4
                 }
                 // 3.restore file input
                 if(files.length){
-                    _.arr.each(files,function(o,i){
+                    xui.arr.each(files,function(o,i){
                         if(i=xui.getObject(o.id)){
                             if(i['xui.UIProfile'] && i.boxing() && i.boxing().setUploadObj){
                                 i.boxing().setUploadObj(o.file);
@@ -3635,7 +3635,7 @@ type:4
             if(accept)fileInput.accept = accept;
 
             fileInput.onchange=function(){
-                _.tryF(callback, [this, this.files[0]], this);
+                xui.tryF(callback, [this, this.files[0]], this);
             };
             if (!!window.ActiveXObject || "ActiveXObject" in window)  {
               var label=document.createElement( "div" );
@@ -3655,11 +3655,11 @@ type:4
         },
         animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, returned,times){
             var node = document.createElement('div');
-            _.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
+            xui.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
             document.body.appendChild(node);
             return xui([node]).animate(params, onStart, function(){
-                _.tryF(onEnd);
+                xui.tryF(onEnd);
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
@@ -3667,9 +3667,9 @@ type:4
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){
-            if(!_.isArr(name))name=[name];
+            if(!xui.isArr(name))name=[name];
             var self=this,f;
-            _.arr.each(name,function(o){
+            xui.arr.each(name,function(o){
                 f=function(fun, label, flag){
                     if(typeof fun  == 'function')
                         return this.$addEvent(o, fun, label, flag);
@@ -3687,14 +3687,14 @@ type:4
     After:function(d){
         var self=this;
        //getter
-        _.each({ parent:['y',false], prev:['x',false], next:['x',true], first:['y',true], last:['y',1]},function(o,i){
+        xui.each({ parent:['y',false], prev:['x',false], next:['x',true], first:['y',true], last:['y',1]},function(o,i){
             self.plugIn(i, function(index){
                 return this.$iterator(o[0], o[1], true, index || 1)
             });
         });
 
         //readonly profile
-        _.arr.each(_.toArr('offsetLeft,offsetTop,scrollWidth,scrollHeight'),function(o){
+        xui.arr.each(xui.toArr('offsetLeft,offsetTop,scrollWidth,scrollHeight'),function(o){
             self.plugIn(o,function(){
                 var t=this.get(0),w=window,d=document;
                 if(t==w||t==d){
@@ -3710,7 +3710,7 @@ type:4
 
         var p='padding',m='margin',b='border',c='inner',o='offset',r='outer',w='width',h='height',W='Width',H='Height',T='Top',L='Left',t='top',l='left',R='Right',B='Bottom';
         //dimesion
-        _.arr.each([['_'+p+'H',p+T,p+B],
+        xui.arr.each([['_'+p+'H',p+T,p+B],
             ['_'+p+'W',p+L,p+R],
             ['_'+b+'H',b+T+W,b+B+W],
             ['_'+b+'W',b+L+W,b+R+W],
@@ -3765,7 +3765,7 @@ type:4
         |<--    outerWidth      -->|
         */
 
-        _.arr.each([['_W',w, '_'+p+'W', '_'+b+'W', '_'+m+'W', c+W, o+W],
+        xui.arr.each([['_W',w, '_'+p+'W', '_'+b+'W', '_'+m+'W', c+W, o+W],
         ['_H',h, '_'+p+'H', '_'+b+'H', '_'+m+'H', c+H, o+H]],function(o){
             self.plugIn(o[0],function(node,index,value,_in){
                 var n,r,t,style=node.style,me=arguments.callee,contentBox=xui.browser.contentBox,
@@ -3839,7 +3839,7 @@ type:4
                 }
             })
         });
-        _.arr.each([[c+W,'_W',2],[o+W,'_W',3],[r+W,'_W',4],
+        xui.arr.each([[c+W,'_W',2],[o+W,'_W',3],[r+W,'_W',4],
          [c+H,'_H',2],[o+H,'_H',3],[r+H,'_H',4]],function(o){
             self.plugIn(o[0],function(value){
                 var type=typeof value;
@@ -3851,7 +3851,7 @@ type:4
                     });
             })
         });
-        _.arr.each([[l+'By',l],[t+'By',t],[w+'By',w],[h+'By',h]],function(o){
+        xui.arr.each([[l+'By',l],[t+'By',t],[w+'By',w],[h+'By',h]],function(o){
             self.plugIn(o[0],function(offset,triggerEvent){
                 if(offset===0)return this;
                 var m,args,k=o[1];
@@ -3872,7 +3872,7 @@ type:4
                 },this)
             });
         });
-        _.arr.each(['scrollLeft','scrollTop'],function(o){
+        xui.arr.each(['scrollLeft','scrollTop'],function(o){
             self.plugIn(o,function(value){
                 var a=document.documentElement,b=document.body;
                 if(value !==undefined)
@@ -3892,7 +3892,7 @@ type:4
                 }
             })
         });
-        _.arr.each('width,height,left,top'.split(','),function(o){
+        xui.arr.each('width,height,left,top'.split(','),function(o){
             self.plugIn(o,function(value){
                 var self=this, node=self.get(0),b=xui.browser,type=typeof value,doc=document,t;
                 if(!node || node.nodeType==3)return;
@@ -3930,16 +3930,16 @@ type:4
         });
 
         //xui.Dom event
-        _.arr.each(xui.Event._events,function(o){
-            _.arr.each(xui.Event._getEventName(o),function(o){
+        xui.arr.each(xui.Event._events,function(o){
+            xui.arr.each(xui.Event._getEventName(o),function(o){
                 self.$enableEvents(o);
             })
         });
     },
     Initialize:function(){
         var w=window,d=document;
-        _.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:w});
-        _.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:d});
+        xui.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:w});
+        xui.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:d});
 
         xui.win=xui(['!window'],false);
         xui.doc=xui(['!document'],false);
@@ -3971,7 +3971,7 @@ type:4
                             return;
                         }
                     }
-                    if(_.tryF(set[0],set[1],set[2])===false){
+                    if(xui.tryF(set[0],set[1],set[2])===false){
                         event.stopBubble(e);
                         return false;
                     }
@@ -3997,7 +3997,7 @@ type:4
                             return;
                         }
                     }
-                    if(_.tryF(set[0],set[1],set[2])===false){
+                    if(xui.tryF(set[0],set[1],set[2])===false){
                         event.stopBubble(e);
                         return false;
                     }
@@ -4019,7 +4019,7 @@ type:4
                     if(++i>8)break;
                 }while(o=o.parentNode)
                 if(b){
-                    href=_.str.trim(o.href||"").toLowerCase();
+                    href=xui.str.trim(o.href||"").toLowerCase();
                     if(xui.History){
                         var s = location.href.split('#')[0];
                         if(!xui.Event.getKey(e).shiftKey && xui.Event.getBtn(e)=='left' && (href.indexOf(s+'#')==0||href.indexOf('#')==0)){
@@ -4087,9 +4087,9 @@ type:4
             xui.SC.__gc();
             xui.Thread.__gc();
             Class.__gc();
-            _.breakO(xui.$cache,2);
-            _.breakO([xui,Class,_],3);
-            w.Namespace=w.Class=w.xui=w.xui_ini=w.linb=w._=undefined;
+            xui.breakO(xui.$cache,2);
+            xui.breakO([xui,Class],3);
+            w.Class=w.xui=w.xui_ini=w._=undefined;
         },"window",-1);
 
     }

@@ -120,7 +120,7 @@ Class('App', 'xui.Com',{
                         //set code
                         host.blockCode.setHtml(xui.Coder.formatHTML(txt,'js',['plain']));
                         //get instance
-                        _.exec(txt);
+                        xui.exec(txt);
                         var obj=xui.SC.get(clsName);
                         if(obj){
                             host._class=obj;

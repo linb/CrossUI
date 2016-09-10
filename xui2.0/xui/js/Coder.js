@@ -47,7 +47,7 @@ Class("xui.Coder", null,{
                          "toString|valueOf|window|prototype|document|" +
                          "escape|unescape|parseInt|parseFloat|setTimeout|clearTimeout|setInterval|clearInterval|" +
                          "NaN|isNaN|Infinity|Error",
-                keyword2: 'exists|isNull|isObj|isEmpty|isArr|isBool|isDate|isFun|isHash|isNumb|isStr|_.arr|_.bool|_.cls|_.date|_.fun|_.hash|_.numb|_.str|_.id|_|'+
+                keyword2: 'exists|isNull|isObj|isEmpty|isArr|isBool|isDate|isFun|isHash|isNumb|isStr|xui.arr|xui.bool|xui.cls|xui.date|xui.fun|xui.hash|xui.numb|xui.str|xui.id|_|'+
                          'alias|host|append|toArr|breakO|tryF|each|copy|clone|filter|asyRun|resetRun|merge|each|swap|removeFrom|filter|indexOf|clean|insertAny|serialize|unserialize|'+
                          'Class|Instance|Initialize|Before|After|Static|Constructor|'+
                          'reBoxing|copy|clone|left|top|right|bottom|startWith|endWith|initial|trim|ltrim|rtrim|blen|toDom|create',
@@ -161,19 +161,19 @@ Class("xui.Coder", null,{
        return : replaced string
 
        For example:
-       _.replace("aAa","a","*",true)
+       xui.replace("aAa","a","*",true)
                 will return "*A*"
-       _.replace("aAa","a","*",false)
+       xui.replace("aAa","a","*",false)
                 will return "***"
-       _.replace("aAa","a","*")
-       _.replace("aAa",/a/,"*")         : "/a/" is OK, but not "/a/g"
-       _.replace("aAa",["a","*"])
-       _.replace("aAa",[["a","*"]])
+       xui.replace("aAa","a","*")
+       xui.replace("aAa",/a/,"*")         : "/a/" is OK, but not "/a/g"
+       xui.replace("aAa",["a","*"])
+       xui.replace("aAa",[["a","*"]])
                 will return "***"
-       _.replace("aAa",[["a","*"],[/A/,"-"]])
+       xui.replace("aAa",[["a","*"],[/A/,"-"]])
                 will return "*-*"
       Notice: there is a '$0' symbol here, for protect
-        _.replace("aba",[["ab","$0"],["a","*"]])
+        xui.replace("aba",[["ab","$0"],["a","*"]])
                 will return "ab*"
       here, "ab" will be first matched and be protected to replace by express "a"
       */
@@ -191,9 +191,9 @@ Class("xui.Coder", null,{
                 reg11=me.reg11 || (me.reg11=/(['"])\1\+(.*)\+\1\1$/)
             ;
 
-            if(!_.isArr(reg)){reg=[reg,replace]}else{ignore_case=replace}
-            if(!_.isArr(reg[0])){reg=[reg]};
-            _.arr.each(reg,function(o){
+            if(!xui.isArr(reg)){reg=[reg,replace]}else{ignore_case=replace}
+            if(!xui.isArr(reg[0])){reg=[reg]};
+            xui.arr.each(reg,function(o){
                 m= typeof o[0]=='string'?o[0]:o[0].source;
                 n= o[1]||"";
                 len = ((m).replace(reg1, "").match(reg2) || "").length;
@@ -313,8 +313,8 @@ Class("xui.Coder", null,{
                     ["[\\s]+", ""]
                 ];
                 if(type=='css'){
-                    _.arr.insertAny(arr,[/\s+(\.)/.source, " $1"],2,true);
-                    _.arr.insertAny(arr,[/(\d*\.?\d+|\d+\.?\d*)(cm|em|ex|pt|px|%|\:)?/, " $0 "],-1,true);
+                    xui.arr.insertAny(arr,[/\s+(\.)/.source, " $1"],2,true);
+                    xui.arr.insertAny(arr,[/(\d*\.?\d+|\d+\.?\d*)(cm|em|ex|pt|px|%|\:)?/, " $0 "],-1,true);
                 }
                 // prepare space
                 code=xui.Coder.replace(code,arr);
@@ -396,15 +396,15 @@ Class("xui.Coder", null,{
             if(!this._profiles[type])
                 type='js';
 
-            a=_.copy(this._profiles[type]);
+            a=xui.copy(this._profiles[type]);
             //for clear begin/end, for platform
             code = this.replace(code, [[/(\r\n|\r)/g, "\n"],[/( +)(\n)/g, "$2"],[/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;"],[/ /g,'&nbsp;']]);
 
             var arr=[]; //[[/<[^>]+>[^<]*<\/[^>]+>/,'$0']];
             var f = function(o,s,r){
                 if(o){
-                    if(!_.isArr(o))o=[o];
-                    _.arr.each(o,function(o){
+                    if(!xui.isArr(o))o=[o];
+                    xui.arr.each(o,function(o){
                         if(typeof o =='string')o="\\b(" + o + ")\\b";
                         arr.push([o, r?r:"<span class='"+s+"'>$0<\/span>"]);
                     });
@@ -432,8 +432,8 @@ Class("xui.Coder", null,{
             if(a['reg']){
                 (function(o,s){
                     if(o){
-                        if(!_.isArr(o))o=[o];
-                        _.arr.each(o,function(o){
+                        if(!xui.isArr(o))o=[o];
+                        xui.arr.each(o,function(o){
                             if(typeof o =='string')o="\\b(" + o + ")\\b";
                             arr.push([o, "<span class='"+s+"'>$0<\/span>"]);
                         });
@@ -442,7 +442,7 @@ Class("xui.Coder", null,{
                 delete a['reg'];
             }
 
-            _.arr.each(["string1", "string2", "number"],function(s){
+            xui.arr.each(["string1", "string2", "number"],function(s){
                 if(a[s]){
                     f(a[s],s);
                     delete a[s];
@@ -450,7 +450,7 @@ Class("xui.Coder", null,{
             });
 
             //others
-            _.each(a,function(o,i){
+            xui.each(a,function(o,i){
                 f(o,i);
             });
 
@@ -463,7 +463,7 @@ Class("xui.Coder", null,{
             if(alist[alist.length-1]==""){alist.pop();}
 
             var aa=[];
-            aa.push("<div id='"+_key+":"+id+":' class='sh' "+"style='"+(height?("overflow:hidden;height:"+height+(_.isFinite(height)?"px":"")):"") +"'>");
+            aa.push("<div id='"+_key+":"+id+":' class='sh' "+"style='"+(height?("overflow:hidden;height:"+height+(xui.isFinite(height)?"px":"")):"") +"'>");
             if(arrActions && arrActions[0]){
                 aa.push("<div id='"+_key+"-"+'sh-cmd'+":"+id+":' class='sh-cmd'>");
 
@@ -471,7 +471,7 @@ Class("xui.Coder", null,{
                     +(fold ? " + " : " - ")
                     +"</span> <span class='cmd-ruler'></span>");
 
-                _.arr.each(arrActions,function(s){
+                xui.arr.each(arrActions,function(s){
                      aa.push("<a id='"+_key+"-"+s+":"+id+":' href='javascript:;' onclick='xui.Coder._action(this,\""+s+"\",arguments[0]);'>"+s+"</a>");
                 });
 
@@ -481,18 +481,18 @@ Class("xui.Coder", null,{
             aa.push("<pre style='display:none'>");
             aa.push(_str.replace(/<([\w\/])/g,"&lt;$1"));
             aa.push("</pre>");
-            aa.push("<div id='"+_key+"-"+'sh-con'+":"+id+":'class='sh-con' "+"style='"+(height?("overflow:auto;height:"+height+(_.isFinite(height)?"px":"")+";"):"") +(fold?"display:none;":"")+"'><ol id='"+_key+"-"+'ol'+":"+id+":' start='1' class='"+type+"'><li>");
+            aa.push("<div id='"+_key+"-"+'sh-con'+":"+id+":'class='sh-con' "+"style='"+(height?("overflow:auto;height:"+height+(xui.isFinite(height)?"px":"")+";"):"") +(fold?"display:none;":"")+"'><ol id='"+_key+"-"+'ol'+":"+id+":' start='1' class='"+type+"'><li>");
             aa.push(alist.join('&nbsp;</li><li>'));
             aa.push("</li></ol></div>");
             aa.push("</div>");
             _encode=_decode=null;
 
-            _.asyRun(function(){xui.Coder._remedy(id)});
+            xui.asyRun(function(){xui.Coder._remedy(id)});
 
             return aa.join('');
         },
         formatAll:function(code, type, arrActions, fold, id, height){
-            var arr = _.toArr(arguments);
+            var arr = xui.toArr(arguments);
             arr[0] = this.formatText.call(this, code, type);
             return this.formatHTML.apply(this, arr);
         },
@@ -503,7 +503,7 @@ Class("xui.Coder", null,{
                     i ++ ;
                     _t = xui(id);
                     cls = (_t.get(0).className || "").split(/\s+/g);
-                    o = _.str.toDom(xui.Coder[formatAll ? "formatAll" : "formatHTML"](_t.text(), cls[0], cls[1]&& cls[1].split("-"), cls[2], id + ":" + i));
+                    o = xui.str.toDom(xui.Coder[formatAll ? "formatAll" : "formatHTML"](_t.text(), cls[0], cls[1]&& cls[1].split("-"), cls[2], id + ":" + i));
                     o.setSelectable(true);
                     _t.replace(o);
                 }else{

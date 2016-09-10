@@ -109,7 +109,7 @@ Class('App', 'xui.Com',{
         _ctl_do_onclick : function (profile, e, src, value) {
             var ns = this,
                 uri = ns.ctl_url.getValue(),
-                args = _.unserialize(ns.ctl_request.getValue());
+                args = xui.unserialize(ns.ctl_request.getValue());
             if(uri && args){
                 ns.ctl_response.setValue("Asynchronous calling...");
                 
@@ -119,7 +119,7 @@ Class('App', 'xui.Com',{
                         xui.request("../../../backend/test/soap/soap.php",
                             xui.SOAP.wrapRequest(args, wsdl),
                             function(rsp){
-                                ns.ctl_response.setValue(xui.Coder.formatText(_.stringify(xui.SOAP.parseResponse(rsp, args.methodName, wsdl))));
+                                ns.ctl_response.setValue(xui.Coder.formatText(xui.stringify(xui.SOAP.parseResponse(rsp, args.methodName, wsdl))));
                             },
                             function(msg){
                                 ns.ctl_response.setValue(msg);

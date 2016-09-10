@@ -25,7 +25,7 @@ Class("xui.APICaller","xui.absObj",{
 
             for(var i in (temp=c.$DataStruct))
                 if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?_.copy(temp[i]):temp[i];
+                    profile.properties[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
 
             //set anti-links
             profile.link(c._cache,'self').link(xui._pool,'xui');
@@ -66,10 +66,10 @@ Class("xui.APICaller","xui.absObj",{
                 proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
                 queryPasswrod=prop.queryPasswrod,
-                queryArgs=_.copy(prop.queryArgs),
+                queryArgs=xui.copy(prop.queryArgs),
                 oAuth2Token=prop.oAuth2Token,
-                queryOptions=_.copy(prop.queryOptions),
-                queryHeader=_.copy(prop.queryHeader),
+                queryOptions=xui.copy(prop.queryOptions),
+                queryHeader=xui.copy(prop.queryHeader),
                 requestDataSource=prop.requestDataSource,
                 responseDataTarget=prop.responseDataTarget;
 
@@ -77,12 +77,12 @@ Class("xui.APICaller","xui.absObj",{
 
             if(proxyType=="sajax") proxyType="jsonp";
             else if(proxyType=="iajax") proxyType="xdmi";
-            if(requestType=="FORM"||requestType=="JSON") queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+            if(requestType=="FORM"||requestType=="JSON") queryArgs = typeof queryArgs=='string'?xui.unserialize(queryArgs):queryArgs;
             if(!queryArgs)queryArgs={};
             if(prop.avoidCache){
                 var i=0, rnd="_rand_";
                 while(queryArgs.hasOwnProperty(rnd))rnd="_rand_" + ++i;
-                queryArgs[rnd] = _.rand();
+                queryArgs[rnd] = xui.rand();
             }
             // merge request data
             if(requestDataSource&&requestDataSource.length){
@@ -94,18 +94,18 @@ Class("xui.APICaller","xui.absObj",{
                                 if(!t.updateDataFromUI()){
                                     return;
                                 }else{
-                                    if(o.path) _.set(queryArgs, o.path.split('.'),t.getData());
-                                    else _.merge(queryArgs, t.getData(), 'without');
+                                    if(o.path) xui.set(queryArgs, o.path.split('.'),t.getData());
+                                    else xui.merge(queryArgs, t.getData(), 'without');
                                 }
                             }
                             break;
                         case "form":
-                            if((t = _.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
+                            if((t = xui.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
                                 if(!t.checkValid() || !t.checkRequired()){
                                     return;
                                 }else{
-                                    if(o.path)  _.set(queryArgs, o.path.split('.'), t.getFormValues());
-                                    else _.merge(queryArgs, t.getFormValues(), 'without');
+                                    if(o.path)  xui.set(queryArgs, o.path.split('.'), t.getFormValues());
+                                    else xui.merge(queryArgs, t.getFormValues(), 'without');
                                 }
                             }
                             break;
@@ -120,11 +120,11 @@ Class("xui.APICaller","xui.absObj",{
 
             // for auto adjusting options
             var rMap={header:{}};
-            if(!_.isEmpty(queryHeader)){
-                _.merge(rMap.header, queryHeader);
+            if(!xui.isEmpty(queryHeader)){
+                xui.merge(rMap.header, queryHeader);
             }
-            if(queryOptions.header && !_.isEmpty(queryOptions.header)){
-                _.merge(rMap.header, queryOptions.header);
+            if(queryOptions.header && !xui.isEmpty(queryOptions.header)){
+                xui.merge(rMap.header, queryOptions.header);
                 delete queryOptions.header;
             }
             if(responseType=='SOAP'||requestType=='SOAP'){
@@ -134,8 +134,8 @@ Class("xui.APICaller","xui.absObj",{
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
                        if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
                         if(prf.onError)prf.boxing().onError(prf, rspData);
-                        _.tryF(onFail,arguments,this);
-                        _.tryF(onEnd,arguments,this);
+                        xui.tryF(onFail,arguments,this);
+                        xui.tryF(onEnd,arguments,this);
                     });
                     if(wsdl)
                         con.WDSLCache[queryURL] = wsdl;
@@ -165,7 +165,7 @@ Class("xui.APICaller","xui.absObj",{
             switch(requestType){
                 case "FORM":
                     // ensure object
-                    queryArgs = typeof queryArgs=='string'?_.unserialize(queryArgs):queryArgs;
+                    queryArgs = typeof queryArgs=='string'?xui.unserialize(queryArgs):queryArgs;
                 break;
                 case "JSON":
                     rMap.reqType="json";
@@ -173,7 +173,7 @@ Class("xui.APICaller","xui.absObj",{
                     if(prop.queryMethod=="auto")
                         rMap.method="POST";
                     // ensure string
-                    queryArgs = typeof queryArgs=='string'?queryArgs:_.serialize(queryArgs);
+                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.serialize(queryArgs);
                 break;
                 case "XML":
                     rMap.reqType="xml";
@@ -219,12 +219,12 @@ Class("xui.APICaller","xui.absObj",{
             if(!("onStart" in options))
                 options.onStart=onStart;
 
-            _.merge(options, queryOptions);
+            xui.merge(options, queryOptions);
 
-            _.merge(options, rMap, 'all');
+            xui.merge(options, rMap, 'all');
             options.proxyType=proxyType;
 
-            if(_.isEmpty(options.header)){
+            if(xui.isEmpty(options.header)){
                 delete options.header;
             }
             // If there's mocker, we need try to adjust queryURL and other args
@@ -237,10 +237,10 @@ Class("xui.APICaller","xui.absObj",{
                 }
             }
             var cookies={},t;
-            if(!_.isEmpty(prop.fakeCookies)){
+            if(!xui.isEmpty(prop.fakeCookies)){
                 options.$onStart = function(){
-                    _.each(prop.fakeCookies,function(v,k){
-                        if(_.isSet(t=xui.Cookies.get(k))){
+                    xui.each(prop.fakeCookies,function(v,k){
+                        if(xui.isSet(t=xui.Cookies.get(k))){
                             cookies[k] = t;
                             xui.Cookies.remove(k);
                         }
@@ -248,9 +248,9 @@ Class("xui.APICaller","xui.absObj",{
                     xui.Cookies.set(prop.fakeCookies,1,"/");
                 }
             }
-            if(!_.isEmpty(prop.fakeCookies)){
+            if(!xui.isEmpty(prop.fakeCookies)){
                 options.$onEnd = function(){
-                    _.each(prop.fakeCookies,function(v,k){
+                    xui.each(prop.fakeCookies,function(v,k){
                         xui.Cookies.remove(k);
                     });
                     xui.Cookies.set(cookies);
@@ -259,7 +259,7 @@ Class("xui.APICaller","xui.absObj",{
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
                 var mapb;
                 // ensure to json
-                if(!_.isHash(rspData) && !_.isStr(rspData)){
+                if(!xui.isHash(rspData) && !xui.isStr(rspData)){
                     if(responseType=="XML")
                         rspData=xui.XMLRPC.parseResponse(rspData);
                     else if(responseType=="SOAP")
@@ -268,16 +268,16 @@ Class("xui.APICaller","xui.absObj",{
                 // Normally, Gives a change to modify the "rspData"
                 if(prf.afterInvoke){
                     mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
-                    if(_.isSet(mapb))rspData=mapb;
+                    if(xui.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
 
                 if(responseDataTarget&&responseDataTarget.length){
-                    _.arr.each(responseDataTarget, function(o){
-                        var data = o.path?_.get(rspData,o.path.split('.')):rspData,t;
+                    xui.arr.each(responseDataTarget, function(o){
+                        var data = o.path?xui.get(rspData,o.path.split('.')):rspData,t;
                         switch(o.type){
                             case "alert":
-                                data = _.stringify(data);
+                                data = xui.stringify(data);
                                 if(xui.Coder)data=xui.Coder.formatText(data);
                                 alert(data);
                             break;
@@ -286,11 +286,12 @@ Class("xui.APICaller","xui.absObj",{
                             break;
                             case "databinder":
                                 if(t = xui.DataBinder.getFromName(o.name)){
-                                    t.setData(data).updateDataToUI();
+                                    t.setData(data);
+                                    t.updateDataToUI();
                                 }
                                 break;
                             case "form":
-                                if((t = _.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
+                                if((t = xui.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
                                     t.setFormValues(data);
                                 }
                                 break;
@@ -298,16 +299,16 @@ Class("xui.APICaller","xui.absObj",{
                     });
                 }
                 if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
-                _.tryF(onSuccess,arguments,this);
+                xui.tryF(onSuccess,arguments,this);
 
             }, function(rspData){
                 if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
 
                 if(responseDataTarget&&responseDataTarget.length){
-                    _.arr.each(responseDataTarget, function(o, t){
+                    xui.arr.each(responseDataTarget, function(o, t){
                         switch(o.type){
                             case "alert":
-                                rspData = _.stringify(rspData);
+                                rspData = xui.stringify(rspData);
                                 if(xui.Coder)rspData=xui.Coder.formatText(rspData);
                                 alert(rspData);
                             break;
@@ -319,7 +320,7 @@ Class("xui.APICaller","xui.absObj",{
                 }
                
                 if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
-                _.tryF(onFail,arguments,this);
+                xui.tryF(onFail,arguments,this);
             }, threadid, options]);
 
             if(mode=="quiet")
@@ -327,7 +328,7 @@ Class("xui.APICaller","xui.absObj",{
             else if(mode=="return")
                 return ajax;
             else
-                _.observableRun(function(threadid){
+                xui.observableRun(function(threadid){
                     ajax.threadid=threadid;
                     ajax.start();
                 });                
@@ -339,7 +340,7 @@ Class("xui.APICaller","xui.absObj",{
         _pool:{},
         _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1},
         destroyAll:function(){
-            this.pack(_.toArr(this._pool,false),false).destroy();
+            this.pack(xui.toArr(this._pool,false),false).destroy();
             this._pool={};
         },
         getFromName:function(name){
@@ -367,10 +368,10 @@ Class("xui.APICaller","xui.absObj",{
         },
         _beforeSerialized:function(profile){
             var o={};
-            _.merge(o, profile, 'all');
-            var p = o.properties = _.clone(profile.properties,true);
+            xui.merge(o, profile, 'all');
+            var p = o.properties = xui.clone(profile.properties,true);
             for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && (_.isHash(p[i])||_.isArr(p[i])) && _.isEmpty(p[i]))delete p[i];
+                if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             return o;
         },
         DataModel:{
@@ -452,13 +453,13 @@ Class("xui.APICaller","xui.absObj",{
                     this.invoke(function(d){
                         prf.properties.responseDataTarget = bak;
 
-                        d=_.stringify(d);
+                        d=xui.stringify(d);
                         if(xui.Coder)d=xui.Coder.formatText(d);
                         alert(d);
                     },function(d){
                         prf.properties.responseDataTarget = bak;
 
-                        d=_.stringify(d);
+                        d=xui.stringify(d);
                         if(xui.Coder)d=xui.Coder.formatText(d);
                         alert(d);
                     });

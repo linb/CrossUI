@@ -45,11 +45,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     uiv = uiv?uiv.split(p.valueSeparator):[];
                     value = value?value.split(p.valueSeparator):[];
                     //check all
-                    _.arr.each(uiv,function(o){
+                    xui.arr.each(uiv,function(o){
                         getN(item, getI(o)).tagClass('-checked',false).tagClass('-mouseover',false);
                         getN(mk, getI(o)).tagClass('-checked',false); 
                     });
-                    _.arr.each(value,function(o){
+                    xui.arr.each(value,function(o){
                         getN(item, getI(o)).tagClass('-checked');
                         getN(mk, getI(o)).tagClass('-checked');
                     });
@@ -102,9 +102,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         getShowValue:function(value){
             var profile=this.get(0),
                 pro=profile.properties,v,t;
-            if(!_.isDefined(value))
+            if(!xui.isDefined(value))
                 value=pro.$UIvalue;
-            if( (v=_.arr.subIndexOf(pro.items,'id',value))!=-1){
+            if( (v=xui.arr.subIndexOf(pro.items,'id',value))!=-1){
                 v=pro.items[v].caption;
                 v=v.charAt(0)=='$'?xui.getRes(v.slice(1)):v;
             }else
@@ -329,15 +329,15 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             //for select
                             if(ks.shiftKey){
                                 var items=properties.items,
-                                    i1=_.arr.subIndexOf(items,'id',profile.$firstV.id),
-                                    i2=_.arr.subIndexOf(items,'id',item.id),
+                                    i1=xui.arr.subIndexOf(items,'id',profile.$firstV.id),
+                                    i2=xui.arr.subIndexOf(items,'id',item.id),
                                     i;
                                 arr.length=0;
                                 for(i=Math.min(i1,i2);i<=Math.max(i1,i2);i++)
                                     arr.push(items[i].id);
                             }else{
-                                if(_.arr.indexOf(arr,item.id)!=-1){
-                                    _.arr.removeValue(arr,item.id);
+                                if(xui.arr.indexOf(arr,item.id)!=-1){
+                                    xui.arr.removeValue(arr,item.id);
                                     checktype=-1
                                 }else
                                     arr.push(item.id);
@@ -548,7 +548,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             labelCaption:{
                 ini:"",
                 action: function(v){
-                    v=(_.isSet(v)?v:"")+"";
+                    v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },
@@ -591,7 +591,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             var fid=data&&data.domId, tid=xui.use(src).id();
             if(fid){
                 if(fid==tid)return false;
-                if(_.get(xui.use(src).get(0),['previousSibling','id'])==fid)return false;
+                if(xui.get(xui.use(src).get(0),['previousSibling','id'])==fid)return false;
             }
         },
         _onDrop:function(profile, e, src, key, data, item){
@@ -604,7 +604,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 t=xui.absObj.$specialChars,
                 uiv=profile.properties.$UIvalue;
             //remove
-            oitem=_.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
+            oitem=xui.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
             po.boxing().removeItems([oitem.id]);
 
             if(k==profile.keys.ITEM)
@@ -636,7 +636,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         },
         _prepareCmds:function(profile, item, filter){
             var p=profile.properties,
-                cmds = item.tagCmds || _.clone(p.tagCmds,true);
+                cmds = item.tagCmds || xui.clone(p.tagCmds,true);
             if(cmds && cmds.length){
                 var sid=xui.UI.$tag_subId,
                     a=[],b=[],c;
@@ -644,7 +644,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(typeof t[i]=='string')t[i]={id:t[i]};
                     c=t[i];
 
-                    if(filter && _.isFun(filter)){
+                    if(filter && xui.isFun(filter)){
                         if(!filter(c)){
                             continue;
                         }
@@ -665,8 +665,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(c.tips)c.tips=xui.adjustRes(c.tips);
                     if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
                     c._style="";
-                    if('width' in c)c._style+=c.width + (_.isFinite(c.width) &&"px") + ";";
-                    if('height' in c)c._style+=c.height + (_.isFinite(c.height) &&"px")+ ";";
+                    if('width' in c)c._style+=c.width + (xui.isFinite(c.width) &&"px") + ";";
+                    if('height' in c)c._style+=c.height + (xui.isFinite(c.height) &&"px")+ ";";
                     c[sid]=(item[sid]?item[sid] :"") + '_' + c.id;
                     if(c["location"]=="left")
                         b.push(c);

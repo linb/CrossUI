@@ -44,17 +44,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     uiv = uiv?uiv.split(properties.valueSeparator):[];
                     value = value?value.split(properties.valueSeparator):[];
                     if(flag){
-                        _.arr.each(value,function(o){
+                        xui.arr.each(value,function(o){
                             fun('BAR', o);
                             fun('MARK', o);
                         });
                     }else{
                         //check all
-                        _.arr.each(uiv,function(o){
+                        xui.arr.each(uiv,function(o){
                             fun('BAR', o, false);
                             fun('MARK', o, false);
                         });
-                        _.arr.each(value,function(o){
+                        xui.arr.each(value,function(o){
                             fun('BAR', o);
                             fun('MARK', o);
                         });
@@ -77,7 +77,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     tar = k.items ||(k.items=[])
                 }else{
                     k=profile.getItemByItemId(pid);
-                    tar = _.isArr(k.sub)?k.sub:(k.sub= []);
+                    tar = xui.isArr(k.sub)?k.sub:(k.sub= []);
                 }
                 //1
                 if(profile.renderId){
@@ -107,10 +107,10 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //2
                 //must be here
                 if(!base)
-                    _.arr.insertAny(tar,data, before?0:-1);
+                    xui.arr.insertAny(tar,data, before?0:-1);
                 else{
-                    var index = _.arr.subIndexOf(tar, 'id', base);
-                    _.arr.insertAny(tar,data, before?index:(index+1));
+                    var index = xui.arr.subIndexOf(tar, 'id', base);
+                    xui.arr.insertAny(tar,data, before?index:(index+1));
                 }
                 //3
                 if(profile.renderId && toggle!==false){
@@ -137,11 +137,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         _toggleNodes:function(items, expand, recursive, init){
             var self=this,prf=self.get(0),pro=prf.properties,
                 f=function(items,expand,recursive,init){
-                    if(_.isArr(items)){
-                        _.arr.each(items,function(o){
-                            if(init && (_.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
+                    if(xui.isArr(items)){
+                        xui.arr.each(items,function(o){
+                            if(init && (xui.isBool(o.iniFold)?o.iniFold:pro.iniFold))return;
                             self.toggleNode(o.id, expand, false, recursive);
-                            if(recursive && o.sub && _.isArr(o.sub) && o.sub.length)
+                            if(recursive && o.sub && xui.isArr(o.sub) && o.sub.length)
                                 f(o.sub,expand,true,init);
                         });
                     }
@@ -160,7 +160,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(o && o.sub)
                     profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive);
             }else{
-                _.arr.each(profile.properties.items,function(item){
+                xui.arr.each(profile.properties.items,function(item){
                     self.call(ns,item.id,expand,recursive);
                 })
             }
@@ -175,13 +175,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     fun=function(arr, catId, layer){
                         layer = layer || 0;
                         var me=arguments.callee;
-                        _.arr.each(arr,function(o){
+                        xui.arr.each(arr,function(o){
                             if(o.id==catId){
                                 a.push(o);
                                 res=true;
                                 return false;
                             }
-                            if(o.sub && _.isArr(o.sub)){
+                            if(o.sub && xui.isArr(o.sub)){
                                 res = me.call(me, o.sub, catId, ++layer)
                                 if(res){
                                     a.push(o);
@@ -194,7 +194,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 fun(profile.properties.items, id);
                 if(res){
                     a.reverse();
-                    _.arr.each(a,function(o,i){
+                    xui.arr.each(a,function(o,i){
                         if(o.sub){
                             profile.boxing().toggleNode(o.id,true);
                             // for the last one, trigger its onclick event
@@ -551,7 +551,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         items = self.properties.items,
                         results = self.queryItems(items, function(o){return o.sub && o.group===undefined }),
                         nodes=xui();
-                    _.arr.each(results,function(o){
+                    xui.arr.each(results,function(o){
                         nodes.merge( self.getSubNodeByItemId('BAR', o.id) );
                     });
                     if(v)
@@ -565,7 +565,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 listbox:['single','none','multi','multibycheckbox'],
                 action:function(value){
                     var ns=this,p=this.properties,sels=[];
-                    _.each(this.SubSerialIdMapItem,function(o){
+                    xui.each(this.SubSerialIdMapItem,function(o){
                         if(!(o.sub && (o.hasOwnProperty('group')?o.group:p.group)))
                             sels.push(ns.getSubNodeByItemId('MARK',o.id).get(0));
                     });
@@ -649,15 +649,15 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             var pitem=profile.getItemByItemId(item._pid);
                             if(pitem)items=pitem.sub;
                         }
-                        var i1=_.arr.subIndexOf(items,'id',profile.$firstV.id),
-                            i2=_.arr.subIndexOf(items,'id',item.id),
+                        var i1=xui.arr.subIndexOf(items,'id',profile.$firstV.id),
+                            i2=xui.arr.subIndexOf(items,'id',item.id),
                             i;
                         arr.length=0;
                         for(i=Math.min(i1,i2);i<=Math.max(i1,i2);i++)
                             arr.push(items[i].id);
                     }else{
-                        if(_.arr.indexOf(arr,item.id)!=-1){
-                            _.arr.removeValue(arr,item.id);
+                        if(xui.arr.indexOf(arr,item.id)!=-1){
+                            xui.arr.removeValue(arr,item.id);
                             checktype=-1;
                         }else
                             arr.push(item.id);
@@ -761,7 +761,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 var tid=xui.use(src).id();
                 if(fid==tid)return false;
 
-                if(_.get(xui.use(src).get(0),['parentNode','previousSibling','firstChild','id'])==fid)return false;
+                if(xui.get(xui.use(src).get(0),['parentNode','previousSibling','firstChild','id'])==fid)return false;
 
                 var oitem=profile.getItemByDom(fid);
 
@@ -775,7 +775,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(profile.getSubId(p.id) == profile.getSubId(fid)){
                         return false;
                     }
-                    if(p.id==_.get(rn,["parentNode","id"])){
+                    if(p.id==xui.get(rn,["parentNode","id"])){
                         break;
                     }
                 }
@@ -791,9 +791,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 ks=profile.keys,
                 t=xui.absObj.$specialChars,
                 b=profile.boxing(),
-                arr=_.copy(b.getUIValue(true));
+                arr=xui.copy(b.getUIValue(true));
             //remove
-            oitem=_.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
+            oitem=xui.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
             po.boxing().removeItems([oitem.id]);
 
             //add
@@ -805,7 +805,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 b.insertItems([oitem], item.id, null, false);
 
             if(arr && arr.length){
-                if(_.arr.indexOf(arr, oitem.id)!=-1){
+                if(xui.arr.indexOf(arr, oitem.id)!=-1){
                     //set checked items
                     profile._noScroll=1;
                     b.setUIValue(arr,true,null,'drop');
@@ -878,7 +878,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }else onend();
                 }
                 if(recursive && item.sub && !properties.dynDestory && !item.dynDestory){
-                    _.arr.each(item.sub,function(o){
+                    xui.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
                             profile.box._setSub(profile, o, flag, recursive, true);
                     });
@@ -923,7 +923,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(sub){
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
-                                else if(_.isArr(sub)){
+                                else if(xui.isArr(sub)){
                                     b.insertItems(sub, item.id,null,false,false);
                                     // for []
                                     if(!item.sub)item.sub=sub;                                    
@@ -932,8 +932,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 }
                                 var s=0,arr=b.getUIValue(true);
                                 if(arr && arr.length){
-                                    _.arr.each(sub,function(o){
-                                        if(_.arr.indexOf(arr, o.id||o)!=-1){
+                                    xui.arr.each(sub,function(o){
+                                        if(xui.arr.indexOf(arr, o.id||o)!=-1){
                                             s=1;
                                             return false;
                                         }
@@ -994,7 +994,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                 }
                 if(recursive&& item.sub){
-                    _.arr.each(item.sub,function(o){
+                    xui.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length && !o._checked)
                             profile.box._setSub(profile, o, flag, recursive, true);
                     });

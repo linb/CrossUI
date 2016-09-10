@@ -3,11 +3,11 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         var self=this,
             t = self.getTemplate();
         //modify
-        _.merge(t.FRAME.BORDER,{
+        xui.merge(t.FRAME.BORDER,{
             className:'xui-uiw-border {clsBorderType1}',
             PANEL:{
                 tagName:'div',
-                className:'xui-uibg-content {clsBorderType2}',
+                className:'xui-uibg-bar {clsBorderType2}',
                 style:'{_panelstyle};{background};{_overflow};',
                 text:'{html}'+xui.UI.$childTag
             }
@@ -18,7 +18,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         //get default Appearance
         t = self.getAppearance();
         //modify
-        _.merge(t,{
+        xui.merge(t,{
             PANEL:{
                 position:'relative',
                 overflow:'auto'
@@ -147,7 +147,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
             data.background= data.background?'background:'+data.background:'';
-            if(_.isStr(data.overflow))
+            if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;
         },        

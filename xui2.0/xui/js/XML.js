@@ -5,7 +5,7 @@ Class('xui.XML',null,{
            var arr=[],
            _f=function(key,value,arr){
                 if(typeof value=="object"){
-                    if(_.isArr(value)){
+                    if(xui.isArr(value)){
                         if(value.length){
                             for(var i=0,l=value.length; i<l; i++)
                                 arr.push(_f(key,value[i],arr));

@@ -3,7 +3,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         _index:0,  
         setValue:function(str){
             var ns=this,
-                obj=_.isStr(str)?str?_.unserialize(str):false:str,
+                obj=xui.isStr(str)?str?xui.unserialize(str):false:str,
                 rows=ns._json2rows(obj);
          
             ns.tg.setRows(rows).free();
@@ -11,7 +11,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         getValue:function(returnObj){
             var rows=this.tg.getRows();
             var str = this._rows2json(rows);
-            return returnObj?_.unserialize(str):str;
+            return returnObj?xui.unserialize(str):str;
         },
         getEditor:function(){
             return this.tg;
@@ -85,7 +85,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         _getCellValue:function(n){
             var ns=this, v;
             try{
-                v=_.str.trim(n);
+                v=xui.str.trim(n);
                 //special string
                 if(/^'/.test(v) && !ns._isString(v.slice(1))){
                     v=['string', v.slice(1)];
@@ -93,19 +93,19 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     v=v.replace(/^\s*/,'').replace(/\s*$/,'');
                     v= v=='null'? ['null','null'] :
                       //number
-                        _.isFinite(v) ? ['number',v]  :
+                        xui.isFinite(v) ? ['number',v]  :
                       //reg
                         /^\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*$/.test(v) ? ['regexp', v]  :
                       //bool
                         /^(true|false)$/.test(v) ? ['boolean',v.toLowerCase()] :
                       //date
-                        /^new Date\([0-9 \,]*\)$/i.test(v) ? ['date', _.serialize(_.unserialize(v))] :
+                        /^new Date\([0-9 \,]*\)$/i.test(v) ? ['date', xui.serialize(xui.unserialize(v))] :
                       //function
                         /^((\s*function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))\s*$/i.test(v) ? ['function',v] :
                       //hash
-                        /^\{[\s\S]*\}$/.test(v) ? ['hash',_.stringify(_.unserialize(v))] :
+                        /^\{[\s\S]*\}$/.test(v) ? ['hash',xui.stringify(xui.unserialize(v))] :
                       //array
-                        /^\[[\s\S]*\]$/.test(v) ? ['array', _.stringify(_.unserialize(v))] :
+                        /^\[[\s\S]*\]$/.test(v) ? ['array', xui.stringify(xui.unserialize(v))] :
                       ['string', n];
                   }
               }catch(e){
@@ -114,7 +114,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
               if(v[0]=='string'){
                 if(v[1]===false)
                     return null;
-                v[1]=_.stringify(v[1]);
+                v[1]=xui.stringify(v[1]);
             }
             if(v[1]==="false" && v[0]!='string')
                 v[0]='boolean';
@@ -124,7 +124,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
             var ns=this, me=arguments.callee;
             if(!rows)rows=[];
             if(obj){
-                _.each(obj,function(o,i){
+                xui.each(obj,function(o,i){
                     if(!obj.hasOwnProperty(i))return;
                     var row={},type=ns._getType(o);
                     i={value:array?'[index]':i,disabled:array};
@@ -139,7 +139,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                         me.call(ns, o,true,row.sub);
                     }else{
                         ns._getType(o);
-                        row.cells=[i,_.stringify(o),''];
+                        row.cells=[i,xui.stringify(o),''];
                     }
                     row._type=type;
                     row.caption="";
@@ -150,20 +150,20 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         _getType:function(o){
             return o===null?null:
-                    _.isStr(o)?'string':
-                    _.isNumb(o)?'number':
-                    _.isHash(o)?'hash':
-                    _.isArr(o)?'array':
-                    _.isBool(o)?'boolean':
-                    _.isDate(o)?'date':
-                    _.isReg(o)?'regexp':
-                    _.isFun(o)?'function':
+                    xui.isStr(o)?'string':
+                    xui.isNumb(o)?'number':
+                    xui.isHash(o)?'hash':
+                    xui.isArr(o)?'array':
+                    xui.isBool(o)?'boolean':
+                    xui.isDate(o)?'date':
+                    xui.isReg(o)?'regexp':
+                    xui.isFun(o)?'function':
                     'undefined';
         },
         _rows2json:function(arr,array){
             var me=arguments.callee,
                 a=[], key,value;
-            _.arr.each(arr, function(o){
+            xui.arr.each(arr, function(o){
                 key=((typeof o.cells[0]=='object')?o.cells[0].value:o.cells[0]);
                 if(o._type=='hash')
                     value=me(o.sub);
@@ -194,7 +194,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 if(xui.Coder)str = xui.Coder.formatText(str);
                 obj.$editorValue = str;
             }else if(type=='string'){
-                var v=_.unserialize(obj.value);
+                var v=xui.unserialize(obj.value);
                       //number
                 if(  !ns._isString(v) ){
                     obj.$editorValue = "'" + v;
@@ -205,7 +205,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         _isString:function(v){
             return !(v=='undifined' || v=='null' || v=='NaN' ||
-                       _.isFinite(v) ||
+                       xui.isFinite(v) ||
                       //reg
                         /^\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*$/.test(v)  ||
                       //bool
@@ -235,12 +235,12 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     options.value=va[1];
                     
                     if(map[va[0]]){
-                        ops.sub=this._json2rows(_.unserialize(va[1]),va[0]=='array');
+                        ops.sub=this._json2rows(xui.unserialize(va[1]),va[0]=='array');
                         options.caption=va[0]=='hash'?'{...}':'[...]';
                     }else{
                         ops.sub=null;
                     }
-                    _.asyRun(function(){
+                    xui.asyRun(function(){
                         if(tg.isDestroyed())return;
                         tg.updateRow(rowId, ops);
                         // must get
@@ -255,7 +255,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     alert('Text format is not valid!');
                     return false;
                 }
-                _.asyRun(function(){
+                xui.asyRun(function(){
                     ns.fireEvent("onchange", [ns]);
                 },100);
             }
@@ -269,16 +269,16 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 type, nid;
             switch(cmdkey){
                 case 'add': 
-                    nid=_();
+                    nid=xui.stamp();
                     if(row){
-                        type=_.get(profile.rowMap, [row._serialId,'_type']);
+                        type=xui.get(profile.rowMap, [row._serialId,'_type']);
                         if(type=="array"||type=="hash"){
                             tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),disabled:type=='array'},'null','']}],row.id);
                         }else{
                             var id=row.id;
                             xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
                                 tg.updateCellByRowCol(id, "value", "{"+('new' + ++ns._index)+":"+row.cells[1].value+"}", false, true);
-                                _.asyRun(function(){
+                                xui.asyRun(function(){
                                     if(tg.isDestroyed())return;
                                     tg.editCellbyRowCol(id, "value");
                                 },200);
@@ -286,7 +286,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                                 if(type=='close')return;
                                 var id=row.id;
                                 tg.updateCellByRowCol(id, "value", "["+row.cells[1].value+"]", false, true);
-                                _.asyRun(function(){
+                                xui.asyRun(function(){
                                     if(tg.isDestroyed())return;
                                     tg.editCellbyRowCol(id,"value");
                                 },200);
@@ -297,13 +297,13 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     }
                     break;
                 case 'up': 
-                     nid=_();
-                    if(row._pid) type=_.get(profile.rowMap, [row._pid,'_type']);
+                     nid=xui.stamp();
+                    if(row._pid) type=xui.get(profile.rowMap, [row._pid,'_type']);
                     tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),disabled:type=='array'},'null','']}],null,row.id,true);
                     break;
                 case 'down':
-                     nid=_();
-                    if(row._pid) type=_.get(profile.rowMap, [row._pid,'_type']);
+                     nid=xui.stamp();
+                    if(row._pid) type=xui.get(profile.rowMap, [row._pid,'_type']);
                     tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),disabled:type=='array'},'null','']}],null,row.id,false);
                     break;
                 case 'del': 
@@ -313,7 +313,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     break;
             }
             if( nid ){
-                _.asyRun(function(){
+                xui.asyRun(function(){
                     if(tg.isDestroyed())return;
                     tg.editCellbyRowCol(nid+'', type=='array'?"value":"key");
                 });

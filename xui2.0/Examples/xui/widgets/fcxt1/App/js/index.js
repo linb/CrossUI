@@ -81,8 +81,8 @@ Class('App', 'xui.Com',{
                 v=ns.ctl_v.getValue(),
                 data = ns.ctl_fusionchartsxt1.getJSONData();
             
-            _.set(data,["chart","animation"],"0");
-            _.set(data,["data",ns._curIndex], {label:l,value:v});
+            xui.set(data,["chart","animation"],"0");
+            xui.set(data,["data",ns._curIndex], {label:l,value:v});
             
              ns.ctl_fusionchartsxt1.setJSONData(data,true);
         }

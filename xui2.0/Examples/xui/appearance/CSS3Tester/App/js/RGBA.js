@@ -157,7 +157,7 @@ Class('App.RGBA', 'xui.Com',{
             };
         },
         _t_sd_afteruivalueset : function (profile){
-            _.resetRun("RGBA",this.setTS,0,null,this);
+            xui.resetRun("RGBA",this.setTS,0,null,this);
         },
         setTS:function(){
             var values = this._getValues(),

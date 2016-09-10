@@ -30,7 +30,7 @@ append((new xui.UI.TreeGrid)
         _tg1_beforeComboPop:function(profile, cell, proEditor){
             switch(profile.box.getCellOption(profile, cell, 'type')){
                 case 'getter':
-                    proEditor.boxing().setUIValue(_());
+                    proEditor.boxing().setUIValue(xui.rand());
                 return false;
                 case 'cmdbox':
                 case 'popbox':

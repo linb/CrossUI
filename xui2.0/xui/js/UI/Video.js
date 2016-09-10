@@ -49,7 +49,7 @@ Class("xui.UI.Video", "xui.UI.Audio",{
                 ww=css.$px(width, rootfz), 
                 hh=css.$px(height, rootfz);
 
-            if( (width && !_.compareNumber(size.width,ww,6)) || (height && !_.compareNumber(size.height,hh,6)) ){
+            if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width){
                     prop.width=adjustunit(ww, rootfz);

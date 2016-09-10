@@ -32,7 +32,7 @@ Class('App', 'xui.Com',{
         xui.CSS.addStyleSheet(arr.join(''),'',true);
 
         //dont want to show original function code
-        _.id.$auto$=1;
+        xui.id.$auto$=1;
 
     }, 
     Instance:{
@@ -58,7 +58,7 @@ Class('App', 'xui.Com',{
                 //if same
                 if(SPA.__vid==str)return;
                 //if return to list
-                if(SPA.__vid && _.str.endWith(str2, '._list'))
+                if(SPA.__vid && xui.str.endWith(str2, '._list'))
                     return;
 
                 SPA.__vid=str;
@@ -120,16 +120,16 @@ Class('App', 'xui.Com',{
                     //for IE :  getElementById, name property has priority over id property.
                     if(id4)id4+='_';
                     //open
-                    _.arr.each([id2,id3,id4],function(id){
+                    xui.arr.each([id2,id3,id4],function(id){
                         var t;
-                        if(id && (t=xui.Dom.byId(id)) && _.get(t,['nextSibling', 'style', 'display'])!='block'){
+                        if(id && (t=xui.Dom.byId(id)) && xui.get(t,['nextSibling', 'style', 'display'])!='block'){
                             t=xui(id);
                             t.onClick();
                         }
                     });
                     //focus
                     if(id4 && (t=xui.Dom.byId(id4)))
-                        _.asyRun(function(){
+                        xui.asyRun(function(){
                             SPA.divHead.getRoot().scrollTop(xui(id4).offset(null,SPA.divHead.getRoot()).top);
                         });
                 }
@@ -148,7 +148,7 @@ Class('App', 'xui.Com',{
             //pop
             node.popToTop(xui.Event.getPos(e));
 
-            node.setBlurTrigger(_()+"", function(){
+            node.setBlurTrigger(xui.rand(), function(){
                 node.remove();
             });
 
@@ -400,7 +400,7 @@ Class('App', 'xui.Com',{
                 obj.parent.sort();
                 arr.push('<h2 id="'+key+'._parent'+'" class="inherite"><span class="xui-custom-cmd"></span>'+xui.getRes('app.supCls')+'</h2>');
                 arr.push('<div class="xui-custom-block">')
-                _.arr.each(obj.parent,function(o){
+                xui.arr.each(obj.parent,function(o){
                     arr.push('<div class="p"><a href="#!'+o+'"><div><span class="xui-custom-icon" style="background-position:' +ipm.cls+';"></span>'+ o +'</div></a></div>');
                 });
                 arr.push('</div>')
@@ -409,7 +409,7 @@ Class('App', 'xui.Com',{
                 obj.children.sort();
                 arr.push('<h2 id="'+key+'._children'+'" class="inherite"><span class="xui-custom-cmd"></span>'+xui.getRes('app.subCls')+'</h2>');
                 arr.push('<div class="xui-custom-block">')
-                _.arr.each(obj.children,function(o){
+                xui.arr.each(obj.children,function(o){
                     arr.push('<div class="p"><a href="#!'+o+'"><div><span class="xui-custom-icon" style="background-position:' +ipm.cls+';"></span>'+ o +'</div></a></div>');
                 });
                 arr.push('</div>')
@@ -422,7 +422,7 @@ Class('App', 'xui.Com',{
             }
 
             if(this.$CLS_STATIC[key]){
-                arr.push('<h2 id="'+_.id()+'" class="notice">&nbsp;&nbsp;&nbsp;&nbsp;'+xui.getRes('app.noCons')+'</h2>');
+                arr.push('<h2 id="'+xui.id()+'" class="notice">&nbsp;&nbsp;&nbsp;&nbsp;'+xui.getRes('app.noCons')+'</h2>');
                 arr.push('<div class="xui-custom-block"></div>');
             }
 
@@ -436,7 +436,7 @@ Class('App', 'xui.Com',{
                 obj.vars.sort();
                 arr.push('<h2 id="'+key+'._staticP'+'" ><span class="xui-custom-cmd"></span>'+xui.getRes('app.staticProperties')+'</h2>');
                 var a1=[],a2=[],tt;
-                _.arr.each(obj.vars,function(o){
+                xui.arr.each(obj.vars,function(o){
                     tt=key + dot + o;
                     a1.push(getItem(ipm.mem,o, tt, tt, false));
                     a2.push("<a id='short-abc' href='#!"+tt+"' >"+o+"</a> &nbsp;&nbsp;&nbsp;");
@@ -449,7 +449,7 @@ Class('App', 'xui.Com',{
                 if(obj.funs.self){
                     obj.funs.self.sort();
                     var a1=[],a2=[],tt;
-                    _.arr.each(obj.funs.self,function(o){
+                    xui.arr.each(obj.funs.self,function(o){
                         tt=key + dot + o[0];
                         a1.push(getItem(ipm.fun,o[1], tt));
                         a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
@@ -461,7 +461,7 @@ Class('App', 'xui.Com',{
                         arr.push('<h3 id="'+key+'._staticM.'+i.replace(/\./g,'_')+'"><span class="xui-custom-cmd"></span>'+xui.getRes('app.inhFrom')+' '+i+'</h3>');
                         obj.funs[i].sort();
                         var a1=[],a2=[],tt;
-                        _.arr.each(obj.funs[i],function(o){
+                        xui.arr.each(obj.funs[i],function(o){
                             tt=i + dot + o[0];
                             a1.push(getItem(ipm.fun,o[1], tt, key+dot+o[0]));
                             tt=key + dot + o[0];
@@ -476,7 +476,7 @@ Class('App', 'xui.Com',{
                 obj.provars.sort();
                 arr.push('<h2 id="'+key+'._prototypeP'+'" ><span class="xui-custom-cmd"></span>'+xui.getRes('app.insProperties')+'</h2>');
                 var a1=[],a2=[],tt;
-                _.arr.each(obj.provars,function(o){
+                xui.arr.each(obj.provars,function(o){
                     tt=key + pdot + o;
                     a1.push(getItem(ipm.mem,o, tt, tt,false));
                     a2.push("<a id='short-abc' href='#!"+tt+"' >"+o+"</a> &nbsp;&nbsp;&nbsp;");
@@ -489,7 +489,7 @@ Class('App', 'xui.Com',{
                 if(obj.profuns.self){
                     obj.profuns.self.sort();
                     var a1=[],a2=[],tt;
-                    _.arr.each(obj.profuns.self,function(o){
+                    xui.arr.each(obj.profuns.self,function(o){
                         tt=key + pdot + o[0];
                         a1.push(getItem(ipm.fun,o[1], tt));
                         a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
@@ -501,7 +501,7 @@ Class('App', 'xui.Com',{
                         arr.push('<h3 id="'+key+'._prototype.'+i.replace(/\./g,'_')+'" ><span class="xui-custom-cmd"></span>'+xui.getRes('app.inhFrom')+' ' +i+'</h3>');
                         obj.profuns[i].sort();
                         var a1=[],a2=[],tt;
-                        _.arr.each(obj.profuns[i],function(o){
+                        xui.arr.each(obj.profuns[i],function(o){
                             tt=i + pdot + o[0];
                             a1.push(getItem(ipm.fun,o[1], tt,key+pdot+o[0]));
                             tt=key + pdot + o[0];
@@ -520,7 +520,7 @@ Class('App', 'xui.Com',{
                 if(obj.events.self){
                     obj.events.self.sort();
                     var a1=[],a2=[],tt;
-                    _.arr.each(obj.events.self,function(o){
+                    xui.arr.each(obj.events.self,function(o){
                         tt=key + pdot + o[0];
                         a1.push(getItem(ipm.event,o[1], tt, tt));
                         a2.push("<a id='short-abc' name='"+tt+"._list' href='#!"+tt+"' >"+o[0]+"</a> &nbsp;&nbsp;&nbsp;");
@@ -532,7 +532,7 @@ Class('App', 'xui.Com',{
                         obj.events[i].sort();
                         var a1=[],a2=[],tt;
                         arr.push('<h3 id="'+key+'._event.'+i.replace(/\./g,'_')+'" ><span class="xui-custom-cmd"></span>'+xui.getRes('app.inhFrom')+' ' +i+'</h3>');
-                        _.arr.each(obj.events[i],function(o){
+                        xui.arr.each(obj.events[i],function(o){
                             tt=i + pdot + o[0];
                             a1.push(getItem(ipm.event,o[1], tt,key+pdot+o[0]));
                             tt=key + pdot + o[0];
@@ -546,7 +546,7 @@ Class('App', 'xui.Com',{
             arr.push('</div>')
 
             if(obj.$abstract)
-              arr.push('<h3 id="'+_.id()+'"> ==== Abstract Virtual Class or Inner Class ==== </h3>');
+              arr.push('<h3 id="'+xui.id()+'"> ==== Abstract Virtual Class or Inner Class ==== </h3>');
 
             return arr.join('');
         }, 
@@ -578,11 +578,11 @@ Class('App', 'xui.Com',{
             obj.key = id;
 
             if(cls){
-                _.arr.each(o.$parent,function(o,i){
+                xui.arr.each(o.$parent,function(o,i){
                     if(!obj.parent)obj.parent=[];
                     obj.parent.push(o.KEY);
                 });
-                _.arr.each(o.$children,function(o){
+                xui.arr.each(o.$children,function(o){
                     if(!obj.children)obj.children=[];
                     obj.children.push(o);
                 });
@@ -683,7 +683,7 @@ Class('App', 'xui.Com',{
                     ta.each(function(o){
                         if(o.id!='code')return;
                         t=xui([o]);
-                        o=_.str.toDom(xui.Coder.formatAll(t.text(), 'js', ['plain','run']));
+                        o=xui.str.toDom(xui.Coder.formatAll(t.text(), 'js', ['plain','run']));
                         t.replace(o);
                     });
             }
@@ -708,14 +708,14 @@ Class('App', 'xui.Com',{
         }, 
         _iq1_afteruivalueset:function (profile,ov,v) {
             if(SPA.$v==v)return;
-            _.resetRun('__a__',function(){
+            xui.resetRun('__a__',function(){
                 SPA.$v=v;
                 SPA.RefreshQ(1,v);
             },500);
         }, 
         _iq2_afteruivalueset:function (profile,ov,v) {
             if(SPA.$v==v)return;
-            _.resetRun('__a__',function(){
+            xui.resetRun('__a__',function(){
                 SPA.$v=v;
                 SPA.RefreshQ(2,v);
             },500);
@@ -740,14 +740,14 @@ Class('App', 'xui.Com',{
                 if(type1==1){
                     if(SPA.iQ2.getUIValue())
                         SPA.iQ2.setValue('',true);
-                    _.each(pool,function(o,i){
+                    xui.each(pool,function(o,i){
                         if(i.indexOf(v)!=-1)
                             arr.push({id:i,caption:'<font style="color:#444">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+o})
                     });
                 }else{
                     if(SPA.iQ1.getUIValue())
                         SPA.iQ1.setValue('',true);
-                    _.each(pool,function(o,i){
+                    xui.each(pool,function(o,i){
                         if(o.indexOf(v)!=-1)
                             arr.push({id:i,caption:'<font style="color:#444">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+o})
                     });
@@ -787,7 +787,7 @@ Class('App', 'xui.Com',{
                     arr.push('<div class="inndiv">' + '<strong>'+xui.getRes('app.retV')+': </strong>' + o.$rtn + '</div>');
                 if(o.$paras){
                     arr.push('<div class="inndiv">' + '<div><strong>'+xui.getRes('app.param')+': </strong></div><ul>');
-                    _.arr.each(o.$paras,function(v){
+                    xui.arr.each(o.$paras,function(v){
                         v=v.replace(/^([^:\[]*)([^:]*):(.*)$/,"<strong>$1</strong> $2 : $3");
                         arr.push('<li> ' + v + ' </li>');
                     })
@@ -796,7 +796,7 @@ Class('App', 'xui.Com',{
 
                 if(o.$snippet){
                     arr.push('<div class="inndiv">' + '<div><strong>'+xui.getRes('app.codesnip')+': </strong></div>');
-                    _.arr.each(o.$snippet,function(v){
+                    xui.arr.each(o.$snippet,function(v){
                         arr.push('<textarea id="code" class="js plain-run">' + v + '</textarea><p>&nbsp;</p>');
                     })
                     arr.push("</div>");
@@ -806,7 +806,7 @@ Class('App', 'xui.Com',{
 
                 if(o.$links){
                     arr.push('<div class="inndiv">' + '<div><strong>'+xui.getRes('app.seealso')+': </strong></div><ul>');
-                    _.arr.each(o.$links,function(v){
+                    xui.arr.each(o.$links,function(v){
                         arr.push('<li><a target="'+(v[2]||'')+'" href="' +v[1]+ '">' + v[0] + '</a></li>');
                     })
                     arr.push("</ul></div>");
@@ -855,12 +855,12 @@ Class('App', 'xui.Com',{
                                 hash[tag+'.prototype.'+i]=1;
                 }
             };
-        _.arr.each(['_','_.fun','_.str','_.arr','Class','xui'],function(o,i){
+        xui.arr.each(['xui','xui.fun','xui.str','xui.arr','Class'],function(o,i){
             hash[o]=1;
             getAPI(xui.SC.get(o),o);
         });
-        _.each(hash,function(o,i){
-            hash[i]=_.get(doc,(i+'.$desc').split('.'));
+        xui.each(hash,function(o,i){
+            hash[i]=xui.get(doc,(i+'.$desc').split('.'));
             if(hash[i]){
                 if(hash[i].indexOf('<')!=-1)
                     hash[i]=hash[i].split('<')[0];
@@ -872,7 +872,7 @@ Class('App', 'xui.Com',{
     
         /*
         var no={},l=0;
-        _.each(hash,function(o,i){
+        xui.each(hash,function(o,i){
             l++;
             if(!o)no[i]=1;
         });
@@ -880,6 +880,6 @@ Class('App', 'xui.Com',{
     
         return SPA.$api_pool=hash;
     }, 
-    $S_CLS:{'Class':1,'_':1,'_.fun':1,'_.arr':1,'_.str':1,'xui':1}, $CLS_FUN:{'Class':1,'_':1,'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'_.fun':1,'xui':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
+    $S_CLS:{'Class':1,'xui':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, $CLS_FUN:{'Class':1,'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }
 });

@@ -1,6 +1,6 @@
 Class('xui.Debugger', null, {
     Static:{
-        $time:_(),
+        $time:xui.stamp(),
         _id1:'xui:dbg::_frm',
         _id4:'xui:dbg::_head',
         _id2:'xui:dbg::_con',
@@ -12,7 +12,7 @@ Class('xui.Debugger', null, {
             return true;
         },
         trace:function(obj){
-            var args=_.toArr(arguments),
+            var args=xui.toArr(arguments),
                 fun=args[1]||arguments.callee.caller,
                 arr=args[2]||[];
             if(fun){
@@ -37,13 +37,13 @@ Class('xui.Debugger', null, {
             fun=null;
         },
         log:function(){
-            var t1,t2,time,self=this,arr=_.toArr(arguments),str;
+            var t1,t2,time,self=this,arr=xui.toArr(arguments),str;
             if(!arr.length)return;
 
             t1 = document.createElement("div");
             t2 = document.createElement("div");
             t2.className='xui-uibg-base xui-dbg-con1';
-            time=_();
+            time=xui.stamp();
             t2.appendChild(document.createTextNode('Time stamp : '+time +'('+(time-self.$time)+')' ));
             self.$time=time;
             t1.appendChild(t2);
@@ -51,7 +51,7 @@ Class('xui.Debugger', null, {
                 str=arr[i];
                 t2 = document.createElement("div");
                 t2.className='xui-uibg-base xui-dbg-con2';
-                t2.appendChild(document.createTextNode(" "+_.stringify(_.isArguments(str)?_.toArr(str):str)));
+                t2.appendChild(document.createTextNode(" "+xui.stringify(xui.isArguments(str)?xui.toArr(str):str)));
                 t1.appendChild(t2);
             }
 
@@ -68,7 +68,7 @@ Class('xui.Debugger', null, {
                 if(xui.browser.ie6){
                     ns.height(ns.offsetHeight());
                     ns.width(299);
-                    _.asyRun(function(){ns.width(300);})
+                    xui.asyRun(function(){ns.width(300);})
                 }
                 var bak='',temp;
                 xui(self._id3).onKeydown(function(p,e,s){
@@ -125,7 +125,7 @@ Class('xui.Debugger', null, {
         //shorcut
         xui.echo = function(){
             if(!xui.debugMode)return false;
-            xui.Debugger.log.apply(xui.Debugger,_.toArr(arguments));
+            xui.Debugger.log.apply(xui.Debugger,xui.toArr(arguments));
         };
         xui.message = function(body, head, width, duration){
            width = width || 300;
@@ -177,7 +177,7 @@ Class('xui.Debugger', null, {
                 }).start();
                 
                 var lh=last.offsetHeight();
-               _.filter(allmsg,function(ind){
+               xui.filter(allmsg,function(ind){
                     if(ind.isEmpty())
                         return false;
                    if(!ind.__hide && ind!=div && ind!=last){
@@ -203,7 +203,7 @@ Class('xui.Debugger', null, {
                 div.top(st+20);
             },300,0,'expoOut').start();
 
-            _.asyRun(function(){
+            xui.asyRun(function(){
                 if(div._thread&&div._thread.id&&div._thread.isAlive())div._thread.abort();
                 div._thread=div.animate({top:[div.top(), height+20]},null,function(){
                      stack.push(div); 
@@ -214,8 +214,8 @@ Class('xui.Debugger', null, {
             me=null;
         };
 
-        if(_.isDefined(window.console) && (typeof window.console.log=="function")){
-            xui.log=function(){window.console.log.apply(window.console,_.toArr(arguments));};
+        if(xui.isDefined(window.console) && (typeof window.console.log=="function")){
+            xui.log=function(){window.console.log.apply(window.console,xui.toArr(arguments));};
         }else if(xui.debugMode){
             xui.log=xui.echo;
             window.onerror=this.err;

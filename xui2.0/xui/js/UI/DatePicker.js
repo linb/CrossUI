@@ -601,9 +601,9 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
         _ensureValue:function(profile, value){
             var d;
             if(value){
-                if(_.isDate(value))
+                if(xui.isDate(value))
                     d=value;
-                else if(_.isFinite(value))
+                else if(xui.isFinite(value))
                     d=new Date(parseInt(value,10));
             }
             d = d||new Date;
@@ -666,7 +666,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             var cls2="xui-cell-alt",
                 fdmap={};
             if(p.offDays){
-                _.arr.each(p.offDays.split(""),function(i){
+                xui.arr.each(p.offDays.split(""),function(i){
                     i=parseInt(i,10);
                     if(i>=0 && i<=6)
                         fdmap[i]=1;
@@ -716,7 +716,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             if(profile.$selnode)
                 profile.$selnode.tagClass('-checked',false);
             //[[add cecked css class
-            _.arr.each(profile.$daymap,function(o,i){
+            xui.arr.each(profile.$daymap,function(o,i){
                 if(date.get(o,'m',fw)+'-'+date.get(o,'d',fw)==date.get(time,'m',fw)+'-'+date.get(time,'d',fw)){
                     index=i;
                     return false;
