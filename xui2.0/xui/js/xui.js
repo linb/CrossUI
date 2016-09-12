@@ -881,7 +881,7 @@ xui.merge(Class, {
 
 //function Dependencies: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:1.4,
+    version:2.0,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -1651,6 +1651,15 @@ xui.merge(xui,{
             }
         }
         return o;
+    },
+    query:function(){
+        return xui.doc.query.apply(xui.doc, arguments);
+    },
+    querySelector:function(){
+        return xui.doc.querySelector.apply(xui.doc, arguments);
+    },
+    querySelectorAll:function(){
+        return xui.doc.querySelectorAll.apply(xui.doc, arguments);
     },
     use:function(xid){
         var c=xui._tempBox||(xui._tempBox=xui()), n=c._nodes;

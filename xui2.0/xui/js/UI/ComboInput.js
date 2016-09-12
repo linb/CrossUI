@@ -205,8 +205,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var profile=this.get(0),prop=profile.properties;
             if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
                 var fileInput = profile.getSubNode('FILE').get(0);
-                if (!!window.ActiveXObject || "ActiveXObject" in window)  {
-                  var label=document.createElement( "div" );
+                // for IE11
+                if (xui.browser.ie11)  {
+                  var label=document.createElement( "div");
                   fileInput.appendChild(label);
                   label.click();
                   fileInput.removeChild(label);
@@ -654,12 +655,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 visibility:'hidden'
             },
             FILE:{
-                opacity:0,
-                'filter':(xui.browser.ie&&xui.browser.ver<9)?'alpha(opacity=0)':null,
+                visibility:'hidden',
                 'z-index':'3',
                 border:0,
-                height:'100%',
                 width:'100%',
+                height:'100%',
                 position:'absolute',
                 padding:0,
                 top:0,
@@ -750,10 +750,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             BTN:{
                 onClick : function(profile, e, src){
-                    var prop=profile.properties;
-                    if(prop.type=='label' || prop.type=='popbox' || prop.type=='cmdbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
+                    var prop=profile.properties, type=prop.type;
+                    if(type=='label' || type=='popbox' || type=='cmdbox' || type=='getter' || type=='button' || type=='dropbutton'){
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
+                    }
+                    if(type=='file'||type=='upload'){
+                        profile.boxing().popFileSelector();
+                        return;
                     }
 
                     if(prop.disabled || prop.readonly)return;
@@ -1396,7 +1400,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 root=f('KEY'),
                 v1=f('INPUT'),
                 box = f('BOX'), 
-                label = f('LABEL'),                
+                label = f('LABEL'),
                 commandbtn=f(prop.commandBtn!='none'?'SBTN':null),
                 functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
                 // determine em

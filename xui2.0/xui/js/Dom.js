@@ -232,7 +232,7 @@ Class('xui.Dom','xui.absBox',{
         },
         querySelector:function(selectors){
             return this.$sum(function(){
-                return xui.toArr(this.querySelector(selectors));
+                return this.querySelector(selectors);
             });
         },
         querySelectorAll:function(selectors){

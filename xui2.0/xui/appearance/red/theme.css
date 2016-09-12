@@ -173,7 +173,7 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
 .xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked{
-    background-color:#FCEA29;
+    background-color:#FF6B44;
 }
 
 /*gradient*/
@@ -313,25 +313,27 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-tabs-items{
     padding:0 0 4px 0;
 }
+.xui-tabs-listbg:{
+    border-top: solid 1px #FF0005;
+		border-bottom: solid 1px #FF0005;
+}
 .xui-tabs-item{
-	  margin:0;
-    border:none;
+		border-bottom: solid 1px #FF6B44;
+    border-left: solid 1px #FF6B44;
+    border-top: solid 1px #FF6B44;
+    border-right: solid 1px #FF6B44;
     background-color:transparent; 
 }
 .xui-tabs-item-mouseover, .xui-tabs-item-mousedown, .xui-tabs-item-checked{
-		background-image:none;
-		background-color: transparent;
-    border-left: solid 1px #FF6F11;
-    border-top: solid 1px #FF6F11;
-    border-right: solid 1px #FF6F11;
+		background-color: #FAD200;
 }
-.xui-tabs-item-mousedown, .xui-tabs-item-checked{
-	  background-color: #FCEA29;
+.xui-tabs-item-mousedown{
+	  background-color: #F5D22D;
 }
-/*to adjust item size*/
-.xui-tabs-handle{
-	padding:1px 1px 0 1px;
+.xui-tabs-item-checked{
+	  background-color: #FF6B44;
 }
+
 .xui-tabs-item-mouseover .xui-tabs-handle, 
 .xui-tabs-item-mousedown .xui-tabs-handle, 
 .xui-tabs-item-checked .xui-tabs-handle{
