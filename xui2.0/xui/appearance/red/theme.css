@@ -110,7 +110,7 @@ input:disabled, .xui-ui-inputdisabled,
     border-color:#FF0005;
 }
 .xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
-    border-color:#3393D2;
+    border-color:#fcea29;
 }
 .xui-uiborder-outset{
     border-color:#FFB29E #FF0005 #FF0005 #FFB29E;
@@ -119,7 +119,7 @@ input:disabled, .xui-ui-inputdisabled,
     border-color:#FF0005 #FFB29E #FFB29E #FF0005;
 }
 .xui-uiborder-btn-mouseover{
-    border-color: #FFDDCA;
+    border-color: #FCEA29;
 }
 .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
     background: #FCEA29;
@@ -190,7 +190,7 @@ input:disabled, .xui-ui-inputdisabled,
     background: -o-linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);  
 }
 .xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
-    border-color:#c87800;
+    border-color: #FCEA29;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC7BC', endColorstr='#FFA28A');
     background: linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFC7BC), to(1, #FFA28A));
