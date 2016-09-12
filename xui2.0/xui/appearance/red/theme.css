@@ -4,7 +4,7 @@
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
-  color:#555;
+  color:#333;
 }
 .xuifont-checked, .xuicon-checked{
   color:#fcea29;
@@ -12,7 +12,7 @@
 
 /*background*/
 html{
-    background-color:#FFFFFF;
+  background-color:#FFFFFF;
 	color:#333;
 }
 .xui-uibg-base{
@@ -79,10 +79,10 @@ input:disabled, .xui-ui-inputdisabled,
     border:solid 1px #FF0005;
 }
 .xui-uiborder-l{
-    border-left-color:#FFB9A5;
+    border-left-color:#FFB29E;
 }
 .xui-uiborder-t{
-    border-top-color:#FFB9A5;
+    border-top-color:#FFB29E;
 }
 .xui-uiborder-r{
     border-right-color:#FF0005;
@@ -91,16 +91,16 @@ input:disabled, .xui-ui-inputdisabled,
     border-bottom-color:#FF0005;
 }
 .xui-uiborder-lr{
-    border-left-color:#FFB9A5;
+    border-left-color:#FFB29E;
     border-right-color:#FF0005;
 }
 .xui-uiborder-tb{
-    border-top-color:#FFB9A5;
+    border-top-color:#FFB29E;
     border-bottom-color:#FF0005;
 }
 .xui-uiborder-lt{
-    border-left-color:#FFB9A5;
-    border-top-color:#FFB9A5;
+    border-left-color:#FFB29E;
+    border-top-color:#FFB29E;
 }
 .xui-uiborder-rb{
     border-right-color:#FF0005;
@@ -113,10 +113,10 @@ input:disabled, .xui-ui-inputdisabled,
     border-color:#3393D2;
 }
 .xui-uiborder-outset{
-    border-color:#FFB9A5 #FF0005 #FF0005 #FFB9A5;
+    border-color:#FFB29E #FF0005 #FF0005 #FFB29E;
 }
 .xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
-    border-color:#FF0005 #FFB9A5 #FFB9A5 #FF0005;
+    border-color:#FF0005 #FFB29E #FFB29E #FF0005;
 }
 .xui-uiborder-btn-mouseover{
     border-color: #FFDDCA;
@@ -178,7 +178,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 /*gradient*/
 .xui-ui-gradientbg, .xui-ui-btn{
-    border-color:#FF0005;
+    border-color:#FFA28A;
     -moz-box-shadow:inset 0 1px 0 0 #FFBCAB;
     -webkit-box-shadow:inset 0 1px 0 0 #FFBCAB;
     box-shadow:inset 0 1px 0 0 #FFBCAB;    
@@ -190,7 +190,7 @@ input:disabled, .xui-ui-inputdisabled,
     background: -o-linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);  
 }
 .xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
-    border-color:#FFA28A;
+    border-color:#c87800;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC7BC', endColorstr='#FFA28A');
     background: linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFC7BC), to(1, #FFA28A));
@@ -336,6 +336,9 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-tabs-item-mousedown .xui-tabs-handle, 
 .xui-tabs-item-checked .xui-tabs-handle{
 	padding:0;
+}
+.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
+	font-size:1.5em;
 }
 
 /*xui.UI.TreeGrid*/
