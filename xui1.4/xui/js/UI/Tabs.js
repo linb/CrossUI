@@ -1188,7 +1188,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 key=t.$UIvalue;
             item = profile.getItemByItemId(key);
             var o = profile.boxing().getPanel(key),
-                l=profile.getSubNode('LIST'),
+                list=profile.getSubNode('LIST'),
                 listH;
 
             if(!o || o.isEmpty())return;
@@ -1199,9 +1199,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._h=height;
                 if(height && height!='auto'){
                     if(!t.noHandler){
-                        listH = l.get(0).offsetHeight ||
+                        listH = list.get(0).offsetHeight ||
                             //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                            l.offsetHeight();
+                            list.offsetHeight();
     
                         height = height-listH;
                     }
@@ -1210,7 +1210,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             if(width && item._w!=width){
-                l.width(item._w=width);
+                list.width(item._w=width);
                 if(!t.noHandler){
                     this._adjustScroll(profile);
                 }

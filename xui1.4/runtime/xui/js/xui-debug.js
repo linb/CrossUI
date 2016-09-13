@@ -8476,12 +8476,20 @@ Class('xui.Dom','xui.absBox',{
                 return a;
             }
         },
-        each:function(fun){
-            var ns=this,purge=xui.$cache.domPurgeData,n;
-            for(var i=0,j=ns._nodes,l=j.length;i<l;i++)
-                if((n=purge[j[i]]) && (n=n.element))
-                    if(false===fun.call(ns,n,i))
-                        break;
+        each:function(fun,desc){
+            var ns=this,purge=xui.$cache.domPurgeData,n,
+                  i, j=ns._nodes, l=j.length;
+            if(desc){
+                for(i=l;i>=0;i--)
+                    if((n=purge[j[i]]) && (n=n.element))
+                        if(false===fun.call(ns,n,i))
+                            break;
+            }else{
+                for(i=0;i<l;i++)
+                    if((n=purge[j[i]]) && (n=n.element))
+                        if(false===fun.call(ns,n,i))
+                            break;
+            }
             n=null;
             return ns;
         },
@@ -13336,7 +13344,7 @@ Class('xui.Module','xui.absProfile',{
 
             //unserialize
             s = o.serialize(false, true);
-            o.destroy(true);
+            o.destroy(true, true, true);
             //set back
             _.merge(o,s,'all');
             // notice: remove destroyed here
@@ -13857,7 +13865,7 @@ Class('xui.Module','xui.absProfile',{
         isDestroyed:function(){
             return !!this.destroyed;
         },
-        destroy:function(keepStructure){
+        destroy:function(ignoreEffects, purgeNow,keepStructure){
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
             
@@ -13871,7 +13879,7 @@ Class('xui.Module','xui.absProfile',{
             if(ns && ns.length)
                 _.arr.each(ns, function(o){
                     if(o && o.box)
-                        o.boxing().destroy();
+                        o.boxing().destroy(ignoreEffects, purgeNow);
                 },null,true);
 
             if(ns && ns.length)
@@ -37785,7 +37793,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 key=t.$UIvalue;
             item = profile.getItemByItemId(key);
             var o = profile.boxing().getPanel(key),
-                l=profile.getSubNode('LIST'),
+                list=profile.getSubNode('LIST'),
                 listH;
 
             if(!o || o.isEmpty())return;
@@ -37796,9 +37804,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._h=height;
                 if(height && height!='auto'){
                     if(!t.noHandler){
-                        listH = l.get(0).offsetHeight ||
+                        listH = list.get(0).offsetHeight ||
                             //for opear 9.0 get height bug, get offsetheight in firefox is slow
-                            l.offsetHeight();
+                            list.offsetHeight();
     
                         height = height-listH;
                     }
@@ -37807,7 +37815,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             if(width && item._w!=width){
-                l.width(item._w=width);
+                list.width(item._w=width);
                 if(!t.noHandler){
                     this._adjustScroll(profile);
                 }

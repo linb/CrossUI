@@ -40,12 +40,20 @@ Class('xui.Dom','xui.absBox',{
                 return a;
             }
         },
-        each:function(fun){
-            var ns=this,purge=xui.$cache.domPurgeData,n;
-            for(var i=0,j=ns._nodes,l=j.length;i<l;i++)
-                if((n=purge[j[i]]) && (n=n.element))
-                    if(false===fun.call(ns,n,i))
-                        break;
+        each:function(fun,desc){
+            var ns=this,purge=xui.$cache.domPurgeData,n,
+                  i, j=ns._nodes, l=j.length;
+            if(desc){
+                for(i=l;i>=0;i--)
+                    if((n=purge[j[i]]) && (n=n.element))
+                        if(false===fun.call(ns,n,i))
+                            break;
+            }else{
+                for(i=0;i<l;i++)
+                    if((n=purge[j[i]]) && (n=n.element))
+                        if(false===fun.call(ns,n,i))
+                            break;
+            }
             n=null;
             return ns;
         },

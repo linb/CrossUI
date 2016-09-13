@@ -356,7 +356,9 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                     var item = arr[arr.length-1];
                     item._show = true;
                     item._fill = true;
-                    item._body = profile.onGetContent?profile.boxing().onGetContent(profile,item) : profile.box._buildBody(profile, item);
+                    item._body = profile.onGetContent?profile.boxing().onGetContent(profile,item,function(o){
+                        profile.boxing().fillContent(item.id, item._body=o);
+                    }) : profile.box._buildBody(profile, item);
                 }
             }
             return arguments.callee.upper.apply(this, arguments);
