@@ -107,7 +107,7 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
     border-color:#7BA3CB #F1FAFF #F1FAFF #7BA3CB;
 }
-.xui-uiborder-btn-mousseover{
+.xui-uiborder-btn-mouseover{
     border-color: #F1FAFF;
 }
 .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
@@ -142,16 +142,16 @@ input:disabled, .xui-ui-inputdisabled,
 	  border-color:#c9c9c9;
 }
 .xui-uitembg-mouseover{
-	background-position: left -51px;
+	background-position: left -100px;
 	background-color: #EBF3FD;
 }
 .xui-uitembg-mousedown{
-	background-position: left -101px;
-	background-color:#C6E0EF;
+	background-position: left -200px;
+	background-color:#F1F7FE;
 }
 .xui-uitembg-checked{
 	background-position:left top;
-	background-color:#C6E0EF;
+	background-color:#CFE4FE;
 }
 
 .xui-uitembg-bar{
@@ -240,8 +240,8 @@ input:disabled, .xui-ui-inputdisabled,
 	height:30px;
 	background-position: right -60px;
 }
-.xui-uibar-top-focus .xui-uibar-tdl
-.xui-uibar-top-focus .xui-uibar-tdm
+.xui-uibar-top-focus .xui-uibar-tdl,
+.xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
 	background-color: #C6E0EF;
 }
@@ -329,7 +329,9 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-tabs-item-checked .xui-tabs-handle{
 	padding:0;
 }
-
+.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
+	font-size:1.5em;
+}
 /*xui.UI.TreeGrid*/
 .xui-treegrid-alt{
 		background-color: #EFF8FF;
@@ -351,20 +353,6 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
 }
-.xui-treegrid-fhcell, .xui-treegrid-hcell{
-    border-right:solid 1px #d4d4d4;
-    border-bottom:solid 1px #d4d4d4;
-}
-.xui-treegrid-fcell, .xui-treegrid-cell, 
-.xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
-    border-right:solid 1px #f1f1f1;
-}
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
-    background: #CFE4FE url(TreeGrid/head_mouseover.gif) repeat-x left top;
-}
-.xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
-    border-right:solid 1px #CFE4FE;
-}
 .xui-treegrid-cell-mouseover{
     background-color: #D9E8FB;
 }
@@ -379,6 +367,21 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
     background-color: #FFE97F;
+}
+
+.xui-treegrid-fhcell, .xui-treegrid-hcell{
+    border-right:solid 1px #d4d4d4;
+    border-bottom:solid 1px #d4d4d4;
+}
+.xui-treegrid-fcell, .xui-treegrid-cell, 
+.xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
+    border-right:solid 1px #f1f1f1;
+}
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
+    background: #CFE4FE url(TreeGrid/head_mouseover.gif) repeat-x left top;
+}
+.xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
+    border-right:solid 1px #CFE4FE;
 }
 
 /** important => the last one: this theme's name */

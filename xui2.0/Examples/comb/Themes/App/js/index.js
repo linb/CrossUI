@@ -52,6 +52,10 @@ Class('App', 'xui.Module',{
                     "caption" : "blackwhite"
                 },
                 {
+                    "id" : "classic",
+                    "caption" : "classic"
+                },
+                {
                     "id" : "darkblue",
                     "caption" : "darkblue"
                 },
@@ -2442,6 +2446,7 @@ Class('App', 'xui.Module',{
                 .setTop("0em")
                 .setWidth("67em")
                 .setHeight("20em")
+                .setAltRowsBg(true)
                 .setHeader([{
                     "id" : "a3-1",
                     "caption" : "col 1",

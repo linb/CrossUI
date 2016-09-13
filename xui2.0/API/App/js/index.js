@@ -772,7 +772,10 @@ Class('App', 'xui.Com',{
                "xui.UI.TreeGrid.prototype.updateColumn":"xui.UI.TreeGrid.prototype.updateHeader",
                "xui.UI.TreeGrid.prototype.getColByDom":"xui.UI.TreeGrid.prototype.getHeaderByDom",
                "xui.UI.TreeGrid.prototype.getColByColId":"xui.UI.TreeGrid.prototype.getHeaderByColId",
-               "xui.UI.TreeGrid.prototype.getColByCell":"xui.UI.TreeGrid.prototype.getHeaderByCell"
+               "xui.UI.TreeGrid.prototype.getColByCell":"xui.UI.TreeGrid.prototype.getHeaderByCell",
+               "xui.query":"xui.Dom.prototype.query",
+               "xui.querySelector":"xui.Dom.prototype.querySelector",
+               "xui.querySelectorAll":"xui.Dom.prototype.querySelectorAll"
             };
             if(!key)return ['',''];
             

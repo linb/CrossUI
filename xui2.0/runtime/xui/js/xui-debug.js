@@ -881,7 +881,7 @@ xui.merge(Class, {
 
 //function Dependencies: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:1.4,
+    version:2.0,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -1651,6 +1651,15 @@ xui.merge(xui,{
             }
         }
         return o;
+    },
+    query:function(){
+        return xui.doc.query.apply(xui.doc, arguments);
+    },
+    querySelector:function(){
+        return xui.doc.querySelector.apply(xui.doc, arguments);
+    },
+    querySelectorAll:function(){
+        return xui.doc.querySelectorAll.apply(xui.doc, arguments);
     },
     use:function(xid){
         var c=xui._tempBox||(xui._tempBox=xui()), n=c._nodes;
@@ -3902,8 +3911,8 @@ Class('xui.Profile','xui.absProfile',{
                 this.properties[key]=value;
             if(this.propSetAction)this.propSetAction(this.properties);
         },
-        _applySetAction:function(fun, value){
-            return fun.call(this,value);
+        _applySetAction:function(fun, value, ovalue, force, tag, tag2){
+            return fun.call(this,value, ovalue, force, tag, tag2);
         },
         __gc:function(){
             var ns=this;
@@ -8815,7 +8824,7 @@ Class('xui.Dom','xui.absBox',{
         },
         querySelector:function(selectors){
             return this.$sum(function(){
-                return xui.toArr(this.querySelector(selectors));
+                return this.querySelector(selectors);
             });
         },
         querySelectorAll:function(selectors){
@@ -26236,8 +26245,8 @@ Class("xui.UI.Resizer","xui.UI",{
             selectable:true,
             html:{
                 html:1,
-                action:function(v){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1));
+                action:function(v,ov,force){
+                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
                 }
             },
             borderType:{
@@ -29692,8 +29701,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var profile=this.get(0),prop=profile.properties;
             if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
                 var fileInput = profile.getSubNode('FILE').get(0);
-                if (!!window.ActiveXObject || "ActiveXObject" in window)  {
-                  var label=document.createElement( "div" );
+                // for IE11
+                if (xui.browser.ie11)  {
+                  var label=document.createElement( "div");
                   fileInput.appendChild(label);
                   label.click();
                   fileInput.removeChild(label);
@@ -30141,12 +30151,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 visibility:'hidden'
             },
             FILE:{
-                opacity:0,
-                'filter':(xui.browser.ie&&xui.browser.ver<9)?'alpha(opacity=0)':null,
+                visibility:'hidden',
                 'z-index':'3',
                 border:0,
-                height:'100%',
                 width:'100%',
+                height:'100%',
                 position:'absolute',
                 padding:0,
                 top:0,
@@ -30237,10 +30246,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             BTN:{
                 onClick : function(profile, e, src){
-                    var prop=profile.properties;
-                    if(prop.type=='label' || prop.type=='popbox' || prop.type=='cmdbox' || prop.type=='getter' || prop.type=='button' || prop.type=='dropbutton'){
+                    var prop=profile.properties, type=prop.type;
+                    if(type=='label' || type=='popbox' || type=='cmdbox' || type=='getter' || type=='button' || type=='dropbutton'){
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
+                    }
+                    if(type=='file'||type=='upload'){
+                        profile.boxing().popFileSelector();
+                        return;
                     }
 
                     if(prop.disabled || prop.readonly)return;
@@ -30883,7 +30896,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 root=f('KEY'),
                 v1=f('INPUT'),
                 box = f('BOX'), 
-                label = f('LABEL'),                
+                label = f('LABEL'),
                 commandbtn=f(prop.commandBtn!='none'?'SBTN':null),
                 functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
                 // determine em
@@ -44029,7 +44042,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _objectProp:{rowOptions:1,colOptions:1},
         Behaviors:{
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:'HCELL', FCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:'HCELL', FHCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:'HCELL',CMD:'CMD'},
             DroppableKeys:['SCROLL22','CELLS1','CELLS2','FCELL'],
             DraggableKeys:['FCELL'],

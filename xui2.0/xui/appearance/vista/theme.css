@@ -142,16 +142,16 @@ input:disabled, .xui-ui-inputdisabled,
 	  border-color:#c9c9c9;
 }
 .xui-uitembg-mouseover{
-	background-position: left -51px;
+	background-position: left -100px;
 	background-color: #EBF3FD;
 }
 .xui-uitembg-mousedown{
-	background-position: left -101px;
-	background-color:#C6E0EF;
+	background-position: left -200px;
+	background-color:#F1F7FE;
 }
 .xui-uitembg-checked{
 	background-position:left top;
-	background-color:#C6E0EF;
+	background-color:#CFE4FE;
 }
 
 .xui-uitembg-bar{

@@ -153,11 +153,11 @@ input:disabled, .xui-ui-inputdisabled,
 	  border-color:#648CB4;
 }
 .xui-uitembg-mouseover{
-	background-position: left -51px;
+	background-position: left -100px;
 	background-color: #FAD200;
 }
 .xui-uitembg-mousedown{
-	background-position: left -101px;
+	background-position: left -200px;
 	background-color:#F5D22D;
 }
 .xui-uitembg-checked{
@@ -318,10 +318,10 @@ input:disabled, .xui-ui-inputdisabled,
 		border-bottom: solid 1px #FF0005;
 }
 .xui-tabs-item{
-		border-bottom: solid 1px #FF6B44;
-    border-left: solid 1px #FF6B44;
-    border-top: solid 1px #FF6B44;
-    border-right: solid 1px #FF6B44;
+    border:none;
+    background-color:transparent; 
+    background-image: url(Tabs/right.png);
+    background-repeat:no-repeat;
     background-color:transparent; 
 }
 .xui-tabs-item-mouseover, .xui-tabs-item-mousedown, .xui-tabs-item-checked{
