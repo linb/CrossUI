@@ -19,7 +19,7 @@ html{
     background-color:#FFFFFF;
 }
 .xui-uibg-bar{
-    background-color:#FF7751;
+    background-color:#FF5F4A;
 }
 .xui-uibg-bar-mouseover{
     background-color:#FFB9A5;
@@ -372,7 +372,7 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
 .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background-color: #FF7751;
+    background-color: #FF5F4A;
 }
 .xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
 .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
