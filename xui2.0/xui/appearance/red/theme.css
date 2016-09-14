@@ -313,18 +313,18 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-tabs-items{
     padding:0 0 4px 0;
 }
-.xui-tabs-listbg:{
+.xui-tabs-listbg{
     border-top: solid 1px #FF0005;
 		border-bottom: solid 1px #FF0005;
 }
 .xui-tabs-item{
-    border:none;
-    background-color:transparent; 
-    background-image: url(Tabs/right.png);
-    background-repeat:no-repeat;
+		border-bottom: solid 1px #FF6B44;
+    border-left: solid 1px #FF6B44;
+    border-top: solid 1px #FF6B44;
+    border-right: solid 1px #FF6B44;
     background-color:transparent; 
 }
-.xui-tabs-item-mouseover, .xui-tabs-item-mousedown, .xui-tabs-item-checked{
+.xui-tabs-item-mouseover{
 		background-color: #FAD200;
 }
 .xui-tabs-item-mousedown{
@@ -392,7 +392,7 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
     border-right:solid 1px #FFB5A2;
-		background-color: #FFB5A2;
+    background-color: #FFB5A2;
 }
 
 
