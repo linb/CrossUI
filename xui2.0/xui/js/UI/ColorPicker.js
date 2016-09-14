@@ -125,6 +125,11 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                             $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
+                    },
+                    TBARTDB:{
+                        $order:5,
+                        tagName: 'div',
+                        className:'xui-uibar-tdb xui-uiborder-inset'
                     }
                 },
                 MAIN:{
@@ -299,6 +304,16 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             CON:{
                 padding:'.25em',
                 position:'relative'
+            },
+            '.xui-uibar-top BARCMDL':{
+                padding:".25em 0 0 0"
+            },
+            '.xui-uibar-top BARCMDR':{
+                top:".3334em",
+                right:".5em"
+            },
+            CMDL:{
+                padding:".25em 0 .25em 0"
             },
             DATA:{
             },

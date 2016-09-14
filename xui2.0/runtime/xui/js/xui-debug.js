@@ -19060,6 +19060,11 @@ Class("xui.UI",  "xui.absObj", {
                 right:'.75em',
                 'text-align':'right'
             },
+            '.xui-uibar-top .xui-uibar-tdb':{
+                position:'relative',
+                display:'none',
+                margin:'.16667em .16667em 0 .16667em'
+            },
             '.xui-uicon-main':{
                 position:'relative',
                 'padding-left':'.3333em',
@@ -31463,6 +31468,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
+                    },
+                    TBARTDB:{
+                        $order:5,
+                        tagName: 'div',
+                        className:'xui-uibar-tdb xui-uiborder-inset'
                     }
                 },
                 MAIN:{
@@ -31637,6 +31647,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             CON:{
                 padding:'.25em',
                 position:'relative'
+            },
+            '.xui-uibar-top BARCMDL':{
+                padding:".25em 0 0 0"
+            },
+            '.xui-uibar-top BARCMDR':{
+                top:".3334em",
+                right:".5em"
+            },
+            CMDL:{
+                padding:".25em 0 .25em 0"
             },
             DATA:{
             },
@@ -32448,6 +32468,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
+                    },
+                    TBARTDB:{
+                        $order:5,
+                        tagName: 'div',
+                        className:'xui-uibar-tdb xui-uiborder-inset'
                     }
                 },
                 MAIN:{
@@ -33237,6 +33262,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
+                    },
+                    TBARTDB:{
+                        $order:5,
+                        tagName: 'div',
+                        className:'xui-uibar-tdb xui-uiborder-inset'
                     }
                 },
                 MAIN:{
@@ -48612,6 +48642,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         $fonticon:'xui-uicmd-close',
                         style:'{closeDisplay}'
                     }
+                },
+                TBARTDB:{
+                    $order:5,
+                    tagName: 'div',
+                    className:'xui-uibar-tdb xui-uiborder-inset'
                 }
             },
             MAIN:{
@@ -48634,14 +48669,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 tagName:'div',
                 className:'xui-uibar-bottom',
                 BBARTDL:{
+                    $order:1,
                     className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                 },
                 BBARTDM:{
-                    $order:1,
+                    $order:2,
                     className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                 },
                 BBARTDR:{
-                    $order:2,
+                    $order:3,
                     className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                 }
             },

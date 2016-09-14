@@ -6,6 +6,9 @@
   font-size:1.33333em;
   color:#333;
 }
+.xuifont-checked, .xuicon-checked{
+  color:#fcea29;
+}
 
 /*background*/
 html{
@@ -16,10 +19,10 @@ html{
     background-color:#FFFFFF;
 }
 .xui-uibg-bar{
-    background-color:#EEB2D9;
+    background-color:#FF7751;
 }
 .xui-uibg-bar-mouseover{
-    background-color:#F8E3F0;
+    background-color:#FFB9A5;
 }
 .xui-uibg-content{
     background-color:#FFFFFF;
@@ -61,149 +64,149 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-alert{}
 */
 .xui-cell{
-	background-color: #FAF9F9;
+	background-color: #F9F7D1;
 }
 .xui-cell-mouseover{
-  background-color:#F6D5EA;
+  background-color:#FCEA29;
 }
 .xui-cell-checked, .xui-cell-checked .xui-node{
-    background-color:#BF83AA;
-    color:#fff;
+    background-color: #FADA12;
+    color: #444;
 }
 
 /*border*/
 .xui-uiborder{
-    border:solid 1px #EEB2D9;
+    border:solid 1px #FF0005;
 }
 .xui-uiborder-l{
-    border-left-color:#F8E3F0;
+    border-left-color:#FFB29E;
 }
 .xui-uiborder-t{
-    border-top-color:#F8E3F0;
+    border-top-color:#FFB29E;
 }
 .xui-uiborder-r{
-    border-right-color:#BF83AA;
+    border-right-color:#FF0005;
 }
 .xui-uiborder-b{
-    border-bottom-color:#BF83AA;
+    border-bottom-color:#FF0005;
 }
 .xui-uiborder-lr{
-    border-left-color:#F8E3F0;
-    border-right-color:#BF83AA;
+    border-left-color:#FFB29E;
+    border-right-color:#FF0005;
 }
 .xui-uiborder-tb{
-    border-top-color:#F8E3F0;
-    border-bottom-color:#BF83AA;
+    border-top-color:#FFB29E;
+    border-bottom-color:#FF0005;
 }
 .xui-uiborder-lt{
-    border-left-color:#F8E3F0;
-    border-top-color:#F8E3F0;
+    border-left-color:#FFB29E;
+    border-top-color:#FFB29E;
 }
 .xui-uiborder-rb{
-    border-right-color:#BF83AA;
-    border-bottom-color:#BF83AA;
+    border-right-color:#FF0005;
+    border-bottom-color:#FF0005;
 }
 .xui-uiborder-flat{
-    border-color:#BF83AA;
+    border-color:#FF0005;
 }
 .xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
-    border-color:#b5b5b5;
+    border-color:#fcea29;
 }
 .xui-uiborder-outset{
-    border-color:#F8E3F0 #BF83AA #BF83AA #F8E3F0;
+    border-color:#FFB29E #FF0005 #FF0005 #FFB29E;
 }
 .xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
-    border-color:#BF83AA #F8E3F0 #F8E3F0 #BF83AA;
+    border-color:#FF0005 #FFB29E #FFB29E #FF0005;
 }
 .xui-uiborder-btn-mouseover{
-    border-color: #F8E3F0;
+    border-color: #FCEA29;
 }
 .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
-    background: #F8E3F0;
+    background: #FCEA29;
 }
 
 .xui-uiborder-r-dark{
-    border-right-color:#D694BE;
+    border-right-color:#C87800;
 }
 .xui-uiborder-b-dark{
-    border-bottom-color:#D694BE;
+    border-bottom-color:#C87800;
 }
 .xui-uiborder-rb-dark{
-    border-right-color:#D694BE;
-    border-bottom-color:#D694BE;
+    border-right-color:#C87800;
+    border-bottom-color:#C87800;
 }
 .xui-uiborder-r-light{
-    border-right-color:#FFC2EC;
+    border-right-color:#FFBCAB;
 }
 .xui-uiborder-b-light{
-    border-bottom-color:#FFC2EC;
+    border-bottom-color:#FFBCAB;
 }
 .xui-uiborder-rb-light{
-    border-right-color:#FFC2EC;
-    border-bottom-color:#FFC2EC;
+    border-right-color:#FFBCAB;
+    border-bottom-color:#FFBCAB;
 }
 
 /*item*/
 .xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
     background-image: url(Public/list_item.gif);
     background-repeat:repeat-x;
-	  border-color:#BF83AA;
+	  border-color:#648CB4;
 }
 .xui-uitembg-mouseover{
 	background-position: left -100px;
-	background-color: #CC7DB3;
+	background-color: #FAD200;
 }
 .xui-uitembg-mousedown{
 	background-position: left -200px;
-	background-color:#D091BD;
+	background-color:#F5D22D;
 }
 .xui-uitembg-checked{
 	background-position:left top;
-	background-color:#EEB2D9;
+	background-color:#FF6B44;
 }
 
 .xui-uitembg-bar{
-    background-color:#EEB2D9;
+    background-color:#FF6F11;
 }
 .xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover{
-    background-color:#FFC2EC;
+    background-color:#FADA12;
 }
 .xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
 .xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked{
-    background-color:#D694BE;
+    background-color:#FF6B44;
 }
 
 /*gradient*/
 .xui-ui-gradientbg, .xui-ui-btn{
-    border-color:#BF83AA;
-    -moz-box-shadow:inset 0 1px 0 0 #F8E3F0;
-    -webkit-box-shadow:inset 0 1px 0 0 #F8E3F0;
-    box-shadow:inset 0 1px 0 0 #F8E3F0;    
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F8E3F0', endColorstr='#BF83AA');
-    background: linear-gradient(top,  #F8E3F0 5%,  #BF83AA 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #F8E3F0), to(1, #BF83AA));
-    background: -webkit-linear-gradient(top, #F8E3F0 5%, #BF83AA 100%);
-    background: -moz-linear-gradient(top,  #F8E3F0 5%,  #BF83AA 100%);
-    background: -o-linear-gradient(top,  #F8E3F0 5%,  #BF83AA 100%);  
+    border-color:#FFA28A;
+    -moz-box-shadow:inset 0 1px 0 0 #FFBCAB;
+    -webkit-box-shadow:inset 0 1px 0 0 #FFBCAB;
+    box-shadow:inset 0 1px 0 0 #FFBCAB;    
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFBCAB', endColorstr='#FF7751');
+    background: linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFBCAB), to(1, #FF7751));
+    background: -webkit-linear-gradient(top, #FFBCAB 5%, #FF7751 100%);
+    background: -moz-linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);
+    background: -o-linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);  
 }
 .xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
-    border-color: #CE92B9;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF5FD', endColorstr='#CE92B9');
-    background: linear-gradient(top,  #FFF5FD 5%,  #CE92B9 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF5FD), to(1, #CE92B9));
-    background: -webkit-linear-gradient(top, #FFF5FD 5%, #CE92B9 100%);
-    background: -moz-linear-gradient(top,  #FFF5FD 5%,  #CE92B9 100%);
-    background: -o-linear-gradient(top,  #FFF5FD 5%,  #CE92B9 100%);  
+    border-color: #FCEA29;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC7BC', endColorstr='#FFA28A');
+    background: linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFC7BC), to(1, #FFA28A));
+    background: -webkit-linear-gradient(top, #FFC7BC 5%, #FFA28A 100%);
+    background: -moz-linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
+    background: -o-linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);  
 }
 .xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked,
 .xui-ui-btn-mousedown, .xui-ui-btn-checked,  
 .xui-ui-btn:active, .xui-ui-btn-mousedown:hover,  .xui-ui-btn-checked:hover{
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EEB2D9', endColorstr='#F8E3F0');
-    background: linear-gradient(top,  #EEB2D9 5%,  #F8E3F0 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #EEB2D9), to(1, #F8E3F0));
-    background: -webkit-linear-gradient(top, #EEB2D9 5%, #F8E3F0 100%);
-    background: -moz-linear-gradient(top,  #EEB2D9 5%,  #F8E3F0 100%);
-    background: -o-linear-gradient(top,  #EEB2D9 5%,  #F8E3F0 100%);  
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF7751', endColorstr='#FFBCAB');
+    background: linear-gradient(top,  #FF7751 5%,  #FFBCAB 100%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FF7751), to(1, #FFBCAB));
+    background: -webkit-linear-gradient(top, #FF7751 5%, #FFBCAB 100%);
+    background: -moz-linear-gradient(top,  #FF7751 5%,  #FFBCAB 100%);
+    background: -o-linear-gradient(top,  #FF7751 5%,  #FFBCAB 100%);  
 }
 
 /*uicontainer*/
@@ -235,9 +238,6 @@ input:disabled, .xui-ui-inputdisabled,
     background-repeat: repeat-y;
     background-position: right top;
 }
-.xui-uibar-top .xui-uibar-tdb{
-	display:block;
-}
 .xui-uibar-top .xui-uibar-tdlt{
 	height:30px;
 	background-position: 0 0;
@@ -254,7 +254,7 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-uibar-top-focus .xui-uibar-tdl,
 .xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
-	background-color: #EEB2D9;
+	background-color: #FF6F11;
 }
 
 .xui-uibar-top-focus .xui-uibar-tdlt{
@@ -314,24 +314,24 @@ input:disabled, .xui-ui-inputdisabled,
     padding:0 0 4px 0;
 }
 .xui-tabs-listbg{
-    border-top:solid 1px #D694BE;
-		border-bottom:solid 1px #D694BE;
-		background-color:#EEB2D9;
+    border-top: solid 1px #FF0005;
+		border-bottom: solid 1px #FF0005;
 }
 .xui-tabs-item{
-    border-left: solid 1px #BF83AA;
-    border-top: solid 1px #BF83AA;
-    border-right: solid 1px #BF83AA;
+		border-bottom: solid 1px #FF6B44;
+    border-left: solid 1px #FF6B44;
+    border-top: solid 1px #FF6B44;
+    border-right: solid 1px #FF6B44;
     background-color:transparent; 
 }
 .xui-tabs-item-mouseover{
-		background-color: #CC7DB3;
+		background-color: #FAD200;
 }
 .xui-tabs-item-mousedown{
-	  background-color: #D091BD;
+	  background-color: #F5D22D;
 }
 .xui-tabs-item-checked{
-	  background-color: #EEB2D9;
+	  background-color: #FF6B44;
 }
 
 .xui-tabs-item-mouseover .xui-tabs-handle, 
@@ -345,7 +345,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 /*xui.UI.TreeGrid*/
 .xui-treegrid-alt{
-		background-color: #EFF8FF;
+		background-color: #F9F7D1;
 }
 .xui-treegrid-rownum{
 		color:#808080;
@@ -362,21 +362,21 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-treegrid-header1, .xui-treegrid-header2, 
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
-    background: #F7CFE8 url(TreeGrid/head.gif) repeat-x left top;
+    background: #FFA28A url(TreeGrid/head.gif) repeat-x left top;
 }
 .xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
-    background: #EDC7DE url(TreeGrid/head_mouseover.gif) repeat-x left top;
+    background: #FDE81E url(TreeGrid/head_mouseover.gif) repeat-x left top;
 }
 .xui-treegrid-cell-mouseover{
-    background-color: #F8E3F0;
+    background-color: #FFF1A0;
 }
 .xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
 .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background-color: #EEB2D9;
+    background-color: #FF7751;
 }
 .xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
 .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background-color: #D996BF;
+    background-color: #FF0005;
     color:#fff;
 }
 .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
@@ -384,19 +384,19 @@ input:disabled, .xui-ui-inputdisabled,
 }
 
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
-    border-color: #fff5fd  #EEB2D9 #EEB2D9 #fff5fd;
+    border-color: #EEE #FFB9A5 #FFB9A5 #EEE;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
 .xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
-    border-right:solid 1px #F8E3F0;
+    border-right:solid 1px #FFBCAB;
 }
 .xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
     border-right:solid 1px #FFB5A2;
-    background-color: #DFE8F6;
+    background-color: #FFB5A2;
 }
 
 
 /** important => the last one: this theme's name */
 .setting-uikey{
-    font-family: pink;
+    font-family: red;
 }

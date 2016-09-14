@@ -2216,6 +2216,11 @@ Class("xui.UI",  "xui.absObj", {
                 right:'.75em',
                 'text-align':'right'
             },
+            '.xui-uibar-top .xui-uibar-tdb':{
+                position:'relative',
+                display:'none',
+                margin:'.16667em .16667em 0 .16667em'
+            },
             '.xui-uicon-main':{
                 position:'relative',
                 'padding-left':'.3333em',

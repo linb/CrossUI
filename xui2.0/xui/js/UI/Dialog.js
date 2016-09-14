@@ -265,6 +265,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         $fonticon:'xui-uicmd-close',
                         style:'{closeDisplay}'
                     }
+                },
+                TBARTDB:{
+                    $order:5,
+                    tagName: 'div',
+                    className:'xui-uibar-tdb xui-uiborder-inset'
                 }
             },
             MAIN:{
@@ -287,14 +292,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 tagName:'div',
                 className:'xui-uibar-bottom',
                 BBARTDL:{
+                    $order:1,
                     className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
                 },
                 BBARTDM:{
-                    $order:1,
+                    $order:2,
                     className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
                 },
                 BBARTDR:{
-                    $order:2,
+                    $order:3,
                     className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
                 }
             },

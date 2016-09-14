@@ -133,6 +133,11 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                             $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}'
                         }
+                    },
+                    TBARTDB:{
+                        $order:5,
+                        tagName: 'div',
+                        className:'xui-uibar-tdb xui-uiborder-inset'
                     }
                 },
                 MAIN:{
