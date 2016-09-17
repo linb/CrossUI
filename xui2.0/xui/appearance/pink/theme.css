@@ -95,14 +95,18 @@ html{
 }
 
 .xui-uiborder-r-dark{
-    border-right-color:#D694BE;
+    border-right-color:#D996BF;
 }
 .xui-uiborder-b-dark{
-    border-bottom-color:#D694BE;
+    border-bottom-color:#D996BF;
 }
 .xui-uiborder-rb-dark{
-    border-right-color:#D694BE;
-    border-bottom-color:#D694BE;
+    border-right-color:#D996BF;
+    border-bottom-color:#D996BF;
+}
+.xui-uiborder-tb-dark{
+    border-top-color:#D996BF;
+    border-bottom-color:#D996BF;
 }
 .xui-uiborder-r-light{
     border-right-color:#FFC2EC;
@@ -142,7 +146,7 @@ html{
 }
 .xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
 .xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked{
-    background-color:#D694BE;
+    background-color:#EEB2D9;
 }
 
 /*gradient*/
@@ -282,14 +286,7 @@ html{
 
 
 /*xui.UI.Tabs*/
-.xui-tabs-items{
-    padding:0 0 4px 0;
-}
-.xui-tabs-listbg{
-    border-top:solid 1px #D694BE;
-    border-bottom:solid 1px #D694BE;
-    background-color:#EEB2D9;
-}
+/*.xui-tabs-items{padding:0 0 4px 0;}*/
 .xui-tabs-item{
     border-left: solid 1px #BF83AA;
     border-top: solid 1px #BF83AA;

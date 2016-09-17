@@ -93,14 +93,18 @@ html{
 }
 
 .xui-uiborder-r-dark{
-    border-right-color:#f1f1f1;
+    border-right-color: #678FB7;
 }
 .xui-uiborder-b-dark{
-    border-bottom-color:#f1f1f1;
+    border-bottom-color: #678FB7;
 }
 .xui-uiborder-rb-dark{
-    border-right-color:#f1f1f1;
-    border-bottom-color:#f1f1f1;
+    border-right-color: #678FB7;
+    border-bottom-color: #678FB7;
+}
+.xui-uiborder-tb-dark{
+    border-top-color:#678FB7;
+    border-bottom-color:#678FB7;
 }
 .xui-uiborder-r-light{
     border-right-color:#E7F1F6;
@@ -277,9 +281,7 @@ html{
 
 
 /*xui.UI.Tabs*/
-.xui-tabs-items{
-    padding:0 0 4px 0;
-}
+/*.xui-tabs-items{padding:0 0 4px 0;}*/
 .xui-tabs-item{
 	  margin:0;
     border:none;
@@ -356,7 +358,7 @@ html{
 .xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
 .xui-treegrid-cells1-checked .xui-node, .xui-treegrid-cells2-checked .xui-node, 
 .xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node{
-    background-color: #316AC5;
+    background-color: #678FB7;
     color:#fff;
 }
 .xui-treegrid-cell-mouseover, .xui-treegrid-cell-mouseover .xui-node{

@@ -98,14 +98,18 @@ html{
 }
 
 .xui-uiborder-r-dark{
-    border-right-color:#C87800;
+    border-right-color:#FF0005;
 }
 .xui-uiborder-b-dark{
-    border-bottom-color:#C87800;
+    border-bottom-color:#FF0005;
 }
 .xui-uiborder-rb-dark{
-    border-right-color:#C87800;
-    border-bottom-color:#C87800;
+    border-right-color:#FF0005;
+    border-bottom-color:#FF0005;
+}
+.xui-uiborder-tb-dark{
+    border-top-color:#FF0005;
+    border-bottom-color:#FF0005;
 }
 .xui-uiborder-r-light{
     border-right-color:#FFBCAB;
@@ -282,13 +286,7 @@ html{
 
 
 /*xui.UI.Tabs*/
-.xui-tabs-items{
-    padding:0 0 4px 0;
-}
-.xui-tabs-listbg{
-    border-top: solid 1px #FF0005;
-		border-bottom: solid 1px #FF0005;
-}
+/*.xui-tabs-items{padding:0 0 4px 0;}*/
 .xui-tabs-item{
 		border-bottom: solid 1px #FF6B44;
     border-left: solid 1px #FF6B44;

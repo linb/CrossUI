@@ -338,7 +338,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 style:'{_liststyle}',
                 LISTBG:{
                      $order:0,
-                     className:'xui-uiborder-tb xui-uitembg-bar-checked'
+                     className:'xui-uiborder-tb-dark xui-uitembg-bar-checked'
                 },
                 LEFT:{
                     className:'xui-ui-unselectable xui-special-icon',
@@ -469,7 +469,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
 
             ITEMS:{
-                padding:'1px 0 4px 0',
+                padding:'0 0 4px 0',
                 position:'relative',
                 left:0,
                 top:0,

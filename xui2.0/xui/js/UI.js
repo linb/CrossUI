@@ -2091,21 +2091,13 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-uitembg-menu":{
                 "background-color":"transparent"
             },
-            ".xui-uitembg-bar-mouseover":{
+            ".xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover":{
                 $order:2,
-                "background-color":"#EEEEEE"
+                "background-color":"#E0E0E0"
             },
-            ".xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked":{
+            ".xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked":{
                 $order:3,
                  "background-color":"#DDDDDD"
-            },
-            ".xui-uitembg-menu-mouseover":{
-                $order:2,
-                "background-color":"#C5C5C5"
-            },
-            ".xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked":{
-                $order:3,
-                 "background-color":"#B5B5B5"
             },
 
             ".xui-cell":{
@@ -2512,6 +2504,12 @@ Class("xui.UI",  "xui.absObj", {
                 'border-width':'0 1px 1px 0',
                 'border-right-color':'#EDEDED',
                 'border-bottom-color':'#EDEDED'
+            },
+            '.xui-uiborder-tb-dark':{
+                'border-style':'solid',
+                'border-width':'1px 0',
+                'border-top-color':'#B5B5B5',
+                'border-bottom-color':'#B5B5B5'
             },
             '.xui-uiborder-rb-dark':{
                 'border-style':'solid',
