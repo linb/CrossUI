@@ -48,18 +48,6 @@ Class('App', 'xui.Module',{
                     "caption" : "army"
                 },
                 {
-                    "id" : "blackwhite",
-                    "caption" : "blackwhite"
-                },
-                {
-                    "id" : "classic",
-                    "caption" : "classic"
-                },
-                {
-                    "id" : "darkblue",
-                    "caption" : "darkblue"
-                },
-                {
                     "id" : "electricity",
                     "caption" : "electricity"
                 },
@@ -498,7 +486,7 @@ Class('App', 'xui.Module',{
                 .setDockStretch("fixed")
                 .setLeft("0.8333333333333334em")
                 .setWidth("66.66666666666667em")
-                .setHeight("11em")
+                .setHeight("11.5em")
                 , "3");
             
             host.pane16.append(
@@ -929,6 +917,7 @@ Class('App', 'xui.Module',{
                 .setHeight("22.5835em")
                 .setBorderType("flat")
                 .setOverflow("overflow-y:auto")
+                .setBackground('transparent')
                 , "6");
             
             host.xui_ui_block56.append(
@@ -2447,6 +2436,7 @@ Class('App', 'xui.Module',{
                 .setWidth("67em")
                 .setHeight("20em")
                 .setAltRowsBg(true)
+                .setSelMode('multi')
                 .setHeader([{
                     "id" : "a3-1",
                     "caption" : "col 1",

@@ -374,13 +374,13 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-treegrid-header1, .xui-treegrid-header2, 
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
-    background: #D3E7F2 url(TreeGrid/head.gif) repeat-x left top;
+    background: #D3E7F2  url(Public/list_item.gif) repeat-x left -400px;
 }
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     border-color: #fff5fd  #B8D6E6 #B8D6E6 #fff5fd;
 }
 .xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
-    background: #CBDCE8 url(TreeGrid/head_mouseover.gif) repeat-x left top;
+    background: #CBDCE8 url(Public/list_item.gif) repeat-x left -500px;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
 .xui-treegrid-cells1-group, .xui-treegrid-cells2-group{

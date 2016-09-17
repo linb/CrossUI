@@ -19,7 +19,7 @@ html{
     background-color:#FFFFFF;
 }
 .xui-uibg-bar{
-    background-color:#FF7751;
+    background-color:#FF5F4A;
 }
 .xui-uibg-bar-mouseover{
     background-color:#FFB9A5;
@@ -54,10 +54,6 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-ui-invalid, .xui-ui-invalid *{}
 .xui-ui-input{}
 .xui-ui-shadow{}
-.xui-cell{}
-.xui-cell-mouseover{}
-.xui-cell-alt{}
-.xui-hcell{}
 .xui-special-icon{}
 .xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
 .xui-required{}
@@ -65,6 +61,12 @@ input:disabled, .xui-ui-inputdisabled,
 */
 .xui-cell{
 	background-color: #F9F7D1;
+}
+.xui-hcell{
+    background-color: #FFAA96;
+}
+.xui-cell-alt{
+    background-color: #fff1a0;
 }
 .xui-cell-mouseover{
   background-color:#FCEA29;
@@ -334,11 +336,6 @@ input:disabled, .xui-ui-inputdisabled,
 	  background-color: #FF6B44;
 }
 
-.xui-tabs-item-mouseover .xui-tabs-handle, 
-.xui-tabs-item-mousedown .xui-tabs-handle, 
-.xui-tabs-item-checked .xui-tabs-handle{
-	padding:0;
-}
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
 	font-size:1.5em;
 }
@@ -362,29 +359,13 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-treegrid-header1, .xui-treegrid-header2, 
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
-    background: #FFA28A url(TreeGrid/head.gif) repeat-x left top;
+    background: #FFB8A6 url(Public/list_item.gif) repeat-x left -300px;
 }
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
-    background: #FDE81E url(TreeGrid/head_mouseover.gif) repeat-x left top;
-}
-.xui-treegrid-cell-mouseover{
-    background-color: #FFF1A0;
-}
-.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
-.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background-color: #FF7751;
-}
-.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background-color: #FF0005;
-    color:#fff;
-}
-.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
-    background-color: #FFE97F;
-}
-
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     border-color: #EEE #FFB9A5 #FFB9A5 #EEE;
+}
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
+    background: #FCE01E url(Public/list_item.gif) repeat-x left -400px;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
 .xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
@@ -394,7 +375,21 @@ input:disabled, .xui-ui-inputdisabled,
     border-right:solid 1px #FFB5A2;
     background-color: #FFB5A2;
 }
-
+.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
+.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
+    background-color: #FF5F4A;
+}
+.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
+    background-color: #FFE97F;
+}
+.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
+    background-color: #FF0005;
+    color:#fff;
+}
+.xui-treegrid-cell-mouseover{
+    background-color: #FFF1A0;
+}
 
 /** important => the last one: this theme's name */
 .setting-uikey{
