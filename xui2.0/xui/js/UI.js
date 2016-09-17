@@ -2604,28 +2604,28 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly *, .xui-ui-itemreadonly *':{
+            'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
                 $order:2,
-                color: '#808080'
+                color: '#808080 !important'
             },
             '.xui-ui-readonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea':{
                 $order:3,
-                color: '#909090'
+                color: '#909090 !important'
             },
-            'button:disabled, a:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled *, .xui-ui-itemdisabled *':{
+            'button:disabled, a:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node':{
                 $order:2,
                 cursor:'not-allowed',
-                color: '#808080'
+                color: '#808080 !important'
             },
-            'input:disabled, .xui-ui-inputdisabled, .xui-uicell-disabled, .xui-uicell-disabled *, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
+            'input:disabled, .xui-ui-inputdisabled, .xui-uicell-disabled, .xui-uicell-disabled .xui-node, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
                 $order:3,
                 cursor:'not-allowed',
-                color: '#808080',
-                'background-color':'#eee'
+                color: '#808080 !important',
+                'background-color':'#eee !important'
             },
-            '.xui-ui-invalid, .xui-ui-invalid *':{
+            '.xui-ui-invalid, .xui-ui-invalid .xui-node':{
                 $order:1,
-                'background-color': '#FFEBCD'
+                'background-color': '#FFEBCD !important'
             },
             '.xui-item-row':{
                 display:"block",
@@ -2641,10 +2641,10 @@ Class("xui.UI",  "xui.absObj", {
                 visibility:'hidden'
             },
             ".xui-required":{
-                "color":"#ff0000"
+                "color":"#ff0000 !important"
             },
             '.xui-alert':{
-                'background-color':'#ff6600'
+                'background-color':'#ff6600 !important'
             },
             ".xui-err":{
                 "background-image":"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)",

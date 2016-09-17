@@ -2385,7 +2385,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 $order:6,
                 'background-color':'#FFE97F'
             },
-            'CELLS1-checked, CELLS2-checked, CELL-checked, CELL-checked CELLA':{
+            'CELLS1-checked, CELLS2-checked, CELLS1-checked .xui-node, CELLS2-checked .xui-node, CELL-checked, CELL-checked .xui-node':{
                  $order:6,
                 'background-color':'#ABABAB',
                 color:'#fff'
@@ -2491,9 +2491,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'FHCELL-mouseover, HCELL-mouseover':{
                'background-color':'#F6F6F6'
             },
-            'CELL-mouseover':{
+            'CELL-mouseover, CELL-mouseover .xui-node':{
                 $order:5,
-                'background-color':'#C5C5C5'
+                'background-color':'#C5C5C5 !important'
             },
             'FCELL CELLA, GCELL GCELLA, HCELLA':{
                 position:'relative',

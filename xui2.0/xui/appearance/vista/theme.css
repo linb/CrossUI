@@ -24,37 +24,7 @@ html{
     background-color:#FFFFFF;
 }
 
-/*disable and readonly*/
-input[readonly], textarea[readonly], 
-.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, 
-.xui-ui-readonly *, .xui-ui-itemreadonly *{
-		color: #808080;
-}
-.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
-.xui-ui-readonly textarea, .xui-ui-readonly textarea{
-		color: #09090;
-}
-button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-itemdisabled,  
-.xui-ui-disabled *, .xui-ui-itemdisabled *{
-	color: #808080;
-}
-input:disabled, .xui-ui-inputdisabled, 
-.xui-uicell-disabled, .xui-uicell-disabled *,
-.xui-ui-disabled input, .xui-ui-itemdisabled input, 
-.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
-	 color: #909090;
-   background-color:#eee;
-}
-
-/*
-.xui-ui-invalid, .xui-ui-invalid *{}
-.xui-ui-input{}
-.xui-ui-shadow{}
-.xui-special-icon{}
-.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
-.xui-required{}
-.xui-alert{}
-*/
+/*small cell*/
 .xui-cell{
 		background-color: #F9F9FB;
 }
@@ -384,13 +354,48 @@ input:disabled, .xui-ui-inputdisabled,
     background-color: #FFE97F;
 }
 .xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
+.xui-treegrid-cells1-checked .xui-node, .xui-treegrid-cells2-checked .xui-node, 
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node{
     background-color: #316AC5;
     color:#fff;
 }
-.xui-treegrid-cell-mouseover{
-    background-color: #D9E8FB;
+.xui-treegrid-cell-mouseover, .xui-treegrid-cell-mouseover .xui-node{
+    background-color: #D9E8FB !important;
 }
+
+
+/*disable and readonly*/
+input[readonly], textarea[readonly], 
+.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, 
+.xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node{
+		color: #808080 !important;
+}
+.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
+.xui-ui-readonly textarea, .xui-ui-readonly textarea{
+		color: #09090 !important;
+}
+button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-itemdisabled,  
+.xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node{
+	color: #808080 !important;
+}
+input:disabled, .xui-ui-inputdisabled, 
+.xui-uicell-disabled, .xui-uicell-disabled .xui-node,
+.xui-ui-disabled input, .xui-ui-itemdisabled input, 
+.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
+	 color: #909090 !important;
+   background-color:#eee !important;
+}
+
+/*
+.xui-ui-invalid, .xui-ui-invalid .xui-node{}
+.xui-ui-input{}
+.xui-ui-shadow{}
+.xui-special-icon{}
+.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
+.xui-required{}
+.xui-alert{}
+*/
+
 /** important => the last one: this theme's name */
 .setting-uikey{
     font-family: vista;
