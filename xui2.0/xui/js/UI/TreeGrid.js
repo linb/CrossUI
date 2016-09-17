@@ -2583,6 +2583,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator),null,null,'click');
                         profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
+                    return false;
                 }
             },
             //key navigator
