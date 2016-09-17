@@ -142,7 +142,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         CON:{
                             $order:1,
                             tagName:'div',
-                            className:'xui-uibg-content xui-uiborder-inset',
+                            className:'xui-uiborder-inset',
                             SIMPLE:{
                                 tagName:'div',
                                 TOP:{

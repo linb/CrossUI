@@ -1,6 +1,6 @@
 /*base size*/
 .xui-node{
-		font-size: 12px;
+    font-size: 12px;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
@@ -10,7 +10,7 @@
 /*background*/
 html{
   background-color:#FFFFFF;
-	color:#333;
+  color:#333;
 }
 .xui-uibg-base{
     background-color:#FFFFFF;
@@ -29,21 +29,21 @@ html{
 input[readonly], textarea[readonly], 
 .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, 
 .xui-ui-readonly *, .xui-ui-itemreadonly *{
-		color: #808080;
+    color: #808080;
 }
 .xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
 .xui-ui-readonly textarea, .xui-ui-readonly textarea{
-		color: #09090;
+    color: #09090;
 }
 button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-itemdisabled,  
 .xui-ui-disabled *, .xui-ui-itemdisabled *{
-	color: #808080;
+  color: #808080;
 }
 input:disabled, .xui-ui-inputdisabled, 
 .xui-uicell-disabled, .xui-uicell-disabled *,
 .xui-ui-disabled input, .xui-ui-itemdisabled input, 
 .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
-	 color: #909090;
+   color: #909090;
    background-color:#eee;
 }
 
@@ -51,17 +51,19 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-ui-invalid, .xui-ui-invalid *{}
 .xui-ui-input{}
 .xui-ui-shadow{}
-.xui-cell{}
-.xui-cell-mouseover{}
-.xui-cell-alt{}
-.xui-hcell{}
 .xui-special-icon{}
 .xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
 .xui-required{}
 .xui-alert{}
 */
 .xui-cell{
-	background-color: #FAF9F9;
+  background-color: #FAF9F9;
+}
+.xui-cell-alt{
+  background-color: #F9E3F0;
+}
+.xui-hcell{
+  background-color: #FFBEE9;
 }
 .xui-cell-mouseover{
   background-color:#F6D5EA;
@@ -147,19 +149,19 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
     background-image: url(Public/list_item.gif);
     background-repeat:repeat-x;
-	  border-color:#BF83AA;
+    border-color:#BF83AA;
 }
 .xui-uitembg-mouseover{
-	background-position: left -100px;
-	background-color: #CC7DB3;
+  background-position: left -100px;
+  background-color: #CC7DB3;
 }
 .xui-uitembg-mousedown{
-	background-position: left -200px;
-	background-color:#D091BD;
+  background-position: left -200px;
+  background-color:#D091BD;
 }
 .xui-uitembg-checked{
-	background-position:left top;
-	background-color:#EEB2D9;
+  background-position:left top;
+  background-color:#EEB2D9;
 }
 
 .xui-uitembg-bar{
@@ -236,36 +238,36 @@ input:disabled, .xui-ui-inputdisabled,
     background-position: right top;
 }
 .xui-uibar-top .xui-uibar-tdb{
-	display:block;
+  display:block;
 }
 .xui-uibar-top .xui-uibar-tdlt{
-	height:30px;
-	background-position: 0 0;
+  height:30px;
+  background-position: 0 0;
 }
 .xui-uibar-top .xui-uibar-tdmt{
-	height:30px;
-	background-position: 0 -30px;
-	background-repeat: repeat-x;
+  height:30px;
+  background-position: 0 -30px;
+  background-repeat: repeat-x;
 }
 .xui-uibar-top .xui-uibar-tdrt{
-	height:30px;
-	background-position: right -60px;
+  height:30px;
+  background-position: right -60px;
 }
 .xui-uibar-top-focus .xui-uibar-tdl,
 .xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
-	background-color: #EEB2D9;
+  background-color: #EEB2D9;
 }
 
 .xui-uibar-top-focus .xui-uibar-tdlt{
-	background-position: left -90px;
+  background-position: left -90px;
 }
 .xui-uibar-top-focus .xui-uibar-tdmt{
-	background-position: left -120px;
-	background-repeat: repeat-x;
+  background-position: left -120px;
+  background-repeat: repeat-x;
 }
 .xui-uibar-top-focus .xui-uibar-tdrt{
-	background-position: right -150px;
+  background-position: right -150px;
 }
 
 
@@ -273,14 +275,14 @@ input:disabled, .xui-ui-inputdisabled,
     padding:3px 0;
 }
 .xui-uibar-bottom .xui-uibar-tdl{
-	background-position: left -189px;
+  background-position: left -189px;
 }
 .xui-uibar-bottom .xui-uibar-tdm{
-	background-position: left -211px;
-	background-repeat: repeat-x;
+  background-position: left -211px;
+  background-repeat: repeat-x;
 }
 .xui-uibar-bottom .xui-uibar-tdr{
-	background-position: right -233px;
+  background-position: right -233px;
 }
 
 
@@ -288,24 +290,24 @@ input:disabled, .xui-ui-inputdisabled,
     padding:5px 0 0 0;
 }
 .xui-uibar-top-s .xui-uibar-tdl{
-	background-position: left -261px;
+  background-position: left -261px;
 }
 .xui-uibar-top-s .xui-uibar-tdm{
-	background-position: left -283px;
-	background-repeat: repeat-x;
+  background-position: left -283px;
+  background-repeat: repeat-x;
 }
 .xui-uibar-top-s .xui-uibar-tdr{
-	background-position: right -305px;
+  background-position: right -305px;
 }
 .xui-uibar-bottom-s .xui-uibar-tdl{
-	background-position: left -327px;
+  background-position: left -327px;
 }
 .xui-uibar-bottom-s .xui-uibar-tdm{
-	background-position: left -349px;
-	background-repeat: repeat-x;
+  background-position: left -349px;
+  background-repeat: repeat-x;
 }
 .xui-uibar-bottom-s .xui-uibar-tdr{
-	background-position: right -371px;
+  background-position: right -371px;
 }
 
 
@@ -315,8 +317,8 @@ input:disabled, .xui-ui-inputdisabled,
 }
 .xui-tabs-listbg{
     border-top:solid 1px #D694BE;
-		border-bottom:solid 1px #D694BE;
-		background-color:#EEB2D9;
+    border-bottom:solid 1px #D694BE;
+    background-color:#EEB2D9;
 }
 .xui-tabs-item{
     border-left: solid 1px #BF83AA;
@@ -325,66 +327,45 @@ input:disabled, .xui-ui-inputdisabled,
     background-color:transparent; 
 }
 .xui-tabs-item-mouseover{
-		background-color: #CC7DB3;
+    background-color: #CC7DB3;
 }
 .xui-tabs-item-mousedown{
-	  background-color: #D091BD;
+    background-color: #D091BD;
 }
 .xui-tabs-item-checked{
-	  background-color: #EEB2D9;
+    background-color: #EEB2D9;
 }
 
-.xui-tabs-item-mouseover .xui-tabs-handle, 
-.xui-tabs-item-mousedown .xui-tabs-handle, 
-.xui-tabs-item-checked .xui-tabs-handle{
-	padding:0;
-}
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
-	font-size:1.5em;
+  font-size:1.5em;
 }
 
 /*xui.UI.TreeGrid*/
 .xui-treegrid-alt{
-		background-color: #EFF8FF;
+    background-color: #EFF8FF;
 }
 .xui-treegrid-rownum{
-		color:#808080;
+    color:#808080;
 }
 .xui-treegrid-tbody21 .columnfreezed{
     -moz-box-shadow: 1px 0  1px #CCC;
     -webkit-box-shadow: 1px 0  1px #CCC;
-		box-shadow: 1px 0  1px #CCC;
+    box-shadow: 1px 0  1px #CCC;
 }
 .xui-treegrid-tbody12 .rowfreezed{
     -moz-box-shadow: 0 1px 1px #CCC;
     -webkit-box-shadow: 0 1px 1px #CCC;
-		box-shadow: 0 1px 1px #CCC;
+    box-shadow: 0 1px 1px #CCC;
 }
 .xui-treegrid-header1, .xui-treegrid-header2, 
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #F7CFE8 url(TreeGrid/head.gif) repeat-x left top;
 }
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
-    background: #EDC7DE url(TreeGrid/head_mouseover.gif) repeat-x left top;
-}
-.xui-treegrid-cell-mouseover{
-    background-color: #F8E3F0;
-}
-.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
-.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background-color: #EEB2D9;
-}
-.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background-color: #D996BF;
-    color:#fff;
-}
-.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
-    background-color: #FFE97F;
-}
-
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     border-color: #fff5fd  #EEB2D9 #EEB2D9 #fff5fd;
+}
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
+    background: #EDC7DE url(TreeGrid/head_mouseover.gif) repeat-x left top;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
 .xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
@@ -394,7 +375,21 @@ input:disabled, .xui-ui-inputdisabled,
     border-right:solid 1px #FFB5A2;
     background-color: #DFE8F6;
 }
-
+.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
+.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
+    background-color: #EEB2D9;
+}
+.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
+    background-color: #FFE97F;
+}
+.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
+    background-color: #D996BF;
+    color:#fff;
+}
+.xui-treegrid-cell-mouseover{
+    background-color: #F8E3F0;
+}
 
 /** important => the last one: this theme's name */
 .setting-uikey{

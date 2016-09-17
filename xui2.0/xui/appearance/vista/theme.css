@@ -50,15 +50,23 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-ui-invalid, .xui-ui-invalid *{}
 .xui-ui-input{}
 .xui-ui-shadow{}
-.xui-cell{}
-.xui-cell-mouseover{}
-.xui-cell-alt{}
-.xui-hcell{}
 .xui-special-icon{}
 .xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
 .xui-required{}
 .xui-alert{}
 */
+.xui-cell{
+		background-color: #F9F9FB;
+}
+.xui-cell-alt{
+    background-color: #FDF8D2;
+}
+.xui-hcell{
+    background-color: #E8EEF7;
+}
+.xui-cell-mouseover{
+    background-color: #D9E8FB;
+}
 .xui-cell-checked, .xui-cell-checked .xui-node{
 	background-color: #316AC5;
 }
@@ -353,22 +361,6 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     background: #EBF3FD url(TreeGrid/head.gif) repeat-x left top;
 }
-.xui-treegrid-cell-mouseover{
-    background-color: #D9E8FB;
-}
-.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
-.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background-color: #B0EAFA;
-}
-.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background-color: #316AC5;
-    color:#fff;
-}
-.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
-    background-color: #FFE97F;
-}
-
 .xui-treegrid-fhcell, .xui-treegrid-hcell{
     border-right:solid 1px #d4d4d4;
     border-bottom:solid 1px #d4d4d4;
@@ -383,7 +375,21 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
     border-right:solid 1px #CFE4FE;
 }
-
+.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
+.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
+    background-color: #B0EAFA;
+}
+.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
+    background-color: #FFE97F;
+}
+.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
+    background-color: #316AC5;
+    color:#fff;
+}
+.xui-treegrid-cell-mouseover{
+    background-color: #D9E8FB;
+}
 /** important => the last one: this theme's name */
 .setting-uikey{
     font-family: vista;

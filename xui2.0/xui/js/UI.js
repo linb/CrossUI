@@ -2232,7 +2232,7 @@ Class("xui.UI",  "xui.absObj", {
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
-                'padding':'.25em 0 0 0'
+                'padding':'3px 0 0 0'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
@@ -2262,7 +2262,7 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-top-s
             '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
                 $order:3,
-                height:'.8px'
+                height:'6px'
             },
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
@@ -2300,7 +2300,7 @@ Class("xui.UI",  "xui.absObj", {
 //uibar-bottom-s
             '.xui-uibar-bottom-s':{
                 $order:3,
-                'padding':'.25em 0'
+                'padding':'3px 0'
             },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
