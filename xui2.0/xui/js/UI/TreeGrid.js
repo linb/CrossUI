@@ -6539,7 +6539,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _left=0;
                     for(var k=0,o;k<=grp['to'];k++){
                         o=header[k];
-                        _ww=css.$px(o._colWidth);
+                        _ww=css.$px(o._colWidth,null,true);
                         // for the main region
                         if(prop.freezedColumn && prop.freezedColumn==k && !_l2){
                             _l2 = _left;
