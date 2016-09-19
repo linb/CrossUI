@@ -45,13 +45,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             }else{
                 return profile.getSubNode("EDITOR").html();
             }
-        },
-        //update UI face
-        _setDirtyMark:function(){
-            return arguments.callee.upper.apply(this,['MARK']);
         }
     },
     Static:{
+        DIRYMARKICON:"DIRTYMARK",
         Templates:{
             tagName:'div',
             style:'{_style}',
@@ -66,8 +63,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     tagName:'div',
                     className:'xui-uiborder-flat xui-uibg-base'
                 },
-                MARK:{
-                },
+                DIRTYMARK:{},
                 POOL:{}
             }
         },
@@ -189,7 +185,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 position:'absolute',
                 display:'none'
             },
-            MARK:{
+            DIRTYMARK:{
                 position:'absolute',
                 width:"1em",
                 height:"1em"
@@ -1082,7 +1078,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             size.height=adjustunit(size.height);
 
                             profile.getSubNode('EDITOR').top(adjustunit(_top)).cssSize(size,true);
-                            profile.getSubNode('MARK').left(0+css.$picku()).top(adjustunit(_top+1));
+                            profile.getSubNode('DIRTYMARK').left(0+css.$picku()).top(adjustunit(_top+1));
                         }
                     }
                 }, 20/*greater than 16*/);

@@ -1,6 +1,7 @@
 /*base size*/
 .xui-node{
     font-size: 12px;
+    color:#333;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
@@ -8,10 +9,6 @@
 }
 
 /*background*/
-html{
-  background-color:#FFFFFF;
-  color:#333;
-}
 .xui-uibg-base{
     background-color:#FFFFFF;
 }
@@ -23,54 +20,6 @@ html{
 }
 .xui-uibg-content{
     background-color:#FFFFFF;
-}
-
-/*disable and readonly*/
-input[readonly], textarea[readonly], 
-.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, 
-.xui-ui-readonly *, .xui-ui-itemreadonly *{
-    color: #808080;
-}
-.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
-.xui-ui-readonly textarea, .xui-ui-readonly textarea{
-    color: #09090;
-}
-button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-itemdisabled,  
-.xui-ui-disabled *, .xui-ui-itemdisabled *{
-  color: #808080;
-}
-input:disabled, .xui-ui-inputdisabled, 
-.xui-uicell-disabled, .xui-uicell-disabled *,
-.xui-ui-disabled input, .xui-ui-itemdisabled input, 
-.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
-   color: #909090;
-   background-color:#eee;
-}
-
-/*
-.xui-ui-invalid, .xui-ui-invalid *{}
-.xui-ui-input{}
-.xui-ui-shadow{}
-.xui-special-icon{}
-.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
-.xui-required{}
-.xui-alert{}
-*/
-.xui-cell{
-  background-color: #FAF9F9;
-}
-.xui-cell-alt{
-  background-color: #F9E3F0;
-}
-.xui-hcell{
-  background-color: #FFBEE9;
-}
-.xui-cell-mouseover{
-  background-color:#F6D5EA;
-}
-.xui-cell-checked, .xui-cell-checked .xui-node{
-    background-color:#BF83AA;
-    color:#fff;
 }
 
 /*border*/
@@ -114,25 +63,29 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-uiborder-outset{
     border-color:#F8E3F0 #BF83AA #BF83AA #F8E3F0;
 }
-.xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
+.xui-uiborder-inset, .xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
     border-color:#BF83AA #F8E3F0 #F8E3F0 #BF83AA;
 }
-.xui-uiborder-btn-mouseover{
+.xui-uitoolbtn-mouseover{
     border-color: #F8E3F0;
 }
-.xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
+.xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
     background: #F8E3F0;
 }
 
 .xui-uiborder-r-dark{
-    border-right-color:#D694BE;
+    border-right-color:#D996BF;
 }
 .xui-uiborder-b-dark{
-    border-bottom-color:#D694BE;
+    border-bottom-color:#D996BF;
 }
 .xui-uiborder-rb-dark{
-    border-right-color:#D694BE;
-    border-bottom-color:#D694BE;
+    border-right-color:#D996BF;
+    border-bottom-color:#D996BF;
+}
+.xui-uiborder-tb-dark{
+    border-top-color:#D996BF;
+    border-bottom-color:#D996BF;
 }
 .xui-uiborder-r-light{
     border-right-color:#FFC2EC;
@@ -171,8 +124,8 @@ input:disabled, .xui-ui-inputdisabled,
     background-color:#FFC2EC;
 }
 .xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
-.xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked{
-    background-color:#D694BE;
+.xui-uitembg-menu-mouseover, .xui-uitembg-menu-mousedown{
+    background-color:#EEB2D9;
 }
 
 /*gradient*/
@@ -312,14 +265,7 @@ input:disabled, .xui-ui-inputdisabled,
 
 
 /*xui.UI.Tabs*/
-.xui-tabs-items{
-    padding:0 0 4px 0;
-}
-.xui-tabs-listbg{
-    border-top:solid 1px #D694BE;
-    border-bottom:solid 1px #D694BE;
-    background-color:#EEB2D9;
-}
+/*.xui-tabs-items{padding:0 0 4px 0;}*/
 .xui-tabs-item{
     border-left: solid 1px #BF83AA;
     border-top: solid 1px #BF83AA;
@@ -341,6 +287,11 @@ input:disabled, .xui-ui-inputdisabled,
 }
 
 /*xui.UI.TreeGrid*/
+.xui-uicell,
+.xui-treegrid{
+  background-color: #FAF9F9;
+}
+.xui-uicell-alt,
 .xui-treegrid-alt{
     background-color: #EFF8FF;
 }
@@ -357,14 +308,16 @@ input:disabled, .xui-ui-inputdisabled,
     -webkit-box-shadow: 0 1px 1px #CCC;
     box-shadow: 0 1px 1px #CCC;
 }
-.xui-treegrid-header1, .xui-treegrid-header2, 
-.xui-treegrid-fhcell, .xui-treegrid-hcell{
+.xui-hcell,
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,
+.xui-treegrid-header1, .xui-treegrid-header2{
     background: #F7CFE8 url(Public/list_item.gif) repeat-x left -300px;
 }
-.xui-treegrid-fhcell, .xui-treegrid-hcell{
+.xui-hcell,
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
     border-color: #fff5fd  #EEB2D9 #EEB2D9 #fff5fd;
 }
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover, .xui-treegrid-hscell-mouseover{
     background: #EDC7DE url(Public/list_item.gif) repeat-x left -400px;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
@@ -382,14 +335,51 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
     background-color: #FFE97F;
 }
-.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
+.xui-uicell-checked, .xui-uicell-checked .xui-node,
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node,
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node, 
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node{
     background-color: #D996BF;
     color:#fff;
 }
-.xui-treegrid-cell-mouseover{
-    background-color: #F8E3F0;
+.xui-uicell-mouseover,
+.xui-treegrid-cell-mouseover, .xui-treegrid-cell-mouseover .xui-node{
+    background-color: #F8E3F0 !important;
 }
+
+/*disable and readonly*/
+input[readonly], textarea[readonly], 
+input:read-only, textarea:read-only,
+.xui-ui-readonly, .xui-ui-readonly .xui-node,
+.xui-ui-itemreadonly, .xui-ui-itemreadonly .xui-node{
+    color: #808080 !important;
+}
+.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
+.xui-ui-readonly textarea, .xui-ui-readonly textarea{
+    color: #09090 !important;
+}
+button:disabled, a:disabled, 
+.xui-ui-disabled, .xui-ui-disabled .xui-node,
+.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node{
+  color: #808080 !important;
+}
+input:disabled, textarea:disabled, 
+.xui-uicell-disabled, .xui-uicell-disabled .xui-node,
+.xui-ui-disabled input, .xui-ui-itemdisabled input, 
+.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
+   color: #909090 !important;
+   background-color:#eee;
+}
+
+/*
+.xui-ui-invalid, .xui-ui-invalid .xui-node{}
+.xui-ui-input{}
+.xui-ui-shadow{}
+.xui-special-icon{}
+.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
+.xui-required{}
+.xui-alert{}
+*/
 
 /** important => the last one: this theme's name */
 .setting-uikey{

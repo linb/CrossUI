@@ -1,6 +1,7 @@
 /*base size*/
 .xui-node{
     font-size: 12px;
+    color:#333;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
@@ -8,204 +9,162 @@
 }
 
 /*background*/
-html{
-  background-color:#FFFFFF;
-  color:#333;
-}
 .xui-uibg-base{
     background-color:#FFFFFF;
 }
 .xui-uibg-bar{
-    background-color:#B8D6E6;
+    background-color:#749CC4;
 }
 .xui-uibg-bar-mouseover{
-    background-color:#E5EFF5;
+    background-color:#C5D5E4;
 }
 .xui-uibg-content{
     background-color:#FFFFFF;
 }
 
-/*disable and readonly*/
-input[readonly], textarea[readonly], 
-.xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, 
-.xui-ui-readonly *, .xui-ui-itemreadonly *{
-    color: #808080;
-}
-.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
-.xui-ui-readonly textarea, .xui-ui-readonly textarea{
-    color: #09090;
-}
-button:disabled, a:disabled, .xui-ui-disabled, .xui-ui-itemdisabled,  
-.xui-ui-disabled *, .xui-ui-itemdisabled *{
-  color: #808080;
-}
-input:disabled, .xui-ui-inputdisabled, 
-.xui-uicell-disabled, .xui-uicell-disabled *,
-.xui-ui-disabled input, .xui-ui-itemdisabled input, 
-.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
-   color: #909090;
-   background-color:#eee;
-}
-
-/*
-.xui-ui-invalid, .xui-ui-invalid *{}
-.xui-ui-input{}
-.xui-ui-shadow{}
-.xui-special-icon{}
-.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
-.xui-required{}
-.xui-alert{}
-*/
-.xui-cell{
-  background-color: #F9F9FB;
-}
-.xui-cell-alt{
-    background-color: #DEECF4;
-}
-.xui-hcell{
-  background-color: #B8D6E6;
-}
-.xui-cell-mouseover{
-  background-color:#DEECF4;
-}
-.xui-cell-checked, .xui-cell-checked .xui-node{
-    background-color:#3393d2;
-    color:#fff;
-}
-
 /*border*/
 .xui-uiborder{
-    border:solid 1px #88A6B6;
+    border:solid 1px #1D456D;
 }
 .xui-uiborder-l{
-    border-left-color:#E5EFF5;
+    border-left-color:#D9E8FB;
 }
 .xui-uiborder-t{
-    border-top-color:#E5EFF5;
+    border-top-color:#D9E8FB;
 }
 .xui-uiborder-r{
-    border-right-color:#88A6B6;
+    border-right-color:#1D456D;
 }
 .xui-uiborder-b{
-    border-bottom-color:#88A6B6;
+    border-bottom-color:#1D456D;
 }
 .xui-uiborder-lr{
-    border-left-color:#E5EFF5;
-    border-right-color:#88A6B6;
+    border-left-color:#D9E8FB;
+    border-right-color:#1D456D;
 }
 .xui-uiborder-tb{
-    border-top-color:#E5EFF5;
-    border-bottom-color:#88A6B6;
+    border-top-color:#D9E8FB;
+    border-bottom-color:#1D456D;
 }
 .xui-uiborder-lt{
-    border-left-color:#E5EFF5;
-    border-top-color:#E5EFF5;
+    border-left-color:#D9E8FB;
+    border-top-color:#D9E8FB;
 }
 .xui-uiborder-rb{
-    border-right-color:#88A6B6;
-    border-bottom-color:#88A6B6;
+    border-right-color:#1D456D;
+    border-bottom-color:#1D456D;
 }
 .xui-uiborder-flat{
-    border-color:#88A6B6;
+    border-color:#1D456D;
 }
 .xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
     border-color:#9CBACA;
 }
 .xui-uiborder-outset{
-    border-color:#E5EFF5 #88A6B6 #88A6B6 #E5EFF5;
+    border-color:#D9E8FB #1D456D #1D456D #D9E8FB;
 }
-.xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
-    border-color:#88A6B6 #E5EFF5 #E5EFF5 #88A6B6;
+.xui-uiborder-inset, .xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
+    border-color:#1D456D #D9E8FB #D9E8FB #1D456D;
 }
-.xui-uiborder-btn-mouseover{
-    border-color: #E5EFF5;
+.xui-uitoolbtn-mouseover{
+    border-color: #D9E8FB;
 }
-.xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked{
-    background: #E5EFF5;
+.xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
+    background: #D9E8FB;
 }
 
 .xui-uiborder-r-dark{
-    border-right-color:#9CBCCF;
+    border-right-color:#1D456D;
 }
 .xui-uiborder-b-dark{
-    border-bottom-color:#9CBCCF;
+    border-bottom-color:#1D456D;
 }
 .xui-uiborder-rb-dark{
-    border-right-color:#9CBCCF;
-    border-bottom-color:#9CBCCF;
+    border-right-color:#1D456D;
+    border-bottom-color:#1D456D;
+}
+.xui-uiborder-tb-dark{
+    border-top-color:#1D456D;
+    border-bottom-color:#1D456D;
 }
 .xui-uiborder-r-light{
-    border-right-color:#B8D6E6;
+    border-right-color:#749cc4;
 }
 .xui-uiborder-b-light{
-    border-bottom-color:#B8D6E6;
+    border-bottom-color:#749cc4;
 }
 .xui-uiborder-rb-light{
-    border-right-color:#B8D6E6;
-    border-bottom-color:#B8D6E6;
+    border-right-color:#749cc4;
+    border-bottom-color:#749cc4;
 }
 
 /*item*/
 .xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
     background-image: url(Public/list_item.gif);
     background-repeat:repeat-x;
-    border-color:#85AEC2;
+    border-color:#2B6394;
 }
 .xui-uitembg-mouseover{
-  background-position: left -200px;
-  background-color:#85AEC2;
+  background-position:left -100px;
+  background-color:#749CC4;
 }
 .xui-uitembg-mousedown{
   background-position: left -300px;
-  background-color:#97B9C8;
+  background-color:#447398;
 }
 .xui-uitembg-checked{
-  background-position:left -100px;
-   background-color:#B8D6E6;
+  background-position: left -200px;
+  background-color:#2B6394;
 }
 
 .xui-uitembg-bar{
-    background-color:#88A6B6;
-}
-.xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover{
     background-color:#85AEC2;
 }
-.xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
-.xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked{
-    background-color:#9CBCCF;
+.xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover{
+    background-color:#719BCA;
 }
-
+.xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
+.xui-uitembg-menu-mouseover, .xui-uitembg-menu-mousedown{
+    background-color:#2B6394;
+}
+.xui-uitembg-checked, .xui-uitembg-checked .xui-node, 
+.xui-uitembg-bar-mousedown, .xui-uitembg-bar-mousedown .xui-node,
+.xui-uitembg-bar-checked,  .xui-uitembg-bar-checked .xui-node, 
+.xui-uitembg-menu-mouseover,  .xui-uitembg-menu-mouseover .xui-node,
+.xui-uitembg-menu-mousedown, .xui-uitembg-menu-mousedown .xui-node{
+	color:#ffffff;
+}
 /*gradient*/
 .xui-ui-gradientbg, .xui-ui-btn{
-    border-color:#88A6B6;
-    -moz-box-shadow:inset 0 1px 0 0 #E5EFF5;
-    -webkit-box-shadow:inset 0 1px 0 0 #E5EFF5;
-    box-shadow:inset 0 1px 0 0 #E5EFF5;    
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E5EFF5', endColorstr='#88A6B6');
-    background: linear-gradient(top,  #E5EFF5 5%,  #88A6B6 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #E5EFF5), to(1, #88A6B6));
-    background: -webkit-linear-gradient(top, #E5EFF5 5%, #88A6B6 100%);
-    background: -moz-linear-gradient(top,  #E5EFF5 5%,  #88A6B6 100%);
-    background: -o-linear-gradient(top,  #E5EFF5 5%,  #88A6B6 100%);  
+    border-color:#1D456D;
+    -moz-box-shadow:inset 0 1px 0 0 #D9E8FB;
+    -webkit-box-shadow:inset 0 1px 0 0 #D9E8FB;
+    box-shadow:inset 0 1px 0 0 #D9E8FB;    
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D9E8FB', endColorstr='#1D456D');
+    background: linear-gradient(top,  #D9E8FB 5%,  #1D456D 100%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #D9E8FB), to(1, #1D456D));
+    background: -webkit-linear-gradient(top, #D9E8FB 5%, #1D456D 100%);
+    background: -moz-linear-gradient(top,  #D9E8FB 5%,  #1D456D 100%);
+    background: -o-linear-gradient(top,  #D9E8FB 5%,  #1D456D 100%);  
 }
 .xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
-    border-color: #9CBACA;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E5EFF5', endColorstr='#9CBACA');
-    background: linear-gradient(top,  #E5EFF5 5%,  #9CBACA 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #E5EFF5), to(1, #9CBACA));
-    background: -webkit-linear-gradient(top, #E5EFF5 5%, #9CBACA 100%);
-    background: -moz-linear-gradient(top,  #E5EFF5 5%,  #9CBACA 100%);
-    background: -o-linear-gradient(top,  #E5EFF5 5%,  #9CBACA 100%);  
+    border-color: #749CC4;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D9E8FB', endColorstr='#749CC4');
+    background: linear-gradient(top,  #D9E8FB 5%,  #749CC4 100%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #D9E8FB), to(1, #749CC4));
+    background: -webkit-linear-gradient(top, #D9E8FB 5%, #749CC4 100%);
+    background: -moz-linear-gradient(top,  #D9E8FB 5%,  #749CC4 100%);
+    background: -o-linear-gradient(top,  #D9E8FB 5%,  #749CC4 100%);  
 }
 .xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked,
 .xui-ui-btn-mousedown, .xui-ui-btn-checked,  
 .xui-ui-btn:active, .xui-ui-btn-mousedown:hover,  .xui-ui-btn-checked:hover{
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#88A6B6', endColorstr='#E5EFF5');
-    background: linear-gradient(top,  #88A6B6 5%,  #E5EFF5 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #88A6B6), to(1, #E5EFF5));
-    background: -webkit-linear-gradient(top, #88A6B6 5%, #E5EFF5 100%);
-    background: -moz-linear-gradient(top,  #88A6B6 5%,  #E5EFF5 100%);
-    background: -o-linear-gradient(top,  #88A6B6 5%,  #E5EFF5 100%);  
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1D456D', endColorstr='#D9E8FB');
+    background: linear-gradient(top,  #1D456D 5%,  #D9E8FB 100%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #1D456D), to(1, #D9E8FB));
+    background: -webkit-linear-gradient(top, #1D456D 5%, #D9E8FB 100%);
+    background: -moz-linear-gradient(top,  #1D456D 5%,  #D9E8FB 100%);
+    background: -o-linear-gradient(top,  #1D456D 5%,  #D9E8FB 100%);  
 }
 
 /*uicontainer*/
@@ -256,7 +215,7 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-uibar-top-focus .xui-uibar-tdl,
 .xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
-  background-color: #B8D6E6;
+  background-color: #749cc4;
 }
 
 .xui-uibar-top-focus .xui-uibar-tdlt{
@@ -312,34 +271,27 @@ input:disabled, .xui-ui-inputdisabled,
 
 
 /*xui.UI.Tabs*/
-.xui-tabs-items{
-    padding:0 0 4px 0;
-}
-.xui-tabs-listbg{
-		border-top: solid 1px #9CBCCF;
-    border-bottom: solid 1px #9CBCCF;
-    background-color:#85AEC2;
-}
+/*.xui-tabs-items{padding:0 0 4px 0;}*/
 .xui-tabs-item{
     background-image: url(Public/list_item.gif);
     background-repeat:repeat-x;
 
     background-position: left top;
-    background-color: #CCEAFA;
+    background-color: #88B0D8;
 
-    border-color: #88A6B6;
+    border-color: #1D456D;
 }
 .xui-tabs-item-mouseover{
-   background-position:left -100px;
-   background-color:#B8D6E6;
+  background-position:left -100px;
+   background-color:#749CC4;
 }
 .xui-tabs-item-mousedown{
   background-position: left -300px;
-  background-color:#97B9C8;
+  background-color:#447398;
 }
 .xui-tabs-item-checked{
   background-position: left -200px;
-  background-color:#85AEC2;
+  background-color:#2B6394;
 }
 .xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
   font-size:1.5em;
@@ -351,11 +303,14 @@ input:disabled, .xui-ui-inputdisabled,
 .xui-tabs-item-checked .xui-tabs-handle{
 	padding-bottom:1px;
 }
-.xui-tabs-item-checked .xui-node{
-	color:#ffffff;
-}
+
 
 /*xui.UI.TreeGrid*/
+.xui-uicell,
+.xui-treegrid{
+  background-color: #D9E8FB;
+}
+.xui-uicell-alt,
 .xui-treegrid-alt{
     background-color: #EEEEEE;
 }
@@ -372,39 +327,78 @@ input:disabled, .xui-ui-inputdisabled,
     -webkit-box-shadow: 0 1px 1px #CCC;
     box-shadow: 0 1px 1px #CCC;
 }
-.xui-treegrid-header1, .xui-treegrid-header2, 
-.xui-treegrid-fhcell, .xui-treegrid-hcell{
-    background: #D3E7F2  url(Public/list_item.gif) repeat-x left -400px;
+.xui-hcell,
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,
+.xui-treegrid-header1, .xui-treegrid-header2{
+    background: #A7BFDA  url(Public/list_item.gif) repeat-x left -400px;
 }
-.xui-treegrid-fhcell, .xui-treegrid-hcell{
-    border-color: #fff5fd  #B8D6E6 #B8D6E6 #fff5fd;
+.xui-hcell,
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
+    border-right: solid 1px #B4C8DC;
+    border-bottom: solid 1px #B4C8DC;
 }
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover{
-    background: #CBDCE8 url(Public/list_item.gif) repeat-x left -500px;
+.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover, .xui-treegrid-hscell-mouseover{
+    background: #A3B7CF url(Public/list_item.gif) repeat-x left -500px;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
 .xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
-    border-right:solid 1px #B8D6E6;
+    border-right:solid 1px #B4C8DC;
 }
 .xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
-    background-color: #DFE8F6;
+    background-color: #749CC4;
 }
 .xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
 .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
-    background-color: #B8D6E6;
+    background-color: #749CC4;
 }
 .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
     background-color: #FFE97F;
 }
-.xui-treegrid-cells1-checked, .xui-treegrid-cells2-checked, 
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella{
-    background-color: #7290A0;
+.xui-uicell-checked, .xui-uicell-checked .xui-node,
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node,
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node, 
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node{
+    background-color: #1D456D;
     color:#fff;
 }
-.xui-treegrid-cell-mouseover{
-    background-color: #B8D6E6;
+.xui-uicell-mouseover,
+.xui-treegrid-cell-mouseover, .xui-treegrid-cell-mouseover .xui-node{
+    background-color: #749CC4 !important;
 }
 
+/*disable and readonly*/
+input[readonly], textarea[readonly], 
+input:read-only, textarea:read-only,
+.xui-ui-readonly, .xui-ui-readonly .xui-node,
+.xui-ui-itemreadonly, .xui-ui-itemreadonly .xui-node{
+    color: #808080 !important;
+}
+.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
+.xui-ui-readonly textarea, .xui-ui-readonly textarea{
+    color: #09090 !important;
+}
+button:disabled, a:disabled, 
+.xui-ui-disabled, .xui-ui-disabled .xui-node,
+.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node{
+  color: #808080 !important;
+}
+input:disabled, textarea:disabled, 
+.xui-uicell-disabled, .xui-uicell-disabled .xui-node,
+.xui-ui-disabled input, .xui-ui-itemdisabled input, 
+.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
+   color: #909090 !important;
+   background-color:#eee !important;
+}
+
+/*
+.xui-ui-invalid, .xui-ui-invalid .xui-node{}
+.xui-ui-input{}
+.xui-ui-shadow{}
+.xui-special-icon{}
+.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
+.xui-required{}
+.xui-alert{}
+*/
 
 /** important => the last one: this theme's name */
 .setting-uikey{

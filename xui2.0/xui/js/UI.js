@@ -2089,30 +2089,31 @@ Class("xui.UI",  "xui.absObj", {
                 "background-color":"#EDEDED"
             },
             ".xui-uitembg-menu":{
+                $order:1,
                 "background-color":"transparent"
             },
-            ".xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover":{
+            ".xui-uitembg-bar-mouseover":{
                 $order:2,
                 "background-color":"#E0E0E0"
             },
-            ".xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, xui-uitembg-menu-mousedown, .xui-uitembg-menu-checked":{
+            ".xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, .xui-uitembg-menu-mouseover, .xui-uitembg-menu-mousedown":{
                 $order:3,
                  "background-color":"#DDDDDD"
             },
 
-            ".xui-cell":{
+            ".xui-uicell":{
                 "background-color": "#F9F9FB"
             },
-            ".xui-cell-mouseover":{
+            ".xui-uicell-mouseover":{
                  $order:2,
                 "background-color": "#d9e8fb"
             },
-            ".xui-cell-checked, .xui-cell-checked .xui-node":{
+            ".xui-uicell-checked, .xui-uicell-checked .xui-node":{
                  $order:3,
                 "background-color":"#ABABAB",
                 color:"#fff"
             },
-            ".xui-cell-alt":{
+            ".xui-uicell-alt":{
                  $order:1,
                 "background-color":"#FDF8D2"
             },
@@ -2517,7 +2518,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-right-color':'#B5B5B5',
                 'border-bottom-color':'#B5B5B5'
             },
-            '.xui-uiborder-btn, .xui-uiborder-flat, .xui-uiborder-outset, .xui-uiborder-inset':{
+            '.xui-uitoolbtn, .xui-uiborder-flat, .xui-uiborder-outset, .xui-uiborder-inset':{
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
@@ -2525,14 +2526,14 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px'
             },
-            '.xui-uiborder-btn':{
+            '.xui-uitoolbtn':{
                 border:'solid 1px transparent',
                 background:'none'
             },
-            '.xui-uiborder-btn-mouseover':{
+            '.xui-uitoolbtn-mouseover':{
                 border:'solid 1px #F6F6F6'
             },
-            '.xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked':{
+            '.xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked':{
                 background:'#EDEDED'
             },
             '.xui-uiborder-flat':{
@@ -2547,7 +2548,7 @@ Class("xui.UI",  "xui.absObj", {
                 border:'solid 1px',
                 'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
             },
-            '.xui-uiborder-inset, .xui-uiborder-btn-mousedown, .xui-uiborder-btn-checked':{
+            '.xui-uiborder-inset, .xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked':{
                 $order:9,
                 border:'solid 1px',
                 'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
@@ -2602,7 +2603,7 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            'input[readonly], textarea[readonly], .xui-ui-readonly, .xui-ui-inputreadonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
+            'input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
                 $order:2,
                 color: '#808080 !important'
             },
@@ -2615,7 +2616,7 @@ Class("xui.UI",  "xui.absObj", {
                 cursor:'not-allowed',
                 color: '#808080 !important'
             },
-            'input:disabled, .xui-ui-inputdisabled, .xui-uicell-disabled, .xui-uicell-disabled .xui-node, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
+            'input:disabled, textarea:disabled, .xui-uicell-disabled, .xui-uicell-disabled .xui-node, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
                 $order:3,
                 cursor:'not-allowed',
                 color: '#808080 !important',
@@ -6334,7 +6335,7 @@ Class("xui.absValue", "xui.absObj",{
                 if(!profile.renderId)return;
                 var properties = profile.properties,
                     flag=properties.value !== properties.$UIvalue,
-                    o=profile.getSubNode(key||profile.box.DIRYMARKCON||"KEY"),
+                    o=profile.getSubNode(key||profile.box.DIRYMARKICON||"KEY"),
                     d=xui.UI.$css_tag_dirty;
                 if(profile._dirtyFlag!==flag){
                     if(properties.dirtyMark && properties.showDirtyMark){
@@ -6972,7 +6973,7 @@ new function(){
         },
         Static:{
             //for IE67 and dirtymark
-            DIRYMARKCON:"BACKGROUND",
+            DIRYMARKICON:"BACKGROUND",
             Templates:{
                 tagName:'button',
                 // dont set class to HTML Element

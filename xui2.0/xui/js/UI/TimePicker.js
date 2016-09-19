@@ -198,15 +198,15 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         });
     },
     Static:{
-        _excls:'xuiex-timepicker xui-cell',
-        _excls2:'xuiex-timepicker xui-cell xui-cell-alt ',
-        _excls3:'xuiex-timepicker3 xui-cell',
-        _excls4:'xuiex-timepicker xui-cell xui-cell-alt',
+        _excls:'xuiex-timepicker xui-uicell',
+        _excls2:'xuiex-timepicker xui-uicell xui-uicell-alt ',
+        _excls3:'xuiex-timepicker3 xui-uicell',
+        _excls4:'xuiex-timepicker xui-uicell xui-uicell-alt',
 
-        _excls_mo:'xui-cell-mouseover',
-        _excls_c:'xui-cell-checked',
-        _excls_mo3:'xui-cell-mouseover',
-        _excls_c3:'xui-cell-checked',
+        _excls_mo:'xui-uicell-mouseover',
+        _excls_c:'xui-uicell-checked',
+        _excls_mo3:'xui-uicell-mouseover',
+        _excls_c3:'xui-uicell-checked',
         _mover:function(src, type){
             var b=this,cn=src.className;
             if(type==2){

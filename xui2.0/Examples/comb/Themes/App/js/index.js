@@ -48,6 +48,10 @@ Class('App', 'xui.Module',{
                     "caption" : "army"
                 },
                 {
+                    "id" : "darkblue",
+                    "caption" : "darkblue"
+                },
+                {
                     "id" : "electricity",
                     "caption" : "electricity"
                 },
@@ -2437,6 +2441,8 @@ Class('App', 'xui.Module',{
                 .setHeight("20em")
                 .setAltRowsBg(true)
                 .setSelMode('multi')
+                .setFreezedColumn(1)
+                .setFreezedRow(1)
                 .setHeader([{
                     "id" : "a3-1",
                     "caption" : "col 1",

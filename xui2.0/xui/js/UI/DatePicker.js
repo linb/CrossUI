@@ -36,7 +36,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             tr1='<tr>',
             tr2='</tr>',
             td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-hcell xui-uiborder-rb-light xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
-            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-cell xui-uiborder-rb-light xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
+            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-uicell xui-uiborder-rb-light xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
                 '</td>',
             body,i,j,k,l,a=[],b=[];
         for(i=0;i<7;i++)
@@ -668,7 +668,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             }
 
             // for free days            
-            var cls2="xui-cell-alt",
+            var cls2="xui-uicell-alt",
                 fdmap={};
             if(p.offDays){
                 xui.arr.each(p.offDays.split(""),function(i){

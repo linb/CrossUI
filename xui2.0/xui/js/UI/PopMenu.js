@@ -234,11 +234,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         xui.merge(t.FRAME.BORDER,{
             className:"xui-uiborder-outset",
              TOP:{
-                className:'xuifont',
+                className:'xuifont xui-uibg-bar xui-uiborder-b',
                 $fonticon:'xui-icon-circleup'
              },
              BOTTOM:{
-                className:'xuifont',
+                className:'xuifont xui-uibg-bar xui-uiborder-t',
                 $fonticon:'xui-icon-circledown'
              },
              BOX:{
@@ -421,19 +421,19 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-.75em',
-                right:0,
                 'z-index':'10',
-                top:0
+                top:0,
+                'text-align':'center',
+                width:'100%'
             },
             BOTTOM:{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                'margin-left':'-.75em',
-                right:0,
+                bottom:0,
                 'z-index':'10',
-                bottom:0
+                'text-align':'center',
+                width:'100%'
             },
             'RADIOBOX, CHECKBOX, RADIOBOX-checked, CHECKBOX-checked':{
                 cursor:'pointer',
@@ -464,6 +464,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             }
         },
         Behaviors:{
+            HoverEffected:{TOP:'TOP', BOTTOM:'BOTTOM'},
+
             ITEM:{
                 onMouseover:function(profile, e, src){
                     var sms='$subPopMenuShowed',

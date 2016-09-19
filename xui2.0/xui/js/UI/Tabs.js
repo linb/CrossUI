@@ -449,8 +449,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 cursor:'pointer',
                 display:'none',
                 position:'absolute',
-                top:'0',
-                'font-size':'1.25em',
+                top:'.25em',
                 'z-index':'10',
                 width:'1em',
                 height:'1em',
@@ -462,10 +461,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 left:0
             },
             RIGHT:{
-                right:"1.5em"
+                right:"1.75em"
             },
             DROP:{
-                right:0
+                right:".25em"
             },
 
             ITEMS:{
