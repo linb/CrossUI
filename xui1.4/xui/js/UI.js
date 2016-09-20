@@ -3431,7 +3431,7 @@ Class("xui.UI",  "xui.absObj", {
                             dragKey:'',
                             dropKeys:'',
                             overflow:{
-                                ini:xui.browser.isTouch?'auto':undefined,
+                                ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
                                 combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                                 action:function(v){
                                     var prf=this;
@@ -7075,7 +7075,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:xui.browser.isTouch?'auto':undefined,
+                    ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
                     combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                     action:function(v){
                         var node=this.getContainer();
@@ -7315,7 +7315,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:xui.browser.isTouch?'auto':undefined,
+                    ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
                     combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                     action:function(v){
                         var node=this.getContainer();
