@@ -2,9 +2,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
     Initialize:function(){        
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibg-bar';
-        delete t.LIST.LEFT;
-        delete t.LIST.RIGHT;
-        delete t.LIST.DROP;
         this.setTemplate(t);
         t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
@@ -13,35 +10,67 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         Appearances:{
             LIST:{
                 'z-index':'2',
-                position:'absolute'
+                position:'absolute',
+                'white-space': 'nowrap',
+                overflow:'hidden'
             },
             LISTBG:{
                 display:'none'
             },
+            MENU:{
+                display:'none',
+                margin:'.25em',
+                padding:'.25em',
+                cursor:'pointer'
+            },
+            MENU2:{
+                display:'none',
+                'text-align':'center'
+           },
+            MENUICON2:{
+                position:'relative',
+                margin:'.1875em 0 0 0',
+                padding:'.1875em',
+                cursor: 'pointer'
+            },
             ITEMS:{
                 'z-index':'2',
-                position:'absolute',
+                position:'relative',
                 left:0,
-                top:0
+                top:0,
+                width:'100%',
+                height:'100%',
+                'white-space': 'nowrap',
+                overflow:'hidden',
+                'overflow-y':'scroll'
             },
             'ITEMS-left, ITEMS-left ITEMC':{
                 $order:1,
+                height:'auto',
                 'text-align': 'left'
             },
             'ITEMS-center, ITEMS-center ITEMC':{
                 $order:1,
+                height:'auto',
                 'text-align': 'center'
             },
             'ITEMS-right, ITEMS-right ITEMC':{
                 $order:1,
+                height:'auto',
                 'text-align': 'right'
             },
             ITEM:{
                 $order:0,
-                margin:'.15em',
+                margin:'.166667em',
                 position:'relative',
                 cursor:'pointer',
-                'padding':'0 .25em 0 0',
+                'padding':'0 .125em 0 0',
+                'vertical-align':'top'
+            },
+            ITEMI:{
+                $order:0,
+                'padding-left':'.125em',
+                //keep this same with ITEM
                 'vertical-align':'top'
             },
             'ITEMS-block ITEM, ITEMS-block ITEMI, ITEMS-block ITEMC':{
@@ -121,25 +150,37 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.cssRegion({bottom:unit,top:'auto'});
                 }
             },
+            _minBarSize:'3em',
             barSize:{
                 ini:50,
                 action:function(v){
-                    var self=this,
-                        t=self.properties,
+                    var self = this,
+                        t = self.properties,
                         css = xui.CSS,
                         useem = (t.spaceUnit||xui.SpaceUnit)=='em',
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                        noPanel=t.noPanel,
+                        noPanel = t.noPanel,
                         hs = self.getSubNode('LIST'),
-                        hl = self.getSubNode('ITEMS');
+                        hl = self.getSubNode('ITEMS'),
+                        menu2 =  self.getSubNode('MENUICON2');
+
+                        v = t.miniStatus?css.$px(t._minBarSize,hs,true):v;
+
+                    t._barSize=v;
+
+                    if(t.miniStatus){
+                        hl.tagClass('-mini2',true);
+                        menu2.tagClass('-checked',true);
+                    }else{
+                        hl.tagClass('-mini2',false);
+                        menu2.tagClass('-checked',false);
+                    }
+
                     if(t.barLocation=='left'||t.barLocation=='right'){
                         if(!noPanel){
-                            hs.width( adjustunit(v,hs) );
-                            hl.width( adjustunit(v,hl) );
+                            hs.width( adjustunit(v, hs) );
+                            hl.width( adjustunit(v + xui.Dom.getScrollBarSize(), hl) );
                         }
-                    }else{
-                        if(!noPanel)
-                            hs.height( adjustunit(v,hs) );
                     }
                     var t=self.getRootNode().style;
                     xui.UI.$tryResize(self,t.width, t.height,true);
@@ -179,6 +220,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     //force to resize
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
+            },
+            miniStatus:{
+                ini:false,
+                action:function(v){
+                   this.boxing().setBarSize(this.properties.barSize,true);
+                }
             }
         },
         LayoutTrigger:function(){
@@ -186,12 +233,17 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             this.boxing().setBarLocation(pro.barLocation,true)
             .setBarHAlign(pro.barHAlign,true)
             .setBarVAlign(pro.barVAlign,true);
-            
+
+            if(pro.barLocation=='top'||pro.barLocation=='bottom'){
+                this.getSubNode('ITEMS').addClass('xui-css-noscroll');
+            }else{
+                this.getSubNode('MENU2').css('display','block');
+            }
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
         _onresize:function(profile,width,height,force,key){
-            var prop=profile.properties,
-                noPanel=prop.noPanel,
+            var prop = profile.properties,
+                noPanel = prop.noPanel,
                 item = profile.getItemByItemId(key);
 
             if(!item){
@@ -207,11 +259,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 panelfz = useem?panel._getEmSize():null,
                 // caculate by px
-                ww=width?css.$px(width, rootfz):width, 
-                hh=height?css.$px(height, rootfz):height,
+                ww=width?css.$px(width, rootfz, true):width, 
+                hh=height?css.$px(height, rootfz, true):height,
 
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
+                menu2 =  profile.getSubNode('MENU2'),
                 hsfz =  useem?hs._getEmSize():null,
                 hlfz =  useem?hl._getEmSize():null,
                 type = prop.borderType,
@@ -228,7 +281,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         // for nopanel:
                         if(noPanel)
                             hs.height(adjustunit(hh-bw, hsfz));
-                     
+                        
+                        if(!prop.noHandler)
+                            profile.box._adjustHScroll(profile);
+
                         left = 0;
                         wc=ww;
                     }
@@ -238,23 +294,24 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     if(hh-itmsH>0)hc=hh-itmsH-bw;
                     top = prop.barLocation=='top'?bw+itmsH:0;
 
-                    hs.height(adjustunit(itmsH, hsfz));
+                    //hs.height(adjustunit(itmsH, hsfz));
                 }else{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hs.width(adjustunit(ww-bw,hsfz));
-                            hl.width(adjustunit(ww-bw,hlfz));
+                            hs.width(adjustunit(ww-bw, hsfz));
+                            hl.width(adjustunit(ww-bw+xui.Dom.getScrollBarSize(), hlfz));
                         }
-                        hs.height(adjustunit(hh-bw,hsfz));
+                        hs.height(adjustunit(hh-bw, hsfz));
+                        hl.height(adjustunit(hh-bw-menu2.offsetHeight(), hlfz));
     
                         top=0;
                         hc=hh;
                     }
                     if(width){
                         //caculate by px
-                        left = prop.barLocation=='left'?bw+css.$px(prop.barSize, hsfz):0;
-                        wc = ww-css.$px(prop.barSize, hsfz)-bw;
+                        left = prop.barLocation=='left'?bw+css.$px(prop._barSize||prop.barSize, hsfz):0;
+                        wc = ww-css.$px(prop._barSize||prop.barSize, hsfz)-bw;
                     }
                 }
             }else{
@@ -269,7 +326,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     left : adjustunit(left,panelfz),
                     top : adjustunit(top,panelfz)
                 },true);
-        },
-        _adjustScroll:null
+        }
     }
 });

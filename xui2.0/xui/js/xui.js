@@ -1692,8 +1692,12 @@ new function(){
         isAir:/adobeair/.test(u),
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
-
-        isTouch:(("ontouchend" in d) && !(/hp-tablet/).test(u) ) || (w.DocumentTouch && d instanceof DocumentTouch) || w.PointerEvent || w.MSPointerEvent,
+        // detect touch for browser
+        isTouch: !!navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
+            || (("ontouchend" in d) && !(/hp-tablet/).test(u) ) 
+            || (w.DocumentTouch && d instanceof DocumentTouch) 
+            || w.PointerEvent 
+            || w.MSPointerEvent,
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u),
         isBB:/blackberry/.test(u) || /BB[\d]+;.+\sMobile\s/.test(navigator.userAgent)
@@ -1701,10 +1705,20 @@ new function(){
         s=u.split(s)[1].split('.');
         return k + (b.ver=parseFloat((s.length>0 && isFinite(s[1]))?(s[0]+'.'+s[1]):s[0]))
     };
-    // for new chrome
-    if(b.isTouch && w.matchMedia)
-            if(!w.matchMedia('(pointer: coarse)').matches)
-                delete b.isTouch;
+   // for new device
+    if(w.matchMedia && typeof w.matchMedia=='function'){
+        // detect touch for device
+        b.isTouch = w.matchMedia('(any-pointer: coarse)').matches;
+        b.deviceType = b.isTouch 
+            ? ( 
+                (w.matchMedia('(any-hover: hover)').matches || w.matchMedia('(any-pointer: fine)').matches) 
+                    ? 'hybrid'
+                    : 'touchOnly'
+            ) 
+            : 'mouseOnly';
+    }else{
+        b.deviceType = b.isTouch ? 'touchOnly' : 'mouseOnly';
+    }
 
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
 
@@ -1824,13 +1838,33 @@ new function(){
     var f = xui._domReadyFuns= function(){
         if(!xui.isDomReady){
             if(d.addEventListener ) {
-          d.removeEventListener("DOMContentLoaded", f, false );
-          w.removeEventListener("load", f, false );
-        } else {
-          d.detachEvent("onreadystatechange", f);
-          w.detachEvent("onload", f);
+              d.removeEventListener("DOMContentLoaded", f, false );
+              w.removeEventListener("load", f, false );
+            } else {
+              d.detachEvent("onreadystatechange", f);
+              w.detachEvent("onload", f);
+            }
+
+            // adjust touchonly again
+            if(xui.browser.deviceType != 'touchOnly' && !xui.Dom.getScrollBarSize()){
+                xui.browser.deviceType = 'touchOnly';
+                if(xui.UI){
+                    var f=function(c){
+                        xui.arr.each(c,function(key){
+                            if(key=xui.SC.get(key)){
+                                if(key.$DataModel.overflow){
+                                    key.$DataModel.overflow.ini='auto';
+                                    key.$DataStruct.overflow='auto';
+                                }
+                                if(key.$children && key.$children.length)f(key.$children);
+                            }
+                        });
+                    };
+                    f(xui.UI.$children);
+                }
+            }
         }
-      }
+
         try{
             if(xui.ini.customStyle&&!xui.isEmpty(xui.ini.customStyle)){
                 var arr=[],style=xui.ini.customStyle,txt;

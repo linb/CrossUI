@@ -121,7 +121,9 @@ new function(){
             "xui-icon-triangle-down": '&#xe677;',
             "xui-icon-triangle-right": '&#xe678;',
             "xui-icon-sort-checked": '&#xe6bb;',
-            "xui-icon-transparent":'&#xe60e;'
+            "xui-icon-transparent":'&#xe60e;',
+            "xui-icon-menu":'&#xe611;',
+            "xui-icon-menu-checked":'&#xe82d;'
         };
     }
 };
@@ -3438,7 +3440,7 @@ Class("xui.UI",  "xui.absObj", {
                             dragKey:'',
                             dropKeys:'',
                             overflow:{
-                                ini:xui.browser.isTouch?'auto':undefined,
+                                ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
                                 combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                                 action:function(v){
                                     var prf=this;
@@ -7162,7 +7164,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:xui.browser.isTouch?'auto':undefined,
+                    ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
                     combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                     action:function(v){
                         var node=this.getContainer();
@@ -7408,7 +7410,7 @@ new function(){
                     }
                 },
                 overflow:{
-                    ini:xui.browser.isTouch?'auto':undefined,
+                    ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
                     combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
                     action:function(v){
                         var node=this.getContainer();

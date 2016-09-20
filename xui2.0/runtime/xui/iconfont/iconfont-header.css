@@ -20,7 +20,7 @@
 }
 
 .xuicon{
-  margin: 0 4px;
+  margin: 0 .25em;
   /* for IE67 */
   *height:1em;
   *width:1em;

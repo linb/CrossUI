@@ -7,7 +7,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     uiv = box.getUIValue(),
                     prop = profile.properties,
                     dm=profile.box.$DataModel,
-
+                    mcap=profile.getSubNode('MENUCAPTION'),
                     fold=function(itemId, arr){
                         var subId = profile.getSubIdByItemId(itemId),
                             item = profile.getItemByItemId(itemId);
@@ -30,7 +30,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             item=profile.getItemByItemId(itemId);
                         if(subId){
                             arr.push(subId);
-
+                            mcap.html(item.caption);
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // show pane
                                 //box.getPanel(value).css('position','relative').show('auto','auto');
@@ -67,15 +67,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         if(l<arr2.length)
                             lastV=key;
                     });
-
-                    if(!prop.noHandler && lastV)
-                        xui.tryF(profile.box._adjustScroll,[profile,lastV],profile.box);
                 }else{
                     fold(uiv, arr1);
                     expand(value, arr2);
-                    
-                    if(!prop.noHandler && arr2.length)
-                        xui.tryF(profile.box._adjustScroll,[profile,value],profile.box);
                 }
 
                 if(arr1.length){
@@ -218,14 +212,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 // add panels anyway
                 obj.append(profile._buildItems('panels', data));
                 // for stacks only
-                if(!profile.box.$DataModel.hasOwnProperty("noPanel")){
+                if(!profile.box.$DataModel.hasOwnProperty("noPanel") ){
                     if(!(v=this.getUIValue()))
-                        this.fireItemClickEvent((v=pp.items[0]) && (v=v.id));
-
-                    var t=profile.getRootNode().style;
-                    xui.UI.$tryResize(profile, t.width, t.height, true,v);
-                    t=null;
+                        this.fireItemClickEvent((v=pp.items[0]) && v.id);
                 }
+                var t=profile.getRootNode().style;
+                xui.UI.$tryResize(profile, t.width, t.height, true);
+                t=null;
             }
         },
         /*  remove some views from pageView
@@ -257,11 +250,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         profile.boxing().fireItemClickEvent((i=profile.properties.items[0]) && i.id);
                     });
                 }
-                if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel){
-                    var t=profile.getRootNode().style;
-                    xui.UI.$tryResize(profile, t.width, t.height, true, profile.boxing().getUIValue());
-                    t=null;
-                }
+
+                var t=profile.getRootNode().style;
+                xui.UI.$tryResize(profile, t.width, t.height, true);
+                t=null;
             });
 
             return self;
@@ -289,42 +281,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 subId._dirty=mark;
             }
             return this;
-        },
-        _scrollToBottom:function(node, asy){
-            var profile=this.get(0),
-                o = profile.getSubNode('ITEMS'),
-                w = profile.getSubNode('LIST').width(),
-                flag;
-            if(node){
-                o.left(w-(node.offsetLeft+node.offsetWidth));
-                if(!node.nextSibling){
-                    profile.getSubNode('RIGHT').css('display','none');
-                    flag=false;
-                }else{
-                    if(asy!==false && node.nextSibling)
-                        profile.$scrollTobottom=xui.asyRun(arguments.callee, 1000, [node.nextSibling], this);
-                }
-                profile.getSubNode('LEFT').css('display','block');
-                return flag;
-            }
-
-        },
-        _scrollToTop:function(node, asy){
-            var profile=this.get(0),
-                o = profile.getSubNode('ITEMS'),
-                flag;
-            if(node){
-                o.left(-node.offsetLeft);
-                if(!node.previousSibling){
-                    profile.getSubNode('LEFT').css('display','none');
-                    flag=false;
-                }else{
-                    if(asy!==false && node.previousSibling)
-                        profile.$scrollToTop=xui.asyRun(arguments.callee, 1000, [node.previousSibling], this);
-                }
-                profile.getSubNode('RIGHT').css('display','block');
-            }
-            return flag;
         }
     },
     Static:{
@@ -340,17 +296,21 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                      $order:0,
                      className:'xui-uiborder-tb-dark xui-uitembg-bar-checked'
                 },
-                LEFT:{
-                    className:'xui-ui-unselectable xui-special-icon',
-                    text:'&#10094'
+                MENU:{
+                    className:'xui-ui-unselectable xui-uitoolbtn',
+                    MENUICON:{
+                        className:'xuicon',
+                        $fonticon:'xui-icon-menu'
+                    },
+                    MENUCAPTION:{}
                 },
-                RIGHT:{
-                    className:'xui-ui-unselectable xui-special-icon',
-                    text:'&#10095'
-                },
-                DROP:{
-                    className:'xui-ui-unselectable xui-special-icon',
-                    text:'&#9660'
+                MENU2:{
+                    tagName:'div',
+                    className:'xui-ui-unselectable',
+                    MENUICON2:{
+                        className:'xui-uitoolbtn xuicon',
+                        $fonticon:'xui-icon-menu'
+                    }
                 },
                 ITEMS:{
                     tagName : 'div',
@@ -435,7 +395,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 left:0,
                 width:'100%',
-                padding:'.25em .25em 0 .25em '
+                padding:'.25em .25em 0 .25em ',
+                'white-space': 'nowrap'
             },
             LISTBG:{
                 position:'absolute',
@@ -445,34 +406,35 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 height:'3px',
                 width:'100%'                
             },
-            'LEFT, RIGHT, DROP':{
-                cursor:'pointer',
+            MENU:{
                 display:'none',
-                position:'absolute',
-                top:'.25em',
-                'z-index':'10',
-                width:'1em',
-                height:'1em',
-                'font-weight': 'bold',
-                'text-align': 'center',
-                'font-size': '1.5em'
+                margin:'.25em',
+                padding:'.16667em',
+                cursor:'pointer'
             },
-            LEFT:{
-                left:0
+            MENU2:{
+                display:'none'
             },
-            RIGHT:{
-                right:"1.75em"
+            MENUICON:{
+                'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
-            DROP:{
-                right:".25em"
+            MENUCAPTION:{
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                margin:'0 4px',
+                'font-size':'1em'
             },
-
             ITEMS:{
                 padding:'0 0 4px 0',
                 position:'relative',
                 left:0,
                 top:0,
                 'white-space':'nowrap'
+            },
+            'ITEMS-mini CAPTION, ITEMS-mini CMDS, ITEMS-mini2 CAPTION, ITEMS-mini2 CMDS':{
+                display:'none'
+            },
+            'ITEMS-solo ITEM':{
+                display:'none'
             },
             ITEM:{
                 $order:0,
@@ -488,23 +450,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 '-ms-border-radius': '6px 6px 0 0',
                 '-khtml-border-radius': '6px 6px 0 0'
             },
-            'ITEM-mouseover':{
-                $order:1
-            },
-            'ITEM-mousedown, ITEM-checked':{
-                $order:2
-            },
             ITEMI:{
                 $order:0,
                 'padding-left':'.5em',
                 //keep this same with ITEM
                 'vertical-align':'top'
-            },
-            'ITEM-mouseover ITEMI':{
-                $order:1
-            },
-            'ITEM-mousedown ITEMI, ITEM-checked ITEMI':{
-                $order:2
             },
             ITEMC:{
                 $order:0,
@@ -512,12 +462,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
-            },
-            'ITEM-mouseover ITEMC':{
-                $order:1
-            },
-            'ITEM-mousedown ITEMC, ITEM-checked ITEMC':{
-                $order:2
             },
             HANDLE:{
                 display:xui.$inlineBlock,
@@ -527,7 +471,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             RULER:{
                 height:'1.5em',
-                width:'1px',
+                width:'0',
                 'vertical-align':'middle'
             },
             PANEL:{
@@ -542,7 +486,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
-                'font-size':'1em'
+                'font-size':'1em',
+                overflow: 'hidden'
             },
             CMDS:{
                 'vertical-align':'middle'
@@ -553,8 +498,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DroppableKeys:['PANEL','KEY', 'ITEM'],
             PanelKeys:['PANEL'],
             DraggableKeys:['ITEM'],
-            HoverEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP',LEFT:"LEFT",RIGHT:"RIGHT",DROP:"DROP"},
-            ClickEffected:{ITEM:'ITEM',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
+            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
+            ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
             onSize:xui.UI.$onSize,
             CAPTION:{
                 onMousedown:function(profile, e, src){
@@ -779,93 +724,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     return false;
                 }
             },
-            ITEMS:{
-                beforeMousedown:function(profile, e, src){
-                    var ep=xui.Event.getPos(e);
-                    if(!profile._$scroll_l && !profile._$scroll_r)return;
-                    xui.use(src).startDrag(e, {
-                        horizontalOnly:true,
-                        dragType:'blank',
-                        dragDefer:2,
-                        targetLeft:ep.left,
-                        targetTop:ep.top,
-                        targetReposition:false,
-                        maxLeftOffset:profile._$scroll_l,
-                        maxRightOffset:profile._$scroll_r
-                    });
-                },
-                onDrag:function(profile, e, src){
-                    var dd=xui.DragDrop.getProfile();
-                    xui.use(src).left(-profile._$scroll_r + dd.offset.x);
-                },
-                onDragstop:function(profile, e, src){
-                    if(profile.box._adjustScroll)profile.box._adjustScroll(profile);
-                }
-            },
-            LEFT:{
-                onMouseover:function(profile, e, src){
-                     xui(src).css('display','none');
-                     var d=xui(src).get(0).ownerDocument||document;
-                        pos=xui.Event.getPos(e),
-                        node=d.elementFromPoint(pos.left,pos.top),
-                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
-                     xui(src).css('display','block');
-                     if(pnode=pnode.get(0)){
-                        if(false===profile.boxing()._scrollToTop(pnode)){
-                            return;
-                        }
-                     }
-                     xui(src).css('display','block');
-                },
-                onMouseout:function(profile, e, src){
-                    xui.clearTimeout(profile.$scrollToTop);
-                },
-                onClick:function(profile, e, src){
-                    xui(src).css('display','none');
-                    var d=xui(src).get(0).ownerDocument||document;
-                        pos=xui.Event.getPos(e),
-                        node=d.elementFromPoint(pos.left,pos.top),
-                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
-                     xui(src).css('display','block');
-                     if(pnode=pnode.get(0)){
-                        if(pnode.previousSibling)pnode=pnode.previousSibling;
-                        xui.clearTimeout(profile.$scrollToTop);
-                        profile.boxing()._scrollToTop(pnode,false);
-                     }
-                }
-            },
-            RIGHT:{
-                onMouseover:function(profile, e, src){
-                    xui(src).css('display','none');
-                    var d=xui(src).get(0).ownerDocument||document;
-                        pos=xui.Event.getPos(e),
-                        node=d.elementFromPoint(pos.left,pos.top),
-                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
-                     xui(src).css('display','block');
-                     if(pnode=pnode.get(0)){
-                        if(false===profile.boxing()._scrollToBottom(pnode)){
-                            return;
-                        }
-                     }
-                },
-                onMouseout:function(profile, e, src){
-                    xui.clearTimeout(profile.$scrollTobottom);
-                },
-                onClick:function(profile, e, src){
-                     xui(src).css('display','none');
-                     var d=xui(src).get(0).ownerDocument||document;
-                        pos=xui.Event.getPos(e),
-                        node=d.elementFromPoint(pos.left,pos.top),
-                        pnode=profile.getSubNode("ITEM",profile.getSubId(node.id));
-                     xui(src).css('display','block');
-                     if(pnode=pnode.get(0)){
-                        if(pnode.nextSibling)pnode=pnode.nextSibling;
-                         xui.clearTimeout(profile.$scrollTobottom);
-                        profile.boxing()._scrollToBottom(pnode,false);
-                     }
-                }
-            },
-            DROP:{
+            MENU:{
                 onMouseover:function(profile, e, src){
                     var menu=profile._droppopmenu;
                     if(menu)return;
@@ -925,6 +784,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 },
                 onClick:function(p, e, src){
                     xui(src).onMouseover(true);
+                }
+            },
+            MENU2:{
+                onClick:function(profile, e, src){
+                    profile.boxing().setMiniStatus(!profile.properties.miniStatus, true);
                 }
             },
             PANEL:{
@@ -989,7 +853,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 action:function(value){
                     this.getSubNode('LIST').css('display',value?'none':'');
                     var t=this.getRootNode().style;
-                    xui.UI.$tryResize(this, t.width, t.height, true, this.$UIValue);
+                    xui.UI.$tryResize(this, t.width, t.height, true);
                 }
             }
         },
@@ -1182,7 +1046,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item = profile.getItemByItemId(key);
 
             if(!item){
-                key=prop.$UIvalue;
+                key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
 
@@ -1228,79 +1092,75 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(width && item._w!=width){
                 list.width(adjustunit(item._w=width, listfz));
                 if(!prop.noHandler){
-                    this._adjustScroll(profile,prop.$UIvalue||prop.value);
+                    this._adjustHScroll(profile);
                 }
                 wc=width;
             }
             if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
         },
-
-        _adjustScroll:function(profile,itemid,h_em){
+        _adjustHScroll:function(profile){
             // SCROLL
             var css=xui.CSS,
-                list = profile.getSubNode('LIST'),
-                rootwidth=profile.getRoot().offsetWidth(),
                 items = profile.getSubNode('ITEMS'),
-                left =  profile.getSubNode('LEFT'),
-                right =  profile.getSubNode('RIGHT'),
-                drop =  profile.getSubNode('DROP'),
-                bgh = profile.getSubNode('LISTBG').offsetHeight(),
-                lastitemright=0,
-                selectitemleft=0,
-                selectitemwidth=0,
-                ks=profile.keys, 
-                prop=profile,properties,
-                css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                itemsfz=useem?items._getEmSize():null,
-                itemsleft=css.$px(items.left(),itemsfz);
+                innerW=items.width(),
+                list = profile.getSubNode('LIST'),
+                menu = profile.getSubNode('MENU'),
+                caps = profile.getSubNode('CAPTION',true),
+                itemsW = 0,
+                getItemsW=function(){
+                    var w=0;
+                    items.children().each(function(item){
+                        if(item.offsetWidth==0)return;
+                        if(!w){
+                            w = item.offsetLeft + item.offsetWidth;
+                            return false;
+                        }
+                    },true);
+                    return w;
+                },
+                getCapsW=function(){
+                    var w=0;
+                    caps.each(function(item){
+                        if(item.clientWidth==0)return;
+                        w += item.clientWidth;
+                    });
+                    return w;
+                },
+                ignoreCap;
 
-            items.children().each(function(item){
-                if(item.hidden)return;
-                if(item.id.indexOf(ks.ITEM)!==0)return;
+                // init
+                items.tagClass('-mini',false);
+                items.tagClass('-mini2',false);
+                items.tagClass('-solo',false);
+                menu.css('display','none');
+                caps.css('width','');
+                //list.prepend(menu);
 
-                if(!lastitemright){
-                    lastitemright = item.offsetLeft + item.offsetWidth;
-                }
-                
-                // to show the seleted one
-                if(itemid && profile.getItemIdByDom(item.id) == itemid){
-                    selectitemwidth=item.offsetWidth;
-                    selectitemleft=item.offsetLeft;
-                    return false;
-                }
-            },true);
+                // try 1: minus caption width
+                itemsW = getItemsW();
+                if(itemsW>innerW){
+                    var capw=getCapsW();
+                    if((itemsW - innerW) < capw * .75){
+                        var percent = 1- (itemsW - innerW) / capw;
+                        caps.each(function(cap){
+                            xui(cap).width(Math.floor(cap.clientWidth * percent) +'px');
+                        });
+                    }else{
+                        ignoreCap=1;
+                    }
 
-            items.width(adjustunit(Math.max(lastitemright, rootwidth),itemsfz));
+                    // try 2: icon mode
+                    if(ignoreCap || getItemsW()>innerW){
+                        items.tagClass('-mini',true);
 
-            if(lastitemright<=rootwidth){
-                items.left(0+xui.CSS.$picku());
-                profile._$scroll_r=profile._$scroll_l=0;
-                items.css('cursor','');
-            }else{
-                // to show the seleted one
-                if(selectitemwidth){
-                    if((selectitemleft+itemsleft<0) || (selectitemleft+selectitemwidth-itemsleft>rootwidth)){
-                        itemsleft=-selectitemleft;
+                        // try 3: menu mode
+                        if(getItemsW()>innerW){
+                            items.tagClass('-solo',true);
+                            menu.setInlineBlock();
+//                            items.append(menu);
+                        }
                     }
                 }
-
-                if(lastitemright+itemsleft<rootwidth){
-                    items.left(adjustunit(rootwidth-lastitemright,itemsfz));
-                    profile._$scroll_r = lastitemright-rootwidth;
-                    profile._$scroll_l = 0;
-                }else{
-                    items.left(adjustunit(itemsleft,itemsfz));
-                    profile._$scroll_r = -itemsleft;
-                    profile._$scroll_l =  lastitemright - rootwidth + itemsleft;
-                }
-                items.css('cursor','move');
-            }
-            
-            left.css('display', profile._$scroll_r ? 'block' : 'none');
-            right.css('display', profile._$scroll_l ? 'block' : 'none');
-            drop.css('display', (profile._$scroll_l||profile._$scroll_r) ? 'block' : 'none');
         }
     }
 });

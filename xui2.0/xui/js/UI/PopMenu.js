@@ -10,6 +10,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     var border = profile.getSubNode('BORDER'),
                         box = profile.getSubNode('BOX'),
+                        bg = profile.getSubNode('BOXBGBAR'),
                         items = profile.getSubNode('ITEMS'),
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
@@ -32,9 +33,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     // for IE7
                     items.cssSize({
-                        width:adjustunit(ww,rootfz),
+                        width:adjustunit(ww, rootfz),
                         height:adjustunit(hh,rootfz)
                     });
+                    bg.height(adjustunit(hh,rootfz));
 
                     var h = adjustunit(Math.min(prop._maxHeight, hh),rootfz),
                         w = adjustunit(Math.min(prop._maxWidth, ww),rootfz),
@@ -46,8 +48,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     prop.height=h;
 
                     root.cssSize(size);
-                    box.cssSize(size);
                     border.cssSize(size);
+                    box.cssSize({
+                        width:adjustunit(Math.min(prop._maxWidth, ww)  + xui.Dom.getScrollBarSize(), rootfz),
+                        height:size.height
+                    });
                 }
             });
             return this._setScroll();
@@ -55,37 +60,37 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _setScroll:function(){
             return this.each(function(profile){
                 if(profile.renderId){
-                    var o=profile.getSubNode('ITEMS'),
-                        t=o.offsetTop(),
-                        h=o.offsetHeight(),
+                    var o=profile.getSubNode('BOX'),
+                        t=o.scrollTop(),
+                        h=o.scrollHeight(),
                         b = profile.getRoot(),
                         hh=b.offsetHeight();
                     profile.getSubNode('TOP').css('display',t===0?'none':'block');
-                    profile.getSubNode('BOTTOM').css('display',(hh>=h+t)?'none':'block');
+                    profile.getSubNode('BOTTOM').css('display',(hh>=h-t)?'none':'block');
                 }
             })
         },
         _scrollToBottom:function(){
             return this.each(function(profile){
-                var o = profile.getSubNode('ITEMS'),
+                var o = profile.getSubNode('BOX'),
                 border = profile.getSubNode('BORDER'),
-                y = o.offsetTop(),
+                y = o.scrollTop(),
                 offset,
-                h = o.offsetHeight(),
+                h = o.scrollHeight(),
                 b=false,
                 bh = border.height();
-                if(bh<h+y){
+                if(bh<h-y){
                     if(!profile.$scrollStep)profile.$scrollStep=1;
 
                     if(profile.$scrollStep<5)
                         profile.$scrollStep = profile.$scrollStep*1.01;
 
-                    y -= profile.$scrollStep;
-                    if(bh>h+y){
-                        y=bh-h;
+                    y += profile.$scrollStep;
+                    if(bh>=h-y){
+                        y=h-bh;
                         b=true;
                     }
-                    o.top(y);
+                    o.scrollTop(y);
                     if(b){
                         profile.getSubNode('BOTTOM').css('display','none');
                         profile.$scrollTobottom=false;
@@ -100,22 +105,22 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         _scrollToTop:function(){
             return this.each(function(profile){
-                var o = profile.getSubNode('ITEMS'),
-                y = o.offsetTop(),
+                var o = profile.getSubNode('BOX'),
+                y = o.scrollTop(),
                 b=false;
 
-                if(y<0){
+                if(y>0){
                     if(!profile.$scrollStep)profile.$scrollStep=1;
 
                     if(profile.$scrollStep<5)
                         profile.$scrollStep = profile.$scrollStep*1.01;
 
-                    y += profile.$scrollStep;
-                    if(y>=-1){
+                    y -= profile.$scrollStep;
+                    if(y<0){
                         y=0;
                         b=true;
                     }
-                    o.top(y);
+                    o.scrollTop(y);
                     if(b){
                         profile.getSubNode('TOP').css('display','none');
                         profile.$scrollToTop=false;
@@ -148,6 +153,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             profile._conainer=parent;
 
             root.popToTop(obj, type, parent);
+
+            this._setScroll();
 
             if(profile._needadjust){
                 delete profile._needadjust;
@@ -374,10 +381,13 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOX:{
                 overflow:'hidden',
                 position:'relative',
+                overflow:'hidden',
+                'overflow-y':'auto',
                 'z-index':'3'
             },
             BORDER:{
-                position:'relative'
+                position:'relative',
+                overflow:'hidden'
             },
             ITEMS:{
                 position:'relative',
@@ -465,7 +475,11 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         Behaviors:{
             HoverEffected:{TOP:'TOP', BOTTOM:'BOTTOM'},
-
+            BOX:{
+                onScroll:function(profile, e, src){
+                    profile.boxing()._setScroll();
+                }
+            },
             ITEM:{
                 onMouseover:function(profile, e, src){
                     var sms='$subPopMenuShowed',

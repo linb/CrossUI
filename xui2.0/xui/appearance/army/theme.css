@@ -333,7 +333,7 @@
     background: #D8EDDE url(Public/list_item.gif) repeat-x left -400px;
 }
 .xui-hcell,
-.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,{
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
     border-color: #f6f6f6 #b5b5b5 #b5b5b5 #f6f6f6;
 }
 .xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover, .xui-treegrid-hscell-mouseover{

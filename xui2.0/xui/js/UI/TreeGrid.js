@@ -5926,10 +5926,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'getter':
                         case 'popbox':
                         case 'cmd':
-                            type='label';
                         case 'cmdbox':
                         case 'droplist':
-                            editor.setType(type);
+                            editor.setType(type=='cmd'?'label':type);
                             if(profile.box.getCellOption(profile, cell,'disabled')){
                             }else{
                                 editor.beforeComboPop(function(prop, pos, e, src){
@@ -6315,7 +6314,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //h1.width(adjustunit(w1,h1));
                 h2.width(adjustunit(w2,h2));
                 //s21.width(adjustunit(w1,s21));
-                s22.width(adjustunit(w2,s22));
+                //s22.width(adjustunit(w2,s22));
 
                 xui.asyRun(function(){
                     b21.css('padding-bottom', s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0);
@@ -6927,7 +6926,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //h1.width(adjustunit(w1,h1));
                 h2.width(adjustunit(w2,h2));
                 //s21.width(adjustunit(w1,s21));
-                s22.width(adjustunit(w2,s22));
+                //s22.width(adjustunit(w2,s22));
             }
 
             // adjust height
