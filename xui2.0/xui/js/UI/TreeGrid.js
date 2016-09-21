@@ -6304,7 +6304,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                 }
                 // for border-bottom
-                if(rr)rr-=1;
+                if(rr && prop.freezedRow)rr-=1;
                 // for border-right
                 if(w1 && prop.freezedColumn)w1-=1;
 
@@ -6916,7 +6916,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                 }
                 // for border-bottom
-                if(rr)rr-=1;
+                if(rr && prop.freezedRow)rr-=1;
                 // for border-right
                 if(w1 && prop.freezedColumn)w1-=1;
 

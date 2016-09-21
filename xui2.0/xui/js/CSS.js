@@ -305,6 +305,7 @@ Class("xui.CSS", null,{
                 "sub{vertical-align:text-bottom;}"+
                 "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
                 "input,textarea,select{*font-size:100%;}"+
+                "button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}"+
                 (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
@@ -364,20 +365,20 @@ Class("xui.CSS", null,{
             return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
         },
 
-        $em2px:function(value, node, force){
+        $em2px:function(value, node, roundPx){
             value = (!value||value=='auto')?value:(xui.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
-            return force?Math.round(parseFloat(value)||0):value;
+            return roundPx?Math.round(parseFloat(value)||0):value;
         },
-        $px2em:function(value, node){
-            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
+        $px2em:function(value, node,roundPx){
+            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (roundPx?Math.round(parseFloat(value)||0):(parseFloat(value)||0)) / (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
         },
 
-        $px:function(value, node, force){
+        $px:function(value, node,roundPx){
             value = ((!xui.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
-            return force?Math.round(parseFloat(value)||0):value;
+            return roundPx?Math.round(parseFloat(value)||0):value;
         },
-        $em:function(value, node){
-            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+        $em:function(value, node,roundPx){
+            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2em(value, node,roundPx):(!value||value=='auto')?value:(parseFloat(value)||0));
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
@@ -389,7 +390,7 @@ Class("xui.CSS", null,{
         },
         $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
         $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
-        $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
+        $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node,true)+'em':Math.round(this.$px(v,node))+'px'}
     },
     Initialize:function(){
         var b=xui.browser,

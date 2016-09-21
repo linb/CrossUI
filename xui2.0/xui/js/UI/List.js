@@ -695,7 +695,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz =needfz?root._getEmSize():null,
 
-                border=prop.borderType!='none'?2:0,
+                border=prop.borderType!='none'?xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2:0,
                 dock=prop.dock,
                 max=prop.maxHeight,
 

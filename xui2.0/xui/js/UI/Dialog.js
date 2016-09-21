@@ -1107,8 +1107,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             node.cssSize(size).css('overflow','auto').show();
 
-            w=size.width + 20;
-            h=size.height + 60;
+            var fs=xui.CSS._getDftEmSize();
+            w=size.width + fs*2;
+            h=size.height + fs*6;
             dialog.setCaption(caption).setWidth(w).setHeight(h);
             return {width:w, height:h};
         },
@@ -1333,8 +1334,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     resizer:false,
                     left:200,
                     top:200,
-                    width:300,
-                    height:130
+                    width:'25em',
+                    height:'11em'
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
@@ -1346,14 +1347,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
-                            return false;                        }
+                            return false;                        
+                        }
                     }
                 });
                 var con = dialog._$con = new xui.UI.Div({
                     top:4,
                     left:10,
-                    width:270,
-                    height:18
+                    width:'23em',
+                    height:'1.2em'
                 }),
                 cmd = new xui.UI.Div({
                     height:'2.5em',
@@ -1385,8 +1387,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 var inp=dialog._$inp=new xui.UI.Input({
                     left:10,
                     top:22,
-                    width:270,
-                    height:36,
+                    width:'23em',
+                    height:'3em',
                     multiLines:true
                 })
                 dialog.append(con).append(cmd).append(inp).render();

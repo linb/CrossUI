@@ -362,6 +362,10 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 listbox:['top','bottom']
             }
         },
+        LayoutTrigger:function(){
+            var v=this.properties;
+            v.$hborder=v.$vborder=xui.UI.$getCSSValue('xui-uiborder-outset','borderLeftWidth');
+        },
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},
             onMenuBtnClick:function(profile, item, src){},

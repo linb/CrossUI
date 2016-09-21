@@ -1115,8 +1115,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             max:Math.pow(10,15),
             commandBtn:{
                 ini:"none",
-                listbox:xui.toArr("none,save,delete,add,remove,pop,select,custom"),
-                action:function(v){
+                combobox:xui.toArr("none,save,delete,add,remove,pop,select,search"),
+                action:function(v,ov){
                     this.boxing().refresh();
                 }
             },
@@ -1319,7 +1319,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var data={},prop=profile.properties,css=xui.CSS;
+            var data={},
+                prop=profile.properties,
+                arr=profile.box.$DataModel.commandBtn.combobox,
+                css=xui.CSS;
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
@@ -1334,8 +1337,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 data._btnStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
             data._type="text";
 
-            data._saveDisplay = data.commandBtn!='none'?'':'display:none';
-            data._fi_commandCls = "xui-uicmd-" + data.commandBtn;
+            data._saveDisplay = (!data.commandBtn||data.commandBtn=='none')?'display:none':'';
+            data._fi_commandCls = (xui.arr.indexOf(arr, data.commandBtn)!=-1?"xui-uicmd-":"") + data.commandBtn;
 
             data._popbtnDisplay = (data.type!='none'&&data.type!='input'&&data.type!='password')?'':'display:none';
             data.typecls=profile.getClass('KEY','-type-'+(
@@ -1414,14 +1417,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
 
                 isB=v1.get(0).type.toLowerCase()=='button',
-                $hborder=1, 
-                $vborder=1,
+                $hborder, $vborder,
                 clsname='xui-node xui-input-input',
                 toff=isB?0:xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
-                btnw=css._getDftEmSize() * 1.5;
+                btnw;
+
+            $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+            btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
             if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
@@ -1461,8 +1466,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 iW=ww===null?null:Math.max(0,ww - ((labelPos=='left'||labelPos=='right')?labelSize:0)),
                 iH=hh===null?null:Math.max(0,hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)),
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
+            // for left offset 1px
+            iW += (functionbtn?$hborder:0) + (commandbtn?$hborder:0);
 
-            if(null!==iW && iW-loff-roff>0)
+             if(null!==iW && iW-loff-roff>0)
                 v1.width(adjustunit(Math.max(0,iW-loff-roff),v1fz));
             if(null!==iH && iH-toff-boff>0)
                 v1.height(adjustunit(Math.max(0,iH-toff-boff),v1fz));
@@ -1482,7 +1489,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
 
-            iL += (iW||0) + $hborder*2;
+            // left offset 1px
+            iL += (iW||0) + $hborder*2 -$hborder;
             if(functionbtn){
                 if(iH2!==null)
                     functionbtn.height(adjustunit(Math.max(0,iH2)));
@@ -1491,12 +1499,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 functionbtn.top(adjustunit(iT));
 
                if(iH2!==null && prop.type=='spin'){
-                    if(iH2/2-2>0){
+                    if(iH2/2-$vborder*2>0){
                         f('R1').height(adjustunit(iH2/2));
-                        f('R2').height(adjustunit(iH2/2));
+                        // left offset 1px
+                        f('R2').height(adjustunit(iH2/2 + $hborder));
                     }
                 }
-                iL += bw1;
+                // left offset 1px
+                iL += bw1-$hborder;
             }
             if(commandbtn){
                 if(iH2!==null)

@@ -518,7 +518,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
                 panelfz = useem?v2._getEmSize():null,
-                bordersize=profile.properties.borderType=='none'?0:2,
+                bordersize=profile.properties.borderType!='none'?xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2:0,
                 h1,h4,t;
 
             // caculate by px

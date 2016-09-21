@@ -162,7 +162,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 left:0,
                 //for firefox bug: cursor not show
                 position:'absolute',
-                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'hidden'
+                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'visible'
             },
             BOX:{
                 left:0,
@@ -879,14 +879,16 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 v1fz=useem?v1._getEmSize():null,
                 labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
 
-                $hborder=1, 
-                $vborder=1,
+                $hborder, $vborder,
+
                 clsname='xui-node xui-input-input',
                 toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=xui.UI.$getCSSValue(clsname,'paddingBottom');
-
+            
+            $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+            
             // caculate by px
             if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width,root) : width;

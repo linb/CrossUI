@@ -1027,6 +1027,7 @@ xui.merge(xui,{
                 }
                 if(refresh!==false){
                     xui.$CSSCACHE={};
+                    xui.CSS.adjustFont();
                     if(xui.UI)xui.UI.getAll().reLayout(true);
                  }
                 xui.tryF(onSucess);

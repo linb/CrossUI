@@ -3,7 +3,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibg-bar';
         this.setTemplate(t);
-        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly}';
+        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
@@ -29,7 +29,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
            },
             MENUICON2:{
                 position:'relative',
-                margin:'.1875em 0 0 0',
+                margin:'.09375em',
                 padding:'.1875em',
                 cursor: 'pointer'
             },
@@ -128,6 +128,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                             break;
                     }
                     self.boxing().setBarSize(self.properties.barSize,true);
+
+                    hs.tagClass('(-top|-bottom|-left|-right)',false).tagClass('-'+v, true);
                 }
             },
             barHAlign:{
@@ -150,7 +152,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.cssRegion({bottom:unit,top:'auto'});
                 }
             },
-            _minBarSize:'3em',
             barSize:{
                 ini:50,
                 action:function(v){
@@ -164,15 +165,15 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
 
-                        v = t.miniStatus?css.$px(t._minBarSize,hs,true):v;
+                        v = t.status=='fold' ? css.$px(t.sideBarSize,hs,true) : v;
 
                     t._barSize=v;
 
-                    if(t.miniStatus){
-                        hl.tagClass('-mini2',true);
+                    if(t.status=='fold'){
+                        hl.tagClass('-icon2',true);
                         menu2.tagClass('-checked',true);
                     }else{
-                        hl.tagClass('-mini2',false);
+                        hl.tagClass('-icon2',false);
                         menu2.tagClass('-checked',false);
                     }
 
@@ -221,10 +222,25 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
             },
-            miniStatus:{
-                ini:false,
+            status:{
+                ini:'expand',
+                listbox:['expand','fold'],
                 action:function(v){
                    this.boxing().setBarSize(this.properties.barSize,true);
+                }
+            },
+            sideBarSize:{
+                ini:'3em',
+                action:function(v){
+                   // trigger layout
+                   this.boxing().setBarSize(this.properties.barSize,true);
+                }
+            }
+        },
+        Behaviors:{
+            MENU2:{
+                onClick:function(profile, e, src){
+                    profile.boxing().setStatus(profile.properties.status=='fold'?'expand':'fold', true);
                 }
             }
         },
@@ -236,8 +252,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
             if(pro.barLocation=='top'||pro.barLocation=='bottom'){
                 this.getSubNode('ITEMS').addClass('xui-css-noscroll');
-            }else{
-                this.getSubNode('MENU2').css('display','block');
             }
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
@@ -268,7 +282,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hsfz =  useem?hs._getEmSize():null,
                 hlfz =  useem?hl._getEmSize():null,
                 type = prop.borderType,
-                bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
+                bw = (type=='flat'||type=='inset'||type=='outset') ? xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2 : 0,
                 wc=null,
                 hc=null,
                 top, left, itmsH;
@@ -296,6 +310,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
                     //hs.height(adjustunit(itmsH, hsfz));
                 }else{
+                    // side bar
+                    menu2.css('display',prop.sideBarSize?'block':'none');
+
                     if(height){
                         // for nopanel:
                         if(noPanel){
@@ -303,7 +320,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                             hl.width(adjustunit(ww-bw+xui.Dom.getScrollBarSize(), hlfz));
                         }
                         hs.height(adjustunit(hh-bw, hsfz));
-                        hl.height(adjustunit(hh-bw-menu2.offsetHeight(), hlfz));
+                        hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
     
                         top=0;
                         hc=hh;

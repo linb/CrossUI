@@ -48,6 +48,10 @@ Class('App', 'xui.Module',{
                     "caption" : "army"
                 },
                 {
+                    "id" : "classic",
+                    "caption" : "classic"
+                },
+                {
                     "id" : "darkblue",
                     "caption" : "darkblue"
                 },
@@ -2216,23 +2220,23 @@ Class('App', 'xui.Module',{
                 .setHost(host,"xui_ui_buttonviews5")
                 .setItems([{
                     "id" : "a",
-                    "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
+                    "caption" : "Color",
+                    "imageClass" : "xui-icon-forecolor"
                 },
                 {
                     "id" : "b",
-                    "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
+                    "caption" : "Bg Color",
+                    "imageClass" : "xui-icon-bgcolor"
                 },
                 {
                     "id" : "c",
-                    "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
+                    "caption" : "Date",
+                    "imageClass" : "xui-uicmd-datetime"
                 },
                 {
                     "id" : "d",
-                    "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
+                    "caption" : "Time",
+                    "imageClass" : "xui-icon-clock",
                     "closeBtn" : true,
                     "optBtn" : true,
                     "popBtn" : true
@@ -2241,6 +2245,7 @@ Class('App', 'xui.Module',{
                 .setTop("0em")
                 .setBarLocation("left")
                 .setBarSize(140)
+                .setStatus('fold')
                 .setValue("a")
                 , "main");
             
@@ -2274,6 +2279,7 @@ Class('App', 'xui.Module',{
                 .setTop("0em")
                 .setBarLocation("right")
                 .setBarSize(140)
+                .setSideBarSize(0)
                 .setValue("a")
                 , "after");
             
@@ -3773,8 +3779,10 @@ Class('App', 'xui.Module',{
             xui.UI.Dialog.pop('pop message', 'pop');
         },
         _ctl_comboinput61_afteruivalueset:function (profile,oldValue,newValue){
-            xui.setTheme(newValue);
-            this.xui_ui_comboinput32.setUIValue('12px',true);
+            var ns=this;
+            xui.setTheme(newValue,true,function(){
+                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"?'1rem':'12px',true);
+            });
         },
         _xui_ui_comboinput32_afteruivalueset:function (profile,oldValue,newValue){
             xui.CSS.setStyleRules(".xui-node",{'font-size': newValue});

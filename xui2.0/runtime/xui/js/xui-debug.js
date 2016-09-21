@@ -1027,6 +1027,7 @@ xui.merge(xui,{
                 }
                 if(refresh!==false){
                     xui.$CSSCACHE={};
+                    xui.CSS.adjustFont();
                     if(xui.UI)xui.UI.getAll().reLayout(true);
                  }
                 xui.tryF(onSucess);
@@ -8463,6 +8464,7 @@ Class('xui.Event',null,{
                 "sub{vertical-align:text-bottom;}"+
                 "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
                 "input,textarea,select{*font-size:100%;}"+
+                "button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}"+
                 (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
@@ -8522,20 +8524,20 @@ Class('xui.Event',null,{
             return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
         },
 
-        $em2px:function(value, node, force){
+        $em2px:function(value, node, roundPx){
             value = (!value||value=='auto')?value:(xui.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
-            return force?Math.round(parseFloat(value)||0):value;
+            return roundPx?Math.round(parseFloat(value)||0):value;
         },
-        $px2em:function(value, node){
-            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (parseFloat(value)||0) / (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
+        $px2em:function(value, node,roundPx){
+            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (roundPx?Math.round(parseFloat(value)||0):(parseFloat(value)||0)) / (node?xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
         },
 
-        $px:function(value, node, force){
+        $px:function(value, node,roundPx){
             value = ((!xui.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
-            return force?Math.round(parseFloat(value)||0):value;
+            return roundPx?Math.round(parseFloat(value)||0):value;
         },
-        $em:function(value, node){
-            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2em(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+        $em:function(value, node,roundPx){
+            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2em(value, node,roundPx):(!value||value=='auto')?value:(parseFloat(value)||0));
         },
         $addpx:function(a,b,node){
             if(a=='auto')return a;
@@ -8547,7 +8549,7 @@ Class('xui.Event',null,{
         },
         $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
         $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''},
-        $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node)+'em':Math.round(this.$px(v,node))+'px'}
+        $forceu:function(v,u,node){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node,true)+'em':Math.round(this.$px(v,node))+'px'}
     },
     Initialize:function(){
         var b=xui.browser,
@@ -15747,6 +15749,7 @@ Class('xui.DragDrop',null,{
                     xui.create('<div id="' + d._id + '" style="left:0;top:0;border:0;font-size:0;line-height:0;padding:'+d.$proxySize+'px;position:absolute;background:url('+xui.ini.img_bg+') repeat;"><div style="font-size:0;line-height:0;" id="' +d._idi+ '">'+(xui.browser.ie6?'&nbsp;':'')+'</div></div>')
                 );
             t=xui(d._id);
+            //t.rotate('10');
             if(p.dragKey){
                 d.$proxySize=0;
                 t.css('padding',0);
@@ -15781,7 +15784,7 @@ Class('xui.DragDrop',null,{
                     o.html('&nbsp;');
                 else o.empty();
                 o.attr('style','font-size:0;line-height:0;');
-
+                //o.rotate(0);
                 xui('body').prepend(
                     t
                     .css({
@@ -19085,8 +19088,8 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
                 position:'absolute',
-                top:'.75em',
-                right:'.75em',
+                top:'.5em',
+                right:'.5em',
                 'text-align':'right'
             },
             '.xui-uibar-top .xui-uibar-tdb':{
@@ -19491,6 +19494,10 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 color: '#909090 !important'
             },
+            'button::-moz-focus-inner, input::-moz-focus-inner':{
+                 padding: 0,
+                 border: 0
+             },
             'button:disabled, a:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node':{
                 $order:2,
                 cursor:'not-allowed',
@@ -20606,6 +20613,7 @@ Class("xui.UI",  "xui.absObj", {
             return self;
         },
         $getCSSValue:function(cls, key,force){
+            cls=cls.replace(/\./g,'');
             var cache=xui.$CSSCACHE,
                 ck=cls+'->'+key;
             if(!force &&(ck in cache))return cache[ck];
@@ -26357,10 +26365,13 @@ Class("xui.UI.Resizer","xui.UI",{
                     xui.UI.Div._applyAutoLoad(this);
         },
         _setB:function(profile){
-            var p=profile.properties,type=p.borderType;
+            var p=profile.properties,
+                type=p.borderType,
+                w=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             p.$hborder=p.$vborder=p.$iborder=0;
-            if(type=='flat'||type=='inset'||type=='outset'){p.$hborder=p.$vborder=1;p.$iborder=0;}
-            else if(type=='groove'||type=='ridge'){p.$hborder=p.$vborder=p.$iborder=1;}
+
+            if(type=='flat'||type=='inset'||type=='outset'){p.$hborder=p.$vborder=w;p.$iborder=0;}
+            else if(type=='groove'||type=='ridge'){p.$hborder=p.$vborder=p.$iborder=w;}
         },
         LayoutTrigger:function(){
             var v=this.properties.borderType;
@@ -26596,6 +26607,10 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             },
             $hborder:1,
             $vborder:1
+        },
+        LayoutTrigger:function(){
+            var v=this.properties;
+            v.$hborder=v.$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -27563,7 +27578,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 //for firefox bug: cursor not show
                 position:'absolute',
-                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'hidden'
+                overflow:(xui.browser.gek&&xui.browser.ver<3)?'auto':'visible'
             },
             BOX:{
                 left:0,
@@ -28280,14 +28295,16 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 v1fz=useem?v1._getEmSize():null,
                 labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
 
-                $hborder=1, 
-                $vborder=1,
+                $hborder, $vborder,
+
                 clsname='xui-node xui-input-input',
                 toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=xui.UI.$getCSSValue(clsname,'paddingBottom');
-
+            
+            $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+            
             // caculate by px
             if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width,root) : width;
@@ -30647,8 +30664,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             max:Math.pow(10,15),
             commandBtn:{
                 ini:"none",
-                listbox:xui.toArr("none,save,delete,add,remove,pop,select,custom"),
-                action:function(v){
+                combobox:xui.toArr("none,save,delete,add,remove,pop,select,search"),
+                action:function(v,ov){
                     this.boxing().refresh();
                 }
             },
@@ -30851,7 +30868,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var data={},prop=profile.properties,css=xui.CSS;
+            var data={},
+                prop=profile.properties,
+                arr=profile.box.$DataModel.commandBtn.combobox,
+                css=xui.CSS;
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
@@ -30866,8 +30886,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 data._btnStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
             data._type="text";
 
-            data._saveDisplay = data.commandBtn!='none'?'':'display:none';
-            data._fi_commandCls = "xui-uicmd-" + data.commandBtn;
+            data._saveDisplay = (!data.commandBtn||data.commandBtn=='none')?'display:none':'';
+            data._fi_commandCls = (xui.arr.indexOf(arr, data.commandBtn)!=-1?"xui-uicmd-":"") + data.commandBtn;
 
             data._popbtnDisplay = (data.type!='none'&&data.type!='input'&&data.type!='password')?'':'display:none';
             data.typecls=profile.getClass('KEY','-type-'+(
@@ -30946,14 +30966,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
 
                 isB=v1.get(0).type.toLowerCase()=='button',
-                $hborder=1, 
-                $vborder=1,
+                $hborder, $vborder,
                 clsname='xui-node xui-input-input',
                 toff=isB?0:xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
-                btnw=css._getDftEmSize() * 1.5;
+                btnw;
+
+            $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+            btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
             if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
@@ -30993,8 +31015,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 iW=ww===null?null:Math.max(0,ww - ((labelPos=='left'||labelPos=='right')?labelSize:0)),
                 iH=hh===null?null:Math.max(0,hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)),
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
+            // for left offset 1px
+            iW += (functionbtn?$hborder:0) + (commandbtn?$hborder:0);
 
-            if(null!==iW && iW-loff-roff>0)
+             if(null!==iW && iW-loff-roff>0)
                 v1.width(adjustunit(Math.max(0,iW-loff-roff),v1fz));
             if(null!==iH && iH-toff-boff>0)
                 v1.height(adjustunit(Math.max(0,iH-toff-boff),v1fz));
@@ -31014,7 +31038,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
 
-            iL += (iW||0) + $hborder*2;
+            // left offset 1px
+            iL += (iW||0) + $hborder*2 -$hborder;
             if(functionbtn){
                 if(iH2!==null)
                     functionbtn.height(adjustunit(Math.max(0,iH2)));
@@ -31023,12 +31048,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 functionbtn.top(adjustunit(iT));
 
                if(iH2!==null && prop.type=='spin'){
-                    if(iH2/2-2>0){
+                    if(iH2/2-$vborder*2>0){
                         f('R1').height(adjustunit(iH2/2));
-                        f('R2').height(adjustunit(iH2/2));
+                        // left offset 1px
+                        f('R2').height(adjustunit(iH2/2 + $hborder));
                     }
                 }
-                iL += bw1;
+                // left offset 1px
+                iL += bw1-$hborder;
             }
             if(commandbtn){
                 if(iH2!==null)
@@ -34393,7 +34420,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz =needfz?root._getEmSize():null,
 
-                border=prop.borderType!='none'?2:0,
+                border=prop.borderType!='none'?xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2:0,
                 dock=prop.dock,
                 max=prop.maxHeight,
 
@@ -35393,7 +35420,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
                 panelfz = useem?v2._getEmSize():null,
-                bordersize=profile.properties.borderType=='none'?0:2,
+                bordersize=profile.properties.borderType!='none'?xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2:0,
                 h1,h4,t;
 
             // caculate by px
@@ -36229,10 +36256,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 top:0,
                 'white-space':'nowrap'
             },
-            'ITEMS-mini CAPTION, ITEMS-mini CMDS, ITEMS-mini2 CAPTION, ITEMS-mini2 CMDS':{
+            'ITEMS-icon CAPTION, ITEMS-icon CMDS, ITEMS-icon2 CAPTION, ITEMS-icon2 CMDS':{
                 display:'none'
             },
-            'ITEMS-solo ITEM':{
+            'ITEMS-menu ITEM':{
                 display:'none'
             },
             ITEM:{
@@ -36585,11 +36612,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     xui(src).onMouseover(true);
                 }
             },
-            MENU2:{
-                onClick:function(profile, e, src){
-                    profile.boxing().setMiniStatus(!profile.properties.miniStatus, true);
-                }
-            },
             PANEL:{
                 onClick:function(profile, e, src){
                     var p=profile.properties,
@@ -36928,13 +36950,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 ignoreCap;
 
                 // init
-                items.tagClass('-mini',false);
-                items.tagClass('-mini2',false);
-                items.tagClass('-solo',false);
+                items.tagClass('-icon',false);
+                items.tagClass('-icon2',false);
+                items.tagClass('-menu',false);
                 menu.css('display','none');
                 caps.css('width','');
-                //list.prepend(menu);
-
+                
+                profile._mode='normal';
                 // try 1: minus caption width
                 itemsW = getItemsW();
                 if(itemsW>innerW){
@@ -36944,19 +36966,20 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         caps.each(function(cap){
                             xui(cap).width(Math.floor(cap.clientWidth * percent) +'px');
                         });
+                        profile._mode='narrow';
                     }else{
                         ignoreCap=1;
                     }
 
                     // try 2: icon mode
                     if(ignoreCap || getItemsW()>innerW){
-                        items.tagClass('-mini',true);
-
+                        items.tagClass('-icon',true);
+                        profile._mode='icon';
                         // try 3: menu mode
                         if(getItemsW()>innerW){
-                            items.tagClass('-solo',true);
+                            items.tagClass('-menu',true);
                             menu.setInlineBlock();
-//                            items.append(menu);
+                            profile._mode='menu';
                         }
                     }
                 }
@@ -37096,7 +37119,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 panelfz = useem?panel._getEmSize():null,
                 listfz = useem?list._getEmSize():null,
                 type = prop.borderType,
-                bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
+                // have to use borderLeftWidth( ff will result 0 with borderWidth)
+                bw = (type=='flat'||type=='inset'||type=='outset') ? xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2 : 0,
                 wc=null,
                 hc=null,
                 off,
@@ -37161,7 +37185,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibg-bar';
         this.setTemplate(t);
-        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly}';
+        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
@@ -37187,7 +37211,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
            },
             MENUICON2:{
                 position:'relative',
-                margin:'.1875em 0 0 0',
+                margin:'.09375em',
                 padding:'.1875em',
                 cursor: 'pointer'
             },
@@ -37286,6 +37310,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                             break;
                     }
                     self.boxing().setBarSize(self.properties.barSize,true);
+
+                    hs.tagClass('(-top|-bottom|-left|-right)',false).tagClass('-'+v, true);
                 }
             },
             barHAlign:{
@@ -37308,7 +37334,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.cssRegion({bottom:unit,top:'auto'});
                 }
             },
-            _minBarSize:'3em',
             barSize:{
                 ini:50,
                 action:function(v){
@@ -37322,15 +37347,15 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
 
-                        v = t.miniStatus?css.$px(t._minBarSize,hs,true):v;
+                        v = t.status=='fold' ? css.$px(t.sideBarSize,hs,true) : v;
 
                     t._barSize=v;
 
-                    if(t.miniStatus){
-                        hl.tagClass('-mini2',true);
+                    if(t.status=='fold'){
+                        hl.tagClass('-icon2',true);
                         menu2.tagClass('-checked',true);
                     }else{
-                        hl.tagClass('-mini2',false);
+                        hl.tagClass('-icon2',false);
                         menu2.tagClass('-checked',false);
                     }
 
@@ -37379,10 +37404,25 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
             },
-            miniStatus:{
-                ini:false,
+            status:{
+                ini:'expand',
+                listbox:['expand','fold'],
                 action:function(v){
                    this.boxing().setBarSize(this.properties.barSize,true);
+                }
+            },
+            sideBarSize:{
+                ini:'3em',
+                action:function(v){
+                   // trigger layout
+                   this.boxing().setBarSize(this.properties.barSize,true);
+                }
+            }
+        },
+        Behaviors:{
+            MENU2:{
+                onClick:function(profile, e, src){
+                    profile.boxing().setStatus(profile.properties.status=='fold'?'expand':'fold', true);
                 }
             }
         },
@@ -37394,8 +37434,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
             if(pro.barLocation=='top'||pro.barLocation=='bottom'){
                 this.getSubNode('ITEMS').addClass('xui-css-noscroll');
-            }else{
-                this.getSubNode('MENU2').css('display','block');
             }
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
@@ -37426,7 +37464,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hsfz =  useem?hs._getEmSize():null,
                 hlfz =  useem?hl._getEmSize():null,
                 type = prop.borderType,
-                bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
+                bw = (type=='flat'||type=='inset'||type=='outset') ? xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2 : 0,
                 wc=null,
                 hc=null,
                 top, left, itmsH;
@@ -37454,6 +37492,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
                     //hs.height(adjustunit(itmsH, hsfz));
                 }else{
+                    // side bar
+                    menu2.css('display',prop.sideBarSize?'block':'none');
+
                     if(height){
                         // for nopanel:
                         if(noPanel){
@@ -37461,7 +37502,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                             hl.width(adjustunit(ww-bw+xui.Dom.getScrollBarSize(), hlfz));
                         }
                         hs.height(adjustunit(hh-bw, hsfz));
-                        hl.height(adjustunit(hh-bw-menu2.offsetHeight(), hlfz));
+                        hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
     
                         top=0;
                         hc=hh;
@@ -40026,6 +40067,10 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ini:'top',
                 listbox:['top','bottom']
             }
+        },
+        LayoutTrigger:function(){
+            var v=this.properties;
+            v.$hborder=v.$vborder=xui.UI.$getCSSValue('xui-uiborder-outset','borderLeftWidth');
         },
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},
@@ -47781,7 +47826,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                 }
                 // for border-bottom
-                if(rr)rr-=1;
+                if(rr && prop.freezedRow)rr-=1;
                 // for border-right
                 if(w1 && prop.freezedColumn)w1-=1;
 
@@ -48393,7 +48438,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                 }
                 // for border-bottom
-                if(rr)rr-=1;
+                if(rr && prop.freezedRow)rr-=1;
                 // for border-right
                 if(w1 && prop.freezedColumn)w1-=1;
 
@@ -49532,8 +49577,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             node.cssSize(size).css('overflow','auto').show();
 
-            w=size.width + 20;
-            h=size.height + 60;
+            var fs=xui.CSS._getDftEmSize();
+            w=size.width + fs*2;
+            h=size.height + fs*6;
             dialog.setCaption(caption).setWidth(w).setHeight(h);
             return {width:w, height:h};
         },
@@ -49758,8 +49804,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     resizer:false,
                     left:200,
                     top:200,
-                    width:300,
-                    height:130
+                    width:'25em',
+                    height:'11em'
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
@@ -49771,14 +49817,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
-                            return false;                        }
+                            return false;                        
+                        }
                     }
                 });
                 var con = dialog._$con = new xui.UI.Div({
                     top:4,
                     left:10,
-                    width:270,
-                    height:18
+                    width:'23em',
+                    height:'1.2em'
                 }),
                 cmd = new xui.UI.Div({
                     height:'2.5em',
@@ -49810,8 +49857,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var inp=dialog._$inp=new xui.UI.Input({
                     left:10,
                     top:22,
-                    width:270,
-                    height:36,
+                    width:'23em',
+                    height:'3em',
                     multiLines:true
                 })
                 dialog.append(con).append(cmd).append(inp).render();

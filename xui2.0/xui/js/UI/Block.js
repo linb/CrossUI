@@ -135,10 +135,13 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                     xui.UI.Div._applyAutoLoad(this);
         },
         _setB:function(profile){
-            var p=profile.properties,type=p.borderType;
+            var p=profile.properties,
+                type=p.borderType,
+                w=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             p.$hborder=p.$vborder=p.$iborder=0;
-            if(type=='flat'||type=='inset'||type=='outset'){p.$hborder=p.$vborder=1;p.$iborder=0;}
-            else if(type=='groove'||type=='ridge'){p.$hborder=p.$vborder=p.$iborder=1;}
+
+            if(type=='flat'||type=='inset'||type=='outset'){p.$hborder=p.$vborder=w;p.$iborder=0;}
+            else if(type=='groove'||type=='ridge'){p.$hborder=p.$vborder=p.$iborder=w;}
         },
         LayoutTrigger:function(){
             var v=this.properties.borderType;

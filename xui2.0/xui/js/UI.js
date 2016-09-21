@@ -2207,8 +2207,8 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
                 position:'absolute',
-                top:'.75em',
-                right:'.75em',
+                top:'.5em',
+                right:'.5em',
                 'text-align':'right'
             },
             '.xui-uibar-top .xui-uibar-tdb':{
@@ -2613,6 +2613,10 @@ Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 color: '#909090 !important'
             },
+            'button::-moz-focus-inner, input::-moz-focus-inner':{
+                 padding: 0,
+                 border: 0
+             },
             'button:disabled, a:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node':{
                 $order:2,
                 cursor:'not-allowed',
@@ -3728,6 +3732,7 @@ Class("xui.UI",  "xui.absObj", {
             return self;
         },
         $getCSSValue:function(cls, key,force){
+            cls=cls.replace(/\./g,'');
             var cache=xui.$CSSCACHE,
                 ck=cls+'->'+key;
             if(!force &&(ck in cache))return cache[ck];

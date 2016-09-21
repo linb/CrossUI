@@ -101,6 +101,10 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             $hborder:1,
             $vborder:1
         },
+        LayoutTrigger:function(){
+            var v=this.properties;
+            v.$hborder=v.$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+        },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
             data.fillBG = data.fillBG?'background:'+data.fillBG:'';

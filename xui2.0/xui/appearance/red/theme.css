@@ -1,14 +1,9 @@
 /*base size*/
 .xui-node{
 		font-size: 12px;
-		color:#333;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
-  color:#333;
-}
-.xuifont-checked, .xuicon-checked{
-  color:#fcea29;
 }
 
 /*background*/

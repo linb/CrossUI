@@ -692,6 +692,7 @@ Class('xui.DragDrop',null,{
                     xui.create('<div id="' + d._id + '" style="left:0;top:0;border:0;font-size:0;line-height:0;padding:'+d.$proxySize+'px;position:absolute;background:url('+xui.ini.img_bg+') repeat;"><div style="font-size:0;line-height:0;" id="' +d._idi+ '">'+(xui.browser.ie6?'&nbsp;':'')+'</div></div>')
                 );
             t=xui(d._id);
+            //t.rotate('10');
             if(p.dragKey){
                 d.$proxySize=0;
                 t.css('padding',0);
@@ -726,7 +727,7 @@ Class('xui.DragDrop',null,{
                     o.html('&nbsp;');
                 else o.empty();
                 o.attr('style','font-size:0;line-height:0;');
-
+                //o.rotate(0);
                 xui('body').prepend(
                     t
                     .css({

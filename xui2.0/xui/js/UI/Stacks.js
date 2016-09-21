@@ -132,7 +132,8 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 panelfz = useem?panel._getEmSize():null,
                 listfz = useem?list._getEmSize():null,
                 type = prop.borderType,
-                bw = (type=='flat'||type=='inset'||type=='outset') ? 2 : 0,
+                // have to use borderLeftWidth( ff will result 0 with borderWidth)
+                bw = (type=='flat'||type=='inset'||type=='outset') ? xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2 : 0,
                 wc=null,
                 hc=null,
                 off,

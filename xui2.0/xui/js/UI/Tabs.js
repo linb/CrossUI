@@ -430,10 +430,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 top:0,
                 'white-space':'nowrap'
             },
-            'ITEMS-mini CAPTION, ITEMS-mini CMDS, ITEMS-mini2 CAPTION, ITEMS-mini2 CMDS':{
+            'ITEMS-icon CAPTION, ITEMS-icon CMDS, ITEMS-icon2 CAPTION, ITEMS-icon2 CMDS':{
                 display:'none'
             },
-            'ITEMS-solo ITEM':{
+            'ITEMS-menu ITEM':{
                 display:'none'
             },
             ITEM:{
@@ -786,11 +786,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     xui(src).onMouseover(true);
                 }
             },
-            MENU2:{
-                onClick:function(profile, e, src){
-                    profile.boxing().setMiniStatus(!profile.properties.miniStatus, true);
-                }
-            },
             PANEL:{
                 onClick:function(profile, e, src){
                     var p=profile.properties,
@@ -1129,13 +1124,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 ignoreCap;
 
                 // init
-                items.tagClass('-mini',false);
-                items.tagClass('-mini2',false);
-                items.tagClass('-solo',false);
+                items.tagClass('-icon',false);
+                items.tagClass('-icon2',false);
+                items.tagClass('-menu',false);
                 menu.css('display','none');
                 caps.css('width','');
-                //list.prepend(menu);
-
+                
+                profile._mode='normal';
                 // try 1: minus caption width
                 itemsW = getItemsW();
                 if(itemsW>innerW){
@@ -1145,19 +1140,20 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         caps.each(function(cap){
                             xui(cap).width(Math.floor(cap.clientWidth * percent) +'px');
                         });
+                        profile._mode='narrow';
                     }else{
                         ignoreCap=1;
                     }
 
                     // try 2: icon mode
                     if(ignoreCap || getItemsW()>innerW){
-                        items.tagClass('-mini',true);
-
+                        items.tagClass('-icon',true);
+                        profile._mode='icon';
                         // try 3: menu mode
                         if(getItemsW()>innerW){
-                            items.tagClass('-solo',true);
+                            items.tagClass('-menu',true);
                             menu.setInlineBlock();
-//                            items.append(menu);
+                            profile._mode='menu';
                         }
                     }
                 }
