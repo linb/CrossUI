@@ -14,6 +14,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'white-space': 'nowrap',
                 overflow:'hidden'
             },
+            // for auto height
+            'LIST-top, LIST-bottom':{
+                $order:2,
+                position:'relative'
+            },
             LISTBG:{
                 display:'none'
             },
@@ -274,7 +279,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 panelfz = useem?panel._getEmSize():null,
                 // caculate by px
                 ww=width?css.$px(width, rootfz, true):width, 
-                hh=height?css.$px(height, rootfz, true):height,
+                hh=(height&&height!='auto')?css.$px(height, rootfz, true):height,
 
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
@@ -293,7 +298,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hs.width(adjustunit(ww-bw, hsfz));
                         hl.width(adjustunit(ww-bw, hlfz));
                         // for nopanel:
-                        if(noPanel)
+                        if(noPanel && height!='auto')
                             hs.height(adjustunit(hh-bw, hsfz));
                         
                         if(!prop.noHandler)
@@ -302,14 +307,18 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         left = 0;
                         wc=ww;
                     }
-
-                    // caculate by px
-                    itmsH = hl.offsetHeight()
-                    if(hh-itmsH>0)hc=hh-itmsH-bw;
-                    top = prop.barLocation=='top'?bw+itmsH:0;
-
-                    //hs.height(adjustunit(itmsH, hsfz));
+                    if(hh!='auto'){
+                        // caculate by px
+                        if(hh-itmsH>0)hc=hh-itmsH-bw;
+                        //hs.height(adjustunit(itmsH, hsfz));
+                    }else{
+                        hc=hh;
+                    }
                 }else{
+                    // dont support auto height for 'top' or 'bottom' barLocation
+                    if(hh=='auto'){
+                        hh=300;
+                    }
                     // side bar
                     menu2.css('display',prop.sideBarSize?'block':'none');
 
@@ -322,7 +331,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hs.height(adjustunit(hh-bw, hsfz));
                         hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
     
-                        top=0;
                         hc=hh;
                     }
                     if(width){
@@ -340,8 +348,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 if(panel && !panel.isEmpty())panel.cssRegion({
                     width : wc?adjustunit(wc,panelfz):null,
                     height : hc?adjustunit(hc,panelfz):null,
-                    left : adjustunit(left,panelfz),
-                    top : adjustunit(top,panelfz)
+                    left : adjustunit(left,panelfz)
                 },true);
         }
     }

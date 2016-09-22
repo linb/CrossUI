@@ -151,7 +151,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uicon-maini xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CON:{
                             tagName:'div',
-                            className:'xui-uiborder-flat',
+                            className:'xui-uiborder-lt xui-uiborder-noradius',
                             BODY:{
                                 tagName:'table',
                                 cellpadding:"0",
@@ -261,7 +261,8 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 top:'.125em'
             },
             TAILI:{
-                position:'relative'
+                position:'relative',
+                padding:'.5em 0 .25em 0'
             },
             TIME:{
                 'padding':'.25em 1.5em'
@@ -300,13 +301,12 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             'MONTH, DAY,HOUR, MINUTE':{
             },
             CAPTION:{
-                padding:'.5em 0 0 0',
                 'text-align':'center',
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             },
             MAINI:{
-                 padding:'.5em .5em .5em 0'
+                 padding:'.5em .5em .25em 0'
             },
             BODY:{
                 overflow: 'visible'

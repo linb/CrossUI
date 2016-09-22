@@ -16158,14 +16158,10 @@ Class("xui.Tips", null,{
 
                     var self=this,node,_ruler,s,w,h;
                     if(!(node=self.node) || !node.get(0)){
-                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
-                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
+                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
+                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
-                        if(xui.Dom.css3Support("boxShadow")){
-                            node.css("boxShadow","2px 2px 2px #717C8C");
-                            _ruler.css("boxShadow","2px 2px 2px #717C8C");
-                        }
                         xui('body').append(_ruler);
                     }
                     _ruler = self._ruler;
@@ -31715,7 +31711,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'border-collapse':'separate'
             },
             MAINI:{
-                padding:'.5em .5em .5em 0'
+                padding:'.5em .5em .25em 0'
             },
             CON:{
                 padding:'.25em',
@@ -31734,8 +31730,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             DATA:{
             },
             'DATA span':{
-                'padding':'0 .25em',
-                'margin-right':'.125em',
+                'padding':'0 1px',
+                'margin-left': '-1px',
+                'margin-right':'1px',
                 'width':'1.75em'
             },
             'DATA div':{
@@ -31772,7 +31769,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.5em',
+                'padding':'.5em 0 .25em 0',
                 'text-align':'center'
             },
             SIMPLE:{
@@ -31842,13 +31839,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SET:{
                 position:'absolute',
                 display:'none',
-                top:'0',
+                top:'.125em',
                 right:'2.5em'
             },
             TOGGLE:{
                 position:'absolute',
                 right:'.5em',
-                top:'0.125em',
+                top:'0.25em',
                 display:xui.$inlineBlock,
                 cursor:'default'
             }
@@ -32557,7 +32554,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uicon-maini xui-uicon-maini xui-uibg-bar xui-uiborder-r',
                         CON:{
                             tagName:'div',
-                            className:'xui-uiborder-flat',
+                            className:'xui-uiborder-lt xui-uiborder-noradius',
                             BODY:{
                                 tagName:'table',
                                 cellpadding:"0",
@@ -32667,7 +32664,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 top:'.125em'
             },
             TAILI:{
-                position:'relative'
+                position:'relative',
+                padding:'.5em 0 .25em 0'
             },
             TIME:{
                 'padding':'.25em 1.5em'
@@ -32706,13 +32704,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'MONTH, DAY,HOUR, MINUTE':{
             },
             CAPTION:{
-                padding:'.5em 0 0 0',
                 'text-align':'center',
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
             },
             MAINI:{
-                 padding:'.5em .5em .5em 0'
+                 padding:'.5em .5em .25em 0'
             },
             BODY:{
                 overflow: 'visible'
@@ -33437,7 +33434,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding-top':'.5em'
+                'padding':'.5em 0 .25em 0'
             },
             CONH:{
                 'white-space': 'nowrap',
@@ -33473,7 +33470,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.5em',
+                padding:'.5em 0 .25em 0',
                 'text-align':'center'
             },
             CAPTION:{
@@ -35446,8 +35443,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 else{
                     if(profile._toggle){
                         //force to get height
-                        h1=v1.height(true);
-                        h4=noFrame?0:v4.height(true);
+                        h1=v1.offsetHeight(true);
+                        h4=noFrame?0:v4.offsetHeight(true);
                         if((t=height-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
                     }else{
@@ -37211,6 +37208,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'white-space': 'nowrap',
                 overflow:'hidden'
             },
+            // for auto height
+            'LIST-top, LIST-bottom':{
+                $order:2,
+                position:'relative'
+            },
             LISTBG:{
                 display:'none'
             },
@@ -37471,7 +37473,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 panelfz = useem?panel._getEmSize():null,
                 // caculate by px
                 ww=width?css.$px(width, rootfz, true):width, 
-                hh=height?css.$px(height, rootfz, true):height,
+                hh=(height&&height!='auto')?css.$px(height, rootfz, true):height,
 
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
@@ -37490,7 +37492,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hs.width(adjustunit(ww-bw, hsfz));
                         hl.width(adjustunit(ww-bw, hlfz));
                         // for nopanel:
-                        if(noPanel)
+                        if(noPanel && height!='auto')
                             hs.height(adjustunit(hh-bw, hsfz));
                         
                         if(!prop.noHandler)
@@ -37499,14 +37501,18 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         left = 0;
                         wc=ww;
                     }
-
-                    // caculate by px
-                    itmsH = hl.offsetHeight()
-                    if(hh-itmsH>0)hc=hh-itmsH-bw;
-                    top = prop.barLocation=='top'?bw+itmsH:0;
-
-                    //hs.height(adjustunit(itmsH, hsfz));
+                    if(hh!='auto'){
+                        // caculate by px
+                        if(hh-itmsH>0)hc=hh-itmsH-bw;
+                        //hs.height(adjustunit(itmsH, hsfz));
+                    }else{
+                        hc=hh;
+                    }
                 }else{
+                    // dont support auto height for 'top' or 'bottom' barLocation
+                    if(hh=='auto'){
+                        hh=300;
+                    }
                     // side bar
                     menu2.css('display',prop.sideBarSize?'block':'none');
 
@@ -37519,7 +37525,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hs.height(adjustunit(hh-bw, hsfz));
                         hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
     
-                        top=0;
                         hc=hh;
                     }
                     if(width){
@@ -37537,8 +37542,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 if(panel && !panel.isEmpty())panel.cssRegion({
                     width : wc?adjustunit(wc,panelfz):null,
                     height : hc?adjustunit(hc,panelfz):null,
-                    left : adjustunit(left,panelfz),
-                    top : adjustunit(top,panelfz)
+                    left : adjustunit(left,panelfz)
                 },true);
         }
     }

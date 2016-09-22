@@ -531,8 +531,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 else{
                     if(profile._toggle){
                         //force to get height
-                        h1=v1.height(true);
-                        h4=noFrame?0:v4.height(true);
+                        h1=v1.offsetHeight(true);
+                        h4=noFrame?0:v4.offsetHeight(true);
                         if((t=height-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
                     }else{

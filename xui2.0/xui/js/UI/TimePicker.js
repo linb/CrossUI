@@ -237,7 +237,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding-top':'.5em'
+                'padding':'.5em 0 .25em 0'
             },
             CONH:{
                 'white-space': 'nowrap',
@@ -273,7 +273,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             },
             TAILI:{
                 position:'relative',
-                'padding-top':'.5em',
+                padding:'.5em 0 .25em 0',
                 'text-align':'center'
             },
             CAPTION:{

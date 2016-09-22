@@ -298,7 +298,18 @@ html, .xui-uibg-base{
     background-color: #38404C !important;
 }
 
-
+.xui-treegrid-tdbody21 > .columnfreezed {
+    -moz-box-shadow: 1px 0 1px #282d34;
+    -webkit-box-shadow: 1px 0 1px #282d34;
+    box-shadow: 1px 0 1px #282d34;
+    z-index: 10;
+}
+.xui-treegrid-tdbody12 > .rowfreezed {
+    -moz-box-shadow: 0 1px 1px #282d34;
+    -webkit-box-shadow: 0 1px 1px #282d34;
+    box-shadow: 0 1px 1px #282d34;
+    z-index: 10;
+}
 /*disable and readonly*/
 input[readonly], textarea[readonly], 
 input:read-only, textarea:read-only,
@@ -325,7 +336,6 @@ input:disabled, textarea:disabled,
 
 /*
 .xui-ui-invalid, .xui-ui-invalid .xui-node{}
-.xui-ui-shadow{}
 .xui-special-icon{}
 .xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
 .xui-required{}
@@ -338,7 +348,11 @@ input:disabled, textarea:disabled,
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-
+.xui-ui-shadow {
+    -moz-box-shadow: 2px 2px 5px #282d34;
+    -webkit-box-shadow: 2px 2px 5px #282d34;
+    box-shadow: 2px 2px 5px #282d34;
+}
 /** important => the last one: this theme's name */
 .setting-uikey{
     font-family: moonify;

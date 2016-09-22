@@ -159,14 +159,10 @@ Class("xui.Tips", null,{
 
                     var self=this,node,_ruler,s,w,h;
                     if(!(node=self.node) || !node.get(0)){
-                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
-                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
+                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
+                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
                         self.n = node.first();
                         self._n = _ruler.first();
-                        if(xui.Dom.css3Support("boxShadow")){
-                            node.css("boxShadow","2px 2px 2px #717C8C");
-                            _ruler.css("boxShadow","2px 2px 2px #717C8C");
-                        }
                         xui('body').append(_ruler);
                     }
                     _ruler = self._ruler;
