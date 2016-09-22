@@ -475,7 +475,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 prop=prf.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = prf.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),

@@ -476,7 +476,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         profile.getRoot().height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                        useem = xui.$uem(p),
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
                         rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -504,7 +504,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
            var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
@@ -522,8 +522,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 h1,h4,t;
 
             // caculate by px
-            if(width && width!='auto')width=css.$px(width, rootfz)
-            if(height && height!='auto')height=css.$px(height, rootfz)
+            if(width && width!='auto')width=css.$px(width, rootfz, true);
+            if(height && height!='auto')height=css.$px(height, rootfz, true);
 
             if(height){
                 if(height=='auto')

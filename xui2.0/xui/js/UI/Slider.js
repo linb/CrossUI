@@ -576,7 +576,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label = f('LABEL'),
                 
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,

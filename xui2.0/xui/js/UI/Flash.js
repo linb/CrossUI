@@ -168,7 +168,7 @@ Class("xui.UI.Flash", "xui.UI",{
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 css=xui.CSS,
-                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem=xui.$uem(prop),
                 root=profile.getRoot(),
                 rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},

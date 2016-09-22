@@ -80,7 +80,7 @@ Class("xui.UI.Image", "xui.UI",{
             var prop=profile.properties,
                 src=profile.getRootNode(),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,

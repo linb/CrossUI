@@ -103,7 +103,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;

@@ -893,6 +893,7 @@ xui.merge(xui,{
     $rand:"_r_",
 
     SpaceUnit:'em',
+    $uem:function(p){return ((p?p.spaceUnit:'')||xui.SpaceUnit) == 'em'},
     // for show xui.echo
     debugMode:true,
 
@@ -1841,7 +1842,7 @@ new function(){
             if(d.addEventListener ) {
               d.removeEventListener("DOMContentLoaded", f, false );
               w.removeEventListener("load", f, false );
-            } else {
+            } else if(d.detachEvent){
               d.detachEvent("onreadystatechange", f);
               w.detachEvent("onload", f);
             }
@@ -1850,18 +1851,18 @@ new function(){
             if(xui.browser.deviceType != 'touchOnly' && !xui.Dom.getScrollBarSize()){
                 xui.browser.deviceType = 'touchOnly';
                 if(xui.UI){
-                    var f=function(c){
+                    var f2=function(c){
                         xui.arr.each(c,function(key){
                             if(key=xui.SC.get(key)){
                                 if(key.$DataModel.overflow){
                                     key.$DataModel.overflow.ini='auto';
                                     key.$DataStruct.overflow='auto';
                                 }
-                                if(key.$children && key.$children.length)f(key.$children);
+                                if(key.$children && key.$children.length)f2(key.$children);
                             }
                         });
                     };
-                    f(xui.UI.$children);
+                    f2(xui.UI.$children);
                 }
             }
         }
@@ -4185,7 +4186,7 @@ Class('xui.absObj',"xui.absBox",{
 
                             var t,nfz;
                             // *** force to em
-                            if((v.properties.spaceUnit||xui.SpaceUnit)=='em'){
+                            if(xui.$uem(v.properties)){
                                 if(dm[i] && dm[i]['$spaceunit'])
                                     if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value)))
                                         // only have root dom node

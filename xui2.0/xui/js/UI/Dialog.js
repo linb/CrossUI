@@ -10,7 +10,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 var t,
                     p=profile.properties,
                     css=xui.CSS,
-                    useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(p),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -47,7 +47,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        rootfz= (p.spaceUnit||xui.SpaceUnit)=='em'?root._getEmSize():null,
+                        rootfz= xui.$uem(p)?root._getEmSize():null,
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
@@ -91,7 +91,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 var pro=profile.properties,
                     box=profile.box,
                     css=xui.CSS,
-                    useem = (pro.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(pro),
                     root=profile.getRoot(),
                     rootfz=useem?root._getEmSize():null;
 
@@ -380,7 +380,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             onDragstop:function(profile){
                 var p = profile.properties,
                     css = xui.CSS,
-                    useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(p),
                     root=profile.getRoot(),
                     rootfz=useem?root._getEmSize():null,
                     pos = root.cssPos(),
@@ -1053,7 +1053,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             var prop=profile.properties, 
                 css=xui.CSS,
                 root=profile.getRoot(),
-                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem=xui.$uem(prop),
                 rootfz= useem?root._getEmSize():null,
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 nr=root.cssRegion();
@@ -1420,7 +1420,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             var prop=profile.properties,
                 css=xui.CSS,
-                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem=xui.$uem(prop),
                 root=profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,

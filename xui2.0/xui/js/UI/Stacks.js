@@ -122,7 +122,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             }
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),

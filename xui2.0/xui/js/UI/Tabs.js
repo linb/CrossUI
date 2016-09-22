@@ -1047,7 +1047,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
@@ -1058,9 +1058,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 hc=null,
                 listH;
 
-             // caculate by px
-            width=width?css.$px(width, rootfz, true):width;
-            height=height?css.$px(height, rootfz, true):height;
+            // caculate by px
+            if(width && width!='auto')width=css.$px(width, rootfz, true);
+            if(height && height!='auto')height=css.$px(height, rootfz, true);
 
             if(!panel || panel.isEmpty())return;
             
@@ -1076,7 +1076,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
-                if(height!='auto'){
+                if(height=='auto'){
+                    hc='auto';
+                }else{
                     if(!prop.noHandler){
                         height = height-listH;
                     }

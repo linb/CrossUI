@@ -689,7 +689,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),

@@ -821,7 +821,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 css=xui.CSS,
                 _handlerSize=css._getDftFISize() / 2 + 2,
-                useem = (t.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(t),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz =  useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;

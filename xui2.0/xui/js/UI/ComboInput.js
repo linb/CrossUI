@@ -231,8 +231,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
 
-                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
-
                 //open already
                 if(profile.$poplink)return;
                 var o, v, css=xui.CSS,
@@ -243,207 +241,215 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if((profile.beforeComboPop && false===(profile.$drop = box.beforeComboPop(profile, pos, e, src))))
                     return;
 
-                if(profile.__tryToHide){
-                    xui.clearTimeout(profile.__tryToHide);
-                    delete profile.__tryToHide;
-                }
+                // for standard drop
+                if(type=='combobox'||type=='listbox'||type=='helpinput'
+                    ||type=='date'||type=='datepicker'
+                    ||type=='time'||type=='timepicker'
+                    ||type=='datetime'
+                    ||type=='color'||type=='colorpicker'){
 
-                //get cache key
-                var cachekey;
-                if(cacheDrop){
-                    switch(type){
-                        case 'timepicker':
-                        case 'time':
-                        case 'datepicker':
-                        case 'date':
-                        case 'datetime':
-                        case 'colorpicker':
-                        case 'color':
-                            cachekey=type;
-                            break;
-                        default:
-                            if(pro.listKey)
-                                //function no cache
-                                if(typeof xui.get(xui.$cache,['UIDATA', pro.listKey])=='function')
-                                    profile.$drop = cachekey = null;
+                    if(profile.__tryToHide){
+                        xui.clearTimeout(profile.__tryToHide);
+                        delete profile.__tryToHide;
+                    }
+
+                    //get cache key
+                    var cachekey;
+                    if(cacheDrop){
+                        switch(type){
+                            case 'timepicker':
+                            case 'time':
+                            case 'datepicker':
+                            case 'date':
+                            case 'datetime':
+                            case 'colorpicker':
+                            case 'color':
+                                cachekey=type;
+                                break;
+                            default:
+                                if(pro.listKey)
+                                    //function no cache
+                                    if(typeof xui.get(xui.$cache,['UIDATA', pro.listKey])=='function')
+                                        profile.$drop = cachekey = null;
+                                    else
+                                        cachekey = "!"+pro.listKey;
                                 else
-                                    cachekey = "!"+pro.listKey;
-                            else
-                                cachekey = "$"+profile.$xid;
+                                    cachekey = "$"+profile.$xid;
+                        }
+                        //get from global cache
+                        if(cachekey){
+                            //filter first
+                            xui.filter(profile.box.$drop,function(o){
+                                return !!o.renderId;
+                            });
+                            profile.$drop = profile.box.$drop[cachekey];
+                        }
                     }
-                    //get from global cache
-                    if(cachekey){
-                        //filter first
-                        xui.filter(profile.box.$drop,function(o){
-                            return !!o.renderId;
-                        });
-                        profile.$drop = profile.box.$drop[cachekey];
-                    }
-                }
 
-                //cache pop
-                if(!profile.$drop){
+                    //cache pop
+                    if(!profile.$drop){
+                        switch(type){
+                            case 'combobox':
+                            case 'listbox':
+                            case 'helpinput':
+                                o = xui.create('List');
+                                o.setHost(profile).setDirtyMark(false).setItems(xui.copy(pro.items)).setListKey(pro.listKey||'');
+                                if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
+                                else o.setWidth(css.$forceu( main.offsetWidth() + btn.offsetWidth() ));
+
+                                o.setHeight(pro.dropListHeight||'auto');
+
+                                o.afterClick(function(){
+                                    if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    else
+                                        o.destroy(true);
+                                    return false;
+                                });
+                                o.beforeUIValueSet(function(p, ovalue, value){
+                                    var b2=this.boxing();
+                                    if(type=='combobox'){
+                                        var item=p.queryItems(p.properties.items,function(o){return o.id==value},false,true);
+                                        if(item.length)
+                                            value = item[0].caption;
+                                    }
+                                    //update value
+                                    b2.setUIValue(value,null,null,'pick');
+
+                                    //cache pop
+                                    return b2._cache('',true);
+                                });
+                                break;
+                            case 'time':
+                            case 'timepicker':
+                                o = xui.create('TimePicker');
+                                o.setHost(profile);
+                                o.beforeClose(function(){
+                                   if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    return false
+                                });
+                                o.beforeUIValueSet(function(p, o, v){
+                                    var b2=this.boxing();
+                                    //update value
+                                    b2.setUIValue(v,null,null,'pick');
+                                    return b2._cache('',true);
+                                });
+                                break;
+                            case 'date':
+                            case 'datepicker':
+                            case 'datetime':
+                                o = xui.create('DatePicker');
+
+                                if(type=='datetime')
+                                    o.setTimeInput(true);
+
+                                o.setHost(profile);
+                                o.beforeClose(function(){
+                                    if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    else
+                                        o.destroy(true);
+                                    return false
+                                });
+                                o.beforeUIValueSet(function(p, o, v){
+                                    var b2=this.boxing();
+                                    //update value
+                                    b2.setUIValue(String(v.getTime()),null,null,'pick');
+                                    return b2._cache('',true);
+                                });
+
+                                break;
+                            case 'color':
+                            case 'colorpicker':
+                                o = xui.create('ColorPicker');
+                                o.setHost(profile);
+                                o.beforeClose(function(){
+                                    if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    else
+                                        o.destroy(true);
+                                    return false
+                                });
+                                o.beforeUIValueSet(function(p, o, v){
+                                    var b2=this.boxing();
+                                    //update value
+                                    b2.setUIValue((v=='transparent'?'':'#')+v,null,null,'pick');
+                                    return b2._cache('',true);
+                                });
+                                break;
+                        }
+                        if(xui.isHash(pro.popCtrlProp) && !xui.isEmpty(pro.popCtrlProp))
+                            o.setProperties(pro.popCtrlProp);
+                        if(xui.isHash(pro.popCtrlEvents) && !xui.isEmpty(pro.popCtrlEvents))
+                            o.setEvents(pro.popCtrlEvents);
+
+                        profile.$drop = o.get(0);
+
+                        //set to global cache
+                        if(cachekey)
+                            profile.box.$drop[cachekey]=profile.$drop;
+
+                        o.render();
+                    }
+
+                    o=profile.$drop.boxing();
+                    o.setHost(profile);
+
+                    //set pop
                     switch(type){
                         case 'combobox':
                         case 'listbox':
                         case 'helpinput':
-                            o = xui.create('List');
-                            o.setHost(profile).setDirtyMark(false).setItems(xui.copy(pro.items)).setListKey(pro.listKey||'');
-                            if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
-                            else o.setWidth(css.$forceu( main.offsetWidth() + btn.offsetWidth() ));
-
-                            o.setHeight(pro.dropListHeight||'auto');
-
-                            o.afterClick(function(){
-                                if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                else
-                                    o.destroy(true);
-                                return false;
-                            });
-                            o.beforeUIValueSet(function(p, ovalue, value){
-                                var b2=this.boxing();
-                                if(type=='combobox'){
-                                    var item=p.queryItems(p.properties.items,function(o){return o.id==value},false,true);
-                                    if(item.length)
-                                        value = item[0].caption;
-                                }
-                                //update value
-                                b2.setUIValue(value,null,null,'pick');
-
-                                //cache pop
-                                return b2._cache('',true);
-                            });
-                            break;
                         case 'time':
                         case 'timepicker':
-                            o = xui.create('TimePicker');
-                            o.setHost(profile);
-                            o.beforeClose(function(){
-                               if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                return false
-                            });
-                            o.beforeUIValueSet(function(p, o, v){
-                                var b2=this.boxing();
-                                //update value
-                                b2.setUIValue(v,null,null,'pick');
-                                return b2._cache('',true);
-                            });
+                            o.setValue(profile.properties.$UIvalue, true,'pop');
                             break;
                         case 'date':
                         case 'datepicker':
                         case 'datetime':
-                            o = xui.create('DatePicker');
-
-                            if(type=='datetime')
-                                o.setTimeInput(true);
-
-                            o.setHost(profile);
-                            o.beforeClose(function(){
-                                if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                else
-                                    o.destroy(true);
-                                return false
-                            });
-                            o.beforeUIValueSet(function(p, o, v){
-                                var b2=this.boxing();
-                                //update value
-                                b2.setUIValue(String(v.getTime()),null,null,'pick');
-                                return b2._cache('',true);
-                            });
-
+                            var t = profile.$drop.properties;
+                            if(t=profile.properties.$UIvalue)
+                                o.setValue(new Date( parseInt(t,10)), true,'pop');
                             break;
                         case 'color':
                         case 'colorpicker':
-                            o = xui.create('ColorPicker');
-                            o.setHost(profile);
-                            o.beforeClose(function(){
-                                if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                else
-                                    o.destroy(true);
-                                return false
-                            });
-                            o.beforeUIValueSet(function(p, o, v){
-                                var b2=this.boxing();
-                                //update value
-                                b2.setUIValue((v=='transparent'?'':'#')+v,null,null,'pick');
-                                return b2._cache('',true);
-                            });
+                            o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
                             break;
                     }
-                    if(xui.isHash(pro.popCtrlProp) && !xui.isEmpty(pro.popCtrlProp))
-                        o.setProperties(pro.popCtrlProp);
-                    if(xui.isHash(pro.popCtrlEvents) && !xui.isEmpty(pro.popCtrlEvents))
-                        o.setEvents(pro.popCtrlEvents);
 
-                    profile.$drop = o.get(0);
+                    profile.$poplink = o.get(0);
 
-                    //set to global cache
-                    if(cachekey)
-                        profile.box.$drop[cachekey]=profile.$drop;
+                    if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
+                        return;
+                    //pop
+                    var node=o.reBoxing();
+                    node.popToTop(profile.getSubNode('BOX'));
 
-                    o.render();
-                }
+                    xui.tryF(o.activate,[],o);
 
-                o=profile.$drop.boxing();
-                o.setHost(profile);
-
-                //set pop
-                switch(type){
-                    case 'combobox':
-                    case 'listbox':
-                    case 'helpinput':
-                    case 'time':
-                    case 'timepicker':
-                        o.setValue(profile.properties.$UIvalue, true,'pop');
-                        break;
-                    case 'date':
-                    case 'datepicker':
-                    case 'datetime':
-                        var t = profile.$drop.properties;
-                        if(t=profile.properties.$UIvalue)
-                            o.setValue(new Date( parseInt(t,10)), true,'pop');
-                        break;
-                    case 'color':
-                    case 'colorpicker':
-                        o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
-                        break;
-                }
-
-                profile.$poplink = o.get(0);
-
-                if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
-                    return;
-                //pop
-                var node=o.reBoxing();
-                node.popToTop(profile.getSubNode('BOX'));
-
-                xui.tryF(o.activate,[],o);
-
-                //for on blur disappear
-                node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
-                    box._cache('blur');
-                });
-
-                //for esc
-                xui.Event.keyboardHookUp('esc',0,0,0,function(){
-                    profile.$escclosedrop=1;
-                    xui.asyRun(function(){
-                        delete profile.$escclosedrop;
+                    //for on blur disappear
+                    node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
+                        box._cache('blur');
                     });
 
-                    box.activate();
-                    //unhook
-                    xui.Event.keyboardHook('esc');
-                    box._cache('esc',true);
-                });
-                
+                    //for esc
+                    xui.Event.keyboardHookUp('esc',0,0,0,function(){
+                        profile.$escclosedrop=1;
+                        xui.asyRun(function(){
+                            delete profile.$escclosedrop;
+                        });
+
+                        box.activate();
+                        //unhook
+                        xui.Event.keyboardHook('esc');
+                        box._cache('esc',true);
+                    });
+                }
+
                 if(profile.afterPopShow)
                     box.afterPopShow(profile, profile.$drop);
             });
@@ -1408,7 +1414,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
                 // determine em
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,
@@ -1423,14 +1429,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
-                btnw;
+                btnw, autoH;
 
             $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(height)height = (autoH=height=='auto') ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
+            
+            // for auto height
+            if(autoH)root.height(adjustunit(height, rootfz));
 
             var 
                 // make it round to Integer

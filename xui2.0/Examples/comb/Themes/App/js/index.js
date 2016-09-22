@@ -40,10 +40,6 @@ Class('App', 'xui.Module',{
                     "caption" : "default"
                 },
                 {
-                    "id" : "aqua",
-                    "caption" : "aqua"
-                },
-                {
                     "id" : "army",
                     "caption" : "army"
                 },

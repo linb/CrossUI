@@ -6274,7 +6274,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 
                 var prop = profile.properties,
                     css=xui.CSS,
-                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     rootfz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?profile.getRoot()._getEmSize():null,
                     size = profile.getSubNode("BORDER").cssSize(),
@@ -6877,7 +6877,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
                 css=xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,

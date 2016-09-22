@@ -161,7 +161,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 b=(prop.$iborder||0)*2,
 
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 panelfz = useem||css.$isEm(size.width)||css.$isEm(size.height)?panel._getEmSize():null,
                 // caculate by px

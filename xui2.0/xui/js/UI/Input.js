@@ -871,7 +871,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 label = f('LABEL'),
 
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,
@@ -885,13 +885,17 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
-                boff=xui.UI.$getCSSValue(clsname,'paddingBottom');
+                boff=xui.UI.$getCSSValue(clsname,'paddingBottom'),
+                autoH;
             
             $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(height)height = (autoH=height=='auto') ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
+
+            // for auto height
+            if(autoH)root.height(adjustunit(height, rootfz));
 
             var labelSize=css.$px(prop.labelSize,labelfz)||0,
                 labelGap=css.$px(prop.labelGap,rootfz)||0,

@@ -2376,7 +2376,9 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiw-border':{
                 $order:2,
                 display:'block',
-                position:'absolute',
+                //position:'absolute',
+                // modify to relative for 'auto' height
+                position:'relative',
                 border:0,
                 padding:0,
                 margin:0,
@@ -4407,7 +4409,7 @@ Class("xui.UI",  "xui.absObj", {
                 style=node.style;
 
             // *** force to em
-            if((p.spaceUnit||xui.SpaceUnit)=='em'){
+            if(xui.$uem(p)){
                 xui.each(xui.UI.$ps,function(j,i){
                     if(style[i]!='auto'&&(xui.isFinite(style[i])||xui.CSS.$isPx(style[i]))){
                         if(!nodefz)nodefz=xui(node)._getEmSize();
@@ -4625,7 +4627,7 @@ Class("xui.UI",  "xui.absObj", {
                 f,t,isWin,
                 //for ie6 1px bug
                 _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
                 rootfz = needfz?node._getEmSize():null,
@@ -4744,7 +4746,7 @@ Class("xui.UI",  "xui.absObj", {
 
                              var pn=node.get(0),
                                 style=pn.style,
-                                useem = (pprop.spaceUnit||xui.SpaceUnit)=='em',
+                                useem = xui.$uem(prop),
                                 nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 obj,i,k,o,key,target,
@@ -5002,7 +5004,7 @@ Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 root = node.get(0),
                                 style = root.style,
-                                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                                useem = xui.$uem(prop),
                                 nodefz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?node._getEmSize():null,
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
@@ -5509,7 +5511,7 @@ Class("xui.UI",  "xui.absObj", {
             }
 
             // *** force to em
-            if((p.spaceUnit||xui.SpaceUnit)=='em'){
+            if(xui.$uem(p)){
                 if(dm[i] && dm[i]['$spaceunit'])
                     if(p[i]!='auto'&&(xui.isFinite(p[i])||xui.CSS.$isPx(p[i])))
                         // only have root dom node
@@ -5608,7 +5610,7 @@ Class("xui.UI",  "xui.absObj", {
             
             // *** force to em
              xui.each(prop,function(o,i){
-                if((prop.spaceUnit||xui.SpaceUnit)=='em'){
+                if(xui.$uem(prop)){
                     if(dm[i] && dm[i]['$spaceunit'])
                         if(prop[i]==0||prop[i]=='0')prop[i]='0em';
                 }else{
@@ -6705,7 +6707,7 @@ new function(){
                     region,
 
                     css = xui.CSS,
-                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     root = profile.getRoot(),
                     rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,

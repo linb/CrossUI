@@ -893,6 +893,7 @@ xui.merge(xui,{
     $rand:"_r_",
 
     SpaceUnit:'em',
+    $uem:function(p){return ((p?p.spaceUnit:'')||xui.SpaceUnit) == 'em'},
     // for show xui.echo
     debugMode:true,
 
@@ -1841,7 +1842,7 @@ new function(){
             if(d.addEventListener ) {
               d.removeEventListener("DOMContentLoaded", f, false );
               w.removeEventListener("load", f, false );
-            } else {
+            } else if(d.detachEvent){
               d.detachEvent("onreadystatechange", f);
               w.detachEvent("onload", f);
             }
@@ -1850,18 +1851,18 @@ new function(){
             if(xui.browser.deviceType != 'touchOnly' && !xui.Dom.getScrollBarSize()){
                 xui.browser.deviceType = 'touchOnly';
                 if(xui.UI){
-                    var f=function(c){
+                    var f2=function(c){
                         xui.arr.each(c,function(key){
                             if(key=xui.SC.get(key)){
                                 if(key.$DataModel.overflow){
                                     key.$DataModel.overflow.ini='auto';
                                     key.$DataStruct.overflow='auto';
                                 }
-                                if(key.$children && key.$children.length)f(key.$children);
+                                if(key.$children && key.$children.length)f2(key.$children);
                             }
                         });
                     };
-                    f(xui.UI.$children);
+                    f2(xui.UI.$children);
                 }
             }
         }
@@ -4185,7 +4186,7 @@ Class('xui.absObj',"xui.absBox",{
 
                             var t,nfz;
                             // *** force to em
-                            if((v.properties.spaceUnit||xui.SpaceUnit)=='em'){
+                            if(xui.$uem(v.properties)){
                                 if(dm[i] && dm[i]['$spaceunit'])
                                     if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value)))
                                         // only have root dom node
@@ -19257,7 +19258,9 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiw-border':{
                 $order:2,
                 display:'block',
-                position:'absolute',
+                //position:'absolute',
+                // modify to relative for 'auto' height
+                position:'relative',
                 border:0,
                 padding:0,
                 margin:0,
@@ -21288,7 +21291,7 @@ Class("xui.UI",  "xui.absObj", {
                 style=node.style;
 
             // *** force to em
-            if((p.spaceUnit||xui.SpaceUnit)=='em'){
+            if(xui.$uem(p)){
                 xui.each(xui.UI.$ps,function(j,i){
                     if(style[i]!='auto'&&(xui.isFinite(style[i])||xui.CSS.$isPx(style[i]))){
                         if(!nodefz)nodefz=xui(node)._getEmSize();
@@ -21506,7 +21509,7 @@ Class("xui.UI",  "xui.absObj", {
                 f,t,isWin,
                 //for ie6 1px bug
                 _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
                 rootfz = needfz?node._getEmSize():null,
@@ -21625,7 +21628,7 @@ Class("xui.UI",  "xui.absObj", {
 
                              var pn=node.get(0),
                                 style=pn.style,
-                                useem = (pprop.spaceUnit||xui.SpaceUnit)=='em',
+                                useem = xui.$uem(prop),
                                 nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 obj,i,k,o,key,target,
@@ -21883,7 +21886,7 @@ Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 root = node.get(0),
                                 style = root.style,
-                                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                                useem = xui.$uem(prop),
                                 nodefz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?node._getEmSize():null,
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
@@ -22390,7 +22393,7 @@ Class("xui.UI",  "xui.absObj", {
             }
 
             // *** force to em
-            if((p.spaceUnit||xui.SpaceUnit)=='em'){
+            if(xui.$uem(p)){
                 if(dm[i] && dm[i]['$spaceunit'])
                     if(p[i]!='auto'&&(xui.isFinite(p[i])||xui.CSS.$isPx(p[i])))
                         // only have root dom node
@@ -22489,7 +22492,7 @@ Class("xui.UI",  "xui.absObj", {
             
             // *** force to em
              xui.each(prop,function(o,i){
-                if((prop.spaceUnit||xui.SpaceUnit)=='em'){
+                if(xui.$uem(prop)){
                     if(dm[i] && dm[i]['$spaceunit'])
                         if(prop[i]==0||prop[i]=='0')prop[i]='0em';
                 }else{
@@ -23586,7 +23589,7 @@ new function(){
                     region,
 
                     css = xui.CSS,
-                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     root = profile.getRoot(),
                     rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -24646,7 +24649,7 @@ new function(){
             var prop=profile.properties,
                 src=profile.getRootNode(),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -24923,7 +24926,7 @@ new function(){
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 css=xui.CSS,
-                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem=xui.$uem(prop),
                 root=profile.getRoot(),
                 rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
@@ -25079,7 +25082,7 @@ new function(){
                 size=H5.cssSize(),
                 prop=profile.properties,
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -25143,7 +25146,7 @@ new function(){
                 size=H5.cssSize(),
                 prop=profile.properties,
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em'
+                useem =xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -26391,7 +26394,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 b=(prop.$iborder||0)*2,
 
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 panelfz = useem||css.$isEm(size.width)||css.$isEm(size.height)?panel._getEmSize():null,
                 // caculate by px
@@ -26624,7 +26627,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
                 css = xui.CSS,
-                useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(p),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 inn = profile.getSubNode('INN'),
@@ -27357,7 +27360,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label = f('LABEL'),
                 
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,
@@ -28287,7 +28290,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label = f('LABEL'),
 
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,
@@ -28301,13 +28304,17 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
                 loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
-                boff=xui.UI.$getCSSValue(clsname,'paddingBottom');
+                boff=xui.UI.$getCSSValue(clsname,'paddingBottom'),
+                autoH;
             
             $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(height)height = (autoH=height=='auto') ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
+
+            // for auto height
+            if(autoH)root.height(adjustunit(height, rootfz));
 
             var labelSize=css.$px(prop.labelSize,labelfz)||0,
                 labelGap=css.$px(prop.labelGap,rootfz)||0,
@@ -29476,7 +29483,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     label = profile.getSubNode('LABEL'),
 
                     css = xui.CSS,
-                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     needfz = useem||css.$isEm(width)||css.$isEm(height),
                     rootfz=needfz?root._getEmSize():null,
@@ -29780,8 +29787,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
 
-                if(!(type=='combobox'||type=='listbox'||type=='helpinput'||type=='date'||type=='time'||type=='datetime'||type=='color'))return;
-
                 //open already
                 if(profile.$poplink)return;
                 var o, v, css=xui.CSS,
@@ -29792,207 +29797,215 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if((profile.beforeComboPop && false===(profile.$drop = box.beforeComboPop(profile, pos, e, src))))
                     return;
 
-                if(profile.__tryToHide){
-                    xui.clearTimeout(profile.__tryToHide);
-                    delete profile.__tryToHide;
-                }
+                // for standard drop
+                if(type=='combobox'||type=='listbox'||type=='helpinput'
+                    ||type=='date'||type=='datepicker'
+                    ||type=='time'||type=='timepicker'
+                    ||type=='datetime'
+                    ||type=='color'||type=='colorpicker'){
 
-                //get cache key
-                var cachekey;
-                if(cacheDrop){
-                    switch(type){
-                        case 'timepicker':
-                        case 'time':
-                        case 'datepicker':
-                        case 'date':
-                        case 'datetime':
-                        case 'colorpicker':
-                        case 'color':
-                            cachekey=type;
-                            break;
-                        default:
-                            if(pro.listKey)
-                                //function no cache
-                                if(typeof xui.get(xui.$cache,['UIDATA', pro.listKey])=='function')
-                                    profile.$drop = cachekey = null;
+                    if(profile.__tryToHide){
+                        xui.clearTimeout(profile.__tryToHide);
+                        delete profile.__tryToHide;
+                    }
+
+                    //get cache key
+                    var cachekey;
+                    if(cacheDrop){
+                        switch(type){
+                            case 'timepicker':
+                            case 'time':
+                            case 'datepicker':
+                            case 'date':
+                            case 'datetime':
+                            case 'colorpicker':
+                            case 'color':
+                                cachekey=type;
+                                break;
+                            default:
+                                if(pro.listKey)
+                                    //function no cache
+                                    if(typeof xui.get(xui.$cache,['UIDATA', pro.listKey])=='function')
+                                        profile.$drop = cachekey = null;
+                                    else
+                                        cachekey = "!"+pro.listKey;
                                 else
-                                    cachekey = "!"+pro.listKey;
-                            else
-                                cachekey = "$"+profile.$xid;
+                                    cachekey = "$"+profile.$xid;
+                        }
+                        //get from global cache
+                        if(cachekey){
+                            //filter first
+                            xui.filter(profile.box.$drop,function(o){
+                                return !!o.renderId;
+                            });
+                            profile.$drop = profile.box.$drop[cachekey];
+                        }
                     }
-                    //get from global cache
-                    if(cachekey){
-                        //filter first
-                        xui.filter(profile.box.$drop,function(o){
-                            return !!o.renderId;
-                        });
-                        profile.$drop = profile.box.$drop[cachekey];
-                    }
-                }
 
-                //cache pop
-                if(!profile.$drop){
+                    //cache pop
+                    if(!profile.$drop){
+                        switch(type){
+                            case 'combobox':
+                            case 'listbox':
+                            case 'helpinput':
+                                o = xui.create('List');
+                                o.setHost(profile).setDirtyMark(false).setItems(xui.copy(pro.items)).setListKey(pro.listKey||'');
+                                if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
+                                else o.setWidth(css.$forceu( main.offsetWidth() + btn.offsetWidth() ));
+
+                                o.setHeight(pro.dropListHeight||'auto');
+
+                                o.afterClick(function(){
+                                    if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    else
+                                        o.destroy(true);
+                                    return false;
+                                });
+                                o.beforeUIValueSet(function(p, ovalue, value){
+                                    var b2=this.boxing();
+                                    if(type=='combobox'){
+                                        var item=p.queryItems(p.properties.items,function(o){return o.id==value},false,true);
+                                        if(item.length)
+                                            value = item[0].caption;
+                                    }
+                                    //update value
+                                    b2.setUIValue(value,null,null,'pick');
+
+                                    //cache pop
+                                    return b2._cache('',true);
+                                });
+                                break;
+                            case 'time':
+                            case 'timepicker':
+                                o = xui.create('TimePicker');
+                                o.setHost(profile);
+                                o.beforeClose(function(){
+                                   if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    return false
+                                });
+                                o.beforeUIValueSet(function(p, o, v){
+                                    var b2=this.boxing();
+                                    //update value
+                                    b2.setUIValue(v,null,null,'pick');
+                                    return b2._cache('',true);
+                                });
+                                break;
+                            case 'date':
+                            case 'datepicker':
+                            case 'datetime':
+                                o = xui.create('DatePicker');
+
+                                if(type=='datetime')
+                                    o.setTimeInput(true);
+
+                                o.setHost(profile);
+                                o.beforeClose(function(){
+                                    if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    else
+                                        o.destroy(true);
+                                    return false
+                                });
+                                o.beforeUIValueSet(function(p, o, v){
+                                    var b2=this.boxing();
+                                    //update value
+                                    b2.setUIValue(String(v.getTime()),null,null,'pick');
+                                    return b2._cache('',true);
+                                });
+
+                                break;
+                            case 'color':
+                            case 'colorpicker':
+                                o = xui.create('ColorPicker');
+                                o.setHost(profile);
+                                o.beforeClose(function(){
+                                    if(!this.destroyed)
+                                        this.boxing()._cache('',true);
+                                    else
+                                        o.destroy(true);
+                                    return false
+                                });
+                                o.beforeUIValueSet(function(p, o, v){
+                                    var b2=this.boxing();
+                                    //update value
+                                    b2.setUIValue((v=='transparent'?'':'#')+v,null,null,'pick');
+                                    return b2._cache('',true);
+                                });
+                                break;
+                        }
+                        if(xui.isHash(pro.popCtrlProp) && !xui.isEmpty(pro.popCtrlProp))
+                            o.setProperties(pro.popCtrlProp);
+                        if(xui.isHash(pro.popCtrlEvents) && !xui.isEmpty(pro.popCtrlEvents))
+                            o.setEvents(pro.popCtrlEvents);
+
+                        profile.$drop = o.get(0);
+
+                        //set to global cache
+                        if(cachekey)
+                            profile.box.$drop[cachekey]=profile.$drop;
+
+                        o.render();
+                    }
+
+                    o=profile.$drop.boxing();
+                    o.setHost(profile);
+
+                    //set pop
                     switch(type){
                         case 'combobox':
                         case 'listbox':
                         case 'helpinput':
-                            o = xui.create('List');
-                            o.setHost(profile).setDirtyMark(false).setItems(xui.copy(pro.items)).setListKey(pro.listKey||'');
-                            if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
-                            else o.setWidth(css.$forceu( main.offsetWidth() + btn.offsetWidth() ));
-
-                            o.setHeight(pro.dropListHeight||'auto');
-
-                            o.afterClick(function(){
-                                if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                else
-                                    o.destroy(true);
-                                return false;
-                            });
-                            o.beforeUIValueSet(function(p, ovalue, value){
-                                var b2=this.boxing();
-                                if(type=='combobox'){
-                                    var item=p.queryItems(p.properties.items,function(o){return o.id==value},false,true);
-                                    if(item.length)
-                                        value = item[0].caption;
-                                }
-                                //update value
-                                b2.setUIValue(value,null,null,'pick');
-
-                                //cache pop
-                                return b2._cache('',true);
-                            });
-                            break;
                         case 'time':
                         case 'timepicker':
-                            o = xui.create('TimePicker');
-                            o.setHost(profile);
-                            o.beforeClose(function(){
-                               if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                return false
-                            });
-                            o.beforeUIValueSet(function(p, o, v){
-                                var b2=this.boxing();
-                                //update value
-                                b2.setUIValue(v,null,null,'pick');
-                                return b2._cache('',true);
-                            });
+                            o.setValue(profile.properties.$UIvalue, true,'pop');
                             break;
                         case 'date':
                         case 'datepicker':
                         case 'datetime':
-                            o = xui.create('DatePicker');
-
-                            if(type=='datetime')
-                                o.setTimeInput(true);
-
-                            o.setHost(profile);
-                            o.beforeClose(function(){
-                                if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                else
-                                    o.destroy(true);
-                                return false
-                            });
-                            o.beforeUIValueSet(function(p, o, v){
-                                var b2=this.boxing();
-                                //update value
-                                b2.setUIValue(String(v.getTime()),null,null,'pick');
-                                return b2._cache('',true);
-                            });
-
+                            var t = profile.$drop.properties;
+                            if(t=profile.properties.$UIvalue)
+                                o.setValue(new Date( parseInt(t,10)), true,'pop');
                             break;
                         case 'color':
                         case 'colorpicker':
-                            o = xui.create('ColorPicker');
-                            o.setHost(profile);
-                            o.beforeClose(function(){
-                                if(!this.destroyed)
-                                    this.boxing()._cache('',true);
-                                else
-                                    o.destroy(true);
-                                return false
-                            });
-                            o.beforeUIValueSet(function(p, o, v){
-                                var b2=this.boxing();
-                                //update value
-                                b2.setUIValue((v=='transparent'?'':'#')+v,null,null,'pick');
-                                return b2._cache('',true);
-                            });
+                            o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
                             break;
                     }
-                    if(xui.isHash(pro.popCtrlProp) && !xui.isEmpty(pro.popCtrlProp))
-                        o.setProperties(pro.popCtrlProp);
-                    if(xui.isHash(pro.popCtrlEvents) && !xui.isEmpty(pro.popCtrlEvents))
-                        o.setEvents(pro.popCtrlEvents);
 
-                    profile.$drop = o.get(0);
+                    profile.$poplink = o.get(0);
 
-                    //set to global cache
-                    if(cachekey)
-                        profile.box.$drop[cachekey]=profile.$drop;
+                    if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
+                        return;
+                    //pop
+                    var node=o.reBoxing();
+                    node.popToTop(profile.getSubNode('BOX'));
 
-                    o.render();
-                }
+                    xui.tryF(o.activate,[],o);
 
-                o=profile.$drop.boxing();
-                o.setHost(profile);
-
-                //set pop
-                switch(type){
-                    case 'combobox':
-                    case 'listbox':
-                    case 'helpinput':
-                    case 'time':
-                    case 'timepicker':
-                        o.setValue(profile.properties.$UIvalue, true,'pop');
-                        break;
-                    case 'date':
-                    case 'datepicker':
-                    case 'datetime':
-                        var t = profile.$drop.properties;
-                        if(t=profile.properties.$UIvalue)
-                            o.setValue(new Date( parseInt(t,10)), true,'pop');
-                        break;
-                    case 'color':
-                    case 'colorpicker':
-                        o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
-                        break;
-                }
-
-                profile.$poplink = o.get(0);
-
-                if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
-                    return;
-                //pop
-                var node=o.reBoxing();
-                node.popToTop(profile.getSubNode('BOX'));
-
-                xui.tryF(o.activate,[],o);
-
-                //for on blur disappear
-                node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
-                    box._cache('blur');
-                });
-
-                //for esc
-                xui.Event.keyboardHookUp('esc',0,0,0,function(){
-                    profile.$escclosedrop=1;
-                    xui.asyRun(function(){
-                        delete profile.$escclosedrop;
+                    //for on blur disappear
+                    node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
+                        box._cache('blur');
                     });
 
-                    box.activate();
-                    //unhook
-                    xui.Event.keyboardHook('esc');
-                    box._cache('esc',true);
-                });
-                
+                    //for esc
+                    xui.Event.keyboardHookUp('esc',0,0,0,function(){
+                        profile.$escclosedrop=1;
+                        xui.asyRun(function(){
+                            delete profile.$escclosedrop;
+                        });
+
+                        box.activate();
+                        //unhook
+                        xui.Event.keyboardHook('esc');
+                        box._cache('esc',true);
+                    });
+                }
+
                 if(profile.afterPopShow)
                     box.afterPopShow(profile, profile.$drop);
             });
@@ -30957,7 +30970,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
                 // determine em
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,
@@ -30972,14 +30985,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
                 roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
                 boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
-                btnw;
+                btnw, autoH;
 
             $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(height)height = (autoH=height=='auto') ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
             if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
+            
+            // for auto height
+            if(autoH)root.height(adjustunit(height, rootfz));
 
             var 
                 // make it round to Integer
@@ -31337,7 +31353,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         profile.getRoot().height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                        useem = xui.$uem(p),
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
                         rootfz = root._getEmSize(),
@@ -31366,7 +31382,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -34411,7 +34427,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
@@ -35375,7 +35391,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         profile.getRoot().height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                        useem = xui.$uem(p),
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
                         rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -35403,7 +35419,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
            var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
@@ -35421,8 +35437,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 h1,h4,t;
 
             // caculate by px
-            if(width && width!='auto')width=css.$px(width, rootfz)
-            if(height && height!='auto')height=css.$px(height, rootfz)
+            if(width && width!='auto')width=css.$px(width, rootfz, true);
+            if(height && height!='auto')height=css.$px(height, rootfz, true);
 
             if(height){
                 if(height=='auto')
@@ -36870,7 +36886,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
@@ -36881,9 +36897,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 hc=null,
                 listH;
 
-             // caculate by px
-            width=width?css.$px(width, rootfz, true):width;
-            height=height?css.$px(height, rootfz, true):height;
+            // caculate by px
+            if(width && width!='auto')width=css.$px(width, rootfz, true);
+            if(height && height!='auto')height=css.$px(height, rootfz, true);
 
             if(!panel || panel.isEmpty())return;
             
@@ -36899,7 +36915,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
-                if(height!='auto'){
+                if(height=='auto'){
+                    hc='auto';
+                }else{
                     if(!prop.noHandler){
                         height = height-listH;
                     }
@@ -37106,7 +37124,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
@@ -37337,7 +37355,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     var self = this,
                         t = self.properties,
                         css = xui.CSS,
-                        useem = (t.spaceUnit||xui.SpaceUnit)=='em',
+                        useem = xui.$uem(t),
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         noPanel = t.noPanel,
                         hs = self.getSubNode('LIST'),
@@ -37446,7 +37464,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
             var panel = profile.boxing().getPanel(key),
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -38857,7 +38875,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
                         css=xui.CSS,
-                        useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                        useem = xui.$uem(prop),
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                         rootfz =root._getEmSize(),
                         ww=0,hh=0;
@@ -41359,7 +41377,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 css=xui.CSS,
                 _handlerSize=css._getDftFISize() / 2 + 2,
-                useem = (t.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(t),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz =  useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
@@ -47793,7 +47811,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 
                 var prop = profile.properties,
                     css=xui.CSS,
-                    useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                     rootfz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?profile.getRoot()._getEmSize():null,
                     size = profile.getSubNode("BORDER").cssSize(),
@@ -48396,7 +48414,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
                 css=xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
@@ -48477,7 +48495,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var t,
                     p=profile.properties,
                     css=xui.CSS,
-                    useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(p),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -48514,7 +48532,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        rootfz= (p.spaceUnit||xui.SpaceUnit)=='em'?root._getEmSize():null,
+                        rootfz= xui.$uem(p)?root._getEmSize():null,
                         adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
@@ -48558,7 +48576,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var pro=profile.properties,
                     box=profile.box,
                     css=xui.CSS,
-                    useem = (pro.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(pro),
                     root=profile.getRoot(),
                     rootfz=useem?root._getEmSize():null;
 
@@ -48847,7 +48865,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onDragstop:function(profile){
                 var p = profile.properties,
                     css = xui.CSS,
-                    useem = (p.spaceUnit||xui.SpaceUnit)=='em',
+                    useem = xui.$uem(p),
                     root=profile.getRoot(),
                     rootfz=useem?root._getEmSize():null,
                     pos = root.cssPos(),
@@ -49520,7 +49538,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var prop=profile.properties, 
                 css=xui.CSS,
                 root=profile.getRoot(),
-                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem=xui.$uem(prop),
                 rootfz= useem?root._getEmSize():null,
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 nr=root.cssRegion();
@@ -49887,7 +49905,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             var prop=profile.properties,
                 css=xui.CSS,
-                useem=(prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem=xui.$uem(prop),
                 root=profile.getRoot(),
                 needfz = useem||css.$isEm(width)||css.$isEm(height),
                 rootfz=needfz?root._getEmSize():null,
@@ -50737,7 +50755,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 profile.getSubNode("PANEL",true).each(function(panel){
                     if(panel.offsetWidth){
                         var w=xui(panel).width(), prop=profile.properties;
-                        if((prop.spaceUnit||xui.SpaceUnit)=='em')w=xui.CSS.$px2em(w, panel)+'em';
+                        if(xui.$uem(prop))w=xui.CSS.$px2em(w, panel)+'em';
                         xui(panel).width('auto').width(w);
                     }
                 });
@@ -62695,7 +62713,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
                 css = xui.CSS,
-                useem = (prop.spaceUnit||xui.SpaceUnit)=='em',
+                useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;

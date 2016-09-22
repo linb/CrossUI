@@ -2,4 +2,4 @@
 2)Move 'NameSpace' to xui.NameSpace;
 3)Merge '_' to 'xui';
 4)Removed Some advanced widgets: Range/Poll/TagEditor/ColLayout/Calendar/TimeLine;
-
+5)Remove themes 'aqua' and 'blackwhite', and 'classic' added.
