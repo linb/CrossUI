@@ -85,8 +85,8 @@ Class("xui.UI.Image", "xui.UI",{
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
 
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             src.style.width=src.style.height='';
             if(width>0 && height>0){

@@ -183,7 +183,7 @@ Class("xui.Tips", null,{
                         s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 

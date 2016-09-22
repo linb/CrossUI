@@ -48,6 +48,14 @@
     border-left-color:#F8E3F0;
     border-top-color:#F8E3F0;
 }
+.xui-uiborder-rt{
+    border-top-color:#F8E3F0;
+    border-right-color:#BF83AA;
+}
+.xui-uiborder-lb{
+    border-left-color:#F8E3F0;
+    border-bottom-color:#BF83AA;
+}
 .xui-uiborder-rb{
     border-right-color:#BF83AA;
     border-bottom-color:#BF83AA;
@@ -280,10 +288,6 @@
     background-color: #EEB2D9;
 }
 
-.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
-  font-size:1.5em;
-}
-
 /*xui.UI.TreeGrid*/
 .xui-uicell,
 .xui-treegrid{
@@ -295,16 +299,6 @@
 }
 .xui-treegrid-rownum{
     color:#808080;
-}
-.xui-treegrid-tbody21 .columnfreezed{
-    -moz-box-shadow: 1px 0  1px #CCC;
-    -webkit-box-shadow: 1px 0  1px #CCC;
-    box-shadow: 1px 0  1px #CCC;
-}
-.xui-treegrid-tbody12 .rowfreezed{
-    -moz-box-shadow: 0 1px 1px #CCC;
-    -webkit-box-shadow: 0 1px 1px #CCC;
-    box-shadow: 0 1px 1px #CCC;
 }
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,

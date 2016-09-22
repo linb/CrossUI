@@ -142,12 +142,12 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             if(!panel || panel.isEmpty())return;
 
             // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz,true):width;
+            height=height?css.$px(height, rootfz,true):height;
 
             // change value
             if(height){
-                height-=bw;
+                height -= bw;
                 t2=t1=0;
                 xui.arr.each(prop.items,function(o){
                     obj = profile.getSubNodeByItemId('ITEM', o.id);

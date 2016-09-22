@@ -4418,7 +4418,7 @@ Class("xui.UI",  "xui.absObj", {
                 xui.each(xui.UI.$ps,function(j,i){
                     if(style[i]!='auto'&& xui.CSS.$isEm(style[i])){
                         if(!nodefz)nodefz=xui(node)._getEmSize();
-                        p[i]=style[i]=css.$em2px(style[i], nodefz)+'px';
+                        p[i]=style[i]=css.$em2px(style[i], nodefz,true)+'px';
                     }
                 });
             }
@@ -5523,7 +5523,7 @@ Class("xui.UI",  "xui.absObj", {
                         // only have root dom node
                         if(t=profile.getRootNode()){
                             if(!nfz)nfz=xui(t)._getEmSize();
-                            p[i]=css.$em2px(p[i], t);
+                            p[i]=css.$em2px(p[i], t,true);
                         }
             }
 
@@ -5620,14 +5620,14 @@ Class("xui.UI",  "xui.absObj", {
             //give border width
             if('$hborder' in dm && dm.$hborder){
                 if(xui.CSS.$isEm(prop.width)){
-                    data.bWidth = xui.CSS.$px2em( xui.CSS.$em2px(prop.width) - prop.$hborder*2 ) + 'em';
+                    data.bWidth = xui.CSS.$px2em( xui.CSS.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
                 }else{
                     data.bWidth = parseFloat(prop.width) - prop.$hborder*2;
                 }
             }
             if('$vborder' in dm && dm.$vborder){
                 if(xui.CSS.$isEm(prop.height)){
-                    data.bHeight = xui.CSS.$px2em( xui.CSS.$em2px(prop.height) - prop.$vborder*2 ) + 'em';
+                    data.bHeight = xui.CSS.$px2em( xui.CSS.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
                 }else{
                     data.bHeight = parseFloat(prop.height) - prop.$vborder*2;
                 }

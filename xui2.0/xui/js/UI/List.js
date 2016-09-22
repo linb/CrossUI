@@ -71,7 +71,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     h_em=css.$isEm(pp.height),
                     h,flag;
 
-                if(css.$isEm(mh))mh=css.$em2px(mh, items);
+                if(css.$isEm(mh))mh=css.$em2px(mh, items,true);
 
                 if(root.css('display')=='none'){
                     flag=1;

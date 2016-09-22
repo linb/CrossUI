@@ -48,6 +48,14 @@
     border-left-color:#D9E8FB;
     border-top-color:#D9E8FB;
 }
+.xui-uiborder-rt{
+    border-top-color:#D9E8FB;
+    border-right-color:#1D456D;
+}
+.xui-uiborder-lb{
+    border-left-color:#D9E8FB;
+    border-bottom-color:#1D456D;
+}
 .xui-uiborder-rb{
     border-right-color:#1D456D;
     border-bottom-color:#1D456D;
@@ -291,9 +299,7 @@
   background-position: left -200px;
   background-color:#2B6394;
 }
-.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
-  font-size:1.5em;
-}
+
 /*to adjust item size*/
 .xui-tabs-handle{
 	padding:0;
@@ -314,16 +320,6 @@
 }
 .xui-treegrid-rownum{
     color:#808080;
-}
-.xui-treegrid-tbody21 .columnfreezed{
-    -moz-box-shadow: 1px 0  1px #CCC;
-    -webkit-box-shadow: 1px 0  1px #CCC;
-    box-shadow: 1px 0  1px #CCC;
-}
-.xui-treegrid-tbody12 .rowfreezed{
-    -moz-box-shadow: 0 1px 1px #CCC;
-    -webkit-box-shadow: 0 1px 1px #CCC;
-    box-shadow: 0 1px 1px #CCC;
 }
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,

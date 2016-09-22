@@ -1429,12 +1429,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
-            if(width)width = css.$isEm(width) ? css.$em2px(width,root) : width;
+            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
 
             var 
-                labelSize=css.$px(prop.labelSize,labelfz)||0,
-                labelGap=css.$px(prop.labelGap,rootfz)||0,
+                // make it round to Integer
+                labelSize=css.$px(prop.labelSize,labelfz,true)||0,
+                labelGap=css.$px(prop.labelGap,rootfz,true)||0,
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,

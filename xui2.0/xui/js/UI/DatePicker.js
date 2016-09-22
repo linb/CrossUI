@@ -221,9 +221,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                             tagName:"button",
                             className:'xui-ui-btn',
                             tabindex: '{tabindex}',
-                            SETA:{
-                                text:"{_set}"
-                            }
+                            text:"{_set}"
                         }
                     }
                 },

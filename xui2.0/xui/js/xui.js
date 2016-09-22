@@ -4199,7 +4199,7 @@ Class('xui.absObj',"xui.absBox",{
                                         // only have root dom node
                                         if(v.getRootNode && (t=v.getRootNode())){
                                             if(!nfz)nfz=xui(t)._getEmSize();
-                                            value=xui.CSS.$em2px(value, nfz)+'px';
+                                            value=xui.CSS.$em2px(value, nfz, true)+'px';
                                         }
                             }
                             //if same return

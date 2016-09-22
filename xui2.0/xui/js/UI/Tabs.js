@@ -1059,8 +1059,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 listH;
 
              // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             if(!panel || panel.isEmpty())return;
             

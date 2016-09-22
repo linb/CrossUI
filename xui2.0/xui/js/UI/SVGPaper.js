@@ -109,8 +109,8 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
 
             // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             if(scaleChildren){
                 ow=paper.width;

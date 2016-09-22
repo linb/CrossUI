@@ -210,9 +210,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                             tagName:"button",
                             className:'xui-ui-btn',
                             tabindex: '{tabindex}',
-                            SETA:{
-                                text:"{_set}"
-                            }
+                            text:"{_set}"
                         },
                         TOGGLE:{
                             $order:2,

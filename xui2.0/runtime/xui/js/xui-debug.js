@@ -4199,7 +4199,7 @@ Class('xui.absObj',"xui.absBox",{
                                         // only have root dom node
                                         if(v.getRootNode && (t=v.getRootNode())){
                                             if(!nfz)nfz=xui(t)._getEmSize();
-                                            value=xui.CSS.$em2px(value, nfz)+'px';
+                                            value=xui.CSS.$em2px(value, nfz, true)+'px';
                                         }
                             }
                             //if same return
@@ -16181,7 +16181,7 @@ Class("xui.Tips", null,{
                         s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
+                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
@@ -21299,7 +21299,7 @@ Class("xui.UI",  "xui.absObj", {
                 xui.each(xui.UI.$ps,function(j,i){
                     if(style[i]!='auto'&& xui.CSS.$isEm(style[i])){
                         if(!nodefz)nodefz=xui(node)._getEmSize();
-                        p[i]=style[i]=css.$em2px(style[i], nodefz)+'px';
+                        p[i]=style[i]=css.$em2px(style[i], nodefz,true)+'px';
                     }
                 });
             }
@@ -22404,7 +22404,7 @@ Class("xui.UI",  "xui.absObj", {
                         // only have root dom node
                         if(t=profile.getRootNode()){
                             if(!nfz)nfz=xui(t)._getEmSize();
-                            p[i]=css.$em2px(p[i], t);
+                            p[i]=css.$em2px(p[i], t,true);
                         }
             }
 
@@ -22501,14 +22501,14 @@ Class("xui.UI",  "xui.absObj", {
             //give border width
             if('$hborder' in dm && dm.$hborder){
                 if(xui.CSS.$isEm(prop.width)){
-                    data.bWidth = xui.CSS.$px2em( xui.CSS.$em2px(prop.width) - prop.$hborder*2 ) + 'em';
+                    data.bWidth = xui.CSS.$px2em( xui.CSS.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
                 }else{
                     data.bWidth = parseFloat(prop.width) - prop.$hborder*2;
                 }
             }
             if('$vborder' in dm && dm.$vborder){
                 if(xui.CSS.$isEm(prop.height)){
-                    data.bHeight = xui.CSS.$px2em( xui.CSS.$em2px(prop.height) - prop.$vborder*2 ) + 'em';
+                    data.bHeight = xui.CSS.$px2em( xui.CSS.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
                 }else{
                     data.bHeight = parseFloat(prop.height) - prop.$vborder*2;
                 }
@@ -24651,8 +24651,8 @@ new function(){
                 root = profile.getRoot(),
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
 
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             src.style.width=src.style.height='';
             if(width>0 && height>0){
@@ -28306,8 +28306,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
             
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
-            if(width)width = css.$isEm(width) ? css.$em2px(width,root) : width;
+            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
 
             var labelSize=css.$px(prop.labelSize,labelfz)||0,
                 labelGap=css.$px(prop.labelGap,rootfz)||0,
@@ -28547,7 +28547,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;background:#fff;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.5em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.5em}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -30978,12 +30978,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             btnw=css._getDftEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = height=='auto' ? css.$em2px(1.83,root) : css.$isEm(height) ? css.$em2px(height,root) : height;
-            if(width)width = css.$isEm(width) ? css.$em2px(width,root) : width;
+            if(height)height = height=='auto' ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
+            if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
 
             var 
-                labelSize=css.$px(prop.labelSize,labelfz)||0,
-                labelGap=css.$px(prop.labelGap,rootfz)||0,
+                // make it round to Integer
+                labelSize=css.$px(prop.labelSize,labelfz,true)||0,
+                labelGap=css.$px(prop.labelGap,rootfz,true)||0,
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
@@ -31611,9 +31612,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:"button",
                             className:'xui-ui-btn',
                             tabindex: '{tabindex}',
-                            SETA:{
-                                text:"{_set}"
-                            }
+                            text:"{_set}"
                         },
                         TOGGLE:{
                             $order:2,
@@ -32612,9 +32611,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:"button",
                             className:'xui-ui-btn',
                             tabindex: '{tabindex}',
-                            SETA:{
-                                text:"{_set}"
-                            }
+                            text:"{_set}"
                         }
                     }
                 },
@@ -33796,7 +33793,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     h_em=css.$isEm(pp.height),
                     h,flag;
 
-                if(css.$isEm(mh))mh=css.$em2px(mh, items);
+                if(css.$isEm(mh))mh=css.$em2px(mh, items,true);
 
                 if(root.css('display')=='none'){
                     flag=1;
@@ -36885,8 +36882,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 listH;
 
              // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             if(!panel || panel.isEmpty())return;
             
@@ -37129,12 +37126,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(!panel || panel.isEmpty())return;
 
             // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz,true):width;
+            height=height?css.$px(height, rootfz,true):height;
 
             // change value
             if(height){
-                height-=bw;
+                height -= bw;
                 t2=t1=0;
                 xui.arr.each(prop.items,function(o){
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
@@ -39124,7 +39121,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.split':{
                 ITEMSPLIT:{
                     style:"{_itemDisplay}",
-                    className:'xui-uiborder-t'
+                    className:'xui-uiborder-b'
                 }
             },
             'items.button':{
@@ -48420,8 +48417,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rr = b12.height();
 
              // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             border.cssSize({
                 width:width?adjustunit(width,borderfz):null,
@@ -62704,8 +62701,8 @@ Class("xui.svg.group", "xui.svg.absComb",{
                 rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
 
             // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             if(scaleChildren){
                 ow=paper.width;

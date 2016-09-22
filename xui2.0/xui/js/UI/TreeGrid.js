@@ -6898,8 +6898,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rr = b12.height();
 
              // caculate by px
-            width=width?css.$px(width, rootfz):width;
-            height=height?css.$px(height, rootfz):height;
+            width=width?css.$px(width, rootfz, true):width;
+            height=height?css.$px(height, rootfz, true):height;
 
             border.cssSize({
                 width:width?adjustunit(width,borderfz):null,

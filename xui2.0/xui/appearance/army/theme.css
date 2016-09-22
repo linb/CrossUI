@@ -48,6 +48,14 @@
     border-left-color:#D4E8D9;
     border-top-color:#D4E8D9;
 }
+.xui-uiborder-rt{
+    border-top-color:#D4E8D9;
+    border-right-color:#779880;
+}
+.xui-uiborder-lb{
+    border-left-color:#D4E8D9;
+    border-bottom-color:#779880;
+}
 .xui-uiborder-rb{
     border-right-color:#779880;
     border-bottom-color:#779880;
@@ -292,9 +300,7 @@
   background-position: left -200px;
   background-color: #8CB796;
 }
-.xui-tabs-left, .xui-tabs-right, .xui-tabs-drop{
-  font-size:1.5em;
-}
+
 /*to adjust item size*/
 .xui-tabs-handle{
 	padding:0;
@@ -314,16 +320,6 @@
 }
 .xui-treegrid-rownum{
     color:#808080;
-}
-.xui-treegrid-tbody21 .columnfreezed{
-    -moz-box-shadow: 1px 0  1px #CCC;
-    -webkit-box-shadow: 1px 0  1px #CCC;
-    box-shadow: 1px 0  1px #CCC;
-}
-.xui-treegrid-tbody12 .rowfreezed{
-    -moz-box-shadow: 0 1px 1px #CCC;
-    -webkit-box-shadow: 0 1px 1px #CCC;
-    box-shadow: 0 1px 1px #CCC;
 }
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,

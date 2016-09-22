@@ -279,7 +279,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.split':{
                 ITEMSPLIT:{
                     style:"{_itemDisplay}",
-                    className:'xui-uiborder-t'
+                    className:'xui-uiborder-b'
                 }
             },
             'items.button':{
