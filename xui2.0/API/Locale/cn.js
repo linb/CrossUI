@@ -2772,7 +2772,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "isAdd [可选参数] : Boolean, 添加标签或移除标签. 默认为 [true]"
                 ],
                 $snippet:[
-                    "var n=xui('btnLang');n.tagClass('-checked').tagClass('-mouseover');alert(n.attr('className')); n.tagClass('-checked',false).tagClass('-mouseover',false);alert(n.attr('className'));"
+                    "var n=xui('btnLang');n.tagClass('-checked').tagClass('-hover');alert(n.attr('className')); n.tagClass('-checked',false).tagClass('-hover',false);alert(n.attr('className'));"
                 ]
             },
             append:{
@@ -4782,7 +4782,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "tag [可选参数] : String, 附加字符串"
                 ],
                 $snippet:[
-                    "alert(xui.UIProfile.getFromDom('btnLang').getClass('CAPTION','-mouseover'))"
+                    "alert(xui.UIProfile.getFromDom('btnLang').getClass('CAPTION','-hover'))"
                 ]
             },
             getDomId:{

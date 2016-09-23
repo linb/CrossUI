@@ -201,7 +201,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:0,
                             tagName:'div',
                             // give icon font for em size
-                            className:'xui-ui-unselectable xui-uibg-bar xuifont {clsmovebg} {cls2} ',
+                            className:'xui-ui-unselectable xui-uibar xuifont {clsmovebg} {cls2} ',
                             style:'cursor:{_cursor}'
                         },
                         CMD:{
@@ -213,7 +213,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uibg-base',
+                            className:'xui-uibase',
                             style:'position:absolute;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
@@ -760,13 +760,13 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }else{
                 var pos;
                 if(p.type=='vertical'){
-                    data.clsmovebg = "xui-uiborder-tb";
+                    data.clsmovebg = "xui-uiborder-t xui-uiborder-b";
                     if(data.pos=='before')
                         pos='top';
                     else
                         pos='bottom';
                 }else{
-                    data.clsmovebg = "xui-uiborder-lr";
+                    data.clsmovebg = "xui-uiborder-l xui-uiborder-r";
                     if(data.pos=='before')
                         pos='left';
                     else

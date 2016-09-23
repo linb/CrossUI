@@ -69,7 +69,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             className:'{_className}',
             FIELDSET:{
                 tagName : 'fieldset',
-                className: 'xui-uiborder-flat {toggleCls}',
+                className: 'xui-uiborder-flat xui-uiborder-radius {toggleCls}',
                 LEGEND:{
                     tagName : 'legend',
                     style:'{_align}',
@@ -95,7 +95,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     $order:1,
                     tagName:'div',
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
-                    className:'xui-uibg-base',
+                    className:'xui-uibase',
                     text:'{html}'+xui.UI.$childTag
                 }
             }

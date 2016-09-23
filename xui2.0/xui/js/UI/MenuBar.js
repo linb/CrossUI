@@ -31,7 +31,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 return;
             }else{
                 
-                xui.use(src).tagClass('-mousedown');
+                xui.use(src).tagClass('-active');
                 
                 var menu, 
                     id=item.id,
@@ -91,7 +91,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     menu.hide(false,ignoreEffects);
                 // collect
                 profile.getSubNode('POOL').append(menu.reBoxing());
-                xui([node]).tagClass('-mousedown',false);
+                xui([node]).tagClass('-active',false);
             }
             profile.$menuPop=profile.$curPop=profile.$curElem=null;
         },
@@ -116,7 +116,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 tagName:'div'
             },
             BORDER:{
-                className:'xui-uibg-bar xui-uiborder-outset',
+                className:'xui-uibar xui-uiborder-outset xui-uiborder-radius',
                 tagName:'div',
                 LIST:{
                     tagName:'div',
@@ -223,7 +223,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     var item = profile.getItemByDom(src),
                         itemId = item.id;
                     if(item.disabled)return;
-                    xui.use(ns).tagClass('-mouseover');
+                    xui.use(ns).tagClass('-hover');
 
                     if(profile.$menuPop){
                         if(profile.$menuPop != itemId){
@@ -243,7 +243,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     if(p.disabled)return;
                     var item = profile.getItemByDom(src);
                     if(item.disabled)return;
-                    xui.use(src).tagClass('-mouseover',false);
+                    xui.use(src).tagClass('-hover',false);
 
                     if(p.autoShowTime){
                         var pop = profile.$allPops;
@@ -267,7 +267,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         itemId = item.id;
                     if(item.disabled)return;
 
-                    xui.use(src).tagClass('-mousedown');
+                    xui.use(src).tagClass('-active');
                     
                     // if poped, stop to trigger document.body's onmousedown event
                     return profile.boxing()._pop(item, src);                    
@@ -275,7 +275,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 onMouseup:function(profile,e,src){
                     var item = profile.getItemByDom(src);
                     if(profile.$menuPop != item.id)
-                        xui.use(src).tagClass('-mousedown',false);
+                        xui.use(src).tagClass('-active',false);
                 },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey,

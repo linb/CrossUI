@@ -48,26 +48,26 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             className:'{_className}',
             BORDER:{
                 tagName:'div',
-                className: 'xui-uiborder-radius',
+                className: 'xui-uiborder-radius-big',
                 TBAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                        className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
                         BARTDMT:{
                             className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -132,15 +132,15 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
                     style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
+                        className:'xui-uicon-maini xui-uibar xui-uiborder-r',
                         style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uibg-content {_bordertype}',
+                            className:'xui-uicontent {_bordertype}',
                             style:'{panelDisplay};{_panelstyle};{_overflow};',
                             text:'{html}'+xui.UI.$childTag
                         }
@@ -152,15 +152,15 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     className:'xui-uibar-bottom-s',
                     style:"{_bbarDisplay}",
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
                     },
                     BBARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                        className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
                     }
                 }
             }

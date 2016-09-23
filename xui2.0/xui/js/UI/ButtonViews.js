@@ -1,7 +1,7 @@
 Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
     Initialize:function(){        
         var t=this.getTemplate(),keys=this.$Keys;
-        t.LIST.className='xui-uibg-bar';
+        t.LIST.className='xui-uibar';
         this.setTemplate(t);
         t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
@@ -206,9 +206,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         p=ns.properties,
                         n1=ns.getSubNode('LIST'),
                         reg=/^xui-uiborder-/,
-                        flat='xui-uiborder-flat',
-                        ins='xui-uiborder-inset',
-                        outs='xui-uiborder-outset',
+                        flat='xui-uiborder-flat xui-uiborder-radius',
+                        ins='xui-uiborder-inset xui-uiborder-radius',
+                        outs='xui-uiborder-outset xui-uiborder-radius',
                         root=ns.getRoot();
                     n1.removeClass(reg);
                     switch(v){

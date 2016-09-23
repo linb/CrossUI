@@ -218,7 +218,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
-                className:"xui-uibg-base",
+                className:"xui-uibase",
                 BOX:{
                     tagName : 'div',
                     onselectstart:'return false',

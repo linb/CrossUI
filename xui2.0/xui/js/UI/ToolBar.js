@@ -131,7 +131,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             className:'{_className}',
             style:'{_style}',
             ITEMS:{
-                className:'xui-uibg-bar xui-uiborder-outset',
+                className:'xui-uibar xui-uiborder-outset xui-uiborder-radius',
                 tagName:'div',
                 style:'{mode}',
                 text:'{items}'
@@ -162,7 +162,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             tagName:'div',
                             SPLIT:{
                                 style:'{splitDisplay}',
-                                className:"xui-uiborder-lr",
+                                className:"xui-uiborder-l xui-uiborder-r",
                                 // for auto height
                                 text:'&nbsp;'
                             },
@@ -172,7 +172,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             },
                             BTN:{
                                 tagName:'button',
-                                className:'xui-uitoolbtn xui-showfocus {itemcls} {itemClass}',
+                                className:'xui-uiborder-hidden xui-uiborder-radius xui-showfocus {itemcls} {itemClass}',
                                 style:'{itemStyle} {boxDisplay}',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
@@ -411,7 +411,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         xui.UI.adjustData(profile,item, dataItem);
 
                         if(item.type=="statusButton" && !!item.value)
-                            dataItem.itemcls=" xui-uitoolbtn-checked "+profile.getClass('BTN','-checked', !!item.value);
+                            dataItem.itemcls=" xui-uiborder-hidden-checked "+profile.getClass('BTN','-checked', !!item.value);
 
                         dataItem._tabindex=tabindex;
                         dataItem.splitDisplay=dataItem.type=="split"?'':dn;

@@ -7,23 +7,20 @@
 }
 
 /*background*/
-.xui-uibg-base{
+.xui-uibase{
     background-color:#FFFFFF;
 }
-.xui-uibg-bar{
+.xui-uibar{
     background-color:#FF5F4A;
 }
-.xui-uibg-bar-mouseover{
+.xui-uibar-hover{
     background-color:#FFB9A5;
 }
-.xui-uibg-content{
+.xui-uicontent{
     background-color:#FFFFFF;
 }
 
 /*border*/
-.xui-uiborder{
-    border:solid 1px #FF0005;
-}
 .xui-uiborder-l{
     border-left-color:#FFB29E;
 }
@@ -36,85 +33,36 @@
 .xui-uiborder-b{
     border-bottom-color:#FF0005;
 }
-.xui-uiborder-lr{
-    border-left-color:#FFB29E;
-    border-right-color:#FF0005;
-}
-.xui-uiborder-tb{
-    border-top-color:#FFB29E;
-    border-bottom-color:#FF0005;
-}
-.xui-uiborder-lt{
-    border-left-color:#FFB29E;
-    border-top-color:#FFB29E;
-}
-.xui-uiborder-rt{
-    border-top-color:#FFB29E;
-    border-right-color:#FF0005;
-}
-.xui-uiborder-lb{
-    border-left-color:#FFB29E;
-    border-bottom-color:#FF0005;
-}
-.xui-uiborder-rb{
-    border-right-color:#FF0005;
-    border-bottom-color:#FF0005;
-}
 .xui-uiborder-flat{
     border-color:#FF0005;
-}
-.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
-    border-color:#fcea29;
 }
 .xui-uiborder-outset{
     border-color:#FFB29E #FF0005 #FF0005 #FFB29E;
 }
-.xui-uiborder-inset, .xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
+.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked{
     border-color:#FF0005 #FFB29E #FFB29E #FF0005;
 }
-.xui-uitoolbtn-mouseover{
-    border-color: #FCEA29;
+.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked{
+    background: #FFB29E;
 }
-.xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
-    background: #FCEA29;
+.xui-uiborder-dark, .xui-uiborder-flat-hover, .xui-tabs-item{
+    border-color:#FF0005;
 }
-
-.xui-uiborder-r-dark{
-    border-right-color:#FF0005;
-}
-.xui-uiborder-b-dark{
-    border-bottom-color:#FF0005;
-}
-.xui-uiborder-rb-dark{
-    border-right-color:#FF0005;
-    border-bottom-color:#FF0005;
-}
-.xui-uiborder-tb-dark{
-    border-top-color:#FF0005;
-    border-bottom-color:#FF0005;
-}
-.xui-uiborder-r-light{
-    border-right-color:#FFBCAB;
-}
-.xui-uiborder-b-light{
-    border-bottom-color:#FFBCAB;
-}
-.xui-uiborder-rb-light{
-    border-right-color:#FFBCAB;
-    border-bottom-color:#FFBCAB;
+.xui-uiborder-light, .xui-uiborder-hidden-hover{
+    border-color:#FFB29E;
 }
 
 /*item*/
-.xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
+.xui-uitembg-hover, .xui-uitembg-active, .xui-uitembg-checked{
     background-image: url(Public/list_item.gif);
     background-repeat:repeat-x;
 	  border-color:#648CB4;
 }
-.xui-uitembg-mouseover{
+.xui-uitembg-hover{
 	background-position: left -100px;
 	background-color: #FAD200;
 }
-.xui-uitembg-mousedown{
+.xui-uitembg-active{
 	background-position: left -200px;
 	background-color:#F5D22D;
 }
@@ -126,11 +74,11 @@
 .xui-uitembg-bar{
     background-color:#FFB09D;
 }
-.xui-uitembg-bar-mouseover, .xui-uitembg-menu-mouseover{
+.xui-uitembg-bar-hover, .xui-uitembg-menu-hover{
     background-color:#FFA38A;
 }
-.xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
-.xui-uitembg-menu-mouseover, .xui-uitembg-menu-mousedown{
+.xui-uitembg-bar-active, .xui-uitembg-bar-checked, 
+.xui-uitembg-menu-hover, .xui-uitembg-menu-active{
     background-color:#FF6B44;
 }
 
@@ -147,7 +95,7 @@
     background: -moz-linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);
     background: -o-linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);  
 }
-.xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
+.xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
     border-color: #FCEA29;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC7BC', endColorstr='#FFA28A');
     background: linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
@@ -156,9 +104,9 @@
     background: -moz-linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
     background: -o-linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);  
 }
-.xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked,
-.xui-ui-btn-mousedown, .xui-ui-btn-checked,  
-.xui-ui-btn:active, .xui-ui-btn-mousedown:hover,  .xui-ui-btn-checked:hover{
+.xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
+.xui-ui-btn-active, .xui-ui-btn-checked,  
+.xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF7751', endColorstr='#FFBCAB');
     background: linear-gradient(top,  #FF7751 5%,  #FFBCAB 100%);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FF7751), to(1, #FFBCAB));
@@ -269,17 +217,10 @@
 
 /*xui.UI.Tabs*/
 /*.xui-tabs-items{padding:0 0 4px 0;}*/
-.xui-tabs-item{
-		border-bottom: solid 1px #FF6B44;
-    border-left: solid 1px #FF6B44;
-    border-top: solid 1px #FF6B44;
-    border-right: solid 1px #FF6B44;
-    background-color:transparent; 
-}
-.xui-tabs-item-mouseover{
+.xui-tabs-item-hover{
 		background-color: #FAD200;
 }
-.xui-tabs-item-mousedown{
+.xui-tabs-item-active{
 	  background-color: #F5D22D;
 }
 .xui-tabs-item-checked{
@@ -307,14 +248,14 @@
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
     border-color: #EEE #FFB9A5 #FFB9A5 #EEE;
 }
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover, .xui-treegrid-hscell-mouseover{
+.xui-treegrid-fhcell-hover, .xui-treegrid-hcell-hover, .xui-treegrid-hscell-hover{
     background: #FCE01E url(Public/list_item.gif) repeat-x left -400px;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
 .xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
     border-right:solid 1px #FFBCAB;
 }
-.xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
+.xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
     border-right:solid 1px #FFB5A2;
     background-color: #FFB5A2;
 }
@@ -332,8 +273,8 @@
     background-color: #FF0005;
     color:#fff;
 }
-.xui-uicell-mouseover,
-.xui-treegrid-cell-mouseover, .xui-treegrid-cell-mouseover .xui-node{
+.xui-uicell-hover,
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node{
     background-color: #FFF1A0 !important;
 }
 

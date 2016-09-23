@@ -15,7 +15,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 if(p.selMode=='single'){
                     var itemId = getI(uiv);
                     if(uiv!==null && itemId){
-                        getN(item,itemId).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(item,itemId).tagClass('-checked',false).tagClass('-hover',false);
                         getN(mk, itemId).tagClass('-checked',false); 
                     }
 
@@ -46,7 +46,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     value = value?value.split(p.valueSeparator):[];
                     //check all
                     xui.arr.each(uiv,function(o){
-                        getN(item, getI(o)).tagClass('-checked',false).tagClass('-mouseover',false);
+                        getN(item, getI(o)).tagClass('-checked',false).tagClass('-hover',false);
                         getN(mk, getI(o)).tagClass('-checked',false); 
                     });
                     xui.arr.each(value,function(o){
@@ -59,7 +59,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _clearMouseOver:function(){
             var box=this.constructor,
                 item=box._ITEMKEY || 'ITEM';
-            this.getSubNode(item, true).tagClass('-mouseover',false);
+            this.getSubNode(item, true).tagClass('-hover',false);
         },
         adjustSize:function(){
             return this.each(function(profile){
@@ -129,7 +129,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ITEMS:{
                $order:10,
                tagName:'div',
-               className:'xui-uibg-base {_bordertype}',
+               className:'xui-uibase {_bordertype}',
                text:"{items}"
             },
             $submap:{

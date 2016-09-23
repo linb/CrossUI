@@ -39,11 +39,11 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 cursor:'pointer',
                 'white-space':'nowrap'
             },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':{
+            'ITEM-hover, ITEM-active, ITEM-checked':{
             },
-            'ITEM-mouseover':{
+            'ITEM-hover':{
             },
-            'ITEM-mousedown':{
+            'ITEM-active':{
             },
             'ITEM-checked':{
             },

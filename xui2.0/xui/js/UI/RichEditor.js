@@ -61,7 +61,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             BOX:{
                 EDITOR:{
                     tagName:'div',
-                    className:'xui-uiborder-flat xui-uibg-base'
+                    className:'xui-uiborder-flat xui-uiborder-radius xui-uibase'
                 },
                 DIRTYMARK:{},
                 POOL:{}

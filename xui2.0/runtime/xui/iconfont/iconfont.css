@@ -26,8 +26,8 @@
   *width:1em;
 }
 
-.xuifont-mouseover, .xuicon-mouseover{ color: #686868; }
-.xuifont-mousedown, .xuicon-mousedown{ color: #3393D2; }
+.xuifont-hover, .xuicon-hover{ color: #686868; }
+.xuifont-active, .xuicon-active{ color: #3393D2; }
 .xuifont-checked, .xuicon-checked{ color: #3393D2; }
 
 .xui-icon-empty:before, .xui-ui-busy:before{

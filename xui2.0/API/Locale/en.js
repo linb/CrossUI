@@ -2763,7 +2763,7 @@ xui.set(xui.Locale,["en","app"], {
                     "isAdd [Optional] : Boolean, adds or removes. Default is [true]"
                 ],
                 $snippet:[
-                    "var n=xui('btnLang');n.tagClass('-checked').tagClass('-mouseover');alert(n.attr('className')); n.tagClass('-checked',false).tagClass('-mouseover',false);alert(n.attr('className'));"
+                    "var n=xui('btnLang');n.tagClass('-checked').tagClass('-hover');alert(n.attr('className')); n.tagClass('-checked',false).tagClass('-hover',false);alert(n.attr('className'));"
                 ]
             },
             append:{
@@ -4730,7 +4730,7 @@ xui.set(xui.Locale,["en","app"], {
                     "tag [Optional] : String, tag string"
                 ],
                 $snippet:[
-                    "alert(xui.UIProfile.getFromDom('xui.UI.Panel:a:').getClass('HANDLE','-mouseover'))"
+                    "alert(xui.UIProfile.getFromDom('xui.UI.Panel:a:').getClass('HANDLE','-hover'))"
                 ]
             },
             getDomId:{

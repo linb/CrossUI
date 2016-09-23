@@ -166,27 +166,27 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         var ns=this, t=ns.getTemplate();
         xui.merge(t.FRAME.BORDER,{
             tabindex: '{tabindex}',
-            className: 'xui-uiborder-radius',
+            className: 'xui-uiborder-radius-big',
             TABSTOP1:{$order:-1},
             TBAR:{
                 tagName:'div',
                 className:'xui-uibar-top',
                 TBARTDL:{
-                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                    className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
                     TBARTDLT:{
                         className:'xui-uibar-tdlt'
                     }
                 },
                 TBARTDM:{
                     $order:1,
-                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                    className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
                     TBARTDMT:{
                         className:'xui-uibar-tdmt'
                     }
                 },
                 TBARTDR:{
                     $order:2,
-                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                    className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
                     TBARTDRT:{
                         className:'xui-uibar-tdrt'
                     }
@@ -269,20 +269,20 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 TBARTDB:{
                     $order:5,
                     tagName: 'div',
-                    className:'xui-uibar-tdb xui-uiborder-inset'
+                    className:'xui-uibar-tdb xui-uiborder-inset xui-uiborder-radius'
                 }
             },
             MAIN:{
                 $order:2,
                 tagName:'div',
-                className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
+                className:'xui-uicon-main xui-uibar xui-uiborder-l',
                 MAINI:{
                     tagName:'div',
-                    className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
+                    className:'xui-uicon-maini xui-uibar xui-uiborder-r',
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
-                        className:'xui-uibg-bar',
+                        className:'xui-uibar',
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -293,15 +293,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 className:'xui-uibar-bottom',
                 BBARTDL:{
                     $order:1,
-                    className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                    className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
                 },
                 BBARTDM:{
                     $order:2,
-                    className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                    className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
                 },
                 BBARTDR:{
                     $order:3,
-                    className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
+                    className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
                 }
             },
             TABSTOP2:{$order:9}

@@ -36,7 +36,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 RULER:{
                     $order:1,
                     tagName:'div',
-                    className:'xui-uiborder-flat',
+                    className:'xui-uiborder-flat xui-uiborder-radius',
                     RULERLEFT:{},
                     RULERRIGHT:{}
                 },

@@ -294,10 +294,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 style:'{_liststyle}',
                 LISTBG:{
                      $order:0,
-                     className:'xui-uiborder-tb-dark xui-uitembg-bar-checked'
+                     className:'xui-uiborder-t xui-uiborder-b xui-uiborder-dark xui-uitembg-bar-checked'
                 },
                 MENU:{
-                    className:'xui-ui-unselectable xui-uitoolbtn',
+                    className:'xui-ui-unselectable xui-uiborder-hidden xui-uiborder-radius',
                     MENUICON:{
                         className:'xuicon',
                         $fonticon:'xui-icon-menu'
@@ -308,7 +308,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     tagName:'div',
                     className:'xui-ui-unselectable',
                     MENUICON2:{
-                        className:'xui-uitoolbtn xuicon',
+                        className:'xui-uiborder-hidden xui-uiborder-radius xuicon',
                         $fonticon:'xui-icon-menu'
                     }
                 },
@@ -327,7 +327,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uiborder-flat xui-uitembg {itemClass} {disabled} {readonly}',
+                        className:'xui-uiborder-flat xui-uiborder-radius xui-uitembg {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
                         ITEMI:{
                             ITEMC:{
@@ -378,7 +378,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 panels:{
                     PANEL:{
                         tagName : 'div',
-                        className:'xui-uibg-base',
+                        className:'xui-uibase',
                         style:"{_overflow};{_bginfo}",
                         text:'{html}'+xui.UI.$childTag
                     }
@@ -467,7 +467,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
                 cursor:'pointer',
-                'vertical-align':'middle'
+                'vertical-align':'middle',
+                padding:0
+            },
+            'ITEM-checked HANDLE':{
+                'padding-bottom':'1px'
             },
             RULER:{
                 height:'1.5em',

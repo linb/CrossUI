@@ -18,7 +18,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             t = self.getTemplate();
         //modify
         xui.merge(t.FRAME.BORDER,{
-            className:"xui-uiborder-flat xui-uibg-base",
+            className:"xui-uiborder-flat xui-uiborder-radius xui-uibase",
             FILL:{
                 tagName:'div',
                 style:'{fillBG}',

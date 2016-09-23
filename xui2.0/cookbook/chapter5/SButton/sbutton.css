@@ -32,21 +32,21 @@
     padding:0 4px 1px;
 }
 
-.xuit-sbtn-mouseover .xuit-sbtn-btn{
+.xuit-sbtn-hover .xuit-sbtn-btn{
     background-position:right -90px;
 }
-.xuit-sbtn-mouseover .xuit-sbtn-btni{
+.xuit-sbtn-hover .xuit-sbtn-btni{
     background-position:left -150px;
 }
-.xuit-sbtn-mouseover .xuit-sbtn-btnc{
+.xuit-sbtn-hover .xuit-sbtn-btnc{
     background-position:left -120px;
 }
-.xuit-sbtn-mousedown .xuit-sbtn-btn{
+.xuit-sbtn-active .xuit-sbtn-btn{
     background-position:right -180px
 }
-.xuit-sbtn-mousedown .xuit-sbtn-btni{
+.xuit-sbtn-active .xuit-sbtn-btni{
     background-position:left -240px;
 }
-.xuit-sbtn-mousedown .xuit-sbtn-btnc{
+.xuit-sbtn-active .xuit-sbtn-btnc{
     background-position:left -210px;
 }

@@ -3957,10 +3957,10 @@ type:4
         xui.$inlineBlock=xui.browser.gek
             ? xui.browser.ver<3
                 ? ['-moz-inline-block', '-moz-inline-box','inline-block']
-                : 'inline-block'
+                : ['inline-block']
             : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
-                : 'inline-block',
+                : ['inline-block'],
         //hot keys
         xui.doc.onKeydown(function(p,e,s){
             xui.Event.$keyboard=xui.Event.getKey(e);

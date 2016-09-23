@@ -7,7 +7,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             className:'xui-uiw-border {clsBorderType1}',
             PANEL:{
                 tagName:'div',
-                className:'xui-uibg-bar {clsBorderType2}',
+                className:'xui-uibar {clsBorderType2}',
                 style:'{_panelstyle};{background};{_overflow};',
                 text:'{html}'+xui.UI.$childTag
             }
@@ -75,9 +75,9 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                         p=ns.properties,
                         n1=ns.getSubNode('BORDER'), n2=ns.getSubNode('PANEL'),
                         reg=/^xui-uiborder-/,
-                        flat='xui-uiborder-flat',
-                        ins='xui-uiborder-inset',
-                        outs='xui-uiborder-outset',
+                        flat='xui-uiborder-flat xui-uiborder-radius',
+                        ins='xui-uiborder-inset xui-uiborder-radius',
+                        outs='xui-uiborder-outset xui-uiborder-radius',
                         root=ns.getRoot();
                     n1.removeClass(reg);
                     n2.removeClass(reg);

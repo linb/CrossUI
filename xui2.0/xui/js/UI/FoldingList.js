@@ -65,11 +65,11 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
         t.$submap.items={
             ITEM:{
                 tagName : 'div',
-                className:'xui-uiborder-flat {_checked} {_precheked} {itemClass} {disabled} {readonly}',
+                className:'xui-uiborder-flat xui-uiborder-radius {_checked} {_precheked} {itemClass} {disabled} {readonly}',
                 style:'{itemStyle}',
                 HEAD:{
                     tagName : 'div',
-                    className:'xui-uibg-base',
+                    className:'xui-uibase',
                     HL:{tagName : 'div'},
                     HR:{tagName : 'div'},
                     TITLE:{
@@ -115,7 +115,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 BODY:{
                     $order:1,
                     tagName : 'div',
-                    className:'xui-uibg-base',
+                    className:'xui-uibase',
                     BODYI:{
                         $order:0,
                         tagName : 'div',
@@ -125,7 +125,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 TAIL:{
                     $order:4,
                     tagName : 'div',
-                    className:'xui-uibg-bar',
+                    className:'xui-uibar',
                     TL:{tagName : 'div'},
                     TR:{tagName : 'div'}
                 }
@@ -171,7 +171,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
             },
             'BODY, BODYI':{
             },
-            'ITEM-mouseover, ITEM-mousedown, ITEM-checked':null,
+            'ITEM-hover, ITEM-active, ITEM-checked':null,
             'ITEM-checked':{
                 $order:2,
                 'margin-bottom':'1em'

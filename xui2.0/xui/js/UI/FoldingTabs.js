@@ -87,7 +87,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             BOX:{
                 $order:0,
                 tagName : 'div',
-                className:'xui-uibg-base',
+                className:'xui-uibase',
                 ITEMS:{
                     tagName : 'div',
                     text:"{items}"
@@ -97,11 +97,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 items:{
                     ITEM:{
                         tagName : 'div',
-                        className:'xui-uiborder-flat {_checked} {_precheked} {itemClass} {disabled} {readonly}',
+                        className:'xui-uiborder-flat xui-uiborder-radius {_checked} {_precheked} {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
                         HEAD:{
                             tagName : 'div',
-                            className:'xui-uibg-base',
+                            className:'xui-uibase',
                             HL:{tagName : 'div'},
                             HR:{tagName : 'div'},
                             TITLE:{
@@ -168,7 +168,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                 PANEL:{
                                     tagName : 'div',
                                     style:'{_itemHeight};{_overflow};{_bginfo}',
-                                    className:'xui-uibg-base',
+                                    className:'xui-uibase',
                                     text:xui.UI.$childTag
                                 }
                             }
@@ -176,7 +176,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         TAIL:{
                             $order:4,
                             tagName : 'div',
-                            className:'xui-uibg-bar',
+                            className:'xui-uibar',
                             TL:{tagName : 'div'},
                             TR:{tagName : 'div'}
                         }
@@ -230,9 +230,9 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 overflow:'auto',
                 padding:'.25em'
             },
-            'ITEM-mouseover':{
+            'ITEM-hover':{
             },
-            'ITEM-mousedown, ITEM-checked':{
+            'ITEM-active, ITEM-checked':{
             },
             'ITEM-checked':{
                 $order:2,

@@ -64,45 +64,46 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             i,data,
             arr=[],
             evs=xui.$IEUNSELECTABLE(),
-            evs2='style="visibility:hidden;"';
+            evs2='style="visibility:hidden;"',
+            ddcls = 'xui-node xui-node-span xui-ui-draggable xui-uibase xui-uiborder-flat xui-uiborder-radius';
 
         ns.addTemplateKeys(['DD1', 'DD2', 'DD3','R','G','B','TXT','HH','S','V','H','E','X']);
 
         //simple list
         for(i=0;i<l;i++){
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-uiborder-radius xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
             if((i+1)%17==0)arr.push('<br />');
         }
         //data
-        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
-                '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
-               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 xui-node xui-node-span xui-ui-draggable xui-uibg-base xui-uiborder-flat  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
+        data = '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>R: </span><span '+'id="'+key+'-R:'+id+':" class="'+cls+'-dd2 '+ddcls+' '+tag+'DD2_CC'+tag+'" '+evs+'>R</span><span '+evs2+'>%</span><span class="'+cls+'-txt"'+evs+'>G: </span><span '+'id="'+key+'-G:'+id+':" class="'+cls+'-dd2 '+ddcls+'  '+tag+'DD2_CC'+tag+'" '+evs+'>G</span><span '+evs2+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>B: </span><span '+'id="'+key+'-B:'+id+':" class="'+cls+'-dd2 '+ddcls+'  '+tag+'DD2_CC'+tag+'" '+evs+'>B</span></div>' +
+                '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>S: </span><span '+'id="'+key+'-S:'+id+':" class="'+cls+'-dd2 '+ddcls+'  '+tag+'DD2_CC'+tag+'"  '+evs+'>S</span><span '+evs+'>%</span><span class="'+cls+'-txt"'+evs+'>H: </span><span '+'id="'+key+'-HH:'+id+':" class="'+cls+'-dd2 '+ddcls+'  '+tag+'DD2_CC'+tag+'" '+evs+'>H</span><span '+evs+'>\xB0</span><span class="'+cls+'-txt"'+evs+'>V: </span><span '+'id="'+key+'-V:'+id+':" class="'+cls+'-dd2 '+ddcls+'  '+tag+'DD2_CC'+tag+'" '+evs+'>V</span><span '+evs+'>%</span></div>' +
+               '<div '+evs+'><span class="'+cls+'-txt"'+evs+'>HEX: </span><span '+'id="'+key+'-H:'+id+':" class="'+cls+'-dd3 '+ddcls+'  '+tag+'DD3_CC'+tag+'" '+evs+'>H</span><span '+'id="'+key+'-E:'+id+':" class="'+cls+'-dd3 '+ddcls+'  '+tag+'DD3_CC'+tag+'" '+evs+''+evs+'>E</span><span '+'id="'+key+'-X:'+id+':" class="'+cls+'-dd3 '+ddcls+'  '+tag+'DD1_CC'+tag+'" '+evs+'>X</span></div>'
         ns.setTemplate({
             style:'{_style};height:auto;width:auto',
             tagName : 'div',
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
-                className: 'xui-uiborder-radius',
+                className: 'xui-uiborder-radius-big',
                 BAR:{
                     tagName:'div',
                     className:'{classBar}',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-t',
+                        className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
                         BARTDMT:{
                             className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -129,20 +130,20 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     TBARTDB:{
                         $order:5,
                         tagName: 'div',
-                        className:'xui-uibar-tdb xui-uiborder-inset'
+                        className:'xui-uibar-tdb xui-uiborder-inset xui-uiborder-radius'
                     }
                 },
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini xui-uibg-bar xui-uiborder-r',
+                        className:'xui-uicon-maini xui-uibar xui-uiborder-r',
                         CON:{
                             $order:1,
                             tagName:'div',
-                            className:'xui-uiborder-inset',
+                            className:'xui-uiborder-inset xui-uiborder-radius',
                             SIMPLE:{
                                 tagName:'div',
                                 TOP:{
@@ -157,7 +158,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                     EXAM:{
                                         $order:3,
                                         tagName:'div',
-                                        className:'xui-uiborder-inset'
+                                        className:'xui-uiborder-inset xui-uiborder-radius'
                                     }
                                 },
                                 LIST:{
@@ -193,10 +194,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibg-bar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibg-bar xui-uicon-maini xui-uibg-bar xui-uiborder-r',
+                        className:'xui-uibar xui-uicon-maini xui-uiborder-r',
                         TRANS:{
                             className:'xuicon',
                             $fonticon:'xui-icon-transparent',
@@ -225,15 +226,15 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibg-bar xui-uiborder-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
                     },
                     BBARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibg-bar xui-uiborder-b'
+                        className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibg-bar xui-uiborder-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
                     }
                 }
             }

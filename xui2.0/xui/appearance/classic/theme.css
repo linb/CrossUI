@@ -6,36 +6,33 @@
 .xuifont, .xuicon{
     font-size:1.33333em;
 }
-.xuifont-mouseover, .xuicon-mouseover{ color: #888; }
-.xuifont-mousedown, .xuicon-mousedown{ color: #222; }
+.xuifont-hover, .xuicon-hover{ color: #888; }
+.xuifont-active, .xuicon-active{ color: #222; }
 .xuifont-checked, .xuicon-checked{ color: #000; }
 
 /*background*/
-.xui-uibg-base{
+.xui-uibase{
     background-color:#FFFFFF;
 }
-.xui-uibg-bar{
+.xui-uibar{
     background-color:#f8f6f2;
 }
-.xui-uibg-bar-mouseover{
+.xui-uibar-hover{
     background-color:#eeece8;
 }
-.xui-uibg-content{
+.xui-uicontent{
     background-color:#FFFFFF;
 }
 
 /*border*/
-.xui-uitoolbtn, .xui-uiborder-flat, .xui-uiborder-outset, .xui-uiborder-inset,
-.xui-uiborder-lt, .xui-uiborder-rt, .xui-uiborder-lb, .xui-uiborder-rb{
+.xui-uiborder-radius, .xui-uiborder-radius-big, 
+.xui-uiborder-radius-lt, .xui-uiborder-radius-rt, .xui-uiborder-radius-lb, .xui-uiborder-radius-rb{
     border-radius: 0;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     -o-border-radius: 0;
     -ms-border-radius: 0;
     -khtml-border-radius: 0;
-}
-.xui-uiborder{
-    border:solid 1px #ccc;
 }
 .xui-uiborder-l{
     border-left-color:#fff;
@@ -49,72 +46,23 @@
 .xui-uiborder-b{
     border-bottom-color:#ccc;
 }
-.xui-uiborder-lr{
-    border-left-color:#fff;
-    border-right-color:#ccc;
-}
-.xui-uiborder-tb{
-    border-top-color:#fff;
-    border-bottom-color:#ccc;
-}
-.xui-uiborder-lt{
-    border-left-color:#fff;
-    border-top-color:#fff;
-}
-.xui-uiborder-rt{
-    border-top-color:#fff;
-    border-right-color:#ccc;
-}
-.xui-uiborder-lb{
-    border-left-color:#fff;
-    border-bottom-color:#ccc;
-}
-.xui-uiborder-rb{
-    border-right-color:#ccc;
-    border-bottom-color:#ccc;
-}
 .xui-uiborder-flat{
     border-color:#ccc;
-}
-.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover{
-    border-color:#ddd;
 }
 .xui-uiborder-outset{
     border-color:#fff #ccc #ccc #fff;
 }
-.xui-uiborder-inset, .xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
+.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked{
     border-color:#ccc #fff #fff #ccc;
 }
-.xui-uitoolbtn-mouseover{
-    border-color: #fff;
-}
-.xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked{
+.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked{
     background: #fff;
 }
-
-.xui-uiborder-r-dark{
-    border-right-color: #ccc;
+.xui-uiborder-dark, .xui-uiborder-flat-hover, .xui-tabs-item{
+    border-color: #bcbcbc;
 }
-.xui-uiborder-b-dark{
-    border-bottom-color: #ccc;
-}
-.xui-uiborder-rb-dark{
-    border-right-color: #ccc;
-    border-bottom-color: #ccc;
-}
-.xui-uiborder-tb-dark{
-    border-top-color:#ccc;
-    border-bottom-color:#ccc;
-}
-.xui-uiborder-r-light{
-    border-right-color:#fff;
-}
-.xui-uiborder-b-light{
-    border-bottom-color:#fff;
-}
-.xui-uiborder-rb-light{
-    border-right-color:#fff;
-    border-bottom-color:#fff;
+.xui-uiborder-light, .xui-uiborder-hidden-hover{
+    border-color:#fff;
 }
 
 /*item*/
@@ -126,13 +74,13 @@
     -ms-border-radius:0;
     -khtml-border-radius:0;
 }
-.xui-uitembg-mouseover, .xui-uitembg-mousedown, .xui-uitembg-checked{
+.xui-uitembg-hover, .xui-uitembg-active, .xui-uitembg-checked{
     border-color:transparent;
 }
-.xui-uitembg-mouseover{
+.xui-uitembg-hover{
   background-color: #EBF3FD;
 }
-.xui-uitembg-mousedown{
+.xui-uitembg-active{
   background-color:#F1F7FE;
 }
 .xui-uitembg-checked{
@@ -142,11 +90,11 @@
 .xui-uitembg-bar{
     background-color:#e1e1e1;
 }
-.xui-uitembg-bar-mouseover{
+.xui-uitembg-bar-hover{
     background-color:#eeece8;
 }
-.xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, 
-.xui-uitembg-menu-mouseover, .xui-uitembg-menu-mousedown{
+.xui-uitembg-bar-active, .xui-uitembg-bar-checked, 
+.xui-uitembg-menu-hover, .xui-uitembg-menu-active{
     background-color:#F8F6F2;
 }
 
@@ -165,13 +113,13 @@
     -ms-border-radius: 0;
     -khtml-border-radius: 0;
 }
-.xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover{
+.xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
     border-color:#bbb;
     background: #EAEAEA;
 }
-.xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked,
-.xui-ui-btn-mousedown, .xui-ui-btn-checked,  
-.xui-ui-btn:active, .xui-ui-btn-mousedown:hover,  .xui-ui-btn-checked:hover{
+.xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
+.xui-ui-btn-active, .xui-ui-btn-checked,  
+.xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
     background: #eeece8;
 }
 
@@ -201,22 +149,9 @@
 .xui-uibar-top .xui-uibar-tdrt{
   height:30px;
 }
-.xui-uibar-top-focus .xui-uibar-tdl,
-.xui-uibar-top-focus .xui-uibar-tdm,
-.xui-uibar-top-focus .xui-uibar-tdr{
+.xui-uibar-top-focus{
   background-color: #ededed;
 }
-
-.xui-uibar-top-focus .xui-uibar-tdlt{
-  background-color: #ededed;
-}
-.xui-uibar-top-focus .xui-uibar-tdmt{
-  background-color: #ededed;
-}
-.xui-uibar-top-focus .xui-uibar-tdrt{
-  background-color: #ededed;
-}
-
 
 .xui-uibar-bottom{
     padding:3px 0;
@@ -260,18 +195,15 @@
 }
 .xui-tabs-item{
     background-color: transparent;
-    border:none;
+    border-color: transparent;
     margin:0 4px;
-    border-left: solid 1px transparent;
-    border-top: solid 1px transparent;
-    border-right: solid 1px transparent;
 }
-.xui-tabs-item-mouseover, .xui-tabs-item-mousedown, .xui-tabs-item-checked{
+.xui-tabs-item-hover, .xui-tabs-item-active, .xui-tabs-item-checked{
     border-left: solid 1px #ccc;
     border-top: solid 1px #ccc;
     border-right: solid 1px #ccc;
 }
-.xui-tabs-item-mousedown, .xui-tabs-item-checked{
+.xui-tabs-item-active, .xui-tabs-item-checked{
     background-color: #ffffff;
 }
 
@@ -280,10 +212,10 @@
     border:0;
     background:none;
 }
-.xui-buttonviews-item-mouseover{
+.xui-buttonviews-item-hover{
     background:none;
 }
-.xui-buttonviews-item-mousedown{
+.xui-buttonviews-item-active{
     background:#efefef;
 }
 .xui-buttonviews-item-checked{
@@ -306,8 +238,8 @@
 .xui-tabs-handle{
   padding:1px 1px 0 1px;
 }
-.xui-tabs-item-mouseover .xui-tabs-handle, 
-.xui-tabs-item-mousedown .xui-tabs-handle, 
+.xui-tabs-item-hover .xui-tabs-handle, 
+.xui-tabs-item-active .xui-tabs-handle, 
 .xui-tabs-item-checked .xui-tabs-handle{
   padding:1px 1px 0 1px;
 }
@@ -334,7 +266,7 @@
     border-right:solid 1px #d4d4d4;
     border-bottom:solid 1px #d4d4d4;
 }
-.xui-treegrid-fhcell-mouseover, .xui-treegrid-hcell-mouseover, .xui-treegrid-hscell-mouseover{
+.xui-treegrid-fhcell-hover, .xui-treegrid-hcell-hover, .xui-treegrid-hscell-hover{
     background: #eeece8;
 }
 .xui-treegrid-fcell, .xui-treegrid-cell, 
@@ -342,7 +274,7 @@
     border-right:solid 1px #f1f1f1;
 }
 
-.xui-treegrid-cells1-mouseover, .xui-treegrid-cells2-mouseover{
+.xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
     border-right:solid 1px #CFE4FE;
 }
 .xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
@@ -359,8 +291,8 @@
     background-color: #ccc;
     color:#fff;
 }
-.xui-uicell-mouseover,
-.xui-treegrid-cell-mouseover, .xui-treegrid-cell-mouseover .xui-node{
+.xui-uicell-hover,
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node{
     background-color: #D9E8FB !important;
 }
 

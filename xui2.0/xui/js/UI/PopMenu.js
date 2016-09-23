@@ -149,7 +149,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             //clear highLight first
             if(profile.$highLight)
-                xui([profile.$highLight]).tagClass('-mouseover',false);
+                xui([profile.$highLight]).tagClass('-hover',false);
             profile._conainer=parent;
 
             root.popToTop(obj, type, parent);
@@ -204,7 +204,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         root.css('display','none');
 
                     if(t=profile[hl])
-                       xui([t]).tagClass('-mouseover',false);
+                       xui([t]).tagClass('-hover',false);
 
                     //hide all parent pop
                     var p=profile[cm],q;
@@ -239,21 +239,21 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         //modify default template fro shell
         var t = this.getTemplate();
         xui.merge(t.FRAME.BORDER,{
-            className:"xui-uiborder-outset",
+            className:"xui-uiborder-outset xui-uiborder-radius",
              TOP:{
-                className:'xuifont xui-uibg-bar xui-uiborder-b',
+                className:'xuifont xui-uibar xui-uiborder-b',
                 $fonticon:'xui-icon-circleup'
              },
              BOTTOM:{
-                className:'xuifont xui-uibg-bar xui-uiborder-t',
+                className:'xuifont xui-uibar xui-uiborder-t',
                 $fonticon:'xui-icon-circledown'
              },
              BOX:{
                 tagName:'div',
-                className:"xui-uibg-base",
+                className:"xui-uibase",
                 BOXBGBAR:{
                     tabName:'div',
-                    className:'xui-uibg-bar',
+                    className:'xui-uibar',
                     style:'{_iconDisplay}'
                 },
                  ITEMS:{
@@ -507,9 +507,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     if(!Cancel){
                         if(t=profile[hl])
-                            xui([t]).tagClass( '-mouseover',false);
+                            xui([t]).tagClass( '-hover',false);
                         profile[hl] = src;
-                        xui.use(src).tagClass('-mouseover');
+                        xui.use(src).tagClass('-hover');
                         //don't fire events here
                         try{xui.use(src).get(0).focus()}catch(e){}
                     }
@@ -602,7 +602,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             }while((node && (node=node.parentNode)))
                         }catch(a){}
                     }
-                    xui.use(src).tagClass('-mouseover',false);
+                    xui.use(src).tagClass('-hover',false);
                     profile[hl] = null;
                 },
                 onClick:function(profile, e, src){
@@ -627,7 +627,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         if(profile.onMenuSelected)profile.boxing().onMenuSelected(profile, item, src);
 
                         if(prop.hideAfterClick){
-                            xui.use(src).tagClass('-mouseover',false);
+                            xui.use(src).tagClass('-hover',false);
                             //hide all parent pop
                             xui.asyRun(function(){
                                 var p=profile,q;

@@ -614,7 +614,7 @@ Class('xui.UIProfile','xui.Profile', {
             (o[key] || (o[key]=[])).push(id);
         },
         /*
-        *('KEY','-mouseover',false);
+        *('KEY','-hover',false);
         */
         _cacheR3:/\./g,
         _cacheH1:{},
@@ -1989,7 +1989,7 @@ Class("xui.UI",  "xui.absObj", {
                 padding: "0 !important",
                 border: "0 none !important"
             },
-            ".xui-ui-gradientbg-mouseover, .xui-ui-btn:hover, .xui-ui-btn-mouseover":{
+            ".xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover":{
                 background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
                 background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
@@ -2001,7 +2001,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
-            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-mousedown, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-mousedown, .xui-ui-btn-checked, .xui-ui-btn-mousedown:hover, .xui-ui-btn-checked:hover":{
+            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-active, .xui-ui-btn-checked, .xui-ui-btn-active:hover, .xui-ui-btn-checked:hover":{
                 $order:2,
                 background_1: "linear-gradient(top,  #DDD 5%,  #FFF)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
@@ -2034,7 +2034,7 @@ Class("xui.UI",  "xui.absObj", {
                 'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
                 'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
-            ".xui-ui-btn:hover, .xui-ui-btn-mouseover":{
+            ".xui-ui-btn:hover, .xui-ui-btn-hover":{
                 'border-color': '#B5B5B5'
             },
             ".xui-ui-input":{
@@ -2071,12 +2071,12 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-radius': '3px',
                 'border':'solid 0.125em transparent'
             },
-            ".xui-uitembg-mouseover":{
+            ".xui-uitembg-hover":{
                 $order:2,
                 'background-color':'#EDEDED',
                 'border-color':'#DDDDDD'
             },
-            ".xui-uitembg-mousedown":{
+            ".xui-uitembg-active":{
                 $order:3,
                 'background-color':'#DDDDDD',
                 'border-color':'#C5C5C5'
@@ -2094,11 +2094,11 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 "background-color":"transparent"
             },
-            ".xui-uitembg-bar-mouseover":{
+            ".xui-uitembg-bar-hover":{
                 $order:2,
                 "background-color":"#E0E0E0"
             },
-            ".xui-uitembg-bar-mousedown, .xui-uitembg-bar-checked, .xui-uitembg-menu-mouseover, .xui-uitembg-menu-mousedown":{
+            ".xui-uitembg-bar-active, .xui-uitembg-bar-checked, .xui-uitembg-menu-hover, .xui-uitembg-menu-active":{
                 $order:3,
                  "background-color":"#DDDDDD"
             },
@@ -2106,7 +2106,7 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-uicell":{
                 "background-color": "#F9F9FB"
             },
-            ".xui-uicell-mouseover":{
+            ".xui-uicell-hover":{
                  $order:2,
                 "background-color": "#d9e8fb"
             },
@@ -2188,13 +2188,7 @@ Class("xui.UI",  "xui.absObj", {
                 top:0,
                 height:'12px'
             },
-            '.xui-uibar-top-focus .xui-uibar-tdl':{
-                'background-color':'#C5C5C5'
-            },
-            '.xui-uibar-top-focus .xui-uibar-tdm':{
-                'background-color':'#C5C5C5'
-            },
-            '.xui-uibar-top-focus .xui-uibar-tdr':{
+            '.xui-uibar-top-focus':{
                 'background-color':'#C5C5C5'
             },
             '.xui-uibar-top-focus .xuifont, .xui-uibar-top-focus .xuicon, .xui-uibar-top-focus .xui-uicaption':{
@@ -2389,20 +2383,17 @@ Class("xui.UI",  "xui.absObj", {
             }
         })
         + xui.UI.buildCSSText({
-            '.xui-uibg-base':{
+            '.xui-uibase':{
                 'background-color':'#FFFFFF'
             },
-            '.xui-uibg-content':{
+            '.xui-uicontent':{
                 'background-color':'#EDEDED'
             },
-            '.xui-uibg-bar':{
+            '.xui-uibar':{
                 'background-color':'#DDDDDD'
             },
-            '.xui-uibg-bar-mouseover':{
+            '.xui-uibar-hover':{
                 'background-color':'#EDEDED'
-            },
-            '.xui-uiborder':{
-                border:'solid 1px #b5b5b5'
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
@@ -2424,105 +2415,34 @@ Class("xui.UI",  "xui.absObj", {
                 'border-bottom-width':'1px',
                 'border-bottom-color':'#C5C5C5'
             },
-            '.xui-uiborder-r-dark':{
-                'border-right-style':'solid',
-                'border-right-width':'1px',
-                'border-right-color':'#B5B5B5'
+            '.xui-uiborder-hidden':{
+                border:'solid 1px transparent',
+                background:'none'
             },
-            '.xui-uiborder-b-dark':{
-                'border-bottom-style':'solid',
-                'border-bottom-width':'1px',
-                'border-bottom-color':'#B5B5B5'
+            '.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
+                background:'#F6F6F6'
             },
-            '.xui-uiborder-r-light':{
-                'border-right-style':'solid',
-                'border-right-width':'1px',
-                'border-right-color':'#EDEDED'
+            '.xui-uiborder-flat':{
+                border:'solid 1px #C5C5C5'
             },
-            '.xui-uiborder-b-light':{
-                'border-bottom-style':'solid',
-                'border-bottom-width':'1px',
-                'border-bottom-color':'#EDEDED'
+            '.xui-uiborder-outset':{
+                $order:8,
+                border:'solid 1px',
+                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
             },
-            '.xui-uiborder-tb':{
-                'border-style':'solid',
-                'border-width':'1px 0 1px 0 ',
-                'border-top-color':'#F6F6F6',
-                'border-bottom-color':'#C5C5C5'
+            '.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
+                $order:9,
+                border:'solid 1px',
+                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
             },
-            '.xui-uiborder-lr':{
-                'border-style':'solid',
-                'border-width':'0 1px 0 1px',
-                'border-left-color':'#F6F6F6',
-                'border-right-color':'#C5C5C5' 
+            '.xui-uiborder-dark, .xui-uiborder-flat-hover':{
+                'border-color':'#B6B6B6'
             },
-            '.xui-uiborder-lt':{
-                'border-style':'solid',
-                'border-width':'1px 0 0 1px',
-                'border-left-color':'#F6F6F6',
-                'border-top-color':'#F6F6F6',
-                'border-radius':'6px 0 0 0',
-                '-moz-border-radius': '6px 0 0 0',
-                '-webkit-border-radius': '6px 0 0 0',
-                '-o-border-radius': '6px 0 0 0',
-                '-ms-border-radius': '6px 0 0 0',
-                '-khtml-border-radius': '6px 0 0 0'      
+            '.xui-uiborder-light, .xui-uiborder-hidden-hover':{
+                'border-color':'#F6F6F6'
             },
-            '.xui-uiborder-rt':{
-                'border-style':'solid',
-                'border-width':'1px 1px 0 0',
-                'border-right-color':'#C5C5C5',
-                'border-top-color':'#F6F6F6',
-                'border-radius':'0 6px 0 0',
-                '-moz-border-radius': '0 6px 0 0',
-                '-webkit-border-radius': '0 6px 0 0',
-                '-o-border-radius': '0 6px 0 0',
-                '-ms-border-radius': '0 6px 0 0',
-                '-khtml-border-radius': '0 6px 0 0'
-            },
-            '.xui-uiborder-rb':{
-                'border-style':'solid',
-                'border-width':'0 1px 1px 0',
-                'border-right-color':'#C5C5C5',
-                'border-bottom-color':'#C5C5C5',
-                'border-radius':'0 0 6px 0',
-                '-moz-border-radius': '0 0 6px 0',
-                '-webkit-border-radius': '0 0 6px 0',
-                '-o-border-radius': '0 0 6px 0',
-                '-ms-border-radius': '0 0 6px 0',
-                '-khtml-border-radius': '0 0 6px 0'
-            },
-            '.xui-uiborder-lb':{
-                'border-style':'solid',
-                'border-width':'0 0 1px 1px ',
-                'border-left-color':'#F6F6F6',
-                'border-bottom-color':'#C5C5C5',
-                'border-radius':'0 0 0 6px',
-                '-moz-border-radius': '0 0 0 6px',
-                '-webkit-border-radius': '0 0 0 6px',
-                '-o-border-radius': '0 0 0 6px',
-                '-ms-border-radius': '0 0 0 6px',
-                '-khtml-border-radius': '0 0 0 6px'
-            },
-            '.xui-uiborder-rb-light':{
-                'border-style':'solid',
-                'border-width':'0 1px 1px 0',
-                'border-right-color':'#EDEDED',
-                'border-bottom-color':'#EDEDED'
-            },
-            '.xui-uiborder-tb-dark':{
-                'border-style':'solid',
-                'border-width':'1px 0',
-                'border-top-color':'#B5B5B5',
-                'border-bottom-color':'#B5B5B5'
-            },
-            '.xui-uiborder-rb-dark':{
-                'border-style':'solid',
-                'border-width':'0 1px 1px 0',
-                'border-right-color':'#B5B5B5',
-                'border-bottom-color':'#B5B5B5'
-            },
-            '.xui-uitoolbtn, .xui-uiborder-flat, .xui-uiborder-outset, .xui-uiborder-inset':{
+            '.xui-uiborder-radius':{
+                $order:11,
                 'border-radius':'3px',
                 '-moz-border-radius': '3px',
                 '-webkit-border-radius': '3px',
@@ -2530,34 +2450,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '3px',
                 '-khtml-border-radius': '3px'
             },
-            '.xui-uitoolbtn':{
-                border:'solid 1px transparent',
-                background:'none'
-            },
-            '.xui-uitoolbtn-mouseover':{
-                border:'solid 1px #F6F6F6'
-            },
-            '.xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked':{
-                background:'#EDEDED'
-            },
-            '.xui-uiborder-flat':{
-                border:'solid 1px #C5C5C5'
-            },
-            '.xui-uiborder-flat-focus, .xui-uiborder-flat-mouseover':{
-                $order:2,
-                'border-color':'#7EADD9'
-            },
-            '.xui-uiborder-outset':{
-                $order:8,
-                border:'solid 1px',
-                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
-            },
-            '.xui-uiborder-inset, .xui-uitoolbtn-mousedown, .xui-uitoolbtn-checked':{
-                $order:9,
-                border:'solid 1px',
-                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
-            },
-            '.xui-uiborder-radius':{
+            '.xui-uiborder-radius-big':{
                 $order:11,
                 'border-radius':'6px',
                 '-moz-border-radius': '6px',
@@ -2566,8 +2459,44 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '6px',
                 '-khtml-border-radius': '6px'
             },
+            '.xui-uiborder-radius-lt':{
+                $order:12,
+                'border-radius':'6px 0 0 0',
+                '-moz-border-radius': '6px 0 0 0',
+                '-webkit-border-radius': '6px 0 0 0',
+                '-o-border-radius': '6px 0 0 0',
+                '-ms-border-radius': '6px 0 0 0',
+                '-khtml-border-radius': '6px 0 0 0'      
+            },
+            '.xui-uiborder-radius-rt':{
+                $order:12,
+                'border-radius':'0 6px 0 0',
+                '-moz-border-radius': '0 6px 0 0',
+                '-webkit-border-radius': '0 6px 0 0',
+                '-o-border-radius': '0 6px 0 0',
+                '-ms-border-radius': '0 6px 0 0',
+                '-khtml-border-radius': '0 6px 0 0'
+            },
+            '.xui-uiborder-radius-rb':{
+                $order:12,
+                'border-radius':'0 0 6px 0',
+                '-moz-border-radius': '0 0 6px 0',
+                '-webkit-border-radius': '0 0 6px 0',
+                '-o-border-radius': '0 0 6px 0',
+                '-ms-border-radius': '0 0 6px 0',
+                '-khtml-border-radius': '0 0 6px 0'
+            },
+            '.xui-uiborder-radius-lb':{
+                $order:12,
+                'border-radius':'0 0 0 6px',
+                '-moz-border-radius': '0 0 0 6px',
+                '-webkit-border-radius': '0 0 0 6px',
+                '-o-border-radius': '0 0 0 6px',
+                '-ms-border-radius': '0 0 0 6px',
+                '-khtml-border-radius': '0 0 0 6px'
+            },
             '.xui-uiborder-noradius':{
-                $order:11,
+                $order:15,
                 'border-radius':'0',
                 '-moz-border-radius': '0',
                 '-webkit-border-radius': '0',
@@ -2576,7 +2505,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-radius': '0'
             },
             '.xui-uiborder-none':{
-                $order:10,
+                $order:20,
                 border:'none'
             }
         });
@@ -3187,6 +3116,7 @@ Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
+                                type=type=='mouseover'?'hover':type=='mousedown'?'active':type;
                                 nodes.tagClass('-'+type);
                             }else{
                                 if(type=='mouseup'){
@@ -3196,7 +3126,7 @@ Class("xui.UI",  "xui.absObj", {
                                         return;
                                     if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mouseup'))
                                         return;
-                                    nodes.tagClass('-mousedown', false);
+                                    nodes.tagClass('-active', false);
                                 }else{
                                     if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseout'))
                                         return;
@@ -3204,7 +3134,7 @@ Class("xui.UI",  "xui.absObj", {
                                         return;
                                     if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))
                                         return;
-                                    nodes.tagClass('(-mouseover|-mousedown)', false);
+                                    nodes.tagClass('(-hover|-active)', false);
                                 }
                             }
                         }
@@ -3541,6 +3471,12 @@ Class("xui.UI",  "xui.absObj", {
                                     this.boxing().adjustDock(true);
                                 }
                             },
+                            themeRoller:{
+                                ini:{},
+                                action:function(v){
+                                    xui.UI._refreshThemeRoller(this, v);
+                                }
+                            },
                             formMethod:{
                                 ini:'get',
                                 listbox:['get','post']
@@ -3709,7 +3645,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
+                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,themeRoller,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+xui.str.initial(o);
@@ -3732,6 +3668,26 @@ Class("xui.UI",  "xui.absObj", {
                 self.$cssKeys[i]=(self.$Keys[i]=i=='KEY'?key:key+"-"+i).replace(reg,'-').toLowerCase().replace('xui-ui','xui');
             });
             return self;
+        },
+        _refreshThemeRoller:function(profile, cssSetting){
+            var domId=profile.getDomId(),
+                id=domId+"themeroller",
+                // escape special char
+                prevId='#'+domId.replace(/([.:])/g,"\\$1"),
+                old=xui(id).get(0),
+                css="";
+            if(old){
+                old.disabled=true;
+                xui(id).remove(false);
+            }
+            if(cssSetting&&!xui.isEmpty(cssSetting)){
+                var arr=[];
+                xui.each(cssSetting,function(o,i){
+                    arr.push(prevId + " " + i + "{\n    "+xui.str.trim(o).split(/\s*;\s*/).join(';\n    ')+"\n}");
+                });
+                css="\n"+arr.join('\n')+"\n";
+                xui.CSS._appendSS(profile.getRootNode(), css, id, true);
+            }
         },
         $getCSSValue:function(cls, key,force){
             cls=cls.replace(/\./g,'');
@@ -4407,6 +4363,10 @@ Class("xui.UI",  "xui.absObj", {
                 css=xui.CSS,
                 node=prf.getRootNode(),nodefz,
                 style=node.style;
+
+            if(p.themeRoller &&!xui.isEmpty(p.themeRoller)){
+                xui.UI._refreshThemeRoller(prf, p.themeRoller);
+            }
 
             // *** force to em
             if(xui.$uem(p)){
@@ -5545,7 +5505,7 @@ Class("xui.UI",  "xui.absObj", {
             for(var i in profile.box._objectProp)
                 if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             // 
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","propBinder","tagVar","animConf"],function(key){
+            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","themeRoller","propBinder","tagVar","animConf"],function(key){
                 if(t=p[key]){
                     r=ds[key];
                     for(var i in t){
@@ -5645,7 +5605,7 @@ Class("xui.UI",  "xui.absObj", {
             if(prop.position)a[a.length] = 'position:'+prop.position;
             if(prop.visibility)a[a.length]= 'visibility:'+prop.visibility;
             if('zIndex' in prop)a[a.length]= 'z-index:'+prop.zIndex;
-            if(prop.display)a[a.length]= 'display:'+ (prop.display=='inline-block'? xui.browser.gek?'-moz-inline-block;display:-moz-inline-box;display:inline-block;':'inline-block' :prop.display)
+            if(prop.display)a[a.length]= prop.display=='inline-block'? ('display:' + xui.$inlineBlock.join('; display:') + ';') :('display:' + prop.display);
 
            data._style = a.join(';');
            if(box.$Behaviors.PanelKeys && !box["xui.absList"]){
@@ -6676,8 +6636,8 @@ new function(){
                     action: function(v){
                         if(xui.browser.ie && xui.browser.ver <=8){
                             var node=this.getSubNode('IE67_SHADOW');
-                            if(v) node.addClass('xui-ui-shadow xui-uiborder-rb');
-                            else node.removeClass('xui-ui-shadow xui-uiborder-rb');
+                            if(v) node.addClass('xui-ui-shadow xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb');
+                            else node.removeClass('xui-ui-shadow xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb');
                         }else{
                             var node=this.getSubNode('BORDER');
                             if(v) node.addClass('xui-ui-shadow');

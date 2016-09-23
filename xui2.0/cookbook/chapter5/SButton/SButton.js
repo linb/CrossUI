@@ -5,17 +5,17 @@ Class("xui.Template.SButton","xui.Template",{
         arr[2]=arr[2]||{
             "root":{
                 onMouseover:function(profile,e,src){
-                    xui.use(src).tagClass('-mouseover');
+                    xui.use(src).tagClass('-hover');
                 },
                 onMouseout:function(profile,e,src){
-                    xui.use(src).tagClass('-mouseover',false);
-                    xui.use(src).tagClass('-mousedown',false);
+                    xui.use(src).tagClass('-hover',false);
+                    xui.use(src).tagClass('-active',false);
                 },
                 onMousedown:function(profile,e,src){
-                    xui.use(src).tagClass('-mousedown');
+                    xui.use(src).tagClass('-active');
                 },
                 onMouseup:function(profile,e,src){
-                    xui.use(src).tagClass('-mousedown',false);
+                    xui.use(src).tagClass('-active',false);
                 },
                 onClick:function(profile,e,src){
                     xui.tryF(profile.handler_onClick,arguments,profile.host||profile)

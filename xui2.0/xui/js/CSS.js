@@ -19,7 +19,7 @@ Class("xui.CSS", null,{
                      .replace(ns._reg5,'')
                      .replace(ns._reg6,',').toLowerCase();
         },
-        _appendSS:function(container,txt, id){
+        _appendSS:function(container,txt, id, before, attr){
             var fc=document.createElement('style');
             fc.type="text/css";
             if(id)fc.id=id;
@@ -27,7 +27,11 @@ Class("xui.CSS", null,{
                 fc.styleSheet.cssText = txt||'';
             else
                 try{fc.appendChild(document.createTextNode(txt||''))}catch(p){fc.styleSheet.cssText = txt||''}
-            container.appendChild(fc);
+            if(attr){
+                xui(fc).attr(attr);
+            }
+            if(before) xui(container).prepend(fc);
+            else xui(container).append(fc);
             return fc;
         },
         _createCss:function(id, txt,last){
