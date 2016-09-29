@@ -2,6 +2,9 @@
 .xui-node{
     font-size: 12px;
 }
+.xui-title-node{
+		font-size:1.1667em;
+}
 .xuifont, .xuicon{
   font-size:1.33333em;
 }
@@ -16,8 +19,16 @@
 .xui-uibar-hover{
     background-color:#F9EEE2;
 }
-.xui-uicontent{
-    background-color:#FFFFFF;
+.xui-uibar-active, .xui-uibar-checked, 
+.xui-uimenu-hover, .xui-uimenu-active{
+    background-color:#D0A27A;
+}
+.xui-node-highlight, 
+.xui-uibar-active, .xui-uibar-active .xui-node,
+.xui-uibar-checked,  .xui-uibar-checked .xui-node, 
+.xui-uimenu-hover,  .xui-uimenu-hover .xui-node,
+.xui-uimenu-active, .xui-uimenu-active .xui-node{
+	color:#ffffff;
 }
 
 /*border*/
@@ -70,24 +81,10 @@
   background-position: left -200px;
   background-color: #D0A27A;
 }
-
-.xui-uitembg-bar{
-    background-color:#C2A181;
-}
-.xui-uitembg-bar-hover, .xui-uitembg-menu-hover{
-    background-color:#E7C6A6;
-}
-.xui-uitembg-bar-active, .xui-uitembg-bar-checked, 
-.xui-uitembg-menu-hover, .xui-uitembg-menu-active{
-    background-color:#D0A27A;
-}
-.xui-uitembg-checked, .xui-uitembg-checked .xui-node, 
-.xui-uitembg-bar-active, .xui-uitembg-bar-active .xui-node,
-.xui-uitembg-bar-checked,  .xui-uitembg-bar-checked .xui-node, 
-.xui-uitembg-menu-hover,  .xui-uitembg-menu-hover .xui-node,
-.xui-uitembg-menu-active, .xui-uitembg-menu-active .xui-node{
+.xui-uitembg-checked, .xui-uitembg-checked .xui-node{
 	color:#ffffff;
 }
+
 /*gradient*/
 .xui-ui-gradientbg, .xui-ui-btn{
     border-color:#D0A27A;
@@ -122,11 +119,13 @@
 }
 
 /*uicontainer*/
+.xui-uiborder-box{
+		border-width:0;
+}
 .xui-uibar-top .xui-uibar-tdlt, .xui-uibar-top .xui-uibar-tdmt, .xui-uibar-top .xui-uibar-tdrt, 
 .xui-uibar-top-s .xui-uibar-tdl, .xui-uibar-top-s .xui-uibar-tdm, .xui-uibar-top-s .xui-uibar-tdr, 
 .xui-uibar-bottom .xui-uibar-tdl, .xui-uibar-bottom .xui-uibar-tdm, .xui-uibar-bottom .xui-uibar-tdr,
 .xui-uibar-bottom-s .xui-uibar-tdl, .xui-uibar-bottom-s .xui-uibar-tdm, .xui-uibar-bottom-s .xui-uibar-tdr{
-    border: none;
     background-image: url(Public/con_vertical.gif);
     background-repeat: no-repeat;
     background-position: left top;
@@ -135,17 +134,14 @@
 .xui-uicon-main,
 .xui-uibar-top .xui-uibar-tdl,
 .xui-uibar-top .xui-uibar-tdr{
-    border: none;
     background-image: url(Public/con_left.gif);
     background-repeat: repeat-y;
     background-position: left top;
 }
 .xui-uibar-top .xui-uibar-tdm{
-    border: none;
 }
 .xui-uicon-maini,
 .xui-uibar-top .xui-uibar-tdr{
-    border: none;
     background-image: url(Public/con_right.gif);
     background-repeat: repeat-y;
     background-position: right top;
@@ -166,6 +162,7 @@
   height:30px;
   background-position: right -60px;
 }
+.xui-uibar-focus, 
 .xui-uibar-top-focus .xui-uibar-tdl,
 .xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
@@ -183,10 +180,6 @@
   background-position: right -150px;
 }
 
-
-.xui-uibar-bottom{
-    padding:3px 0;
-}
 .xui-uibar-bottom .xui-uibar-tdl{
   background-position: left -189px;
 }
@@ -248,15 +241,12 @@
  
 /*xui.UI.TreeGrid*/
 .xui-uicell,
-.xui-treegrid{
+.xui-treegrid-cells1, .xui-treegrid-cells2{
   background-color: #FAFAF9;
 }
 .xui-uicell-alt,
-.xui-treegrid-alt{
+.xui-treegrid-cells1-alt, .xui-treegrid-cells2-alt{
     background-color: #ffeedc;
-}
-.xui-treegrid-rownum{
-    color:#808080;
 }
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,
@@ -270,10 +260,7 @@
 .xui-treegrid-fhcell-hover, .xui-treegrid-hcell-hover, .xui-treegrid-hscell-hover{
     background: #F0DDC6 url(Public/list_item.gif) repeat-x left -500px;
 }
-.xui-treegrid-fcell, .xui-treegrid-cell, 
-.xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
-    border-right:solid 1px #F8E5D3;
-}
+
 .xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
     border-right:solid 1px #FFB5A2;
     background-color: #F7E7D7;
@@ -286,39 +273,30 @@
     background-color: #FFE97F;
 }
 .xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node,
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node, 
-.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node{
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node[class*="xui-treegrid-"],
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node[class*="xui-treegrid-"], 
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node[class*="xui-treegrid-"]{
     background-color: #C2A181;
     color:#fff;
 }
 .xui-uicell-hover,
-.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node{
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
     background-color: #FFF1A0 !important;
 }
 
 /*disable and readonly*/
-input[readonly], textarea[readonly], 
-input:read-only, textarea:read-only,
+.xui-node-readonly, 
+input[readonly], textarea[readonly], input:read-only, textarea:read-only,
 .xui-ui-readonly, .xui-ui-readonly .xui-node,
 .xui-ui-itemreadonly, .xui-ui-itemreadonly .xui-node{
-    color: #808080 !important;
+    color: #66666 !important;
 }
-.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
-.xui-ui-readonly textarea, .xui-ui-readonly textarea{
-    color: #09090 !important;
-}
-button:disabled, a:disabled, 
+.xui-node-disabled, 
+button:disabled, a:disabled, input:disabled, textarea:disabled, 
 .xui-ui-disabled, .xui-ui-disabled .xui-node,
-.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node{
+.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node,
+.xui-uicell-disabled, .xui-uicell-disabled .xui-node{
   color: #808080 !important;
-}
-input:disabled, textarea:disabled, 
-.xui-uicell-disabled, .xui-uicell-disabled .xui-node,
-.xui-ui-disabled input, .xui-ui-itemdisabled input, 
-.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
-   color: #909090 !important;
-   background-color:#eee !important;
 }
 
 /*
@@ -326,7 +304,6 @@ input:disabled, textarea:disabled,
 .xui-ui-input{}
 .xui-ui-shadow{}
 .xui-special-icon{}
-.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
 .xui-required{}
 .xui-alert{}
 */

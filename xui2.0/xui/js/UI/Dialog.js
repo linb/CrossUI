@@ -9,7 +9,6 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    css=xui.CSS,
                     useem = xui.$uem(p),
                     ins = profile.boxing();
                 // default to center dlg
@@ -20,19 +19,19 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             top=left.top;
                             left=left.left;
                         }else{
-                            top=(top||top===0)?top:css.$px(p.top);
-                            left=(left||left===0)?left:css.$px(p.left);
+                            top=(top||top===0)?top:profile.$px(p.top);
+                            left=(left||left===0)?left:profile.$px(p.left);
                         }
                     break;
                     case 'center':
                         if(xui.isHash(left)){
-                            top=left.top+(left.height-css.$px(p.height))/2;
-                            left=left.left+(left.width-css.$px(p.width))/2;
+                            top=left.top+(left.height-profile.$px(p.height))/2;
+                            left=left.left+(left.width-profile.$px(p.width))/2;
                         }else{
                             var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent);
                             // here, have to use global em
-                            top=(top||top===0)?top:Math.max(0,(pr.height()-css.$px(p.height))/2+pr.scrollTop());
-                            left=(left||left===0)?left:Math.max(0,(pr.width()-css.$px(p.width))/2+pr.scrollLeft());
+                            top=(top||top===0)?top:Math.max(0,(pr.height()-profile.$px(p.height))/2+pr.scrollTop());
+                            left=(left||left===0)?left:Math.max(0,(pr.width()-profile.$px(p.width))/2+pr.scrollLeft());
                         }
                     break;
                 }
@@ -47,8 +46,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        rootfz= xui.$uem(p)?root._getEmSize():null,
-                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)};
+                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
                         xui.UI.Div._applyAutoLoad(profile);
@@ -69,7 +67,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     else{
                         // resize immidiately here, maybe max here
                         xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
-                        root.show(left?adjustunit(left,rootfz):null, top?adjustunit(top,rootfz):null, fun,null,ignoreEffects);
+                        root.show(left?adjustunit(left):null, top?adjustunit(top):null, fun,null,ignoreEffects);
                         box._refreshRegion(profile);
                     }
                 };
@@ -79,8 +77,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
                         left:[t.left,left],
                         top:[t.top,top],
-                        width:[t.width, css.$px(p.width)],
-                        height:[t.height, css.$px(p.height)]
+                        width:[t.width, profile.$px(p.width)],
+                        height:[t.height, profile.$px(p.height)]
                     }, null,f1,300,0,'expoIn').start();
                 else
                     f1();
@@ -90,10 +88,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
-                    css=xui.CSS,
                     useem = xui.$uem(pro),
-                    root=profile.getRoot(),
-                    rootfz=useem?root._getEmSize():null;
+                    root=profile.getRoot();
 
                 var fun=function(){
                     if(profile.inHiding)return;
@@ -112,10 +108,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     };
                     if(t)
                         xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
-                            left:[css.$px(pro.left,rootfz),t.left],
-                            top:[css.$px(pro.top,rootfz),t.top],
-                            width:[css.$px(pro.width,rootfz),t.width],
-                            height:[css.$px(pro.height,rootfz),t.height]
+                            left:[profile.$px(pro.left),t.left],
+                            top:[profile.$px(pro.top),t.top],
+                            width:[profile.$px(pro.width),t.width],
+                            height:[profile.$px(pro.height),t.height]
                         },  null, f1,300,0,'expoOut').start();
                     else
                         f1();
@@ -166,27 +162,27 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         var ns=this, t=ns.getTemplate();
         xui.merge(t.FRAME.BORDER,{
             tabindex: '{tabindex}',
-            className: 'xui-uiborder-radius-big',
+            className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
             TABSTOP1:{$order:-1},
             TBAR:{
                 tagName:'div',
                 className:'xui-uibar-top',
                 TBARTDL:{
-                    className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
+                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
                     TBARTDLT:{
                         className:'xui-uibar-tdlt'
                     }
                 },
                 TBARTDM:{
                     $order:1,
-                    className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
+                    className:'xui-uibar-tdm xui-uibar',
                     TBARTDMT:{
                         className:'xui-uibar-tdmt'
                     }
                 },
                 TBARTDR:{
                     $order:2,
-                    className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
+                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
                     TBARTDRT:{
                         className:'xui-uibar-tdrt'
                     }
@@ -195,15 +191,19 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     $order:3,
                     tagName: 'div',
                     className:'xui-uibar-cmdl',
+                    RULER:{
+                        className:'xui-ui-ruler'
+                    },
                     ICON:{
                         $order:0,
                         className:'xuicon {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                        text:'{fontCode}'
                     },
                     CAPTION:{
                         $order:1,
                         tabindex: '{tabindex}',
-                        className:'xui-uicaption',
+                        className:'xui-title-node xui-uicaption',
                         text:'{caption}'
                     }
                 },
@@ -275,14 +275,14 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             MAIN:{
                 $order:2,
                 tagName:'div',
-                className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                className:'xui-uicon-main xui-uibar',
                 MAINI:{
                     tagName:'div',
-                    className:'xui-uicon-maini xui-uibar xui-uiborder-r',
+                    className:'xui-uicon-maini xui-uibar',
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
-                        className:'xui-uibar',
+                        className:'xui-uibar xui-uicontainer',
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -293,15 +293,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 className:'xui-uibar-bottom',
                 BBARTDL:{
                     $order:1,
-                    className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
+                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
                 },
                 BBARTDM:{
                     $order:2,
-                    className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
+                    className:'xui-uibar-tdm xui-uibar'
                 },
                 BBARTDR:{
                     $order:3,
-                    className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
+                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
                 }
             },
             TABSTOP2:{$order:9}
@@ -334,8 +334,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             CAPTION:{
                 display:'inline',
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'font-size':'1em'
+                'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             BORDER:{
                 position:'relative',
@@ -379,17 +378,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             onDragstop:function(profile){
                 var p = profile.properties,
-                    css = xui.CSS,
                     useem = xui.$uem(p),
                     root=profile.getRoot(),
-                    rootfz=useem?root._getEmSize():null,
                     pos = root.cssPos(),
                     l = null, t = null;
 
-                if(css.$px(p.left,rootfz) !== pos.left)
-                    p.left = l = css.$forceu( pos.left,null,rootfz);
-                if(css.$px(p.top,rootfz) !== pos.top)
-                    p.top = t = css.$forceu( pos.top,null,rootfz);
+                if(profile.$px(p.left) !== pos.left)
+                    p.left = l = profile.$forceu( pos.left,null);
+                if(profile.$px(p.top) !== pos.top)
+                    p.top = t = profile.$forceu( pos.top,null);
 
                 root.cssPos({ left: l, top: t });
 
@@ -1051,17 +1048,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         _refreshRegion:function(profile){
             if(!profile.renderId) return;
             var prop=profile.properties, 
-                css=xui.CSS,
                 root=profile.getRoot(),
                 useem=xui.$uem(prop),
-                rootfz= useem?root._getEmSize():null,
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 nr=root.cssRegion();
 
-            nr.left=adjustunit(nr.left,rootfz);
-            nr.top=adjustunit(nr.top,rootfz);
-            nr.width=adjustunit(nr.width,rootfz);
-            nr.height=adjustunit(nr.height,rootfz);
+            nr.left=adjustunit(nr.left);
+            nr.top=adjustunit(nr.top);
+            nr.width=adjustunit(nr.width);
+            nr.height=adjustunit(nr.height);
 
             return xui.merge(prop, nr, function(o,i){return prop[i]!='auto'});
         },
@@ -1107,7 +1102,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             node.cssSize(size).css('overflow','auto').show();
 
-            var fs=xui.CSS._getDftEmSize();
+            var fs=dialog.getRoot()._getEmSize();
             w=size.width + fs*2;
             h=size.height + fs*6;
             dialog.setCaption(caption).setWidth(w).setHeight(h);
@@ -1419,12 +1414,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
     			width=profile.properties.minWidth;
 
             var prop=profile.properties,
-                css=xui.CSS,
                 useem=xui.$uem(prop),
-                root=profile.getRoot(),
-                needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz=needfz?root._getEmSize():null,
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
@@ -1436,12 +1428,12 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 v6=profile.getSubNode('MAINI'),
                 h1,h4,t;
             // caculate with px
-            if(width)width=css.$px(width, rootfz);
-            if(height)height=css.$px(height, rootfz);
-            if(size.left)size.left=css.$px(size.left, rootfz);
-            if(size.top)size.top=css.$px(size.top, rootfz);
-            if(size.width)size.width=css.$px(size.width, rootfz);
-            if(size.height)size.height=css.$px(size.height, rootfz);
+            if(width)width=profile.$px(width);
+            if(height)height=profile.$px(height);
+            if(size.left)size.left=profile.$px(size.left);
+            if(size.top)size.top=profile.$px(size.top);
+            if(size.width)size.width=profile.$px(size.width);
+            if(size.height)size.height=profile.$px(size.height);
 
             if(height){
                 if(height=='auto'){
@@ -1460,8 +1452,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
                     - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
             
-            if(width&&useem)isize.width=adjustunit(isize.width,rootfz);
-            if(height&&useem)isize.height=adjustunit(isize.height,rootfz);
+            if(width&&useem)isize.width=adjustunit(isize.width);
+            if(height&&useem)isize.height=adjustunit(isize.height);
 
             v2.cssSize(isize, true);
         }

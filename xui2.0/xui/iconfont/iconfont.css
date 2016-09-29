@@ -30,11 +30,41 @@
 .xuifont-active, .xuicon-active{ color: #3393D2; }
 .xuifont-checked, .xuicon-checked{ color: #3393D2; }
 
-.xui-icon-empty:before, .xui-ui-busy:before{
+.xui-icon-empty:before{
 	content: "\e62c" !important;
 	display:inline-block;
 	height:1em;
 	width:1em;
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+.xui-icon-loading:before{
+	content: "\e68d" !important;
+	display:inline-block;
+	height:1em;
+	width:1em;
+}
+.xui-icon-loading{
+    -webkit-animation: fa-spin 1.5s infinite linear;
+    animation: fa-spin 1.5s infinite linear;
 }
 
 /*special for IE8*/
@@ -57,7 +87,6 @@
 .xui-icon-mouse:before { content: "\e64d"; }
 .xui-icon-prev:before { content: "\e60a"; }
 .xui-icon-question:before { content: "\e63d"; }
-.xui-icon-loading:before { content: "\e68d"; }
 .xui-icon-indent:before { content: "\e634"; }
 .xui-icon-outdent:before { content: "\e635"; }
 .xui-icon-strikethrough:before { content: "\e636"; }

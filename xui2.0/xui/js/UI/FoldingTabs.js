@@ -1,11 +1,4 @@
 Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
-    Initialize:function(){
-        var t=this.getTemplate(),keys=this.$Keys;
-        delete t.LIST;
-        delete keys.PNAELS;
-        this.setTemplate(t);
-        delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;delete keys.LIST;delete keys.PNAELS;
-    },    
     Instance:{
         _setCtrlValue:function(value,init){
             this.each(function(profile){
@@ -101,7 +94,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         style:'{_itemDisplay} {itemStyle}',
                         HEAD:{
                             tagName : 'div',
-                            className:'xui-uibase',
+                            className:'xui-uibar  {_checked} {_precheked} ',
                             HL:{tagName : 'div'},
                             HR:{tagName : 'div'},
                             TITLE:{
@@ -117,10 +110,12 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     ICON:{
                                         $order:2,
                                         className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                        text:'{fontCode}'
                                     },
                                     CAPTION:{
                                         $order:3,
+                                        className:"xui-title-node",
                                         text:'{caption}'
                                     }
                                 },
@@ -163,12 +158,13 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         BODY:{
                             $order:1,
                             tagName : 'div',
+                            className:'xui-uibase',
                             BODYI:{
                                 tagName : 'div',
                                 PANEL:{
                                     tagName : 'div',
                                     style:'{_itemHeight};{_overflow};{_bginfo}',
-                                    className:'xui-uibase',
+                                    className:'xui-uibase xui-uicontainer ',
                                     text:xui.UI.$childTag
                                 }
                             }
@@ -194,7 +190,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 border:0,
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
-                'padding-top':'.75em'//,
+                padding:'11px 4px 4px 4px'//,
                 //for ie6 1px bug,  HR/TR(position:absolute;right:0;)
                 //'margin-right':xui.browser.ie6?'expression(this.parentNode.offsetWidth?(this.parentNode.offsetWidth-(parseInt(this.parentNode.style.paddingLeft,10)||0)-(parseInt(this.parentNode.style.paddingRight,10)||0) )%2+"px":"auto")':null
             },
@@ -220,11 +216,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             BODY:{
                 display:'none',
                 zoom:xui.browser.ie?1:null,
-                position:'relative',
-                overflow:'auto'
+                position:'relative'
             },
             BODYI:{
-                padding:'0 .75em'
+                padding:'0 .25em'
             },
             PANEL:{
                 overflow:'auto',
@@ -244,8 +239,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
             'HL, HR, TL, TR':{
                 position:'absolute',
-                'font-size':0,
-                'line-height':0,
                 width:'.75em'
             },
             'HL, HR':{
@@ -281,6 +274,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 right:0
             },
             HEAD:{
+                cursor:'pointer',
                 position:'relative',
                 zoom:xui.browser.ie?1:null,
                 overflow:'hidden'
@@ -294,23 +288,20 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                padding:'.25em .5em'
             },
             'BODY, BODYI':{
-                'font-size':0,
-                'line-height':0
+                overflow:'hidden'
             },
             TAIL:{
-                'font-size':0,
-                'line-height':0,
                 height:'.25em'
             },
             'CAPTION, MESSAGE':{
                 padding:'.25em',
-                'vertical-align':'middle',
+                'vertical-align':'middle'
+            },
+            MESSAGE:{
                 'font-size':'1em'
             },
             CAPTION:{
-                cursor:'pointer',
-                'white-space':'nowrap',
-                'font-size':'1em'
+                'white-space':'nowrap'
             },
             'ITEM-checked CAPTION':{
                 $order:2,
@@ -338,8 +329,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
         },
         Behaviors:{
             DraggableKeys:['HEAD'],
-            HoverEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
-            ClickEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
+            HoverEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP',ITEM:'HEAD'},
+            ClickEffected:{OPT:'OPT',CLOSE:'CLOSE',POP:'POP',ITEM:'HEAD'},
             ITEM:{onClick:null},
             ITEMS:{onMousedown:null,onDrag:null,onDragstop:null},
             HEAD:{
@@ -416,7 +407,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 arr[0]._precheked = profile.getClass('ITEM','-prechecked');
             return arguments.callee.upper.apply(this, arguments);
         },
-        _prepareItem:function(profile, item){            
+        _prepareItem:function(profile, item){
             var dpn = 'display:none',p=profile.properties,t;
             item.closeDisplay = item.closeBtn?'':dpn;
             item.popDisplay = item.popBtn?'':dpn;
@@ -424,7 +415,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             item._itemDisplay = item.hidden?dpn:'';
 
             if(item.height)
-                item._itemHeight="height:"+xui.CSS.$forceu(item.height);
+                item._itemHeight="height:"+profile.$forceu(item.height);
 
             var prop = profile.properties,o;
             item._tabindex = prop.tabindex;
@@ -445,6 +436,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
                 item._bginfo+="background-attachment:"+t+";";
 
+            if(xui.isStr(item.overflow))
+                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
+            else if(xui.isStr(p.overflow))
+                item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
+
             if(item._show){
                 item._checked = profile.getClass('ITEM','-checked');
                 item._tlgchecked = profile.getClass('TOGGLE','-checked');
@@ -457,7 +453,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 profile.getSubNode("PANEL",true).each(function(panel){
                     if(panel.offsetWidth){
                         var w=xui(panel).width(), prop=profile.properties;
-                        if(xui.$uem(prop))w=xui.CSS.$px2em(w, panel)+'em';
+                        if(xui.$uem(prop))w=profile.$px2em(w, panel)+'em';
                         xui(panel).width('auto').width(w);
                     }
                 });

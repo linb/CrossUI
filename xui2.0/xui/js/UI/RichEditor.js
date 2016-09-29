@@ -291,7 +291,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
+            d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -1015,22 +1015,20 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
 
-                    css = xui.CSS,
                     useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                    needfz = useem||css.$isEm(width)||css.$isEm(height),
-                    rootfz=needfz?root._getEmSize():null,
+                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    needfz = useem||profile.$isEm(width)||profile.$isEm(height),
                     boxfz=useem?box._getEmSize():null,
-                    labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
+                    labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
 
-                    labelSize=css.$px(prop.labelSize, labelfz)||0,
-                    labelGap=css.$px(prop.labelGap)||0,
+                    labelSize=profile.$px(prop.labelSize, labelfz)||0,
+                    labelGap=profile.$px(prop.labelGap)||0,
                     labelPos=prop.labelPos || 'left',
                     ll, tt, ww, hh;
 
                 // caculate by px
-                if(width && width!='auto')width=css.$px(width, rootfz);
-                if(height && height!='auto')height=css.$px(height, rootfz);
+                if(width && width!='auto')width=profile.$px(width);
+                if(height && height!='auto')height=profile.$px(height);
 
                 box.cssRegion({
                     left : adjustunit(ll = labelPos=='left'?labelSize:0,boxfz),
@@ -1078,7 +1076,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             size.height=adjustunit(size.height);
 
                             profile.getSubNode('EDITOR').top(adjustunit(_top)).cssSize(size,true);
-                            profile.getSubNode('DIRTYMARK').left(0+css.$picku()).top(adjustunit(_top+1));
+                            profile.getSubNode('DIRTYMARK').left(0+profile.$picku()).top(adjustunit(_top+1));
                         }
                     }
                 }, 20/*greater than 16*/);

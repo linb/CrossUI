@@ -264,7 +264,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             ITEMICON:{
                                 $order:6,
                                 className:'xuicon {imageClass}',
-                                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                text:'{fontCode}'
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
@@ -903,7 +904,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 backgroundAttachment:''
                               });
                         }else{
-                            markNode.removeClass('xui-uicmd-toggle-busy');
+                            markNode.removeClass('xui-icon-loading');
                         }
                         if(!empty){
                             item._checked = true;
@@ -982,7 +983,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         if(xui.browser.ie && xui.browser.ver<=8){
                             markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
                         }else{
-                            markNode.addClass('xui-uicmd-toggle-busy');
+                            markNode.addClass('xui-icon-loading');
                         }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){

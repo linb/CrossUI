@@ -28,15 +28,15 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
         var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="1px"/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/></colgroup>',
-            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1px"><th id="'+key+'-H:'+id+':7" class="xui-node xui-hcell xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb xui-uiborder-light xui-node-th '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
+            thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1px"><th id="'+key+'-H:'+id+':7" class="xui-node  xui-node-th xui-uiborder-b xui-uiborder-r '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
             thead2='</tr></thead>',
-            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-hcell xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb xui-uiborder-light xui-node-th '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
+            th='<th id="'+key+'-H:'+id+':@" class="xui-node xui-node-th xui-uiborder-b xui-uiborder-r '+cls+'-h '+tag+'H_CC'+tag+' xui-custom {comcls}"  style="'+tag+'H_CS'+tag+'">@</th>',
             tbody1 = '<tbody id="'+key+'-TBODY:'+id +':"  class="'+tag+'TBODY_CS'+tag+' xui-custom {comcls}"  style="'+tag+'TBODY_CS'+tag+'" >',
             tbody2 = '</tbody>',
             tr1='<tr>',
             tr2='</tr>',
-            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-hcell xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb xui-uiborder-light xui-node-th '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
-            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-uicell xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb xui-uiborder-light xui-node-td '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
+            td1='<th id="'+key+'-W:'+id+':@"  class="xui-node xui-node-th xui-uiborder-b xui-uiborder-r '+cls+'-w '+tag+'W_CC'+tag+' xui-custom {comcls}"  style="'+tag+'W_CS'+tag+'">@</th>',
+            td2='<td id="'+key+'-TD:'+id+':@" class="xui-node xui-uicell  xui-node-td xui-uiborder-b xui-uiborder-r '+cls+'-td '+tag+'TD_CC'+tag+' xui-custom {comcls}"  style="'+tag+'TD_CS'+tag+'" '+xui.$IEUNSELECTABLE()+' >'+
                 '</td>',
             body,i,j,k,l,a=[],b=[];
         for(i=0;i<7;i++)
@@ -58,27 +58,27 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
-                className: 'xui-uiborder-radius-big',
+                className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
                 BAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
+                        className:'xui-uibar-tdm xui-uibar',
                         BARTDMT:{
                             className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -145,13 +145,13 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini xui-uicon-maini xui-uibar xui-uiborder-r',
+                        className:'xui-uicon-maini xui-uicon-maini xui-uibar',
                         CON:{
                             tagName:'div',
-                            className:'xui-uiborder-l xui-uiborder-t',
+                            className:'xui-uiborder-inset',
                             BODY:{
                                 tagName:'table',
                                 cellpadding:"0",
@@ -164,10 +164,10 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uicon-maini xui-uibar xui-uiborder-r',
+                        className:'xui-uicon-maini xui-uibar',
                         CAPTION:{
                             tagName:'div',
                             style:'{_nocap}',
@@ -230,15 +230,15 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
                     },
                     BBARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
+                        className:'xui-uibar-tdm xui-uibar'
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
                     }
                 }
             }
@@ -262,7 +262,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             },
             TAILI:{
                 position:'relative',
-                padding:'.5em 0 .25em 0'
+                 padding:'.5em 0 0 0'
             },
             TIME:{
                 'padding':'.25em 1.5em'
@@ -306,7 +306,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 'font-size':'1em'
             },
             MAINI:{
-                 padding:'.5em .5em .25em 0'
+                 'padding':'.5em .3333em .3333em 0'
             },
             BODY:{
                 overflow: 'visible'
@@ -331,7 +331,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             },
             H:{
                 $order:4,
-                padding:'.25em 0.5em'
+                padding:'.25em 0.6666667em'
             }
         },
         Behaviors:{

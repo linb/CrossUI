@@ -13,7 +13,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     ICON:{
                         $order:10,
                         className:'xuicon {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                        text:'{fontCode}'
                     },
                     CAPTION:{
                         $order:11,
@@ -96,7 +97,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 item.itemMargin = "margin:" + t;
 
             if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth = "width:"+ xui.CSS.$forceu(t);
+                item.itemWidth = "width:"+ profile.$forceu(t);
 
             if(t = item.itemAlign || p.itemAlign)
                 item.itemAlign = "text-align:"+ t;

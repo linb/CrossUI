@@ -7,7 +7,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         delete t.LIST.DROP;
         delete t.LIST;
         delete t.PNAELS;
-        t.$submap.items.ITEM.className = 'xui-uitembg-bar xui-uiborder-t xui-uiborder-b';
+        t.$submap.items.ITEM.className = 'xui-uibar xui-uiborder-t xui-uiborder-b';
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
@@ -15,6 +15,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         Appearances:{
             BOX:{
                 position:'absolute',
+                overflow:'hidden',
                 left:0,
                 top:0
             },
@@ -56,6 +57,8 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 display:'block',
                 'padding':'.5em .75em',
                 'white-space':'nowrap'
+            },
+            'ITEM-checked HANDLE':{
             },
             PANEL:{
                 position:'absolute',
@@ -121,19 +124,17 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 item = profile.getItemByItemId(key);
             }
             var panel = profile.boxing().getPanel(key),
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
                 list=profile.getSubNode('LIST'),
                 boxfz = useem?box._getEmSize():null,
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 panelfz = useem?panel._getEmSize():null,
                 listfz = useem?list._getEmSize():null,
                 type = prop.borderType,
                 // have to use borderLeftWidth( ff will result 0 with borderWidth)
-                bw = (type=='flat'||type=='inset'||type=='outset') ? xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2 : 0,
+                bw = (type=='flat'||type=='inset'||type=='outset') ? box._borderW() : 0,
                 wc=null,
                 hc=null,
                 off,
@@ -142,8 +143,8 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             if(!panel || panel.isEmpty())return;
 
             // caculate by px
-            width=width?css.$px(width, rootfz,true):width;
-            height=height?css.$px(height, rootfz,true):height;
+            width=width?profile.$px(width, null,true):width;
+            height=height?profile.$px(height, null,true):height;
 
             // change value
             if(height){
@@ -186,7 +187,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 width:wc?adjustunit(wc,panelfz):null,
                 height:hc?adjustunit(hc,panelfz):null,
                 top:adjustunit(top,panelfz),
-                left:0+xui.CSS.$picku()
+                left:0+profile.$picku()
             },true);
             if(wc)list.width(adjustunit(wc,listfz));
         },

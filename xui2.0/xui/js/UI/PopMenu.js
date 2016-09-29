@@ -14,10 +14,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items = profile.getSubNode('ITEMS'),
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
-                        css=xui.CSS,
                         useem = xui.$uem(prop),
-                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                        rootfz =root._getEmSize(),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});
@@ -33,13 +31,13 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     // for IE7
                     items.cssSize({
-                        width:adjustunit(ww, rootfz),
-                        height:adjustunit(hh,rootfz)
+                        width:adjustunit(ww),
+                        height:adjustunit(hh)
                     });
-                    bg.height(adjustunit(hh,rootfz));
+                    bg.height(adjustunit(hh));
 
-                    var h = adjustunit(Math.min(prop._maxHeight, hh),rootfz),
-                        w = adjustunit(Math.min(prop._maxWidth, ww),rootfz),
+                    var h = adjustunit(Math.min(prop._maxHeight, hh)),
+                        w = adjustunit(Math.min(prop._maxWidth, ww)),
                         size={
                             width:w,
                             height:h
@@ -50,7 +48,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     root.cssSize(size);
                     border.cssSize(size);
                     box.cssSize({
-                        width:adjustunit(Math.min(prop._maxWidth, ww)  + xui.Dom.getScrollBarSize(), rootfz),
+                        width:adjustunit(Math.min(prop._maxWidth, ww)  + xui.Dom.getScrollBarSize()),
                         height:size.height
                     });
                 }
@@ -285,12 +283,13 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.button':{
                 ITEM:{
                     tabindex: -1,
-                    className: ' xui-uitembg-menu {itemClass} {disabled}',
+                    className: ' xui-uimenu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-empty {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}'
+                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}',
+                        text:'{fontCode}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -316,7 +315,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.checkbox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uitembg-menu {itemClass} {disabled}',
+                    className: '  xui-uimenu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     CHECKBOX:{
                         $order:0,
@@ -342,7 +341,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             'items.radiobox':{
                 ITEM:{
                     tabindex: -1,
-                    className: '  xui-uitembg-menu {itemClass} {disabled}',
+                    className: '  xui-uimenu {itemClass} {disabled}',
                     style:'{itemStyle}{_itemDisplay}',
                     RADIOBOX:{
                         $order:0,

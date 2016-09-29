@@ -489,7 +489,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d._cls=profile.getClass('BOX',d.type=='vertical'?'-v':'-h');
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
+            d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -574,26 +574,25 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 ru1 = f('RULERLEFT'),
                 box = f('BOX'),
                 label = f('LABEL'),
+                cmd = f('DECREASE'),
                 
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz=needfz?root._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
                 boxfz=useem?box._getEmSize():null,
-                labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
+                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
                 rulerfz = useem?ruler._getEmSize():null,
                 indfz = useem?ind._getEmSize():null,
 
                 label = profile.getSubNode('LABEL'),
-                labelSize=css.$px(prop.labelSize, labelfz)||0,
-                labelGap=css.$px(prop.labelGap)||0,
+                labelSize=profile.$px(prop.labelSize, labelfz)||0,
+                labelGap=profile.$px(prop.labelGap)||0,
                 labelPos = prop.labelPos || 'left',
                 ll, tt, ww, hh;
 
             // caculate by px
-            if(width && width!='auto')width=css.$px(width, rootfz);
-            if(height && height!='auto')height=css.$px(height, rootfz);
+            if(width && width!='auto')width=profile.$px(width);
+            if(height && height!='auto')height=profile.$px(height);
 
             box.cssRegion({
                 left : adjustunit(ll = labelPos=='left'?labelSize:0,boxfz),
@@ -612,8 +611,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
             if(type=='vertical'){
                 var w=ru1.height(),
-                    w1=prop.showDecreaseHandle?xui.CSS._getDftFISize():0,
-                    w2=prop.showIncreaseHandle?xui.CSS._getDftFISize():0,
+                    w1=prop.showDecreaseHandle?cmd.offsetHeight():0,
+                    w2=w1,
                     w3=f('IND1').height();
     
                 if(hh){
@@ -622,8 +621,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             }else{
                 var w=ru1.width(),
-                    w1=prop.showDecreaseHandle?xui.CSS._getDftFISize():0,
-                    w2=prop.showIncreaseHandle?xui.CSS._getDftFISize():0,
+                    w1=prop.showDecreaseHandle?cmd.offsetWidth():0,
+                    w2=w1,
                     w3=f('IND1').width();
     
                 if(ww){

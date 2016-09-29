@@ -182,7 +182,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                         $order:1,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}',
-                                        text:'{_fi_}'
+                                        text:'{fontCode}'
                                     },
                                     CAPTION:{
                                         $order:2,

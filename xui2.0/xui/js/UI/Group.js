@@ -83,7 +83,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                         ICON:{
                             $order:1,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            text:'{fontCode}'
                         },
                         CAPTION : {
                             text:   '{caption}',
@@ -95,7 +96,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     $order:1,
                     tagName:'div',
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
-                    className:'xui-uibase',
+                    className:'xui-uibase xui-uicontainer',
                     text:'{html}'+xui.UI.$childTag
                 }
             }
@@ -111,17 +112,28 @@ Class("xui.UI.Group", "xui.UI.Div",{
             },
             'FIELDSET-checked':{
                 $order:2,
-                'padding-left':'.25em',
                 'border-left':'0',
                 'border-right':'0',
-                'border-bottom':'0'
+                'border-bottom':'0',
+                'border-radius':'0',
+                '-moz-border-radius': '0',
+                '-webkit-border-radius': '0',
+                '-o-border-radius': '0',
+                '-ms-border-radius': '0',
+                '-khtml-border-radius': '0'
             },
             LEGEND:{
-                'margin-left':'.e3m'
+                'margin-left':'.5em'
+            },
+            'FIELDSET-checked LEGEND':{
+                'margin-left':'-.5em'
+            },
+            'FIELDSET-checked HANDLE':{
+                'padding-left':'1em'
             },
             HANDLE:{
                 cursor:'default',
-                padding:'0 .25em 0 .5em',
+                'padding-right':'.25em',
                 display:xui.$inlineBlock
             },
             PANEL:{
@@ -249,8 +261,9 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 //chang toggle button
                 if(p.toggleBtn)
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
-
-                profile.getSubNode('FIELDSET').tagClass('-checked',!value);
+                
+                var fs=profile.getSubNode('FIELDSET')
+                fs.tagClass('-checked',!value);
 
                 // same to ***
                 // for expand status:
@@ -261,15 +274,17 @@ Class("xui.UI.Group", "xui.UI.Div",{
 
                 if(p.toggle){
                         profile.getRoot().height(p.height);
+                        fs.height(p.height);
                 }else{
                     var css = xui.CSS,
                         useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                        root = profile.getRoot(),
-                        rootfz = root._getEmSize(),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                         height=profile.getSubNode('LEGEND').height();
-                    height = height?adjustunit(height, rootfz):null;
+                    height = height?adjustunit(height):null;
                     profile.getRoot().height(height?height:'auto');
+                    if(height && height!='auto'){
+                        fs.height(height);
+                    }
                 }
 
                 if(!ignoreEvent){
@@ -293,16 +308,14 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 // compare with px
                 css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 
 
                 // caculate by px
-                ww=width?css.$px(width, rootfz):null, 
-                hh=height?css.$px(height, rootfz):null;
+                ww=width?profile.$px(width):null, 
+                hh=height?profile.$px(height):null;
 
             if(profile._toggle){
                 if(height && height!='auto'){
@@ -318,11 +331,14 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
                 height = profile.getSubNode('LEGEND').height();
-                height = height?adjustunit(height, rootfz):null;
+                height = height?adjustunit(height):null;
                 profile.getRoot().height(height || 'auto');
+                if(height && height!='auto'){
+                    fs.height(height);
+                }
             }
             if(width && width!='auto' && ww>=2){
-                profile.getSubNode('PANEL').width(adjustunit(ww-2, rootfz));
+                profile.getSubNode('PANEL').width(adjustunit(ww-2));
             }
         }
     }

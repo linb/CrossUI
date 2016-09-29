@@ -80,18 +80,17 @@ Class("xui.UI.Resizer","xui.UI",{
                             node=profile.getRoot(),
                             instance=profile.boxing(),
                             prop=profile.properties,
-                            css=xui.CSS,
                             svg=profile.box['xui.svg'],
                             t;
                         if(size){
                             var w=null,h=null,l=null,t=null;
                             if(t=size.width){
                                 node.widthBy(t);
-                                prop.width = w = css.$forceu(svg?instance.getWidth():node.width());
+                                prop.width = w = profile.$forceu(svg?instance.getWidth():node.width());
                             }
                             if(t=size.height){
                                 node.heightBy(t);
-                                prop.height = h = css.$forceu(svg?instance.getHeight():node.height());
+                                prop.height = h = profile.$forceu(svg?instance.getHeight():node.height());
                             }
                             xui.UI.$tryResize(profile,w,h,true);
 
@@ -102,11 +101,11 @@ Class("xui.UI.Resizer","xui.UI",{
                         if(cssPos){
                             if((t=cssPos.left) && !(prop.left=='auto'&&Math.round(parseFloat(prop.right))>=0)){
                                 node.leftBy(t);
-                                prop.left= l = css.$forceu(svg?instance.getLeft():node.left());
+                                prop.left= l = profile.$forceu(svg?instance.getLeft():node.left());
                             }
                             if((t=cssPos.top) && !(prop.top=='auto'&&Math.round(parseFloat(prop.bottom))>=0)){
                                 node.topBy(t);
-                                prop.top = t = css.$forceu(svg?instance.getTop():node.top());
+                                prop.top = t = profile.$forceu(svg?instance.getTop():node.top());
                             }
                             if(profile.onMove && (l!==null||t!==null))
                                 instance.onMove(profile,l,t,null,null);
@@ -633,7 +632,8 @@ Class("xui.UI.Resizer","xui.UI",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var t = profile.properties, css=xui.CSS;
+            var t = profile.properties, 
+                css=xui.CSS;
             //default is true
             t._visible=true;
             t._cover=false;

@@ -95,6 +95,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 cursor:'pointer',
                 'vertical-align':'middle',
                 margin:'.125em'
+            },
+            'ITEM-checked HANDLE':{
             }
         },
         DataModel:{
@@ -106,7 +108,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     var self=this,
                         hs = self.getSubNode('LIST'),
                         h = self.getSubNode('ITEMS'),
-                        unit = 0+xui.CSS.$picku();
+                        unit = 0+self.$picku();
                     switch(v){
                         case 'left':
                             hs.cssRegion({left:unit,top:unit,right:'auto',bottom:unit});
@@ -150,7 +152,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 listbox:['top','bottom'],
                 action:function(v){
                     var hl = this.getSubNode('ITEMS'),
-                        unit = 0+xui.CSS.$picku();
+                        unit = 0+this.$picku();
                     if(v=='top')
                         hl.cssRegion({top:unit,bottom:'auto'});
                     else
@@ -162,19 +164,14 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     var self = this,
                         t = self.properties,
-                        css = xui.CSS,
                         useem = xui.$uem(t),
-                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                        adjustunit = function(v,emRate){return self.$forceu(v, useem?'em':'px', emRate)},
                         noPanel = t.noPanel,
                         hs = self.getSubNode('LIST'),
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
 
-                        v = t.status=='fold' ? css.$px(t.sideBarSize,hs,true) : v;
-
-                    t._barSize=v;
-
-                    if(t.status=='fold'){
+                    if(t.sideBarStatus=='fold'){
                         hl.tagClass('-icon2',true);
                         menu2.tagClass('-checked',true);
                     }else{
@@ -182,13 +179,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         menu2.tagClass('-checked',false);
                     }
 
-                    if(t.barLocation=='left'||t.barLocation=='right'){
-                        if(!noPanel){
-                            hs.width( adjustunit(v, hs) );
-                            hl.width( adjustunit(v + xui.Dom.getScrollBarSize(), hl) );
-                        }
-                    }
-                    var t=self.getRootNode().style;
+                    t=self.getRootNode().style;
                     xui.UI.$tryResize(self,t.width, t.height,true);
                 }
             },
@@ -227,7 +218,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
             },
-            status:{
+            sideBarStatus:{
                 ini:'expand',
                 listbox:['expand','fold'],
                 action:function(v){
@@ -245,7 +236,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         Behaviors:{
             MENU2:{
                 onClick:function(profile, e, src){
-                    profile.boxing().setStatus(profile.properties.status=='fold'?'expand':'fold', true);
+                    profile.boxing().setSideBarStatus(profile.properties.sideBarStatus=='fold'?'expand':'fold', true);
                 }
             }
         },
@@ -271,15 +262,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             }
 
             var panel = profile.boxing().getPanel(key),
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 panelfz = useem?panel._getEmSize():null,
                 // caculate by px
-                ww=width?css.$px(width, rootfz, true):width, 
-                hh=(height&&height!='auto')?css.$px(height, rootfz, true):height,
+                ww=width?profile.$px(width, null, true):width, 
+                hh=(height&&height!='auto')?profile.$px(height, null, true):height,
 
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
@@ -287,7 +275,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hsfz =  useem?hs._getEmSize():null,
                 hlfz =  useem?hl._getEmSize():null,
                 type = prop.borderType,
-                bw = (type=='flat'||type=='inset'||type=='outset') ? xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2 : 0,
+                bw = (type=='flat'||type=='inset'||type=='outset') ? hs._borderW() : 0,
                 wc=null,
                 hc=null,
                 top, left, itmsH;
@@ -334,9 +322,17 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hc=hh;
                     }
                     if(width){
+
+                        var v = prop.sideBarStatus=='fold' ? profile.$px(prop.sideBarSize,hsfz,true) : prop.barSize;
+
                         //caculate by px
-                        left = prop.barLocation=='left'?bw+css.$px(prop._barSize||prop.barSize, hsfz):0;
-                        wc = ww-css.$px(prop._barSize||prop.barSize, hsfz)-bw;
+                        left = prop.barLocation=='left'?bw+profile.$px(v, hsfz):0;
+                        wc = ww-profile.$px(v, hsfz)-bw;
+
+                        if(!noPanel){
+                            hs.width( adjustunit(v, hs) );
+                            hl.width( adjustunit(v+ xui.Dom.getScrollBarSize(), hl) );
+                        }
                     }
                 }
             }else{

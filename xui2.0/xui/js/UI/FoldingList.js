@@ -89,6 +89,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             },
                             CAP1:{
                                 $order:1,
+                                className:"xui-title-node",
                                 text:'{title}'
                             }
                         },

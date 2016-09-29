@@ -65,13 +65,13 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             arr=[],
             evs=xui.$IEUNSELECTABLE(),
             evs2='style="visibility:hidden;"',
-            ddcls = 'xui-node xui-node-span xui-ui-draggable xui-uibase xui-uiborder-flat xui-uiborder-radius';
+            ddcls = 'xui-node xui-node-span xui-ui-draggable xui-uibase xui-uiborder-flat';
 
         ns.addTemplateKeys(['DD1', 'DD2', 'DD3','R','G','B','TXT','HH','S','V','H','E','X']);
 
         //simple list
         for(i=0;i<l;i++){
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-uiborder-radius xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
             if((i+1)%17==0)arr.push('<br />');
         }
         //data
@@ -84,26 +84,26 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
-                className: 'xui-uiborder-radius-big',
+                className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
                 BAR:{
                     tagName:'div',
                     className:'{classBar}',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
+                        className:'xui-uibar-tdm xui-uibar',
                         BARTDMT:{
                             className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -136,10 +136,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini xui-uibar xui-uiborder-r',
+                        className:'xui-uicon-maini xui-uibar',
                         CON:{
                             $order:1,
                             tagName:'div',
@@ -194,10 +194,10 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibar xui-uicon-maini xui-uiborder-r',
+                        className:'xui-uibar xui-uicon-maini',
                         TRANS:{
                             className:'xuicon',
                             $fonticon:'xui-icon-transparent',
@@ -226,15 +226,15 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
                     },
                     BBARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
+                        className:'xui-uibar-tdm xui-uibar'
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
                     }
                 }
             }
@@ -298,7 +298,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                padding:'.5em .5em .25em 0'
+                'padding':'.5em .3333em .3333em 0'
             },
             CON:{
                 padding:'.25em',
@@ -356,7 +356,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             },
             TAILI:{
                 position:'relative',
-                'padding':'.5em 0 .25em 0',
+                 padding:'.5em 0 0 0',
                 'text-align':'center'
             },
             SIMPLE:{

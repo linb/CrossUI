@@ -20,7 +20,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-busy xui-uitembg xui-showfocus {itemClass} {disabled}  {readonly}',
+                    className:'xui-icon-loading xui-uiborder-radius xui-uitembg xui-showfocus {itemClass} {disabled}  {readonly}',
                     style:'padding:{itemPadding};margin:{itemMargin};{itemStyle};{_itemDisplay};{_loadbg}',
                     //for firefox2 image in -moz-inline-box cant change height bug
                     IBWRAP:{
@@ -82,7 +82,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                         if(item.autoItemSize||p.autoItemSize){
                             nn.attr('width','');nn.attr('height','');
                         }                    
-                        xui(node).parent(2).removeClass('xui-busy'); 
+                        xui(node).parent(2).removeClass('xui-icon-loading'); 
                         nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                         node.style.visibility="visible";
                         item._status='loaded';
@@ -93,7 +93,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                           nn=xui.use(src),
                           node=nn.get(0),
                           item=profile.getItemByDom(src);
-                    xui(node).parent(2).removeClass('xui-busy').addClass('xui-err');
+                    xui(node).parent(2).removeClass('xui-icon-loading').addClass('xui-err');
                     if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
@@ -115,7 +115,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ini:6,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('margin',xui.CSS.$forceu(v));
+                        this.getSubNode('ITEM',true).css('margin',this.$forceu(v));
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
@@ -124,7 +124,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 ini:2,
                 action:function(v){
                     if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('padding',xui.CSS.$forceu(v));
+                        this.getSubNode('ITEM',true).css('padding',this.$forceu(v));
                     else
                         this.getSubNode('ITEM',true).css(v);
                 }
@@ -152,8 +152,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
             xui.arr.each(xui.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemMargin)item.itemMargin=xui.CSS.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=xui.CSS.$forceu(t);
+            if(t=item.itemMargin)item.itemMargin=profile.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
             item._tabindex = p.tabindex;
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },

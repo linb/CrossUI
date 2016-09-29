@@ -102,8 +102,8 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             $vborder:1
         },
         LayoutTrigger:function(){
-            var v=this.properties;
-            v.$hborder=v.$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+            var v=this.properties,nd=this.getSubNode("BORDER");
+            v.$hborder=v.$vborder=nd._borderW('left');
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);

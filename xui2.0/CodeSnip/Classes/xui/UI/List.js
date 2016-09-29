@@ -134,7 +134,7 @@ Class('App.xui_UI_List', 'xui.Com',{
                 (new xui.UI.List)
                 .setHost(host,"ctl_list1")
                 .setItems([
-                    {"imageClass":"xui-ui-busy", "caption":"xui-ui-busy", "id":"aq"}, 
+                    {"imageClass":"xui-icon-loading", "caption":"xui-icon-loading", "id":"aq"}, 
                 {"imageClass":"xui-uicmd-none", "caption":"xui-uicmd-none", "id":"ar"}, 
                 {"imageClass":"xui-uicmd-empty", "caption":"xui-uicmd-empty", "id":"as"}, 
                 {"imageClass":"xui-uicmd-opt", "caption":"xui-uicmd-opt", "id":"at"}, 

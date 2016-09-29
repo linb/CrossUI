@@ -2,6 +2,9 @@
 .xui-node{
 		font-size: 12px;
 }
+.xui-title-node{
+		font-size:1.1667em;
+}
 .xuifont, .xuicon{
   font-size:1.33333em;
 }
@@ -16,9 +19,11 @@
 .xui-uibar-hover{
     background-color:#FFB9A5;
 }
-.xui-uicontent{
-    background-color:#FFFFFF;
+.xui-uibar-active, .xui-uibar-checked, 
+.xui-uimenu-hover, .xui-uimenu-active{
+    background-color:#FF0000;
 }
+
 
 /*border*/
 .xui-uiborder-l{
@@ -71,17 +76,6 @@
 	background-color:#FF6B44;
 }
 
-.xui-uitembg-bar{
-    background-color:#FFB09D;
-}
-.xui-uitembg-bar-hover, .xui-uitembg-menu-hover{
-    background-color:#FFA38A;
-}
-.xui-uitembg-bar-active, .xui-uitembg-bar-checked, 
-.xui-uitembg-menu-hover, .xui-uitembg-menu-active{
-    background-color:#FF6B44;
-}
-
 /*gradient*/
 .xui-ui-gradientbg, .xui-ui-btn{
     border-color:#FFA28A;
@@ -116,11 +110,13 @@
 }
 
 /*uicontainer*/
+.xui-uiborder-box{
+		border-width:0;
+}
 .xui-uibar-top .xui-uibar-tdlt, .xui-uibar-top .xui-uibar-tdmt, .xui-uibar-top .xui-uibar-tdrt, 
 .xui-uibar-top-s .xui-uibar-tdl, .xui-uibar-top-s .xui-uibar-tdm, .xui-uibar-top-s .xui-uibar-tdr, 
 .xui-uibar-bottom .xui-uibar-tdl, .xui-uibar-bottom .xui-uibar-tdm, .xui-uibar-bottom .xui-uibar-tdr,
 .xui-uibar-bottom-s .xui-uibar-tdl, .xui-uibar-bottom-s .xui-uibar-tdm, .xui-uibar-bottom-s .xui-uibar-tdr{
-    border: none;
     background-image: url(Public/con_vertical.gif);
     background-repeat: no-repeat;
     background-position: left top;
@@ -129,17 +125,14 @@
 .xui-uicon-main,
 .xui-uibar-top .xui-uibar-tdl,
 .xui-uibar-top .xui-uibar-tdr{
-    border: none;
     background-image: url(Public/con_left.gif);
     background-repeat: repeat-y;
     background-position: left top;
 }
 .xui-uibar-top .xui-uibar-tdm{
-    border: none;
 }
 .xui-uicon-maini,
 .xui-uibar-top .xui-uibar-tdr{
-    border: none;
     background-image: url(Public/con_right.gif);
     background-repeat: repeat-y;
     background-position: right top;
@@ -157,6 +150,7 @@
 	height:30px;
 	background-position: right -60px;
 }
+.xui-uibar-focus, 
 .xui-uibar-top-focus .xui-uibar-tdl,
 .xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
@@ -175,9 +169,6 @@
 }
 
 
-.xui-uibar-bottom{
-    padding:3px 0;
-}
 .xui-uibar-bottom .xui-uibar-tdl{
 	background-position: left -189px;
 }
@@ -217,27 +208,27 @@
 
 /*xui.UI.Tabs*/
 /*.xui-tabs-items{padding:0 0 4px 0;}*/
+.xui-tabs-item{
+    background-color:transparent; 
+}
 .xui-tabs-item-hover{
-		background-color: #FAD200;
+		background-color: #FFB9A5;
 }
 .xui-tabs-item-active{
-	  background-color: #F5D22D;
+	  background-color: #FF0000;
 }
 .xui-tabs-item-checked{
-	  background-color: #FF6B44;
+	  background-color: #FF0000;
 }
 
 /*xui.UI.TreeGrid*/
 .xui-uicell,
-.xui-treegrid{
+.xui-treegrid-cells1, .xui-treegrid-cells2{
 	background-color: #F9F7D1;
 }
 .xui-uicell-alt,
-.xui-treegrid-alt{
+.xui-treegrid-cells1-alt, .xui-treegrid-cells2-alt{
 		background-color: #F9F7D1;
-}
-.xui-treegrid-rownum{
-		color:#808080;
 }
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,
@@ -251,10 +242,7 @@
 .xui-treegrid-fhcell-hover, .xui-treegrid-hcell-hover, .xui-treegrid-hscell-hover{
     background: #FCE01E url(Public/list_item.gif) repeat-x left -400px;
 }
-.xui-treegrid-fcell, .xui-treegrid-cell, 
-.xui-treegrid-cells1-group, .xui-treegrid-cells2-group{
-    border-right:solid 1px #FFBCAB;
-}
+
 .xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
     border-right:solid 1px #FFB5A2;
     background-color: #FFB5A2;
@@ -267,39 +255,30 @@
     background-color: #FFE97F;
 }
 .xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node,
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node, 
-.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node{
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node[class*="xui-treegrid-"],
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node[class*="xui-treegrid-"], 
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node[class*="xui-treegrid-"]{
     background-color: #FF0005;
     color:#fff;
 }
 .xui-uicell-hover,
-.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node{
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
     background-color: #FFF1A0 !important;
 }
 
 /*disable and readonly*/
-input[readonly], textarea[readonly], 
-input:read-only, textarea:read-only,
+.xui-node-readonly, 
+input[readonly], textarea[readonly], input:read-only, textarea:read-only,
 .xui-ui-readonly, .xui-ui-readonly .xui-node,
 .xui-ui-itemreadonly, .xui-ui-itemreadonly .xui-node{
-		color: #808080 !important;
+    color: #66666 !important;
 }
-.xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea, 
-.xui-ui-readonly textarea, .xui-ui-readonly textarea{
-		color: #09090 !important;
-}
-button:disabled, a:disabled, 
+.xui-node-disabled, 
+button:disabled, a:disabled, input:disabled, textarea:disabled, 
 .xui-ui-disabled, .xui-ui-disabled .xui-node,
-.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node{
-	color: #808080 !important;
-}
-input:disabled, textarea:disabled, 
-.xui-uicell-disabled, .xui-uicell-disabled .xui-node,
-.xui-ui-disabled input, .xui-ui-itemdisabled input, 
-.xui-ui-disabled textarea, .xui-ui-itemdisabled textarea{
-	 color: #909090 !important;
-   background-color:#eee !important;
+.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node,
+.xui-uicell-disabled, .xui-uicell-disabled .xui-node{
+  color: #808080 !important;
 }
 
 /*
@@ -307,7 +286,6 @@ input:disabled, textarea:disabled,
 .xui-ui-input{}
 .xui-ui-shadow{}
 .xui-special-icon{}
-.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy{}
 .xui-required{}
 .xui-alert{}
 */

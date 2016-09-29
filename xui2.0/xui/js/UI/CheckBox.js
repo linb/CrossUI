@@ -33,7 +33,8 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 ICON:{
                     $order:1,
                     className:'xuicon {imageClass}',
-                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                    text:'{fontCode}' 
                 },
                 CAPTION:{
                     $order:2,

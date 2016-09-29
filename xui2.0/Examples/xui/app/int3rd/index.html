@@ -11,7 +11,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--add 3rd css link here-->
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../runtime/xui/appearance/vista/theme.css" />
         <title>Built by CrossUI RAD Tools - Develop Once,Deploy Anywhere</title>
     </head>
     <body>
@@ -22,7 +21,7 @@
         <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
         <script type="text/javascript">
             if(typeof(xui)!=="undefined")
-                xui.launch('App', function(){xui('loading').remove();},'','vista');
+                xui.launch('App', function(){xui('loading').remove();},'','default');
             else{
                 document.body.removeChild(document.getElementById("loading"));
                 document.write("It's not a release package, try <a href=debug.html>debug.html</a> please!");

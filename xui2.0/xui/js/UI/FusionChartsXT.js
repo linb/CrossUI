@@ -27,8 +27,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     var fc=new FusionCharts(
                             prop.chartType, 
                             prf._chartId, 
-                            xui.CSS.$isEm(prop.width)?xui.CSS.$em2px(prop.width ,prf.getRootNode(),true):prop.width, 
-                            xui.CSS.$isEm(prop.height)?xui.CSS.$em2px(prop.height, prf.getRootNode(),true):prop.height
+                            prf.$isEm(prop.width)?prf.$em2px(prop.width ,prf.getRootNode(),true):prop.width, 
+                            prf.$isEm(prop.height)?prf.$em2px(prop.height, prf.getRootNode(),true):prop.height
                     ),
                      flag;
                     
@@ -474,23 +474,20 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             var size = prf.getSubNode('BOX').cssSize(),
                 prop=prf.properties,
                 // compare with px
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return prf.$forceu(v, useem?'em':'px', emRate)},
                 root = prf.getRoot(),
-                needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz = needfz?root._getEmSize():null,
+                needfz = useem||prf.$isEm(width)||prf.$isEm(height),
 
                 // caculate by px
-                ww=width?css.$px(width, rootfz):width, 
-                hh=height?css.$px(height, rootfz):height,
-
+                ww=width?prf.$px(width):width, 
+                hh=height?prf.$px(height):height,
                 t;
 
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
-                if(width)prop.width=adjustunit(ww, rootfz);
-                if(height)prop.height=adjustunit(hh, rootfz);
+                if(width)prop.width=adjustunit(ww);
+                if(height)prop.height=adjustunit(hh);
 
                 size={
                     width:width?prop.width:null,

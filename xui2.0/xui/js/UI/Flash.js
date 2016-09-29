@@ -167,22 +167,19 @@ Class("xui.UI.Flash", "xui.UI",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                css=xui.CSS,
                 useem=xui.$uem(prop),
-                root=profile.getRoot(),
-                rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 size = profile.getSubNode('BOX').cssSize(),
 
                 // caculate by px
-                ww=width?css.$px(width, rootfz):width, 
-                hh=height?css.$px(height, rootfz):height;
+                ww=width?profile.$px(width):width, 
+                hh=height?profile.$px(height):height;
 
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
-                if(width)prop.width=adjustunit(ww,rootfz);
-                if(height)prop.height=adjustunit(hh,rootfz);
+                if(width)prop.width=adjustunit(ww);
+                if(height)prop.height=adjustunit(hh);
 
                 size={
                     width:width?prop.width:null,

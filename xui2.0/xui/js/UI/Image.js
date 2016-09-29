@@ -79,14 +79,11 @@ Class("xui.UI.Image", "xui.UI",{
         _adjust:function(profile,width,height){
             var prop=profile.properties,
                 src=profile.getRootNode(),
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
 
-            width=width?css.$px(width, rootfz, true):width;
-            height=height?css.$px(height, rootfz, true):height;
+            width=width?profile.$px(width, null, true):width;
+            height=height?profile.$px(height, null, true):height;
 
             src.style.width=src.style.height='';
             if(width>0 && height>0){

@@ -135,7 +135,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 items:{
                     ITEM:{
                         style:'{itemStyle}{_itemDisplay}',
-                        className:'xui-uitembg-menu',
+                        className:'xui-uimenu',
                         ITEMI:{
                             ITEMC:{
                                 ITEMA:{
@@ -144,7 +144,8 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                                     ICON:{
                                         $order:1,
                                         className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                        text:'{fontCode}'
                                     },
                                     CAPTION:{
                                         $order:2,
@@ -363,8 +364,8 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             }
         },
         LayoutTrigger:function(){
-            var v=this.properties;
-            v.$hborder=v.$vborder=xui.UI.$getCSSValue('xui-uiborder-outset','borderLeftWidth');
+            var v=this.properties,nd=this.getSubNode("BORDER");
+            v.$hborder=v.$vborder=nd._borderW('left');
         },
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},

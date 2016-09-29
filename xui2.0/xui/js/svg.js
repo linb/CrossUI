@@ -1925,7 +1925,7 @@ Class("xui.svg", "xui.UI",{
             xui.filter(bb,function(v,k){
                 if(xui.arr.indexOf(keys,k)==-1 || v==='auto' || v==='')return false;
                 if(!xui.isNumb(v)){
-                    bb[k]=xui.CSS.$px(v);
+                    bb[k]=parseFloat(v)||0;
                     return false;
                 }
             });

@@ -294,7 +294,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 style:'{_liststyle}',
                 LISTBG:{
                      $order:0,
-                     className:'xui-uiborder-t xui-uiborder-b xui-uiborder-dark xui-uitembg-bar-checked'
+                     className:'xui-uiborder-t xui-uiborder-b xui-uiborder-dark xui-uibar-checked'
                 },
                 MENU:{
                     className:'xui-ui-unselectable xui-uiborder-hidden xui-uiborder-radius',
@@ -327,7 +327,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uiborder-flat xui-uiborder-radius xui-uitembg {itemClass} {disabled} {readonly}',
+                        className:'xui-uiborder-flat xui-uiborder-nob xui-uiborder-box xui-uiborder-radius-lt xui-uiborder-radius-rt xui-uibar {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
                         ITEMI:{
                             ITEMC:{
@@ -341,10 +341,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         ICON:{
                                             $order:0,
                                             className:'xuicon {imageClass}',
-                                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                            text:'{fontCode}'
                                         },
                                         CAPTION:{
                                             text: '{caption}',
+                                            className:"xui-title-node",
                                             style:'{itemWidth};{itemAlign}',
                                             $order:1
                                         },
@@ -378,7 +380,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 panels:{
                     PANEL:{
                         tagName : 'div',
-                        className:'xui-uibase',
+                        className:'xui-uibase xui-uicontainer',
                         style:"{_overflow};{_bginfo}",
                         text:'{html}'+xui.UI.$childTag
                     }
@@ -490,7 +492,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
-                'font-size':'1em',
                 overflow: 'hidden'
             },
             CMDS:{
@@ -1050,12 +1051,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             var panel = profile.boxing().getPanel(key),
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                 panelfz = useem?panel._getEmSize():null,
                 listfz = useem?list._getEmSize():null,
                 wc=null,
@@ -1063,8 +1062,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 listH;
 
             // caculate by px
-            if(width && width!='auto')width=css.$px(width, rootfz, true);
-            if(height && height!='auto')height=css.$px(height, rootfz, true);
+            if(width && width!='auto')width=profile.$px(width, null, true);
+            if(height && height!='auto')height=profile.$px(height, null, true);
 
             if(!panel || panel.isEmpty())return;
             
@@ -1101,8 +1100,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         _adjustHScroll:function(profile){
             // SCROLL
-            var css=xui.CSS,
-                items = profile.getSubNode('ITEMS'),
+            var items = profile.getSubNode('ITEMS'),
                 innerW=items.width(),
                 list = profile.getSubNode('LIST'),
                 menu = profile.getSubNode('MENU'),

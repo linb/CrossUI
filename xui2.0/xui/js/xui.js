@@ -1027,7 +1027,6 @@ xui.merge(xui,{
                     }
                 }
                 if(refresh!==false){
-                    xui.$CSSCACHE={};
                     xui.CSS.adjustFont();
                     if(xui.UI)xui.UI.getAll().reLayout(true);
                  }
@@ -1072,10 +1071,8 @@ xui.merge(xui,{
         }
     },
     reLayout:function(){
-        xui.$CSSCACHE={};
         if(xui.UI)xui.UI.getAll().reLayout(true);
     },
-    $CSSCACHE:{},
     _langParamReg:/\x24(\d+)/g,
     _langscMark:/[$@{][\S]+/,
      // locale  pattern  :  $*  $a  $a.b.c  $(a.b.c- d)

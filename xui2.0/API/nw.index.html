@@ -22,7 +22,7 @@ window.xui_ini={path:"../runtime/xui/"};
         <script type="text/javascript">
 xui.CSS.resetCSS();
 xui.setAppLangKey("app");
-xui.setTheme("vista",true,function(){
+
     xui.Com.load('App', function(){xui('loading').remove();}, (function(){
         var dft='en-us',
            map={
@@ -33,7 +33,7 @@ xui.setTheme("vista",true,function(){
            l=(n.language || n.userLanguage || n.systemLanguage || n.browserLanguage || '').toLowerCase();
            return map[l] || map[dft];
     })());
-});
+
         </script>
 </body>
 </html>

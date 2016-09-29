@@ -13,7 +13,8 @@ Class("xui.UI.Label", "xui.UI",{
             ICON:{
                 $order:0,
                 className:'xuicon {imageClass}',
-                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                text:'{fontCode}'
             },
             CAPTION:{
                 text : '{caption}',

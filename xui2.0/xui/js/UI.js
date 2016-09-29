@@ -366,6 +366,40 @@ Class('xui.UIProfile','xui.Profile', {
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
             return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
         },
+        // wrap these functions from xui.CSS
+        getEmSize:function(){
+            return this._nodeEmSize || ( this._nodeEmSize = this.getRoot()._getEmSize() );
+        },
+        // have to call these after rendered
+        $px:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$px(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $em:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$em(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $px2em:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$px2em(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $em2px:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$em2px(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $forceu:function(value,u,node,roundPx){
+            var ns=this;
+            return xui.CSS.$forceu(value,u,node||function(){return ns.getEmSize()},roundPx);
+        },
+        $addpx:function(a,b,node){
+            var ns=this;
+            return xui.CSS.$addpx(a,b,node||function(){return ns.getEmSize()});
+        },
+        $isEm:function(value){return xui.CSS.$isEm(value);},
+        $isPx:function(value){return xui.CSS.$isPx(value);},
+        $picku:function(value){return xui.CSS.$picku(value);},
+        $addu:function(value){return xui.CSS.$addu(value);},
+
         _cacheR1:/^\w[\w_-]*$/,
         setDomId:function(id){
             var t=this, c=xui.$cache.profileMap;
@@ -902,7 +936,6 @@ Class("xui.UI",  "xui.absObj", {
                     arr.push(o);
                 }
             });
-            xui.$CSSCACHE={};
             xui.UI.pack(arr,false).refresh();
             return this;
         },
@@ -1082,6 +1115,10 @@ Class("xui.UI",  "xui.absObj", {
         reLayout:function(force){
             return this.each(function(o){
                 if(!o.renderId)return;
+
+                // have to refresh this
+                delete o._nodeEmSize;
+
                 var p=o.properties;
 
                 if((!o.$noB) && p.border && o.boxing()._border)
@@ -1178,7 +1215,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
-                var t=o.properties,ins=o.boxing(),b,root=o.getRoot(),rn=root.get(0);
+                var t=o.properties,ins=o.boxing(),b,root=o.getRoot();
                 left=(left||left===0)?(left||0):null;
                 top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
@@ -1186,7 +1223,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    root.show(left&&xui.CSS.$forceu(left,rn), top&&xui.CSS.$forceu(top,rn),null,ignoreEffects);
+                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -1204,7 +1241,7 @@ Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&xui.CSS.$forceu(left,rn), top&&xui.CSS.$forceu(top,rn));
+                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top));
                     }
                 }
             });
@@ -1785,13 +1822,13 @@ Class("xui.UI",  "xui.absObj", {
                 if(!o.renderId)return;
                 // adjust self
                 if('dock' in o.properties && o.properties.dock && o.properties.dock!='none' && o.renderId){
-                    var n=o.getRootNode(),css=xui.CSS;
+                    var n=o.getRootNode();
                     // ensure display
                     if(n.clientHeight){
                         if(force){
                             // ensure force 1
-                            n.style.width = 0 + css.$picku(n.style.width);
-                            n.style.height = 0 + css.$picku(n.style.height);
+                            n.style.width = 0 + o.$picku(n.style.width);
+                            n.style.height = 0 + o.$picku(n.style.height);
                             // ensure force 2
                             o._resize_h=o._resize_w=-1;
                         }
@@ -1967,6 +2004,7 @@ Class("xui.UI",  "xui.absObj", {
                 zoom:xui.browser.ie?1:null
             },
             ".xui-ui-gradientbg, .xui-ui-btn":{
+                $order:3,
                 border:'none',
                 color: "#333",
                 'text-decoration': 'none',
@@ -1986,10 +2024,12 @@ Class("xui.UI",  "xui.absObj", {
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
             ".xui-ui-btn::-moz-focus-inner":{
+                $order:3,
                 padding: "0 !important",
                 border: "0 none !important"
             },
             ".xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover":{
+                $order:4,
                 background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
                 background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
@@ -2002,7 +2042,7 @@ Class("xui.UI",  "xui.absObj", {
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
             },
             ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-active, .xui-ui-btn-checked, .xui-ui-btn-active:hover, .xui-ui-btn-checked:hover":{
-                $order:2,
+                $order:5,
                 background_1: "linear-gradient(top,  #DDD 5%,  #FFF)",
                 background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
                 background_3: "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
@@ -2014,7 +2054,7 @@ Class("xui.UI",  "xui.absObj", {
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-btn":{
-                $order:1,
+                $order:6,
                 padding: ".25em",
                 cursor: 'pointer',
                 display: xui.$inlineBlock,
@@ -2035,23 +2075,38 @@ Class("xui.UI",  "xui.absObj", {
                 'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
             ".xui-ui-btn:hover, .xui-ui-btn-hover":{
+                $order:7,
                 'border-color': '#B5B5B5'
             },
             ".xui-ui-input":{
-                background:'#fff',
+                background:'#fff'
+            },
+            '.xui-ui-shadow-input':{
                '-moz-box-shadow': 'inset 2px 2px 2px #EEEEEE',
                '-webkit-box-shadow': 'inset 2px 2px 2px #EEEEEE',
                'box-shadow': 'inset 2px 2px 2px #EEEEEE'
             },
             '.xui-ui-shadow':{
-                '-moz-box-shadow': '2px 2px 5px #ababab',
-                '-webkit-box-shadow': '2px 2px 5px #ababab',
-                'box-shadow': '2px 2px 5px #ababab',
+                '-moz-box-shadow': '2px 2px 4px #CCC',
+                '-webkit-box-shadow': '2px 2px 4px #CCC',
+                'box-shadow': '2px 2px 4px #CCC',
                 /* For IE 8 */
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')":null,
                 /* For IE 5.5 - 7 */
                 'filter': (xui.browser.ie&&xui.browser.ver<=8)?"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#9f9f9f')":null
              },
+            '.xui-ui-shadow-r':{
+                '-moz-box-shadow': '1px 0  1px #CCC',
+                '-webkit-box-shadow': '1px 0  1px #CCC',
+                'box-shadow': '1px 0  1px #CCC',
+                'z-index':10
+            },
+            '.xui-ui-shadow-b':{
+                '-moz-box-shadow': '0 1px 1px #CCC',
+                '-webkit-box-shadow': '0 1px 1px #CCC',
+                'box-shadow': '0 1px 1px #CCC',
+                'z-index':10
+            },
             '.xui-ui-image':{
                 'vertical-align':'middle',
                 width:'1.3333em',
@@ -2063,17 +2118,11 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-uitembg":{
                 padding:'.25em .5em',
-               'border-radius':'3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px',
-                'border':'solid 0.125em transparent'
+                'border':'solid 1px transparent'
             },
             ".xui-uitembg-hover":{
                 $order:2,
-                'background-color':'#EDEDED',
+                'background-color':'#E0E0E0',
                 'border-color':'#DDDDDD'
             },
             ".xui-uitembg-active":{
@@ -2085,22 +2134,6 @@ Class("xui.UI",  "xui.absObj", {
                 $order:4,
                 'background-color':'#DDDDDD',
                 'border-color':'#C5C5C5'
-            },
-
-            ".xui-uitembg-bar":{
-                "background-color":"#EDEDED"
-            },
-            ".xui-uitembg-menu":{
-                $order:1,
-                "background-color":"transparent"
-            },
-            ".xui-uitembg-bar-hover":{
-                $order:2,
-                "background-color":"#E0E0E0"
-            },
-            ".xui-uitembg-bar-active, .xui-uitembg-bar-checked, .xui-uitembg-menu-hover, .xui-uitembg-menu-active":{
-                $order:3,
-                 "background-color":"#DDDDDD"
             },
 
             ".xui-uicell":{
@@ -2127,9 +2160,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-special-icon':{
                 color:'#3393D2',
                 'text-shadow': '1px 1px 4px #ccc'
-            }
-            
-            ,
+            },
             '.xui-uibar-top, .xui-uibar-bottom, .xui-uibar-top-s, .xui-uibar-bottom-s':{
                 position:'relative',
                 //for avoiding extra space after table in IE
@@ -2188,7 +2219,7 @@ Class("xui.UI",  "xui.absObj", {
                 top:0,
                 height:'12px'
             },
-            '.xui-uibar-top-focus':{
+            '.xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr':{
                 'background-color':'#C5C5C5'
             },
             '.xui-uibar-top-focus .xuifont, .xui-uibar-top-focus .xuicon, .xui-uibar-top-focus .xui-uicaption':{
@@ -2221,7 +2252,7 @@ Class("xui.UI",  "xui.absObj", {
             },
 //uibar-bottom
             '.xui-uibar-bottom':{
-                'padding':'3px 0 0 0'
+                'padding':'3px 0'
             },
             '.xui-uibar-bottom .xui-uibar-tdl':{
                 $order:1,
@@ -2386,14 +2417,19 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibase':{
                 'background-color':'#FFFFFF'
             },
-            '.xui-uicontent':{
-                'background-color':'#EDEDED'
+            '.xui-uicontainer':{
+                'line-height':'2.2em'
             },
             '.xui-uibar':{
-                'background-color':'#DDDDDD'
+                'background-color':'#E0E0E0'
             },
             '.xui-uibar-hover':{
-                'background-color':'#EDEDED'
+                $order:2,
+                'background-color':'#DDDDDD'
+            },
+            ".xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active":{
+                $order:3,
+                 "background-color":"#CDCDCD"
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
@@ -2415,12 +2451,17 @@ Class("xui.UI",  "xui.absObj", {
                 'border-bottom-width':'1px',
                 'border-bottom-color':'#C5C5C5'
             },
+            '.xui-uiborder-nob':{
+                $order:1,
+                'border-bottom-width':0,
+                'border-bottom-style':'none'
+            },
             '.xui-uiborder-hidden':{
                 border:'solid 1px transparent',
                 background:'none'
             },
             '.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
-                background:'#F6F6F6'
+                background:'#fff'
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #C5C5C5'
@@ -2431,7 +2472,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
             },
             '.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
-                $order:9,
+                $order:10,
                 border:'solid 1px',
                 'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
             },
@@ -2439,7 +2480,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-color':'#B6B6B6'
             },
             '.xui-uiborder-light, .xui-uiborder-hidden-hover':{
-                'border-color':'#F6F6F6'
+                'border-color':'#efefef'
             },
             '.xui-uiborder-radius':{
                 $order:11,
@@ -2507,6 +2548,69 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-none':{
                 $order:20,
                 border:'none'
+            },
+            '.xui-uisb':{
+                position:'absolute',
+            },
+            '.xui-uisb-none':{
+                display:'none'
+            },
+            '.xui-uisb-left':{
+                left:0,
+                top:0,
+                width:'3em',
+                height:'100%'
+            },
+            '.xui-uisb-right':{
+                top:0,
+                right:0,
+                width:'3em',
+                height:'100%'
+            },
+            '.xui-uisb-top':{
+                left:0,
+                top:0,
+                width:'100%',
+                height:'3em'
+            },
+            '.xui-uisb-bottom':{
+                left:0,
+                bottom:0,
+                width:'100%',
+                height:'3em'
+            },
+            '.xui-uisbbtn':{
+                position:'absolute',
+                cursor:'pointer',
+                'z-index':1,
+                width:'1em',
+                height:'1em'
+            },
+            '.xui-uisb-left .xui-uisbbtn':{
+                left:'.333333em',
+                top:'.333333em'
+            },
+            '.xui-uisb-right .xui-uisbbtn':{
+                right:'.333333em',
+                top:'.333333em'
+            },
+            '.xui-uisb-top .xui-uisbbtn':{
+                right:'.333333em',    
+                bottom:'.333333em'
+            },
+            '.xui-uisb-bottom .xui-uisbbtn':{
+                right:'.333333em',    
+                top:'.333333em'
+            },
+            '.xui-uisbcap':{
+               position:'relative',
+               'text-align':'center',
+               width:'100%',
+               height:'100%'
+            },
+            '.xui-uisb-left .xui-uisbcap, .xui-uisb-right .xui-uisbcap':{
+                'writing-mode': 'tb-rl',
+                'filter': 'flipv fliph'
             }
         });
 
@@ -2531,32 +2635,43 @@ Class("xui.UI",  "xui.absObj", {
                 'background-repeat':'no-repeat',
                 'background-position':'left top'
             },
+            /*
+            ".xui-ui-diry:after":{
+                content: "";
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: 0,
+                height: '1px',
+                'z-index':100,
+                'border-top': '8px solid #f44',
+                'border-right': '8px solid transparent'
+            },*/
+            '.xui-ui-ruler':{
+                width:0,
+                height:'1.22em',
+                'vertical-align':'middle'
+            },
             '.xui-nodatauri .xui-ui-dirty':{
                 $order:2,
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            'input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
+            '.xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
                 $order:2,
-                color: '#808080 !important'
-            },
-            '.xui-ui-readonly input, .xui-ui-readonly textarea, .xui-ui-itemreadonly input, .xui-ui-itemreadonly textarea':{
-                $order:3,
-                color: '#909090 !important'
+                color: '#666666 !important'
             },
             'button::-moz-focus-inner, input::-moz-focus-inner':{
                  padding: 0,
                  border: 0
              },
-            'button:disabled, a:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node':{
+            '.xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node, .xui-uicell-disabled, .xui-uicell-disabled .xui-node':{
                 $order:2,
                 cursor:'not-allowed',
                 color: '#808080 !important'
             },
-            'input:disabled, textarea:disabled, .xui-uicell-disabled, .xui-uicell-disabled .xui-node, .xui-ui-disabled input, .xui-ui-itemdisabled input, .xui-ui-disabled textarea, .xui-ui-itemdisabled textarea':{
+            '.xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled input,.xui-ui-disabled textarea, .xui-ui-itemdisabled input, .xui-ui-itemdisabled textarea, .xui-uicell-disabled':{
                 $order:3,
-                cursor:'not-allowed',
-                color: '#808080 !important',
                 'background-color':'#eee !important'
             },
             '.xui-ui-invalid, .xui-ui-invalid .xui-node':{
@@ -2567,14 +2682,15 @@ Class("xui.UI",  "xui.absObj", {
                 display:"block",
                 'white-space': 'nowrap'
             },
-            '.xui-busy, .xui-ui-busy, .xui-uicmd-toggle-busy':{
+            '.xui-icon-loading':{
                 $order:7,
-                'background-image': 'url('+xui.ini.img_busy+')',
-                "background-repeat":"no-repeat",
-                "background-position":"center center"
+                'background-image': (xui.browser.ie&&xui.browser.ver<10)?'url('+xui.ini.img_busy+')':'',
+                "background-repeat":(xui.browser.ie&&xui.browser.ver<10)?"no-repeat":'',
+                "background-position":(xui.browser.ie&&xui.browser.ver<10)?"center center":''
             },
-            ".xui-busy:before, .xui-ui-busy:before, .xui-uicmd-toggle-busy:before":{
-                visibility:'hidden'
+            ".xui-icon-loading:before":{
+                $order:7,
+                visibility:(xui.browser.ie&&xui.browser.ver<10)?'hidden':null
             },
             ".xui-required":{
                 "color":"#ff0000 !important"
@@ -3116,8 +3232,7 @@ Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
-                                type=type=='mouseover'?'hover':type=='mousedown'?'active':type;
-                                nodes.tagClass('-'+type);
+                                nodes.tagClass('-'+(type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
                                     if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
@@ -3680,25 +3795,18 @@ Class("xui.UI",  "xui.absObj", {
                 old.disabled=true;
                 xui(id).remove(false);
             }
-            if(cssSetting&&!xui.isEmpty(cssSetting)){
-                var arr=[];
-                xui.each(cssSetting,function(o,i){
-                    arr.push(prevId + " " + i + "{\n    "+xui.str.trim(o).split(/\s*;\s*/).join(';\n    ')+"\n}");
+            if(cssSetting){
+                cssSetting = cssSetting
+                .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'')
+                .replace(/^\s*(\.)/,function(a,b){
+                    return prevId + " " + b;
+                }).replace(/([},])\s*(\.)/g,function(a,b,c){
+                    return b + "\n" + prevId + " " + c;
+                }).replace(/([{;])\s*(.)/g,function(a,b,c){
+                    return b + '\n' + (c=='}'?'':'    ') + c;
                 });
-                css="\n"+arr.join('\n')+"\n";
-                xui.CSS._appendSS(profile.getRootNode(), css, id, true);
+                xui.CSS._appendSS(profile.getRootNode(), cssSetting, id, true);
             }
-        },
-        $getCSSValue:function(cls, key,force){
-            cls=cls.replace(/\./g,'');
-            var cache=xui.$CSSCACHE,
-                ck=cls+'->'+key;
-            if(!force &&(ck in cache))return cache[ck];
-            var c=xui.Dom.getEmptyDiv().get(0),r;
-            xui.Dom._setClass(c,cls);
-            r=cache[ck]=parseFloat(xui.Dom.getStyle(c,key))||0;
-            xui.Dom._setClass(c,"");
-            return r;
         },
         setAppearance:function(hash){
             xui.merge(this.$Appearances,hash,'all');
@@ -4112,19 +4220,27 @@ Class("xui.UI",  "xui.absObj", {
 
             //todo:remove the extra paras
             hashOut.imageDisplay = (hashOut.imageClass||hashOut.image)?'':'display:none';
-            if(hashOut.image){
-                hashOut.imageClass='xui-icon-empty';
-                hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
-            }
-            if(hashOut.imagePos)
-                hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
-            else if(hashOut.image)
-                hashOut.backgroundPosition='background-position:center;';
 
-            if(hashOut.imageRepeat)
-                hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
-            else if(hashOut.image)
-                hashOut.backgroundRepeat='background-repeat:no-repeat;';
+            if(!hashOut.fontCode && hashOut.imageClass){
+                if(xui.__iefix2 && xui.__iefix2[hashOut.imageClass]){
+                    hashOut.fontCode=xui.__iefix2[hashOut.imageClass];
+                }
+            }
+            if(!hashOut.fontCode){
+                if(hashOut.image){
+                    hashOut.imageClass='xui-icon-empty';
+                    hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+                }
+                if(hashOut.imagePos)
+                    hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
+                else if(hashOut.image)
+                    hashOut.backgroundPosition='background-position:center;';
+
+                if(hashOut.imageRepeat)
+                    hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
+                else if(hashOut.image)
+                    hashOut.backgroundRepeat='background-repeat:no-repeat;';
+            }
             //must be here
             //Avoid Empty Image src
             if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_bg;
@@ -4254,10 +4370,22 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
 
-            dockMinW:0,
-            dockMinH:0,
-            dockMaxW:0,
-            dockMaxH:0,
+            dockMinW:{
+                $spaceunit:1,
+                ini:'0'
+            },
+            dockMinH:{
+                $spaceunit:1,
+                ini:'0'
+            },
+            dockMaxW:{
+                $spaceunit:1,
+                ini:'0'
+            },
+            dockMaxH:{
+                $spaceunit:1,
+                ini:'0'
+            },
 
             // to stop conDockFlexFill
             dockIgnoreFlexFill:{
@@ -4360,27 +4488,23 @@ Class("xui.UI",  "xui.absObj", {
         },
         RenderTrigger:function(){
             var prf=this, b=prf.boxing(),p=prf.properties,t,
-                css=xui.CSS,
-                node=prf.getRootNode(),nodefz,
+                node=prf.getRootNode(),
                 style=node.style;
 
             if(p.themeRoller &&!xui.isEmpty(p.themeRoller)){
                 xui.UI._refreshThemeRoller(prf, p.themeRoller);
             }
-
             // *** force to em
             if(xui.$uem(p)){
                 xui.each(xui.UI.$ps,function(j,i){
-                    if(style[i]!='auto'&&(xui.isFinite(style[i])||xui.CSS.$isPx(style[i]))){
-                        if(!nodefz)nodefz=xui(node)._getEmSize();
-                        p[i]=style[i]=css.$px2em(style[i], nodefz)+'em';
+                    if(style[i]!='auto'&&(xui.isFinite(style[i])||prf.$isPx(style[i]))){
+                        p[i]=style[i]=prf.$px2em(style[i])+'em';
                     }
                 });
             }else{
                 xui.each(xui.UI.$ps,function(j,i){
-                    if(style[i]!='auto'&& xui.CSS.$isEm(style[i])){
-                        if(!nodefz)nodefz=xui(node)._getEmSize();
-                        p[i]=style[i]=css.$em2px(style[i], nodefz,true)+'px';
+                    if(style[i]!='auto'&& prf.$isEm(style[i])){
+                        p[i]=style[i]=prf.$em2px(style[i], null,true)+'px';
                     }
                 });
             }
@@ -4443,12 +4567,12 @@ Class("xui.UI",  "xui.absObj", {
             }
         },
         $tryResize:function(profile,w,h,force,key){
-            var s=profile.box,t=s._onresize,css=xui.CSS;
+            var s=profile.box,t=s._onresize;
             if(t&&(force||w||h)){
                 //adjust width and height
                 //w=parseFloat(w)||null;
-                w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||css.$isPx(w))?parseFloat(w):w))||null
-                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||css.$isPx(h))?parseFloat(h):h))||null;
+                w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||profile.$isPx(w))?parseFloat(w):w))||null
+                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||profile.$isPx(h))?parseFloat(h):h))||null;
 
                 //if it it has delay resize, overwrite arguments
                 if('_$visibility' in profile){
@@ -4478,13 +4602,16 @@ Class("xui.UI",  "xui.absObj", {
         },
         LayoutTrigger:function(){
             var self=this, b=self.boxing(),p=self.properties;
+            // have to refresh this
+            delete self._nodeEmSize;
+            
             if(p.dock && p.dock != 'none'){
                 //first time, ensure _onresize to be executed.
                 if(!self.$laidout){
                     self.$laidout=1;
                     var stl=self.getRootNode().style,
-                        wu = 0+xui.CSS.$picku(stl.width),
-                        hu = 0+xui.CSS.$picku(stl.height);
+                        wu = 0+self.$picku(stl.width),
+                        hu = 0+self.$picku(stl.height);
                     switch(p.dock){
                         case 'top':
                         case 'bottom':
@@ -4868,7 +4995,7 @@ Class("xui.UI",  "xui.absObj", {
                                     target = me[key];
                                     var ii=0;
                                     if(target.length){
-                                        delete obj.$prevLeft;
+                                        delete obj.$prevDiff;
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
                                             if(!o.properties.dockIgnore){
@@ -5048,17 +5175,23 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'top':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;
-                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
-                                            
-                                            tempW = temp - margin.left - margin.right;
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
+                                            obj.$prevDiff=0;
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             if((obj.preX + temp - obj.oX) > obj.ww){
                                                 obj.top += obj.topHolder;
                                                 obj.topHolder=0;
                                                 obj.preX = obj.oX;
+
+                                                // wrap to new line ,recaculate from start
+                                                obj.$prevDiff=0;
+                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
+                                                obj.$prevDiff=0;
+                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
+                                            tempW = temp - margin.left - margin.right;
                                             tempW -= spaceW;
 
                                             left=obj.preX;
@@ -5085,12 +5218,12 @@ Class("xui.UI",  "xui.absObj", {
                                             left = sStart ? ((flt?0:obj.left)+margin.left) : css.$px(prop.left,nodefz);
                                             right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                             top=(flt?0:obj.top)+margin.top;
-                                            temp = obj.width - left - right - x + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp = obj.width - left - right - x + (obj.$prevDiff||0);
+                                            delete obj.$prevDiff;                                            
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             
-
+    
                                             if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
                                             if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
                                             if(css.$px(style.width,nodefz)!==temp)region.width=adjustunit(_adjust(temp));
@@ -5109,17 +5242,24 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
+                                            obj.$prevDiff=0;
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
-                                            tempW = temp - margin.left - margin.right;
                                             if((obj.preX + temp - obj.oX) > obj.ww){
                                                 obj.bottom += obj.bottomHolder;
                                                 obj.bottomHolder=0;
                                                 obj.preX = obj.oX;
+
+                                                // wrap to new line ,recaculate from start
+                                                obj.$prevDiff=0;
+                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
+                                                obj.$prevDiff=0;
+                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
+                                            tempW = temp - margin.left - margin.right;
                                             tempW -= spaceW;
 
                                             left=obj.preX;
@@ -5148,10 +5288,10 @@ Class("xui.UI",  "xui.absObj", {
                                             right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                             bottom=(flt?0:obj.bottom)+margin.bottom;
 
-                                            temp=obj.width - left - right - x + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinW&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW),nodefz)) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp=obj.width - left - right - x + (obj.$prevDiff||0);
+                                            delete obj.$prevDiff;                                            
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW),nodefz)) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
                                             if(css.$px(style.bottom,nodefz)!==bottom)region.bottom=adjustunit(bottom);
                                             if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
@@ -5187,18 +5327,25 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
+                                            obj.$prevDiff=0;
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
-                                            tempH = temp - margin.top - margin.bottom;
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
                                                 obj.left += obj.leftHolder;
                                                 obj.leftHolder=0;
                                                 // reset preY
                                                 obj.preY = obj.top;
+
+                                                // wrap to new line ,recaculate from start
+                                                obj.$prevDiff=0;
+                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
+                                                obj.$prevDiff=0;
+                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
+                                            tempH = temp - margin.top - margin.bottom;
                                             tempH -= spaceH;
 
                                             top=obj.preY;
@@ -5228,10 +5375,10 @@ Class("xui.UI",  "xui.absObj", {
                                             top=sStart?((flt?0:obj.top)+margin.top):css.$px(prop.top,nodefz);
                                             bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
 
-                                            temp=obj.height - top - bottom - y + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp=obj.height - top - bottom - y + (obj.$prevDiff||0);
+                                            delete obj.$prevDiff;                                            
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             
                                             if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
                                             if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
@@ -5267,18 +5414,25 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
+                                             obj.$prevDiff=0;
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
-                                            tempH = temp - margin.top - margin.bottom;
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
                                                 obj.right += obj.rightHolder;
                                                 obj.rightHolder=0;
                                                 // reset preY
                                                 obj.preY = obj.top;
+
+                                                // wrap to new line ,recaculate from start
+                                                obj.$prevDiff=0;
+                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
+                                                 obj.$prevDiff=0;
+                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
+                                            tempH = temp - margin.top - margin.bottom;
                                             tempH -= spaceH;
 
                                             top=obj.preY;
@@ -5308,10 +5462,10 @@ Class("xui.UI",  "xui.absObj", {
                                             top=sStart?((flt?0:obj.top)+margin.top):(css.$px(prop.top,nodefz));
                                             bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
 
-                                            temp=obj.height - top - bottom - y + (obj.$prevLeft||0);
-                                            delete obj.$prevLeft;                                            
-                                            if(prop.dockMinH&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevLeft=temp-t,  t));
-                                            if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevLeft=temp-t,  t):(temp));
+                                            temp=obj.height - top - bottom - y + (obj.$prevDiff||0);
+                                            delete obj.$prevDiff;                                            
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             
                                             if(css.$px(style.right,nodefz)!==right)region.right=adjustunit(right);
                                             if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
@@ -5345,8 +5499,8 @@ Class("xui.UI",  "xui.absObj", {
                                     top = prop.dock=='width'?(css.$px(prop.top,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top,nodefz));
                                     //later call for w/h change once
                                     temp=obj.width - left - right - x;
-                                    if(prop.dockMinW&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  t));
-                                    if(prop.dockMaxW&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxW=1,  t):(delete profile.$dockMaxW, temp));
+                                    if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  t));
+                                    if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxW=1,  t):(delete profile.$dockMaxW, temp));
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5378,8 +5532,8 @@ Class("xui.UI",  "xui.absObj", {
                                     left = prop.dock=='height'?(css.$px(prop.left,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left,nodefz));
                                     //later call for w/h change once
                                     temp=obj.height - top - bottom - y;
-                                    if(prop.dockMinH&&(t=css.$px(prop.dockMinH,nodefz))) temp = _adjust((t<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  t));
-                                    if(prop.dockMaxH&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxH=1,  t):(delete profile.$dockMaxH, temp));
+                                    if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp = _adjust((t<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  t));
+                                    if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxH=1,  t):(delete profile.$dockMaxH, temp));
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5454,7 +5608,7 @@ Class("xui.UI",  "xui.absObj", {
             var b,t,r,o={};
             xui.merge(o, profile, 'all');
             var p = o.properties = xui.clone(profile.properties,true),
-                ds = o.box.$DataStruct, t, nfz,
+                ds = o.box.$DataStruct, t,
                 dm = o.box.$DataModel;
             switch(p.dock){
                 case 'top':
@@ -5471,22 +5625,32 @@ Class("xui.UI",  "xui.absObj", {
             }
 
             // *** force to em
-            if(xui.$uem(p)){
-                if(dm[i] && dm[i]['$spaceunit'])
-                    if(p[i]!='auto'&&(xui.isFinite(p[i])||xui.CSS.$isPx(p[i])))
-                        // only have root dom node
-                        if(t=profile.getRootNode()){
-                            if(!nfz)nfz=xui(t)._getEmSize();
-                            p[i]=css.$px2em(p[i], t)+'em';
-                        }
+            if(xui.$uem(profile.properties)){
+                for(var i in dm){
+                    if(dm[i] && dm[i]['$spaceunit']){
+                        if(p[i]!='auto'&&(xui.isFinite(p[i])||profile.$isPx(p[i])))
+                            // only have root dom node
+                            if(t=profile.getRootNode()){
+                                p[i]=profile.$px2em(p[i])+'em';
+                            }
+                        if(p[i]=='0em' && parseFloat(dm[i].ini)==0)delete p[i];
+                    }
+                }
             }else{
-                if(dm[i] && dm[i]['$spaceunit'])
-                    if(p[i]!='auto'&&xui.CSS.$isEm(p[i]))
-                        // only have root dom node
-                        if(t=profile.getRootNode()){
-                            if(!nfz)nfz=xui(t)._getEmSize();
-                            p[i]=css.$em2px(p[i], t,true);
-                        }
+                for(var i in dm){
+                    if(dm[i] && dm[i]['$spaceunit']){
+                        if(p[i]!='auto'&&profile.$isEm(p[i]))
+                            // only have root dom node
+                            if(t=profile.getRootNode()){
+                                p[i]=profile.$em2px(p[i], null,true);
+                            }
+                        if(p[i]===0 && parseFloat(dm[i].ini)==0)delete p[i];
+                    }
+                }
+            }
+            
+            for(var i in xui.UI.$ps){
+                if((i in p) && xui.isNaN(p[i]))delete p[i];
             }
 
             if(p.items && p.items.length){
@@ -5581,15 +5745,15 @@ Class("xui.UI",  "xui.absObj", {
 
             //give border width
             if('$hborder' in dm && dm.$hborder){
-                if(xui.CSS.$isEm(prop.width)){
-                    data.bWidth = xui.CSS.$px2em( xui.CSS.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
+                if(profile.$isEm(prop.width)){
+                    data.bWidth = profile.$px2em( profile.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
                 }else{
                     data.bWidth = parseFloat(prop.width) - prop.$hborder*2;
                 }
             }
             if('$vborder' in dm && dm.$vborder){
-                if(xui.CSS.$isEm(prop.height)){
-                    data.bHeight = xui.CSS.$px2em( xui.CSS.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
+                if(profile.$isEm(prop.height)){
+                    data.bHeight = profile.$px2em( profile.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
                 }else{
                     data.bHeight = parseFloat(prop.height) - prop.$vborder*2;
                 }
@@ -5598,7 +5762,7 @@ Class("xui.UI",  "xui.absObj", {
             for(var j=0,i;i=map[j];j++){
                 var t=(i in data)?data[i]:prop[i];
                 if(t || t===0){
-                    if(t!='auto')a[a.length]=i+':'+xui.CSS.$addu(t);
+                    if(t!='auto')a[a.length]=i+':'+profile.$addu(t);
                 }
             }
             // position,z-index,visibility,display
@@ -6630,7 +6794,6 @@ new function(){
                     $spaceunit:1,
                     ini:'10em'
                 },
-                border:'deprecated',
                 shadow:{
                     ini:false,
                     action: function(v){
@@ -6665,17 +6828,14 @@ new function(){
                     border = profile.getSubNode('BORDER'),
                     shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                     region,
-
-                    css = xui.CSS,
                     useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                     root = profile.getRoot(),
-                    rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                     borderfz = useem?border._getEmSize():null,
 
                     //caculate with px
-                    ww=css.$px(width, rootfz), 
-                    hh=css.$px(height, rootfz),
+                    ww=profile.$px(width), 
+                    hh=profile.$px(height),
                     left=Math.max(0, (prop.$b_lw||0)-(prop.$hborder||0)), 
                     top=Math.max(0, (prop.$b_tw||0)-(prop.$vborder||0));
 
@@ -6684,12 +6844,12 @@ new function(){
                     /*for ie6 bug*/
                     /*for example, if single number, 100% width will add 1*/
                     /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(css.$px(ww/2, rootfz))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(profile.$px(ww/2))*2;
                 }
                 if(hh&&'auto'!==hh){
                     hh -=Math.max((prop.$vborder||0)*2, (prop.$b_lw||0) + (prop.$b_rw||0));
 
-                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(css.$px(hh/2, rootfz))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(profile.$px(hh/2))*2;
                     /*for ie6 bug*/
                     if(xui.browser.ie&&xui.browser.ver<=6&&null===width){
                         border.ieRemedy();
@@ -6864,7 +7024,7 @@ new function(){
                 _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-node xui-wrapper {_className}',
+                className:'xui-node xui-wrapper xui-ui-btn  {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -6955,10 +7115,12 @@ new function(){
                 ICON:{
                     $order:1,
                     className:'xuicon {imageClass}',
-                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                    text:'{fontCode}'
                 },
                 CAPTION:{
                     $order:2,
+                    className:'',
                     text:'{caption}'
                 },
                 DROP:{
@@ -7336,13 +7498,12 @@ new function(){
                    // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
                     outline:xui.browser.gek?'none':null,
                     zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                    'line-height':'normal',
                     background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
                 }
             },
             Templates:{
                 tagName:'div',
-                className:'{_className}',
+                className:'xui-uicontainer {_className}',
                 style:'{_style};{_panelstyle};{_overflow};',
                 //for firefox div focus bug: outline:none; tabindex:'-1'
                 tabindex: '{tabindex}',

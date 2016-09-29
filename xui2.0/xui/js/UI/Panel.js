@@ -48,26 +48,26 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             className:'{_className}',
             BORDER:{
                 tagName:'div',
-                className: 'xui-uiborder-radius-big',
+                className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
                 TBAR:{
                     tagName:'div',
                     className:'xui-uibar-top',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
+                        className:'xui-uibar-tdm xui-uibar',
                         BARTDMT:{
                             className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -85,10 +85,12 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         ICON:{
                             $order:0,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            text:'{fontCode}'
                         },
                         CAPTION:{
                             tabindex: '{tabindex}',
+                            className:"xui-title-node",
                             text : '{caption}',
                             $order:1
                         }
@@ -132,15 +134,15 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     style:"{_leftp}",
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uicon-maini xui-uibar xui-uiborder-r',
+                        className:'xui-uicon-maini xui-uibar',
                         style:"{_rightp}",
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uicontent {_bordertype}',
+                            className:'xui-uibase xui-uicontainer {_bordertype}',
                             style:'{panelDisplay};{_panelstyle};{_overflow};',
                             text:'{html}'+xui.UI.$childTag
                         }
@@ -152,15 +154,15 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     className:'xui-uibar-bottom-s',
                     style:"{_bbarDisplay}",
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
                     },
                     BBARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
+                        className:'xui-uibar-tdm xui-uibar'
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
                     }
                 }
             }
@@ -188,8 +190,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 cursor:'pointer',
                 display:'inline',
                 padding:'.25em',
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'font-size':'1em'
+                'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },
         Behaviors:{
@@ -475,13 +476,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(p.toggle){
                         profile.getRoot().height(p.height);
                 }else{
-                    var css = xui.CSS,
-                        useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                    var useem = xui.$uem(p),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                         root = profile.getRoot(),
-                        rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
                         h1=profile.getSubNode('BORDER').height();
-                    h1 = h1?adjustunit(h1, rootfz):null;
+                    h1 = h1?adjustunit(h1):null;
                     profile.getRoot().height(h1?h1:'auto');
                 }
 
@@ -503,11 +502,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         _onresize:function(profile,width,height){
            var prop=profile.properties,
                 // compare with px
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
-                rootfz = useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null;
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                root = profile.getRoot();
 
             var isize={},
                 noFrame=prop.noFrame,
@@ -518,12 +515,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
                 panelfz = useem?v2._getEmSize():null,
-                bordersize=profile.properties.borderType!='none'?xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2:0,
+                bordersize=profile.properties.borderType!='none'?v2._borderW():0,
+                h0=bd._borderH(),
                 h1,h4,t;
 
             // caculate by px
-            if(width && width!='auto')width=css.$px(width, rootfz, true);
-            if(height && height!='auto')height=css.$px(height, rootfz, true);
+            if(width && width!='auto')width=profile.$px(width,null, true);
+            if(height && height!='auto')height=profile.$px(height,null, true);
 
             if(height){
                 if(height=='auto')
@@ -533,7 +531,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         //force to get height
                         h1=v1.offsetHeight(true);
                         h4=noFrame?0:v4.offsetHeight(true);
-                        if((t=height-h1-h4)>0)
+                        if((t=height-h0-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
                     }else{
                         // same to ***
@@ -543,7 +541,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         //    if display => adjust ctrl's height to border's
                         //    if non-display => adjust ctrl's height to 'auto'
                         h1 = bd.height();
-                        h1 = h1?adjustunit(h1, rootfz):null;
+                        h1 = h1?adjustunit(h1):null;
                         profile.getRoot().height(h1 || 'auto');
                     }
                 }
@@ -552,6 +550,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 isize.width=adjustunit(width
                     -(noFrame?0:(Math.round(parseFloat(v6.css('paddingRight')))||0))
                     -(noFrame?0:(Math.round(parseFloat(v5.css('paddingLeft')))||0))
+                    -h0
                     -bordersize
                     -v5._borderW()
                     -v6._borderW()

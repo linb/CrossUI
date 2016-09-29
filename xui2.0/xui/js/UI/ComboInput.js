@@ -233,7 +233,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 //open already
                 if(profile.$poplink)return;
-                var o, v, css=xui.CSS,
+                var o, v,
                     box = profile.boxing(),
                     main = profile.getSubNode('BOX'),
                     btn = profile.getSubNode('BTN'),
@@ -298,7 +298,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 o = xui.create('List');
                                 o.setHost(profile).setDirtyMark(false).setItems(xui.copy(pro.items)).setListKey(pro.listKey||'');
                                 if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
-                                else o.setWidth(css.$forceu( main.offsetWidth() + btn.offsetWidth() ));
+                                else o.setWidth(profile.$forceu( main.offsetWidth() + btn.offsetWidth() ));
 
                                 o.setHeight(pro.dropListHeight||'auto');
 
@@ -744,6 +744,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _objectProp:{popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
             HoverEffected:{BOX:'BOX'},
+            ClickEffected:{BOX:'BOX'},
             FILE:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
@@ -1302,7 +1303,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     };
                 }
                 if(properties.type=='button'||properties.type=='dropbutton'){
-                    t.BOX.WRAP.INPUT.className+=' xui-ui-btn';
+                    t.BOX.className += ' xui-ui-gradientbg';
                 }
 
                 if(properties.multiLines){
@@ -1327,8 +1328,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _prepareData:function(profile){
             var data={},
                 prop=profile.properties,
-                arr=profile.box.$DataModel.commandBtn.combobox,
-                css=xui.CSS;
+                arr=profile.box.$DataModel.commandBtn.combobox;
             data=arguments.callee.upper.call(this, profile, data);
 
             var tt=data.type;
@@ -1413,38 +1413,34 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 commandbtn=f(prop.commandBtn!='none'?'SBTN':null),
                 functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
                 // determine em
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz=needfz?root._getEmSize():null,
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
                 boxfz=useem?box._getEmSize():null,
                 v1fz=useem?v1._getEmSize():null,
-                labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
+                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
                 clsname='xui-node xui-input-input',
-                toff=isB?0:xui.UI.$getCSSValue(clsname,'paddingTop'),
-                loff=isB?0:xui.UI.$getCSSValue(clsname,'paddingLeft'),
-                roff=isB?0:xui.UI.$getCSSValue(clsname,'paddingRight'),
-                boff=isB?0:xui.UI.$getCSSValue(clsname,'paddingBottom'),
+                paddingH=isB?0:v1._paddingH(),
+                paddingW=isB?0:v1._paddingW(),
                 btnw, autoH;
 
-            $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
-            btnw=css._getDftEmSize() * 1.5;
+             $hborder=$vborder=box._borderW() / 2;
+            btnw=root._getEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = (autoH=height=='auto') ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
-            if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
-            
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(1.83,null,true) : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
+
             // for auto height
-            if(autoH)root.height(adjustunit(height, rootfz));
+            if(autoH)root.height(adjustunit(height));
 
             var 
                 // make it round to Integer
-                labelSize=css.$px(prop.labelSize,labelfz,true)||0,
-                labelGap=css.$px(prop.labelGap,rootfz,true)||0,
+                labelSize=profile.$px(prop.labelSize,labelfz,true)||0,
+                labelGap=profile.$px(prop.labelGap,null,true)||0,
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
@@ -1479,10 +1475,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // for left offset 1px
             iW += (functionbtn?$hborder:0) + (commandbtn?$hborder:0);
 
-             if(null!==iW && iW-loff-roff>0)
-                v1.width(adjustunit(Math.max(0,iW-loff-roff),v1fz));
-            if(null!==iH && iH-toff-boff>0)
-                v1.height(adjustunit(Math.max(0,iH-toff-boff),v1fz));
+             if(null!==iW && iW-paddingW>0)
+                v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
+            if(null!==iH && iH-paddingH>0)
+                v1.height(adjustunit(Math.max(0,iH-paddingH),v1fz));
 
             box.cssRegion({
                 left:adjustunit(iL,boxfz),

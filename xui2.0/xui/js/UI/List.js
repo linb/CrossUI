@@ -67,11 +67,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     items = profile.getSubNode('ITEMS'),
                     pp=profile.properties,
                     mh=pp.maxHeight,
-                    css=xui.CSS,
-                    h_em=css.$isEm(pp.height),
+                    h_em=profile.$isEm(pp.height),
                     h,flag;
 
-                if(css.$isEm(mh))mh=css.$em2px(mh, items,true);
+                if(profile.$isEm(mh))mh=profile.$em2px(mh, items,true);
 
                 if(root.css('display')=='none'){
                     flag=1;
@@ -80,7 +79,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 items.height('auto');
                 if(profile.properties.height!='auto'){
                     h=Math.min(mh, items.offsetHeight());                    
-                    if(h_em)h=css.$px2em(h, items)+'em';
+                    if(h_em)h=profile.$px2em(h, items)+'em';
                     items.height(pp.height=h);
                 }else{
                     h=items.offsetHeight();
@@ -135,7 +134,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uitembg xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
@@ -153,7 +152,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         ICON:{
                             $order:10,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}'
+                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            text:'{fontCode}'
                         },
                         CAPTION:{
                             text : '{caption}',
@@ -622,7 +622,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             d._bordertype='xui-uiborder-'+d.borderType;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
+            d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -688,16 +688,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz =needfz?root._getEmSize():null,
-
-                border=prop.borderType!='none'?xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth')*2:0,
-                dock=prop.dock,
-                max=prop.maxHeight,
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
 
                 f=function(k){return profile.getSubNode(k)},
                 items = f('ITEMS'),
@@ -705,14 +699,18 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 itemsfz = useem?items._getEmSize():null,
                 labelfz = needfz?label._getEmSize():null,
 
-                labelSize=css.$px(prop.labelSize, labelfz)||0,
-                labelGap=css.$px(prop.labelGap, rootfz)||0,
+                border=prop.borderType!='none'?items._borderW():0,
+                dock=prop.dock,
+                max=prop.maxHeight,
+
+                labelSize=profile.$px(prop.labelSize, labelfz)||0,
+                labelGap=profile.$px(prop.labelGap)||0,
                 labelPos = prop.labelPos || 'left',
                 ll, tt, ww, hh;
 
             // caculate by px
-            if(width && width!='auto')width = css.$px(width, rootfz);
-            if(height && height!='auto')height = css.$px(height, rootfz);
+            if(width && width!='auto')width = profile.$px(width);
+            if(height && height!='auto')height = profile.$px(height);
 
             items.cssRegion({
                 left : adjustunit(ll = labelPos=='left'?labelSize:0, itemsfz),

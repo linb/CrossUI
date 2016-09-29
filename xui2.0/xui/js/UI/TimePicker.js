@@ -61,27 +61,27 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             style:'{_style};height:auto;',
             BORDER:{
                 tagName : 'div',
-                className: 'xui-uiborder-radius-big',
+                className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
                 BART:{
                     tagName:'div',
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-t xui-uiborder-radius-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
                     },
                     BARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-t',
+                        className:'xui-uibar-tdm xui-uibar',
                         BARTDMT:{
                             className:'xui-uibar-tdmt'
                         }
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-t xui-uiborder-radius-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -143,19 +143,19 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 MAIN:{
                     $order:2,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     MAINI:{
                         tagName:'div',
-                        className:'xui-uibar xui-uicon-maini xui-uibar xui-uiborder-r',
+                        className:'xui-uibar xui-uicon-maini xui-uibar',
                         CONH:{
                             tagName:'div',
-                            className:'xui-uicontent xui-uiborder-flat xui-uiborder-radius',
+                            className:'xui-uibase xui-uiborder-flat',
                             text:h
                         },
                         CONM:{
                             $order:2,
                             tagName:'div',
-                            className:'xui-uicontent xui-uiborder-flat xui-uiborder-radius',
+                            className:'xui-uibase xui-uiborder-flat',
                             text:m
                         }
                     }
@@ -163,10 +163,10 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 TAIL:{
                     $order:3,
                     tagName:'div',
-                    className:'xui-uicon-main xui-uibar xui-uiborder-l',
+                    className:'xui-uicon-main xui-uibar',
                     TAILI:{
                         tagName:'div',
-                        className:'xui-uibar xui-uicon-maini xui-uiborder-r',
+                        className:'xui-uibar xui-uicon-maini',
                         CAPTION:{
                             text : '{caption}'
                         },
@@ -183,15 +183,15 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-l xui-uiborder-b xui-uiborder-radius-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
                     },
                     BBARTDM:{
                         $order:1,
-                        className:'xui-uibar-tdm xui-uibar xui-uiborder-b'
+                        className:'xui-uibar-tdm xui-uibar'
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
                     }
                 }
             }
@@ -237,7 +237,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                 'border-collapse':'separate'
             },
             MAINI:{
-                'padding':'.5em 0 .25em 0'
+                'padding':'.5em .3333em .3333em 0'
             },
             CONH:{
                 'white-space': 'nowrap',
@@ -273,7 +273,7 @@ Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             },
             TAILI:{
                 position:'relative',
-                padding:'.5em 0 .25em 0',
+                padding:'.5em 0 0 0',
                 'text-align':'center'
             },
             CAPTION:{

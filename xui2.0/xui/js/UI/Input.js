@@ -22,7 +22,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 if(node){
                     try{
                         node.focus(); 
-                        if(!xui.browser.isTouch){
+                        if(select || xui.browser.deviceType!='touchOnly'){
                             try{
                                 if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 else xui(node).caret(0,0);
@@ -114,7 +114,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 text:'{labelCaption}'
             },
             BOX:{
-                className:'xui-ui-input xui-uiborder-flat xui-uiborder-radius xui-uibase',
+                className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uibase',
                 WRAP:{
                     tagName : 'div',
                     INPUT:{
@@ -323,7 +323,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=xui.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                if(!xui.browser.isTouch){
+                                if(xui.browser.deviceType!='touchOnly'){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             })
@@ -363,12 +363,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=xui.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                if(!xui.browser.isTouch){
+                                if(xui.browser.deviceType!='touchOnly'){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             });
                         }else{
-                            if(!xui.browser.isTouch){
+                            if(xui.browser.deviceType!='touchOnly'){
                                 if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             }
                         }
@@ -425,7 +425,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             // label
             labelSize:{
                 $spaceunit:1,
-                ini:0,
+                ini:'0',
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
@@ -440,7 +440,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             labelGap:{
                 $spaceunit:1,
-                ini:4,
+                ini:'4',
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
@@ -618,7 +618,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
+            d._labelSize=d.labelSize?'':0+profile.$picku();
     
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -870,35 +870,31 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 box = f('BOX'),
                 label = f('LABEL'),
 
-                css = xui.CSS,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                needfz = useem||css.$isEm(width)||css.$isEm(height),
-                rootfz=needfz?root._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
                 boxfz=useem?box._getEmSize():null,
                 v1fz=useem?v1._getEmSize():null,
-                labelfz=needfz||css.$isEm(labelSize)?label._getEmSize():null,
+                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
 
                 $hborder, $vborder,
 
                 clsname='xui-node xui-input-input',
-                toff=xui.UI.$getCSSValue(clsname,'paddingTop'),
-                loff=xui.UI.$getCSSValue(clsname,'paddingLeft'),
-                roff=xui.UI.$getCSSValue(clsname,'paddingRight'),
-                boff=xui.UI.$getCSSValue(clsname,'paddingBottom'),
+                paddingH=v1._paddingH(),
+                paddingW=v1._paddingW(),
                 autoH;
             
-            $hborder=$vborder=xui.UI.$getCSSValue('xui-uiborder-flat','borderLeftWidth');
+            $hborder=$vborder=box._borderW() / 2;
             
             // caculate by px
-            if(height)height = (autoH=height=='auto') ? css.$em2px(1.83,root,true) : css.$isEm(height) ? css.$em2px(height,root,true) : height;
-            if(width)width = css.$isEm(width) ? css.$em2px(width,root,true) : width;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(1.83,null,true) : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
-            if(autoH)root.height(adjustunit(height, rootfz));
+            if(autoH)root.height(adjustunit(height));
 
-            var labelSize=css.$px(prop.labelSize,labelfz)||0,
-                labelGap=css.$px(prop.labelGap,rootfz)||0,
+            var labelSize=profile.$px(prop.labelSize,labelfz)||0,
+                labelGap=profile.$px(prop.labelGap)||0,
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
@@ -924,10 +920,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 iH=hh===null?null:Math.max(0,hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)),
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
 
-            if(null!==iW && iW-loff-roff>0)
-                v1.width(adjustunit(Math.max(0,iW-loff-roff),v1fz));
-            if(null!==iH && iH-toff-boff>0)
-                v1.height(adjustunit(Math.max(0,iH-toff-boff),v1fz));
+            if(null!==iW && iW-paddingW>0)
+                v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
+            if(null!==iH && iH-paddingH>0)
+                v1.height(adjustunit(Math.max(0,iH-paddingH),v1fz));
 
             box.cssRegion({
                 left:adjustunit(iL,boxfz),

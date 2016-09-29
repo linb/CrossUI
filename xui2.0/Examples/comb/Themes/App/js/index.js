@@ -1470,8 +1470,8 @@ Class('App', 'xui.Module',{
                     "id" : "er"
                 },
                 {
-                    "imageClass" : "xui-ui-busy",
-                    "caption" : "xui-ui-busy",
+                    "imageClass" : "xui-icon-loading",
+                    "caption" : "xui-icon-loading",
                     "id" : "es"
                 },
                 {
@@ -2241,7 +2241,7 @@ Class('App', 'xui.Module',{
                 .setTop("0em")
                 .setBarLocation("left")
                 .setBarSize(140)
-                .setStatus('fold')
+                .setSideBarStatus('fold')
                 .setValue("a")
                 , "main");
             
