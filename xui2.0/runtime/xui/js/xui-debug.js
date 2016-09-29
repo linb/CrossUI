@@ -41052,8 +41052,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             MOVE:{
                 $order:0,
                 position:'absolute',
-
-                'z-index':'10'            },
+                'z-index':'10'
+            },
             CMD:{
                 position:'absolute',
                 cursor:'pointer',
@@ -41631,13 +41631,12 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var t=profile.properties,itemId,
                 key=profile.keys.ITEM,
                 panel=profile.keys.PANEL,
-                move=profile.getSubNode('MOVE',true),
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
                 pct = t.flexSize, 
                 sum=0,
 
-                _handlerSize=(t.type=='vertical'?move.offsetHeight():move.offsetWidth()),
+                move, _handlerSize,
                 useem = xui.$uem(t),
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
 
@@ -41662,6 +41661,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(o.id=='main')return;
                     if(o.pos=='before'){
                         itemId = profile.getSubIdByItemId(o.id);
+                        move=profile.getSubNode('MOVE',itemId),
+                        _handlerSize=(t.type=='vertical'?move.offsetHeight():move.offsetWidth())
                         if(o.hidden){
                             m=0;
                             obj2[itemId][width]=Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) :o._size);
@@ -41692,6 +41693,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(o.id=='main')return;
                     if(o.pos=='after'){
                         itemId = profile.getSubIdByItemId(o.id);
+                        move=profile.getSubNode('MOVE',itemId),
+                        _handlerSize=(t.type=='vertical'?move.offsetHeight():move.offsetWidth())
                         if(o.hidden){
                             m=0;
                             obj2[itemId][width]= Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) : o._size);

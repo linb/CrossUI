@@ -1,103 +1,173 @@
 Class('App.xui_UI_Block', 'xui.Com',{
     Instance:{
-        iniComponents:function(){
-            // [[Code created by CrossUI RAD Tools
-            var host=this, children=[], append=function(child){children.push(child.get(0))};
+        iniComponents : function(){
+            // [[Code created by CrossUI RAD Studio
+            var host=this, children=[], append=function(child){children.push(child.get(0));};
             
             append(
-                (new xui.UI.Block)
-                .setHost(host,"block3")
-                .setLeft(320)
-                .setTop(60)
-                .setShadow(true)
-                .setHtml("shadow")
-                .setBorderType("none")
+                xui.create("xui.UI.Pane")
+                .setHost(host,"xui_ui_pane6")
+                .setLeft("4.166666666666667em")
+                .setTop("10em")
+                .setWidth("38.3333em")
+                .setHeight("27.5em")
             );
+            
+            host.xui_ui_pane6.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block1")
+                .setDock("fill")
+                );
+            
+            host.xui_ui_pane6.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block2")
+                .setDock("left")
+                .setSideBarType("right")
+                .setSideBarCaption("with right SideBar")
+                );
+            
+            host.xui_ui_block2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block11")
+                .setDock("fill")
+                .setLeft("1.6666666666666667em")
+                .setTop("5em")
+                .setBorderType("inset")
+                );
+            
+            host.xui_ui_pane6.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block3")
+                .setDock("top")
+                .setSideBarType("bottom")
+                .setSideBarCaption("with bottom SidBar")
+                .setSideBarStatus("fold")
+                );
+            
+            host.xui_ui_block3.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block14")
+                .setDock("fill")
+                .setLeft("25em")
+                .setTop("3.3333333333333335em")
+                .setBorderType("inset")
+                );
+            
+            host.xui_ui_pane6.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block4")
+                .setDock("bottom")
+                .setSideBarType("top")
+                .setSideBarCaption("with top SidBar")
+                );
+            
+            host.xui_ui_block4.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block13")
+                .setDock("fill")
+                .setLeft("25.833333333333332em")
+                .setTop("2.5em")
+                .setBorderType("inset")
+                );
+            
+            host.xui_ui_pane6.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block5")
+                .setDock("right")
+                .setSideBarType("left")
+                .setSideBarCaption("with left SideBar")
+                );
+            
+            host.xui_ui_block5.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block12")
+                .setDock("fill")
+                .setLeft("1.6666666666666667em")
+                .setTop("6.666666666666667em")
+                .setBorderType("inset")
+                );
             
             append(
-                (new xui.UI.Block)
-                .setHost(host,"block2")
-                .setLeft(170)
-                .setTop(60)
-                .setHtml("border")
-                .setBorderType("none")
-            );
-            
-            append(
-                (new xui.UI.Block)
-                .setHost(host,"block1")
-                .setLeft(50)
-                .setTop(60)
-            );
-            
-            host.block1.append(
-                (new xui.UI.Button)
-                .setHost(host,"button21")
-                .setLeft(10)
-                .setTop(30)
-                .setWidth(80)
-                .setCaption("button21")
-            );
-            
-            append(
-                (new xui.UI.Block)
-                .setHost(host,"block4")
-                .setLeft(470)
-                .setTop(60)
-                .setResizer(true)
-                .setHtml("resizer")
-            );
-            
-            append(
-                (new xui.UI.Block)
-                .setHost(host,"block6")
-                .setLeft(60)
-                .setTop(230)
-                .setWidth(110)
-                .setHtml("borderType:inset")
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block24")
+                .setLeft("17.5em")
+                .setTop("1.6666666666666667em")
+                .setWidth("5.83333em")
+                .setHeight("5.83333em")
+                .setHtml("<div align=\"center\">inset<br></div>")
                 .setBorderType("inset")
             );
             
             append(
-                (new xui.UI.Block)
-                .setHost(host,"block7")
-                .setLeft(180)
-                .setTop(230)
-                .setWidth(110)
-                .setHtml("borderType:outset")
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block25")
+                .setLeft("24.166700000000002em")
+                .setTop("1.66667em")
+                .setHeight("5.83333em")
+                .setWidth("5.83333em")
+                .setHtml("<div align=\"center\">outset<br></div>")
             );
             
             append(
-                (new xui.UI.Block)
-                .setHost(host,"block8")
-                .setLeft(300)
-                .setTop(230)
-                .setWidth(110)
-                .setHtml("borderType:groove")
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block26")
+                .setLeft("30.833299999999998em")
+                .setTop("1.66667em")
+                .setHeight("5.83333em")
+                .setWidth("5.83333em")
+                .setHtml("<div align=\"center\">groove</div>")
                 .setBorderType("groove")
             );
             
             append(
-                (new xui.UI.Block)
-                .setHost(host,"block9")
-                .setLeft(420)
-                .setTop(230)
-                .setWidth(110)
-                .setHtml("borderType:ridge")
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block27")
+                .setLeft("37.5em")
+                .setTop("1.66667em")
+                .setHeight("5.83333em")
+                .setWidth("5.83333em")
+                .setHtml("<div align=\"center\">ridge</div>")
                 .setBorderType("ridge")
             );
             
             append(
-                (new xui.UI.Block)
-                .setHost(host,"ctl_block18")
-                .setLeft(650)
-                .setTop(220)
-                .setIframeAutoLoad("http://www.crossui.com")
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block30")
+                .setLeft("10.8333em")
+                .setTop("1.66667em")
+                .setWidth("5.83333em")
+                .setHeight("5.83333em")
+                .setHtml("<div align=\"center\">flat<br></div>")
+                .setBorderType("flat")
+            );
+            
+            append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block31")
+                .setLeft("4.16667em")
+                .setTop("1.66667em")
+                .setWidth("5.83333em")
+                .setHeight("5.83333em")
+                .setHtml("<div align=\"center\">none<br></div>")
+                .setBorderType("none")
+                .setPanelBgClr("transparent")
+            );
+            
+            append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"xui_ui_block32")
+                .setLeft("44.1667em")
+                .setTop("1.66667em")
+                .setWidth("17.5em")
+                .setHeight("35.8333em")
+                .setHtml("<div align=\"center\">inset<br></div>")
                 .setBorderType("inset")
+                .setIframeAutoLoad("http://www.crossui.com")
             );
             
             return children;
-            // ]]Code created by CrossUI RAD Tools
+            // ]]Code created by CrossUI RAD Studio
         }
     }
 });
