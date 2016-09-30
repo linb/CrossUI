@@ -78,6 +78,9 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "vista",
                     "caption" : "vista"
+                },{
+                    "id":"webflat",
+                     caption:"webflat"
                 }])
                 .setValue("default")
                 .afterUIValueSet("_ctl_comboinput61_afteruivalueset")
@@ -111,6 +114,14 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "14px",
                     "caption" : "14 px"
+                },
+                {
+                    "id" : "15px",
+                    "caption" : "15 px"
+                },
+                {
+                    "id" : "16px",
+                    "caption" : "16 px"
                 },
                 {
                     "id" : "1rem",
@@ -3777,7 +3788,7 @@ Class('App', 'xui.Module',{
         _ctl_comboinput61_afteruivalueset:function (profile,oldValue,newValue){
             var ns=this;
             xui.setTheme(newValue,true,function(){
-                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"?'1rem':'12px',true);
+                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"?'1rem':newValue=='webflat'?'15px':'12px',true);
             });
         },
         _xui_ui_comboinput32_afteruivalueset:function (profile,oldValue,newValue){

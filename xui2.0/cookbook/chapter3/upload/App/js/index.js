@@ -16,7 +16,7 @@ Class('App', 'xui.Com',{
                 .setLeft(140)
                 .setTop(40)
                 .setWidth(140)
-                .setType("upload")
+                .setType("file")
                 .setValue("Select a file ...")
             );
             

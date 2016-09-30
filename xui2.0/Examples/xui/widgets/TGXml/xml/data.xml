@@ -42,12 +42,12 @@
     </header>
     <header>
         <caption>orderDate</caption>
-        <type>datepicker</type>
+        <type>date</type>
         <width>70</width>
     </header>
     <header>
         <caption>color</caption>
-        <type>colorpicker</type>
+        <type>color</type>
         <width>70</width>
     </header>
     <header>

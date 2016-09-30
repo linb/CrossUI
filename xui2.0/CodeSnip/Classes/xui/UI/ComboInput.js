@@ -494,7 +494,7 @@ Class('App.xui_UI_ComboInput', 'xui.Com',{
                 .setWidth(240)
                 .setTabindex("16")
                 .setLabelCaption("comboinput41")
-                .setType("upload")
+                .setType("file")
             );
             
             return children;

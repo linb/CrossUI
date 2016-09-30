@@ -31,7 +31,7 @@
 /*border*/
 .xui-uiborder-radius, .xui-uiborder-radius-big, 
 .xui-uiborder-radius-tl, .xui-uiborder-radius-tr, .xui-uiborder-radius-bl, .xui-uiborder-radius-br,
-xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-big-bl, .xui-uiborder-radius-big-br{
+.xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-big-bl, .xui-uiborder-radius-big-br{
     border-radius: 0;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;

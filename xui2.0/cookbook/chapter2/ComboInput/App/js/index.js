@@ -314,7 +314,7 @@ Class('App', 'xui.Com',{
                 .setTop(260)
                 .setWidth(240)
                 .setTabindex("16")
-                .setType("upload")
+                .setType("file")
             );
             
             return children;
