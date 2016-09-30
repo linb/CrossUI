@@ -376,7 +376,7 @@ Class("xui.Coder", null,{
         height:control height
         id:specify id
         */
-        formatHTML:function(code, type, arrActions, fold, id, height){
+        formatHTML:function(code, type, arrActions, fold, id, height, callback){
             if(!id)id=''+this.$xid++;
             var _key = this.$key,
                 _str = code,
@@ -487,7 +487,7 @@ Class("xui.Coder", null,{
             aa.push("</div>");
             _encode=_decode=null;
 
-            xui.asyRun(function(){xui.Coder._remedy(id)});
+            xui.asyRun(function(){xui.Coder._remedy(id, callback)});
 
             return aa.join('');
         },
@@ -512,12 +512,13 @@ Class("xui.Coder", null,{
             };
             xui.Thread.repeat(fun);
         },
-        _remedy:function(id){
+        _remedy:function(id, callback){
             var _t=this.$key+":"+id+":";
             if(!(_t=xui(_t)).isEmpty()){
                 var p=_t.parent(), w=p.scrollWidth(), w2 = p.width();
                 p.css('positoin','relative');
                 if(w>w2)_t.width(w);
+                xui.tryF(callback,[_t, p])
             }
         },
         $action:{

@@ -26383,6 +26383,8 @@ Class("xui.UI.Resizer","xui.UI",{
     },
     Static:{
         Behaviors:{
+            HoverEffected:{SBBTN:'SBBTN'},
+            ClickEffected:{SBBTN:'SBBTN'},
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             PANEL:{
@@ -26406,6 +26408,18 @@ Class("xui.UI.Resizer","xui.UI",{
                         : a=='left'?'right':a=='right'?'left':a=='top'?'down':'up';
 
                     xui.use(src).replaceClass(/(xui-icon-double)[\w]+/g,'$1' + target);
+                }
+            },
+            SIDEBAR:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties,
+                        btn=profile.getSubNode('SBBTN');
+                    if(p.disabled)return false;
+                    if(xui.Event.getSrc(e).$xid!=btn.xid()){
+                        if(p.sideBarStatus=='fold'){
+                            btn.onClick(true);
+                        }
+                    }
                 }
             }
         },
@@ -26548,6 +26562,9 @@ Class("xui.UI.Resizer","xui.UI",{
             },
             'KEY-fold PANEL':{
                 display:'none'
+            },
+            'KEY-fold SIDEBAR':{
+                cursor:'pointer'
             }
         },
         RenderTrigger:function(){
@@ -37518,6 +37535,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 $order:1,
                 height:'auto',
                 'text-align': 'right'
+            },
+            'ITEMS-left HANDLE, ITEMS-right HANDLE':{
+                $order:2,
+                display:'block'
             },
             ITEM:{
                 $order:0,

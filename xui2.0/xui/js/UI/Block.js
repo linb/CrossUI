@@ -42,6 +42,8 @@ Class("xui.UI.Block", "xui.UI.Widget",{
     },
     Static:{
         Behaviors:{
+            HoverEffected:{SBBTN:'SBBTN'},
+            ClickEffected:{SBBTN:'SBBTN'},
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             PANEL:{
@@ -65,6 +67,18 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                         : a=='left'?'right':a=='right'?'left':a=='top'?'down':'up';
 
                     xui.use(src).replaceClass(/(xui-icon-double)[\w]+/g,'$1' + target);
+                }
+            },
+            SIDEBAR:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties,
+                        btn=profile.getSubNode('SBBTN');
+                    if(p.disabled)return false;
+                    if(xui.Event.getSrc(e).$xid!=btn.xid()){
+                        if(p.sideBarStatus=='fold'){
+                            btn.onClick(true);
+                        }
+                    }
                 }
             }
         },
@@ -207,6 +221,9 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             },
             'KEY-fold PANEL':{
                 display:'none'
+            },
+            'KEY-fold SIDEBAR':{
+                cursor:'pointer'
             }
         },
         RenderTrigger:function(){

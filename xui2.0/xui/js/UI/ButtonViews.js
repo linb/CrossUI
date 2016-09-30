@@ -64,6 +64,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 height:'auto',
                 'text-align': 'right'
             },
+            'ITEMS-left HANDLE, ITEMS-right HANDLE':{
+                $order:2,
+                display:'block'
+            },
             ITEM:{
                 $order:0,
                 margin:'.166667em',
