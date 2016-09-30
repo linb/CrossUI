@@ -3,7 +3,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';
         this.setTemplate(t);
-        t.$submap.items.ITEM.className = 'xui-ui-btn {itemClass} {disabled} {readonly} {itemPosCls}';
+        t.$submap.items.ITEM.className = 'xui-ui-btn xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
@@ -286,6 +286,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
             if(!prop.noHandler){
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
+                    itmsH = hs.offsetHeight(true);
                     if(width){
                         hs.width(adjustunit(ww-bw, hsfz));
                         hl.width(adjustunit(ww-bw, hlfz));
@@ -316,26 +317,22 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
                     if(height){
                         // for nopanel:
-                        if(noPanel){
-                            hs.width(adjustunit(ww-bw, hsfz));
-                            hl.width(adjustunit(ww-bw+xui.Dom.getScrollBarSize(), hlfz));
-                        }
                         hs.height(adjustunit(hh-bw, hsfz));
                         hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
     
                         hc=hh;
                     }
-                    if(width){
-
-                        var v = prop.sideBarStatus=='fold' ? profile.$px(prop.sideBarSize,hsfz,true) : prop.barSize;
+                    if(height || width){
+                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz);
+                        var vv = hl._paddingW() + hl._marginW();
 
                         //caculate by px
-                        left = prop.barLocation=='left'?bw+profile.$px(v, hsfz):0;
-                        wc = ww-profile.$px(v, hsfz)-bw;
+                        left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz):0;
+                        wc = ww-profile.$px(v+vv, hsfz)-bw;
 
                         if(!noPanel){
-                            hs.width( adjustunit(v, hs) );
-                            hl.width( adjustunit(v+ xui.Dom.getScrollBarSize(), hl) );
+                            hs.width( adjustunit(v + vv , hsfz) );
+                            hl.width( adjustunit(v + xui.Dom.getScrollBarSize(), hlfz) );
                         }
                     }
                 }

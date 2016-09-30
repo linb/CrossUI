@@ -201,7 +201,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-node xui-ui-btn xui-list-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-uiborder-radius xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }

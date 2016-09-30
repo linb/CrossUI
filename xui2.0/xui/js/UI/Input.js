@@ -114,7 +114,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 text:'{labelCaption}'
             },
             BOX:{
-                className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uibase',
+                className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uiborder-radius xui-uibase',
                 WRAP:{
                     tagName : 'div',
                     INPUT:{

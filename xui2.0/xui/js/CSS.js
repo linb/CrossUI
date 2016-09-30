@@ -264,16 +264,19 @@ Class("xui.CSS", null,{
                     o=ds[i][k];
                 }catch(e){continue;}
                 if(!ds[i].disabled){
-                    m=(o=ds[i][k]).length;
-                    for(j=m-1; j>=0; j--){
-                        if((v=o[j]).selectorText && !v.disabled){
-                            selectorText = ns._rep(v.selectorText);
-                            if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
-                                if(!cssValue){
-                                    // replace is crack for opera
-                                    return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
-                                }else if(cssValue===v.style[cssKey]){
-                                    return ds[i].ownerNode||ds[i].owningElement ;
+                    o=ds[i][k];
+                    if(o){
+                        m=o.length;
+                        for(j=m-1; j>=0; j--){
+                            if((v=o[j]).selectorText && !v.disabled){
+                                selectorText = ns._rep(v.selectorText);
+                                if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
+                                    if(!cssValue){
+                                        // replace is crack for opera
+                                        if(v.style[cssKey]!=='')return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
+                                    }else if(cssValue===v.style[cssKey]){
+                                        return ds[i].ownerNode||ds[i].owningElement ;
+                                    }
                                 }
                             }
                         }

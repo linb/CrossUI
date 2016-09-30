@@ -69,7 +69,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             className:'{_className}',
             FIELDSET:{
                 tagName : 'fieldset',
-                className: 'xui-uiborder-flat xui-uiborder-radius {toggleCls}',
+                className: '{toggleCls}',
                 LEGEND:{
                     tagName : 'legend',
                     style:'{_align}',
@@ -109,18 +109,6 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 position:'relative',
                 overflow:'hidden',
                 zoom:xui.browser.ie6?"1":null
-            },
-            'FIELDSET-checked':{
-                $order:2,
-                'border-left':'0',
-                'border-right':'0',
-                'border-bottom':'0',
-                'border-radius':'0',
-                '-moz-border-radius': '0',
-                '-webkit-border-radius': '0',
-                '-o-border-radius': '0',
-                '-ms-border-radius': '0',
-                '-khtml-border-radius': '0'
             },
             LEGEND:{
                 'margin-left':'.5em'
@@ -229,7 +217,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             data.toggleDispplay=data.toggleBtn?'':nodisplay;
 
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
-            data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked'):'';
+            data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked') + ' xui-uiborder-t':' xui-uiborder-flat xui-uiborder-radius';
             data._fi_toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle xuifont-checked xui-uicmd-toggle-checked':'xui-uicmd-toggle';
 
             profile._toggle = !!data.toggle;
@@ -263,7 +251,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
                 
                 var fs=profile.getSubNode('FIELDSET')
-                fs.tagClass('-checked',!value);
+                if(value)
+                    fs.removeClass('xui-uiborder-t').addClass('xui-uiborder-flat xui-uiborder-radius');
+                else
+                    fs.removeClass('xui-uiborder-flat xui-uiborder-radius').addClass('xui-uiborder-t');
 
                 // same to ***
                 // for expand status:

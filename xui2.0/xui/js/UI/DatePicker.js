@@ -64,7 +64,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     className:'xui-uibar-top',
                     style:'{barDisplay};',
                     BARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-big-tl',
                         BARTDLT:{
                             className:'xui-uibar-tdlt'
                         }
@@ -78,7 +78,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     },
                     BARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-tr',
                         BARTDRT:{
                             className:'xui-uibar-tdrt'
                         }
@@ -219,7 +219,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         },
                         SET:{
                             tagName:"button",
-                            className:'xui-ui-btn',
+                            className:'xui-ui-btn xui-uiborder-radius',
                             tabindex: '{tabindex}',
                             text:"{_set}"
                         }
@@ -230,7 +230,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     tagName:'div',
                     className:'xui-uibar-bottom-s',
                     BBARTDL:{
-                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
+                        className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-big-bl'
                     },
                     BBARTDM:{
                         $order:1,
@@ -238,7 +238,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     },
                     BBARTDR:{
                         $order:2,
-                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
+                        className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-br'
                     }
                 }
             }

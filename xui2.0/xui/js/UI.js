@@ -2061,14 +2061,7 @@ Class("xui.UI",  "xui.absObj", {
                 'text-align': 'center',
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'line-height': '1',
-                'border': 'solid 1px #C5C5C5',
-                'border-radius': '3px',
-                '-moz-border-radius': '3px',
-                '-webkit-border-radius': '3px',
-                '-o-border-radius': '3px',
-                '-ms-border-radius': '3px',
-                '-khtml-border-radius': '3px',
-                
+                'border': 'solid 1px #C5C5C5',                
                 zoom:xui.browser.ie?1:null,
                 // for IE6
                 'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
@@ -2500,41 +2493,77 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '6px',
                 '-khtml-border-radius': '6px'
             },
-            '.xui-uiborder-radius-lt':{
+            '.xui-uiborder-radius-tl':{
                 $order:12,
-                'border-radius':'6px 0 0 0',
-                '-moz-border-radius': '6px 0 0 0',
-                '-webkit-border-radius': '6px 0 0 0',
-                '-o-border-radius': '6px 0 0 0',
-                '-ms-border-radius': '6px 0 0 0',
-                '-khtml-border-radius': '6px 0 0 0'      
+                'border-top-left-radius':'3px',
+                '-moz-border-top-left-radius': '3px',
+                '-webkit-border-top-left-radius': '3px',
+                '-o-border-top-left-radius': '3px',
+                '-ms-border-top-left-radius': '3px',
+                '-khtml-border-top-left-radius': '3px'      
             },
-            '.xui-uiborder-radius-rt':{
+            '.xui-uiborder-radius-tr':{
                 $order:12,
-                'border-radius':'0 6px 0 0',
-                '-moz-border-radius': '0 6px 0 0',
-                '-webkit-border-radius': '0 6px 0 0',
-                '-o-border-radius': '0 6px 0 0',
-                '-ms-border-radius': '0 6px 0 0',
-                '-khtml-border-radius': '0 6px 0 0'
+                'border-top-right-radius':'3px',
+                '-moz-border-top-right-radius': '3px',
+                '-webkit-border-top-right-radius': '3px',
+                '-o-border-top-right-radius': '3px',
+                '-ms-border-top-right-radius': '3px',
+                '-khtml-border-top-right-radius': '3px'
             },
-            '.xui-uiborder-radius-rb':{
+            '.xui-uiborder-radius-br':{
                 $order:12,
-                'border-radius':'0 0 6px 0',
-                '-moz-border-radius': '0 0 6px 0',
-                '-webkit-border-radius': '0 0 6px 0',
-                '-o-border-radius': '0 0 6px 0',
-                '-ms-border-radius': '0 0 6px 0',
-                '-khtml-border-radius': '0 0 6px 0'
+                'border-bottom-right-radius':'3px',
+                '-moz-border-bottom-right--radius': '3px',
+                '-webkit-border-bottom-right--radius': '3px',
+                '-o-border-bottom-right--radius': '3px',
+                '-ms-border-bottom-right--radius': '3px',
+                '-khtml-border-bottom-right--radius': '3px'
             },
-            '.xui-uiborder-radius-lb':{
+            '.xui-uiborder-radius-bl':{
                 $order:12,
-                'border-radius':'0 0 0 6px',
-                '-moz-border-radius': '0 0 0 6px',
-                '-webkit-border-radius': '0 0 0 6px',
-                '-o-border-radius': '0 0 0 6px',
-                '-ms-border-radius': '0 0 0 6px',
-                '-khtml-border-radius': '0 0 0 6px'
+                'border-bottom-left-radius':'3px',
+                '-moz-border-bottom-left-radius': '3px',
+                '-webkit-border-bottom-left-radius': '3px',
+                '-o-border-bottom-left-radius': '3px',
+                '-ms-border-bottom-left-radius': '3px',
+                '-khtml-border-bottom-left-radius': '3px'
+            },
+            '.xui-uiborder-radius-big-tl':{
+                $order:13,
+                'border-top-left-radius':'6px',
+                '-moz-border-top-left-radius': '6px',
+                '-webkit-border-top-left-radius': '6px',
+                '-o-border-top-left-radius': '6px',
+                '-ms-border-top-left-radius': '6px',
+                '-khtml-border-top-left-radius': '6px'      
+            },
+            '.xui-uiborder-radius-big-tr':{
+                $order:13,
+                'border-top-right-radius':'6px',
+                '-moz-border-top-right-radius': '6px',
+                '-webkit-border-top-right-radius': '6px',
+                '-o-border-top-right-radius': '6px',
+                '-ms-border-top-right-radius': '6px',
+                '-khtml-border-top-right-radius': '6px'
+            },
+            '.xui-uiborder-radius-big-br':{
+                $order:13,
+                'border-bottom-right-radius':'6px',
+                '-moz-border-bottom-right--radius': '6px',
+                '-webkit-border-bottom-right--radius': '6px',
+                '-o-border-bottom-right--radius': '6px',
+                '-ms-border-bottom-right--radius': '6px',
+                '-khtml-border-bottom-right--radius': '6px'
+            },
+            '.xui-uiborder-radius-big-bl':{
+                $order:13,
+                'border-bottom-left-radius':'6px',
+                '-moz-border-bottom-left-radius': '6px',
+                '-webkit-border-bottom-left-radius': '6px',
+                '-o-border-bottom-left-radius': '6px',
+                '-ms-border-bottom-left-radius': '6px',
+                '-khtml-border-bottom-left-radius': '6px'
             },
             '.xui-uiborder-noradius':{
                 $order:15,
@@ -6799,8 +6828,8 @@ new function(){
                     action: function(v){
                         if(xui.browser.ie && xui.browser.ver <=8){
                             var node=this.getSubNode('IE67_SHADOW');
-                            if(v) node.addClass('xui-ui-shadow xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb');
-                            else node.removeClass('xui-ui-shadow xui-uiborder-r xui-uiborder-b xui-uiborder-radius-rb');
+                            if(v) node.addClass('xui-ui-shadow xui-uiborder-r xui-uiborder-b xui-uiborder-radius-br');
+                            else node.removeClass('xui-ui-shadow xui-uiborder-r xui-uiborder-b xui-uiborder-radius-br');
                         }else{
                             var node=this.getSubNode('BORDER');
                             if(v) node.addClass('xui-ui-shadow');
@@ -7024,7 +7053,7 @@ new function(){
                 _NativeElement:true,
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-node xui-wrapper xui-ui-btn  {_className}',
+                className:'xui-node xui-wrapper xui-ui-btn xui-ui-sbtn xui-uiborder-radius {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -7106,7 +7135,7 @@ new function(){
             Templates:{
                 tagName:'button',
                 // dont set class to HTML Element
-                className:'xui-ui-unselectable xui-ui-btn {_className}',
+                className:'xui-ui-unselectable xui-ui-btn xui-ui-sbtn xui-uiborder-radius {_className}',
                 style:'cursor:pointer;{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{

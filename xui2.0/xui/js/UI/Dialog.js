@@ -168,7 +168,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 tagName:'div',
                 className:'xui-uibar-top',
                 TBARTDL:{
-                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lt',
+                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-big-tl',
                     TBARTDLT:{
                         className:'xui-uibar-tdlt'
                     }
@@ -182,7 +182,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },
                 TBARTDR:{
                     $order:2,
-                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rt',
+                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-tr',
                     TBARTDRT:{
                         className:'xui-uibar-tdrt'
                     }
@@ -293,7 +293,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 className:'xui-uibar-bottom',
                 BBARTDL:{
                     $order:1,
-                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-lb'
+                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-big-bl'
                 },
                 BBARTDM:{
                     $order:2,
@@ -301,7 +301,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 },
                 BBARTDR:{
                     $order:3,
-                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-rb'
+                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-br'
                 }
             },
             TABSTOP2:{$order:9}

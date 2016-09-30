@@ -30,7 +30,8 @@
 
 /*border*/
 .xui-uiborder-radius, .xui-uiborder-radius-big, 
-.xui-uiborder-radius-lt, .xui-uiborder-radius-rt, .xui-uiborder-radius-lb, .xui-uiborder-radius-rb{
+.xui-uiborder-radius-tl, .xui-uiborder-radius-tr, .xui-uiborder-radius-bl, .xui-uiborder-radius-br,
+xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-big-bl, .xui-uiborder-radius-big-br{
     border-radius: 0;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -93,12 +94,6 @@
     -webkit-box-shadow: none;
     box-shadow: none;
     filter: none;
-    border-radius: 0;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
-    -o-border-radius: 0;
-    -ms-border-radius: 0;
-    -khtml-border-radius: 0;
 }
 .xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
     border-color:#bbb;

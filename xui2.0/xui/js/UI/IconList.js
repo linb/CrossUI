@@ -148,12 +148,14 @@ Class("xui.UI.IconList", "xui.UI.List",{
             onCmd:null
         },
         _prepareItem:function(profile, item){
-            var p = profile.properties,t;
+            var p = profile.properties,
+            css=xui.CSS,    
+            t;
             xui.arr.each(xui.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemMargin)item.itemMargin=profile.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
+            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
             item._tabindex = p.tabindex;
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },

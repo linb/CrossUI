@@ -252,7 +252,7 @@ Class("xui.DataBinder","xui.absObj",{
                         if(xui.isDefined(uv) && 'value' in p)
                             if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
                     }else{
-                        if(profile.box['xui.UI.ComboInput'] && (p.type=='file'||p.type=='upload')){
+                        if(profile.box['xui.UI.ComboInput'] && (p.type=='file')){
                             map[t]=profile;
                         }else if(withCaption && 'caption' in p){
                             cap=typeof(b.getCaption)=="function"?b.getCaption():p.caption;

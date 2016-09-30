@@ -327,7 +327,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uiborder-flat xui-uiborder-nob xui-uiborder-box xui-uiborder-radius-lt xui-uiborder-radius-rt xui-uibar {itemClass} {disabled} {readonly}',
+                        className:'xui-uiborder-flat xui-uiborder-nob xui-uiborder-box xui-uiborder-radius-big-tl xui-uiborder-radius-big-tr xui-uibar {itemClass} {disabled} {readonly}',
                         style:'{_itemDisplay} {itemStyle}',
                         ITEMI:{
                             ITEMC:{

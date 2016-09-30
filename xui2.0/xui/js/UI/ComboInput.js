@@ -6,7 +6,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(profile.$isNumber){
                 v=(''+v).replace(/[^\d.-]/g,'');
                 v=xui.isNumb(parseFloat(v))?xui.toFixedNumber(v,p.precision):null;
-            }else if(profile.properties.type=='datepicker'||profile.properties.type=='date'||profile.properties.type=='datetime'){
+            }else if(profile.properties.type=='date'||profile.properties.type=='datetime'){
                 v=xui.isDate(v)?v:xui.isFinite(v)?new Date(parseInt(v,10)):null;                
             }else if(typeof v=="string" && v.indexOf("\r")!=-1){
                 v=v.replace(/(\r\n|\r)/g, "\n");
@@ -49,7 +49,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 profile.$_inner=1;
                 o.attr('value',value||'');
                 delete profile.$_inner;
-                if(type=='colorpicker'||type=='color')
+                if(type=='color')
                     o.css({backgroundColor:value, color:xui.UI.ColorPicker.getTextColor(value)});
             })
         },
@@ -149,7 +149,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 prop=profile.properties,
                 c = xui(input).get(0);
             if(c.tagName && c.tagName.toLowerCase()=='input' && c.type=='file'){
-                if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
+                if(profile.renderId && prop.type=='file'){
                     var o = profile.getSubNode('FILE').get(0);
                     
                     xui.setNodeData(c.$xid=o.$xid,'element',c);
@@ -169,7 +169,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         //for upload ,special must get the original node
         getUploadObj:function(){
             var profile=this.get(0),prop=profile.properties;
-            if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
+            if(profile.renderId && prop.type=='file'){
                 var o = profile.getSubNode('FILE').get(0);
                 if(!o.value)
                     return null;
@@ -203,7 +203,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         popFileSelector:function(){
             var profile=this.get(0),prop=profile.properties;
-            if(profile.renderId && (prop.type=='upload'||prop.type=='file')){
+            if(profile.renderId && prop.type=='file'){
                 var fileInput = profile.getSubNode('FILE').get(0);
                 // for IE11
                 if (xui.browser.ie11)  {
@@ -218,7 +218,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         resetValue:function(value){
             this.each(function(p){
-                if(p.properties.type=='upload'||p.properties.type=='file')
+                if(p.properties.type=='file')
                     p.getSubNode('FILE').attr('value','');
             });
             var upper=arguments.callee.upper,
@@ -246,10 +246,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 // for standard drop
                 if(type=='combobox'||type=='listbox'||type=='helpinput'
-                    ||type=='date'||type=='datepicker'
-                    ||type=='time'||type=='timepicker'
+                    ||type=='date'
+                    ||type=='time'
                     ||type=='datetime'
-                    ||type=='color'||type=='colorpicker'){
+                    ||type=='color'){
 
                     if(profile.__tryToHide){
                         xui.clearTimeout(profile.__tryToHide);
@@ -260,12 +260,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var cachekey;
                     if(cacheDrop){
                         switch(type){
-                            case 'timepicker':
                             case 'time':
-                            case 'datepicker':
                             case 'date':
                             case 'datetime':
-                            case 'colorpicker':
                             case 'color':
                                 cachekey=type;
                                 break;
@@ -324,7 +321,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 });
                                 break;
                             case 'time':
-                            case 'timepicker':
                                 o = xui.create('TimePicker');
                                 o.setHost(profile);
                                 o.beforeClose(function(){
@@ -340,7 +336,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 });
                                 break;
                             case 'date':
-                            case 'datepicker':
                             case 'datetime':
                                 o = xui.create('DatePicker');
 
@@ -364,7 +359,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                                 break;
                             case 'color':
-                            case 'colorpicker':
                                 o = xui.create('ColorPicker');
                                 o.setHost(profile);
                                 o.beforeClose(function(){
@@ -405,18 +399,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         case 'listbox':
                         case 'helpinput':
                         case 'time':
-                        case 'timepicker':
                             o.setValue(profile.properties.$UIvalue, true,'pop');
                             break;
                         case 'date':
-                        case 'datepicker':
                         case 'datetime':
                             var t = profile.$drop.properties;
                             if(t=profile.properties.$UIvalue)
                                 o.setValue(new Date( parseInt(t,10)), true,'pop');
                             break;
                         case 'color':
-                        case 'colorpicker':
                             o.setValue(profile.properties.$UIvalue.replace('#',''), true,'pop');
                             break;
                     }
@@ -479,14 +470,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             SBTN:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-nofocus xui-ui-btn',
-                style:"{_saveDisplay}",
+                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-nofocus xui-ui-btn',
+                style:"{_cmdDisplay}",
                 SMID:{
                     className:"xuifont {btncls}",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
         },'all');
+        t.FRAME.BORDER.BOX.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat {_radius_input} xui-uibase';
         t.FRAME.POOL={};
         t.className +=' {typecls}';
 
@@ -510,16 +502,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             delete profile.$fromEditor;
             delete profile.$typeOK;
 
-            if(type=='listbox'||type=='upload'||type=='file'||type=='cmdbox'||type=='button'||type=='dropbutton')
+            if(type=='listbox'||type=='file'||type=='cmdbox'||type=='button'||type=='dropbutton')
                 profile.$inputReadonly=true;
 
-            if(type=='upload'||type=='file')
+            if(type=='file')
                 profile.$xuiFileCtrl=true;
 
             if(type!='listbox' && type!='combobox' && type!='helpinput')
                 pro.items=[];
 
-            if(type=='timepicker' || type=='time'){
+            if(type=='time'){
                 var keymap={a:1,c:1,v:1,x:1};
                 xui.merge(profile,{
                     $beforeKeypress : function(p,c,k){
@@ -536,7 +528,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return v;
                     }
                 },'all');
-            }else if(type=='datepicker' || type=='date' || type=='datetime'){
+            }else if(type=='date' || type=='datetime'){
                 var date=xui.Date;
                 var keymap={a:1,c:1,v:1,x:1};
                 xui.merge(profile,{
@@ -762,7 +754,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
                     }
-                    if(type=='file'||type=='upload'){
+                    if(type=='file'){
                         profile.boxing().popFileSelector();
                         return;
                     }
@@ -1257,7 +1249,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus',
+                            className:'xui-ui-btn xui-nofocus {_radius_drop1}',
                             R1B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
@@ -1265,7 +1257,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus',
+                            className:'xui-ui-btn xui-nofocus {_radius_drop2}',
                             R2B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
@@ -1275,11 +1267,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 break;
 
                 // following have BTN button
-                case 'upload':
                 case 'file':
                     t.FILE={
                         $order:20,
-                        className:'xui-ui-unselectable',
+                        className:'xui-ui-unselectable {_radius_drop}',
                         tagName:'input',
                         type:'file',
                         hidefocus:xui.browser.ie?"hidefocus":null,
@@ -1293,8 +1284,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.BTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus',
-                        style:"{_popbtnDisplay}",
+                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_drop}',
+                        style:"{_popDisplay}",
                         MID:{
                             className:'xuifont',
                             $fonticon:'{_fi_btnClass}',
@@ -1327,33 +1318,31 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         _prepareData:function(profile){
             var data={},
+                NONE='display:none',
                 prop=profile.properties,
+                type=prop.type,
                 arr=profile.box.$DataModel.commandBtn.combobox;
             data=arguments.callee.upper.call(this, profile, data);
 
-            var tt=data.type;
-            tt=tt=='timepicker'?'time':
-                tt=='datepicker'?'date':
-                tt=='colorpicker'?'color':
-                (tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':
-                tt;
+            var tt=type,a,b;
+            tt=(tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':tt;
 
             data._fi_btnClass = "xui-uicmd-" + tt;
             if(data.btnImage)
                 data._btnStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
             data._type="text";
 
-            data._saveDisplay = (!data.commandBtn||data.commandBtn=='none')?'display:none':'';
+            data._cmdDisplay = (a=(!data.commandBtn)||data.commandBtn=='none')?NONE:'';
             data._fi_commandCls = (xui.arr.indexOf(arr, data.commandBtn)!=-1?"xui-uicmd-":"") + data.commandBtn;
 
-            data._popbtnDisplay = (data.type!='none'&&data.type!='input'&&data.type!='password')?'':'display:none';
-            data.typecls=profile.getClass('KEY','-type-'+(
-            data.type=='colorpicker'?'color'
-            :data.type=='datepicker'?'date'
-            :data.type=='timepicker'?'time'
-            :data.type=='upload'?'file'
-            :data.type
-            ));
+            data._popDisplay = (b=type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?NONE:'';
+            data.typecls=profile.getClass('KEY','-type-'+data.type);
+
+            data._radius_input=(a&&b)?'xui-uiborder-radius':'xui-uiborder-radius-tl xui-uiborder-radius-bl';
+            data._radius_drop=a?'xui-uiborder-radius-tr xui-uiborder-radius-br':'xui-uiborder-noradius';
+            data._radius_drop1=a?'xui-uiborder-radius-tr':'xui-uiborder-noradius';
+            data._radius_drop2=a?'xui-uiborder-radius-br':'xui-uiborder-noradius';
+
             return data;
         },
         _ensureValue:function(profile, value){
@@ -1365,7 +1354,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
             switch(profile.properties.type){
                 case 'date':
-                case 'datepicker':
                 case 'datetime':
                     var d;
                     if(value){
@@ -1378,11 +1366,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
                     return d?String(profile.properties.type=='datetime'?d.getTime():xui.Date.getTimSpanStart(d,'d',1).getTime()):"";
                 case 'color':
-                case 'colorpicker':
                     var c=xui.UI.ColorPicker._ensureValue(null,value);
                     return (c=="transparent"?'':'#')+c;
                 case 'time':
-                case 'timepicker':
                     return xui.UI.TimePicker._ensureValue(null,value);
                 case 'currency':
                 case 'number':

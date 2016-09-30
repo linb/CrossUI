@@ -2213,7 +2213,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLA:{
                             _NativeElement:true,
                             tagName:'button',
-                            className:'xui-node xui-showfocus xui-wrapper xui-ui-btn xui-treegrid-tgbtn {cellClass}',
+                            className:'xui-node xui-showfocus xui-wrapper xui-ui-btn xui-uiborder-radius xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -2289,7 +2289,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-node xui-ui-btn xui-uiborder-radius xui-list-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-uiborder-radius xui-uiborder-radius xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -4033,7 +4033,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             headerHeight:{
                 $spaceunit:1,
-                ini:'1.83333em',
+                ini:'2em',
                 action:function(v){
                     var profile=this,
                         prop=profile.properties;
@@ -4046,7 +4046,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             rowHeight:{
                 $spaceunit:1,
-                ini:'1.75em',
+                ini:'2em',
                 action:function(v){
                     this.box._adjusteditorH(this, this.getSubNodes(['CELLS1','CELLS2'], true).height(v),v);
                 }
@@ -5077,7 +5077,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         node.html(caption,false);
                 break;
                 case 'date':
-                case 'datepicker':
                     cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):null;
                     caption= capOut || ren(profile,cell,uicell,f1);
                     if(node)
@@ -5096,7 +5095,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         node.html(caption,false);
                 break;
                 case 'color':
-                case 'colorpicker':
                     var c=xui.UI.ColorPicker._ensureValue(0,cell.value);
                     cell.value=cell.value?((c!=="transparent"?'#':'')+c):"";
                     caption= capOut ||ren(profile,cell,uicell);
@@ -5886,7 +5884,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 xui.tryF(editor.setResizer,[true],editor);
                             break;
                         case 'date':
-                        case 'datepicker':
                         case 'datetime':
                             var dateEditorTpl=getPro('dateEditorTpl');
                             if(dateEditorTpl)
@@ -5895,9 +5892,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'combobox':
                         case 'helpinput':
                         case 'time':
-                        case 'timepicker':
                         case 'color':
-                        case 'colorpicker':
                         case 'getter':
                         case 'popbox':
                         case 'cmd':
@@ -6176,14 +6171,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         var expand,
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
-                        issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='cmd'||type=='file'||type=='upload'));
+                        issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='cmd'||type=='file'));
 
                         if( xui.isFun(editor.expand) &&
                             editorAutoPop!==false &&
                             (
                                 issharp ||
                                 (
-                                    (editMode=="sharp"||editMode=="focus") &&   (editorAutoPop || type=='listbox'||type=='date'||type=='datepicker'||type=='datetime'||type=='time'||type=='timepicker'||type=='color'||type=='colorpicker')
+                                    (editMode=="sharp"||editMode=="focus") &&   (editorAutoPop || type=='listbox'||type=='date'||type=='datetime'||type=='time'||type=='color')
                                 )
                            )
                          ){

@@ -7,7 +7,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'xui-ui-btn {itemClass} {disabled} {readonly}',
+                    className:'xui-ui-btn xui-uiborder-radius {itemClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{

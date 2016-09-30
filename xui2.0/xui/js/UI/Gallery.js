@@ -242,13 +242,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             onCmd:null
         },
         _prepareItem:function(profile, item){
-            var p = profile.properties,t;
+            var p = profile.properties,
+                css=xui.CSS,
+                t;
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemMargin)item.itemMargin=profile.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
+            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
             item.caption = item.caption || '';
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
@@ -257,7 +259,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
-                item._itemSize='width:'+profile.$forceu(item.itemWidth)+'height:'+profile.$forceu(item.itemHeight);
+                item._itemSize='width:'+css.$forceu(item.itemWidth)+'height:'+css.$forceu(item.itemHeight);
             }
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },
