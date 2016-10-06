@@ -33,9 +33,9 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 //change href and text
                 change(first, min, min);
                 change(prehide, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1);
-                change(prev, cur-1, prop.prevMark);
+                change(prev, cur-1, prop.prevMark||(cur-1));
                 change(current, cur, cur);
-                change(next, cur+1, prop.nextMark);
+                change(next, cur+1, prop.nextMark||(cur+1));
                 change(nexthide, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1);
                 change(last, max, max);
 
@@ -120,7 +120,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             CUR:{
                 $order:4,
-                className:'xui-ui-btn xui-uiborder-radius xui-ui-btn-focus',
+                className:'xui-ui-btn xui-uiborder-radius xui-ui-btn-checked',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -257,7 +257,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             textTpl:"*",
             prevMark:'&lt;',
             nextMark:'&gt;',
-            _moreStep:100
+            _moreStep:30
         },
         EventHandlers:{
             onClick:function(profile, page){},

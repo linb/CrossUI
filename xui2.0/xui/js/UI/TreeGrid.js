@@ -6284,11 +6284,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //s21.width(adjustunit(w1,s21));
                 //s22.width(adjustunit(w2,s22));
 
+                // for scroll sync
                 xui.asyRun(function(){
-                    b21.css('padding-bottom', s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0);
+                    b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px');
                     s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0);
+                        b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px');
                         s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);

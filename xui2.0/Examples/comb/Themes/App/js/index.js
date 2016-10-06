@@ -116,10 +116,6 @@ Class('App', 'xui.Module',{
                     "caption" : "14 px"
                 },
                 {
-                    "id" : "15px",
-                    "caption" : "15 px"
-                },
-                {
                     "id" : "16px",
                     "caption" : "16 px"
                 },
@@ -1170,6 +1166,8 @@ Class('App', 'xui.Module',{
                 .setWidth("29.166666666666668em")
                 .setHeight("2.5em")
                 .setValue("1:100:200")
+                .setPrevMark("")
+                .setNextMark("")
                 , "2");
             
             host.tabs2.append(
@@ -2177,10 +2175,7 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "d",
                     "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
+                    "image" : "{xui.ini.img_icon}"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -2277,10 +2272,7 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "d",
                     "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
+                    "image" : "{xui.ini.img_icon}"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -2344,10 +2336,7 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "d",
                     "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}",
-                    "closeBtn" : true,
-                    "optBtn" : true,
-                    "popBtn" : true
+                    "image" : "{xui.ini.img_icon}"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -3788,7 +3777,7 @@ Class('App', 'xui.Module',{
         _ctl_comboinput61_afteruivalueset:function (profile,oldValue,newValue){
             var ns=this;
             xui.setTheme(newValue,true,function(){
-                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"?'1rem':newValue=='webflat'?'15px':'12px',true);
+                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"?'1rem':newValue=='webflat'?'16px':'12px',true);
             });
         },
         _xui_ui_comboinput32_afteruivalueset:function (profile,oldValue,newValue){

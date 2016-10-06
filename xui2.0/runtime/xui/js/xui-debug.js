@@ -27696,7 +27696,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
             if(type=='vertical'){
                 var w=ru1.height(),
-                    w1=prop.showDecreaseHandle?cmd.offsetHeight():0,
+                    w1=prop.showDecreaseHandle?cmd.offsetHeight(true):0,
                     w2=w1,
                     w3=f('IND1').height();
     
@@ -27706,7 +27706,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             }else{
                 var w=ru1.width(),
-                    w1=prop.showDecreaseHandle?cmd.offsetWidth():0,
+                    w1=prop.showDecreaseHandle?cmd.offsetWidth(true):0,
                     w2=w1,
                     w3=f('IND1').width();
     
@@ -27887,17 +27887,18 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 left:0,
                 top:0,
                 position:'absolute',
+                overflow:'hidden',
                 'z-index':10
             },
             INPUT:{
                //don't change it in custom class or style
-               'padding-top':'.25em',
-               'padding-left':'.25em',
-               'padding-right':'.25em',
-               'padding-bottom':'.25em',
+               'padding-top':'4px',
+               'padding-left':'4px',
+               'padding-right':'4px',
+               'padding-bottom':'4px',
 
                "background-color":"transparent",
-               "background-image":xui.browser.ie?'url(.)':null,
+               "background-image":xui.browser.ie687?'url(.)':null,
                border:0,
                margin:0,
                // default
@@ -31259,8 +31260,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
                 clsname='xui-node xui-input-input',
-                paddingH=isB?0:v1._paddingH(),
-                paddingW=isB?0:v1._paddingW(),
+                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
+                paddingW=isB?0:Math.round(v1._paddingW()/2)*2,
                 btnw, autoH;
 
              $hborder=$vborder=box._borderW() / 2;
@@ -31343,8 +31344,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                if(iH2!==null && prop.type=='spin'){
                     if(iH2/2-$vborder*2>0){
                         f('R1').height(adjustunit(iH2/2));
-                        // left offset 1px
-                        f('R2').height(adjustunit(iH2/2 + $hborder));
+                        f('R2').height(adjustunit(iH2/2 + (Math.round(iH2) - Math.round(iH2/2)*2) ));
                     }
                 }
                 // left offset 1px
@@ -35796,9 +35796,9 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 //change href and text
                 change(first, min, min);
                 change(prehide, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1);
-                change(prev, cur-1, prop.prevMark);
+                change(prev, cur-1, prop.prevMark||(cur-1));
                 change(current, cur, cur);
-                change(next, cur+1, prop.nextMark);
+                change(next, cur+1, prop.nextMark||(cur+1));
                 change(nexthide, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1);
                 change(last, max, max);
 
@@ -35883,7 +35883,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             CUR:{
                 $order:4,
-                className:'xui-ui-btn xui-uiborder-radius xui-ui-btn-focus',
+                className:'xui-ui-btn xui-uiborder-radius xui-ui-btn-checked',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -36020,7 +36020,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             textTpl:"*",
             prevMark:'&lt;',
             nextMark:'&gt;',
-            _moreStep:100
+            _moreStep:30
         },
         EventHandlers:{
             onClick:function(profile, page){},
@@ -48114,11 +48114,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //s21.width(adjustunit(w1,s21));
                 //s22.width(adjustunit(w2,s22));
 
+                // for scroll sync
                 xui.asyRun(function(){
-                    b21.css('padding-bottom', s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0);
+                    b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px');
                     s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0);
+                        b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px');
                         s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);

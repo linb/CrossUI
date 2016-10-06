@@ -611,7 +611,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
             if(type=='vertical'){
                 var w=ru1.height(),
-                    w1=prop.showDecreaseHandle?cmd.offsetHeight():0,
+                    w1=prop.showDecreaseHandle?cmd.offsetHeight(true):0,
                     w2=w1,
                     w3=f('IND1').height();
     
@@ -621,7 +621,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
             }else{
                 var w=ru1.width(),
-                    w1=prop.showDecreaseHandle?cmd.offsetWidth():0,
+                    w1=prop.showDecreaseHandle?cmd.offsetWidth(true):0,
                     w2=w1,
                     w3=f('IND1').width();
     

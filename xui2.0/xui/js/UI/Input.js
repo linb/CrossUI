@@ -168,17 +168,18 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 left:0,
                 top:0,
                 position:'absolute',
+                overflow:'hidden',
                 'z-index':10
             },
             INPUT:{
                //don't change it in custom class or style
-               'padding-top':'.25em',
-               'padding-left':'.25em',
-               'padding-right':'.25em',
-               'padding-bottom':'.25em',
+               'padding-top':'4px',
+               'padding-left':'4px',
+               'padding-right':'4px',
+               'padding-bottom':'4px',
 
                "background-color":"transparent",
-               "background-image":xui.browser.ie?'url(.)':null,
+               "background-image":xui.browser.ie687?'url(.)':null,
                border:0,
                margin:0,
                // default

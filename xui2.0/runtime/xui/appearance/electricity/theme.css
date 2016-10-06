@@ -65,20 +65,15 @@
 
 /*item*/
 .xui-uitembg-hover, .xui-uitembg-active, .xui-uitembg-checked{
-    background-image: url(Public/list_item.gif);
-    background-repeat:repeat-x;
     border-color:#85AEC2;
 }
 .xui-uitembg-hover{
-  background-position:left -100px;
    background-color:#BCDDE0;
 }
 .xui-uitembg-active{
-  background-position: left -300px;
   background-color:#97B9C8;
 }
 .xui-uitembg-checked{
-  background-position: left -200px;
   background-color:#85AEC2;
 }
 .xui-uitembg-checked, .xui-uitembg-checked .xui-node{
@@ -119,48 +114,17 @@
 }
 
 /*uicontainer*/
-.xui-uiborder-box{
-		border-width:0;
-}
-.xui-uibar-top .xui-uibar-tdlt, .xui-uibar-top .xui-uibar-tdmt, .xui-uibar-top .xui-uibar-tdrt, 
-.xui-uibar-top-s .xui-uibar-tdl, .xui-uibar-top-s .xui-uibar-tdm, .xui-uibar-top-s .xui-uibar-tdr, 
-.xui-uibar-bottom .xui-uibar-tdl, .xui-uibar-bottom .xui-uibar-tdm, .xui-uibar-bottom .xui-uibar-tdr,
-.xui-uibar-bottom-s .xui-uibar-tdl, .xui-uibar-bottom-s .xui-uibar-tdm, .xui-uibar-bottom-s .xui-uibar-tdr{
-    background-image: url(Public/con_vertical.gif);
-    background-repeat: no-repeat;
-    background-position: left top;
-}
-
-.xui-uicon-main,
-.xui-uibar-top .xui-uibar-tdl,
-.xui-uibar-top .xui-uibar-tdr{
-    background-image: url(Public/con_left.gif);
-    background-repeat: repeat-y;
-    background-position: left top;
-}
-.xui-uibar-top .xui-uibar-tdm{
-}
-.xui-uicon-maini,
-.xui-uibar-top .xui-uibar-tdr{
-    background-image: url(Public/con_right.gif);
-    background-repeat: repeat-y;
-    background-position: right top;
-}
 .xui-uibar-top .xui-uibar-tdb{
   display:block;
 }
 .xui-uibar-top .xui-uibar-tdlt{
   height:30px;
-  background-position: 0 0;
 }
 .xui-uibar-top .xui-uibar-tdmt{
   height:30px;
-  background-position: 0 -30px;
-  background-repeat: repeat-x;
 }
 .xui-uibar-top .xui-uibar-tdrt{
   height:30px;
-  background-position: right -60px;
 }
 .xui-uibar-focus, 
 .xui-uibar-top-focus .xui-uibar-tdl,
@@ -169,77 +133,25 @@
   background-color: #BCDDE0;
 }
 
-.xui-uibar-top-focus .xui-uibar-tdlt{
-  background-position: left -90px;
-}
-.xui-uibar-top-focus .xui-uibar-tdmt{
-  background-position: left -120px;
-  background-repeat: repeat-x;
-}
-.xui-uibar-top-focus .xui-uibar-tdrt{
-  background-position: right -150px;
-}
-
-.xui-uibar-bottom .xui-uibar-tdl{
-  background-position: left -189px;
-}
-.xui-uibar-bottom .xui-uibar-tdm{
-  background-position: left -211px;
-  background-repeat: repeat-x;
-}
-.xui-uibar-bottom .xui-uibar-tdr{
-  background-position: right -233px;
-}
-
-
 .xui-uibar-top-s, .xui-uibar-bottom-s{
     padding:3px 0;
 }
-.xui-uibar-top-s .xui-uibar-tdl{
-  background-position: left -261px;
-}
-.xui-uibar-top-s .xui-uibar-tdm{
-  background-position: left -283px;
-  background-repeat: repeat-x;
-}
-.xui-uibar-top-s .xui-uibar-tdr{
-  background-position: right -305px;
-}
-.xui-uibar-bottom-s .xui-uibar-tdl{
-  background-position: left -327px;
-}
-.xui-uibar-bottom-s .xui-uibar-tdm{
-  background-position: left -349px;
-  background-repeat: repeat-x;
-}
-.xui-uibar-bottom-s .xui-uibar-tdr{
-  background-position: right -370px;
-}
-
 
 /*xui.UI.Tabs*/
 /*.xui-tabs-items{padding:0 0 4px 0;}*/
 .xui-tabs-item{
-    background-image: url(Public/list_item.gif);
-    background-repeat:repeat-x;
-
-    background-position: left top;
     background-color: #CCEAFA;
 }
 .xui-tabs-item-hover{
-   background-position:left -100px;
    background-color:#BCDDE0;
 }
 .xui-tabs-item-active{
-  background-position: left -300px;
   background-color:#97B9C8;
 }
 .xui-tabs-item-checked{
-  background-position: left -200px;
   background-color:#85AEC2;
 }
 
- 
 /*xui.UI.TreeGrid*/
 .xui-uicell,
 .xui-treegrid-cells1, .xui-treegrid-cells2{
@@ -252,7 +164,7 @@
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,
 .xui-treegrid-header1, .xui-treegrid-header2{
-    background: #D3E7F2  url(Public/list_item.gif) repeat-x left -400px;
+    background-color: #D3E7F2;
 }
 .xui-hcell,
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
@@ -260,7 +172,7 @@
     border-bottom:solid 1px #BDDEE0;
 }
 .xui-treegrid-fhcell-hover, .xui-treegrid-hcell-hover, .xui-treegrid-hscell-hover{
-    background: #CEE2E5 url(Public/list_item.gif) repeat-x left -500px;
+    background-color: #CEE2E5;
 }
 
 .xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
@@ -299,7 +211,6 @@ button:disabled, a:disabled, input:disabled, textarea:disabled,
 .xui-uicell-disabled, .xui-uicell-disabled .xui-node{
   color: #808080 !important;
 }
-
 /*
 .xui-ui-invalid, .xui-ui-invalid .xui-node{}
 .xui-ui-input{}
@@ -308,7 +219,6 @@ button:disabled, a:disabled, input:disabled, textarea:disabled,
 .xui-required{}
 .xui-alert{}
 */
-
 
 /** important => the last one: this theme's name */
 .setting-uikey{

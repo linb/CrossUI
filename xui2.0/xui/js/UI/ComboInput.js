@@ -1409,8 +1409,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
                 clsname='xui-node xui-input-input',
-                paddingH=isB?0:v1._paddingH(),
-                paddingW=isB?0:v1._paddingW(),
+                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
+                paddingW=isB?0:Math.round(v1._paddingW()/2)*2,
                 btnw, autoH;
 
              $hborder=$vborder=box._borderW() / 2;
@@ -1493,8 +1493,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                if(iH2!==null && prop.type=='spin'){
                     if(iH2/2-$vborder*2>0){
                         f('R1').height(adjustunit(iH2/2));
-                        // left offset 1px
-                        f('R2').height(adjustunit(iH2/2 + $hborder));
+                        f('R2').height(adjustunit(iH2/2 + (Math.round(iH2) - Math.round(iH2/2)*2) ));
                     }
                 }
                 // left offset 1px

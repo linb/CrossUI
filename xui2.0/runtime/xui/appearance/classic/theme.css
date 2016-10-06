@@ -31,7 +31,7 @@
 /*border*/
 .xui-uiborder-radius, .xui-uiborder-radius-big, 
 .xui-uiborder-radius-tl, .xui-uiborder-radius-tr, .xui-uiborder-radius-bl, .xui-uiborder-radius-br,
-xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-big-bl, .xui-uiborder-radius-big-br{
+.xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-big-bl, .xui-uiborder-radius-big-br{
     border-radius: 0;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -102,7 +102,7 @@ xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-bi
 .xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
 .xui-ui-btn-active, .xui-ui-btn-checked,  
 .xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
-    background: #EEECE8;
+    background: #ababab;
 }
 
 /*uicontainer*/
@@ -245,7 +245,10 @@ xui-uiborder-radius-big-tl, .xui-uiborder-radius-big-tr, .xui-uiborder-radius-bi
 .xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
     background-color: #D9E8FB !important;
 }
-
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
+    border-left-color:transparent;
+    border-top-color:transparent;
+}
 /*disable and readonly*/
 .xui-node-readonly, 
 input[readonly], textarea[readonly], input:read-only, textarea:read-only,
