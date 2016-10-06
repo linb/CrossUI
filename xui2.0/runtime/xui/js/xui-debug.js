@@ -8408,13 +8408,13 @@ Class('xui.Event',null,{
                 ns._addRules(selector,value);
             return ns;
         },
-        $getCSSValue:function(selector, cssKey, cssValue){
+        $getCSSValue:function(selector, cssKey, cssValue, ownerNode){
             var ns=this,
                 k=ns._r,
                 ds=document.styleSheets,
                 l=ds.length,m, o,v,i,j,
                 selectorText;
-            selector=xui.str.trim(selector.replace(/\s+/g,' '));
+            selector=xui.str.trim(selector.replace(/\s+/g,' ').toLowerCase());
             for(i=l-1; i>=0; i--){
                 try{
                     //firefox cracker
@@ -8429,8 +8429,10 @@ Class('xui.Event',null,{
                                 selectorText = ns._rep(v.selectorText);
                                 if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
                                     if(!cssValue){
-                                        // replace is crack for opera
-                                        if(v.style[cssKey]!=='')return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
+                                        if(!ownerNode || (ownerNode==ds[i].ownerNode||ds[i].owningElement))
+                                            if(v.style[cssKey]!=='')
+                                                // replace is crack for opera
+                                                return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
                                     }else if(cssValue===v.style[cssKey]){
                                         return ds[i].ownerNode||ds[i].owningElement ;
                                     }
@@ -12154,7 +12156,7 @@ type:4
             }
             body=o=null;
         },
-        setCover:function(visible,label,cursor){
+        setCover:function(visible,label,busyIcon,cursor){
             // get or create first
             var me=arguments.callee,
                 id="xui.temp:cover:",
@@ -12163,7 +12165,7 @@ type:4
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
-                xui('body').prepend(o1=xui.create('<div id="'+ id +'" class="xui-cover xui-custom" style="position:absolute;display:none;left:0;top:0;"><div id="'+id2+'" class="xui-coverlabel xui-custom" style="position:absolute;"></div></div>'));
+                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
@@ -12171,7 +12173,7 @@ type:4
                 o2=xui(id2);
             }
 
-            //clear
+            //clear the last one
             if(!visible){
                 if(typeof me._label =='string' && me._label!==label)
                     return;
@@ -12186,6 +12188,7 @@ type:4
                 var t = xui.win;
                 if(!me._showed){
                     o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:cursor||'progress'});
+                    if(busyIcon)o1.addClass('xuicon xui-icon-loading'); else o1.removeClass('xuicon xui-icon-loading');
                     me._showed=true;
                 }
                 //show content
@@ -12194,9 +12197,6 @@ type:4
                         content(o1,o2);
                     }else if(o2){
                         o2.html(content +'',false);
-                        o2.css({
-                            left :Math.round(parseFloat(t.scrollLeft()+t.width()/2-o2.width()/2))+'px', 
-                            top: Math.round(parseFloat(t.scrollTop()+t.height()/2-o2.height()/2))+'px'});
                     }
                 }
             }
@@ -12289,11 +12289,11 @@ type:4
             }
             fileInput=null;
         },
-        busy:function(label,busyMsg){
-            xui.Dom.setCover(busyMsg||true,label);
+        busy:function(id,busyMsg,busyIcon,cursor){
+            xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor);
         },
-        free:function(label){
-           xui.Dom.setCover(false,label);
+        free:function(id){
+           xui.Dom.setCover(false,id);
         },
         animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, returned,times){
             var node = document.createElement('div');
@@ -15763,7 +15763,7 @@ Class('xui.DragDrop',null,{
                 pos.left -=  d.$proxySize;
                 pos.top -= d.$proxySize;
                 if(!p.targetOffsetParent)
-                    dom.setCover(true,null,p.dragCursor);
+                    dom.setCover(true,null,false,p.dragCursor);
             }
             if(temp=p.targetOffsetParent)
                 xui(temp).append(t);
@@ -17957,11 +17957,10 @@ Class("xui.UI",  "xui.absObj", {
 
             return self;
         },
-        busy:function(message,html,key,subId){
-            var msg=typeof message=='string'?message:'Loading...',
-                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.5em;">'+msg+'</span>';
+        busy:function(coverAll,html,key,subId){
+            html=typeof html=='string'?html:'Loading...';
             // busy dom too
-            if(message===true||html===true)xui.Dom.busy();
+            if(coverAll===true)xui.Dom.busy();
             return this.each(function(profile){
                 xui.resetRun(profile.$xid+':busy',function(profile,key,subId){
                     // destroyed
@@ -17974,12 +17973,11 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div class="xui-node-div" style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;line-height:2em;cursor:wait;"><div>'+htm+'</div></div>');
-                        xui([node.get(0)]).css({opacity:0.5});
+                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;padding-top:2em;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>');
                     }
                     node=profile.$busy;
 
-                    xui([node.get(1).firstChild]).html(htm,false).css('paddingTop',((parentNode.offsetHeight()||0)/2/xui.CSS._getDftEmSize()-0.5)+'em');
+                    node.first().html(html,false);
 
                     parentNode.append(node);
                 },50,[profile,key,subId]);
@@ -20700,7 +20698,7 @@ Class("xui.UI",  "xui.absObj", {
             var domId=profile.getDomId(),
                 id=domId+"themeroller",
                 // escape special char
-                prevId='#'+domId.replace(/([.:])/g,"\\$1"),
+                prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
                 css="";
             if(old){
@@ -20719,6 +20717,9 @@ Class("xui.UI",  "xui.absObj", {
                 });
                 xui.CSS._appendSS(profile.getRootNode(), cssSetting, id, true);
             }
+        },
+        _getThemePrevId:function(profile){
+            return '#' + profile.getDomId().replace(/([.:])/g,"\\$1");
         },
         setAppearance:function(hash){
             xui.merge(this.$Appearances,hash,'all');
@@ -37135,7 +37136,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     xui.merge(options, _ajax.options);
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=xui.rand();
-                    box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
+                    box.busy(false,null,"PANEL",profile.getSubIdByItemId(item.id));
                     var node=box.getPanel(item.id);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                         node.html(rsp,true,true);
@@ -39304,9 +39305,13 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             //clear highLight first
             if(profile.$highLight)
                 xui([profile.$highLight]).tagClass('-hover',false);
-            profile._conainer=parent;
 
-            root.popToTop(obj, type, parent);
+            // set container
+            if(parent){
+                profile._conainer=parent;
+            }
+
+            root.popToTop(obj, type, profile._conainer);
 
             this._setScroll();
 
@@ -39732,7 +39737,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             popp.$parentPopMenu = profile;
                             profile.$childPopMenu = popp;
 
-                            pop.pop(src, 2);
+                            pop.pop(src, 2, profile._conainer);
                             profile[sms] = pop;
                         }
                     }
@@ -47255,7 +47260,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     backgroundAttachment:''
                                   });
                             }else{
-                                markNode.css('background','');
+                                markNode.removeClass('xui-icon-loading');
                             }
                             if(empty){
                                 // markNode.css('background','none');
@@ -47292,7 +47297,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        if(xui.browser.ie && xui.browser.ver<=8){
+                            markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        }else{
+                            markNode.addClass('xui-icon-loading');
+                        }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: continue UI changing

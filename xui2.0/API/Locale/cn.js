@@ -2540,6 +2540,8 @@ xui.set(xui.Locale,["cn","app"], {
             $paras:[
                 "label [可选参数] : String, 本 busy 的 id. 使用[xui.Dom.free(label)]释放忙状态",
                 "busyMsg [可选参数] : String, 指示忙的文字,如“正在处理中”",
+                "busyIcon [可选参数] : Boolean,  是否显示忙状态图标",
+                "cursor [可选参数] : String, busy层的鼠标样式"
             ],
             $snippet:[
                 "xui.Thread(null,[xui.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
@@ -2622,7 +2624,9 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"显示或隐藏一个覆盖整个页面的DIV",
             $paras:[
                 "visible [必需参数] : Boolean or String, true=>表示显示DIV; false=>h表示隐藏DIV; 'string'=>表示显示DIV和文字",
-                "label [可选参数] : String, 忙标签id"
+                "label [可选参数] : String, 忙标签id",
+                "busyIcon [可选参数] : Boolean,  是否显示忙状态图标",
+                "cursor [可选参数] : String, busy层的鼠标样式"
             ],
             $snippet:[
                 "xui.Dom.setCover(true); xui.asyRun(function(){xui.Dom.setCover(false)},2000);",
@@ -7876,9 +7880,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"将鼠标显示为沙漏(并将一个div覆盖在当前控件上)",
                 $rtn:"[self]",
                 $paras:[
-                    "message [可选参数] : String, 说明文字",
+                    "coverAll [可选参数] : Boolean, 是否遮罩全部UI界面",
                     "html [可选参数] : String, 说明html字符串",
-                    "key [可选参数] : String, 覆盖div的父key. 默认为 'BORDER'"
+                    "key [可选参数] : String, 遮罩的父key. 默认为 'BORDER'",
+                    "subId [可选参数] : String, 遮罩子id"
                 ]
             },
             free:{

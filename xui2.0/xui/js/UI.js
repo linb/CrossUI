@@ -1074,11 +1074,10 @@ Class("xui.UI",  "xui.absObj", {
 
             return self;
         },
-        busy:function(message,html,key,subId){
-            var msg=typeof message=='string'?message:'Loading...',
-                htm=typeof html=='string'?html:'<span class="xui-node" style="background:url('+xui.ini.img_busy+') no-repeat left center;padding-left:1.5em;">'+msg+'</span>';
+        busy:function(coverAll,html,key,subId){
+            html=typeof html=='string'?html:'Loading...';
             // busy dom too
-            if(message===true||html===true)xui.Dom.busy();
+            if(coverAll===true)xui.Dom.busy();
             return this.each(function(profile){
                 xui.resetRun(profile.$xid+':busy',function(profile,key,subId){
                     // destroyed
@@ -1091,12 +1090,11 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<div class="xui-node-div" style="left:0;top:0;z-index:10;position:absolute;background-color:#DDD;width:100%;height:100%"></div><div style="left:0;top:0;z-index:20;text-align:center;position:absolute;width:100%;height:100%;line-height:2em;cursor:wait;"><div>'+htm+'</div></div>');
-                        xui([node.get(0)]).css({opacity:0.5});
+                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;padding-top:2em;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>');
                     }
                     node=profile.$busy;
 
-                    xui([node.get(1).firstChild]).html(htm,false).css('paddingTop',((parentNode.offsetHeight()||0)/2/xui.CSS._getDftEmSize()-0.5)+'em');
+                    node.first().html(html,false);
 
                     parentNode.append(node);
                 },50,[profile,key,subId]);
@@ -3817,7 +3815,7 @@ Class("xui.UI",  "xui.absObj", {
             var domId=profile.getDomId(),
                 id=domId+"themeroller",
                 // escape special char
-                prevId='#'+domId.replace(/([.:])/g,"\\$1"),
+                prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
                 css="";
             if(old){
@@ -3836,6 +3834,9 @@ Class("xui.UI",  "xui.absObj", {
                 });
                 xui.CSS._appendSS(profile.getRootNode(), cssSetting, id, true);
             }
+        },
+        _getThemePrevId:function(profile){
+            return '#' + profile.getDomId().replace(/([.:])/g,"\\$1");
         },
         setAppearance:function(hash){
             xui.merge(this.$Appearances,hash,'all');

@@ -1011,7 +1011,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     xui.merge(options, _ajax.options);
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=xui.rand();
-                    box.busy(null,null,"PANEL",profile.getSubIdByItemId(item.id));
+                    box.busy(false,null,"PANEL",profile.getSubIdByItemId(item.id));
                     var node=box.getPanel(item.id);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                         node.html(rsp,true,true);

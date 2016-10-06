@@ -251,13 +251,13 @@ Class("xui.CSS", null,{
                 ns._addRules(selector,value);
             return ns;
         },
-        $getCSSValue:function(selector, cssKey, cssValue){
+        $getCSSValue:function(selector, cssKey, cssValue, ownerNode){
             var ns=this,
                 k=ns._r,
                 ds=document.styleSheets,
                 l=ds.length,m, o,v,i,j,
                 selectorText;
-            selector=xui.str.trim(selector.replace(/\s+/g,' '));
+            selector=xui.str.trim(selector.replace(/\s+/g,' ').toLowerCase());
             for(i=l-1; i>=0; i--){
                 try{
                     //firefox cracker
@@ -272,8 +272,10 @@ Class("xui.CSS", null,{
                                 selectorText = ns._rep(v.selectorText);
                                 if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
                                     if(!cssValue){
-                                        // replace is crack for opera
-                                        if(v.style[cssKey]!=='')return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
+                                        if(!ownerNode || (ownerNode==ds[i].ownerNode||ds[i].owningElement))
+                                            if(v.style[cssKey]!=='')
+                                                // replace is crack for opera
+                                                return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
                                     }else if(cssValue===v.style[cssKey]){
                                         return ds[i].ownerNode||ds[i].owningElement ;
                                     }

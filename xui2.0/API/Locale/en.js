@@ -2530,7 +2530,9 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"Shows busy-UI(A special top zindex div covers the whole window)",
             $paras:[
                 "label [Optional] : String, the busy instance label. Calls [xui.Dom.free(label)] to release the busy UI",
-                "busyMsg [Optional] : String, the busy message will be showed"
+                "busyMsg [Optional] : String, the busy message will be showed",
+                "busyIcon [Optional] : Boolean, determin if the busy icon will be showed",
+                "cursor [Optional] : String, the cursor of busy layer"
             ],
             $snippet:[
                 "xui.Thread(null,[xui.fun()],1000,null,function(){xui.Dom.busy();},function(){xui.Dom.free();}).start()",
@@ -2613,7 +2615,9 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"To set a special cover div to the top of the page, or to hide it",
             $paras:[
                 "visible [Required] : Boolean or String, true=>show the cover; false=>hide the cover; 'string'=>show the cover and the 'string'",
-                "label [Optional] : String, the busy label"
+                "label [Optional] : String, the busy label",
+                "busyIcon [Optional] : Boolean, determin if the busy icon will be showed",
+                "cursor [Optional] : String, the cursor of busy layer"
             ],
             $snippet:[
                 "xui.Dom.setCover(true); xui.asyRun(function(){xui.Dom.setCover(false)},2000);",
@@ -7856,9 +7860,10 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Shows busy layer(A special top zindex div covers the UI)",
                 $rtn:"[self]",
                 $paras:[
-                    "message [Optional] : String, the busy description inner string",
+                    "coverAll [Optional] : Boolean,  to determine if cover all UI",
                     "html [Optional] : String, the busy description html",
-                    "key [Optional] : String, the busy div's parent key. Default is 'BORDER'"
+                    "key [Optional] : String, the busy div's parent key. Default is 'BORDER'",
+                    "subId [Optional] : String, the sub panel's id "
                 ]
             },
             free:{

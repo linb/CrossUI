@@ -62,7 +62,7 @@
 	height:1em;
 	width:1em;
 }
-.xui-icon-loading{
+.xui-icon-loading:before{
     -webkit-animation: fa-spin 1.5s infinite linear;
     animation: fa-spin 1.5s infinite linear;
 }

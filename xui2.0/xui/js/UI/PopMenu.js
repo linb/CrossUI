@@ -148,9 +148,13 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             //clear highLight first
             if(profile.$highLight)
                 xui([profile.$highLight]).tagClass('-hover',false);
-            profile._conainer=parent;
 
-            root.popToTop(obj, type, parent);
+            // set container
+            if(parent){
+                profile._conainer=parent;
+            }
+
+            root.popToTop(obj, type, profile._conainer);
 
             this._setScroll();
 
@@ -576,7 +580,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             popp.$parentPopMenu = profile;
                             profile.$childPopMenu = popp;
 
-                            pop.pop(src, 2);
+                            pop.pop(src, 2, profile._conainer);
                             profile[sms] = pop;
                         }
                     }

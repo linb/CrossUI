@@ -5425,7 +5425,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     backgroundAttachment:''
                                   });
                             }else{
-                                markNode.css('background','');
+                                markNode.removeClass('xui-icon-loading');
                             }
                             if(empty){
                                 // markNode.css('background','none');
@@ -5462,7 +5462,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
-                        markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        if(xui.browser.ie && xui.browser.ver<=8){
+                            markNode.css('background','url('+xui.ini.img_busy+') no-repeat');
+                        }else{
+                            markNode.addClass('xui-icon-loading');
+                        }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
                             //return true: continue UI changing
