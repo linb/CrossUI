@@ -7,6 +7,8 @@
     now:'现在',
     yes:'是',
     no:'否',
+    Fold:'折叠',
+    Expand:'展开',
     noFlash:'需要Flash!',
     transparent:'透明',
     required:'有必须字段没有填写',

@@ -91,8 +91,13 @@ Class("xui.Tips", null,{
                             return rtn(false);
                     }
                 }
-                //if onShowTips exists, use custom tips id region, or use item region
-                tempid=_from.onShowTips?id:id.replace(tips._reg,':');
+                nt=_from.behavior.HoverEffected;
+                //if onShowTips exists, use seprated id, or use item scope id
+                tempid=_from.onShowTips?id:id.replace(tips._reg,
+                //if HoverEffected exists, use seprated id
+                function(a,b){
+                    return nt&&(b in nt)?a:':';
+                });
                 if(tips._markId && tempid==tips._markId)
                     return rt;
 
@@ -245,7 +250,7 @@ Class("xui.Tips", null,{
         };
     },
     Static:{
-        _reg:/-[\w]+:/,
+        _reg:/-([\w]+):/,
         TIPSKEY:'tips',
         MAXWIDTH:600,
         MOVABLE:true,

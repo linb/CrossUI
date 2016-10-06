@@ -6,6 +6,8 @@
     now:'今',
     yes:'はい',
     no:'いいえ',
+    Fold:'折り畳みます',
+    Expand:'拡大します',
     noFlash:'No Flash PlugIn!',
     transparent:'トランスペアレント',
     required:'フィールドに記入する必要はありません',

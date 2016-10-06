@@ -16095,8 +16095,13 @@ Class("xui.Tips", null,{
                             return rtn(false);
                     }
                 }
-                //if onShowTips exists, use custom tips id region, or use item region
-                tempid=_from.onShowTips?id:id.replace(tips._reg,':');
+                nt=_from.behavior.HoverEffected;
+                //if onShowTips exists, use seprated id, or use item scope id
+                tempid=_from.onShowTips?id:id.replace(tips._reg,
+                //if HoverEffected exists, use seprated id
+                function(a,b){
+                    return nt&&(b in nt)?a:':';
+                });
                 if(tips._markId && tempid==tips._markId)
                     return rt;
 
@@ -16249,7 +16254,7 @@ Class("xui.Tips", null,{
         };
     },
     Static:{
-        _reg:/-[\w]+:/,
+        _reg:/-([\w]+):/,
         TIPSKEY:'tips',
         MAXWIDTH:600,
         MOVABLE:true,
@@ -19497,20 +19502,20 @@ Class("xui.UI",  "xui.absObj", {
                 height:'1em'
             },
             '.xui-uisb-left .xui-uisbbtn':{
-                left:'.333333em',
-                top:'.333333em'
+                left:0,
+                top:0
             },
             '.xui-uisb-right .xui-uisbbtn':{
-                right:'.333333em',
-                top:'.333333em'
+                right:0,
+                top:0
             },
             '.xui-uisb-top .xui-uisbbtn':{
-                right:'.333333em',    
-                bottom:'.333333em'
+                right:0,    
+                bottom:0
             },
             '.xui-uisb-bottom .xui-uisbbtn':{
-                right:'.333333em',    
-                top:'.333333em'
+                right:0,    
+                top:0
             },
             '.xui-uisbcap':{
                position:'relative',
@@ -26383,13 +26388,14 @@ Class("xui.UI.Resizer","xui.UI",{
             SIDEBAR:{
                 tagName:'div',
                 className:'xui-uisb {_sidebar}',
-                SBBTN:{
-                    className:'xui-uisbbtn xuifont',
-                    $fonticon:'{_fi_btn}'
-                },
                 SBCAP:{
                     className:'xui-uisbcap xui-title-node',
                     text:'{sideBarCaption}'
+                },
+                SBBTN:{
+                    $order:1,
+                    className:'xui-uisbbtn xuifont',
+                    $fonticon:'{_fi_btn}'
                 }
             },
             PANEL:{
@@ -26409,6 +26415,10 @@ Class("xui.UI.Resizer","xui.UI",{
             PANEL:{
                 position:'relative',
                 overflow:'auto'
+            },
+            SBBTN:{
+                'z-index':2,
+                padding:'0.33333em'
             }
         });
         //set back
@@ -26416,7 +26426,7 @@ Class("xui.UI.Resizer","xui.UI",{
     },
     Static:{
         Behaviors:{
-            HoverEffected:{SBBTN:'SBBTN'},
+            HoverEffected:{SBBTN:'SBBTN',SBCAP:null},
             ClickEffected:{SBBTN:'SBBTN'},
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
@@ -26705,6 +26715,24 @@ Class("xui.UI.Resizer","xui.UI",{
             if(size.height&&'auto'!==size.height)
                 size.height = adjustunit(hh - b, panelfz);
             panel.cssRegion(size,true);
+        },
+        _showTips:function(profile, node, pos){
+            var p=profile.properties;
+            if(p.disableTips)return;
+            if(profile.onShowTips)
+                return profile.boxing().onShowTips(profile, node, pos);
+
+            if(!xui.Tips)return;
+            if(p.sideBarType=='none')return;
+
+            var id=node.id, ks=profile.keys;
+            if(p.sideBarStatus=="fold" && (id.indexOf(ks.SBCAP)===0||id.indexOf(ks.SBBTN)===0)){
+                xui.Tips.show(pos, {tips: xui.wrapRes('$inline.Expand')});
+                return false;
+            }else if(p.sideBarStatus=="expand" && id.indexOf(ks.SBBTN)===0){
+                xui.Tips.show(pos, {tips: xui.wrapRes('$inline.Fold')});
+                return false;
+            }
         }
     }
 });

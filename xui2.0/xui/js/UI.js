@@ -2614,20 +2614,20 @@ Class("xui.UI",  "xui.absObj", {
                 height:'1em'
             },
             '.xui-uisb-left .xui-uisbbtn':{
-                left:'.333333em',
-                top:'.333333em'
+                left:0,
+                top:0
             },
             '.xui-uisb-right .xui-uisbbtn':{
-                right:'.333333em',
-                top:'.333333em'
+                right:0,
+                top:0
             },
             '.xui-uisb-top .xui-uisbbtn':{
-                right:'.333333em',    
-                bottom:'.333333em'
+                right:0,    
+                bottom:0
             },
             '.xui-uisb-bottom .xui-uisbbtn':{
-                right:'.333333em',    
-                top:'.333333em'
+                right:0,    
+                top:0
             },
             '.xui-uisbcap':{
                position:'relative',

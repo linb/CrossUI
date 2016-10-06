@@ -9,13 +9,14 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             SIDEBAR:{
                 tagName:'div',
                 className:'xui-uisb {_sidebar}',
-                SBBTN:{
-                    className:'xui-uisbbtn xuifont',
-                    $fonticon:'{_fi_btn}'
-                },
                 SBCAP:{
                     className:'xui-uisbcap xui-title-node',
                     text:'{sideBarCaption}'
+                },
+                SBBTN:{
+                    $order:1,
+                    className:'xui-uisbbtn xuifont',
+                    $fonticon:'{_fi_btn}'
                 }
             },
             PANEL:{
@@ -35,6 +36,10 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             PANEL:{
                 position:'relative',
                 overflow:'auto'
+            },
+            SBBTN:{
+                'z-index':2,
+                padding:'0.33333em'
             }
         });
         //set back
@@ -42,7 +47,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
     },
     Static:{
         Behaviors:{
-            HoverEffected:{SBBTN:'SBBTN'},
+            HoverEffected:{SBBTN:'SBBTN',SBCAP:null},
             ClickEffected:{SBBTN:'SBBTN'},
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
@@ -331,6 +336,24 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             if(size.height&&'auto'!==size.height)
                 size.height = adjustunit(hh - b, panelfz);
             panel.cssRegion(size,true);
+        },
+        _showTips:function(profile, node, pos){
+            var p=profile.properties;
+            if(p.disableTips)return;
+            if(profile.onShowTips)
+                return profile.boxing().onShowTips(profile, node, pos);
+
+            if(!xui.Tips)return;
+            if(p.sideBarType=='none')return;
+
+            var id=node.id, ks=profile.keys;
+            if(p.sideBarStatus=="fold" && (id.indexOf(ks.SBCAP)===0||id.indexOf(ks.SBBTN)===0)){
+                xui.Tips.show(pos, {tips: xui.wrapRes('$inline.Expand')});
+                return false;
+            }else if(p.sideBarStatus=="expand" && id.indexOf(ks.SBBTN)===0){
+                xui.Tips.show(pos, {tips: xui.wrapRes('$inline.Fold')});
+                return false;
+            }
         }
     }
 });
