@@ -7,6 +7,13 @@ Class('App', 'xui.Module',{
             var host=this, children=[], append=function(child){children.push(child.get(0));};
             
             append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"baseblock")
+                .setDock("fill")
+                .setBorderType('none')
+            );
+
+            host.baseblock.append(
                 xui.create("xui.UI.Pane")
                 .setHost(host,"pane4")
                 .setDock("top")
@@ -135,7 +142,7 @@ Class('App', 'xui.Module',{
                 .afterUIValueSet("_xui_ui_comboinput32_afteruivalueset")
                 );
             
-            append(
+            host.baseblock.append(
                 xui.create("xui.UI.Tabs")
                 .setHost(host,"tabs2")
                 .setItems([{
