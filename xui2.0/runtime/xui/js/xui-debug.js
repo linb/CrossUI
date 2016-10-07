@@ -8489,11 +8489,8 @@ Class('xui.Event',null,{
         adjustFont:function(){
             this._dftEmStr='';
             this._getDftEmSize(true);
-            if(xui.UI){
-                xui.$adjustFont=1;
-                xui.UI.getAll().reLayout(true);    
-                delete xui.$adjustFont;
-            }
+            if(xui.UI)
+                xui.UI.getAll().reLayout(true);
         },
         _dftEmStr:'',
         _dftEm:0,
@@ -18009,7 +18006,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 if((!o.$noB) && p.border && o.boxing()._border)
                     o.boxing()._border(null,false);
-
+                o.$forceRelayout=1;
                 if(p.dock && p.dock!='none'){
                     o.boxing().adjustDock(force);
                 }else{
@@ -18018,6 +18015,7 @@ Class("xui.UI",  "xui.absObj", {
                     }
                     xui.UI.$tryResize(o,p.width,p.height,force);
                 }
+                delete o.$forceRelayout;
             });
         },
         toHtml:function(force){
@@ -20505,7 +20503,7 @@ Class("xui.UI",  "xui.absObj", {
                             sandboxTheme:{
                                 ini:"",
                                 action:function(v){
-                                    xui.UI._refreshSandboxTheme(this, v);
+                                    xui.UI._refreshSBTheme(this, v);
                                 }
                             },
                             formMethod:{
@@ -20700,7 +20698,7 @@ Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        _refreshSandboxTheme:function(profile, cssSetting){
+        _refreshSBTheme:function(profile, cssSetting){
             var domId=profile.getDomId(),
                 id=domId+"sandboxtheme",
                 // escape special char
@@ -20717,6 +20715,11 @@ Class("xui.UI",  "xui.absObj", {
                             return b + '\n' + (c=='}'?'':'    ') + c;
                         }), 
                     id, true);
+                    
+                    if(profile.$inDesign){
+                        profile.boxing().reLayout(true)
+                            .getChildren(true, "recurse").reLayout(true);
+                    }
                 };
             if(old){
                 old.disabled=true;
@@ -21420,7 +21423,7 @@ Class("xui.UI",  "xui.absObj", {
                 style=node.style;
 
             if(p.sandboxTheme){
-                xui.UI._refreshSandboxTheme(prf, p.sandboxTheme);
+                xui.UI._refreshSBTheme(prf, p.sandboxTheme);
             }
             // *** force to em
             if(xui.$uem(p)){
@@ -48784,7 +48787,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             // for modify em value
-            if(xui.$adjustFont){
+            if(profile.$forceRelayout){
                 this._adjustColsWidth(profile);
                 this._adjustColsHeight(profile);
             }
