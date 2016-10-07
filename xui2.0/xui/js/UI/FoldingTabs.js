@@ -80,7 +80,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             BOX:{
                 $order:0,
                 tagName : 'div',
-                className:'xui-uibase',
                 ITEMS:{
                     tagName : 'div',
                     text:"{items}"

@@ -8561,7 +8561,7 @@ Class('xui.Event',null,{
         var b=xui.browser,
 // cross browser reset 
             css= ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
-            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
+            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
@@ -18997,6 +18997,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-uitembg":{
                 padding:'.25em .5em',
+                'background-color':'transparent',
                 'border':'solid 1px transparent'
             },
             ".xui-uitembg-hover":{
@@ -20501,10 +20502,10 @@ Class("xui.UI",  "xui.absObj", {
                                     this.boxing().adjustDock(true);
                                 }
                             },
-                            themeRoller:{
-                                ini:{},
+                            sandboxTheme:{
+                                ini:"",
                                 action:function(v){
-                                    xui.UI._refreshThemeRoller(this, v);
+                                    xui.UI._refreshSandboxTheme(this, v);
                                 }
                             },
                             formMethod:{
@@ -20675,7 +20676,7 @@ Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,themeRoller,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
+                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+xui.str.initial(o);
@@ -20699,28 +20700,37 @@ Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        _refreshThemeRoller:function(profile, cssSetting){
+        _refreshSandboxTheme:function(profile, cssSetting){
             var domId=profile.getDomId(),
-                id=domId+"themeroller",
+                id=domId+"sandboxtheme",
                 // escape special char
                 prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
-                css="";
+                applyCss=function(css){
+                    xui.CSS._appendSS(profile.getRootNode(), css
+                        .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'')
+                        .replace(/^\s*(\.)/,function(a,b){
+                            return prevId + " " + b;
+                        }).replace(/([},])\s*(\.)/g,function(a,b,c){
+                            return b + "\n" + prevId + " " + c;
+                        }).replace(/([{;])\s*(.)/g,function(a,b,c){
+                            return b + '\n' + (c=='}'?'':'    ') + c;
+                        }), 
+                    id, true);
+                };
             if(old){
                 old.disabled=true;
                 xui(id).remove(false);
             }
             if(cssSetting){
-                cssSetting = cssSetting
-                .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'')
-                .replace(/^\s*(\.)/,function(a,b){
-                    return prevId + " " + b;
-                }).replace(/([},])\s*(\.)/g,function(a,b,c){
-                    return b + "\n" + prevId + " " + c;
-                }).replace(/([{;])\s*(.)/g,function(a,b,c){
-                    return b + '\n' + (c=='}'?'':'    ') + c;
-                });
-                xui.CSS._appendSS(profile.getRootNode(), cssSetting, id, true);
+                if(/^[a-zA-Z-]+$/.test(cssSetting+'')){
+                    var path=xui.getPath('xui.appearance.' + cssSetting,'');
+                    xui.getFileAsync(path+'theme.css', 'text', function(rsp){
+                        applyCss(rsp.replace(/\.setting-uikey\{[^}]+\}/,'').replace(/url\(([^)]+)\)/g, "url("+path+"$1)"));
+                    });
+                }else{
+                    applyCss(cssSetting+'');
+                }
             }
         },
         _getThemePrevId:function(profile){
@@ -21409,8 +21419,8 @@ Class("xui.UI",  "xui.absObj", {
                 node=prf.getRootNode(),
                 style=node.style;
 
-            if(p.themeRoller &&!xui.isEmpty(p.themeRoller)){
-                xui.UI._refreshThemeRoller(prf, p.themeRoller);
+            if(p.sandboxTheme){
+                xui.UI._refreshSandboxTheme(prf, p.sandboxTheme);
             }
             // *** force to em
             if(xui.$uem(p)){
@@ -22587,7 +22597,7 @@ Class("xui.UI",  "xui.absObj", {
             for(var i in profile.box._objectProp)
                 if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             // 
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","themeRoller","propBinder","tagVar","animConf"],function(key){
+            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","tagVar","animConf"],function(key){
                 if(t=p[key]){
                     r=ds[key];
                     for(var i in t){
@@ -30298,7 +30308,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return;
                     //pop
                     var node=o.reBoxing();
-                    node.popToTop(profile.getSubNode('BOX'));
+                    node.popToTop(profile.getSubNode('BOX'),null,pro.parentId);
 
                     xui.tryF(o.activate,[],o);
 
@@ -30919,6 +30929,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             decimalSeparator:".",
             forceFillZero:true,
 
+            parentId:"",
             popCtrlProp:{
                 ini:{}
             },
@@ -44273,6 +44284,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //for ie height change trigger
                 'overflow-y': xui.browser.ie ?'hidden':'',
                 position:'relative',
+                background:'transparent',
                 'white-space': 'nowrap' 
             },
             'HCELLS1, HCELLS2, GRPCELLBOX1, GRPCELLBOX2':{
@@ -50312,7 +50324,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 style:'{itemStyle}',
                 HEAD:{
                     tagName : 'div',
-                    className:'xui-uibase',
+                    className:'xui-uibar',
                     HL:{tagName : 'div'},
                     HR:{tagName : 'div'},
                     TITLE:{
@@ -50668,7 +50680,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             BOX:{
                 $order:0,
                 tagName : 'div',
-                className:'xui-uibase',
                 ITEMS:{
                     tagName : 'div',
                     text:"{items}"

@@ -69,7 +69,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 style:'{itemStyle}',
                 HEAD:{
                     tagName : 'div',
-                    className:'xui-uibase',
+                    className:'xui-uibar',
                     HL:{tagName : 'div'},
                     HR:{tagName : 'div'},
                     TITLE:{

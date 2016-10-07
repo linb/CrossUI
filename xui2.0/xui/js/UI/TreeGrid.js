@@ -2410,6 +2410,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //for ie height change trigger
                 'overflow-y': xui.browser.ie ?'hidden':'',
                 position:'relative',
+                background:'transparent',
                 'white-space': 'nowrap' 
             },
             'HCELLS1, HCELLS2, GRPCELLBOX1, GRPCELLBOX2':{
@@ -6909,7 +6910,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             // for modify em value
-            if(xui.$adjustFont){
+            if(profile.$forceRelayout){
                 this._adjustColsWidth(profile);
                 this._adjustColsHeight(profile);
             }

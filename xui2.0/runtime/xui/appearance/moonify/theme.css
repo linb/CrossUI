@@ -1,17 +1,30 @@
-/*base size*/
+/*font*/
 .xui-node{
-		font-size: 12px;
-		color:#fff;
+    font-size: 12px;
+    font-family:arial, helvetica, clean, sans-serif; 
+    font-weight:normal; 
+    color:#fff; 
 }
 .xui-title-node{
 		font-size:1.1667em;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
+	color: #eee;
+}
+.xuifont-hover, .xuicon-hover{
+	color: #fff;
+}
+.xuifont-active, .xuicon-active{
+	color: #eee; 
+}
+.xuifont-checked, .xuicon-checked{
+	color: #eee; 
 }
 
+
 /*background*/
-html, .xui-uibase{
+.xui-uibase{
     background-color:#48525f;
 }
 .xui-uibar{

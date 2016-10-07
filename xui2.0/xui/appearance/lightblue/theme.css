@@ -1,12 +1,25 @@
-/*base size*/
+/*font*/
 .xui-node{
     font-size: 12px;
+    font-family:arial, helvetica, clean, sans-serif; 
+    font-weight:normal; 
+    color:#444; 
 }
 .xui-title-node{
 		font-size:1.1667em;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
+	color: #444;
+}
+.xuifont-hover, .xuicon-hover{
+	color: #686868;
+}
+.xuifont-active, .xuicon-active{
+	color: #3393D2; 
+}
+.xuifont-checked, .xuicon-checked{
+	color: #3393D2; 
 }
 
 /*background*/

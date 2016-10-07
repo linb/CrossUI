@@ -1,26 +1,3 @@
-/*Base Setting*/
-.xui-uibase{
-    background-color:#FFFFFF;
-}
- .xui-uibar{
-    background-color:#D2E3EF;
-}
- .xui-uibar-hover{
-    background-color:#D4D9F1;
-}
- .xui-uibar-active,
- .xui-uibar-checked,
- .xui-uimenu-hover,
- .xui-uimenu-active{
-    background-color:#3498DB;
-}
- .xui-uibar-focus,
- .xui-uibar-top-focus .xui-uibar-tdl,
- .xui-uibar-top-focus .xui-uibar-tdm,
- .xui-uibar-top-focus .xui-uibar-tdr{
-    background-color:#3498DB;
-}
-
 /*Font Setting*/
 .xui-node{
     font-family:'PT Sans', Tahoma;
@@ -34,20 +11,35 @@
  .xuifont,
  .xuicon{
     font-size:1.33333em;
-    color:;
+    color:#666666;
 }
- .xuifont-hover,
- .xuicon-hover{
-    color:#888888;
+ .xuifont-hover, .xuicon-hover{
+    color:#888;
 }
- .xuifont-active,
- .xuicon-active{
-    color:#222222;
+ .xuifont-active, .xuicon-active{
+    color:#222;
 }
- .xuifont-checked,
- .xuicon-checked{
-    color:#777777;
+ .xuifont-checked, .xuicon-checked{
+    color:#777;
 }
+
+/*Background*/
+.xui-uibase{
+    background-color:#FFFFFF;
+}
+ .xui-uibar{
+    background-color:#D2E3EF;
+}
+ .xui-uibar-hover{
+    background-color:#D4D9F1;
+}
+ .xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active{
+    background-color:#3498DB;
+}
+ .xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr{
+    background-color:#3498DB;
+}
+
  .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only,
  .xui-ui-readonly,
  .xui-ui-readonly .xui-node,
@@ -197,7 +189,6 @@
 
 /*List Setting*/
 .xui-uitembg{
-    background-color: ;
     border-color: transparent;
 }
  .xui-uitembg-hover{
@@ -246,7 +237,6 @@
 .xui-uicell,
  .xui-treegrid-cells1,
  .xui-treegrid-cells2{
-    background-color: ;
 }
  .xui-uicell-alt,
  .xui-treegrid-cells1-alt,
@@ -313,14 +303,7 @@
     outline-style: none;
 }
 
-/*Modal Screen for Overlays*/
-.xui-cover,
- .xui-cover-modal{
-    background-color: transparent;
-    opacity: ;
-}
-
-/*Here, only if you wanna save it as an xui theme file, need to specify the theme name*/
+/** important => the last one: this theme's name */
 .setting-uikey{
     font-family: webflat;
 }

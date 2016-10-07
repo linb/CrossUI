@@ -332,11 +332,8 @@ Class("xui.CSS", null,{
         adjustFont:function(){
             this._dftEmStr='';
             this._getDftEmSize(true);
-            if(xui.UI){
-                xui.$adjustFont=1;
-                xui.UI.getAll().reLayout(true);    
-                delete xui.$adjustFont;
-            }
+            if(xui.UI)
+                xui.UI.getAll().reLayout(true);
         },
         _dftEmStr:'',
         _dftEm:0,
@@ -404,7 +401,7 @@ Class("xui.CSS", null,{
         var b=xui.browser,
 // cross browser reset 
             css= ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
-            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;}"+
+            ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
