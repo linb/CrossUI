@@ -213,7 +213,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uibase xui-uicontainer',
+                            className:'xui-uibar xui-uicontainer',
                             style:'position:absolute;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }

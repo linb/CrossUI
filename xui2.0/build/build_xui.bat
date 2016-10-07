@@ -6,16 +6,13 @@ set miniPath=\xui.js
 set allPath=\xui-all.js
 set debugPath=\xui-debug.js
 
-set advAllPath=\adv-all.js
-set advDebugPath=\adv-debug.js
-
 set rawPath=%relPath%API\App\js\xui-raw.js
-set advRawPath=%relPath%API\App\js\adv-raw.js
 
 
 mkdir %outPath%
 mkdir %outPath%xui
 mkdir %outPath%xui\js
+mkdir %outPath%xui\js\UI
 mkdir %outPath%xui\js\Module
 mkdir %outPath%xui\Locale
 mkdir %outPath%xui\appearance
@@ -125,8 +122,11 @@ java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %rawPath%   --nomung
 copy xui.js  %outPath%xui\js%debugPath%
 
 rem ==================
-rem for adv code
+rem for extra classes
 rem ==================
+rem -----------------------
+rem for FusionChartsXT.js
+rem -----------------------
 copy %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.widgets.js /b ^
@@ -136,20 +136,14 @@ copy %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.ocean.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.zune.js /b ^
 + %relPath%xui\js\UI\FusionChartsXT.js /b ^
-adv.js
+FusionChartsXT.js
 
-java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %outPath%xui\js%advAllPath% adv.js  --charset utf-8
-java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %advRawPath%   --nomunge  adv.js  --charset utf-8
-copy adv.js  %outPath%xui\js%advDebugPath%
+copy FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
 
-
-rem ==================
+rem -----------------------
 rem for Coder.js
-rem ==================
-java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %outPath%xui\js\Coder.js %relPath%xui\js\Coder.js  --charset utf-8
-copy %relPath%xui\js\Coder.js  %outPath%xui\js\Coder-debug.js
-
-
+rem -----------------------
+copy %relPath%xui\js\Coder.js  %outPath%xui\js\Coder.js
 
 rem =======================
 rem copy to other dir
@@ -165,7 +159,7 @@ xcopy %outPath%*.* %oPath%%outPath% /E /Y
 rd %outPath% /S /Q
 
 del /q xui.js
-del /q adv.js
+del /q FusionChartsXT.js
 
 if %errorlevel% == 0 goto done
 pause

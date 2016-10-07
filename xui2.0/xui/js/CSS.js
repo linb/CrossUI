@@ -463,7 +463,11 @@ Class("xui.CSS", null,{
            // last one 
             ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;color:#000;line-height:1.22em;}"+
             ".xui-node-highlight{color:#000;}"+
-            ".xui-title-node{font-size:1.1667em;}"
+            ".xui-title-node{font-size:1.1667em;}"+
+            ".xuifont, .xuicon{color:#000}"+
+            ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
+            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
+            ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

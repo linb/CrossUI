@@ -76,6 +76,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         $order:3,
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
+                        style:'{_align}',
                         TOGGLE:{
                             className: 'xuifont',
                             $fonticon:'{_fi_toggleCls2}',
@@ -394,6 +395,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     //force to resize
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
+            },
+            hAlign:{
+                ini:'left',
+                listbox:['left','center','right'],
+                action: function(v){
+                    this.getSubNode("BARCMDL").css('textAlign',v);
+                }
             }
         },
         EventHandlers:{
@@ -441,6 +449,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             data._rightp=data.noFrame?"padding-right:0;background-image:none;":"";
 
             profile._toggle = !!data.toggle;
+
+            data._align = 'text-align:'+data.hAlign+';';
+
             return data;
         },
         _toggle:function(profile, value, ignoreEvent){

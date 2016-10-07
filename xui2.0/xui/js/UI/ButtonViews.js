@@ -164,7 +164,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 }
             },
             barSize:{
-                ini:50,
+                ini:80,
                 action:function(v){
                     var self = this,
                         t = self.properties,

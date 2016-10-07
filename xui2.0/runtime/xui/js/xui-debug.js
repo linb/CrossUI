@@ -8620,7 +8620,11 @@ Class('xui.Event',null,{
            // last one 
             ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;color:#000;line-height:1.22em;}"+
             ".xui-node-highlight{color:#000;}"+
-            ".xui-title-node{font-size:1.1667em;}"
+            ".xui-title-node{font-size:1.1667em;}"+
+            ".xuifont, .xuicon{color:#000}"+
+            ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
+            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
+            ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -13658,7 +13662,7 @@ Class('xui.Module','xui.absProfile',{
             //base classes
             if((t=self.Dependencies) && t.length)
                 funs.push(function(threadid){
-                    xui.require(self.Dependencies,null,function(uir,key){
+                    xui.require(self.Dependencies,null,function(uri,key){
                         self._fireEvent('onLoadBaseClass', [uri,key]);
                     },function(){
                         self._fireEvent('onLoadBaseClassErr', xui.toArr(arguments));
@@ -19458,6 +19462,15 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '0',
                 '-ms-border-radius': '0',
                 '-khtml-border-radius': '0'
+            },
+            '.xui-uiborder-radius-circle':{
+                $order:16,
+                'border-radius':'50%',
+                '-moz-border-radius': '50%',
+                '-webkit-border-radius': '50%',
+                '-o-border-radius': '50%',
+                '-ms-border-radius': '50%',
+                '-khtml-border-radius': '50%'
             },
             '.xui-uiborder-none':{
                 $order:20,
@@ -30311,7 +30324,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return;
                     //pop
                     var node=o.reBoxing();
-                    node.popToTop(profile.getSubNode('BOX'),null,pro.parentId);
+                    node.popToTop(profile.getSubNode('BOX'),null,pro.parentID);
 
                     xui.tryF(o.activate,[],o);
 
@@ -30932,7 +30945,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             decimalSeparator:".",
             forceFillZero:true,
 
-            parentId:"",
+            parentID:"",
             popCtrlProp:{
                 ini:{}
             },
@@ -31505,7 +31518,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     $order:1,
                     tagName:'div',
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
-                    className:'xui-uibase xui-uicontainer',
+                    className:'xui-uicontainer',
                     text:'{html}'+xui.UI.$childTag
                 }
             }
@@ -34864,8 +34877,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'{flagClass}',
-                        style:'{flagStyle}'
+                        className:'xui-uiborder-radius-circle {flagClass}',
+                        style:'{_flagStyle};{flagStyle}',
+                        text:'{flagText}'
                     },
                     EXTRA:{
                         text : '{ext}',
@@ -34881,12 +34895,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         Appearances:{
             FLAG:{
                 position:'absolute',
-                left:'auto',
+                'z-index':10,
                 top:0,
                 right:0,
-                width:'32px',
-                height:'32px',
-                display:'none'
+                width:'1em',
+                height:'1em',
+                padding: '.3333em',
+                display:'none',
+                'background-color': '#eb6e1a',
+                color:'#fff',
+                'text-align': 'center'
             },
             EXTRA:{
                 display:'none'
@@ -35064,6 +35082,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
 
+            if(item.flagText)item._flagStyle='display:block';
+
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
@@ -35111,6 +35131,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
                             height:'{itemHeight}',
                             style:'{imgStyle}'
                         }
+                    },
+                    FLAG:{
+                        $order:20,
+                        className:'xui-uiborder-radius-circle {flagClass}',
+                        style:'{_flagStyle};{flagStyle}',
+                        text:'{flagText}'
                     }
                 }
             }
@@ -35146,7 +35172,20 @@ Class("xui.UI.IconList", "xui.UI.List",{
             IBWRAP:{
                 'font-size':0,
                 'line-height':0
-            }
+            },
+            FLAG:{
+                position:'absolute',
+                'z-index':10,
+                top:0,
+                right:0,
+                width:'1em',
+                height:'1em',
+                padding: '.3333em',
+                display:'none',
+                'background-color': '#eb6e1a',
+                color:'#fff',
+                'text-align': 'center'
+            },
         },
         Behaviors:{
             IMAGE:{
@@ -35235,6 +35274,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
             if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
             item._tabindex = p.tabindex;
+            if(item.flagText)item._flagStyle='display:block';
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },
         RenderTrigger:function(){
@@ -35320,6 +35360,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         $order:3,
                         tagName: 'div',
                         className:'xui-uibar-cmdl',
+                        style:'{_align}',
                         TOGGLE:{
                             className: 'xuifont',
                             $fonticon:'{_fi_toggleCls2}',
@@ -35638,6 +35679,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     //force to resize
                     xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
                 }
+            },
+            hAlign:{
+                ini:'left',
+                listbox:['left','center','right'],
+                action: function(v){
+                    this.getSubNode("BARCMDL").css('textAlign',v);
+                }
             }
         },
         EventHandlers:{
@@ -35685,6 +35733,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             data._rightp=data.noFrame?"padding-right:0;background-image:none;":"";
 
             profile._toggle = !!data.toggle;
+
+            data._align = 'text-align:'+data.hAlign+';';
+
             return data;
         },
         _toggle:function(profile, value, ignoreEvent){
@@ -37692,7 +37743,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 }
             },
             barSize:{
-                ini:50,
+                ini:80,
                 action:function(v){
                     var self = this,
                         t = self.properties,
@@ -41112,7 +41163,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uibase xui-uicontainer',
+                            className:'xui-uibar xui-uicontainer',
                             style:'position:absolute;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
@@ -48988,6 +49039,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     $order:3,
                     tagName: 'div',
                     className:'xui-uibar-cmdl',
+                    style:'{_align}',
                     RULER:{
                         className:'xui-ui-ruler'
                     },
@@ -49513,6 +49565,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     else if(v=='max')b._max(self,o,null,true);
                     else b._restore(self,o);
                 }
+            },
+            hAlign:{
+                ini:'left',
+                listbox:['left','center','right'],
+                action: function(v){
+                    this.getSubNode("BARCMDL").css('textAlign',v);
+                }
             }
         },
         EventHandlers:{
@@ -49557,6 +49616,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             data.pinDisplay = data.pinBtn?'':nodisplay;
             data.landDisplay = data.landBtn?'':nodisplay;
             data.refreshDisplay= data.refreshBtn?'':nodisplay;
+            data._align = 'text-align:'+data.hAlign+';';
 
             var status=profile.properties.status;
             if(status=='min'||status=='max')
@@ -50766,7 +50826,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                 PANEL:{
                                     tagName : 'div',
                                     style:'{_itemHeight};{_overflow};{_bginfo}',
-                                    className:'xui-uibase xui-uicontainer ',
+                                    className:'xui-uibase xui-uicontainer',
                                     text:xui.UI.$childTag
                                 }
                             }

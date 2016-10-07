@@ -17,7 +17,6 @@
 .xuifont, .xuicon{
   font-size:1.3333333333333333em;
   line-height:1em;
-  color:#000;
 }
 
 .xuicon{
@@ -26,10 +25,6 @@
   *height:1em;
   *width:1em;
 }
-
-.xuifont-hover, .xuicon-hover{ color: #686868; }
-.xuifont-active, .xuicon-active{ color: #3393D2; }
-.xuifont-checked, .xuicon-checked{ color: #3393D2; }
 
 .xui-icon-empty:before{
 	content: "\e62c" !important;

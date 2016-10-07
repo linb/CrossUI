@@ -96,7 +96,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     $order:1,
                     tagName:'div',
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
-                    className:'xui-uibase xui-uicontainer',
+                    className:'xui-uicontainer',
                     text:'{html}'+xui.UI.$childTag
                 }
             }

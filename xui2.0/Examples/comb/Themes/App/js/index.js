@@ -7,19 +7,18 @@ Class('App', 'xui.Module',{
             var host=this, children=[], append=function(child){children.push(child.get(0));};
             
             append(
-                xui.create("xui.UI.Block")
+                xui.create("xui.UI.Pane")
                 .setHost(host,"baseblock")
                 .setDock("fill")
-                .setBorderType('none')
             );
-
+            
             host.baseblock.append(
                 xui.create("xui.UI.Pane")
                 .setHost(host,"pane4")
                 .setDock("top")
                 .setWidth("8.333333333333334em")
                 .setHeight("4.166666666666667em")
-            );
+                );
             
             host.pane4.append(
                 xui.create("xui.UI.Label")
@@ -39,7 +38,6 @@ Class('App', 'xui.Module',{
                 .setDirtyMark(false)
                 .setLeft("8.33333em")
                 .setTop("1.1666666666666667em")
-                .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 .setType("listbox")
                 .setItems([{
@@ -85,9 +83,10 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "vista",
                     "caption" : "vista"
-                },{
-                    "id":"webflat",
-                     caption:"webflat"
+                },
+                {
+                    "id" : "webflat",
+                    "caption" : "webflat"
                 }])
                 .setValue("default")
                 .afterUIValueSet("_ctl_comboinput61_afteruivalueset")
@@ -111,7 +110,6 @@ Class('App', 'xui.Module',{
                 .setDirtyMark(false)
                 .setLeft("28.416700000000002em")
                 .setTop("1.16667em")
-                .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 .setType("listbox")
                 .setItems([{
@@ -180,7 +178,7 @@ Class('App', 'xui.Module',{
                     "caption" : "page 7"
                 }])
                 .setValue("1")
-            );
+                );
             
             host.tabs2.append(
                 xui.create("xui.UI.Pane")
@@ -618,7 +616,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.CheckBox({
-                            "alias" : "xui_ui_checkbox1",
+                            "alias" : "xui_ui_checkbox4",
                             "key" : "xui.UI.CheckBox",
                             "properties" : {
                                 "caption" : "checkbox",
@@ -651,12 +649,11 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "clr",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput6",
+                            "alias" : "xui_ui_comboinput48",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "color",
-                                "position" : "relative",
-                                "labelSize" : "0em"
+                                "position" : "relative"
                             },
                             "CC" : {
                                 "KEY" : " xui-toolbar-item-object"
@@ -669,12 +666,11 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput7",
+                            "alias" : "xui_ui_comboinput49",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "date",
-                                "position" : "relative",
-                                "labelSize" : "0em"
+                                "position" : "relative"
                             },
                             "CC" : {
                                 "KEY" : " xui-toolbar-item-object"
@@ -687,12 +683,11 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "date",
                         "object" : new xui.UI.ComboInput({
-                            "alias" : "xui_ui_comboinput8",
+                            "alias" : "xui_ui_comboinput50",
                             "key" : "xui.UI.ComboInput",
                             "properties" : {
                                 "type" : "time",
-                                "position" : "relative",
-                                "labelSize" : "0em"
+                                "position" : "relative"
                             },
                             "CC" : {
                                 "KEY" : " xui-toolbar-item-object"
@@ -706,7 +701,7 @@ Class('App', 'xui.Module',{
                     "sub" : [{
                         "id" : "radio",
                         "object" : new xui.UI.ProgressBar({
-                            "alias" : "xui_ui_progressbar2",
+                            "alias" : "xui_ui_progressbar6",
                             "key" : "xui.UI.ProgressBar",
                             "properties" : {
                                 "value" : 75,
@@ -720,7 +715,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button4",
+                            "alias" : "xui_ui_button23",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "status button",
@@ -735,7 +730,7 @@ Class('App', 'xui.Module',{
                     {
                         "id" : "btn2",
                         "object" : new xui.UI.Button({
-                            "alias" : "xui_ui_button6",
+                            "alias" : "xui_ui_button24",
                             "key" : "xui.UI.Button",
                             "properties" : {
                                 "caption" : "drop button",
@@ -754,7 +749,7 @@ Class('App', 'xui.Module',{
                     "sub" : [{
                         "id" : "radio",
                         "object" : new xui.UI.RadioBox({
-                            "alias" : "xui_ui_radiobox1",
+                            "alias" : "xui_ui_radiobox5",
                             "key" : "xui.UI.RadioBox",
                             "properties" : {
                                 "width" : "auto",
@@ -775,8 +770,7 @@ Class('App', 'xui.Module',{
                                     "id" : "radio4",
                                     "caption" : "radio4"
                                 }],
-                                "position" : "relative",
-                                "labelSize" : "0em"
+                                "position" : "relative"
                             },
                             "events" : {
                                 "onRender" : function (prf){
@@ -855,8 +849,8 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.Div")
                 .setHost(host,"div11")
-                .setLeft("2.5em")
-                .setTop("0.8333333333333334em")
+                .setLeft("39.1667em")
+                .setTop("20.1667em")
                 .setWidth("5.833333333333333em")
                 .setHeight("2.5em")
                 .setHtml("div")
@@ -865,8 +859,8 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"xui_ui_span5")
-                .setLeft("6.666666666666667em")
-                .setTop("0.75em")
+                .setLeft("25em")
+                .setTop("20.5em")
                 .setWidth("2.1666666666666665em")
                 .setHeight("1.3333333333333333em")
                 .setHtml("span")
@@ -934,8 +928,8 @@ Class('App', 'xui.Module',{
                 .setWidth("21.667em")
                 .setHeight("22.5835em")
                 .setBorderType("flat")
+                .setBackground("transparent")
                 .setOverflow("overflow-y:auto")
-                .setBackground('transparent')
                 , "6");
             
             host.xui_ui_block56.append(
@@ -1007,7 +1001,6 @@ Class('App', 'xui.Module',{
                 .setWidth("20.833333333333332em")
                 .setHeight("22.333em")
                 .setTagCmds(["#","x"])
-                .setLabelSize("0em")
                 , "6");
             
             host.tabs2.append(
@@ -1162,7 +1155,6 @@ Class('App', 'xui.Module',{
                 .setWidth("25.833333333333332em")
                 .setHeight("4.25em")
                 .setBorderType("none")
-                .setLabelSize("0em")
                 , "2");
             
             host.tabs2.append(
@@ -1172,9 +1164,9 @@ Class('App', 'xui.Module',{
                 .setTop("39.166666666666664em")
                 .setWidth("29.166666666666668em")
                 .setHeight("2.5em")
-                .setValue("1:100:200")
                 .setPrevMark("")
                 .setNextMark("")
+                .setValue("1:100:200")
                 , "2");
             
             host.tabs2.append(
@@ -1183,12 +1175,14 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "item a",
-                    "image" : "img/demo.gif"
+                    "image" : "img/demo.gif",
+                    "flagText" : "1"
                 },
                 {
                     "id" : "b",
                     "caption" : "item b",
-                    "image" : "img/demo.gif"
+                    "image" : "img/demo.gif",
+                    "flagText" : "5"
                 },
                 {
                     "id" : "c",
@@ -1199,7 +1193,6 @@ Class('App', 'xui.Module',{
                 .setTop("15em")
                 .setWidth("21.666700000000002em")
                 .setHeight("11em")
-                .setLabelSize("0em")
                 , "2");
             
             host.tabs2.append(
@@ -1224,7 +1217,6 @@ Class('App', 'xui.Module',{
                 .setTop("3.33333em")
                 .setWidth("21.6662em")
                 .setHeight("11em")
-                .setLabelSize("0em")
                 , "2");
             
             host.tabs2.append(
@@ -1244,7 +1236,6 @@ Class('App', 'xui.Module',{
                 .setTop("25em")
                 .setWidth("12.499900000000002em")
                 .setHeight("1.74667em")
-                .setLabelSize("0em")
                 .setType("dropbutton")
                 .setValue("Drop Button 2")
                 , "2");
@@ -1277,7 +1268,6 @@ Class('App', 'xui.Module',{
                 .setLeft("0.833333em")
                 .setTop("24.833299999999998em")
                 .setHeight("17.6662em")
-                .setLabelSize("0em")
                 , "6");
             
             host.tabs2.append(
@@ -1309,7 +1299,6 @@ Class('App', 'xui.Module',{
                 .setTop("25em")
                 .setHeight("17.6662em")
                 .setSelMode("multibycheckbox")
-                .setLabelSize("0em")
                 .setCheckBox(true)
                 , "6");
             
@@ -1474,7 +1463,6 @@ Class('App', 'xui.Module',{
                     "id" : "cmd_2",
                     "caption" : "cmd 2"
                 }])
-                .setLabelSize("0em")
                 , "3");
             
             host.tabs2.append(
@@ -2254,7 +2242,7 @@ Class('App', 'xui.Module',{
                 .setTop("0em")
                 .setBarLocation("left")
                 .setBarSize(140)
-                .setSideBarStatus('fold')
+                .setSideBarStatus("fold")
                 .setValue("a")
                 , "main");
             
@@ -2448,10 +2436,8 @@ Class('App', 'xui.Module',{
                 .setTop("0em")
                 .setWidth("67em")
                 .setHeight("20em")
+                .setSelMode("multi")
                 .setAltRowsBg(true)
-                .setSelMode('multi')
-                .setFreezedColumn(1)
-                .setFreezedRow(1)
                 .setHeader([{
                     "id" : "a3-1",
                     "caption" : "col 1",
@@ -3100,6 +3086,8 @@ Class('App', 'xui.Module',{
                         }]
                     }]
                 }])
+                .setFreezedColumn(1)
+                .setFreezedRow(1)
                 , "5");
             
             host.tabs2.append(
@@ -3124,7 +3112,6 @@ Class('App', 'xui.Module',{
                 .setHost(host,"xui_ui_input85")
                 .setLeft("3.3333333333333335em")
                 .setTop("0.8333333333333334em")
-                .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 );
             
@@ -3207,19 +3194,18 @@ Class('App', 'xui.Module',{
                 .setTop("2.3333333333333335em")
                 .setWidth("20.833333333333332em")
                 .setHeight("auto")
-                .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 );
             
             host.tabs2.append(
                 xui.create("xui.UI.Label")
                 .setHost(host,"label5")
-                .setLeft("2.5em")
-                .setTop("6.666666666666667em")
-                .setCaption("Label")
-                .setImage("img/demo.gif")
+                .setLeft("0em")
+                .setTop("0.833333em")
+                .setWidth("10em")
+                .setCaption("SVG Image")
                 .setFontColor("#4B0082")
-                .setFontSize("1.5em")
+                .setFontSize("1.25em")
                 .setFontWeight("bold")
                 , "1");
             
@@ -3234,8 +3220,8 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.Link")
                 .setHost(host,"link1")
-                .setLeft("2.5em")
-                .setTop("3.3333333333333335em")
+                .setLeft("30.833299999999998em")
+                .setTop("20.5833em")
                 .setCaption("link")
                 .setTarget("crossui.com")
                 , "1");
@@ -3265,7 +3251,6 @@ Class('App', 'xui.Module',{
                 .setZIndex(0)
                 .setSteps(100)
                 .setType("vertical")
-                .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 .setValue("30:60")
                 , "1");
@@ -3278,7 +3263,6 @@ Class('App', 'xui.Module',{
                 .setWidth("60em")
                 .setHeight("2.5em")
                 .setIsRange(false)
-                .setLabelSize("0em")
                 .setLabelGap("0.3333333333333333em")
                 .setValue("20")
                 , "1");
@@ -3286,10 +3270,10 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.Image")
                 .setHost(host,"xui_ui_image3")
-                .setLeft("2.5em")
-                .setTop("11em")
-                .setWidth("7em")
-                .setHeight("6.75em")
+                .setLeft("14.25em")
+                .setTop("14.8333em")
+                .setWidth("4.16667em")
+                .setHeight("4.16667em")
                 .setSrc("{xui.ini.img_pic}")
                 , "1");
             
@@ -3665,6 +3649,16 @@ Class('App', 'xui.Module',{
                 .setType("cmdbox")
                 , "1");
             
+            host.tabs2.append(
+                xui.create("xui.UI.Image")
+                .setHost(host,"xui_ui_image5")
+                .setLeft("1.66667em")
+                .setTop("3.33333em")
+                .setWidth("9.16667em")
+                .setHeight("15em")
+                .setSrc("http://www.crossui.com/RAD/img/svg_demo.svg")
+                , "1");
+            
             append(
                 xui.create("xui.UI.PopMenu")
                 .setHost(host,"pop")
@@ -3791,9 +3785,5 @@ Class('App', 'xui.Module',{
             xui.CSS.setStyleRules(".xui-node",{'font-size': newValue});
             xui.CSS.adjustFont();
         }
-        
-    },
-    Static:{
-        viewStyles:{}
     }
 });

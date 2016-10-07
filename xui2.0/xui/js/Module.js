@@ -596,7 +596,7 @@ Class('xui.Module','xui.absProfile',{
             //base classes
             if((t=self.Dependencies) && t.length)
                 funs.push(function(threadid){
-                    xui.require(self.Dependencies,null,function(uir,key){
+                    xui.require(self.Dependencies,null,function(uri,key){
                         self._fireEvent('onLoadBaseClass', [uri,key]);
                     },function(){
                         self._fireEvent('onLoadBaseClassErr', xui.toArr(arguments));

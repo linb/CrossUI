@@ -33,6 +33,12 @@ Class("xui.UI.IconList", "xui.UI.List",{
                             height:'{itemHeight}',
                             style:'{imgStyle}'
                         }
+                    },
+                    FLAG:{
+                        $order:20,
+                        className:'xui-uiborder-radius-circle {flagClass}',
+                        style:'{_flagStyle};{flagStyle}',
+                        text:'{flagText}'
                     }
                 }
             }
@@ -68,7 +74,20 @@ Class("xui.UI.IconList", "xui.UI.List",{
             IBWRAP:{
                 'font-size':0,
                 'line-height':0
-            }
+            },
+            FLAG:{
+                position:'absolute',
+                'z-index':10,
+                top:0,
+                right:0,
+                width:'1em',
+                height:'1em',
+                padding: '.3333em',
+                display:'none',
+                'background-color': '#eb6e1a',
+                color:'#fff',
+                'text-align': 'center'
+            },
         },
         Behaviors:{
             IMAGE:{
@@ -157,6 +176,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
             if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
             item._tabindex = p.tabindex;
+            if(item.flagText)item._flagStyle='display:block';
             if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },
         RenderTrigger:function(){

@@ -163,7 +163,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                 PANEL:{
                                     tagName : 'div',
                                     style:'{_itemHeight};{_overflow};{_bginfo}',
-                                    className:'xui-uibase xui-uicontainer ',
+                                    className:'xui-uibase xui-uicontainer',
                                     text:xui.UI.$childTag
                                 }
                             }

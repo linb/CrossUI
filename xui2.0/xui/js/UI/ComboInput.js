@@ -418,7 +418,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return;
                     //pop
                     var node=o.reBoxing();
-                    node.popToTop(profile.getSubNode('BOX'),null,pro.parentId);
+                    node.popToTop(profile.getSubNode('BOX'),null,pro.parentID);
 
                     xui.tryF(o.activate,[],o);
 
@@ -1039,7 +1039,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             decimalSeparator:".",
             forceFillZero:true,
 
-            parentId:"",
+            parentID:"",
             popCtrlProp:{
                 ini:{}
             },

@@ -191,6 +191,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     $order:3,
                     tagName: 'div',
                     className:'xui-uibar-cmdl',
+                    style:'{_align}',
                     RULER:{
                         className:'xui-ui-ruler'
                     },
@@ -716,6 +717,13 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     else if(v=='max')b._max(self,o,null,true);
                     else b._restore(self,o);
                 }
+            },
+            hAlign:{
+                ini:'left',
+                listbox:['left','center','right'],
+                action: function(v){
+                    this.getSubNode("BARCMDL").css('textAlign',v);
+                }
             }
         },
         EventHandlers:{
@@ -760,6 +768,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             data.pinDisplay = data.pinBtn?'':nodisplay;
             data.landDisplay = data.landBtn?'':nodisplay;
             data.refreshDisplay= data.refreshBtn?'':nodisplay;
+            data._align = 'text-align:'+data.hAlign+';';
 
             var status=profile.properties.status;
             if(status=='min'||status=='max')

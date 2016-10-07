@@ -2574,6 +2574,15 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '0',
                 '-khtml-border-radius': '0'
             },
+            '.xui-uiborder-radius-circle':{
+                $order:16,
+                'border-radius':'50%',
+                '-moz-border-radius': '50%',
+                '-webkit-border-radius': '50%',
+                '-o-border-radius': '50%',
+                '-ms-border-radius': '50%',
+                '-khtml-border-radius': '50%'
+            },
             '.xui-uiborder-none':{
                 $order:20,
                 border:'none'
