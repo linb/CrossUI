@@ -7,7 +7,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'xui-ui-btn xui-uiborder-radius {itemClass} {disabled} {readonly}',
+                    className:'{_itemClass} {itemClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{
@@ -19,6 +19,18 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     CAPTION:{
                         $order:11,
                         text:'{caption}'
+                    },
+                    DROP:{
+                        $order:12,
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-arrowdrop',
+                        style:'{_dropDisplay}'
+                    },
+                    FLAG:{
+                        $order:13,
+                        className:'xui-uiflag-1 xui-display-none {flagClass}',
+                        style:'{_flagStyle};{flagStyle}',
+                        text:'{flagText}'
                     }
                 }
             }
@@ -29,8 +41,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         Appearances:{
             ITEMS:{
                 position:'relative',
-                overflow:'auto',
-                'overflow-x': 'hidden'
+                overflow:'visible'
             },
             ITEM:{
                 'vertical-align':'middle',
@@ -53,7 +64,14 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 zoom:xui.browser.ie6?1:null,
                 'vertical-align':'middle',
                 'font-size':'1em'
-            } 
+            },
+            DROP:{
+                'vertical-align': 'middle'
+            },
+            FLAG:{
+                top:'-.5em',
+                right:'-.5em'
+            }
         },
         DataModel:({
             maxHeight:null,
@@ -77,10 +95,6 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 action:function(value){
                     this.getSubNode('ITEM',true).css('text-align',value);
                 }
-            },
-            // deprecated
-            itemLinker:{
-                hidden:true
             }
         }),
         Behaviors:{
@@ -93,14 +107,14 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             var p = profile.properties, t;
             item._tabindex = p.tabindex;
 
-            if(t = item.itemMargin || p.itemMargin)
-                item.itemMargin = "margin:" + t;
+            if(t = item.itemMargin || p.itemMargin)item.itemMargin = "margin:" + t;
+            if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ xui.CSS.$forceu(t);
+            if(t = item.itemAlign || p.itemAlign)item.itemAlign = "text-align:"+ t;
+            if(item.flagText)item._flagStyle='display:block';
 
-            if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth = "width:"+ profile.$forceu(t);
-
-            if(t = item.itemAlign || p.itemAlign)
-                item.itemAlign = "text-align:"+ t;
+            // item.type: text button dropButton
+            item._itemClass=item.type=="text"?"xui-node-a":"xui-ui-btn xui-uiborder-radius";
+            item._dropDisplay=item.type=="dropButton"?'':'display:none';
         }
     }
 });

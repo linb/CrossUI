@@ -400,7 +400,15 @@ Class("xui.CSS", null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css= ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
+            css =  ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;color:#000;line-height:1.22em;}"+
+            ".xui-node-highlight{color:#000;}"+
+            ".xui-title-node{}"+
+            ".xuifont, .xuicon{color:#000}"+
+            ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
+            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
+            ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
+            
+            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
@@ -418,8 +426,8 @@ Class("xui.CSS", null,{
             ".xui-node-select,.xui-node-input,.xui-node-textarea{font-family:arial,helvetica,clean,sans-serif;border-width:1px;}"+
             ((b.ie && b.ver<=8)?".xui-node-input{overflow:hidden;}":"")+
 // base setting
-            ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
-            ".xui-node-a:hover{color:red}"+
+            ".xui-node-a, .xui-node-a .xui-node{cursor:pointer;color:#0000ee;text-decoration:none;}"+
+            ".xui-node-a:hover, .xui-node-a:hover .xui-node{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
             ".xui-node-span, .xui-node-div{border:0;}"+
             ((b.ie && b.ver<=8)?"":".xui-node-span:not(.xui-showfocus):focus, .xui-node-div:not(.xui-showfocus):focus{outline:0;}.xui-showfocus:focus{outline-width: 1px;outline-style: dashed;}")+
@@ -460,14 +468,9 @@ Class("xui.CSS", null,{
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
             ".xui-node-tips{background-color:#FDF8D2;}"+
             
-           // last one 
-            ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;color:#000;line-height:1.22em;}"+
-            ".xui-node-highlight{color:#000;}"+
-            ".xui-title-node{font-size:1.1667em;}"+
-            ".xuifont, .xuicon{color:#000}"+
-            ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
-            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
-            ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"
+           // base font-size mub be at the last
+            ".xui-node{font-size:12px;}"+
+            ".xui-title-node{font-size:1.1667em;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

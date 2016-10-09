@@ -10,7 +10,7 @@
         widgets: [
             {id:'xui.UI',caption:'UI Components',group:true, image:_img_app, imagePos:'-64px -48px', sub:[
                 {id:'xui.UI.absForm',caption:'Form Elements',group:true, image:_img_app, imagePos:'-48px -48px',sub:[
-                    {id:'xui.UI.Div', caption:'Div Element', image:_img_widgets, imagePos:'-624px top'},
+                    {id:'xui.UI.Div', caption:'Div', image:_img_widgets, imagePos:'-624px top'},
         
                     {id:'xui.UI.Label', caption:'Label', image:_img_widgets, imagePos:'-16px top'},
                     {id:'xui.UI.Link', caption:'Link', image:_img_widgets, imagePos:'-32px top'},

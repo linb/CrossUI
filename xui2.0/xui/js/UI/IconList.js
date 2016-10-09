@@ -36,7 +36,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-uiborder-radius-circle {flagClass}',
+                        className:'xui-uiflag-1 xui-display-none {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     }
@@ -76,18 +76,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 'line-height':0
             },
             FLAG:{
-                position:'absolute',
-                'z-index':10,
-                top:0,
-                right:0,
-                width:'1em',
-                height:'1em',
-                padding: '.3333em',
-                display:'none',
-                'background-color': '#eb6e1a',
-                color:'#fff',
-                'text-align': 'center'
-            },
+                top:'-.5em',
+                right:'-.5em'
+            }
         },
         Behaviors:{
             IMAGE:{

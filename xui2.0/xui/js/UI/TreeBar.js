@@ -153,12 +153,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         *expand:true->expand false->fold
         *recursive:true open recursively
         */
-        toggleNode:function(id, expand, recursive, stopanim){
+        toggleNode:function(id, expand, recursive, stopanim, callback){
             var profile=this.get(0),ns=this,self=arguments.callee;
             if(id){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive);
+                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive, callback);
             }else{
                 xui.arr.each(profile.properties.items,function(item){
                     self.call(ns,item.id,expand,recursive);
@@ -517,16 +517,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
         },
         EventHandlers:{
-            onDblclick:function(profile, item, e, src){},
-            onGetContent:function(profile, item, callback){},
-
             onShowOptions:function(profile, item, e, src){},
-            onClick:function(profile, item, e, src){},
-            onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
+            onClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
-            
+            onCmd:function(profile,item,cmdkey,e,src){},            
+            onDblclick:function(profile, item, e, src){},
+
+            onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
+            
             beforeFold:function(profile,item){},
             beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
@@ -838,15 +838,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
             xui.UI.List._prepareCmds(profile, item);
         },
-        _setSub:function(profile, item, flag, recursive, stopanim){
+        _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
                 ins=profile.boxing(),
+                prop = profile.properties,
                 itemId = profile.getSubIdByItemId(item.id),
-                properties = profile.properties,
-                barNode = profile.getSubNode('BAR', itemId),
                 markNode = profile.getSubNode('TOGGLE', itemId),
-                icon = profile.getSubNode('ITEMICON', itemId),
-                subNs = profile.getSubNode('SUB', itemId);
+                subNs = profile.getSubNode('SUB', itemId),
+
+                barNode = profile.getSubNode('BAR', itemId),
+                icon = profile.getSubNode('ITEMICON', itemId);
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
@@ -861,7 +862,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         barNode.tagClass('-expand',false).tagClass('-fold');
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
-                        if(properties.dynDestory || item.dynDestory){
+                        if(prop.dynDestory || item.dynDestory){
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
@@ -871,17 +872,20 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
+                       xui.resetRun(id, function(cb){
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                        },0,[cb]);
                     };
                     if(!stopanim){
-                         if(properties.animCollapse){
+                         if(prop.animCollapse){
                             subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
                         }else onend();
                     }else onend();
                 }
-                if(recursive && item.sub && !properties.dynDestory && !item.dynDestory){
+                if(recursive && item.sub && !prop.dynDestory && !item.dynDestory){
                     xui.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
-                            profile.box._setSub(profile, o, flag, recursive, true);
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
                     });
                 }
             }else{
@@ -911,8 +915,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(ins.afterExpand)
                                 ins.afterExpand(profile,item);
                         }
+                       xui.resetRun(id, function(cb){
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                        },0,[cb]);
                     },
-                    openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
+                    openSub = function(profile, item, id, markNode, subNs, barNode, icon, sub){
                         var b=profile.boxing(),
                             p=profile.properties,
                             empty = sub===false;
@@ -925,7 +932,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
                                 else if(xui.isArr(sub)){
-                                    b.insertItems(sub, item.id,null,false,false);
+                                    b.insertItems(sub, item.id);
                                     // for []
                                     if(!item.sub)item.sub=sub;                                    
                                 }else if(sub['xui.Template']||sub['xui.UI']){
@@ -968,13 +975,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 });
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
-                                },200, null, 'expoIn', profile.key+profile.id).start();
+                                }, 200, null, 'expoIn', profile.key+profile.id).start();
                             }else onend(empty);
                         }else onend(empty);
                     },
                     sub=item.sub,
                     callback=function(sub){
-                        openSub(profile, item, id, markNode, subNs, barNode, sub, recursive)
+                        openSub(profile, item, id, markNode, subNs, barNode, icon, sub)
                     },t;
 
                     if((t=typeof sub)=='string'||t=='object')
@@ -997,7 +1004,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(recursive&& item.sub){
                     xui.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length && !o._checked)
-                            profile.box._setSub(profile, o, flag, recursive, true);
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
                     });
                 }
             }

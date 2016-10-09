@@ -162,7 +162,6 @@ Class("xui.UI.Resizer","xui.UI",{
                 ini:{}
             }
         });
-
     },
     Static:{
         Templates:{

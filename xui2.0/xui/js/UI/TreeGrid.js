@@ -387,11 +387,17 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getRowbyCell:function(cell, type){
             return this.constructor._getRow(this.get(0), cell._row, type);
         },
-        toggleRow:function(id, expand){
-            var profile = this.get(0),
-            row = profile.rowMap[profile.rowMap2[id]];
-            if(row && row.sub)
-                profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked);
+        toggleRow:function(id, expand, recursive, stopanim, callback){
+            var profile = this.get(0),ns=this,self=arguments.callee;
+            if(id){
+                var row = profile.rowMap[profile.rowMap2[id]];
+                if(row && row.sub)
+                    profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked, recursive, stopanim||recursive, callback);
+            }else{
+                xui.arr.each(profile.properties.rows,function(row){
+                    self.call(ns,row.id,expand,recursive);
+                })
+            }
             return this;
         },
         updateRow:function(rowId,options,dirtyMark,triggerEvent){
@@ -4256,6 +4262,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onBodyLayout:function(profile, trigger){},
+
             beforeCellKeydown:function(profile,cell,keys){},
             afterCellFocused:function(profile, cell, row){},
 
@@ -4268,6 +4275,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onGetContent:function(profile, row, callback){},
             onRowSelected:function(profile, row, e, src, type){},
             onCmd:function(profile, row, cmdkey, e, src){},
+
+            beforeFold:function(profile,item){},
+            beforeExpand:function(profile,item){},
+            afterFold:function(profile,item){},
+            afterExpand:function(profile,item){},
 
             beforeColDrag:function(profile, colId){},
             beforeColMoved:function(profile, colId, toId){},
@@ -4419,7 +4431,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _temprowid:'_ r _temp_',
         isHotRow:function(row){
-            return (row.id||row)===this._temprowid;
+            return row && (row.id||row)===this._temprowid;
         },
         _addTempRow:function(profile,focusColId){
             var prop=profile.properties;
@@ -5356,41 +5368,101 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //next
             cell._oValue=cell.value;
         },
-        _setSub:function(profile, item, flag){
+        _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
+                ins=profile.boxing(),
                 prop=profile.properties,
-                serialId = profile.rowMap2[item.id],
-                markNode = profile.box._getToggleNode(profile, serialId),
-                subNs1 = profile.getSubNode('SUB1', serialId),
-                subNs2 = profile.getSubNode('SUB2', serialId),
-                subNs = profile.getSubNodes(['SUB1','SUB2'], serialId)
-                ;
+                itemId = profile.rowMap2[item.id],
+                markNode = profile.box._getToggleNode(profile, itemId),
+                subNs = profile.getSubNodes(['SUB1','SUB2'], itemId),
+
+                subNs1 = xui(subNs.get(0)),
+                subNs2 = xui(subNs.get(1));
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
-            if(item._checked){
-                if(!flag){
+            if(!flag){
+                if(item._checked){
+                    if(ins.beforeFold && false===ins.beforeFold(profile,item)){
+                        return;
+                    }
                     var onend=function(){
-                        subNs.css({display:'none',overflow:'', height:0});
+                        subNs.css({display:'none', height:0, overflow:''});
                         markNode.tagClass('-checked', false);
                         item._checked = false;
-                        profile.box._asy(profile);
 
-                        //clear rows cache
-                        delete profile.$allrowscache1;
-                        delete profile.$allrowscache2;
-                        profile.box._adjustBody(profile,'showrow');
+                        if(prop.dynDestory || item.dynDestory){
+                            var s=item.sub, arr=[];
+                            for(var i=0,l=s.length;i<l;i++)
+                                arr.push(s[i].id);
+                            profile.boxing().removeRows(arr);
+                            item.sub=true;
+                            delete item._inited;
+                        }
+                        if(ins.afterFold)
+                            ins.afterFold(profile,item);
+
+                        xui.resetRun(id, function(cb){
+                            profile.box._asy(profile);
+                            //clear rows cache
+                            delete profile.$allrowscache1;
+                            delete profile.$allrowscache2;
+                            profile.box._adjustBody(profile,'foldrow');
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                         },0,[cb]);
                     };
-                    if(prop.animCollapse) {
-                        subNs.css('overflow','hidden');
-                        subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, 0, 'expoOut', profile.key+profile.id).start();
-                    }
-                    else onend();
+                    if(!stopanim){
+                        if(prop.animCollapse) {
+                            subNs.css('overflow','hidden');
+                            subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                        }else onend();
+                    }else onend();
+                }
+                if(recursive && item.sub && !prop.dynDestory && !item.dynDestory){
+                    xui.arr.each(item.sub,function(o){
+                        if(o.sub && o.sub.length)
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
+                    });
                 }
             }else{
                 //open
-                if(flag){
-                    var openSub = function(profile, item, id, markNode, subNs1, subNs2, subNs , sub){
+                if(!item._checked){
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
+                        return;
+                    }
+                    var onend=function(empty){
+                        subNs.css({display:'',height:'auto',overflow:''});  
+                        if(!subNs1.height())
+                            subNs1.height(subNs2.height());
+                        //markNode.css('background','');
+                        // compitable with IE<8
+                        if(xui.browser.ie && xui.browser.ver<=8){
+                            markNode.css({
+                                backgroundImage:'',
+                                backgroundRepeat:'',
+                                backgroundPositionX:'',
+                                backgroundPositionY:'',
+                                backgroundColor:'',
+                                backgroundAttachment:''
+                              });
+                        }else{
+                            markNode.removeClass('xui-icon-loading');
+                        }
+                        if(!empty){
+                            item._checked = true;
+                            if(ins.afterExpand)
+                                ins.afterExpand(profile,item);
+                        }
+                       xui.resetRun(id, function(cb){
+                            profile.box._asy(profile);
+                            //clear rows cache
+                            delete profile.$allrowscache1;
+                            delete profile.$allrowscache2;
+                            profile.box._adjustBody(profile,'expandrow');
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                        },0,[cb]);
+                    },
+                    openSub = function(profile, item, id, markNode, subNs1, subNs2, subNs, sub){
                         var b=profile.boxing(),
                             p = profile.properties,
                             empty = sub===false;
@@ -5399,67 +5471,56 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             delete item.sub;
                             //before insertRows
                             item._inited=true;
-                            //subNs.css('display','none');
                             if(sub){
                                 if(typeof sub=='string'){
                                     subNs2.html(item.sub=sub,false);
                                 }else if(xui.isArr(sub))
                                     b.insertRows(sub, item.id);
+                                    // for []
+                                    if(!item.sub)item.sub=sub;
                                 else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs2.append(item.sub=sub.render(true));
                                 }
+                                var s=0,arr=b.getUIValue(true);
+                                if(arr && arr.length){
+                                    xui.arr.each(sub,function(o){
+                                        if(xui.arr.indexOf(arr, o.id||o)!=-1){
+                                            s=1;
+                                            return false;
+                                        }
+                                    });
+                                    if(s){
+                                        //set checked items
+                                        b._setCtrlValue(b.getUIValue());
+                                    }
+                                }
                             }
-                            //set checked items
-                            b._setCtrlValue(b.getUIValue(), true);
                         }
 
-                        subNs.css("height","0px").css("display",'');
-                        var onend=function(){
-                            // compitable with IE<8
-                            if(xui.browser.ie && xui.browser.ver<=8){
-                                markNode.css({
-                                    backgroundImage:'',
-                                    backgroundRepeat:'',
-                                    backgroundPositionX:'',
-                                    backgroundPositionY:'',
-                                    backgroundColor:'',
-                                    backgroundAttachment:''
-                                  });
-                            }else{
-                                markNode.removeClass('xui-icon-loading');
-                            }
-                            if(empty){
-                                // markNode.css('background','none');
-                                // do nothing
-                            }else{
-                                subNs.css({display:'',height:'auto',overflow:''});
-                                
-                                if(!subNs1.height())
-                                    subNs1.height(subNs2.height());
-
-                                markNode.tagClass('-checked');
-                                item._checked = true;
-                            }
-                            profile.box._asy(profile);
-                            //clear rows cache
-                            delete profile.$allrowscache1;
-                            delete profile.$allrowscache2;
-                            profile.box._adjustBody(profile,'showrow');
-                        };
-                        if(p.animCollapse) {
-                            var h=0;
-                            subNs2.children().each(function(o){
-                                h+=o.offsetHeight;
-                            });
-                            subNs.css('overflow','hidden');
-                            subNs.animate({'height':[0,h]},null,onend, 200, 0, 'expoIn', profile.key+profile.id).start();
+                        if(!empty){
+                            markNode.tagClass('-checked');
                         }
-                        else onend();
-                    };
 
-                    var sub = item.sub, callback=function(sub){
+                        if(!stopanim){
+                            subNs.css("height","0px").css("display",'');
+                        
+                            if(p.animCollapse) {
+                                var h=0;
+                                subNs2.children().each(function(o){
+                                    h+=o.offsetHeight;
+                                });
+                                subNs.css('overflow','hidden');
+                                subNs.animate({'height':[0,h]},null,function(){
+                                    onend(empty);
+                                }, 200, null, 'expoIn', profile.key+profile.id).start();
+                            }else onend(empty);
+                        }else onend(empty);
+                    },
+                    sub = item.sub,
+                    callback=function(sub){
                         openSub(profile, item, id, markNode, subNs1, subNs2, subNs, sub);
                     },t;
+
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
@@ -5470,12 +5531,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
-                            //return true: continue UI changing
+                            //return true: toggle icon will be checked
                             if(r===true)
                                 item._inited=true;
                             callback(r);
                         }
                     }
+                }
+                if(recursive&& item.sub){
+                    xui.arr.each(item.sub,function(o){
+                        if(o.sub && o.sub.length && !o._checked)
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
+                    });
                 }
             }
         },

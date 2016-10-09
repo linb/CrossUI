@@ -8557,7 +8557,15 @@ Class('xui.Event',null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css= ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
+            css =  ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;color:#000;line-height:1.22em;}"+
+            ".xui-node-highlight{color:#000;}"+
+            ".xui-title-node{}"+
+            ".xuifont, .xuicon{color:#000}"+
+            ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
+            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
+            ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
+            
+            ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
@@ -8575,8 +8583,8 @@ Class('xui.Event',null,{
             ".xui-node-select,.xui-node-input,.xui-node-textarea{font-family:arial,helvetica,clean,sans-serif;border-width:1px;}"+
             ((b.ie && b.ver<=8)?".xui-node-input{overflow:hidden;}":"")+
 // base setting
-            ".xui-node-a{cursor:pointer;color:#0000ee;text-decoration:none;}"+
-            ".xui-node-a:hover{color:red}"+
+            ".xui-node-a, .xui-node-a .xui-node{cursor:pointer;color:#0000ee;text-decoration:none;}"+
+            ".xui-node-a:hover, .xui-node-a:hover .xui-node{color:red}"+
             (b.gek? (".xui-node-a:focus{outline-offset:-1px;"+ (b.ver<3?"-moz-outline-offset:-1px !important":"") +"}" ):"")+
             ".xui-node-span, .xui-node-div{border:0;}"+
             ((b.ie && b.ver<=8)?"":".xui-node-span:not(.xui-showfocus):focus, .xui-node-div:not(.xui-showfocus):focus{outline:0;}.xui-showfocus:focus{outline-width: 1px;outline-style: dashed;}")+
@@ -8617,14 +8625,9 @@ Class('xui.Event',null,{
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
             ".xui-node-tips{background-color:#FDF8D2;}"+
             
-           // last one 
-            ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;font-size:12px;color:#000;line-height:1.22em;}"+
-            ".xui-node-highlight{color:#000;}"+
-            ".xui-title-node{font-size:1.1667em;}"+
-            ".xuifont, .xuicon{color:#000}"+
-            ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
-            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
-            ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"
+           // base font-size mub be at the last
+            ".xui-node{font-size:12px;}"+
+            ".xui-title-node{font-size:1.1667em;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -19463,7 +19466,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '0',
                 '-khtml-border-radius': '0'
             },
-            '.xui-uiborder-radius-circle':{
+            '.xui-uiborder-circle':{
                 $order:16,
                 'border-radius':'50%',
                 '-moz-border-radius': '50%',
@@ -19471,6 +19474,25 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '50%',
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%'
+            },
+            '.xui-uiflag-1':{
+                $order:16,
+                'border-radius':'50%',
+                '-moz-border-radius': '50%',
+                '-webkit-border-radius': '50%',
+                '-o-border-radius': '50%',
+                '-ms-border-radius': '50%',
+                '-khtml-border-radius': '50%',
+
+                position:'absolute',
+                'z-index':10,
+                width:'1em',
+                height:'1em',
+                padding: '4px',
+                'background-color': '#eb6e1a',
+                color:'#fff',
+                overflow:'hidden',
+                'text-align': 'center'
             },
             '.xui-uiborder-none':{
                 $order:20,
@@ -20419,7 +20441,7 @@ Class("xui.UI",  "xui.absObj", {
                             dropKeys:'',
                             overflow:{
                                 ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                                combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                                combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
                                 action:function(v){
                                     var prf=this;
                                     xui.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
@@ -23117,6 +23139,10 @@ Class("xui.absList", "xui.absObj",{
             }else
                 return v;
         },
+        focusItem:function(itemId){
+            this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).focus();
+            return this;
+        },
         selectItem:function(itemId){
             return this.fireItemClickEvent(xui.isHash(itemId)?itemId.id:(itemId+''));
         },
@@ -23762,10 +23788,8 @@ new function(){
                 if(self.renderId)
                     if((!self.$noB) && p.border && o._border)o._border();
 
-                if((!self.$noR) && p.resizer && o.setResizer)
-                    o.setResizer(p.resizer,true);
-                if((!self.$noS) && p.shadow && o.setShadow)
-                    o.setShadow(true,true);
+                if((!self.$noR) && p.resizer && o.setResizer)o.setResizer(p.resizer,true);
+                if((!self.$noS) && p.shadow && o.setShadow)o.setShadow(true,true);
             },
             _onresize:function(profile,width,height){
                 var prop = profile.properties,
@@ -24238,7 +24262,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                    combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                    combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
@@ -24436,13 +24460,20 @@ new function(){
     });
 
     Class(u+".Div", u,{
+        Initialize:function(){
+            // compitable
+            xui.UI.Pane = xui.UI.Div;
+            var key="xui.UI.Pane";
+            xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+        },
         Static:{
             Appearances:{
                 KEY:{
                    // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
                     outline:xui.browser.gek?'none':null,
                     zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                    background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
+                    background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
+                    'line-height':'auto'
                 }
             },
             Templates:{
@@ -24483,7 +24514,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                    combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                    combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
@@ -24509,6 +24540,8 @@ new function(){
             },
             Behaviors:{
                 HoverEffected:{KEY:'KEY'},
+                DroppableKeys:['KEY'],
+                PanelKeys:['KEY'],
                 onClick:function(profile, e, src){
                     var p=profile.properties;
                     if(p.disabled)return false;
@@ -24576,30 +24609,6 @@ new function(){
             }
         }
     });
-    
-    Class(u+".Pane", u+".Div",{
-        Static:{
-            Behaviors:{
-                DroppableKeys:['KEY'],
-                PanelKeys:['KEY']
-            },
-            Appearances:{
-                KEY:{
-                    'line-height':'auto'
-                }
-            },
-            RenderTrigger:function(){
-                // only div
-                var ns=this;
-                if(ns.box.KEY=="xui.UI.Pane")
-                    if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                        ns.box._applyAutoLoad(ns);
-            },
-            DataModel:{
-                rotate:null
-            }
-        }
-    }); 
 
     Class(u+".MoudluePlaceHolder", u+".Div",{
         Instance:{
@@ -25503,7 +25512,6 @@ Class("xui.UI.Resizer","xui.UI",{
                 ini:{}
             }
         });
-
     },
     Static:{
         Templates:{
@@ -34877,7 +34885,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-uiborder-radius-circle {flagClass}',
+                        className:'xui-uiflag-1 xui-display-none {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     },
@@ -34893,19 +34901,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     Static:{
         IMGNODE:1,
         Appearances:{
-            FLAG:{
-                position:'absolute',
-                'z-index':10,
-                top:0,
-                right:0,
-                width:'1em',
-                height:'1em',
-                padding: '.3333em',
-                display:'none',
-                'background-color': '#eb6e1a',
-                color:'#fff',
-                'text-align': 'center'
-            },
             EXTRA:{
                 display:'none'
             },
@@ -34966,6 +34961,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 margin:'.25em',
                 'text-align':'center',
                 'font-size':'1em'
+            },
+            FLAG:{
+                top:'-.5em',
+                right:'-.5em'
             }
         },
         Behaviors:{
@@ -35081,9 +35080,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
-
             if(item.flagText)item._flagStyle='display:block';
-
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
@@ -35134,7 +35131,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-uiborder-radius-circle {flagClass}',
+                        className:'xui-uiflag-1 xui-display-none {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     }
@@ -35174,18 +35171,9 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 'line-height':0
             },
             FLAG:{
-                position:'absolute',
-                'z-index':10,
-                top:0,
-                right:0,
-                width:'1em',
-                height:'1em',
-                padding: '.3333em',
-                display:'none',
-                'background-color': '#eb6e1a',
-                color:'#fff',
-                'text-align': 'center'
-            },
+                top:'-.5em',
+                right:'-.5em'
+            }
         },
         Behaviors:{
             IMAGE:{
@@ -38029,7 +38017,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         t.$submap={
             items:{
                 ITEM:{
-                    className:'xui-ui-btn xui-uiborder-radius {itemClass} {disabled} {readonly}',
+                    className:'{_itemClass} {itemClass} {disabled} {readonly}',
                     style:'{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
                     tabindex: '{_tabindex}',
                     ICON:{
@@ -38041,6 +38029,18 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     CAPTION:{
                         $order:11,
                         text:'{caption}'
+                    },
+                    DROP:{
+                        $order:12,
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-arrowdrop',
+                        style:'{_dropDisplay}'
+                    },
+                    FLAG:{
+                        $order:13,
+                        className:'xui-uiflag-1 xui-display-none {flagClass}',
+                        style:'{_flagStyle};{flagStyle}',
+                        text:'{flagText}'
                     }
                 }
             }
@@ -38051,8 +38051,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         Appearances:{
             ITEMS:{
                 position:'relative',
-                overflow:'auto',
-                'overflow-x': 'hidden'
+                overflow:'visible'
             },
             ITEM:{
                 'vertical-align':'middle',
@@ -38075,7 +38074,14 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 zoom:xui.browser.ie6?1:null,
                 'vertical-align':'middle',
                 'font-size':'1em'
-            } 
+            },
+            DROP:{
+                'vertical-align': 'middle'
+            },
+            FLAG:{
+                top:'-.5em',
+                right:'-.5em'
+            }
         },
         DataModel:({
             maxHeight:null,
@@ -38099,10 +38105,6 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 action:function(value){
                     this.getSubNode('ITEM',true).css('text-align',value);
                 }
-            },
-            // deprecated
-            itemLinker:{
-                hidden:true
             }
         }),
         Behaviors:{
@@ -38115,14 +38117,14 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             var p = profile.properties, t;
             item._tabindex = p.tabindex;
 
-            if(t = item.itemMargin || p.itemMargin)
-                item.itemMargin = "margin:" + t;
+            if(t = item.itemMargin || p.itemMargin)item.itemMargin = "margin:" + t;
+            if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ xui.CSS.$forceu(t);
+            if(t = item.itemAlign || p.itemAlign)item.itemAlign = "text-align:"+ t;
+            if(item.flagText)item._flagStyle='display:block';
 
-            if(t = item.itemWidth || p.itemWidth)
-                item.itemWidth = "width:"+ profile.$forceu(t);
-
-            if(t = item.itemAlign || p.itemAlign)
-                item.itemAlign = "text-align:"+ t;
+            // item.type: text button dropButton
+            item._itemClass=item.type=="text"?"xui-node-a":"xui-ui-btn xui-uiborder-radius";
+            item._dropDisplay=item.type=="dropButton"?'':'display:none';
         }
     }
 });
@@ -38282,12 +38284,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         *expand:true->expand false->fold
         *recursive:true open recursively
         */
-        toggleNode:function(id, expand, recursive, stopanim){
+        toggleNode:function(id, expand, recursive, stopanim, callback){
             var profile=this.get(0),ns=this,self=arguments.callee;
             if(id){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive);
+                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive, callback);
             }else{
                 xui.arr.each(profile.properties.items,function(item){
                     self.call(ns,item.id,expand,recursive);
@@ -38646,16 +38648,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
         },
         EventHandlers:{
-            onDblclick:function(profile, item, e, src){},
-            onGetContent:function(profile, item, callback){},
-
             onShowOptions:function(profile, item, e, src){},
-            onClick:function(profile, item, e, src){},
-            onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
+            onClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
-            
+            onCmd:function(profile,item,cmdkey,e,src){},            
+            onDblclick:function(profile, item, e, src){},
+
+            onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
+            
             beforeFold:function(profile,item){},
             beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
@@ -38967,15 +38969,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
             xui.UI.List._prepareCmds(profile, item);
         },
-        _setSub:function(profile, item, flag, recursive, stopanim){
+        _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
                 ins=profile.boxing(),
+                prop = profile.properties,
                 itemId = profile.getSubIdByItemId(item.id),
-                properties = profile.properties,
-                barNode = profile.getSubNode('BAR', itemId),
                 markNode = profile.getSubNode('TOGGLE', itemId),
-                icon = profile.getSubNode('ITEMICON', itemId),
-                subNs = profile.getSubNode('SUB', itemId);
+                subNs = profile.getSubNode('SUB', itemId),
+
+                barNode = profile.getSubNode('BAR', itemId),
+                icon = profile.getSubNode('ITEMICON', itemId);
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
@@ -38990,7 +38993,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         barNode.tagClass('-expand',false).tagClass('-fold');
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
-                        if(properties.dynDestory || item.dynDestory){
+                        if(prop.dynDestory || item.dynDestory){
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
@@ -39000,17 +39003,20 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
+                       xui.resetRun(id, function(cb){
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                        },0,[cb]);
                     };
                     if(!stopanim){
-                         if(properties.animCollapse){
+                         if(prop.animCollapse){
                             subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
                         }else onend();
                     }else onend();
                 }
-                if(recursive && item.sub && !properties.dynDestory && !item.dynDestory){
+                if(recursive && item.sub && !prop.dynDestory && !item.dynDestory){
                     xui.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length)
-                            profile.box._setSub(profile, o, flag, recursive, true);
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
                     });
                 }
             }else{
@@ -39040,8 +39046,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(ins.afterExpand)
                                 ins.afterExpand(profile,item);
                         }
+                       xui.resetRun(id, function(cb){
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                        },0,[cb]);
                     },
-                    openSub = function(profile, item, id, markNode, subNs, barNode, sub, recursive){
+                    openSub = function(profile, item, id, markNode, subNs, barNode, icon, sub){
                         var b=profile.boxing(),
                             p=profile.properties,
                             empty = sub===false;
@@ -39054,7 +39063,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
                                 else if(xui.isArr(sub)){
-                                    b.insertItems(sub, item.id,null,false,false);
+                                    b.insertItems(sub, item.id);
                                     // for []
                                     if(!item.sub)item.sub=sub;                                    
                                 }else if(sub['xui.Template']||sub['xui.UI']){
@@ -39097,13 +39106,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 });
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
-                                },200, null, 'expoIn', profile.key+profile.id).start();
+                                }, 200, null, 'expoIn', profile.key+profile.id).start();
                             }else onend(empty);
                         }else onend(empty);
                     },
                     sub=item.sub,
                     callback=function(sub){
-                        openSub(profile, item, id, markNode, subNs, barNode, sub, recursive)
+                        openSub(profile, item, id, markNode, subNs, barNode, icon, sub)
                     },t;
 
                     if((t=typeof sub)=='string'||t=='object')
@@ -39126,7 +39135,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(recursive&& item.sub){
                     xui.arr.each(item.sub,function(o){
                         if(o.sub && o.sub.length && !o._checked)
-                            profile.box._setSub(profile, o, flag, recursive, true);
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
                     });
                 }
             }
@@ -40676,7 +40685,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             BTN:{
                                 tagName:'button',
                                 className:'xui-uiborder-hidden xui-uiborder-radius xui-showfocus {itemcls} {itemClass}',
-                                style:'{itemStyle} {boxDisplay}',
+                                style:'{itemStyle} {_boxDisplay}',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
                                     tagName:'div',
@@ -40696,7 +40705,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                         $order:3,
                                         className:'xuifont',
                                         $fonticon:'xui-uicmd-arrowdrop',
-                                        style:'{dropDisplay}'
+                                        style:'{_dropDisplay}'
                                     }
                                 }
                             }
@@ -40772,6 +40781,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             LABEL:{
                 cursor:'default',
                 'padding':'.25em'
+            },
+            DROP:{
+                'vertical-align': 'middle'
             }
         },
         Behaviors:{
@@ -40920,8 +40932,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         dataItem.splitDisplay=dataItem.type=="split"?'':dn;
                         dataItem.labelDisplay=dataItem.label?'':dn;
                         dataItem.captionDisplay=dataItem.caption?'':dn;
-                        dataItem.dropDisplay=item.type=="dropButton"?'':dn;
-                        dataItem.boxDisplay= (dataItem.type!=="split" && (dataItem.caption || dataItem.image || dataItem.imageClass))?'':dn;
+                        dataItem._dropDisplay=item.type=="dropButton"?'':dn;
+                        dataItem._boxDisplay= (dataItem.type!=="split" && (dataItem.caption || dataItem.image || dataItem.imageClass))?'':dn;
                     }
                     dataItem._itemDisplay=item.hidden?dn:'';
                     item._pid=pid;
@@ -41163,7 +41175,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uibar xui-uicontainer',
+                            className:'xui-uibase xui-uicontainer',
                             style:'position:absolute;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
@@ -41295,7 +41307,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         Behaviors:{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
-            HoverEffected:{MOVE:'MOVE',CMD:'CMD'},
+            HoverEffected:{MOVE:'MOVE',CMD:['MOVE','CMD']},
+            ClickEffected:{CMD:'CMD'},
             onSize:xui.UI.$onSize,
             MOVE:{
                 beforeMousedown:function(profile, e, src){
@@ -42315,11 +42328,17 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getRowbyCell:function(cell, type){
             return this.constructor._getRow(this.get(0), cell._row, type);
         },
-        toggleRow:function(id, expand){
-            var profile = this.get(0),
-            row = profile.rowMap[profile.rowMap2[id]];
-            if(row && row.sub)
-                profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked);
+        toggleRow:function(id, expand, recursive, stopanim, callback){
+            var profile = this.get(0),ns=this,self=arguments.callee;
+            if(id){
+                var row = profile.rowMap[profile.rowMap2[id]];
+                if(row && row.sub)
+                    profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked, recursive, stopanim||recursive, callback);
+            }else{
+                xui.arr.each(profile.properties.rows,function(row){
+                    self.call(ns,row.id,expand,recursive);
+                })
+            }
             return this;
         },
         updateRow:function(rowId,options,dirtyMark,triggerEvent){
@@ -46184,6 +46203,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onBodyLayout:function(profile, trigger){},
+
             beforeCellKeydown:function(profile,cell,keys){},
             afterCellFocused:function(profile, cell, row){},
 
@@ -46196,6 +46216,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onGetContent:function(profile, row, callback){},
             onRowSelected:function(profile, row, e, src, type){},
             onCmd:function(profile, row, cmdkey, e, src){},
+
+            beforeFold:function(profile,item){},
+            beforeExpand:function(profile,item){},
+            afterFold:function(profile,item){},
+            afterExpand:function(profile,item){},
 
             beforeColDrag:function(profile, colId){},
             beforeColMoved:function(profile, colId, toId){},
@@ -46347,7 +46372,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _temprowid:'_ r _temp_',
         isHotRow:function(row){
-            return (row.id||row)===this._temprowid;
+            return row && (row.id||row)===this._temprowid;
         },
         _addTempRow:function(profile,focusColId){
             var prop=profile.properties;
@@ -47284,41 +47309,101 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //next
             cell._oValue=cell.value;
         },
-        _setSub:function(profile, item, flag){
+        _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
+                ins=profile.boxing(),
                 prop=profile.properties,
-                serialId = profile.rowMap2[item.id],
-                markNode = profile.box._getToggleNode(profile, serialId),
-                subNs1 = profile.getSubNode('SUB1', serialId),
-                subNs2 = profile.getSubNode('SUB2', serialId),
-                subNs = profile.getSubNodes(['SUB1','SUB2'], serialId)
-                ;
+                itemId = profile.rowMap2[item.id],
+                markNode = profile.box._getToggleNode(profile, itemId),
+                subNs = profile.getSubNodes(['SUB1','SUB2'], itemId),
+
+                subNs1 = xui(subNs.get(0)),
+                subNs2 = xui(subNs.get(1));
 
             if(xui.Thread.isAlive(profile.key+profile.id)) return;
             //close
-            if(item._checked){
-                if(!flag){
+            if(!flag){
+                if(item._checked){
+                    if(ins.beforeFold && false===ins.beforeFold(profile,item)){
+                        return;
+                    }
                     var onend=function(){
-                        subNs.css({display:'none',overflow:'', height:0});
+                        subNs.css({display:'none', height:0, overflow:''});
                         markNode.tagClass('-checked', false);
                         item._checked = false;
-                        profile.box._asy(profile);
 
-                        //clear rows cache
-                        delete profile.$allrowscache1;
-                        delete profile.$allrowscache2;
-                        profile.box._adjustBody(profile,'showrow');
+                        if(prop.dynDestory || item.dynDestory){
+                            var s=item.sub, arr=[];
+                            for(var i=0,l=s.length;i<l;i++)
+                                arr.push(s[i].id);
+                            profile.boxing().removeRows(arr);
+                            item.sub=true;
+                            delete item._inited;
+                        }
+                        if(ins.afterFold)
+                            ins.afterFold(profile,item);
+
+                        xui.resetRun(id, function(cb){
+                            profile.box._asy(profile);
+                            //clear rows cache
+                            delete profile.$allrowscache1;
+                            delete profile.$allrowscache2;
+                            profile.box._adjustBody(profile,'foldrow');
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                         },0,[cb]);
                     };
-                    if(prop.animCollapse) {
-                        subNs.css('overflow','hidden');
-                        subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, 0, 'expoOut', profile.key+profile.id).start();
-                    }
-                    else onend();
+                    if(!stopanim){
+                        if(prop.animCollapse) {
+                            subNs.css('overflow','hidden');
+                            subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                        }else onend();
+                    }else onend();
+                }
+                if(recursive && item.sub && !prop.dynDestory && !item.dynDestory){
+                    xui.arr.each(item.sub,function(o){
+                        if(o.sub && o.sub.length)
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
+                    });
                 }
             }else{
                 //open
-                if(flag){
-                    var openSub = function(profile, item, id, markNode, subNs1, subNs2, subNs , sub){
+                if(!item._checked){
+                    if(ins.beforeExpand && false===ins.beforeExpand(profile,item)){
+                        return;
+                    }
+                    var onend=function(empty){
+                        subNs.css({display:'',height:'auto',overflow:''});  
+                        if(!subNs1.height())
+                            subNs1.height(subNs2.height());
+                        //markNode.css('background','');
+                        // compitable with IE<8
+                        if(xui.browser.ie && xui.browser.ver<=8){
+                            markNode.css({
+                                backgroundImage:'',
+                                backgroundRepeat:'',
+                                backgroundPositionX:'',
+                                backgroundPositionY:'',
+                                backgroundColor:'',
+                                backgroundAttachment:''
+                              });
+                        }else{
+                            markNode.removeClass('xui-icon-loading');
+                        }
+                        if(!empty){
+                            item._checked = true;
+                            if(ins.afterExpand)
+                                ins.afterExpand(profile,item);
+                        }
+                       xui.resetRun(id, function(cb){
+                            profile.box._asy(profile);
+                            //clear rows cache
+                            delete profile.$allrowscache1;
+                            delete profile.$allrowscache2;
+                            profile.box._adjustBody(profile,'expandrow');
+                            if(cb)xui.tryF(cb,[profile,item],ins);
+                        },0,[cb]);
+                    },
+                    openSub = function(profile, item, id, markNode, subNs1, subNs2, subNs, sub){
                         var b=profile.boxing(),
                             p = profile.properties,
                             empty = sub===false;
@@ -47327,67 +47412,56 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             delete item.sub;
                             //before insertRows
                             item._inited=true;
-                            //subNs.css('display','none');
                             if(sub){
                                 if(typeof sub=='string'){
                                     subNs2.html(item.sub=sub,false);
                                 }else if(xui.isArr(sub))
                                     b.insertRows(sub, item.id);
+                                    // for []
+                                    if(!item.sub)item.sub=sub;
                                 else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs2.append(item.sub=sub.render(true));
                                 }
+                                var s=0,arr=b.getUIValue(true);
+                                if(arr && arr.length){
+                                    xui.arr.each(sub,function(o){
+                                        if(xui.arr.indexOf(arr, o.id||o)!=-1){
+                                            s=1;
+                                            return false;
+                                        }
+                                    });
+                                    if(s){
+                                        //set checked items
+                                        b._setCtrlValue(b.getUIValue());
+                                    }
+                                }
                             }
-                            //set checked items
-                            b._setCtrlValue(b.getUIValue(), true);
                         }
 
-                        subNs.css("height","0px").css("display",'');
-                        var onend=function(){
-                            // compitable with IE<8
-                            if(xui.browser.ie && xui.browser.ver<=8){
-                                markNode.css({
-                                    backgroundImage:'',
-                                    backgroundRepeat:'',
-                                    backgroundPositionX:'',
-                                    backgroundPositionY:'',
-                                    backgroundColor:'',
-                                    backgroundAttachment:''
-                                  });
-                            }else{
-                                markNode.removeClass('xui-icon-loading');
-                            }
-                            if(empty){
-                                // markNode.css('background','none');
-                                // do nothing
-                            }else{
-                                subNs.css({display:'',height:'auto',overflow:''});
-                                
-                                if(!subNs1.height())
-                                    subNs1.height(subNs2.height());
-
-                                markNode.tagClass('-checked');
-                                item._checked = true;
-                            }
-                            profile.box._asy(profile);
-                            //clear rows cache
-                            delete profile.$allrowscache1;
-                            delete profile.$allrowscache2;
-                            profile.box._adjustBody(profile,'showrow');
-                        };
-                        if(p.animCollapse) {
-                            var h=0;
-                            subNs2.children().each(function(o){
-                                h+=o.offsetHeight;
-                            });
-                            subNs.css('overflow','hidden');
-                            subNs.animate({'height':[0,h]},null,onend, 200, 0, 'expoIn', profile.key+profile.id).start();
+                        if(!empty){
+                            markNode.tagClass('-checked');
                         }
-                        else onend();
-                    };
 
-                    var sub = item.sub, callback=function(sub){
+                        if(!stopanim){
+                            subNs.css("height","0px").css("display",'');
+                        
+                            if(p.animCollapse) {
+                                var h=0;
+                                subNs2.children().each(function(o){
+                                    h+=o.offsetHeight;
+                                });
+                                subNs.css('overflow','hidden');
+                                subNs.animate({'height':[0,h]},null,function(){
+                                    onend(empty);
+                                }, 200, null, 'expoIn', profile.key+profile.id).start();
+                            }else onend(empty);
+                        }else onend(empty);
+                    },
+                    sub = item.sub,
+                    callback=function(sub){
                         openSub(profile, item, id, markNode, subNs1, subNs2, subNs, sub);
                     },t;
+
                     if((t=typeof sub)=='string'||t=='object')
                         callback(sub);
                     else if(profile.onGetContent){
@@ -47398,12 +47472,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         var r=profile.boxing().onGetContent(profile, item, callback);
                         if(r||r===false){
-                            //return true: continue UI changing
+                            //return true: toggle icon will be checked
                             if(r===true)
                                 item._inited=true;
                             callback(r);
                         }
                     }
+                }
+                if(recursive&& item.sub){
+                    xui.arr.each(item.sub,function(o){
+                        if(o.sub && o.sub.length && !o._checked)
+                            profile.box._setSub(profile, o, flag, recursive, true, cb);
+                    });
                 }
             }
         },

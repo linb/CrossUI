@@ -173,7 +173,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             BTN:{
                                 tagName:'button',
                                 className:'xui-uiborder-hidden xui-uiborder-radius xui-showfocus {itemcls} {itemClass}',
-                                style:'{itemStyle} {boxDisplay}',
+                                style:'{itemStyle} {_boxDisplay}',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
                                     tagName:'div',
@@ -193,7 +193,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                         $order:3,
                                         className:'xuifont',
                                         $fonticon:'xui-uicmd-arrowdrop',
-                                        style:'{dropDisplay}'
+                                        style:'{_dropDisplay}'
                                     }
                                 }
                             }
@@ -269,6 +269,9 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             LABEL:{
                 cursor:'default',
                 'padding':'.25em'
+            },
+            DROP:{
+                'vertical-align': 'middle'
             }
         },
         Behaviors:{
@@ -417,8 +420,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         dataItem.splitDisplay=dataItem.type=="split"?'':dn;
                         dataItem.labelDisplay=dataItem.label?'':dn;
                         dataItem.captionDisplay=dataItem.caption?'':dn;
-                        dataItem.dropDisplay=item.type=="dropButton"?'':dn;
-                        dataItem.boxDisplay= (dataItem.type!=="split" && (dataItem.caption || dataItem.image || dataItem.imageClass))?'':dn;
+                        dataItem._dropDisplay=item.type=="dropButton"?'':dn;
+                        dataItem._boxDisplay= (dataItem.type!=="split" && (dataItem.caption || dataItem.image || dataItem.imageClass))?'':dn;
                     }
                     dataItem._itemDisplay=item.hidden?dn:'';
                     item._pid=pid;

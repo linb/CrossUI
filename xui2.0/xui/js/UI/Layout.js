@@ -213,7 +213,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         },
                         PANEL:{
                             tagName:'div',
-                            className:'xui-uibar xui-uicontainer',
+                            className:'xui-uibase xui-uicontainer',
                             style:'position:absolute;{_bginfo};{_overflow};',
                             text:xui.UI.$childTag
                         }
@@ -345,7 +345,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         Behaviors:{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
-            HoverEffected:{MOVE:'MOVE',CMD:'CMD'},
+            HoverEffected:{MOVE:'MOVE',CMD:['MOVE','CMD']},
+            ClickEffected:{CMD:'CMD'},
             onSize:xui.UI.$onSize,
             MOVE:{
                 beforeMousedown:function(profile, e, src){

@@ -56,7 +56,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-uiborder-radius-circle {flagClass}',
+                        className:'xui-uiflag-1 xui-display-none {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     },
@@ -72,19 +72,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
     Static:{
         IMGNODE:1,
         Appearances:{
-            FLAG:{
-                position:'absolute',
-                'z-index':10,
-                top:0,
-                right:0,
-                width:'1em',
-                height:'1em',
-                padding: '.3333em',
-                display:'none',
-                'background-color': '#eb6e1a',
-                color:'#fff',
-                'text-align': 'center'
-            },
             EXTRA:{
                 display:'none'
             },
@@ -145,6 +132,10 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 margin:'.25em',
                 'text-align':'center',
                 'font-size':'1em'
+            },
+            FLAG:{
+                top:'-.5em',
+                right:'-.5em'
             }
         },
         Behaviors:{
@@ -260,9 +251,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
             item._tabindex = p.tabindex;
-
             if(item.flagText)item._flagStyle='display:block';
-
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{

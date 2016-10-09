@@ -2574,7 +2574,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '0',
                 '-khtml-border-radius': '0'
             },
-            '.xui-uiborder-radius-circle':{
+            '.xui-uiborder-circle':{
                 $order:16,
                 'border-radius':'50%',
                 '-moz-border-radius': '50%',
@@ -2582,6 +2582,25 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '50%',
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%'
+            },
+            '.xui-uiflag-1':{
+                $order:16,
+                'border-radius':'50%',
+                '-moz-border-radius': '50%',
+                '-webkit-border-radius': '50%',
+                '-o-border-radius': '50%',
+                '-ms-border-radius': '50%',
+                '-khtml-border-radius': '50%',
+
+                position:'absolute',
+                'z-index':10,
+                width:'1em',
+                height:'1em',
+                padding: '4px',
+                'background-color': '#eb6e1a',
+                color:'#fff',
+                overflow:'hidden',
+                'text-align': 'center'
             },
             '.xui-uiborder-none':{
                 $order:20,
@@ -3530,7 +3549,7 @@ Class("xui.UI",  "xui.absObj", {
                             dropKeys:'',
                             overflow:{
                                 ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                                combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                                combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
                                 action:function(v){
                                     var prf=this;
                                     xui.arr.each(prf.box.$Behaviors.PanelKeys,function(k){
@@ -6228,6 +6247,10 @@ Class("xui.absList", "xui.absObj",{
             }else
                 return v;
         },
+        focusItem:function(itemId){
+            this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).focus();
+            return this;
+        },
         selectItem:function(itemId){
             return this.fireItemClickEvent(xui.isHash(itemId)?itemId.id:(itemId+''));
         },
@@ -6873,10 +6896,8 @@ new function(){
                 if(self.renderId)
                     if((!self.$noB) && p.border && o._border)o._border();
 
-                if((!self.$noR) && p.resizer && o.setResizer)
-                    o.setResizer(p.resizer,true);
-                if((!self.$noS) && p.shadow && o.setShadow)
-                    o.setShadow(true,true);
+                if((!self.$noR) && p.resizer && o.setResizer)o.setResizer(p.resizer,true);
+                if((!self.$noS) && p.shadow && o.setShadow)o.setShadow(true,true);
             },
             _onresize:function(profile,width,height){
                 var prop = profile.properties,
@@ -7349,7 +7370,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                    combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                    combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
@@ -7547,13 +7568,20 @@ new function(){
     });
 
     Class(u+".Div", u,{
+        Initialize:function(){
+            // compitable
+            xui.UI.Pane = xui.UI.Div;
+            var key="xui.UI.Pane";
+            xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+        },
         Static:{
             Appearances:{
                 KEY:{
                    // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
                     outline:xui.browser.gek?'none':null,
                     zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                    background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
+                    background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
+                    'line-height':'auto'
                 }
             },
             Templates:{
@@ -7594,7 +7622,7 @@ new function(){
                 },
                 overflow:{
                     ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                    combobox:['','visible','hidden','scroll','auto','overflow-x:auto;overflow-y:auto'],
+                    combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
                     action:function(v){
                         var node=this.getContainer();
                         if(v){
@@ -7620,6 +7648,8 @@ new function(){
             },
             Behaviors:{
                 HoverEffected:{KEY:'KEY'},
+                DroppableKeys:['KEY'],
+                PanelKeys:['KEY'],
                 onClick:function(profile, e, src){
                     var p=profile.properties;
                     if(p.disabled)return false;
@@ -7687,30 +7717,6 @@ new function(){
             }
         }
     });
-    
-    Class(u+".Pane", u+".Div",{
-        Static:{
-            Behaviors:{
-                DroppableKeys:['KEY'],
-                PanelKeys:['KEY']
-            },
-            Appearances:{
-                KEY:{
-                    'line-height':'auto'
-                }
-            },
-            RenderTrigger:function(){
-                // only div
-                var ns=this;
-                if(ns.box.KEY=="xui.UI.Pane")
-                    if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                        ns.box._applyAutoLoad(ns);
-            },
-            DataModel:{
-                rotate:null
-            }
-        }
-    }); 
 
     Class(u+".MoudluePlaceHolder", u+".Div",{
         Instance:{
