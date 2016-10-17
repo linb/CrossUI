@@ -121,7 +121,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             style:'{_style}',
             className:'{_className}',
             LABEL:{
-                className:'{_required}',
+                className:'{_required} xui-ui-ellipsis',
                 style:'{labelShow};width:{_labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },

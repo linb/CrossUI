@@ -2163,7 +2163,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         className:'xui-uiborder-r xui-uiborder-light xui-treegrid-fcell {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus {cellClass}',
-                            style:'{bgcolor};{color};{cellStyle}',
+                            style:'{bgcolor};{cellStyle}',
                             tabindex: '{_tabindex}',
                             ROWLRULER:{
                                 $order:1,
@@ -2176,6 +2176,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             CELLCAPTION:{
                                 $order:3,
+                                style:'{color}',
                                 className:'xui-v-node xui-treegrid-fcellcaption',
                                 text:"{caption}"
                             }
@@ -2188,10 +2189,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         className:'xui-uiborder-r xui-uiborder-light {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus {cellClass}',
-                            style:'{bgcolor};{color};{cellStyle}',
+                            style:'{bgcolor};{cellStyle}',
                             tabindex: '{_tabindex}',
                             CELLCAPTION:{
                                 className:'xui-v-node',
+                                style:'{color}',
                                 text:"{caption}"
                             }
                         }
@@ -2203,10 +2205,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         className:'xui-uiborder-r xui-uiborder-light {cellCls}',
                         CELLA:{
                             className:'xui-v-wrapper xui-showfocus xui-cls-wordwrap {cellClass}',
-                            style:'{bgcolor};{color};{cellStyle}',
+                            style:'{bgcolor};{cellStyle}',
                             tabindex: '{_tabindex}',
                             CELLCAPTION:{
                                 className:'xui-v-node',
+                                style:'{color}',
                                 text:"{caption}"
                             }
                         }
@@ -2529,6 +2532,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             'CELL-number, CELL-spin, CELL-currency':{
                 'text-align':'right'
+            },
+            'CELL-counter':{
+                'text-align':'center'
             },
             'CELL-checkbox':{
                 'text-align':'center'
@@ -3067,6 +3073,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             switch(type){
                                 case 'number':
                                 case 'spin':
+                                case 'counter':
                                 case 'currency':
                                     ff=function(n){return parseFloat(n)||0};
                                     break;
@@ -4864,7 +4871,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             uicol.firstCellClass=prop.colOptions.firstCellClass||'';
 
             if(!col.type)col.type=prop.colOptions.type || 'input';
-            if(!('caption' in col))col.caption = oid;
+            if(!(('caption' in col) && xui.isDefined(col.caption)))col.caption = oid;
             xui.UI.adjustData(profile, col, uicol);
 
             // id to dom item id
@@ -4993,7 +5000,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t2='',
                 caption,
                 cellanode=node,
-                capOut=('caption' in cell) && xui.adjustRes(cell.caption),
+                capOut=('caption' in cell) && xui.isDefined(cell.caption) && xui.adjustRes(cell.caption),
                 reg1=/</g,
                 me=arguments.callee,
                 dcls='xui-uicell-disabled',
@@ -5069,6 +5076,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             switch(type){
                 case 'number':
                 case 'spin':
+                case 'counter':
                     var v=parseFloat(cell.value);
                     cell.value=(v||v===0)?v:null;
                     caption= capOut ||ren(profile,cell,uicell,f4);
@@ -5115,7 +5123,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         t1=xui.UI.ColorPicker.getTextColor(cell.value);
                         if(node){
                             node.html(caption,false);
-                            node.css('color',t1).css('backgroundColor',cell.value);
+                            node.css('color',t1);
+                            node.parent().css('backgroundColor',cell.value);
                         }else{
                             uicell.color='color:'+t1+';';
                             uicell.bgcolor='background-color:'+cell.value+';';
@@ -5123,7 +5132,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }else{
                         if(node){
                             node.html(caption,false);
-                            node.css('color','').css('backgroundColor','');
+                            node.css('color','');
+                            node.parent().css('backgroundColor','');
                         }else{
                             //uicell.color='color:#000;';
                             //uicell.bgcolor='background-color:#fff;';
@@ -5161,7 +5171,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
             }
 
-            cell._$tips=caption;
+            cell._$tips=cell._$tmpcap=caption;
 
             var t2=getPro(profile, cell, 'disabled'),
                 t3=getPro(profile, cell, 'readonly');
@@ -5579,6 +5589,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 // * remove cell's special setting first
                 delete cell._$caption;
                 delete cell._$tips;
+                delete cell._$tmpcap;
 
                 xui.merge(cell,options,'all');
 
@@ -5610,7 +5621,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     if(editor)editor.setValue(cell.value,true,'editorini');
                 }
-                if(('caption' in options) && editor && editor.setCaption)
+                if(('caption' in options) && xui.isDefined(options.caption) && editor && editor.setCaption)
                     editor.setCaption(options.caption,true);
             }
             if(triggerEvent){
@@ -5902,6 +5913,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     switch(type){
                         case 'number':
                         case 'spin':
+                        case 'counter':
                         case 'currency':
                             var precision=getPro('precision'),
                                 increment=getPro('increment'),
@@ -5915,32 +5927,21 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 forceFillZero=getPro('forceFillZero');
                             editor.setType(type);
                             if(type=='currency'){
-                                if(!xui.isSet(precision))
-                                    precision=2;
-                                if(xui.isSet(currencyTpl))
-                                    editor.setCurrencyTpl(currencyTpl);
+                                if(!xui.isSet(precision))precision=2;
+                                if(xui.isSet(currencyTpl))editor.setCurrencyTpl(currencyTpl);
                             }else{
-                                if(!xui.isSet(precision))
-                                    precision=0;
-                                if(xui.isSet(numberTpl))
-                                    editor.setNumberTpl(numberTpl);
-                                if(type=='spin' && xui.isSet(increment))
-                                    editor.setIncrement(increment);
-                                if(xui.isSet(min))
-                                    editor.setMin(min);
-                                if(xui.isSet(max))
-                                    editor.setMax(max);
-                                if(xui.isSet(maxlength))
-                                    editor.setMaxlength(maxlength);
+                                if(!xui.isSet(precision)) precision=0;
+                                if(!xui.isSet(increment)) increment=1;
+                                if(xui.isSet(numberTpl))editor.setNumberTpl(numberTpl);
+                                if(type=='spin'||type=='counter')editor.setIncrement(increment);
+                                if(xui.isSet(min))editor.setMin(min);
+                                if(xui.isSet(max))editor.setMax(max);
+                                if(xui.isSet(maxlength))editor.setMaxlength(maxlength);
                             }
-                            if(xui.isSet(precision))
-                                editor.setPrecision(precision);
-                            if(xui.isSet(groupingSeparator))
-                                editor.setFroupingSeparator(groupingSeparator);
-                            if(xui.isSet(decimalSeparator))
-                                editor.setDecimalSeparator(decimalSeparator);
-                            if(xui.isSet(forceFillZero))
-                                editor.setForceFillZero(forceFillZero);
+                            if(xui.isSet(precision))editor.setPrecision(precision);
+                            if(xui.isSet(groupingSeparator))editor.setFroupingSeparator(groupingSeparator);
+                            if(xui.isSet(decimalSeparator))editor.setDecimalSeparator(decimalSeparator);
+                            if(xui.isSet(forceFillZero))editor.setForceFillZero(forceFillZero);
                             break;
                         case 'progress':
                             editor.setType('spin').setMax(1).setMin(0).setPrecision(4).setIncrement(0.01);
@@ -6069,10 +6070,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     delete cell.$editorValue;
 
                     if(editor.setCaption){
-                        if(editorProperties&&('caption' in editorProperties)){
+                        if(editorProperties&&('caption' in editorProperties)&& xui.isDefined(editorProperties.caption)){
                             editor.setCaption(editorProperties.caption,true);
                         }else  if(type=="cmdbox"||type=="cmd"||type=="popbox"){
-                            editor.setCaption(cell.caption||"",true);
+                            editor.setCaption(cell.caption||cell._$tmpcap||"",true);
                         }
                     }
                     //$tag for compatible
@@ -6161,6 +6162,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         switch(type){
                             case 'number':
                             case 'spin':
+                            case 'counter':
                             case 'progress':
                                 nV=parseFloat(nV);
                                 nV=(nV||nV===0)?nV:null;
@@ -6352,9 +6354,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile._leftregionw = w1;
 
                 //h1.width(adjustunit(w1,h1));
-                h2.width(adjustunit(w2,h2));
                 //s21.width(adjustunit(w1,s21));
-                //s22.width(adjustunit(w2,s22));
+                h2.width(adjustunit(w2,h2));
+                s22.width(adjustunit(w2,s22));
 
                 // for scroll sync
                 xui.asyRun(function(){
@@ -6904,7 +6906,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }else if(type=='map'){
                     var header=profile.properties.header,h={};
                     xui.each(row.cells||row,function(cell,j){
-                        h[header[j].id]=('caption' in cell)?{
+                        h[header[j].id]=('caption' in cell) && xui.isDefined(cell.caption) ? {
                                 caption:cell.caption,
                                 value:('value' in cell)?cell.value:cell
                             }:('value' in cell)?cell.value:cell;

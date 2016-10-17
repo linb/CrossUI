@@ -76,12 +76,12 @@ Class('App.xui_UI_CheckBox', 'xui.Com',{
                 .setTop(20)
                 .setWidth(330)
                 .setHeight(70)
-                .setCaption("xui.UI.SCheckBox (recommended)")
+                .setCaption("xui.UI.CheckBox")
                 .setToggleBtn(false)
             );
             
-            host.group1.append((new xui.UI.SCheckBox)
-                .setHost(host,"scheckbox1")
+            host.group1.append((new xui.UI.CheckBox)
+                .setHost(host,"CheckBox1")
                 .setLeft(30)
                 .setTop(20)
                 .setCaption("a simple checkbox ")

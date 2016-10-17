@@ -40,7 +40,6 @@ Class('App', 'xui.Com',{
             .setBorderType("none")
             .setItemMargin("2px 4px")
             .setItemWidth(75)
-            .setItemLinker("none")
             .setValue("Column2D")
             .afterUIValueSet("_ctl_statusbuttons1_afteruivalueset")
             );

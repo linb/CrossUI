@@ -2011,12 +2011,12 @@ Class("xui.UI",  "xui.absObj", {
                 '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
                 '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
                 'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
-                background_1: "linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #DDD))",
-                background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                background_4: "-moz-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                background_5: "-o-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                background_6: "-ms-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                'background-image_1': "linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #DDD))",
+                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
 
                 // for IE6789
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
@@ -2029,12 +2029,12 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover":{
                 $order:4,
-                background_1: "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
-                background_3: "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                background_4: "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                background_5: "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                background_6: "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_1': "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
+                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
 
                 // for IE6789
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
@@ -2042,19 +2042,19 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-active, .xui-ui-btn-checked, .xui-ui-btn-active:hover, .xui-ui-btn-checked:hover":{
                 $order:5,
-                background_1: "linear-gradient(top,  #DDD 5%,  #FFF)",
-                background_2: "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
-                background_3: "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                background_4: "-moz-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                background_5: "-o-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                background_6: "-ms-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                'background-image_1': "linear-gradient(top,  #DDD 5%,  #FFF)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
+                'background-image_3': "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
                 // for IE6789
                 '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-btn":{
                 $order:6,
-                padding: ".25em",
+                padding: "4px",
                 cursor: 'pointer',
                 display: xui.$inlineBlock,
                 'text-align': 'center',
@@ -2565,14 +2565,79 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-bottom-left-radius': '6px',
                 '-khtml-border-bottom-left-radius': '6px'
             },
+
             '.xui-uiborder-noradius':{
                 $order:15,
-                'border-radius':'0',
-                '-moz-border-radius': '0',
-                '-webkit-border-radius': '0',
-                '-o-border-radius': '0',
-                '-ms-border-radius': '0',
-                '-khtml-border-radius': '0'
+                'border-radius':'0 !important',
+                '-moz-border-radius': '0 !important',
+                '-webkit-border-radius': '0 !important',
+                '-o-border-radius': '0 !important',
+                '-ms-border-radius': '0 !important',
+                '-khtml-border-radius': '0 !important'
+            },
+            '.xui-uiborder-noradius-l':{
+                $order:12,
+                'border-top-left-radius':'0 !important',
+                '-moz-border-top-left-radius': '0 !important',
+                '-webkit-border-top-left-radius': '0 !important',
+                '-o-border-top-left-radius': '0 !important',
+                '-ms-border-top-left-radius': '0 !important',
+                '-khtml-border-top-left-radius': '0 !important',
+
+                'border-bottom-left-radius':'0 !important',
+                '-moz-border-bottom-left-radius': '0 !important',
+                '-webkit-border-bottom-left-radius': '0 !important',
+                '-o-border-bottom-left-radius': '0 !important',
+                '-ms-border-bottom-left-radius': '0 !important',
+                '-khtml-border-bottom-left-radius': '0 !important'
+            },
+            '.xui-uiborder-noradius-r':{
+                $order:12,
+                'border-top-right-radius':'0 !important',
+                '-moz-border-top-right-radius': '0 !important',
+                '-webkit-border-top-right-radius': '0 !important',
+                '-o-border-top-right-radius': '0 !important',
+                '-ms-border-top-right-radius': '0 !important',
+                '-khtml-border-top-right-radius': '0 !important',
+
+                'border-bottom-right-radius':'0 !important',
+                '-moz-border-bottom-right-radius': '0 !important',
+                '-webkit-border-bottom-right-radius': '0 !important',
+                '-o-border-bottom-right-radius': '0 !important',
+                '-ms-border-bottom-right-radius': '0 !important',
+                '-khtml-border-bottom-right-radius': '0 !important'
+            },
+            '.xui-uiborder-noradius-t':{
+                $order:12,
+                'border-top-left-radius':'0 !important',
+                '-moz-border-top-left-radius': '0 !important',
+                '-webkit-border-top-left-radius': '0 !important',
+                '-o-border-top-left-radius': '0 !important',
+                '-ms-border-top-left-radius': '0 !important',
+                '-khtml-border-top-left-radius': '0 !important',
+
+                'border-top-right-radius':'0 !important',
+                '-moz-border-top-right-radius': '0 !important',
+                '-webkit-border-top-right-radius': '0 !important',
+                '-o-border-top-right-radius': '0 !important',
+                '-ms-border-top-right-radius': '0 !important',
+                '-khtml-border-top-right-radius': '0 !important'
+            },
+            '.xui-uiborder-noradius-b':{
+                $order:12,
+                'border-bottom-left-radius':'0 !important',
+                '-moz-border-bottom-left-radius': '0 !important',
+                '-webkit-border-bottom-left-radius': '0 !important',
+                '-o-border-bottom-left-radius': '0 !important',
+                '-ms-border-bottom-left-radius': '0 !important',
+                '-khtml-border-bottom-left-radius': '0 !important',
+
+                'border-bottom-right-radius':'0 !important',
+                '-moz-border-bottom-right-radius': '0 !important',
+                '-webkit-border-bottom-right-radius': '0 !important',
+                '-o-border-bottom-right-radius': '0 !important',
+                '-ms-border-bottom-right-radius': '0 !important',
+                '-khtml-border-bottom-right-radius': '0 !important'
             },
             '.xui-uiborder-circle':{
                 $order:16,
@@ -2598,7 +2663,7 @@ Class("xui.UI",  "xui.absObj", {
                 height:'1em',
                 padding: '4px',
                 'background-color': '#eb6e1a',
-                color:'#fff',
+                color:'#fff !important',
                 overflow:'hidden',
                 'text-align': 'center'
             },
@@ -2704,6 +2769,12 @@ Class("xui.UI",  "xui.absObj", {
                 'border-top': '8px solid #f44',
                 'border-right': '8px solid transparent'
             },*/
+            '.xui-ui-ellipsis':{
+                "max-width": "100%",
+                "text-overflow": "ellipsis",
+                "white-space": "nowrap",
+                "overflow": "hidden"
+            },
             '.xui-ui-ruler':{
                 width:0,
                 height:'1.22em',
@@ -3848,16 +3919,7 @@ Class("xui.UI",  "xui.absObj", {
                 prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
                 applyCss=function(css){
-                    xui.CSS._appendSS(profile.getRootNode(), css
-                        .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'')
-                        .replace(/^\s*(\.)/,function(a,b){
-                            return prevId + " " + b;
-                        }).replace(/([},])\s*(\.)/g,function(a,b,c){
-                            return b + "\n" + prevId + " " + c;
-                        }).replace(/([{;])\s*(.)/g,function(a,b,c){
-                            return b + '\n' + (c=='}'?'':'    ') + c;
-                        }), 
-                    id, true);
+                    xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId), id, true);
                     
                     if(profile.$inDesign){
                         profile.boxing().reLayout(true)
@@ -3879,8 +3941,22 @@ Class("xui.UI",  "xui.absObj", {
                 }
             }
         },
-        _getThemePrevId:function(profile){
-            return '#' + profile.getDomId().replace(/([.:])/g,"\\$1");
+        _getThemePrevId:function(profile/*UIProfile or dom id*/){
+            return profile?'#' + (profile['xui.UIProfile'] ? profile.getDomId() : profile).replace(/([.:])/g,"\\$1"):"";
+        },
+        _adjustCSS:function(css, prevId){
+            prevId=prevId||"";
+            return css
+                .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'')
+                .replace(/^\s*(\.)/,function(a,b){
+                    return prevId + " " + b;
+                }).replace(/([},])\s*(\.)/g,function(a,b,c){
+                    return b + "\n" + prevId + " " + c;
+                }).replace(/([{;])\s*(.)/g,function(a,b,c){
+                    return b + '\n' + (c=='}'?'':'    ') + c;
+                }).replace(/url\(([^)]+)\)/g, function(a,b){
+                    return "url("+xui.adjustRes(b,0,1)+")";
+                });
         },
         setAppearance:function(hash){
             xui.merge(this.$Appearances,hash,'all');
@@ -4365,7 +4441,13 @@ Class("xui.UI",  "xui.absObj", {
                         i.removeClass('xui-ui-disabled');
                 }
             },
-            spaceUnit:'',
+            spaceUnit:{
+                ini:'',
+                listbox:['','px','em'],
+                action:function(){
+                        this.boxing().reLayout(true).getChildren(true, "recurse").reLayout(true);
+                }
+            },
             defaultFocus:false,
             hoverPop:{
                 ini:'',
@@ -7097,10 +7179,8 @@ new function(){
         },
         Static:{
             Templates:{
-                _NativeElement:true,
                 tagName:'button',
-                // dont set class to HTML Element
-                className:'xui-node xui-wrapper xui-ui-btn xui-ui-sbtn xui-uiborder-radius {_className}',
+                className:'xui-ui-unselectable xui-ui-btn xui-uiborder-radius {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -7108,7 +7188,7 @@ new function(){
             Appearances:{
                 KEY:{
                     cursor:'pointer',
-                    padding:'.25em .41667em'
+                    padding:'4px'
                 }
             },            
             DataModel:{
@@ -7181,9 +7261,8 @@ new function(){
             DIRYMARKICON:"BACKGROUND",
             Templates:{
                 tagName:'button',
-                // dont set class to HTML Element
-                className:'xui-ui-unselectable xui-ui-btn xui-ui-sbtn xui-uiborder-radius {_className}',
-                style:'cursor:pointer;{_style};{_align}',
+                className:'xui-ui-unselectable xui-ui-btn xui-uiborder-radius {_className}',
+                style:'{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{
                     tagName:'div'
@@ -7435,6 +7514,12 @@ new function(){
                         this.box._refreshCSS(this);
                     }
                 },
+                sandbox:{
+                    ini:"",
+                    action:function(v){
+                        this.box._refreshCSS(this);
+                    }
+                },
                 normalStatus:{
                     ini:{},
                     action:function(v){
@@ -7459,6 +7544,7 @@ new function(){
                         this.box._refreshCSS(this);
                     }
                 },
+                spaceUnit:null,
                 showEffects:null,
                 hideEffects:null,
                 position:null,
@@ -7477,6 +7563,7 @@ new function(){
                 hoverPopType:null,
                 dock:null,
                 dockStretch:null,
+                dockIgnoreFlexFill:null,
                 renderer:null,
                 display:null,
                 html:null,
@@ -7512,39 +7599,66 @@ new function(){
             RenderTrigger:function(){
                 var prf=this;
                 if(!prf.$inDesign){
-                    xui('body').prepend(prf.getRoot());
+                    xui('body').append(prf.getRoot());
                 }
             },
             _prepareData:function(profile,data){
                 data=arguments.callee.upper.call(this, profile,data);
-                data._html = "Text"+"<"+"style type='text/css'>"+this._getCon(profile)+"<"+"/style>";
+                var css=this._getCon(profile);
+                data._html = "Text"+(css?("<"+"style id='"+profile.getDomId()+"cssnode' type='text/css'>"+css+"<"+"/style>"):"");
                 return data;
             },
             _getCon:function(prf){
-                    var prop=prf.properties,css="",
+                    var css="", prevId="", t, 
+                        prop=prf.properties,
                         cls=prop.className,
                         hash1=prop.normalStatus,
                         hash2=prop.hoverStatus,
                         hash3=prop.activeStatus,
                         hash4=prop.focusStatus;
-                    if(hash1&&!xui.isEmpty(hash1))css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
-                    if(hash2&&!xui.isEmpty(hash2))css+="."+cls+":hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
-                    if(hash3&&!xui.isEmpty(hash3))css+="."+cls+":active{"+xui.Dom.$adjustCss(hash3,true)+"}";
-                    if(hash4&&!xui.isEmpty(hash4))css+="."+cls+":focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
-                    return css;
+                    if(hash1&&!xui.isEmpty(hash1)){
+                        css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
+                        if(hash1.color)css+="."+cls+" .xui-node{color:"+hash1.color+"}";
+                    }
+                    if(hash2&&!xui.isEmpty(hash2)){
+                        css+="."+cls+":hover, ."+cls+"-hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
+                        if(hash2.color)css+="."+cls+" .xui-node{color:"+hash2.color+"}";
+                    }
+                    // cover :hover effect for -chekced / -active
+                    if(hash3&&!xui.isEmpty(hash3)){
+                        css+="."+cls+":active, ."+cls+":checked, ."+cls+"-active, ."+cls+"-checked, ."+cls+"-checked:hover, ."+cls+"-active:hover{"+xui.Dom.$adjustCss(hash3,true)+"}";
+                        if(hash3.color)css+="."+cls+" .xui-node{color:"+hash3.color+"}";
+                    }
+                    if(hash4&&!xui.isEmpty(hash4)){
+                        css+="."+cls+":focus, ."+cls+"-focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
+                        if(hash4.color)css+="."+cls+" .xui-node{color:"+hash4.color+"}";
+                    }
+
+                    if(t=prop.sandbox){
+                        // alias or domId
+                        t=(prf.host && prf.host[t] && prf.host[t].get(0)) || (xui(t).get(0) && t);
+                        if(t)prevId=xui.UI._getThemePrevId(t);
+                    }
+
+                    return  xui.UI._adjustCSS(css, prevId);
             },
             _refreshCSS:function(prf){
                 var ns=this;
                 xui.resetRun(prf.key+":"+prf.$xid,function(){
                     if(prf.destroyed)return;
-                    var prop=prf.properties,
-                         rootNode=prf.getRootNode(),
-                         css=ns._getCon(prf);
-                    xui.Dom._setClass(rootNode, prop.className);
-                    if(css)xui.CSS._appendSS(rootNode, css);
+                    var id=prf.getDomId()+"cssnode",
+                        prop=prf.properties,
+                        root=prf.getRoot(),
+                        css=ns._getCon(prf);
+   
+                    root.query('style').remove(false);
+
+                    xui.Dom._setClass(root.get(0), prop.className);
+                    if(css)xui.CSS._appendSS(root.get(0), css, id,false);
                 });
             },
             EventHandlers:{
+                beforeInputAlert:null,
                 onContextmenu:null,
                 onClick:null,
                 onDock:null,

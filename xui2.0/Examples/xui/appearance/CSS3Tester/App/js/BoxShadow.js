@@ -141,7 +141,7 @@ Class('App.BoxShadow', 'xui.Com',{
             );
             
             host.ctl_group1.append(
-                (new xui.UI.SCheckBox)
+                (new xui.UI.CheckBox)
                 .setHost(host,"c_inset")
                 .setDirtyMark(false)
                 .setLeft(480)

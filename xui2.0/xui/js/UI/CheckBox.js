@@ -3,6 +3,8 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         // compitable
         xui.UI.SCheckBox = xui.UI.CheckBox;
+        var key="xui.UI.SCheckBox";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Instance:{
         activate:function(){

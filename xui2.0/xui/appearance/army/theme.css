@@ -99,30 +99,30 @@
     -webkit-box-shadow:inset 0 1px 0 0 #D4E8D9;
     box-shadow:inset 0 1px 0 0 #D4E8D9;    
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D4E8D9', endColorstr='#779880');
-    background: linear-gradient(top,  #D4E8D9 5%,  #779880 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #D4E8D9), to(1, #779880));
-    background: -webkit-linear-gradient(top, #D4E8D9 5%, #779880 100%);
-    background: -moz-linear-gradient(top,  #D4E8D9 5%,  #779880 100%);
-    background: -o-linear-gradient(top,  #D4E8D9 5%,  #779880 100%);  
+    background-image: linear-gradient(top,  #D4E8D9 5%,  #779880 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #D4E8D9), to(1, #779880));
+    background-image: -webkit-linear-gradient(top, #D4E8D9 5%, #779880 100%);
+    background-image: -moz-linear-gradient(top,  #D4E8D9 5%,  #779880 100%);
+    background-image: -o-linear-gradient(top,  #D4E8D9 5%,  #779880 100%);  
 }
 .xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
     border-color: #8CBC96;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEDC', endColorstr='#86A78F');
-    background: linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFEEDC), to(1, #86A78F));
-    background: -webkit-linear-gradient(top, #FFEEDC 5%, #86A78F 100%);
-    background: -moz-linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);
-    background: -o-linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);  
+    background-image: linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFEEDC), to(1, #86A78F));
+    background-image: -webkit-linear-gradient(top, #FFEEDC 5%, #86A78F 100%);
+    background-image: -moz-linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);
+    background-image: -o-linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);  
 }
 .xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
 .xui-ui-btn-active, .xui-ui-btn-checked,  
 .xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#779880', endColorstr='#D4E8D9');
-    background: linear-gradient(top,  #779880 5%,  #D4E8D9 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #779880), to(1, #D4E8D9));
-    background: -webkit-linear-gradient(top, #779880 5%, #D4E8D9 100%);
-    background: -moz-linear-gradient(top,  #779880 5%,  #D4E8D9 100%);
-    background: -o-linear-gradient(top,  #779880 5%,  #D4E8D9 100%);  
+    background-image: linear-gradient(top,  #779880 5%,  #D4E8D9 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #779880), to(1, #D4E8D9));
+    background-image: -webkit-linear-gradient(top, #779880 5%, #D4E8D9 100%);
+    background-image: -moz-linear-gradient(top,  #779880 5%,  #D4E8D9 100%);
+    background-image: -o-linear-gradient(top,  #779880 5%,  #D4E8D9 100%);  
 }
 
 /*uicontainer*/
@@ -198,14 +198,14 @@
     background-color: #FFE97F;
 }
 .xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node[class*="xui-treegrid-"],
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node[class*="xui-treegrid-"],
-.xui-treegrid-cells2-checked,  .xui-treegrid-cells2-checked .xui-node[class*="xui-treegrid-"]{
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella, .xui-treegrid-cell-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-treegrid-cella, .xui-treegrid-cells1-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-treegrid-cella, .xui-treegrid-cells2-checked .xui-treegrid-cellcaption{
     background-color: #779880;
     color:#fff;
 }
 .xui-uicell-hover,
-.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-treegrid-cella, .xui-treegrid-cell-hover .xui-treegrid-cellcaption{
     background-color: #CCEDD5 !important;
 }
 

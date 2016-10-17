@@ -9204,6 +9204,18 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : Object, key/value pairs",
                     $force
                 ]
+            },
+            getSandbox:{
+                $desc:"Gets sandbox id",
+                $rtn:"String, widget's alias or DOM id"
+            },
+            setSandbox:{
+                $desc:"Sets sandbox id",
+                $rtn:"[self],",
+                $paras:[
+                    "value [Required] : String, String, widget's alias or DOM id",
+                    $force
+                ]
             }
         }
     });
@@ -12735,12 +12747,6 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
-            },
-            getItemLinker:{
-                $desc:"Deprecated"
-            },
-            setItemLinker:{
-                $desc:"Deprecated"
             },
             getItemAlign:{
                 $desc:"Gets item's text align",

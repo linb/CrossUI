@@ -180,23 +180,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             loadingImg:"",
             errImg:"",
             itemMargin:{
-                $spaceunit:1,
                 ini:6,
                 action:function(v){
-                    if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('margin', this.$forceu(v));
-                    else
-                        this.getSubNode('ITEM',true).css(v);
+                    this.getSubNode('ITEM',true).css(v);
                 }
             },
             itemPadding:{
-                $spaceunit:1,
                 ini:2,
                 action:function(v){
-                    if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('padding',this.$forceu(v));
-                    else
-                        this.getSubNode('ITEM',true).css(v);
+                    this.getSubNode('ITEM',true).css(v);
                 }
             },
             itemWidth:{
@@ -245,8 +237,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
+
             item.caption = item.caption || '';
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';

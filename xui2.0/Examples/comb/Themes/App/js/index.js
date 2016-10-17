@@ -1135,20 +1135,20 @@ Class('App', 'xui.Module',{
                 .setHost(host,"xui_ui_statusbuttons18")
                 .setItems([{
                     "id" : "a",
-                    "caption" : "link list a",
+                    "caption" : "button a",
                     "disabled" : true
                 },
                 {
                     "id" : "b",
-                    "caption" : "link list v"
+                    "caption" : "button b"
                 },
                 {
                     "id" : "c",
-                    "caption" : "link list c"
+                    "caption" : "button c"
                 },
                 {
                     "id" : "d",
-                    "caption" : "link list d"
+                    "caption" : "button d"
                 }])
                 .setLeft("1.6666666666666667em")
                 .setTop("34.916666666666664em")

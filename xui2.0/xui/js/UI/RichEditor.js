@@ -54,7 +54,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             style:'{_style}',
             className:'{_className} xui-ui-selectable',
             LABEL:{
-                className:'{_required}',
+                className:'{_required} xui-ui-ellipsis',
                 style:'{labelShow};width:{_labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },

@@ -23,7 +23,7 @@ Class('App.snip_animator', 'xui.Com',{
             .onChange("_list2_onchange")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cWidth")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -33,7 +33,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setValue(true)
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cHeight")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -43,7 +43,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setValue(true)
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cLeft")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -52,7 +52,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("left")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cTop")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -61,7 +61,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("top")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cOpacity")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -70,7 +70,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("opacity")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cBackgroundColor")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -79,7 +79,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("backgroundColor")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cScrollTop")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -97,7 +97,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setSrc("http://localhost/crossui.com/rad/img/pic.png")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cRotate")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -106,7 +106,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("rotate")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cReverse")
             .setDirtyMark(false)
             .setLeft(388)
@@ -114,7 +114,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("reverse")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cscaleX")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -123,7 +123,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("scaleX")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"ctranslateX")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -132,7 +132,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("translateX")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cscaleY")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -141,7 +141,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("scaleY")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cskewX")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -150,7 +150,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("skewX")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"ctranslateY")
             .setDirtyMark(false)
             .setShowDirtyMark(false)
@@ -159,7 +159,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setCaption("translateY")
             );
             
-            append((new xui.UI.SCheckBox())
+            append((new xui.UI.CheckBox())
             .setHost(host,"cskewY")
             .setDirtyMark(false)
             .setShowDirtyMark(false)

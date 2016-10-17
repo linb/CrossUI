@@ -286,8 +286,8 @@ Class("xui.Tips", null,{
                     // you can settips to null or undefined to stop it
                     && t.tips===''
                     ){
-                    if(t.caption){
-                        self.show(pos, {tips:t.caption});
+                    if(t.caption||t.labelCaption){
+                        self.show(pos, {tips:t.caption||t.labelCaption});
                         b=false;
                     }
                 }

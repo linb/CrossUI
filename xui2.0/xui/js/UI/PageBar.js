@@ -245,6 +245,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             autoTips:false,
             dirtyMark:false,
             showDirtyMark:false,
+            parentID:'',
             caption:{
                 ini:' Page: ',
                 action:function(v){
@@ -349,7 +350,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             pop.html(a.join(' '));
             xui('body').append(pop);
             if(pop.width()>300)pop.width(300);
-            pop.popToTop(src);
+            pop.popToTop(src,null,prop.parentID?xui(prop.parentID):null);
             pop.setBlurTrigger(profile.key+":"+profile.$xid, function(){
                 pool.append(pop);
             });

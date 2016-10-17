@@ -15,7 +15,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 overflow:'hidden'
             },
             // for auto height
-            'LIST-top, LIST-bottom':{
+            'LIST-attop, LIST-atbottom':{
                 $order:2,
                 position:'relative'
             },
@@ -139,8 +139,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                             break;
                     }
                     self.boxing().setBarSize(self.properties.barSize,true);
-
-                    hs.tagClass('(-top|-bottom|-left|-right)',false).tagClass('-'+v, true);
+                    // add 'at' to be distinguished from xui-uibar-bottom
+                    hs.tagClass('(-attop|-atbottom|-atleft|-atright)',false).tagClass('-at'+v, true);
                 }
             },
             barHAlign:{
@@ -272,7 +272,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 // caculate by px
                 ww=width?profile.$px(width, null, true):width, 
                 hh=(height&&height!='auto')?profile.$px(height, null, true):height,
-
+                root = profile.getRootNode(),
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 menu2 =  profile.getSubNode('MENU2'),
@@ -306,6 +306,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         //hs.height(adjustunit(itmsH, hsfz));
                     }else{
                         hc=hh;
+                    }
+                    if(prop.barLocation=='bottom'){
+                        // ensure it's the last
+                        if((root.lastElementChild||root.lastChild)!=hs.get(0)){
+                            root.appendChild(hs.get(0));
+                        }
                     }
                 }else{
                     // dont support auto height for 'top' or 'bottom' barLocation

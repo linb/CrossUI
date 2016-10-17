@@ -3219,8 +3219,12 @@ type:4
             xui.Dom.setStyle(fack,hash);
             if(returnStr){
                 var arr=[];
-                if(xui.browser.ie&&xui.browser.ver==8&&fack.style.filter)
-                    fack.style["-ms-filter"]=fack.style.filter;
+                if(xui.browser.ie&&xui.browser.ver==8){
+                    if(fack.style.filter)
+                        fack.style["-ms-filter"]=fack.style.filter;
+                    if(fack.style['background-image']=='none')
+                        fack.style['background-image']="url(about:blank)";
+                }
                 xui.each(fack.style,function(o,i){
                     arr.push(i.replace(/([A-Z])/g, "-$1" ).toLowerCase()+":"+o);
                 });

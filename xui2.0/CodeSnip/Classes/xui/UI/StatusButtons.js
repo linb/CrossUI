@@ -24,7 +24,6 @@
                 .setHeight(50)
                 .setItemMargin("4px")
                 .setSelMode('multi')
-                .setItemLinker("none")
                 .onItemSelected("_linklist2_sel")
             );
             

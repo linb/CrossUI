@@ -109,7 +109,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         xui.merge(t.FRAME.BORDER,{
             style:'',
             LABEL:{
-                className:'{_required}',
+                className:'{_required} xui-ui-ellipsis',
                 style:'{labelShow};width:{_labelSize};{labelHAlign}',
                 text:'{labelCaption}'
             },
@@ -118,6 +118,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 WRAP:{
                     tagName : 'div',
                     INPUT:{
+                        $order:10,
                         tagName : 'input',
                         type : '{_type}',
                         maxlength:'{maxlength}',

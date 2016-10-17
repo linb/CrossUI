@@ -93,6 +93,7 @@
 }
 .xui-uitembg-checked{
   background-color:#CFE4FE;
+  border-left: solid 3px #ff0000;
 }
 
 /*gradient*/
@@ -174,8 +175,6 @@
 
 /*xui.UI.Tabs*/
 .xui-tabs-list{
-    background:#f8f6f2;
-    border-top: solid 1px #ccc;
 }
 .xui-tabs-items{
      padding:0;
@@ -188,6 +187,7 @@
     background-color: transparent;
     border-color: transparent;
     margin:0 4px;
+    padding-top:2px;
 }
 .xui-tabs-item-hover, .xui-tabs-item-active, .xui-tabs-item-checked{
     border-left: solid 1px #ccc;
@@ -196,6 +196,8 @@
 }
 .xui-tabs-item-active, .xui-tabs-item-checked{
     background-color: #ffffff;
+    border-top: solid 3px #ff0000;
+    padding-top:0;
 }
 
 .xui-buttonviews-item{
@@ -203,25 +205,41 @@
     border:0;
     background:none;
 }
-.xui-buttonviews-item-hover{
-    background:none;
-}
-.xui-buttonviews-item-active{
-    background:#efefef;
-}
-.xui-buttonviews-item-checked{
+.xui-buttonviews-item-hover, .xui-buttonviews-item:hover{
     background:#ffffff;
 }
-.xui-buttonviews-list-top .xui-buttonviews-item-checked{
+.xui-buttonviews-item-active, .xui-buttonviews-item:active{
+    background:#ffffff;
+}
+.xui-buttonviews-item-checked, .xui-buttonviews-item:checked{
+    background:#ffffff;
+}
+.xui-buttonviews-list-attop .xui-buttonviews-item{
+    padding-top:3px;
+}
+.xui-buttonviews-list-attop .xui-buttonviews-item-checked{
     border-top:solid 3px #ff0000;
+    padding-top:0;
 }
-.xui-buttonviews-list-bottom .xui-buttonviews-item-checked{
+.xui-buttonviews-list-atbottom .xui-buttonviews-item{
+    padding-bottom:3px;
+}
+.xui-buttonviews-list-atbottom .xui-buttonviews-item-checked{
     border-bottom:solid 3px #ff0000;
+    padding-bottom:0;
 }
-.xui-buttonviews-list-left .xui-buttonviews-item-checked{
+.xui-buttonviews-list-atleft .xui-buttonviews-item{
+    padding-left:3px;
+}
+.xui-buttonviews-list-atleft .xui-buttonviews-item-checked{
     border-left:solid 3px #ff0000;
+    padding-left:0;
 }
-.xui-buttonviews-list-right .xui-buttonviews-item-checked{
+.xui-buttonviews-list-atright .xui-buttonviews-item{
+    padding-right:3px;
+    padding-right:0;
+}
+.xui-buttonviews-list-atright .xui-buttonviews-item-checked{
     border-right:solid 3px #ff0000;
 }
 
@@ -244,14 +262,14 @@
     background-color: #FFE97F;
 }
 .xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node[class*="xui-treegrid-"],
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node[class*="xui-treegrid-"], 
-.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node[class*="xui-treegrid-"]{
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella, .xui-treegrid-cell-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-treegrid-cella, .xui-treegrid-cells1-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-treegrid-cella, .xui-treegrid-cells2-checked .xui-treegrid-cellcaption{
     background-color: #ccc;
     color:#fff;
 }
 .xui-uicell-hover,
-.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-treegrid-cella, .xui-treegrid-cell-hover .xui-treegrid-cellcaption
     background-color: #D9E8FB !important;
 }
 .xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{

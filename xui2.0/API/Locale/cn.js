@@ -9229,6 +9229,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : Object, 键值对 ",
                     $force
                 ]
+            },
+            getSandbox:{
+                $desc:"得到适用沙箱",
+                $rtn:"String, 容器控件的别名或DOM id"
+            },
+            setFocusStatus:{
+                $desc:"设置适用沙箱",
+                $rtn:"[self],",
+                $paras:[
+                    "value [必需参数] : String, 容器控件的别名或DOM id",
+                    $force
+                ]
             }
         }
     });
@@ -12639,12 +12651,6 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
                     "}"
                 ]
-            },
-            getItemLinker:{
-                $desc:"Deprecated"
-            },
-            setItemLinker:{
-                $desc:"Deprecated"
             },
             getItemAlign:{
                 $desc:"获取状态按钮的对齐方式",
@@ -18793,12 +18799,14 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             "requestId":"数据请求ID"
         },
         'xui_UI_CSSBox':{
+             "sandbox":"适用沙箱",
              "normalStatus":"正常状态",
              "hoverStatus":"悬停状态",
              "activeStatus":"激活状态",
              "focusStatus":"焦点状态"
         },
         'xui_UI' : {
+            'spaceUnit':'空间单位',
             'autoTips':'自动工具提示',
             'className':'CSS类名',
             'disableClickEffect':'禁用点击效果',

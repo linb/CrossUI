@@ -5,10 +5,10 @@ Class("xui.UI.Block", "xui.UI.Widget",{
         //modify
         t.className += ' {_sidebarStatus}';
         xui.merge(t.FRAME.BORDER,{
-            className:'xui-uiw-border xui-uibar {clsBorderType1}',
+            className:'xui-uiw-border {clsBorderType1}',
             SIDEBAR:{
                 tagName:'div',
-                className:'xui-uisb {_sidebar}',
+                className:'xui-uisb xui-uibar {_sidebar}',
                 SBCAP:{
                     className:'xui-uisbcap xui-title-node',
                     text:'{sideBarCaption}'

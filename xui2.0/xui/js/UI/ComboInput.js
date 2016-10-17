@@ -236,7 +236,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 var o, v,
                     box = profile.boxing(),
                     main = profile.getSubNode('BOX'),
-                    btn = profile.getSubNode('BTN'),
+                    btn = profile.getSubNode('RBTN'),
                     pos = main.offset();
                 pos.top += main.offsetHeight();
 
@@ -463,14 +463,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     },
     /*Initialize*/
     Initialize:function(){
-        this.addTemplateKeys(['FILE','BTN','MID','RBTN','R1','R1B','R2','R2B']);
+        this.addTemplateKeys(['FILE','MID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
         //modify default template for shell
         var t = this.getTemplate();
         xui.merge(t.FRAME.BORDER,{
-            SBTN:{
+            LBTN:{},
+            RBTN:{},
+            SPINBTN:{R1:{},R2:{}},
+            CMD:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-nofocus xui-ui-btn',
+                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l xui-nofocus xui-ui-btn',
                 style:"{_cmdDisplay}",
                 SMID:{
                     className:"xuifont {btncls}",
@@ -609,7 +612,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return (xui.isSet(v)&&v!=="")?p.box._number(p, v):"";
                     }
                 },'all');
-            }else if(type=='number' || type=='spin'){
+            }else if(type=='number' || type=='spin' || type=='counter'){
                 profile.$isNumber=1;
                 var keymap={a:1,c:1,v:1,x:1};
                 xui.merge(profile,{
@@ -665,9 +668,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 overflow:'hidden'
             },
-            'KEY-type-number INPUT, KEY-type-spin INPUT, KEY-type-currency INPUT':{
+            'KEY-type-number INPUT, KEY-type-spin INPUT, KEY-type-counter INPUT, KEY-type-currency INPUT':{
                 $order:4,
                 'text-align':'right'
+            },
+            'KEY-type-counter INPUT':{
+                $order:4,
+                'text-align':'center'
             },
             'KEY-type-file INPUT, KEY-type-button INPUT, KEY-type-dropbutton INPUT, KEY-type-cmdbox INPUT, KEY-type-listbox INPUT':{
                 $order:4,
@@ -679,7 +686,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:5,
                 'text-align':'center'
             },
-            'RBTN,SBTN,BTN':{
+            'LBTN,RBTN,SPINBTN,CMD':{
                 display:'block',
                 'z-index':'1',
                 cursor:'pointer',
@@ -690,7 +697,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 // for IE8
                 overflow:'visible'
             },
-            SBTN:{
+            CMD:{
                 $order:2,
                 'z-index':'6',
                 padding:0
@@ -726,8 +733,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             'SMID,MID':{
                 $order:2,
                 cursor:'pointer',
-                position:'absolute',
-                bottom:'2px',
                 padding:0,
                 left:0
             }
@@ -747,9 +752,39 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().setUIValue(xui.use(src).get(0).value+'',null,null,'onchange');
                 }
             },
-            BTN:{
+            LBTN:{
+                onMousedown:function(profile){
+                    var prop=profile.properties;
+                    if(prop.disabled || prop.readonly)return;
+                    profile.box._spin(profile, false);
+                },
+                onMouseout:function(profile){
+                    xui.Thread.abort(profile.$xid+':spin');
+                },
+                onMouseup:function(profile){
+                    xui.Thread.abort(profile.$xid+':spin');
+                }
+            },
+            RBTN:{
+                onMousedown:function(profile){
+                    var prop=profile.properties, type=prop.type;
+                    if(type!='counter')return;
+
+                    if(prop.disabled || prop.readonly)return;
+                    profile.box._spin(profile, true);
+                },
+                onMouseout:function(profile){
+                    if(profile.properties.type!='counter')return;
+                    xui.Thread.abort(profile.$xid+':spin');
+                },
+                onMouseup:function(profile){
+                    if(profile.properties.type!='counter')return;
+                    xui.Thread.abort(profile.$xid+':spin');
+                },
                 onClick : function(profile, e, src){
                     var prop=profile.properties, type=prop.type;
+                    if(type=='counter')return;
+
                     if(type=='label' || type=='popbox' || type=='cmdbox' || type=='getter' || type=='button' || type=='dropbutton'){
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
@@ -764,7 +799,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return false;
                 }
             },
-            SBTN:{
+            CMD:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
                     if(prop.disabled || prop.readonly)return;
@@ -838,7 +873,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     b._asyCheck(profile);
 
                     if(key.key=='down'|| key.key=='up'){
-                        if(p.type=='spin'){
+                        if(p.type=='spin'||p.type=='counter'){
                             xui.Thread.abort(profile.$xid+':spin');
                             return false;
                         }
@@ -975,7 +1010,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
 
                     if(k.key=='down'|| k.key=='up'){
-                        if(p.type=='spin'){
+                        if(p.type=='spin'||p.type=='counter'){
                             if(!k.ctrlKey){
                                 profile.box._spin(profile, k.key=='up');
                                 return false;
@@ -987,7 +1022,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
                 },
                 onDblclick:function(profile, e, src){
-                    profile.getSubNode('BTN').onClick(true);
+                    profile.getSubNode('RBTN').onClick(true);
                 }
             },
             R1:{
@@ -1101,7 +1136,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             type:{
                 ini:'combobox',
-                listbox:xui.toArr('none,input,password,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,currency,number'),
+                listbox:xui.toArr('none,input,password,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,counter,currency,number'),
                 set:function(value){
                     var pro=this;
                     pro.properties.type=value;
@@ -1226,11 +1261,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // set template dynamic
             if(!template){
                 template = xui.clone(profile.box.getTemplate());
-                var t=template.FRAME.BORDER;
+                var t=template.FRAME.BORDER, type=properties.type;
+
+                delete t.LBTN;
+                delete t.RBTN;
+                delete t.SPINBTN;
 
                 t.BOX.WRAP.INPUT.tagName='input';
                 t.BOX.WRAP.INPUT.type='text';
-                switch(properties.type){
+                switch(type){
                 case "none":
                 case "input":
                 case "number":
@@ -1244,13 +1283,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 break;
                 // spin has spin buttons
                 case 'spin':
-                    t.RBTN={
+                    t.SPINBTN={
                         $order:20,
                         className:'xui-ui-unselectable',
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus {_radius_drop1}',
+                            className:'xui-ui-btn xui-nofocus {_radius_dropt}',
                             R1B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
@@ -1258,7 +1297,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus {_radius_drop2}',
+                            className:'xui-ui-btn xui-nofocus {_radius_dropb}',
                             R2B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
@@ -1266,40 +1305,53 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         }
                     };
                 break;
-
-                // following have BTN button
+                // following have RBTN button
+                case 'counter':
+                    t.LBTN={
+                        $order:1,
+                        tagName:'button',
+                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_dropl}',
+                        style:"{_btnlDisplay}",
+                        MID:{
+                            className:'xuifont',
+                            $fonticon:'{_fi_btnlClass}',
+                            style:'{_btnlStyle}'
+                        }
+                    };
+                    break;
                 case 'file':
                     t.FILE={
                         $order:20,
-                        className:'xui-ui-unselectable {_radius_drop}',
+                        className:'xui-ui-unselectable {_radius_dropr}',
                         tagName:'input',
                         type:'file',
                         hidefocus:xui.browser.ie?"hidefocus":null,
                         size:'1'
                     };
+                    break;
                 case 'listbox':
                 case 'cmdbox':
                 case 'dropbutton':
                     t.BOX.WRAP.INPUT.type='button';
-                default:
-                    t.BTN={
+                }
+                if(type!='none'&&type!='input'&&type!='password'&&type!='button'&&type!='spin'&&type!='currency'&&type!='number'){
+                    t.RBTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_drop}',
-                        style:"{_popDisplay}",
+                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_dropr}',
+                        style:"{_btnrDisplay}",
                         MID:{
                             className:'xuifont',
-                            $fonticon:'{_fi_btnClass}',
-                            style:'{_btnStyle}'
+                            $fonticon:'{_fi_btnrClass}'
                         }
                     };
                 }
-                if(properties.type=='button'||properties.type=='dropbutton'){
+                if(type=='button'||type=='dropbutton'){
                     t.BOX.className += ' xui-ui-gradientbg';
                 }
 
                 if(properties.multiLines){
-                    switch(properties.type){
+                    switch(type){
                     case 'none':
                     case 'input':
                     case 'getter':
@@ -1325,24 +1377,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 arr=profile.box.$DataModel.commandBtn.combobox;
             data=arguments.callee.upper.call(this, profile, data);
 
-            var tt=type,a,b;
+            var tt=type,a,b,c=tt=='counter';
             tt=(tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':tt;
 
-            data._fi_btnClass = "xui-uicmd-" + tt;
+            data._fi_btnlClass = "xui-icon-singleleft" ;
+            data._fi_btnrClass = tt=='counter'?'xui-icon-singleright':('xui-uicmd-' + tt);
             if(data.btnImage)
-                data._btnStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
+                data._btnrStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
             data._type="text";
 
             data._cmdDisplay = (a=(!data.commandBtn)||data.commandBtn=='none')?NONE:'';
             data._fi_commandCls = (xui.arr.indexOf(arr, data.commandBtn)!=-1?"xui-uicmd-":"") + data.commandBtn;
 
-            data._popDisplay = (b=type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?NONE:'';
+            data._btnrDisplay = (b=type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?NONE:'';
             data.typecls=profile.getClass('KEY','-type-'+data.type);
 
-            data._radius_input=(a&&b)?'xui-uiborder-radius':'xui-uiborder-radius-tl xui-uiborder-radius-bl';
-            data._radius_drop=a?'xui-uiborder-radius-tr xui-uiborder-radius-br':'xui-uiborder-noradius';
-            data._radius_drop1=a?'xui-uiborder-radius-tr':'xui-uiborder-noradius';
-            data._radius_drop2=a?'xui-uiborder-radius-br':'xui-uiborder-noradius';
+            data._radius_dropl='xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r';
+            // lbtn + rbtn + cmd ?
+            data._radius_input=(a&&b)?'xui-uiborder-radius':c?'xui-uiborder-noradius':'xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r';
+            // rtbn?
+            data._radius_dropr=a?'xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l':'xui-uiborder-noradius';
+
+            data._radius_dropt=a?'xui-uiborder-radius-tr xui-uiborder-noradius-l xui-uiborder-noradius-b':'xui-uiborder-noradius';
+            data._radius_dropb=a?'xui-uiborder-radius-br xui-uiborder-noradius-l xui-uiborder-noradius-t':'xui-uiborder-noradius';
 
             return data;
         },
@@ -1374,6 +1431,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 case 'currency':
                 case 'number':
                 case 'spin':
+                case 'counter':
                     return this._number(profile, value);                
                 default:
                     return typeof value=='string'?value:(value||value===0)?String(value):'';
@@ -1397,8 +1455,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 v1=f('INPUT'),
                 box = f('BOX'), 
                 label = f('LABEL'),
-                commandbtn=f(prop.commandBtn!='none'?'SBTN':null),
-                functionbtn=f(type=='spin'?'RBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'BTN'),
+                cmdbtn=f(prop.commandBtn!='none'?'CMD':null),
+                lbtn=f(type=='counter'?'LBTN':null),
+                rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
                 useem = xui.$uem(prop),
                 needfz = useem||profile.$isEm(width)||profile.$isEm(height),
@@ -1431,17 +1490,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
-                bw1=0,
-                bw2=0,
+                bwcmd=0,
+                lbw=0;
+                rbw=0,
                 left=Math.max(0, (prop.$b_lw||0)-$hborder),
                 top=Math.max(0, (prop.$b_tw||0)-$vborder);
             if(null!==ww){
                 ww -= Math.max($hborder*2, (prop.$b_lw||0)+(prop.$b_rw||0));
-                bw1=(commandbtn?btnw:0);
-                bw2=(functionbtn?btnw:0);
-//                bw1=(commandbtn?commandbtn.offsetWidth:0);
-//                bw2=(functionbtn?functionbtn.offsetWidth:0);
-                ww -= (bw1+bw2);
+                bwcmd=cmdbtn?btnw:0;
+                rbw=rbtn?btnw:0;
+                lbw=lbtn?btnw:0;
+//                bwcmd=(cmdbtn?cmdbtn.offsetWidth:0);
+//                rbw=(rbtn?rbtn.offsetWidth:0);
+                ww -= (bwcmd+rbw+lbw);
                 /*for ie6 bug*/
                 /*for example, if single number, 100% width will add 1*/
                 /*for example, if single number, attached shadow will overlap*/
@@ -1454,14 +1515,27 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 /*for ie6 bug*/
                 if(xui.browser.ie6&&null===width)box.ieRemedy();
             }
-            var iL=left + (labelPos=='left'?labelSize:0),
-                iT=top + (labelPos=='top'?labelSize:0),
+            // offset 1px
+            var iL=ww===null?null:left + (labelPos=='left'?labelSize:0),
+                iT=hh===null?null:top + (labelPos=='top'?labelSize:0),
                 iW=ww===null?null:Math.max(0,ww - ((labelPos=='left'||labelPos=='right')?labelSize:0)),
                 iH=hh===null?null:Math.max(0,hh - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)),
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
-            // for left offset 1px
-            iW += (functionbtn?$hborder:0) + (commandbtn?$hborder:0);
+            
+            if(lbtn){
+                if(iH2!==null)
+                    lbtn.height(adjustunit(Math.max(0,iH2)));
+                if(iW!==null)
+                    lbtn.left(adjustunit(iL));
+                lbtn.top(adjustunit(iT));
+            }
 
+            if(iW!==null){
+                // for left offset 1px
+                iL += lbw -(lbtn?$hborder:0);
+                // for left offset 1px
+                iW += (lbtn?$hborder:0) + (rbtn?$hborder:0) + (cmdbtn?$hborder:0);
+            }
              if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)
@@ -1476,20 +1550,21 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             
             if(labelSize)
                 label.cssRegion({
-                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bw1+bw2+$hborder*2):0,labelfz),
+                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bwcmd+rbw+lbw+$hborder*2):0,labelfz),
                     top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
                     width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
                     height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
-
-            // left offset 1px
-            iL += (iW||0) + $hborder*2 -$hborder;
-            if(functionbtn){
+            if(iW!==null){
+                // left offset 1px
+                iL += (iW||0) + $hborder*2 -$hborder;
+            }
+            if(rbtn){
                 if(iH2!==null)
-                    functionbtn.height(adjustunit(Math.max(0,iH2)));
+                    rbtn.height(adjustunit(Math.max(0,iH2)));
                 if(iW!==null)
-                    functionbtn.left(adjustunit(iL));
-                functionbtn.top(adjustunit(iT));
+                    rbtn.left(adjustunit(iL));
+                rbtn.top(adjustunit(iT));
 
                if(iH2!==null && prop.type=='spin'){
                     if(iH2/2-$vborder*2>0){
@@ -1497,15 +1572,17 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         f('R2').height(adjustunit(iH2/2 + (Math.round(iH2) - Math.round(iH2/2)*2) ));
                     }
                 }
-                // left offset 1px
-                iL += bw1-$hborder;
+                if(iW!==null){
+                    // left offset 1px
+                    iL += bwcmd-$hborder;
+                }
             }
-            if(commandbtn){
+            if(cmdbtn){
                 if(iH2!==null)
-                    commandbtn.height(adjustunit(Math.max(0,iH2)));
+                    cmdbtn.height(adjustunit(Math.max(0,iH2)));
                 if(iW!==null)
-                    commandbtn.left(adjustunit(iL));
-                commandbtn.top(adjustunit(iT));
+                    cmdbtn.left(adjustunit(iL));
+                cmdbtn.top(adjustunit(iT));
             }
 
             /*for ie6 bug*/

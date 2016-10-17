@@ -95,30 +95,30 @@
     box-shadow: none;
     filter: none;
 	 text-shadow: none;
-    background: linear-gradient(top,  #727E91 5%,  #23272D 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #727E91), to(1, #23272D));
-    background: -webkit-linear-gradient(top, #727E91 5%, #23272D 100%);
-    background: -moz-linear-gradient(top,  #727E91 5%,  #23272D 100%);
-    background: -o-linear-gradient(top,  #727E91 5%,  #23272D 100%);  
+    background-image: linear-gradient(top,  #727E91 5%,  #23272D 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #727E91), to(1, #23272D));
+    background-image: -webkit-linear-gradient(top, #727E91 5%, #23272D 100%);
+    background-image: -moz-linear-gradient(top,  #727E91 5%,  #23272D 100%);
+    background-image: -o-linear-gradient(top,  #727E91 5%,  #23272D 100%);  
 }
 .xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
     border-color:#32363C;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#727E91', endColorstr='#32363C');
-    background: linear-gradient(top,  #727E91 5%,  #32363C 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #727E91), to(1, #32363C));
-    background: -webkit-linear-gradient(top, #727E91 5%, #32363C 100%);
-    background: -moz-linear-gradient(top,  #727E91 5%,  #32363C 100%);
-    background: -o-linear-gradient(top,  #727E91 5%,  #32363C 100%);  
+    background-image: linear-gradient(top,  #727E91 5%,  #32363C 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #727E91), to(1, #32363C));
+    background-image: -webkit-linear-gradient(top, #727E91 5%, #32363C 100%);
+    background-image: -moz-linear-gradient(top,  #727E91 5%,  #32363C 100%);
+    background-image: -o-linear-gradient(top,  #727E91 5%,  #32363C 100%);  
 }
 .xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
 .xui-ui-btn-active, .xui-ui-btn-checked,  
 .xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#23272D', endColorstr='#727E91');
-    background: linear-gradient(top,  #23272D 5%,  #727E91 100%);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #23272D), to(1, #727E91));
-    background: -webkit-linear-gradient(top, #23272D 5%, #727E91 100%);
-    background: -moz-linear-gradient(top,  #23272D 5%,  #727E91 100%);
-    background: -o-linear-gradient(top,  #23272D 5%,  #727E91 100%);  
+    background-image: linear-gradient(top,  #23272D 5%,  #727E91 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #23272D), to(1, #727E91));
+    background-image: -webkit-linear-gradient(top, #23272D 5%, #727E91 100%);
+    background-image: -moz-linear-gradient(top,  #23272D 5%,  #727E91 100%);
+    background-image: -o-linear-gradient(top,  #23272D 5%,  #727E91 100%);  
 }
 
 /*uicontainer*/
@@ -207,14 +207,14 @@
     background-color: #5DA778;
 }
 .xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-node[class*="xui-treegrid-"],
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-node[class*="xui-treegrid-"], 
-.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-node[class*="xui-treegrid-"]{
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella, .xui-treegrid-cell-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-treegrid-cella, .xui-treegrid-cells1-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-treegrid-cella, .xui-treegrid-cells2-checked .xui-treegrid-cellcaption{
     background-color: #cdcdcd;
     color:#000;
 }
 .xui-uicell-hover,
-.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
+.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-treegrid-cella, .xui-treegrid-cell-hover .xui-treegrid-cellcaption
     background-color: #38404C !important;
 }
 

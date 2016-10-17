@@ -150,9 +150,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 xui([profile.$highLight]).tagClass('-hover',false);
 
             // set container
-            if(parent){
-                profile._conainer=parent;
-            }
+            profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
 
             root.popToTop(obj, type, profile._conainer);
 
@@ -773,7 +771,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             _maxHeight:260,
             _maxWidth:300,
             left:-10000,
-
+            parentID:'',
             hideAfterClick:true,
 
             autoHide:false,

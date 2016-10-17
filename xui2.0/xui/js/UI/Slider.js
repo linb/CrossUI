@@ -21,7 +21,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
     Static:{
         Templates:{
             style:'{_style}',
-            className:'{_className}',
+            className:'{_className} xui-ui-ellipsis',
             LABEL:{
                 className:'{_required}',
                 style:'{labelShow};width:{_labelSize};{labelHAlign}',

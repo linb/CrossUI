@@ -235,41 +235,29 @@
 
 /*Grid Setting*/
 .xui-uicell,
- .xui-treegrid-cells1,
- .xui-treegrid-cells2{
+ .xui-treegrid-cells1, .xui-treegrid-cells2{
 }
  .xui-uicell-alt,
- .xui-treegrid-cells1-alt,
- .xui-treegrid-cells2-alt{
+ .xui-treegrid-cells1-alt, .xui-treegrid-cells2-alt{
     background-color: #EFF8FF;
 }
- .xui-treegrid-cells1-hover,
- .xui-treegrid-cells2-hover{
+ .xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
     background-color: #D2E3EF;
 }
- .xui-treegrid-cells1-active,
- .xui-treegrid-cells2-active,
- .xui-treegrid-cell-active,
- .xui-treegrid-cell-active .xui-treegrid-cella{
+ .xui-treegrid-cells1-active, .xui-treegrid-cells2-active,
+ .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
     background-color: #B0EAFA;
 }
- .xui-treegrid-cells1-hot,
- .xui-treegrid-cells2-hot{
+ .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
     background-color: #FFE97F;
 }
- .xui-uicell-checked,
- .xui-uicell-checked .xui-node,
- .xui-treegrid-cell-checked,
- .xui-treegrid-cell-checked .xui-node[class*="xui-treegrid-"],
- .xui-treegrid-cells1-checked,
- .xui-treegrid-cells1-checked .xui-node[class*="xui-treegrid-"],
- .xui-treegrid-cells2-checked,
- .xui-treegrid-cells2-checked .xui-node[class*="xui-treegrid-"]{
+.xui-uicell-checked, .xui-uicell-checked .xui-node,
+.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella, .xui-treegrid-cell-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-treegrid-cella, .xui-treegrid-cells1-checked .xui-treegrid-cellcaption,
+.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-treegrid-cella, .xui-treegrid-cells2-checked .xui-treegrid-cellcaption{
     background-color: #27AE60;
 }
- .xui-uicell-hover,
- .xui-treegrid-cell-hover,
- .xui-treegrid-cell-hover .xui-node[class*="xui-treegrid-"]{
+ .xui-uicell-hover, .xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-treegrid-cella, .xui-treegrid-cell-hover .xui-treegrid-cellcaption
     background-color:#D9E8FB;
 }
 
