@@ -99,20 +99,20 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             FIRST:{
                 $order:1,
                 tagName:"a",
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             PREM:{
                 $order:2,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             PREV:{
                 $order:3,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}',
@@ -120,14 +120,14 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             CUR:{
                 $order:4,
-                className:'xui-ui-btn xui-uiborder-radius xui-ui-btn-checked',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-ui-btn-checked xui-ui-btn xui-uibar xui-uigradient-checked',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             NEXT:{
                 $order:5,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}',
@@ -135,14 +135,14 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             NEXTM:{
                 $order:6,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             LAST:{
                 $order:7,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -343,7 +343,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             var _id=profile.keys.POPI+':'+profile.serialId+':';
             while(n<l){
                 //margin-top for ie6
-                a.push('<a style="margin-top:.25em;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn xui-uiborder-radius" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
+                a.push('<a style="margin-top:.25em;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
                 n=n+m;
             }
             pop.width('auto');

@@ -30,9 +30,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             SUB:{
                 zoom:xui.browser.ie?1:null,
                 height:0,
-                'font-size':'1px',
+                'font-size':xui.browser.ie68?'1px':null,
                 //1px for ie8
-                'line-height':'1px',
+                'line-height':xui.browser.ie68?'1px':null,
                 position:'relative',
                 overflow:'hidden'
             },

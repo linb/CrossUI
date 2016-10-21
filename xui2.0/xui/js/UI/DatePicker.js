@@ -219,7 +219,7 @@ Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         },
                         SET:{
                             tagName:"button",
-                            className:'xui-ui-btn xui-uiborder-radius',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                             tabindex: '{tabindex}',
                             text:"{_set}"
                         }

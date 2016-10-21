@@ -139,7 +139,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             if(item.flagText)item._flagStyle='display:block';
 
             item._itemClass = type == "text" ? "xui-node-a" 
-                : ("xui-ui-btn " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 
+                : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 
                     : i===l-1 ? "xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l"
                     :"xui-uiborder-noradius") 
                 : "xui-uiborder-radius"));

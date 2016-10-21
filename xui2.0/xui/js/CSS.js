@@ -340,16 +340,16 @@ Class("xui.CSS", null,{
         _getDftEmSize: function(force){
             var ns=this;
             if(force || !ns._dftEm){
-                var fz=ns.$getCSSValue('.xui-node','font-size');
+                var fz=ns.$getCSSValue('.xui-ui-ctrl','font-size');
 
-                // only can be triggerred by modifing font-size of '.xui-node' itslef.
+                // only can be triggerred by modifing font-size of '.xui-ui-ctrl' itslef.
                 if(!ns._dftEmStr || ns._dftEmStr!=fz){
                     ns._dftEmStr=fz;
                     if(ns.$isPx(fz)){
                         ns._dftEm=parseFloat(fz);
                     }else{
                         var div;
-                        xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                        xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
                         ns._dftEm=div.get(0).offsetHeight;
                         div.remove();
                     }
@@ -400,10 +400,9 @@ Class("xui.CSS", null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css =  ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;color:#000;line-height:1.22em;}"+
+            css =  ".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
-            ".xuifont, .xuicon{color:#000}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
             ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
             ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
@@ -466,11 +465,7 @@ Class("xui.CSS", null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"+
-            
-           // base font-size mub be at the last
-            ".xui-node{font-size:12px;}"+
-            ".xui-title-node{font-size:1.1667em;}"
+            ".xui-node-tips{background-color:#FDF8D2;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

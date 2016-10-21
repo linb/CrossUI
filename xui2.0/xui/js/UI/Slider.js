@@ -44,13 +44,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     $order:2,
                     IND1:{
                         tagName:'button',
-                        className:'xui-ui-btn xui-uiborder-radius',
+                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                         style:'{_showD}',
                         tabindex:'{tabindex}'
                     },
                     IND2:{
                         tagName:'button',
-                        className:'xui-ui-btn xui-uiborder-radius',
+                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                         style:'{_showD2}',
                         tabindex:'{tabindex}'
                     }

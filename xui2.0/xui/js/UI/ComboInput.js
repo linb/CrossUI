@@ -100,6 +100,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return t(profile, value);
             return value;
         },
+        setPopCtrl:function(drop){
+            if(this.isDestroyed())return ;
+            var profile=this.get(0);
+            profile.$drop=profile.$poplink=drop['xui.UI']?drop.get(0):drop;
+        },
         _cache:function(type, focus){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
@@ -142,6 +147,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(profile.renderId)
                 profile.getSubNode('POOL').empty();
             delete profile.$drop;
+            delete profile.$poplink;
             return this;
         },
         setUploadObj:function(input){
@@ -473,7 +479,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             CMD:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l xui-nofocus xui-ui-btn',
+                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l xui-nofocus xui-ui-btn xui-uibar xui-uigradient',
                 style:"{_cmdDisplay}",
                 SMID:{
                     className:"xuifont {btncls}",
@@ -1289,7 +1295,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus {_radius_dropt}',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropt}',
                             R1B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
@@ -1297,7 +1303,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus {_radius_dropb}',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropb}',
                             R2B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
@@ -1310,7 +1316,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.LBTN={
                         $order:1,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_dropl}',
+                        className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropl}',
                         style:"{_btnlDisplay}",
                         MID:{
                             className:'xuifont',
@@ -1338,7 +1344,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.RBTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_dropr}',
+                        className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropr}',
                         style:"{_btnrDisplay}",
                         MID:{
                             className:'xuifont',
@@ -1347,7 +1353,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     };
                 }
                 if(type=='button'||type=='dropbutton'){
-                    t.BOX.className += ' xui-ui-gradientbg';
+                    t.BOX.className += ' xui-uigradient';
                 }
 
                 if(properties.multiLines){

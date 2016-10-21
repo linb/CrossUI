@@ -1021,7 +1021,7 @@ Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort('force');
+                    xui.Thread(tid).abort();
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -1049,7 +1049,7 @@ Class('xui.Dom','xui.absBox',{
                 }*/
                 showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
                 if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
-                if(showEffects)xui.Dom._vAnimate(o,true,showEffects,callback);else if(callback)callback();
+                if(showEffects)xui.Dom._vAnimate(o,showEffects,callback);else if(callback)callback();
             });
         },
         hide:function(callback,hideEffects,ignoreEffects){
@@ -1058,7 +1058,7 @@ Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort('force');
+                    xui.Thread(tid).abort();
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -1080,7 +1080,7 @@ Class('xui.Dom','xui.absBox',{
                 };
                 hideEffects=ignoreEffects?null:hideEffects?hideEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
                if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
-                if(hideEffects)xui.Dom._vAnimate(o,false,hideEffects,fun);else fun();
+                if(hideEffects)xui.Dom._vAnimate(o,hideEffects,fun);else fun();
             });
         },
         cssRegion:function(region,triggerEvent) {
@@ -2001,7 +2001,7 @@ type:4
 
             showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
-            if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
+            if(showEffects)xui.Dom._vAnimate(target,showEffects,callback);else if(callback)callback();
             return this;
         },
         hoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
@@ -2612,9 +2612,9 @@ type:4
         *shape: circle or ellipse, only for radial
         *size: farthest-corner..
         */
-        $setGradients:function(node, value){
+        $setGradients:function(node, value, xb){
+            xb=xb||xui.browser;
             var ns=this,
-                xb=xui.browser,
                 ver=xb.ver,
                 c16="0123456789ABCDEF",
                 _toFF=function(n,b){
@@ -2626,38 +2626,35 @@ type:4
                     s=s.split('');
                     return c16.indexOf(s[0].toUpperCase())*16 + c16.indexOf(s[1].toUpperCase());
                 };
-            if(!window.btoa){
-
-                window.btoa=function (text){
-                    if(/([^\u0000-\u00ff])/.test(text))return ;
-                    var table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",i=0,cur,prev,byteNum,result=[];
-                    while(i<text.length){
-                      cur=text.charCodeAt(i);
-                      byteNum=(i+1)%3;
-                      switch(byteNum){
-                        case 1://first byte
-                          result.push(table.charAt(cur >> 2));
-                          break;
-                        case 2: //second byte
-                          result.push(table.charAt((prev & 3) << 4 | (cur >> 4)));
-                          break;
-                        case 0: //third byte
-                          result.push(table.charAt((prev & 0x0f) << 2 | (cur >> 6)));
-                          result.push(table.charAt(cur & 0x3f));
-                          break;
-                      }
-                      prev = cur;
-                      i++;
-                    }
-                    if (byteNum == 1){
-                      result.push(table.charAt((prev & 3) << 4));
-                      result.push("==");
-                    } else if (byteNum == 2){
-                      result.push(table.charAt((prev & 0x0f) << 2));
-                      result.push("=");
-                    }
-                    return result.join("");
+            window.btoa=window.btoa||function (text){
+                if(/([^\u0000-\u00ff])/.test(text))return ;
+                var table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",i=0,cur,prev,byteNum,result=[];
+                while(i<text.length){
+                  cur=text.charCodeAt(i);
+                  byteNum=(i+1)%3;
+                  switch(byteNum){
+                    case 1://first byte
+                      result.push(table.charAt(cur >> 2));
+                      break;
+                    case 2: //second byte
+                      result.push(table.charAt((prev & 3) << 4 | (cur >> 4)));
+                      break;
+                    case 0: //third byte
+                      result.push(table.charAt((prev & 0x0f) << 2 | (cur >> 6)));
+                      result.push(table.charAt(cur & 0x3f));
+                      break;
+                  }
+                  prev = cur;
+                  i++;
                 }
+                if (byteNum == 1){
+                  result.push(table.charAt((prev & 3) << 4));
+                  result.push("==");
+                } else if (byteNum == 2){
+                  result.push(table.charAt((prev & 0x0f) << 2));
+                  result.push("=");
+                }
+                return result.join("");
             }
             var iecracker1=function(node, orient, stops, shape, size, rate){
                 var id="xui.s-ie8gdfix";
@@ -2947,16 +2944,16 @@ type:4
                             break;
                         }
                     }
-/*                    var rectw=1,recth=1;
-                    if(shape=='circle'){
-                        var m=Math.min(node.offsetWidth,node.offsetHeight);
-                        if(m==node.offsetWidth){
-                            recth=m/node.offsetHeight;
-                        }else{
-                            rectw=m/node.offsetWidth;
-                        }
-                    }
-*/
+                    /*                    var rectw=1,recth=1;
+                                        if(shape=='circle'){
+                                            var m=Math.min(node.offsetWidth,node.offsetHeight);
+                                            if(m==node.offsetWidth){
+                                                recth=m/node.offsetHeight;
+                                            }else{
+                                                rectw=m/node.offsetWidth;
+                                            }
+                                        }
+                    */
                     var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
                     +'<radialGradient id="'+id+'" gradientUnits="userSpaceOnUse" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';
 
@@ -3174,43 +3171,44 @@ type:4
                 }
             }
 
-            if(xb.ie && ver>=6 && ver<9){
+            if(xb.ie678){
                 if(type=='linear'){iecracker2(node,orient,stops);}
                 else{iecracker1(node,orient,stops,shape,size,rate);}
-            }else if((xb.ie && ver>=9 && ver<10) || (xb.opr && ver<11.1)){
+            }
+            if(xb.ie9 || (xb.opr && ver<11.1)){
                 if(type=='linear'){svgcracker2(node,orient,stops);}
                 else{svgcracker1(node,orient,stops,shape,size,rate);}
-            }else{
-                if((xb.gek && ver>=3.6)
-                    ||(xb.isChrome && ver>=10)
-                    ||(xb.isSafari && ver>=5.1)
-                    ||(xb.ie && ver>=10)
-                    ||(xb.opr && ver>=11.1)
-                    ){
-                    if(type=='linear'){css2(node,orient,stops);}
-                    else{
-                        if(xb.opr && ver<12)
-                            svgcracker1(node,orient,stops,shape,size,rate);
-                        else
-                            css1(node,orient,stops,shape,size,rate);
-                    }
+            }
+            if(((xb.gek && ver>=3.6)
+                ||(xb.isChrome && ver>=10)
+                ||(xb.isSafari && ver>=5.1)
+                ||(xb.ie && ver>=10)
+                ||(xb.opr && ver>=11.1)
+                )){
+                if(type=='linear'){
+                    css2(node,orient,stops);
+                }else{
+                    if(xb.opr && ver<12)
+                        svgcracker1(node,orient,stops,shape,size,rate);
+                    else
+                        css1(node,orient,stops,shape,size,rate);
                 }
             }
         },
-        _vAnimate:function(node,isIn,setting,callback){
+        _vAnimate:function(node,setting,callback){
             if(!setting || !setting.params || xui.isEmpty(setting.params)){
                 if(callback)xui.tryF(callback);
                 return;
             }
 
-            var params=setting.params,reset={};
+            var params=setting.params,begin={},end={};
             node=xui(node);
-            xui.each(params,function(o,i){reset[i]=o[0]});
+            xui.each(params,function(o,i){begin[i]=o[0];end[i]=o[1];});
 
-            node.animate(params, function(threadid){
-                if(isIn)node.css(reset);
+            return node.animate(params, function(threadid){
+                node.css(begin);
             },function(threadid){
-                if(!isIn)node.css(reset);
+                node.css(end);
                 if(callback)xui.tryF(callback);
             },setting.duration,0,setting.type).start();
         },

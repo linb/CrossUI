@@ -82,7 +82,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 position:'relative',
                 overflow:'auto',
                 'overflow-x': 'hidden',
-                zoom:xui.browser.ie6?1:null
+                zoom:xui.browser.ie6?1:null,
+                padding:'.5em'
             },
             ITEM:{
                 display:xui.$inlineBlock,

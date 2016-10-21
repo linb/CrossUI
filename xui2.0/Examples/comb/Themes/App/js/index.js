@@ -2441,28 +2441,28 @@ Class('App', 'xui.Module',{
                 .setHeader([{
                     "id" : "a3-1",
                     "caption" : "col 1",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.899746666666666em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-2",
                     "caption" : "col 2",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "6.751316666666668em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-3",
                     "caption" : "col 3",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "5.999993333333333em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-4",
                     "caption" : "col 4",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.751310000000001em",
                     "disabled" : true,
                     "type" : "input"
@@ -2470,28 +2470,28 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "a3-5",
                     "caption" : "col 5",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "5.499993333333333em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-6",
                     "caption" : "col 6",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "5.08333em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-7",
                     "caption" : "col 7",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.667996666666664em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-8",
                     "caption" : "col 8",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "7.583330000000004em",
                     "readonly" : true,
                     "type" : "input"
@@ -2499,35 +2499,35 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "a3-9",
                     "caption" : "col 9",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "3.58466333333333em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-10",
                     "caption" : "col 10",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.666663333333333em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-11",
                     "caption" : "col 11",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.584663333333331em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-12",
                     "caption" : "col 12",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.249996666666667em",
                     "type" : "input"
                 },
                 {
                     "id" : "a3-13",
                     "caption" : "col 13",
-                    "cellStyle" : "text-align:center;cursor:pointer;",
+                    "cellStyle" : "text-align:center;",
                     "width" : "4.668329999999998em",
                     "type" : "input"
                 }])

@@ -22,7 +22,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             FILL:{
                 tagName:'div',
                 style:'{fillBG}',
-                className:'xui-ui-gradientbg',
+                className:'xui-uibar',
                 text:'{html}'+xui.UI.$childTag
             },
             INN:{
@@ -55,6 +55,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 'text-align':'center'
             },
             FILL:{
+                border:'none',
                 position:'relative',
                 width:0,
                 height:0,
@@ -134,7 +135,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(p.type=="horizontal"){
                 if(size.height){
                     v=adjustunit(size.height, innfz);
-                    inn.css({height:v,'line-height':v});
+                    inn.css({'line-height':v});
                     
                     v=adjustunit(size.height, fillfz);
                     fill.css({height:v,'line-height':v});
@@ -144,7 +145,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             }else{
                 if(size.width){
-                    inn.css({width:adjustunit(size.width, innfz)});                   
+                    //inn.css({width:adjustunit(size.width, innfz)});                   
                     fill.css({width:adjustunit(size.width, fillfz)});
                     cap.css({width:adjustunit(size.width, capfz)});
                 }

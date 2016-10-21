@@ -2002,74 +2002,6 @@ Class("xui.UI",  "xui.absObj", {
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
             },
-            ".xui-ui-gradientbg, .xui-ui-btn":{
-                $order:3,
-                border:'none',
-                color: "#333",
-                'text-decoration': 'none',
-                'white-space':'nowrap',
-                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
-                'background-image_1': "linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #DDD))",
-                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-
-                // for IE6789
-                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
-            },
-            ".xui-ui-btn::-moz-focus-inner":{
-                $order:3,
-                padding: "0 !important",
-                border: "0 none !important"
-            },
-            ".xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover":{
-                $order:4,
-                'background-image_1': "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
-                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-
-                // for IE6789
-                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
-            },
-            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-active, .xui-ui-btn-checked, .xui-ui-btn-active:hover, .xui-ui-btn-checked:hover":{
-                $order:5,
-                'background-image_1': "linear-gradient(top,  #DDD 5%,  #FFF)",
-                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
-                'background-image_3': "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                'background-image_4': "-moz-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                'background-image_5': "-o-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                'background-image_6': "-ms-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                // for IE6789
-                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
-            },
-            ".xui-ui-btn":{
-                $order:6,
-                padding: "4px",
-                cursor: 'pointer',
-                display: xui.$inlineBlock,
-                'text-align': 'center',
-                'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
-                'line-height': '1',
-                'border': 'solid 1px #C5C5C5',                
-                zoom:xui.browser.ie?1:null,
-                // for IE6
-                'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
-                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
-            },
-            ".xui-ui-btn:hover, .xui-ui-btn-hover":{
-                $order:7,
-                'border-color': '#B5B5B5'
-            },
             ".xui-ui-input":{
                 background:'#fff'
             },
@@ -2114,41 +2046,36 @@ Class("xui.UI",  "xui.absObj", {
                 'border':'solid 1px transparent'
             },
             ".xui-uitembg-hover":{
-                $order:2,
+                $order:1,
                 'background-color':'#E0E0E0',
-                'border-color':'#DDDDDD'
+                'border-color':'#CDCDCD'
             },
             ".xui-uitembg-active":{
-                $order:3,
-                'background-color':'#DDDDDD',
-                'border-color':'#C5C5C5'
+                $order:2,
+                'background-color':'#CDCDCD',
+                'border-color':'B6B6B6'
             },
             ".xui-uitembg-checked":{
-                $order:4,
-                'background-color':'#DDDDDD',
-                'border-color':'#C5C5C5'
+                $order:3,
+                'background-color':'#CDCDCD',
+                'border-color':'B6B6B6'
             },
 
             ".xui-uicell":{
                 "background-color": "#F9F9FB"
             },
             ".xui-uicell-hover":{
-                 $order:2,
+                 $order:1,
                 "background-color": "#d9e8fb"
             },
-            ".xui-uicell-checked, .xui-uicell-checked .xui-node":{
-                 $order:3,
+            ".xui-uicell-checked":{
+                 $order:2,
                 "background-color":"#ABABAB",
                 color:"#fff"
             },
             ".xui-uicell-alt":{
-                 $order:1,
+                 $order:3,
                 "background-color":"#FDF8D2"
-            },
-            ".xui-hcell":{
-                 $order:1,
-                color:"#333333",
-                "background-color":"#E8EEF7"
             },
             '.xui-special-icon':{
                 color:'#3393D2',
@@ -2160,7 +2087,6 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'baseline'
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
-                $order:1
             },
 //uibar-top
             '.xui-uibar-top':{
@@ -2191,29 +2117,32 @@ Class("xui.UI",  "xui.absObj", {
                 height:'100%'
             },
             '.xui-uibar-top .xui-uibar-tdlt':{
+                $order:1,
                 position:'absolute',
                 width:'12px',
                 left:0,
                 top:0,
-                height:'12px'
+                height:'1.5em'
             },
             '.xui-uibar-top .xui-uibar-tdmt':{
+                $order:1,
                 position:'absolute',
                 top:0,
                 left:0,
                 right:0,
-                height:'12px',
+                height:'1.5em',
                 width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdrt':{
+                $order:1,
                 position:'absolute',
                 width:'12px',
                 right:0,
                 top:0,
-                height:'12px'
+                height:'1.5em'
             },
             '.xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr':{
-                'background-color':'#C5C5C5'
+                'background-color':'#B6B6B6'
             },
             '.xui-uibar-top-focus .xuifont, .xui-uibar-top-focus .xuicon, .xui-uibar-top-focus .xui-uicaption':{
             },
@@ -2273,9 +2202,9 @@ Class("xui.UI",  "xui.absObj", {
                 height:'100%'
             },
 //uibar-top-s
-            '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
+            '.xui-uibar-top-s, .xui-uibar-bottom-s, .xui-uibar-top-s .xui-uibar-t':{
                 $order:3,
-                height:'6px'
+                height:'5px'
             },
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
@@ -2311,10 +2240,6 @@ Class("xui.UI",  "xui.absObj", {
                 display:'none'
             },
 //uibar-bottom-s
-            '.xui-uibar-bottom-s':{
-                $order:3,
-                'padding':'3px 0'
-            },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
@@ -2360,12 +2285,17 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
                 'user-select':'text'
             },
-            '.xui-ui-ctrl':{
+            '.xui-ui-ctrl, .xui-ui-reset':{
                 cursor:'default',
                 'font-family':'arial,helvetica,clean,sans-serif',
                 'font-style':'normal',
                 'font-weight':'normal',
-                'vertical-align':'middle'
+                'vertical-align':'middle',
+                 color:'#000',
+                 'font-size':'12px'
+            },
+            ".xui-title-node":{
+                'font-size':'1.1667em'
             },
             '.xui-uiw-shell':{
 //                background:'transparent',
@@ -2411,18 +2341,89 @@ Class("xui.UI",  "xui.absObj", {
                 'background-color':'#FFFFFF'
             },
             '.xui-uicontainer':{
-                'line-height':'2.2em'
             },
             '.xui-uibar':{
                 'background-color':'#E0E0E0'
             },
             '.xui-uibar-hover':{
-                $order:2,
-                'background-color':'#DDDDDD'
+                $order:1,
+                'background-color':'#CDCDCD'
             },
             ".xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active":{
+                $order:2,
+                 "background-color":"#ABABAB"
+            },
+            ".xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked,  .xui-uimenu-hover, .xui-uimenu-active":{
                 $order:3,
-                 "background-color":"#CDCDCD"
+                color:"#FFF"
+            },
+            ".xui-ui-btn::-moz-focus-inner":{
+                $order:3,
+                padding: "0 !important",
+                border: "0 none !important"
+            },
+            ".xui-uigradient":{
+                $order:4,
+                'border': 'solid 1px #B6B6B6', 
+                color: "#333",
+                'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
+                'text-decoration': 'none',
+                'white-space':'nowrap',
+                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
+                'background-image_1': "linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #CDCDCD))",
+                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
+            },
+            ".xui-uigradient-hover, .xui-uigradient:hover":{
+                $order:5,
+                'background-image_1': "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
+                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
+            },
+            ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover":{
+                $order:6,
+                'background-image_1': "linear-gradient(top,  #CDCDCD 5%,  #FFF)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #CDCDCD), to(1, #FFF))",
+                'background-image_3': "-webkit-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                // for IE6789
+                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null
+            },
+            ".xui-ui-btn":{
+                $order:7,
+                padding: "4px",
+                cursor: 'pointer',
+                'border': 'solid 1px #B6B6B6', 
+                display: xui.$inlineBlock,
+                'text-align': 'center',
+                'line-height': '1',
+                zoom:xui.browser.ie?1:null,
+                // for IE6
+                'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
+            },
+            ".xui-ui-btn:hover, .xui-ui-btn-hover":{
+                $order:8,
+                'border-color': '#B5B5B5'
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
@@ -2432,7 +2433,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-r':{
                 'border-right-style':'solid',
                 'border-right-width':'1px',
-                'border-right-color':'#C5C5C5'
+                'border-right-color':'#B6B6B6'
             },
             '.xui-uiborder-t':{
                 'border-top-style':'solid',
@@ -2442,7 +2443,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-b':{
                 'border-bottom-style':'solid',
                 'border-bottom-width':'1px',
-                'border-bottom-color':'#C5C5C5'
+                'border-bottom-color':'#B6B6B6'
             },
             '.xui-uiborder-nob':{
                 $order:1,
@@ -2457,17 +2458,17 @@ Class("xui.UI",  "xui.absObj", {
                 background:'#fff'
             },
             '.xui-uiborder-flat':{
-                border:'solid 1px #C5C5C5'
+                border:'solid 1px #B6B6B6'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
+                'border-color':'#F6F6F6 #B6B6B6 #B6B6B6 #F6F6F6'
             },
             '.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
                 $order:10,
                 border:'solid 1px',
-                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
+                'border-color':'#B6B6B6 #F6F6F6 #F6F6F6 #B6B6B6'
             },
             '.xui-uiborder-dark, .xui-uiborder-flat-hover':{
                 'border-color':'#B6B6B6'
@@ -2576,7 +2577,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-radius': '0 !important'
             },
             '.xui-uiborder-noradius-l':{
-                $order:12,
+                $order:15,
                 'border-top-left-radius':'0 !important',
                 '-moz-border-top-left-radius': '0 !important',
                 '-webkit-border-top-left-radius': '0 !important',
@@ -2592,7 +2593,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-bottom-left-radius': '0 !important'
             },
             '.xui-uiborder-noradius-r':{
-                $order:12,
+                $order:15,
                 'border-top-right-radius':'0 !important',
                 '-moz-border-top-right-radius': '0 !important',
                 '-webkit-border-top-right-radius': '0 !important',
@@ -2608,7 +2609,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-bottom-right-radius': '0 !important'
             },
             '.xui-uiborder-noradius-t':{
-                $order:12,
+                $order:15,
                 'border-top-left-radius':'0 !important',
                 '-moz-border-top-left-radius': '0 !important',
                 '-webkit-border-top-left-radius': '0 !important',
@@ -2624,7 +2625,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-top-right-radius': '0 !important'
             },
             '.xui-uiborder-noradius-b':{
-                $order:12,
+                $order:15,
                 'border-bottom-left-radius':'0 !important',
                 '-moz-border-bottom-left-radius': '0 !important',
                 '-webkit-border-bottom-left-radius': '0 !important',
@@ -2785,7 +2786,7 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            '.xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
+            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
                 $order:2,
                 color: '#666666 !important'
             },
@@ -2793,12 +2794,12 @@ Class("xui.UI",  "xui.absObj", {
                  padding: 0,
                  border: 0
              },
-            '.xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node, .xui-uicell-disabled, .xui-uicell-disabled .xui-node':{
+            '.xui-ui-ctrl-disabled, .xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node, .xui-uicell-disabled, .xui-uicell-disabled .xui-node':{
                 $order:2,
                 cursor:'not-allowed',
                 color: '#808080 !important'
             },
-            '.xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled input,.xui-ui-disabled textarea, .xui-ui-itemdisabled input, .xui-ui-itemdisabled textarea, .xui-uicell-disabled':{
+            '.xui-ui-ctrl-disabled, .xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled input,.xui-ui-disabled textarea, .xui-ui-itemdisabled input, .xui-ui-itemdisabled textarea, .xui-uicell-disabled':{
                 $order:3,
                 'background-color':'#eee !important'
             },
@@ -3102,7 +3103,7 @@ Class("xui.UI",  "xui.absObj", {
                 r7=self.r7 || (self.r7=/([^{}]*)\{([\w]+)\}([^{}]*)/g),
                 first=false,
                 u=xui.UI,
-                t, o , bak, tagN,lkey;
+                t, o , bak, tagN, cls1, lkey;
 
             if(!template)template=profile.template;
             lkey = key?profile.keys[key]:profile.key;
@@ -3123,9 +3124,10 @@ Class("xui.UI",  "xui.absObj", {
                     //className
                     t = u.$CLS + (key?'-'+key.toLowerCase():'');
                     tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
+                    cls1 = (tagN=="button"||tagN=="input"||tagN=="textarea"||tagN=="select"||tagN=="keygen")?'xui-ui-reset':'';
     
                     //default class first
-                    template['class'] =  'xui-node xui-node-'+tagN + (t?(' '+t):'') + 
+                    template['class'] =  'xui-node'+(cls1?(' '+cls1):'')+' xui-node-'+tagN + (t?(' '+t):'') + 
                         //custom class here
                         (bak?(' '+bak):'') + 
                         (template.$fonticon?(' '+template.$fonticon):'') +
@@ -4875,10 +4877,10 @@ Class("xui.UI",  "xui.absObj", {
                 needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
                 rootfz = needfz?node._getEmSize():null,
                 umargin={
-                    top:adjustunit(margin.top,rootfz),
-                    left:adjustunit(margin.left,rootfz),
-                    right:adjustunit(margin.right,rootfz),
-                    bottom:adjustunit(margin.bottom,rootfz)
+                    top:adjustunit(margin.top||0,rootfz),
+                    left:adjustunit(margin.left||0,rootfz),
+                    right:adjustunit(margin.right||0,rootfz),
+                    bottom:adjustunit(margin.bottom||0,rootfz)
                 };
 
             if(isSVG){
@@ -4976,6 +4978,9 @@ Class("xui.UI",  "xui.absObj", {
                                 isWin= me.pid=="!window" || me.pid=="!document",
                                 pprf = isWin?0:xui.UIProfile.getFromDom(pid),
                                 pprop = pprf && pprf.properties,
+                                proot = pprf && pprf.getRoot(),
+                                pstyle = proot && proot.get(0) && proot.get(0).style,
+                                prootfz = pstyle && (useem||css.$isEm(pstyle&&pstyle.width)||css.$isEm(pstyle&&pstyle.height)?proot._getEmSize():null),
                                 conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
                                 conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
                                 conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
@@ -4991,7 +4996,7 @@ Class("xui.UI",  "xui.absObj", {
                                 style=pn.style,
                                 useem = xui.$uem(prop),
                                 nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
-                                adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
+                                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
                                 ofs = isWin ? xui('body').get(0).style : style,
                                 old_of=ofs.overflow,
@@ -5001,6 +5006,7 @@ Class("xui.UI",  "xui.absObj", {
                             // 1. set overflow for size
                             if(style)style.overflow=style.overflowX=style.overflowY="hidden";
                             
+
                             //2. get width / height
                             var width=(style&&css.$px(style.width,nodefz))||node.width()||0,
                                 height=(style&&css.$px(style.height,nodefz))||node.height()||0;
@@ -5013,6 +5019,16 @@ Class("xui.UI",  "xui.absObj", {
                                style.overflowX = old_ofx;
                                style.overflowY = old_ofy;
                            }
+                            conDockSpacing={
+                                width:css.$px(conDockSpacing.width||0,prootfz),
+                                height:css.$px(conDockSpacing.height||0,prootfz)
+                            };
+                            conDockPadding={
+                                left:css.$px(conDockPadding.left||0,prootfz),
+                                top:css.$px(conDockPadding.top||0,prootfz),
+                                right:css.$px(conDockPadding.right||0,prootfz),
+                                bottom:css.$px(conDockPadding.bottom||0,prootfz)
+                            };
 
                             //window resize: check time span, for window resize in firefox
                             //force call when input $dockid
@@ -7180,7 +7196,7 @@ new function(){
         Static:{
             Templates:{
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn xui-uiborder-radius {_className}',
+                className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -7261,7 +7277,7 @@ new function(){
             DIRYMARKICON:"BACKGROUND",
             Templates:{
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn xui-uiborder-radius {_className}',
+                className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {_className}',
                 style:'{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{
@@ -7283,10 +7299,6 @@ new function(){
                     className: 'xuifont xui-special-icon',
                     style: '{_showDrop}',
                     $fonticon:'xui-uicmd-arrowdrop'
-                },
-                CLEAR:{
-                    $order:4,
-                    style:'clear:both;display:none;'
                 }
             },
             Appearances:{
@@ -7638,6 +7650,9 @@ new function(){
                         // alias or domId
                         t=(prf.host && prf.host[t] && prf.host[t].get(0)) || (xui(t).get(0) && t);
                         if(t)prevId=xui.UI._getThemePrevId(t);
+                    }else if(prf.$inDesign){
+                        // the canvas
+                        if(t=prf.parent)prevId=xui.UI._getThemePrevId(t);
                     }
 
                     return  xui.UI._adjustCSS(css, prevId);

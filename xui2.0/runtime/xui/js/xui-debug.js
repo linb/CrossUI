@@ -2623,7 +2623,7 @@ Class('xui.Thread',null,{
         },
         links:function(thread){
             var p=this.profile, onEnd=p.onEnd, id=p.id;
-            p.onEnd=function(){xui.tryF(onEnd,[id]); thread.start()};
+            p.onEnd=function(tid,flag){xui.tryF(onEnd,[tid,flag]); thread.start()};
             return this;
         },
         insert:function(arr, index){
@@ -8497,16 +8497,16 @@ Class('xui.Event',null,{
         _getDftEmSize: function(force){
             var ns=this;
             if(force || !ns._dftEm){
-                var fz=ns.$getCSSValue('.xui-node','font-size');
+                var fz=ns.$getCSSValue('.xui-ui-ctrl','font-size');
 
-                // only can be triggerred by modifing font-size of '.xui-node' itslef.
+                // only can be triggerred by modifing font-size of '.xui-ui-ctrl' itslef.
                 if(!ns._dftEmStr || ns._dftEmStr!=fz){
                     ns._dftEmStr=fz;
                     if(ns.$isPx(fz)){
                         ns._dftEm=parseFloat(fz);
                     }else{
                         var div;
-                        xui('body').append(div=xui.create('<div class="xui-node" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
+                        xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
                         ns._dftEm=div.get(0).offsetHeight;
                         div.remove();
                     }
@@ -8557,10 +8557,9 @@ Class('xui.Event',null,{
     Initialize:function(){
         var b=xui.browser,
 // cross browser reset 
-            css =  ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;color:#000;line-height:1.22em;}"+
+            css =  ".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
-            ".xuifont, .xuicon{color:#000}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
             ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
             ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
@@ -8623,11 +8622,7 @@ Class('xui.Event',null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"+
-            
-           // base font-size mub be at the last
-            ".xui-node{font-size:12px;}"+
-            ".xui-title-node{font-size:1.1667em;}"
+            ".xui-node-tips{background-color:#FDF8D2;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -9661,7 +9656,7 @@ Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort('force');
+                    xui.Thread(tid).abort();
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -9689,7 +9684,7 @@ Class('xui.Dom','xui.absBox',{
                 }*/
                 showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
                 if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
-                if(showEffects)xui.Dom._vAnimate(o,true,showEffects,callback);else if(callback)callback();
+                if(showEffects)xui.Dom._vAnimate(o,showEffects,callback);else if(callback)callback();
             });
         },
         hide:function(callback,hideEffects,ignoreEffects){
@@ -9698,7 +9693,7 @@ Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort('force');
+                    xui.Thread(tid).abort();
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -9720,7 +9715,7 @@ Class('xui.Dom','xui.absBox',{
                 };
                 hideEffects=ignoreEffects?null:hideEffects?hideEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
                if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
-                if(hideEffects)xui.Dom._vAnimate(o,false,hideEffects,fun);else fun();
+                if(hideEffects)xui.Dom._vAnimate(o,hideEffects,fun);else fun();
             });
         },
         cssRegion:function(region,triggerEvent) {
@@ -10641,7 +10636,7 @@ type:4
 
             showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
-            if(showEffects)xui.Dom._vAnimate(target,true,showEffects,callback);else if(callback)callback();
+            if(showEffects)xui.Dom._vAnimate(target,showEffects,callback);else if(callback)callback();
             return this;
         },
         hoverPop : function(node, type, beforePop,beforeHide, parent, groupid, showEffects, hideEffects){
@@ -11252,9 +11247,9 @@ type:4
         *shape: circle or ellipse, only for radial
         *size: farthest-corner..
         */
-        $setGradients:function(node, value){
+        $setGradients:function(node, value, xb){
+            xb=xb||xui.browser;
             var ns=this,
-                xb=xui.browser,
                 ver=xb.ver,
                 c16="0123456789ABCDEF",
                 _toFF=function(n,b){
@@ -11266,38 +11261,35 @@ type:4
                     s=s.split('');
                     return c16.indexOf(s[0].toUpperCase())*16 + c16.indexOf(s[1].toUpperCase());
                 };
-            if(!window.btoa){
-
-                window.btoa=function (text){
-                    if(/([^\u0000-\u00ff])/.test(text))return ;
-                    var table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",i=0,cur,prev,byteNum,result=[];
-                    while(i<text.length){
-                      cur=text.charCodeAt(i);
-                      byteNum=(i+1)%3;
-                      switch(byteNum){
-                        case 1://first byte
-                          result.push(table.charAt(cur >> 2));
-                          break;
-                        case 2: //second byte
-                          result.push(table.charAt((prev & 3) << 4 | (cur >> 4)));
-                          break;
-                        case 0: //third byte
-                          result.push(table.charAt((prev & 0x0f) << 2 | (cur >> 6)));
-                          result.push(table.charAt(cur & 0x3f));
-                          break;
-                      }
-                      prev = cur;
-                      i++;
-                    }
-                    if (byteNum == 1){
-                      result.push(table.charAt((prev & 3) << 4));
-                      result.push("==");
-                    } else if (byteNum == 2){
-                      result.push(table.charAt((prev & 0x0f) << 2));
-                      result.push("=");
-                    }
-                    return result.join("");
+            window.btoa=window.btoa||function (text){
+                if(/([^\u0000-\u00ff])/.test(text))return ;
+                var table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",i=0,cur,prev,byteNum,result=[];
+                while(i<text.length){
+                  cur=text.charCodeAt(i);
+                  byteNum=(i+1)%3;
+                  switch(byteNum){
+                    case 1://first byte
+                      result.push(table.charAt(cur >> 2));
+                      break;
+                    case 2: //second byte
+                      result.push(table.charAt((prev & 3) << 4 | (cur >> 4)));
+                      break;
+                    case 0: //third byte
+                      result.push(table.charAt((prev & 0x0f) << 2 | (cur >> 6)));
+                      result.push(table.charAt(cur & 0x3f));
+                      break;
+                  }
+                  prev = cur;
+                  i++;
                 }
+                if (byteNum == 1){
+                  result.push(table.charAt((prev & 3) << 4));
+                  result.push("==");
+                } else if (byteNum == 2){
+                  result.push(table.charAt((prev & 0x0f) << 2));
+                  result.push("=");
+                }
+                return result.join("");
             }
             var iecracker1=function(node, orient, stops, shape, size, rate){
                 var id="xui.s-ie8gdfix";
@@ -11587,16 +11579,16 @@ type:4
                             break;
                         }
                     }
-/*                    var rectw=1,recth=1;
-                    if(shape=='circle'){
-                        var m=Math.min(node.offsetWidth,node.offsetHeight);
-                        if(m==node.offsetWidth){
-                            recth=m/node.offsetHeight;
-                        }else{
-                            rectw=m/node.offsetWidth;
-                        }
-                    }
-*/
+                    /*                    var rectw=1,recth=1;
+                                        if(shape=='circle'){
+                                            var m=Math.min(node.offsetWidth,node.offsetHeight);
+                                            if(m==node.offsetWidth){
+                                                recth=m/node.offsetHeight;
+                                            }else{
+                                                rectw=m/node.offsetWidth;
+                                            }
+                                        }
+                    */
                     var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
                     +'<radialGradient id="'+id+'" gradientUnits="userSpaceOnUse" cx="'+cx+'" cy="'+cy+'" r="'+r+'">';
 
@@ -11814,43 +11806,44 @@ type:4
                 }
             }
 
-            if(xb.ie && ver>=6 && ver<9){
+            if(xb.ie678){
                 if(type=='linear'){iecracker2(node,orient,stops);}
                 else{iecracker1(node,orient,stops,shape,size,rate);}
-            }else if((xb.ie && ver>=9 && ver<10) || (xb.opr && ver<11.1)){
+            }
+            if(xb.ie9 || (xb.opr && ver<11.1)){
                 if(type=='linear'){svgcracker2(node,orient,stops);}
                 else{svgcracker1(node,orient,stops,shape,size,rate);}
-            }else{
-                if((xb.gek && ver>=3.6)
-                    ||(xb.isChrome && ver>=10)
-                    ||(xb.isSafari && ver>=5.1)
-                    ||(xb.ie && ver>=10)
-                    ||(xb.opr && ver>=11.1)
-                    ){
-                    if(type=='linear'){css2(node,orient,stops);}
-                    else{
-                        if(xb.opr && ver<12)
-                            svgcracker1(node,orient,stops,shape,size,rate);
-                        else
-                            css1(node,orient,stops,shape,size,rate);
-                    }
+            }
+            if(((xb.gek && ver>=3.6)
+                ||(xb.isChrome && ver>=10)
+                ||(xb.isSafari && ver>=5.1)
+                ||(xb.ie && ver>=10)
+                ||(xb.opr && ver>=11.1)
+                )){
+                if(type=='linear'){
+                    css2(node,orient,stops);
+                }else{
+                    if(xb.opr && ver<12)
+                        svgcracker1(node,orient,stops,shape,size,rate);
+                    else
+                        css1(node,orient,stops,shape,size,rate);
                 }
             }
         },
-        _vAnimate:function(node,isIn,setting,callback){
+        _vAnimate:function(node,setting,callback){
             if(!setting || !setting.params || xui.isEmpty(setting.params)){
                 if(callback)xui.tryF(callback);
                 return;
             }
 
-            var params=setting.params,reset={};
+            var params=setting.params,begin={},end={};
             node=xui(node);
-            xui.each(params,function(o,i){reset[i]=o[0]});
+            xui.each(params,function(o,i){begin[i]=o[0];end[i]=o[1];});
 
-            node.animate(params, function(threadid){
-                if(isIn)node.css(reset);
+            return node.animate(params, function(threadid){
+                node.css(begin);
             },function(threadid){
-                if(!isIn)node.css(reset);
+                node.css(end);
                 if(callback)xui.tryF(callback);
             },setting.duration,0,setting.type).start();
         },
@@ -16196,7 +16189,7 @@ Class("xui.Tips", null,{
                         s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
+                            s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
@@ -18898,74 +18891,6 @@ Class("xui.UI",  "xui.absObj", {
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
             },
-            ".xui-ui-gradientbg, .xui-ui-btn":{
-                $order:3,
-                border:'none',
-                color: "#333",
-                'text-decoration': 'none',
-                'white-space':'nowrap',
-                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
-                'background-image_1': "linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #DDD))",
-                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #DDD 100%)",
-
-                // for IE6789
-                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
-            },
-            ".xui-ui-btn::-moz-focus-inner":{
-                $order:3,
-                padding: "0 !important",
-                border: "0 none !important"
-            },
-            ".xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover":{
-                $order:4,
-                'background-image_1': "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
-                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
-
-                // for IE6789
-                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD', GradientType=0)":null
-            },
-            ".xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked, .xui-ui-btn:active, .xui-ui-btn-active, .xui-ui-btn-checked, .xui-ui-btn-active:hover, .xui-ui-btn-checked:hover":{
-                $order:5,
-                'background-image_1': "linear-gradient(top,  #DDD 5%,  #FFF)",
-                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #DDD), to(1, #FFF))",
-                'background-image_3': "-webkit-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                'background-image_4': "-moz-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                'background-image_5': "-o-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                'background-image_6': "-ms-linear-gradient(top,  #DDD 5%,  #FFF 100%)",
-                // for IE6789
-                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF', GradientType=0)":null
-            },
-            ".xui-ui-btn":{
-                $order:6,
-                padding: "4px",
-                cursor: 'pointer',
-                display: xui.$inlineBlock,
-                'text-align': 'center',
-                'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
-                'line-height': '1',
-                'border': 'solid 1px #C5C5C5',                
-                zoom:xui.browser.ie?1:null,
-                // for IE6
-                'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
-                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
-            },
-            ".xui-ui-btn:hover, .xui-ui-btn-hover":{
-                $order:7,
-                'border-color': '#B5B5B5'
-            },
             ".xui-ui-input":{
                 background:'#fff'
             },
@@ -19010,41 +18935,36 @@ Class("xui.UI",  "xui.absObj", {
                 'border':'solid 1px transparent'
             },
             ".xui-uitembg-hover":{
-                $order:2,
+                $order:1,
                 'background-color':'#E0E0E0',
-                'border-color':'#DDDDDD'
+                'border-color':'#CDCDCD'
             },
             ".xui-uitembg-active":{
-                $order:3,
-                'background-color':'#DDDDDD',
-                'border-color':'#C5C5C5'
+                $order:2,
+                'background-color':'#CDCDCD',
+                'border-color':'B6B6B6'
             },
             ".xui-uitembg-checked":{
-                $order:4,
-                'background-color':'#DDDDDD',
-                'border-color':'#C5C5C5'
+                $order:3,
+                'background-color':'#CDCDCD',
+                'border-color':'B6B6B6'
             },
 
             ".xui-uicell":{
                 "background-color": "#F9F9FB"
             },
             ".xui-uicell-hover":{
-                 $order:2,
+                 $order:1,
                 "background-color": "#d9e8fb"
             },
-            ".xui-uicell-checked, .xui-uicell-checked .xui-node":{
-                 $order:3,
+            ".xui-uicell-checked":{
+                 $order:2,
                 "background-color":"#ABABAB",
                 color:"#fff"
             },
             ".xui-uicell-alt":{
-                 $order:1,
+                 $order:3,
                 "background-color":"#FDF8D2"
-            },
-            ".xui-hcell":{
-                 $order:1,
-                color:"#333333",
-                "background-color":"#E8EEF7"
             },
             '.xui-special-icon':{
                 color:'#3393D2',
@@ -19056,7 +18976,6 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'baseline'
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
-                $order:1
             },
 //uibar-top
             '.xui-uibar-top':{
@@ -19087,29 +19006,32 @@ Class("xui.UI",  "xui.absObj", {
                 height:'100%'
             },
             '.xui-uibar-top .xui-uibar-tdlt':{
+                $order:1,
                 position:'absolute',
                 width:'12px',
                 left:0,
                 top:0,
-                height:'12px'
+                height:'1.5em'
             },
             '.xui-uibar-top .xui-uibar-tdmt':{
+                $order:1,
                 position:'absolute',
                 top:0,
                 left:0,
                 right:0,
-                height:'12px',
+                height:'1.5em',
                 width: xui.browser.ie&&xui.browser.ver<=7? "expression((this.parentNode.offsetWidth)+'px')": null
             },
             '.xui-uibar-top .xui-uibar-tdrt':{
+                $order:1,
                 position:'absolute',
                 width:'12px',
                 right:0,
                 top:0,
-                height:'12px'
+                height:'1.5em'
             },
             '.xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr':{
-                'background-color':'#C5C5C5'
+                'background-color':'#B6B6B6'
             },
             '.xui-uibar-top-focus .xuifont, .xui-uibar-top-focus .xuicon, .xui-uibar-top-focus .xui-uicaption':{
             },
@@ -19169,9 +19091,9 @@ Class("xui.UI",  "xui.absObj", {
                 height:'100%'
             },
 //uibar-top-s
-            '.xui-uibar-top-s, .xui-uibar-top-s .xui-uibar-t':{
+            '.xui-uibar-top-s, .xui-uibar-bottom-s, .xui-uibar-top-s .xui-uibar-t':{
                 $order:3,
-                height:'6px'
+                height:'5px'
             },
             '.xui-uibar-top-s .xui-uibar-tdl':{
                 $order:3,
@@ -19207,10 +19129,6 @@ Class("xui.UI",  "xui.absObj", {
                 display:'none'
             },
 //uibar-bottom-s
-            '.xui-uibar-bottom-s':{
-                $order:3,
-                'padding':'3px 0'
-            },
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
@@ -19256,12 +19174,17 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
                 'user-select':'text'
             },
-            '.xui-ui-ctrl':{
+            '.xui-ui-ctrl, .xui-ui-reset':{
                 cursor:'default',
                 'font-family':'arial,helvetica,clean,sans-serif',
                 'font-style':'normal',
                 'font-weight':'normal',
-                'vertical-align':'middle'
+                'vertical-align':'middle',
+                 color:'#000',
+                 'font-size':'12px'
+            },
+            ".xui-title-node":{
+                'font-size':'1.1667em'
             },
             '.xui-uiw-shell':{
 //                background:'transparent',
@@ -19307,18 +19230,89 @@ Class("xui.UI",  "xui.absObj", {
                 'background-color':'#FFFFFF'
             },
             '.xui-uicontainer':{
-                'line-height':'2.2em'
             },
             '.xui-uibar':{
                 'background-color':'#E0E0E0'
             },
             '.xui-uibar-hover':{
-                $order:2,
-                'background-color':'#DDDDDD'
+                $order:1,
+                'background-color':'#CDCDCD'
             },
             ".xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active":{
+                $order:2,
+                 "background-color":"#ABABAB"
+            },
+            ".xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked,  .xui-uimenu-hover, .xui-uimenu-active":{
                 $order:3,
-                 "background-color":"#CDCDCD"
+                color:"#FFF"
+            },
+            ".xui-ui-btn::-moz-focus-inner":{
+                $order:3,
+                padding: "0 !important",
+                border: "0 none !important"
+            },
+            ".xui-uigradient":{
+                $order:4,
+                'border': 'solid 1px #B6B6B6', 
+                color: "#333",
+                'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
+                'text-decoration': 'none',
+                'white-space':'nowrap',
+                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
+                'box-shadow':'inset 0px 1px 0px 0px #ffffff',       
+                'background-image_1': "linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #CDCDCD))",
+                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
+            },
+            ".xui-uigradient-hover, .xui-uigradient:hover":{
+                $order:5,
+                'background-image_1': "linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #EEE))",
+                'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #FFF 5%,  #EEE 100%)",
+
+                // for IE6789
+                '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
+            },
+            ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover":{
+                $order:6,
+                'background-image_1': "linear-gradient(top,  #CDCDCD 5%,  #FFF)",
+                'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #CDCDCD), to(1, #FFF))",
+                'background-image_3': "-webkit-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                'background-image_4': "-moz-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                'background-image_5': "-o-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                'background-image_6': "-ms-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
+                // for IE6789
+                '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null,
+                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null
+            },
+            ".xui-ui-btn":{
+                $order:7,
+                padding: "4px",
+                cursor: 'pointer',
+                'border': 'solid 1px #B6B6B6', 
+                display: xui.$inlineBlock,
+                'text-align': 'center',
+                'line-height': '1',
+                zoom:xui.browser.ie?1:null,
+                // for IE6
+                'width_1':(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
+            },
+            ".xui-ui-btn:hover, .xui-ui-btn-hover":{
+                $order:8,
+                'border-color': '#B5B5B5'
             },
             '.xui-uiborder-l':{
                 'border-left-style':'solid',
@@ -19328,7 +19322,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-r':{
                 'border-right-style':'solid',
                 'border-right-width':'1px',
-                'border-right-color':'#C5C5C5'
+                'border-right-color':'#B6B6B6'
             },
             '.xui-uiborder-t':{
                 'border-top-style':'solid',
@@ -19338,7 +19332,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uiborder-b':{
                 'border-bottom-style':'solid',
                 'border-bottom-width':'1px',
-                'border-bottom-color':'#C5C5C5'
+                'border-bottom-color':'#B6B6B6'
             },
             '.xui-uiborder-nob':{
                 $order:1,
@@ -19353,17 +19347,17 @@ Class("xui.UI",  "xui.absObj", {
                 background:'#fff'
             },
             '.xui-uiborder-flat':{
-                border:'solid 1px #C5C5C5'
+                border:'solid 1px #B6B6B6'
             },
             '.xui-uiborder-outset':{
                 $order:8,
                 border:'solid 1px',
-                'border-color':'#F6F6F6 #C5C5C5 #C5C5C5 #F6F6F6'
+                'border-color':'#F6F6F6 #B6B6B6 #B6B6B6 #F6F6F6'
             },
             '.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
                 $order:10,
                 border:'solid 1px',
-                'border-color':'#C5C5C5 #F6F6F6 #F6F6F6 #C5C5C5'
+                'border-color':'#B6B6B6 #F6F6F6 #F6F6F6 #B6B6B6'
             },
             '.xui-uiborder-dark, .xui-uiborder-flat-hover':{
                 'border-color':'#B6B6B6'
@@ -19472,7 +19466,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-radius': '0 !important'
             },
             '.xui-uiborder-noradius-l':{
-                $order:12,
+                $order:15,
                 'border-top-left-radius':'0 !important',
                 '-moz-border-top-left-radius': '0 !important',
                 '-webkit-border-top-left-radius': '0 !important',
@@ -19488,7 +19482,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-bottom-left-radius': '0 !important'
             },
             '.xui-uiborder-noradius-r':{
-                $order:12,
+                $order:15,
                 'border-top-right-radius':'0 !important',
                 '-moz-border-top-right-radius': '0 !important',
                 '-webkit-border-top-right-radius': '0 !important',
@@ -19504,7 +19498,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-bottom-right-radius': '0 !important'
             },
             '.xui-uiborder-noradius-t':{
-                $order:12,
+                $order:15,
                 'border-top-left-radius':'0 !important',
                 '-moz-border-top-left-radius': '0 !important',
                 '-webkit-border-top-left-radius': '0 !important',
@@ -19520,7 +19514,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-khtml-border-top-right-radius': '0 !important'
             },
             '.xui-uiborder-noradius-b':{
-                $order:12,
+                $order:15,
                 'border-bottom-left-radius':'0 !important',
                 '-moz-border-bottom-left-radius': '0 !important',
                 '-webkit-border-bottom-left-radius': '0 !important',
@@ -19681,7 +19675,7 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            '.xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
+            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
                 $order:2,
                 color: '#666666 !important'
             },
@@ -19689,12 +19683,12 @@ Class("xui.UI",  "xui.absObj", {
                  padding: 0,
                  border: 0
              },
-            '.xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node, .xui-uicell-disabled, .xui-uicell-disabled .xui-node':{
+            '.xui-ui-ctrl-disabled, .xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled,  .xui-ui-itemdisabled,  .xui-ui-disabled .xui-node, .xui-ui-itemdisabled .xui-node, .xui-uicell-disabled, .xui-uicell-disabled .xui-node':{
                 $order:2,
                 cursor:'not-allowed',
                 color: '#808080 !important'
             },
-            '.xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled input,.xui-ui-disabled textarea, .xui-ui-itemdisabled input, .xui-ui-itemdisabled textarea, .xui-uicell-disabled':{
+            '.xui-ui-ctrl-disabled, .xui-node-disabled, button:disabled, a:disabled, input:disabled, textarea:disabled,  .xui-ui-disabled input,.xui-ui-disabled textarea, .xui-ui-itemdisabled input, .xui-ui-itemdisabled textarea, .xui-uicell-disabled':{
                 $order:3,
                 'background-color':'#eee !important'
             },
@@ -19998,7 +19992,7 @@ Class("xui.UI",  "xui.absObj", {
                 r7=self.r7 || (self.r7=/([^{}]*)\{([\w]+)\}([^{}]*)/g),
                 first=false,
                 u=xui.UI,
-                t, o , bak, tagN,lkey;
+                t, o , bak, tagN, cls1, lkey;
 
             if(!template)template=profile.template;
             lkey = key?profile.keys[key]:profile.key;
@@ -20019,9 +20013,10 @@ Class("xui.UI",  "xui.absObj", {
                     //className
                     t = u.$CLS + (key?'-'+key.toLowerCase():'');
                     tagN = template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName;
+                    cls1 = (tagN=="button"||tagN=="input"||tagN=="textarea"||tagN=="select"||tagN=="keygen")?'xui-ui-reset':'';
     
                     //default class first
-                    template['class'] =  'xui-node xui-node-'+tagN + (t?(' '+t):'') + 
+                    template['class'] =  'xui-node'+(cls1?(' '+cls1):'')+' xui-node-'+tagN + (t?(' '+t):'') + 
                         //custom class here
                         (bak?(' '+bak):'') + 
                         (template.$fonticon?(' '+template.$fonticon):'') +
@@ -21771,10 +21766,10 @@ Class("xui.UI",  "xui.absObj", {
                 needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
                 rootfz = needfz?node._getEmSize():null,
                 umargin={
-                    top:adjustunit(margin.top,rootfz),
-                    left:adjustunit(margin.left,rootfz),
-                    right:adjustunit(margin.right,rootfz),
-                    bottom:adjustunit(margin.bottom,rootfz)
+                    top:adjustunit(margin.top||0,rootfz),
+                    left:adjustunit(margin.left||0,rootfz),
+                    right:adjustunit(margin.right||0,rootfz),
+                    bottom:adjustunit(margin.bottom||0,rootfz)
                 };
 
             if(isSVG){
@@ -21872,6 +21867,9 @@ Class("xui.UI",  "xui.absObj", {
                                 isWin= me.pid=="!window" || me.pid=="!document",
                                 pprf = isWin?0:xui.UIProfile.getFromDom(pid),
                                 pprop = pprf && pprf.properties,
+                                proot = pprf && pprf.getRoot(),
+                                pstyle = proot && proot.get(0) && proot.get(0).style,
+                                prootfz = pstyle && (useem||css.$isEm(pstyle&&pstyle.width)||css.$isEm(pstyle&&pstyle.height)?proot._getEmSize():null),
                                 conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
                                 conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
                                 conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
@@ -21887,7 +21885,7 @@ Class("xui.UI",  "xui.absObj", {
                                 style=pn.style,
                                 useem = xui.$uem(prop),
                                 nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
-                                adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
+                                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
                                 ofs = isWin ? xui('body').get(0).style : style,
                                 old_of=ofs.overflow,
@@ -21897,6 +21895,7 @@ Class("xui.UI",  "xui.absObj", {
                             // 1. set overflow for size
                             if(style)style.overflow=style.overflowX=style.overflowY="hidden";
                             
+
                             //2. get width / height
                             var width=(style&&css.$px(style.width,nodefz))||node.width()||0,
                                 height=(style&&css.$px(style.height,nodefz))||node.height()||0;
@@ -21909,6 +21908,16 @@ Class("xui.UI",  "xui.absObj", {
                                style.overflowX = old_ofx;
                                style.overflowY = old_ofy;
                            }
+                            conDockSpacing={
+                                width:css.$px(conDockSpacing.width||0,prootfz),
+                                height:css.$px(conDockSpacing.height||0,prootfz)
+                            };
+                            conDockPadding={
+                                left:css.$px(conDockPadding.left||0,prootfz),
+                                top:css.$px(conDockPadding.top||0,prootfz),
+                                right:css.$px(conDockPadding.right||0,prootfz),
+                                bottom:css.$px(conDockPadding.bottom||0,prootfz)
+                            };
 
                             //window resize: check time span, for window resize in firefox
                             //force call when input $dockid
@@ -24076,7 +24085,7 @@ new function(){
         Static:{
             Templates:{
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn xui-uiborder-radius {_className}',
+                className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {_className}',
                 style:'{_style};',
                 tabindex: '{tabindex}',
                 text:'{html}'+xui.UI.$childTag 
@@ -24157,7 +24166,7 @@ new function(){
             DIRYMARKICON:"BACKGROUND",
             Templates:{
                 tagName:'button',
-                className:'xui-ui-unselectable xui-ui-btn xui-uiborder-radius {_className}',
+                className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {_className}',
                 style:'{_style};{_align}',
                 tabindex: '{tabindex}',
                 BACKGROUND:{
@@ -24179,10 +24188,6 @@ new function(){
                     className: 'xuifont xui-special-icon',
                     style: '{_showDrop}',
                     $fonticon:'xui-uicmd-arrowdrop'
-                },
-                CLEAR:{
-                    $order:4,
-                    style:'clear:both;display:none;'
                 }
             },
             Appearances:{
@@ -24534,6 +24539,9 @@ new function(){
                         // alias or domId
                         t=(prf.host && prf.host[t] && prf.host[t].get(0)) || (xui(t).get(0) && t);
                         if(t)prevId=xui.UI._getThemePrevId(t);
+                    }else if(prf.$inDesign){
+                        // the canvas
+                        if(t=prf.parent)prevId=xui.UI._getThemePrevId(t);
                     }
 
                     return  xui.UI._adjustCSS(css, prevId);
@@ -27013,7 +27021,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             FILL:{
                 tagName:'div',
                 style:'{fillBG}',
-                className:'xui-ui-gradientbg',
+                className:'xui-uibar',
                 text:'{html}'+xui.UI.$childTag
             },
             INN:{
@@ -27046,6 +27054,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 'text-align':'center'
             },
             FILL:{
+                border:'none',
                 position:'relative',
                 width:0,
                 height:0,
@@ -27125,7 +27134,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(p.type=="horizontal"){
                 if(size.height){
                     v=adjustunit(size.height, innfz);
-                    inn.css({height:v,'line-height':v});
+                    inn.css({'line-height':v});
                     
                     v=adjustunit(size.height, fillfz);
                     fill.css({height:v,'line-height':v});
@@ -27135,7 +27144,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             }else{
                 if(size.width){
-                    inn.css({width:adjustunit(size.width, innfz)});                   
+                    //inn.css({width:adjustunit(size.width, innfz)});                   
                     fill.css({width:adjustunit(size.width, fillfz)});
                     cap.css({width:adjustunit(size.width, capfz)});
                 }
@@ -27312,13 +27321,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     $order:2,
                     IND1:{
                         tagName:'button',
-                        className:'xui-ui-btn xui-uiborder-radius',
+                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                         style:'{_showD}',
                         tabindex:'{tabindex}'
                     },
                     IND2:{
                         tagName:'button',
-                        className:'xui-ui-btn xui-uiborder-radius',
+                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                         style:'{_showD2}',
                         tabindex:'{tabindex}'
                     }
@@ -29035,7 +29044,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.5em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -30135,6 +30144,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return t(profile, value);
             return value;
         },
+        setPopCtrl:function(drop){
+            if(this.isDestroyed())return ;
+            var profile=this.get(0);
+            profile.$drop=profile.$poplink=drop['xui.UI']?drop.get(0):drop;
+        },
         _cache:function(type, focus){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
@@ -30177,6 +30191,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(profile.renderId)
                 profile.getSubNode('POOL').empty();
             delete profile.$drop;
+            delete profile.$poplink;
             return this;
         },
         setUploadObj:function(input){
@@ -30508,7 +30523,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             CMD:{
                 $order:50,
                 tagName:'button',
-                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l xui-nofocus xui-ui-btn',
+                className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l xui-nofocus xui-ui-btn xui-uibar xui-uigradient',
                 style:"{_cmdDisplay}",
                 SMID:{
                     className:"xuifont {btncls}",
@@ -31324,7 +31339,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:"{rDisplay}",
                         R1:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus {_radius_dropt}',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropt}',
                             R1B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smallup'
@@ -31332,7 +31347,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         R2:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-nofocus {_radius_dropb}',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropb}',
                             R2B:{
                                 className:'xuifont',
                                 $fonticon:'xui-icon-smalldown'
@@ -31345,7 +31360,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.LBTN={
                         $order:1,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_dropl}',
+                        className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropl}',
                         style:"{_btnlDisplay}",
                         MID:{
                             className:'xuifont',
@@ -31373,7 +31388,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     t.RBTN={
                         $order:20,
                         tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-nofocus {_radius_dropr}',
+                        className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropr}',
                         style:"{_btnrDisplay}",
                         MID:{
                             className:'xuifont',
@@ -31382,7 +31397,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     };
                 }
                 if(type=='button'||type=='dropbutton'){
-                    t.BOX.className += ' xui-ui-gradientbg';
+                    t.BOX.className += ' xui-uigradient';
                 }
 
                 if(properties.multiLines){
@@ -32172,7 +32187,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         SET:{
                             tagName:"button",
-                            className:'xui-ui-btn xui-uiborder-radius',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                             tabindex: '{tabindex}',
                             text:"{_set}"
                         },
@@ -33172,7 +33187,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         SET:{
                             tagName:"button",
-                            className:'xui-ui-btn xui-uiborder-radius',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                             tabindex: '{tabindex}',
                             text:"{_set}"
                         }
@@ -33919,7 +33934,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         SET:{
                             tagName:'button',
-                            className:'xui-ui-btn xui-uiborder-radius',
+                            className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                             tabindex: '{tabindex}',
                             text:"{_set}"
                         }
@@ -34486,7 +34501,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-node xui-ui-btn xui-uiborder-radius xui-list-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -35109,7 +35124,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 position:'relative',
                 overflow:'auto',
                 'overflow-x': 'hidden',
-                zoom:xui.browser.ie6?1:null
+                zoom:xui.browser.ie6?1:null,
+                padding:'.5em'
             },
             ITEM:{
                 display:xui.$inlineBlock,
@@ -35340,7 +35356,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 'overflow-x': 'hidden',
                 position:'relative',
                 'line-height':'1.25em',
-                zoom:xui.browser.ie6?1:null
+                zoom:xui.browser.ie6?1:null,
+                padding:'.5em'
             },
             ITEM:{
                 padding:0,
@@ -35356,8 +35373,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 visibility:'hidden'
             },
             IBWRAP:{
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.browser.ie678?0:null,
+                'line-height':xui.browser.ie678?0:null
             },
             FLAG:{
                 top:'-.5em',
@@ -36133,20 +36150,20 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             FIRST:{
                 $order:1,
                 tagName:"a",
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             PREM:{
                 $order:2,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             PREV:{
                 $order:3,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}',
@@ -36154,14 +36171,14 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             CUR:{
                 $order:4,
-                className:'xui-ui-btn xui-uiborder-radius xui-ui-btn-checked',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-ui-btn-checked xui-ui-btn xui-uibar xui-uigradient-checked',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             NEXT:{
                 $order:5,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}',
@@ -36169,14 +36186,14 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             NEXTM:{
                 $order:6,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
             },
             LAST:{
                 $order:7,
-                className:'xui-ui-btn xui-uiborder-radius',
+                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -36377,7 +36394,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             var _id=profile.keys.POPI+':'+profile.serialId+':';
             while(n<l){
                 //margin-top for ie6
-                a.push('<a style="margin-top:.25em;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn xui-uiborder-radius" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
+                a.push('<a style="margin-top:.25em;" id="'+_id+n+'" class="xui-node xui-node-span xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius" href="'+prop.uriTpl.replace('*',n)+'">'+prop.textTpl.replace('*',n)+'</a>')
                 n=n+m;
             }
             pop.width('auto');
@@ -37760,7 +37777,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';
         this.setTemplate(t);
-        t.$submap.items.ITEM.className = 'xui-ui-btn xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
+        t.$submap.items.ITEM.className = 'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
@@ -38345,7 +38362,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             if(item.flagText)item._flagStyle='display:block';
 
             item._itemClass = type == "text" ? "xui-node-a" 
-                : ("xui-ui-btn " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 
+                : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 
                     : i===l-1 ? "xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l"
                     :"xui-uiborder-noradius") 
                 : "xui-uiborder-radius"));
@@ -38677,7 +38694,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-ui-btn xui-uiborder-radius xui-list-cmd {itemClass}',
+                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -38739,9 +38756,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 zoom:xui.browser.ie?1:null,
                 height:0,
-                'font-size':'1px',
+                'font-size':xui.browser.ie68?'1px':null,
                 //1px for ie8
-                'line-height':'1px',
+                'line-height':xui.browser.ie68?'1px':null,
                 position:'relative',
                 'margin-left':'1.75em'
             },
@@ -38913,9 +38930,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         nodes.merge( self.getSubNodeByItemId('BAR', o.id) );
                     });
                     if(v)
-                       nodes.addClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
+                       nodes.addClass('xui-uigradient xui-uibar ' + self.getClass('BAR','-group'));
                     else
-                       nodes.removeClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
+                       nodes.removeClass('xui-uigradient xui-uibar ' + self.getClass('BAR','-group'));
                 }
             },
             selMode:{
@@ -39190,7 +39207,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item._tabindex = p.tabindex;
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
-                item.cls_group = "xui-ui-gradientbg "  + profile.getClass('BAR','-group');
+                item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');
                 item.mark2Display = 'display:none';
             }
             xui.UI.List._prepareCmds(profile, item);
@@ -39216,7 +39233,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     var onend=function(){
                         subNs.css({display:'none',height:0});
                         markNode.tagClass('-checked', false);
-                        barNode.tagClass('-expand',false).tagClass('-fold');
+                        barNode.tagClass('-checked',false);
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
                         if(prop.dynDestory || item.dynDestory){
@@ -39318,7 +39335,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                         if(!empty){
                             markNode.tagClass('-checked');
-                            barNode.tagClass('-fold',false).tagClass('-expand');
+                            barNode.tagClass('-checked');
                             icon.tagClass('-fold',false).tagClass('-expand');
                         }
                         
@@ -39408,9 +39425,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             SUB:{
                 zoom:xui.browser.ie?1:null,
                 height:0,
-                'font-size':'1px',
+                'font-size':xui.browser.ie68?'1px':null,
                 //1px for ie8
-                'line-height':'1px',
+                'line-height':xui.browser.ie68?'1px':null,
                 position:'relative',
                 overflow:'hidden'
             },
@@ -42824,7 +42841,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //get array
             ids = xui.isArr(ids)?ids:(ids+"").split(p.valueSeparator);
-            xui.arr.each(ids,function(o,i){ids[i]=''+o});
+            xui.arr.each(ids,function(o,i){
+                if(xui.isNumb(o))
+                    o=p.rows[o] && p.rows[o].id;
+                ids[i]=''+o;
+            });
             xui.arr.each(ids,function(id){
                 //get item id
                 if(id=profile.rowMap2[id]){
@@ -42875,7 +42896,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }else{
                     var f=function(rows){
                         var index=xui.arr.subIndexOf(rows, "id", id);
-                        if(index!==-1)xui.arr.removeFrom(rows,index);
+                        if(index!==-1){
+                            count++;
+                            xui.arr.removeFrom(rows,index);
+                        }
                         xui.arr.each(rows,function(row){
                             if(row.sub)f(row.sub);
                         });
@@ -43560,6 +43584,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         delete editor.get(0).$row;
                         delete editor.get(0)._smartnav;
+                        delete editor.get(0).$editMode;
                         //don't use disply:none, firfox has many bugs about Caret or renderer
                         editor.setVisibility('hidden');
                     }
@@ -44387,7 +44412,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         CELLA:{
                             _NativeElement:true,
                             tagName:'button',
-                            className:'xui-node xui-showfocus xui-wrapper xui-ui-btn xui-uiborder-radius xui-treegrid-tgbtn {cellClass}',
+                            className:'xui-node xui-showfocus xui-wrapper xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             text:"{caption}"
@@ -44420,7 +44445,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             PROGRESS:{
                                 $order:2,
                                 tagName:'div',
-                                className:'xui-v-wrapper xui-ui-gradientbg',
+                                className:'xui-v-wrapper xui-uibar',
                                 style:'width:{progress};',
                                 CELLCAPTION:{
                                     className:'xui-v-node',
@@ -44463,7 +44488,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-node xui-ui-btn xui-uiborder-radius xui-uiborder-radius xui-list-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-uiborder-radius xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -44749,6 +44774,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 '-moz-box-flex':0
             },
             PROGRESS:{
+                border:'none',
                 height:'100%',
                 'line-height':'1.83333em',
                 overflow:'visible',
@@ -44782,7 +44808,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _objectProp:{rowOptions:1,colOptions:1},
         Behaviors:{
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], FHCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
+            //don't add cell in HoverEffected, for 'hover' editMode
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], FHCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
             ClickEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], CMD:'CMD'},
             DroppableKeys:['SCROLL22','CELLS1','CELLS2','FCELL'],
             DraggableKeys:['FCELL'],
@@ -44811,7 +44838,27 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return false;
                 }
             },
-            //key navigator
+
+            TRLOCKED:{
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
+                }
+            },
+            TRTAIL:{
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
+                }
+            },
+            TDBODY21:{
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
+                }
+            },
+            TRHEADER:{
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
+                }
+            },
             SCROLL22:{
                 onScroll:function(profile, e, src){
                     var node=xui.use(src).get(0),
@@ -45628,16 +45675,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             CELL:{
                 afterMouseover:function(profile, e, src){
-                    var box=profile.box, p=profile.properties, i=xui.use(src).id();
+                    var box=profile.box, p=profile.properties, i=xui.use(src).id(),editor;
                     if(p.disableHoverEffect)return;
                     i=i.split(":")[2];
                     if(!i)return;
                     i=profile.cellMap[i];
-                    if(box.getCellOption(profile, i, "disabled"))return;
-                    if(p.activeMode=='cell')
-                        xui.use(src).tagClass('-hover');
+                    if(!i)return;
 
-                   if(!profile._inHoverEdit && box.getCellOption(profile, i, "editable")&&box.getCellOption(profile, i, "editMode")=="hover"){
+                    if(box.getCellOption(profile, i, "disabled"))return;
+
+                   if(box.getCellOption(profile, i, "editable")&&box.getCellOption(profile, i, "editMode")=="hover"){
                         xui.resetRun(profile.key+":"+profile.$xid+":hovereditor",function(){
                                 if(profile.destroyed)return;
                                 if(profile&&profile.$curEditor){
@@ -45646,14 +45693,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 }
                                 profile.box._editCell(profile, profile.getSubId(src),true);
                         });
+                        return false;
+                    }else{
+                        profile.box.$cancelHoverEditor(profile);
                     }
-                },
-                afterMouseout:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return;
-                    if(p.disableHoverEffect)return;
-                    if(p.activeMode=='cell')
-                        xui.use(src).tagClass('-hover',false);
                 }
             },
             CELLA:{
@@ -48135,24 +48178,23 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'popbox':
                         case 'cmd':
                         case 'cmdbox':
-                        case 'droplist':
                             editor.setType(type=='cmd'?'label':type);
                             if(profile.box.getCellOption(profile, cell,'disabled')){
                             }else{
-                                editor.beforeComboPop(function(prop, pos, e, src){
-                                    var cell=prop.$cell,event=profile.box.getCellOption(profile, cell, 'event');
+                                editor.beforeComboPop(function(editorprf, pos, e, src){
+                                    var cell=editorprf.$cell,event=profile.box.getCellOption(profile, cell, 'event');
                                     if(typeof event == 'function')
-                                        return event.call(profile._host||profile, profile, cell, prop, pos,e,src);
+                                        return event.call(profile._host||profile, profile, cell, editorprf, pos,e,src);
                                     else
-                                        return profile.boxing().beforeComboPop(profile, cell, prop, pos, e, src);
+                                        return profile.boxing().beforeComboPop(profile, cell, editorprf, pos, e, src);
                                 });
                                 if(profile.beforePopShow)
-                                    editor.beforePopShow(function(prop, popCtl){
-                                        return profile.boxing().beforePopShow(profile, prop.$cell, prop, popCtl);
+                                    editor.beforePopShow(function(editorprf, popCtl){
+                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl);
                                     });
                                 if(profile.afterPopShow)
-                                    editor.afterPopShow(function(prop, popCtl){
-                                        return profile.boxing().afterPopShow(profile, prop.$cell, prop, popCt);
+                                    editor.afterPopShow(function(editorprf, popCtl){
+                                        return profile.boxing().afterPopShow(profile, editorprf.$cell, editorprf, popCt);
                                     });
                                 if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='cmd' || type=='dropbutton'){
                                     if(profile.onEditorClick)
@@ -48167,8 +48209,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         break;
                     }
                     if(profile.onCommand)
-                        editor.onCommand(function(prop, node){
-                            return profile.boxing().onCommand(profile, prop.$cell, prop, node);
+                        editor.onCommand(function(editorprf, node){
+                            return profile.boxing().onCommand(profile, editorprf.$cell, editorprf, node);
                         });
 
                     if(inline){
@@ -48309,7 +48351,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         profile.$curEditor=null;
                         profile.$cellInEditor=null;
-                        profile._inHoverEdit=null;
                         if(profile.onEndEdit)
                             profile.boxing().onEndEdit(profile, cell, editor, 'cell');
 
@@ -48405,13 +48446,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }else{
                             //**toggleNode
                             editor.setWidth(size.width  - (toggleNode?absPos2.left:0)  +3).setHeight(size.height+2).reLayout(true);
-                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0) -1)+'px',(absPos.top-1)+'px');
+                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0) -2)+'px',(absPos.top-2)+'px');
                         }
 
                         var expand,
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
-                        issharp = editMode=="sharp" && (editorAutoPop || inputReadonly || (type=='listbox'||type=='cmdbox'||type=='cmd'||type=='file'));
-
+                        issharp = editMode=="sharp"  && (editorAutoPop || inputReadonly || (type=='popbox'||type=='cmdbox'||type=='listbox'||type=='combobox'||type=='helpinput'||type=='getter'||type=='date'||type=='time'||type=='datetime'||type=='color'||type=='cmd'||type=='file'||type=='helpinput'||type=='getter'));
                         if( xui.isFun(editor.expand) &&
                             editorAutoPop!==false &&
                             (
@@ -48424,6 +48464,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             expand=1;
                             editor.expand();
                          }
+                        editor.get(0).$editMode=editMode;
+
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");
                        //activate editor
@@ -48435,19 +48477,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 if(target.get(0)&&target.get(0).box){
                                     if(expand && editor.getPopWnd)
                                         target = editor.getPopWnd();
-                                    xui.tryF(target&&target.activate,[],target);
-                                    target.get(0)._stopmouseupcaret=1;
+                                    if(target){
+                                        xui.tryF(target&&target.activate,[],target);
+                                        target.get(0)._stopmouseupcaret=1;
+                                    }
                                 }
                             });
                         }else{
                             var bfun=function(){
                                 if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
-                                profile._inHoverEdit=1;
                             },cfun=function(){
                                 if(editor)editor.getRoot().onMouseout(function(){if(editor) xui.tryF(editor.undo,[],editor);},"tg-hover-edit");
-                                profile._inHoverEdit=0;
                             },dfun=function(){
-                                if(editor) xui.tryF(editor.undo,[],editor);
+                               // if(editor) xui.tryF(editor.undo,[],editor);
                             };
                             editor.onFocus(bfun).beforePopShow(function(){
                                 bfun();
@@ -49081,6 +49123,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return row;
             }
         },
+        $cancelHoverEditor:function(profile){
+            if(xui.get(profile,['$curEditor','_nodes',0,'$editMode'])=='hover'){
+                var editor=profile.$curEditor;
+                xui.tryF(editor.undo,[],editor);
+            }
+        },
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
@@ -49212,6 +49260,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var tt=profile._$rs_args,fun=function(){
                         if(profile.onShow)profile.boxing().onShow(profile);                            
                         delete profile.inShowing;
+                        delete profile.$inThread;
                         xui.tryF(callback);
                     };
                     if(p.status=='min')
@@ -49228,7 +49277,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 profile.inShowing=1;
                 if(t=p.fromRegion)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
+                    profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
                         left:[t.left,left],
                         top:[t.top,top],
                         width:[t.width, profile.$px(p.width)],
@@ -49259,9 +49308,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     
                     var t=pro.fromRegion, f1=function(){
                         delete profile.inHiding;
+                        delete profile.$inThread;
                     };
                     if(t)
-                        xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
+                        profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
                             left:[profile.$px(pro.left),t.left],
                             top:[profile.$px(pro.top),t.top],
                             width:[profile.$px(pro.width),t.width],
@@ -49283,10 +49333,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var pro=profile.properties, t=pro.fromRegion, fun=function(){
                     profile.boxing().destroy(ignoreEffects);
                     delete profile.inClosing;
+                    delete profile.$inThread;
                 };
 
                 if(t)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
+                    profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
                 else
                     fun();
             });
@@ -49482,6 +49533,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             'TBART, BBART':{
                 'border-spacing':0,
                 'border-collapse':'separate'
+            },
+            MAINI:{
+                'padding-top':'.16667em'
             },
             PANEL:{
                 position:'relative',
@@ -49940,7 +49994,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ins=profile.boxing(),
                 t=profile.properties,
                 a=xui.Dom._getEffects(t.showEffects,1);
-
+            if(profile.$inThread)profile.$inThread.abort();
             if(!status)status=t.status;
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
                 return;
@@ -49977,7 +50031,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
             
-            if(a&&xui.browser.ie&&xui.browser.ver<=8)
+            if(a&&xui.browser.ie678)
                 xui.filter(a.params,function(o,i){
                     return !!xui.Dom._cssfake[i];
                 });
@@ -49991,6 +50045,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t=profile.properties,
                 a=xui.Dom._getEffects(t.showEffects,1);
             if(!status)status=t.status;
+            if(profile.$inThread)profile.$inThread.abort();
             
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
                 return;
@@ -50020,12 +50075,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             ins.setDock('cover',true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
-
-                if(a&&xui.browser.ie&&xui.browser.ver<=8)
-                    xui.filter(a.params,function(o,i){
-                        return !!xui.Dom._cssfake[i];
-                    });
-                o.show(null,null,effectcallback,null,ignoreEffects);
+            if(a&&xui.browser.ie678)
+                xui.filter(a.params,function(o,i){
+                    return !!xui.Dom._cssfake[i];
+                });
+            o.show(null,null,effectcallback,null,ignoreEffects);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),
@@ -50299,7 +50353,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"}),
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"}),
 
                 btn = dialog.$btn = new xui.UI.SButton({
                     position:'relative',
@@ -50372,7 +50426,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"}),
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"}),
                 btn = dialog.$btn1 = new xui.UI.SButton({
                     tabindex:1,
                     position:'relative'
@@ -50442,7 +50496,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"})
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"})
             .append( dialog.$btn = new xui.UI.SButton({
                 caption: "&nbsp;&nbsp;"+(btnCap || '$inline.ok')+"&nbsp;&nbsp;",
                 tabindex:1,
@@ -50489,11 +50543,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     minBtn:false,
                     maxBtn:false,
                     pinBtn:false,
-                    resizer:false,
-                    left:200,
-                    top:200,
+                    left:left||200,
+                    top:top||200,
                     width:'25em',
-                    height:'11em'
+                    height:'11em',
+                    conDockPadding:{left:'.5em',right:'.5em',top:0,bottom:0}
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
@@ -50501,7 +50555,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         else
                             delete dialog._$_clickYes;
 
-                        dialog._$inp.setValue('',false,'prompt');
+                        dialog._$input.setValue('',false,'prompt');
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
@@ -50509,24 +50563,22 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                 });
-                var con = dialog._$con = new xui.UI.Div({
-                    top:4,
-                    left:10,
-                    width:'23em',
-                    height:'1.2em'
+                var con = dialog._$caption = new xui.UI.Div({
+                    height:'1.5em',
+                    dock:'top'
                 }),
                 cmd = new xui.UI.Div({
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"})
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"})
                 .append(dialog.$btn1 = new xui.UI.SButton({
                     position:'relative',
                     tabindex:1
                 },
                 {
                     onClick:function(){
-                        if(false!==xui.tryF(dialog._$onYes,[dialog._$inp.getUIValue()])){
+                        if(false!==xui.tryF(dialog._$onYes,[dialog._$input.getUIValue()])){
                             dialog._$_clickYes=1;
                             dialog.close();
                         }
@@ -50542,11 +50594,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         dialog.close();
                     }
                 },null,null,{KEY:'margin:0 .5em'}));
-                var inp=dialog._$inp=new xui.UI.Input({
-                    left:10,
-                    top:22,
-                    width:'23em',
-                    height:'3em',
+                var inp=dialog._$input=new xui.UI.Input({
+                    dock:'fill',
                     multiLines:true
                 })
                 dialog.append(con).append(cmd).append(inp).render();
@@ -50554,8 +50603,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     me.dialog = dialog;
             }
             dialog.setCaption(title||'Prompt');
-            dialog._$con.setHtml(caption||"");
-            dialog._$inp.setValue(content||"",true,'prompt');
+            dialog._$caption.setHtml(caption||"");
+            dialog._$input.setValue(content||"",true,'prompt');
             dialog._$onYes=onYes;
             dialog._$onNo=onNo;
             delete dialog._$_clickYes;
@@ -50567,7 +50616,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             dialog.show(parent, true, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
-                dialog._$inp.activate();
+                dialog._$input.activate();
             });
             return dialog;
         },
@@ -50609,6 +50658,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         isize.height=t;
                 }
             }
+            if(height)
+                isize.height -= (parseFloat(v6.css('paddingTop'))||0) + (parseFloat(v6.css('paddingBottom'))||0);
 
             if(width)
                 isize.width=size.width

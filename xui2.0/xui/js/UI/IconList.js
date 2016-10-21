@@ -56,7 +56,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 'overflow-x': 'hidden',
                 position:'relative',
                 'line-height':'1.25em',
-                zoom:xui.browser.ie6?1:null
+                zoom:xui.browser.ie6?1:null,
+                padding:'.5em'
             },
             ITEM:{
                 padding:0,
@@ -72,8 +73,8 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 visibility:'hidden'
             },
             IBWRAP:{
-                'font-size':0,
-                'line-height':0
+                'font-size':xui.browser.ie678?0:null,
+                'line-height':xui.browser.ie678?0:null
             },
             FLAG:{
                 top:'-.5em',

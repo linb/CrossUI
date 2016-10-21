@@ -1,16 +1,15 @@
 /*font*/
-.xui-node{
+.xui-ui-ctrl, .xui-ui-reset{
+    color:#444; 
     font-size: 12px;
     font-family:arial, helvetica, clean, sans-serif; 
     font-weight:normal; 
-    color:#444; 
 }
 .xui-title-node{
 		font-size:1.1667em;
 }
 .xuifont, .xuicon{
   font-size:1.33333em;
-	color: #444;
 }
 .xuifont-hover, .xuicon-hover{
 	color: #686868;
@@ -20,6 +19,9 @@
 }
 .xuifont-checked, .xuicon-checked{
 	color: #3393D2; 
+}
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+		color:#fff;
 }
 
 /*background*/
@@ -32,16 +34,8 @@
 .xui-uibar-hover{
     background-color:#F9EEE2;
 }
-.xui-uibar-active, .xui-uibar-checked, 
-.xui-uimenu-hover, .xui-uimenu-active{
+.xui-uibar-active,.xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
     background-color:#D0A27A;
-}
-.xui-node-highlight, 
-.xui-uibar-active, .xui-uibar-active .xui-node,
-.xui-uibar-checked,  .xui-uibar-checked .xui-node, 
-.xui-uimenu-hover,  .xui-uimenu-hover .xui-node,
-.xui-uimenu-active, .xui-uimenu-active .xui-node{
-	color:#ffffff;
 }
 
 /*border*/
@@ -77,24 +71,26 @@
 }
 
 /*item*/
-.xui-uitembg-hover, .xui-uitembg-active, .xui-uitembg-checked{
-    border-color:#D0A27A;
-}
 .xui-uitembg-hover{
+  border-color:#D0A27A;
   background-color: #F1D0B0;
 }
 .xui-uitembg-active{
+  border-color:#D0A27A;
   background-color:#D3AC8E;
 }
 .xui-uitembg-checked{
+  border-color:#D0A27A;
   background-color: #D0A27A;
 }
-.xui-uitembg-checked, .xui-uitembg-checked .xui-node{
+.xui-uitembg-checked{
 	color:#ffffff;
 }
 
 /*gradient*/
-.xui-ui-gradientbg, .xui-ui-btn{
+.xui-uigradient{
+    color:#444; 
+    background:none;
     border-color:#D0A27A;
     -moz-box-shadow:inset 0 1px 0 0 #F9EEE2;
     -webkit-box-shadow:inset 0 1px 0 0 #F9EEE2;
@@ -106,7 +102,7 @@
     background-image: -moz-linear-gradient(top,  #F9EEE2 5%,  #EDDAC8 100%);
     background-image: -o-linear-gradient(top,  #F9EEE2 5%,  #EDDAC8 100%);  
 }
-.xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
+.xui-uigradient-hover, .xui-uigradient:hover{
     border-color: #d3ac8e;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEDC', endColorstr='#F9EEE2');
     background-image: linear-gradient(top,  #FFEEDC 5%,  #F9EEE2 100%);
@@ -115,9 +111,9 @@
     background-image: -moz-linear-gradient(top,  #FFEEDC 5%,  #F9EEE2 100%);
     background-image: -o-linear-gradient(top,  #FFEEDC 5%,  #F9EEE2 100%);  
 }
-.xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
-.xui-ui-btn-active, .xui-ui-btn-checked,  
-.xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
+.xui-uigradient-active, .xui-uigradient-checked, 
+.xui-uigradient:active, 
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#C2A181', endColorstr='#F9EEE2');
     background-image: linear-gradient(top,  #C2A181 5%,  #F9EEE2 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #C2A181), to(1, #F9EEE2));
@@ -127,43 +123,13 @@
 }
 
 /*uicontainer*/
-.xui-uibar-top .xui-uibar-tdb{
-  display:block;
-}
-.xui-uibar-top .xui-uibar-tdlt{
-  height:30px;
-}
-.xui-uibar-top .xui-uibar-tdmt{
-  height:30px;
-}
-.xui-uibar-top .xui-uibar-tdrt{
-  height:30px;
-}
 .xui-uibar-focus, 
 .xui-uibar-top-focus .xui-uibar-tdl,
 .xui-uibar-top-focus .xui-uibar-tdm,
 .xui-uibar-top-focus .xui-uibar-tdr{
   background-color: #F1D0B0;
 }
-.xui-uibar-top-s, .xui-uibar-bottom-s{
-    padding:3px 0;
-}
 
-/*xui.UI.Tabs*/
-/*.xui-tabs-items{padding:0 0 4px 0;}*/
-.xui-tabs-item{
-    background-color: #FFDFBF;
-}
-.xui-tabs-item-hover{
-  background-color:#F1D0B0;
-}
-.xui-tabs-item-active{
-  background-color:#D3AC8E;
-}
-.xui-tabs-item-checked{
-  background-color: #D0A27A;
-}
- 
 /*xui.UI.TreeGrid*/
 .xui-uicell,
 .xui-treegrid-cells1, .xui-treegrid-cells2{
@@ -172,18 +138,6 @@
 .xui-uicell-alt,
 .xui-treegrid-cells1-alt, .xui-treegrid-cells2-alt{
     background-color: #ffeedc;
-}
-.xui-hcell,
-.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell,
-.xui-treegrid-header1, .xui-treegrid-header2{
-    background-color: #F9E5CF;
-}
-.xui-hcell,
-.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
-    border-color: #fff5fd  #e7c6a6 #e7c6a6 #fff5fd;
-}
-.xui-treegrid-fhcell-hover, .xui-treegrid-hcell-hover, .xui-treegrid-hscell-hover{
-    background-color: #F0DDC6;
 }
 
 .xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
@@ -197,34 +151,19 @@
 .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
     background-color: #FFE97F;
 }
-.xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella, .xui-treegrid-cell-checked .xui-treegrid-cellcaption,
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-treegrid-cella, .xui-treegrid-cells1-checked .xui-treegrid-cellcaption,
-.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-treegrid-cella, .xui-treegrid-cells2-checked .xui-treegrid-cellcaption{
+.xui-uicell-checked,
+.xui-treegrid-cell-checked,
+.xui-treegrid-cells1-checked,
+.xui-treegrid-cells2-checked{
     background-color: #C2A181;
     color:#fff;
 }
 .xui-uicell-hover,
-.xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-treegrid-cella, .xui-treegrid-cell-hover .xui-treegrid-cellcaption
+.xui-treegrid-cell-hover{
     background-color: #FFF1A0 !important;
 }
 
-/*disable and readonly*/
-.xui-node-readonly, 
-input[readonly], textarea[readonly], input:read-only, textarea:read-only,
-.xui-ui-readonly, .xui-ui-readonly .xui-node,
-.xui-ui-itemreadonly, .xui-ui-itemreadonly .xui-node{
-    color: #66666 !important;
-}
-.xui-node-disabled, 
-button:disabled, a:disabled, input:disabled, textarea:disabled, 
-.xui-ui-disabled, .xui-ui-disabled .xui-node,
-.xui-ui-itemdisabled,  .xui-ui-itemdisabled .xui-node,
-.xui-uicell-disabled, .xui-uicell-disabled .xui-node{
-  color: #808080 !important;
-}
 /*
-.xui-ui-invalid, .xui-ui-invalid .xui-node{}
 .xui-ui-input{}
 .xui-ui-shadow{}
 .xui-special-icon{}

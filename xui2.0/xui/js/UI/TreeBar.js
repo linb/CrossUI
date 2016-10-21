@@ -320,7 +320,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
-                        className:'xui-ui-btn xui-uiborder-radius xui-list-cmd {itemClass}',
+                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         text:"{caption}"
                     }
@@ -382,9 +382,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 overflow:'hidden',
                 zoom:xui.browser.ie?1:null,
                 height:0,
-                'font-size':'1px',
+                'font-size':xui.browser.ie68?'1px':null,
                 //1px for ie8
-                'line-height':'1px',
+                'line-height':xui.browser.ie68?'1px':null,
                 position:'relative',
                 'margin-left':'1.75em'
             },
@@ -556,9 +556,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         nodes.merge( self.getSubNodeByItemId('BAR', o.id) );
                     });
                     if(v)
-                       nodes.addClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
+                       nodes.addClass('xui-uigradient xui-uibar ' + self.getClass('BAR','-group'));
                     else
-                       nodes.removeClass('xui-ui-gradientbg ' + self.getClass('BAR','-group'));
+                       nodes.removeClass('xui-uigradient xui-uibar ' + self.getClass('BAR','-group'));
                 }
             },
             selMode:{
@@ -833,7 +833,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item._tabindex = p.tabindex;
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
-                item.cls_group = "xui-ui-gradientbg "  + profile.getClass('BAR','-group');
+                item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');
                 item.mark2Display = 'display:none';
             }
             xui.UI.List._prepareCmds(profile, item);
@@ -859,7 +859,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     var onend=function(){
                         subNs.css({display:'none',height:0});
                         markNode.tagClass('-checked', false);
-                        barNode.tagClass('-expand',false).tagClass('-fold');
+                        barNode.tagClass('-checked',false);
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
                         if(prop.dynDestory || item.dynDestory){
@@ -961,7 +961,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                         if(!empty){
                             markNode.tagClass('-checked');
-                            barNode.tagClass('-fold',false).tagClass('-expand');
+                            barNode.tagClass('-checked');
                             icon.tagClass('-fold',false).tagClass('-expand');
                         }
                         

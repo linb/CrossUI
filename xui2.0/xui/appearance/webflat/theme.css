@@ -1,17 +1,15 @@
 /*Font Setting*/
-.xui-node{
-    font-family:'PT Sans', Tahoma;
+.xui-ui-ctrl, .xui-ui-reset{
+    color:#666;
     font-size:16px;
+    font-family:'PT Sans', Tahoma;
     font-weight:normal;
-    color:#666666;
 }
  .xui-title-node{
     font-size:1.1667em;
 }
- .xuifont,
- .xuicon{
+ .xuifont, .xuicon{
     font-size:1.33333em;
-    color:#666666;
 }
  .xuifont-hover, .xuicon-hover{
     color:#888;
@@ -22,7 +20,9 @@
  .xuifont-checked, .xuicon-checked{
     color:#777;
 }
-
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+    color:#fff;
+}
 /*Background*/
 .xui-uibase{
     background-color:#FFFFFF;
@@ -33,54 +33,19 @@
  .xui-uibar-hover{
     background-color:#D4D9F1;
 }
- .xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active{
+.xui-uibar-active,.xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
     background-color:#3498DB;
 }
  .xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr{
     background-color:#3498DB;
 }
-
- .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only,
- .xui-ui-readonly,
- .xui-ui-readonly .xui-node,
- .xui-ui-itemreadonly,
- .xui-ui-itemreadonly .xui-node{
-    color:  #777777 !important;
-}
- .xui-node-disabled,button:disabled, a:disabled, input:disabled, textarea:disabled,
- .xui-ui-disabled,
- .xui-ui-disabled .xui-node,
- .xui-ui-itemdisabled,
- .xui-ui-itemdisabled .xui-node,
- .xui-uicell-disabled,
- .xui-uicell-disabled .xui-node{
-    color: #808080 !important;
-}
- .xui-node-highlight{
-    color: #FFFFFF;
-}
- .xui-uibar-active,
- .xui-uibar-active .xui-node,
- .xui-uibar-checked,
- .xui-uibar-checked .xui-node,
- .xui-uimenu-hover,
- .xui-uimenu-hover .xui-node,
- .xui-uimenu-active,
- .xui-uimenu-active .xui-node{
-    color: #FFFFFF;
-}
- .xui-uitembg-checked,
- .xui-uitembg-checked .xui-node{
+ .xui-uitembg-checked{
     color: #FFFFFF;
 }
  .xui-uicell-checked,
- .xui-uicell-checked .xui-node,
  .xui-treegrid-cell-checked,
- .xui-treegrid-cell-checked .xui-node,
  .xui-treegrid-cells1-checked,
- .xui-treegrid-cells1-checked .xui-node,
- .xui-treegrid-cells2-checked,
- .xui-treegrid-cells2-checked .xui-node{
+ .xui-treegrid-cells2-checked{
     color: #FFFFFF;
 }
 
@@ -204,7 +169,9 @@
     border-color: transparent;
 }
 /*gradient*/
-.xui-ui-gradientbg, .xui-ui-btn{
+.xui-uigradient{
+    color:#666; 
+    background:none;
     border-color:#B0CEE3;
     background: #3498db;
     color:#FFFFFF;
@@ -214,16 +181,16 @@
     box-shadow: none;
     filter: none;
 }
-.xui-ui-gradientbg-hover, .xui-ui-btn:hover, .xui-ui-btn-hover{
+.xui-uigradient-hover, .xui-uigradient:hover{
     border-color:#B0CEE3;
     background: #268FD5;
 }
-.xui-ui-gradientbg-expand, .xui-ui-gradientbg-active, .xui-ui-gradientbg-checked,
-.xui-ui-btn-active, .xui-ui-btn-checked,  
-.xui-ui-btn:active, .xui-ui-btn-active:hover,  .xui-ui-btn-checked:hover{
+.xui-uigradient-active, .xui-uigradient-checked, 
+.xui-uigradient:active, 
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover{
     background: #27ae60;
 }
-.xui-ui-gradientbg .xui-node, .xui-ui-btn .xui-node{
+.xui-uigradient{
     color:#FFFFFF;
 }
 .xui-ui-sbtn{
@@ -251,13 +218,13 @@
  .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
     background-color: #FFE97F;
 }
-.xui-uicell-checked, .xui-uicell-checked .xui-node,
-.xui-treegrid-cell-checked, .xui-treegrid-cell-checked .xui-treegrid-cella, .xui-treegrid-cell-checked .xui-treegrid-cellcaption,
-.xui-treegrid-cells1-checked, .xui-treegrid-cells1-checked .xui-treegrid-cella, .xui-treegrid-cells1-checked .xui-treegrid-cellcaption,
-.xui-treegrid-cells2-checked, .xui-treegrid-cells2-checked .xui-treegrid-cella, .xui-treegrid-cells2-checked .xui-treegrid-cellcaption{
+.xui-uicell-checked,
+.xui-treegrid-cell-checked,
+.xui-treegrid-cells1-checked,
+.xui-treegrid-cells2-checked{
     background-color: #27AE60;
 }
- .xui-uicell-hover, .xui-treegrid-cell-hover, .xui-treegrid-cell-hover .xui-treegrid-cella, .xui-treegrid-cell-hover .xui-treegrid-cellcaption
+ .xui-uicell-hover, .xui-treegrid-cell-hover{
     background-color:#D9E8FB;
 }
 

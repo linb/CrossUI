@@ -3,7 +3,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';
         this.setTemplate(t);
-        t.$submap.items.ITEM.className = 'xui-ui-btn xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
+        t.$submap.items.ITEM.className = 'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{

@@ -2623,7 +2623,7 @@ Class('xui.Thread',null,{
         },
         links:function(thread){
             var p=this.profile, onEnd=p.onEnd, id=p.id;
-            p.onEnd=function(){xui.tryF(onEnd,[id]); thread.start()};
+            p.onEnd=function(tid,flag){xui.tryF(onEnd,[tid,flag]); thread.start()};
             return this;
         },
         insert:function(arr, index){

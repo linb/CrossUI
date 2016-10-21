@@ -346,17 +346,18 @@ Class("xui.Coder", null,{
                         //protect number
                         [reg.NUMBER, '$0'],
                         //protect "//" and "/*" comments , that does not start with new line.
-                        [/(\/\/)|(\/\*)|(\*\/)/.source,'$0'],
+                        [/(\/\/)|(\/\*)|(\*\/)/.source,'$0']
+                    ]);
+                    if(type!='css'){
                         // + - * / and so on
                         //[/->|=>/.source,' $0 '],
                         [/\s*((\+\+|\-\-|\&\&|\|\||!!)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:]))\s*/.source,' $1 ']
-                    ]);
+                    }
                 }
 
                 //restore those protection
                 code=xui.Coder.replace(code,[
                     [/[\n\r]+/.source,'\n'],
-
                     [/( *)(\x01[d]\d+\x02)/.source, function(s,i){s[i+1]=s[i+1]||'';return s[i+1] + cache.d[s[i+2]].replace(/(\n)(\s*)/g,'$1'+s[i+1])}],
                     [/\x03[g]\d+\x04/.source, function(s,i){return cache.g[s[i]].replace(/\s*,\s*/g,','+(reverse?'':' '))}],
                     [/[\x01\x03]([\w])\d+[\x02\x04]/.source, function(s,i){return cache[s[i+1]][s[i]]}],

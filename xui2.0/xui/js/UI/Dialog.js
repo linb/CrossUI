@@ -58,6 +58,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     var tt=profile._$rs_args,fun=function(){
                         if(profile.onShow)profile.boxing().onShow(profile);                            
                         delete profile.inShowing;
+                        delete profile.$inThread;
                         xui.tryF(callback);
                     };
                     if(p.status=='min')
@@ -74,7 +75,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
                 profile.inShowing=1;
                 if(t=p.fromRegion)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
+                    profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
                         left:[t.left,left],
                         top:[t.top,top],
                         width:[t.width, profile.$px(p.width)],
@@ -105,9 +106,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
     
                     var t=pro.fromRegion, f1=function(){
                         delete profile.inHiding;
+                        delete profile.$inThread;
                     };
                     if(t)
-                        xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
+                        profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
                             left:[profile.$px(pro.left),t.left],
                             top:[profile.$px(pro.top),t.top],
                             width:[profile.$px(pro.width),t.width],
@@ -129,10 +131,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 var pro=profile.properties, t=pro.fromRegion, fun=function(){
                     profile.boxing().destroy(ignoreEffects);
                     delete profile.inClosing;
+                    delete profile.$inThread;
                 };
 
                 if(t)
-                    xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
+                    profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
                 else
                     fun();
             });
@@ -328,6 +331,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             'TBART, BBART':{
                 'border-spacing':0,
                 'border-collapse':'separate'
+            },
+            MAINI:{
+                'padding-top':'.16667em'
             },
             PANEL:{
                 position:'relative',
@@ -786,7 +792,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 ins=profile.boxing(),
                 t=profile.properties,
                 a=xui.Dom._getEffects(t.showEffects,1);
-
+            if(profile.$inThread)profile.$inThread.abort();
             if(!status)status=t.status;
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'min', status))
                 return;
@@ -823,7 +829,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
             
-            if(a&&xui.browser.ie&&xui.browser.ver<=8)
+            if(a&&xui.browser.ie678)
                 xui.filter(a.params,function(o,i){
                     return !!xui.Dom._cssfake[i];
                 });
@@ -837,6 +843,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 t=profile.properties,
                 a=xui.Dom._getEffects(t.showEffects,1);
             if(!status)status=t.status;
+            if(profile.$inThread)profile.$inThread.abort();
             
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
                 return;
@@ -866,12 +873,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             ins.setDock('cover',true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'max', status);
-
-                if(a&&xui.browser.ie&&xui.browser.ver<=8)
-                    xui.filter(a.params,function(o,i){
-                        return !!xui.Dom._cssfake[i];
-                    });
-                o.show(null,null,effectcallback,null,ignoreEffects);
+            if(a&&xui.browser.ie678)
+                xui.filter(a.params,function(o,i){
+                    return !!xui.Dom._cssfake[i];
+                });
+            o.show(null,null,effectcallback,null,ignoreEffects);
         },
         _restore:function(profile,status){
             var o=profile.getRoot(),
@@ -1145,7 +1151,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"}),
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"}),
 
                 btn = dialog.$btn = new xui.UI.SButton({
                     position:'relative',
@@ -1218,7 +1224,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"}),
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"}),
                 btn = dialog.$btn1 = new xui.UI.SButton({
                     tabindex:1,
                     position:'relative'
@@ -1288,7 +1294,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"})
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"})
             .append( dialog.$btn = new xui.UI.SButton({
                 caption: "&nbsp;&nbsp;"+(btnCap || '$inline.ok')+"&nbsp;&nbsp;",
                 tabindex:1,
@@ -1335,11 +1341,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     minBtn:false,
                     maxBtn:false,
                     pinBtn:false,
-                    resizer:false,
-                    left:200,
-                    top:200,
+                    left:left||200,
+                    top:top||200,
                     width:'25em',
-                    height:'11em'
+                    height:'11em',
+                    conDockPadding:{left:'.5em',right:'.5em',top:0,bottom:0}
                 },{
                     beforeClose:function(){
                         if(!dialog._$_clickYes)
@@ -1347,7 +1353,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         else
                             delete dialog._$_clickYes;
 
-                        dialog._$inp.setValue('',false,'prompt');
+                        dialog._$input.setValue('',false,'prompt');
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
@@ -1355,24 +1361,22 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         }
                     }
                 });
-                var con = dialog._$con = new xui.UI.Div({
-                    top:4,
-                    left:10,
-                    width:'23em',
-                    height:'1.2em'
+                var con = dialog._$caption = new xui.UI.Div({
+                    height:'1.5em',
+                    dock:'top'
                 }),
                 cmd = new xui.UI.Div({
                     height:'2.5em',
                     dock:'bottom',
                     zIndex:10
-                },null,null,null,{KEY:"text-align:center;"})
+                },null,null,null,{KEY:"text-align:center;padding-top:.5em"})
                 .append(dialog.$btn1 = new xui.UI.SButton({
                     position:'relative',
                     tabindex:1
                 },
                 {
                     onClick:function(){
-                        if(false!==xui.tryF(dialog._$onYes,[dialog._$inp.getUIValue()])){
+                        if(false!==xui.tryF(dialog._$onYes,[dialog._$input.getUIValue()])){
                             dialog._$_clickYes=1;
                             dialog.close();
                         }
@@ -1388,11 +1392,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         dialog.close();
                     }
                 },null,null,{KEY:'margin:0 .5em'}));
-                var inp=dialog._$inp=new xui.UI.Input({
-                    left:10,
-                    top:22,
-                    width:'23em',
-                    height:'3em',
+                var inp=dialog._$input=new xui.UI.Input({
+                    dock:'fill',
                     multiLines:true
                 })
                 dialog.append(con).append(cmd).append(inp).render();
@@ -1400,8 +1401,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     me.dialog = dialog;
             }
             dialog.setCaption(title||'Prompt');
-            dialog._$con.setHtml(caption||"");
-            dialog._$inp.setValue(content||"",true,'prompt');
+            dialog._$caption.setHtml(caption||"");
+            dialog._$input.setValue(content||"",true,'prompt');
             dialog._$onYes=onYes;
             dialog._$onNo=onNo;
             delete dialog._$_clickYes;
@@ -1413,7 +1414,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             dialog.show(parent, true, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
-                dialog._$inp.activate();
+                dialog._$input.activate();
             });
             return dialog;
         },
@@ -1455,6 +1456,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         isize.height=t;
                 }
             }
+            if(height)
+                isize.height -= (parseFloat(v6.css('paddingTop'))||0) + (parseFloat(v6.css('paddingBottom'))||0);
 
             if(width)
                 isize.width=size.width
