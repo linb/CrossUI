@@ -100,10 +100,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     return t(profile, value);
             return value;
         },
-        setPopCtrl:function(drop){
+        setPopWnd:function(drop){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
-            profile.$drop=profile.$poplink=drop['xui.UI']?drop.get(0):drop;
+            profile.$drop=profile.$poplink=drop['xui.Module']?drop.getRoot(true):drop['xui.UI']?drop.get(0):drop;
         },
         _cache:function(type, focus){
             if(this.isDestroyed())return ;
@@ -232,7 +232,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             upper=null;
             return rtn;
         },
-        _drop:function(e,src){
+        _drop:function(e, src, baseNode){
             return this.each(function(profile){
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
@@ -424,7 +424,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return;
                     //pop
                     var node=o.reBoxing();
-                    node.popToTop(profile.getSubNode('BOX'),null,pro.parentID);
+                    node.popToTop(baseNode||profile.getSubNode('BOX'),null,pro.parentID);
 
                     xui.tryF(o.activate,[],o);
 
@@ -445,16 +445,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         xui.Event.keyboardHook('esc');
                         box._cache('esc',true);
                     });
+                }else if(type=='file'){
+                    profile.boxing().popFileSelector();
                 }
 
                 if(profile.afterPopShow)
                     box.afterPopShow(profile, profile.$drop);
             });
         },
-        expand:function(){
+        expand:function(node){
             var profile=this.get(0);
             if(profile.renderId)
-                profile.boxing()._drop();
+                profile.boxing()._drop(null,node,node);
         },
         collapse:function(){
             var profile=this.get(0);
@@ -631,7 +633,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     $getShowValue : function(p,v){
                         var pp=p.properties;
                         v=(xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero):"";
-                        if(p.properties.numberTpl)
+                        if(v!="" && p.properties.numberTpl)
                             v=p.properties.numberTpl.replace("*", v);
                         return v;
                     },
@@ -791,7 +793,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var prop=profile.properties, type=prop.type;
                     if(type=='counter')return;
 
-                    if(type=='label' || type=='popbox' || type=='cmdbox' || type=='getter' || type=='button' || type=='dropbutton'){
+                    if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='dropbutton'){
                         if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
                             return;
                     }
@@ -1276,69 +1278,68 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 t.BOX.WRAP.INPUT.tagName='input';
                 t.BOX.WRAP.INPUT.type='text';
                 switch(type){
-                case "none":
-                case "input":
-                case "number":
-                case "currency":
-                break;
-                case 'button':
-                    t.BOX.WRAP.INPUT.type='button';
-                break;
-                case 'password':
-                    t.BOX.WRAP.INPUT.type='password';
-                break;
-                // spin has spin buttons
-                case 'spin':
-                    t.SPINBTN={
-                        $order:20,
-                        className:'xui-ui-unselectable',
-                        style:"{rDisplay}",
-                        R1:{
-                            tagName:'button',
-                            className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropt}',
-                            R1B:{
-                                className:'xuifont',
-                                $fonticon:'xui-icon-smallup'
-                            }
-                        },
-                        R2:{
-                            tagName:'button',
-                            className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropb}',
-                            R2B:{
-                                className:'xuifont',
-                                $fonticon:'xui-icon-smalldown'
-                            }
-                        }
-                    };
-                break;
-                // following have RBTN button
-                case 'counter':
-                    t.LBTN={
-                        $order:1,
-                        tagName:'button',
-                        className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropl}',
-                        style:"{_btnlDisplay}",
-                        MID:{
-                            className:'xuifont',
-                            $fonticon:'{_fi_btnlClass}',
-                            style:'{_btnlStyle}'
-                        }
-                    };
+                    case "none":
+                    case "input":
+                    case "number":
+                    case "currency":
                     break;
-                case 'file':
-                    t.FILE={
-                        $order:20,
-                        className:'xui-ui-unselectable {_radius_dropr}',
-                        tagName:'input',
-                        type:'file',
-                        hidefocus:xui.browser.ie?"hidefocus":null,
-                        size:'1'
-                    };
+                    case 'button':
+                        t.BOX.WRAP.INPUT.type='button';
                     break;
-                case 'listbox':
-                case 'cmdbox':
-                case 'dropbutton':
-                    t.BOX.WRAP.INPUT.type='button';
+                    case 'password':
+                        t.BOX.WRAP.INPUT.type='password';
+                    break;
+                    // spin has spin buttons
+                    case 'spin':
+                        t.SPINBTN={
+                            $order:20,
+                            className:'xui-ui-unselectable',
+                            style:"{rDisplay}",
+                            R1:{
+                                tagName:'button',
+                                className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropt}',
+                                R1B:{
+                                    className:'xuifont',
+                                    $fonticon:'xui-icon-smallup'
+                                }
+                            },
+                            R2:{
+                                tagName:'button',
+                                className:'xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropb}',
+                                R2B:{
+                                    className:'xuifont',
+                                    $fonticon:'xui-icon-smalldown'
+                                }
+                            }
+                        };
+                    break;
+                    // following have RBTN button
+                    case 'counter':
+                        t.LBTN={
+                            $order:1,
+                            tagName:'button',
+                            className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropl}',
+                            style:"{_btnlDisplay}",
+                            MID:{
+                                className:'xuifont',
+                                $fonticon:'{_fi_btnlClass}',
+                                style:'{_btnlStyle}'
+                            }
+                        };
+                        break;
+                    case 'file':
+                        t.FILE={
+                            $order:20,
+                            className:'xui-ui-unselectable {_radius_dropr}',
+                            tagName:'input',
+                            type:'file',
+                            hidefocus:xui.browser.ie?"hidefocus":null,
+                            size:'1'
+                        };
+                    case 'listbox':
+                    case 'cmdbox':
+                    case 'dropbutton':
+                        t.BOX.WRAP.INPUT.type='button';
                 }
                 if(type!='none'&&type!='input'&&type!='password'&&type!='button'&&type!='spin'&&type!='currency'&&type!='number'){
                     t.RBTN={

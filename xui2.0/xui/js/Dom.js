@@ -2376,13 +2376,13 @@ type:4
                     :node.currentStyle?
                         (node.currentStyle[name] || node.currentStyle[name2] || (name3 && (node.currentStyle[name3] || node.currentStyle[name4])))
                 :((node.style && (node.style[name]||(name3 && node.style[name3])))||'');
-/*
-                if(xui.browser.opr){
-                    var map2 = me.map2 || (me.map2={left:1,top:1,right:1,bottom:1});
-                    if(map2[name] && (xui.Dom.getStyle(node,'position')=='static'))
-                        value = 'auto';
-                }
-*/
+            /*
+                            if(xui.browser.opr){
+                                var map2 = me.map2 || (me.map2={left:1,top:1,right:1,bottom:1});
+                                if(map2[name] && (xui.Dom.getStyle(node,'position')=='static'))
+                                    value = 'auto';
+                            }
+            */
             }
             // xui.CSS.$px is for IE678
             if(!b && xui.browser.ie678){

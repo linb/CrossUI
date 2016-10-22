@@ -162,13 +162,13 @@ Class('xui.Module','xui.absProfile',{
             fun.call(scope, this);
             return this;
         },
-        getRoot:function(){
+        getRoot:function(rtnPrf){
             if(!this._innerModulesCreated)this._createInnerModules();
             var fun = function(m){
                 if(m["xui.Module"]){
                     for(var i=0,l=m._nodes,o;i<l, o=m._nodes[i];i++){
                         if(o["xui.Module"]) return fun(o);
-                        if(o["xui.UIProfile"] && !o.box.$initRootHidden) return o.getRoot();
+                        if(o["xui.UIProfile"] && !o.box.$initRootHidden) return rtnPrf?o:o.getRoot();
                     }
                 }
             };

@@ -11108,12 +11108,19 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置下拉框类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 'none'代表是普通的输入框,'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,'helpinput'代表帮助框,'cmd'代表按钮,'cmdbox'代表命令框,'popbox'代表弹出框,'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,'currency'代表货币,'number'代表数字,'spin'代表是spin输入框. 默认为 'combobox'",                    $force
+                    "value [必需参数] : 'none'或'input'代表是普通的输入框,'password'代表密码输入框"+
+                    "'combobox'代表下拉框,'listbox'代表列表框,'file'代表文件框,'getter'代表获取框,"+
+                    "'helpinput'代表帮助框,'button'代表按钮,'cmdbox'代表命令框,'popbox'代表弹出框,"+
+                    "'time'代表时间选择框,'date'代表日期选择框,'datetime'代表日期时间选择框,'color'代表颜色选择框,"+
+                    "'currency'代表货币输入框,'number'代表数字输入框,'spin'代表是spin输入框,'counter'代表是counter输入框."+
+                    "'dropbutton'代表联合按钮"+
+                    " 默认为 'combobox'",
+                    $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var label,o;xui(id).prepend(o=new xui.UI.ComboInput({position:'relative'})).prepend(label=new xui.UI.Label({position:'relative',width:100}));"+
-                    "var arr=['none','combobox','listbox','file','getter','helpinput','cmd','cmdbox','popbox','time','date','color'];"+
+                    "var arr=['none','combobox','listbox','file','getter','helpinput','cmdbox','popbox','time','date','color'];"+
                     "xui.Thread(null,[function(id){if(!arr.length)return xui.Thread.abort(id); var type=arr.shift();o.setType(type);label.setCaption(type)}],1000,null,null,null,true).start();"+
                     "}"
                 ]
@@ -17276,7 +17283,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getEditMode:{
-                $desc:"获取编辑模式'focus', 'sharp', 'hover' 和 'inline'之一，默认为'focus'",
+                $desc:"获取编辑模式'focus', 'sharp', 'hover', 'hoversharp' 和 'inline'之一，默认为'focus'",
                 $rtn:"String"
             },
             setEditMode:{

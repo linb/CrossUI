@@ -11203,13 +11203,13 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the type property value on the each UIProfile",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : 'none','combobox','listbox','file','getter','currency','number','helpinput','cmd','cmdbox','popbox','time','date', 'datetime','color' or 'spin'. Default is 'combobox'",
+                    "value [Required] : none,input,password,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,counter,currency,number. Default is 'combobox'",
                     $force
                 ],
                 $snippet:[
                     "var id='xui.temp.ci4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var label,o;xui(id).prepend(o=new xui.UI.ComboInput({position:'relative'})).prepend(label=new xui.UI.Label({position:'relative',width:100}));"+
-                    "var arr=['none','combobox','listbox','file','getter','helpinput','cmd','cmdbox','popbox','time','date','color'];"+
+                    "var arr=['none','combobox','listbox','file','getter','helpinput','cmdbox','popbox','time','date','color'];"+
                     "xui.Thread(null,[function(id){if(!arr.length)return xui.Thread.abort(id); var type=arr.shift();o.setType(type);label.setCaption(type)}],1000,null,null,null,true).start();"+
                     "}"
                 ]
@@ -17366,7 +17366,7 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             getEditMode:{
-                $desc:"Sets edit moce 'focus', 'sharp', 'hover' or 'inline'. Default is 'focus'",
+                $desc:"Sets edit moce 'focus', 'sharp', 'hover', 'hovershape' or 'inline'. Default is 'focus'",
                 $rtn:"String"
             },
             setEditMode:{

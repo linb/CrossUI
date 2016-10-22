@@ -3,6 +3,7 @@
 //colMap => header_SerialIdMapItem
 //colMap2 => header_ItemIdMapSerialId
 //cellMap => cells_SerialIdMapItem
+//cellType: label,input,textarea,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,counter,currency,number,checkbox,progress
 Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     Instance:{
         activate:function(){
@@ -117,7 +118,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(temp&&temp.length){
                 var needshowinput=[],arrt=[];
                 xui.arr.each(temp,function(o){
-                       if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                       if(box.getCellOption(profile, o, "editable")&&
+                           (box.getCellOption(profile, o, "editMode")=="inline"|| box.getCellOption(profile, o, "type")=='dropbutton'))
                             needshowinput.push(o);
                 });
                 temp.length=0;
@@ -143,7 +145,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             arrt=null;
                         }
                     };
-                    fun();
+                    // for event attached
+                    xui.asyRun(fun);
                 }
             }
             //get base dom
@@ -840,7 +843,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         xui.arr.each(temp,function(o){
-                               if(box.getCellOption(profile, o, "editable")&&box.getCellOption(profile, o, "editMode")=="inline")
+                               if(box.getCellOption(profile, o, "editable")&&
+                                   (box.getCellOption(profile, o, "editMode")=="inline"||box.getCellOption(profile, o, "type")=="dropbutton"))
                                     box._editCell(profile,o);
                         });
                         temp.length=0;
@@ -1397,7 +1401,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editor.getSubNode('INPUT').onBlur(true);
                         editor.getRoot().setBlurTrigger("tg_editor_blur:"+profile.$xid);
                         if(profile.properties){
-                            editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null);
+                            editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null).onFileDlgOpen(null);
                             editor.setValue('',true,'editorreset');
                         }
                         delete editor.get(0).$row;
@@ -2627,8 +2631,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _objectProp:{rowOptions:1,colOptions:1},
         Behaviors:{
             //don't add cell in HoverEffected, for 'hover' editMode
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], FHCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
-            ClickEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], CMD:'CMD'},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], FHCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
+            ClickEffected:  {ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], CMD:'CMD'},
             DroppableKeys:['SCROLL22','CELLS1','CELLS2','FCELL'],
             DraggableKeys:['FCELL'],
 
@@ -3492,7 +3496,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             CELL:{
-                afterMouseover:function(profile, e, src){
+                onMouseover:function(profile, e, src){
                     var box=profile.box, p=profile.properties, i=xui.use(src).id(),editor;
                     if(p.disableHoverEffect)return;
                     i=i.split(":")[2];
@@ -3501,17 +3505,21 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!i)return;
 
                     if(box.getCellOption(profile, i, "disabled"))return;
-
-                   if(box.getCellOption(profile, i, "editable")&&box.getCellOption(profile, i, "editMode")=="hover"){
-                        xui.resetRun(profile.key+":"+profile.$xid+":hovereditor",function(){
-                                if(profile.destroyed)return;
-                                if(profile&&profile.$curEditor){
-                                    editor=profile.$curEditor;
-                                    xui.tryF(editor.undo,[],editor);
-                                }
-                                profile.box._editCell(profile, profile.getSubId(src),true);
-                        });
-                        return false;
+                    var editMode=box.getCellOption(profile, i, "editMode");
+                    if( box.getCellOption(profile, i, "editable") && xui.str.startWith(editMode,"hover")){
+                        if(editMode=='hoversharp' && box.getCellOption(profile, i, "type")=='file'){
+                            profile.box.$cancelHoverEditor(profile);
+                        }else{
+                            xui.resetRun(profile.key+":"+profile.$xid+":hovereditor",function(){
+                                    if(profile.destroyed)return;
+                                    if(profile&&profile.$curEditor){
+                                        editor=profile.$curEditor;
+                                        xui.tryF(editor.undo,[],editor);
+                                    }
+                                    profile.box._editCell(profile, profile.getSubId(src),true);
+                            });
+                            return false;
+                        }
                     }else{
                         profile.box.$cancelHoverEditor(profile);
                     }
@@ -3953,7 +3961,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             editMode:{
                 ini:'focus',
-                listbox:["focus","sharp","hover","inline"]
+                listbox:["focus","sharp","hover","hoversharp","inline"]
             },
             dock:'fill',
 
@@ -4335,11 +4343,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeCellActive:function(profile, cell){},
             afterCellActive:function(profile, cell){},
 
-            beforeIniEditor:function(profile, obj, cellNode, pNode, type){},
-            onBeginEdit:function(profile, obj, editor, type){},
-            beforeEditApply:function(profile, obj, options, editor, tag, type){},
-            onEndEdit:function(profile, obj, editor, type){},
-
             beforeCellUpdated:function(profile, cell, options, isHotRow){},
             afterCellUpdated:function(profile, cell, options, isHotRow){},
             beforeRowUpdated:function(profile, obj, options, isHotRow){},
@@ -4356,7 +4359,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onDblclickCell:function(profile, cell, e, src){},
             onClickGridHandler:function(profile, e, src){},
 
-            // Editors' default events
+            beforeIniEditor:function(profile, cell, cellNode, pNode, type){},
+            onBeginEdit:function(profile, cell, editor, type){},
+            beforeEditApply:function(profile, cell, options, editor, tag, type){},
+            onEndEdit:function(profile, cell, editor, type){},
+
+           // Editors' default events
+            onFileDlgOpen:function(profile, cell, proEditor, src){},
             beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
@@ -4364,7 +4373,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onEditorClick:function(profile, cell, proEditor, type, src){}
         },
         RenderTrigger:function(){
-            var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
+            var ns=this, 
+                box=ns.box, 
+                prop=ns.properties,
+                ins=ns.boxing(), 
+                getPro=box.getCellOption;
+
             ns.destroyTrigger=function(){
                 var ns=this, prop=ns.properties;
                 xui.each(ns.cellMap,function(cell){
@@ -4386,14 +4400,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             xui.arr.each(prop.rows,function(o){
                 if(xui.isFun(o.rowRenderer||prop.rowOptions.rowRenderer))
                     (o.rowRenderer||prop.rowOptions.rowRenderer).call(null,ns,o);
-                    if(false===box.getCellOption(ns, o, "iniFold"))
+                    if(false===getPro(ns, o, "iniFold"))
                         ins._toggleRows([o],true);
             });
 
             ns.box.__ensurehotrow(ns,null);
 
             xui.each(ns.cellMap,function(o){
-                   if(box.getCellOption(ns, o, "editable")&&box.getCellOption(ns, o, "editMode")=="inline")
+                   if(getPro(ns, o, "editable") && 
+                       (getPro(ns, o, "editMode")=="inline" || getPro(ns, o, "type")=='dropbutton' ))
                         box._editCell(ns,o);
             });
         },
@@ -5124,13 +5139,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         node.html(caption,false);
                 break;
                 case 'date':
-                    cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):null;
+                    cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):xui.Date.parse(cell.value);
                     caption= capOut || ren(profile,cell,uicell,f1);
                     if(node)
                         node.html(caption, false);
                 break;
                 case 'datetime':
-                    cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):null;
+                    cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):xui.Date.parse(cell.value);
                     caption= capOut || ren(profile,cell,uicell,f0);
                     if(node)
                         node.html(caption, false);
@@ -5845,6 +5860,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var editor,
                 grid = this,
                 prop = profile.properties,
+                type=getPro('type')||'input',
                 //region = prop.freezedColumn prop.freezedRow
                 col = cell._col,
                 colId = col.id,
@@ -5852,7 +5868,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rowId = row.id,
                 ishotrow=rowId==profile.box._temprowid,
                 editMode= getPro('editMode'),
-                inline=editMode=="inline",
+                inline=editMode=="inline"||(getPro('type')=='dropbutton'),
                 baseNode = profile.getSubNode('SCROLL' + row._region + col._region),
                 //baseNode = profile.getSubNode('BORDER'),
                 cellNode = profile.getSubNode('CELL', cellId),
@@ -5868,6 +5884,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 editor = profile.$curEditor;
                 if(editor)xui.tryF(editor.undo,[],editor);
                 editor=null;
+            }
+
+            // -1. for special type
+            if(inline && cell._editor){
+                cell._editor.activate();
+                return;
+            }else if(type=='checkbox'||type=='button'){
+                profile.getSubNode('CELLA', cellId).focus();
+                return;
             }
 
             // 1. customEditor in cell/row or header
@@ -5887,10 +5912,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         return;
                 }
 
+                // 3. for lable type only, give it an chance to customEditor/beforeIniEditor
+                if(type=='label'){
+                    profile.getSubNode('CELLA', cellId).focus();
+                    return;
+                }
+
                 // if beforeIniEditor doesnt return an editor
                 if(!editor || !editor['xui.UI']){
-                    var type=getPro('type')||'input',
-                        editorAutoPop= getPro('editorAutoPop'),
+                    var editorAutoPop= getPro('editorAutoPop'),
                         editorCacheKey = getPro('editorCacheKey'),
                         editorProperties = getPro('editorProperties'),
                         editorCC= getPro('editorCC'),
@@ -5903,14 +5933,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editorDropListHeight = getPro('editorDropListHeight'),
                         t,oldProp;
 
-                    // 3. for checkbox/lable,button type
-                    if(type=='checkbox'){
-                        if(!inline){
-                            cellNode.focus();
-                        }
-                        return;
-                    }else if(type=='button'||type=='label')
-                        return;
 
                     if(!inline){
                         // 4. try to get editor from cache
@@ -5937,6 +5959,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editor=new xui.UI.ComboInput(iniprop);
                     }
                     switch(type){
+                        // input
+                        // button
+                        // checkbox
                         case 'number':
                         case 'spin':
                         case 'counter':
@@ -5994,9 +6019,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'color':
                         case 'getter':
                         case 'popbox':
-                        case 'cmd':
+                        case 'dropbutton':
                         case 'cmdbox':
-                            editor.setType(type=='cmd'?'label':type);
+                            editor.setType(type);
                             if(profile.box.getCellOption(profile, cell,'disabled')){
                             }else{
                                 editor.beforeComboPop(function(editorprf, pos, e, src){
@@ -6012,9 +6037,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     });
                                 if(profile.afterPopShow)
                                     editor.afterPopShow(function(editorprf, popCtl){
-                                        return profile.boxing().afterPopShow(profile, editorprf.$cell, editorprf, popCt);
+                                        return profile.boxing().afterPopShow(profile, editorprf.$cell, editorprf, popCtl);
                                     });
-                                if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='cmd' || type=='dropbutton'){
+                                if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='dropbutton'){
                                     if(profile.onEditorClick)
                                         editor.onClick(function(prf, e, src, btn){
                                             return profile.boxing().onEditorClick(profile, prf.$cell, prf, btn, src);
@@ -6097,7 +6122,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(editor.setCaption){
                         if(editorProperties&&('caption' in editorProperties)&& xui.isDefined(editorProperties.caption)){
                             editor.setCaption(editorProperties.caption,true);
-                        }else  if(type=="cmdbox"||type=="cmd"||type=="popbox"){
+                        }else  if(type=="cmdbox"||type=="popbox"||type=="button"||type=="dropbutton"){
                             editor.setCaption(cell.caption||cell._$tmpcap||"",true);
                         }
                     }
@@ -6123,7 +6148,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             // for ie's setBlurTrigger doesn't trigger onchange event
                             editor.getSubNode('INPUT').onBlur(true);
 
-                            if(refocus && editMode=="sharp"){
+                            if(refocus && xui.str.endWith(editMode,"sharp")){
                                cell._ignorefocus=1;
                                profile.boxing().focusCell (profile.$cellInEditor);
                                xui.asyRun(function(){
@@ -6181,7 +6206,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     //editor change value, update cell value
                     editor
-                    .afterUIValueSet(function(prop,oV,nV,force,tag){
+                    .afterUIValueSet(function(editorPrf,oV,nV,force,tag){
                         var type=getPro('type'),_$caption;
                         switch(type){
                             case 'number':
@@ -6196,12 +6221,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 nV=(nV||nV===0)?nV:null;
                                 break;
                             case 'cmdbox':
-                            case 'cmd':
+                            case 'button':
+                            case 'dropbutton':
                             case 'popbox':
                             case 'combobox':
                             case 'listbox':
                             case 'helpinput':
-                                _$caption=prop.boxing().getShowValue();
+                                _$caption=editorPrf.boxing().getShowValue();
                                 break;
                         }
                         var options={value:nV};
@@ -6209,18 +6235,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(xui.isDefined(_$caption))
                             options._$caption=_$caption;
 
-                        if(prop.properties.hasOwnProperty("tagVar") && !xui.isEmpty(prop.properties.tagVar))
-                            options.tagVar=prop.properties.tagVar;
+                        if(editorPrf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(editorPrf.properties.tagVar))
+                            options.tagVar=editorPrf.properties.tagVar;
                     
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor, tag, 'cell'))){
 
                             grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
     
-                            if(editMode=="sharp")
+                            if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter')
                                 xui.tryF(editor.undo,[true],editor);
                         }
                     })
-                    .beforeNextFocus(function(prop, e){
+                    .beforeNextFocus(function(editorPrf, e){
                         if(editor.undo)
                             xui.tryF(editor.undo,[true],editor);
                         var hash=xui.Event.getEventPara(e);
@@ -6229,6 +6255,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.getSubNode('CELLA', cell._serialId).onKeydown(true,hash);
                         //prevent
                         return false;
+                    })
+                    .onFileDlgOpen(function(editorPrf,src){
+                        if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,cell,editorPrf,src);
                     });
 
                     if(!inline){
@@ -6238,7 +6267,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 xui.tryF(editor.undo,[],editor);
                         })
                         .afterPopHide(function(p,r,type){
-                            if(editMode=="sharp")
+                            if(xui.str.endWith(editMode,"sharp"))
                                 xui.tryF(editor.undo,[type!="blur"&&type!="call"],editor);
                         })
                         .getRoot().setBlurTrigger(profile.$xid+":editor", function(){
@@ -6264,30 +6293,27 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }else{
                             //**toggleNode
                             editor.setWidth(size.width  - (toggleNode?absPos2.left:0)  +3).setHeight(size.height+2).reLayout(true);
-                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0) -2)+'px',(absPos.top-2)+'px');
+                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0) -1)+'px',(absPos.top-1)+'px');
                         }
 
                         var expand,
+                            noInputType = type=='cmdbox'||type=='cmdbox'|| type=='listbox'||type=='file',
+                            insPopType = noInputType || type=='date' || type=='time' || type=='datetime' || type=='color',
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
-                        issharp = editMode=="sharp"  && (editorAutoPop || inputReadonly || (type=='popbox'||type=='cmdbox'||type=='listbox'||type=='combobox'||type=='helpinput'||type=='getter'||type=='date'||type=='time'||type=='datetime'||type=='color'||type=='cmd'||type=='file'||type=='helpinput'||type=='getter'));
-                        if( xui.isFun(editor.expand) &&
-                            editorAutoPop!==false &&
-                            (
-                                issharp ||
-                                (
-                                    (editMode=="sharp"||editMode=="focus") &&   (editorAutoPop || type=='listbox'||type=='date'||type=='datetime'||type=='time'||type=='color')
-                                )
-                           )
-                         ){
+                        issharp = xui.str.endWith(editMode,"sharp")  && (editorAutoPop || inputReadonly || insPopType);
+                        if( xui.isFun(editor.expand) 
+                            && editorAutoPop!==false
+                            && ( issharp || ((xui.str.endWith(editMode,"sharp") || editMode=="focus") &&   (editorAutoPop || noInputType)))
+                         ) {
                             expand=1;
-                            editor.expand();
+                            editor.expand(cellNode);
                          }
                         editor.get(0).$editMode=editMode;
 
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");
                        //activate editor
-                        if(editMode!="hover" || !byhover){
+                        if(!xui.str.startWith(editMode,"hover") || !byhover){
                             xui.asyRun(function(){
                                 // destroyed
                                 if(!profile.box)return;
@@ -6309,16 +6335,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },dfun=function(){
                                // if(editor) xui.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(function(){
+                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl){
                                 bfun();
                                 editor.onBlur(null);
                                 // for compitable
                                 if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, prop.$cell, prop, popCtl);
+                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl);
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);
                             }).onBlur(dfun);
+
+                            if(!expand)
+                                xui.tryF(editor&&editor.activate,[],editor);
                         }
                     }
                     if(profile.onBeginEdit)
@@ -6728,13 +6757,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(cell && cell._ignorefocus)return;
 
             if(cell){
-                var edit=false;
+                var edit=false,type=getPro(profile, cell, "type");
                 if(getPro(profile, cell, 'editable')){
                     if(getPro(profile, cell, 'disabled')||getPro(profile, cell, 'readonly')){
                         edit=false;
                     }else{
                         edit=true;
-                        if(getPro(profile, cell, 'editMode')=="inline"){
+                        if((getPro(profile, cell, 'editMode')=="inline"&&type!=='label')|| type=='dropbutton'){
                             if(cell._editor)cell._editor.activate();
                         }else{
                             box._editCell(profile, cell._serialId);
@@ -6942,7 +6971,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         $cancelHoverEditor:function(profile){
-            if(xui.get(profile,['$curEditor','_nodes',0,'$editMode'])=='hover'){
+            if(xui.str.startWith(xui.get(profile,['$curEditor','_nodes',0,'$editMode'])||"",'hover')){
                 var editor=profile.$curEditor;
                 xui.tryF(editor.undo,[],editor);
             }
