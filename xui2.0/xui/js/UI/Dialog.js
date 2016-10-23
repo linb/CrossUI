@@ -60,6 +60,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         delete profile.inShowing;
                         delete profile.$inThread;
                         xui.tryF(callback);
+
+                        // attention animation
+                        if(p&&p.activeAnim){
+                            xui.asyRun(function(){
+                                if(profile && !profile.destroyed)
+                                    ins.setActiveAnim(p.activeAnim, true);
+                            });
+                        }
+
                     };
                     if(p.status=='min')
                         box._min(profile,'normal', fun, true);

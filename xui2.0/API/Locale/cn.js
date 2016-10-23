@@ -3623,7 +3623,7 @@ xui.set(xui.Locale,["cn","app"], {
             },
             pop:{
                 $desc:"将第一个元素显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
-                $rtn:"String, 区域外点击隐藏的唯一标示",
+                $rtn:"String, 区域外点击隐藏的唯一标识",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element",
                     "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
@@ -18748,8 +18748,9 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'desc':'组件描述'
         },
        'xui_absContainer' : {
-            'dragKey':'拖拽标识',
-            'dropKeys':'丢下标识',
+            sandboxTheme:'沙箱主题',
+            dragKey:'拖拽标识',
+            dropKeys:'丢下标识',
             panelBgClr:'容器背景色',
             panelBgImg:'容器背景图像',
             panelBgImgPos:'背景图像偏移',
@@ -18912,7 +18913,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_ComboInput' : {
             'value':'控件值',
             'cachePopWnd':'缓存弹出窗口',
-            'dateEditorTpl':' 日期编辑模板',
+            'dateEditorTpl':'日期编辑模板',
             'precision':'数字精度',
             'groupingSeparator':'千位分隔符',
             'decimalSeparator':'小数分隔符',
@@ -19155,8 +19156,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'caption':'标题文字',
             'uriTpl':'链接模板',
             'textTpl':'标签模板',
-            'prevMark':'前一页标示',
-            'nextMark':'后一页标示'
+            'prevMark':'前一页标识',
+            'nextMark':'后一页标识'
         },
         'xui_UI_Tabs' : {
             'lazyAppend':'延迟加载',
@@ -19199,7 +19200,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             noIcon:"隐藏图像"
         },
         'xui_UI_MenuBar' : {
-            'parentID':'父对象标示',
+            'parentID':'父对象标识',
             'autoShowTime':'自动弹出时间',
             'handler':'是否有手柄'
         },
@@ -19244,6 +19245,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'rows':'表格行数据',
             'rawData':'表格键值对数据',
             'tagCmds':"命令按钮集",
+            'tagCmdsAlign':"按钮集对齐",
             'activeMode':'焦点活动模式',
             'rowOptions':'行自定义参数',
             'colOptions':'列自定义参数',

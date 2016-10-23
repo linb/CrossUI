@@ -414,7 +414,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             item._itemDisplay = item.hidden?dpn:'';
 
             if(item.height)
-                item._itemHeight="height:"+profile.$forceu(item.height);
+                item._itemHeight="height:"+xui.CSS.$forceu(item.height);
 
             var prop = profile.properties,o;
             item._tabindex = prop.tabindex;

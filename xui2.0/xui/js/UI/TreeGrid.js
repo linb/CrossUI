@@ -1697,7 +1697,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                             LHCELL:{
                                                 $order: 2,
                                                 className:'xui-v-wrapper',
-                                                LhCELLINNER:{
+                                                LHCELLINNER:{
                                                     $order:1,
                                                     text:'{headerTail}'
                                                 },
@@ -3213,7 +3213,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         targetReposition:false,
                         dragDefer: 2,
                         dragKey:profile.$xid + ":col",
-                        dragData:o.parent().id()
+                        dragData:o.parent().id(),
+                        tagVar:col._region
                     });
                 },
                 onDragbegin:function(profile, e, src){
@@ -3229,13 +3230,14 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     var dp=xui.DragDrop.getProfile();
                     if(!dp.dragData||dp.dragKey!=profile.$xid + ":col")return;
+                    if(dp.tagVar!=col._region)return;
 
                     var psrc=xui.use(src).parent().xid();
                     if(false===profile.box._colDragCheck(profile,psrc))return;
                     xui.DragDrop.setDropElement(src).setDropFace(src,'move');
                     var nn=xui.use(psrc).get(0);
                     profile.getSubNode("ARROW")
-                        .left(nn.offsetLeft + (profile._leftregionw || 0))
+                        .left(nn.offsetLeft + (col._region==2?profile._leftregionw:0))
                         .top(nn.offsetTop+nn.offsetHeight)
                         .css("display","block");
                 },

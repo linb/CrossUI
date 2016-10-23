@@ -811,7 +811,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
                     if(prop.disabled || prop.readonly)return;
-                    if(profile.onCommand)profile.boxing().onCommand(profile,src);
+                    if(profile.onCommand && false===profile.boxing().onCommand(profile,src))
+                        return;
+                    if(prop.commandBtn=='delete'||prop.commandBtn=='remove')
+                        profile.boxing().setUIValue('',true);
                 }
             },
             BOX:{
@@ -1480,7 +1483,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 paddingW=isB?0:Math.round(v1._paddingW()/2)*2,
                 btnw, autoH;
 
-             $hborder=$vborder=box._borderW() / 2;
+            $hborder=$vborder=box._borderW() / 2;
             btnw=root._getEmSize() * 1.5;
 
             // caculate by px
@@ -1498,7 +1501,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ww=width,
                 hh=height,
                 bwcmd=0,
-                lbw=0;
+                lbw=0,
                 rbw=0,
                 left=Math.max(0, (prop.$b_lw||0)-$hborder),
                 top=Math.max(0, (prop.$b_tw||0)-$vborder);

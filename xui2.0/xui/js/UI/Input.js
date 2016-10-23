@@ -411,7 +411,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         DataModel:{
             selectable:true,
-            border:false,
 
             tipsErr:'',
             tipsOK:'',

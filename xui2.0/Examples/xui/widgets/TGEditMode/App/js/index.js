@@ -631,14 +631,13 @@ Class('App', 'xui.Module',{
                 cols = this.xui_ui_treegrid3.getHeader(),
                 colId=cell._col.id,
                 rowId=cell._row.id,
-                pos = xui.arr.subIndexOf(cols,'id', colId) +" - "+ xui.arr.subIndexOf(rows,'id',rowId);
+                pos = "{col:"+xui.arr.subIndexOf(cols,'id', colId) +", row: "+ xui.arr.subIndexOf(rows,'id',rowId)+"}";
             
             if(cell!=this._oldcell){
                 this._oldcell=cell;
                 this.xui_ui_group2.append(xui.create("<hr />"));
-                
             }
-            this.xui_ui_group2.append(xui.create("<p>"+arr.join(" : ")+" [ "+pos+" ]</p>"));
+            this.xui_ui_group2.append(xui.create("<p style='padding:0 1em'>"+pos+" > "+arr.join(" : ")+"</p>"));
 
             var p = this.xui_ui_group2.getSubNode("PANEL").get(0);
             if(p)

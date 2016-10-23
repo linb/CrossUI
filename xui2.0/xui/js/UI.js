@@ -1214,7 +1214,19 @@ Class("xui.UI",  "xui.absObj", {
         },
         show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
-                var t=o.properties,ins=o.boxing(),b,root=o.getRoot();
+                var t=o.properties,
+                    ins=o.boxing(),
+                    b,
+                    root=o.getRoot(),
+                    // attention animation
+                    attention=function(){
+                        if(o && !o.destroyed && t.activeAnim){
+                            xui.asyRun(function(){
+                                if(o && !o.destroyed)
+                                    o.boxing().setActiveAnim(t.activeAnim, true);
+                            });
+                        }
+                    };
                 left=(left||left===0)?(left||0):null;
                 top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
@@ -1222,7 +1234,7 @@ Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
+                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),attention,ignoreEffects);
                     if(t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -1240,7 +1252,7 @@ Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top));
+                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), attention);
                     }
                 }
             });
@@ -2286,13 +2298,15 @@ Class("xui.UI",  "xui.absObj", {
                 'user-select':'text'
             },
             '.xui-ui-ctrl, .xui-ui-reset':{
-                cursor:'default',
                 'font-family':'arial,helvetica,clean,sans-serif',
                 'font-style':'normal',
                 'font-weight':'normal',
                 'vertical-align':'middle',
                  color:'#000',
                  'font-size':'12px'
+            },
+            '.xui-ui-ctrl':{
+                cursor:'default'
             },
             ".xui-title-node":{
                 'font-size':'1.1667em'
@@ -4684,11 +4698,6 @@ Class("xui.UI",  "xui.absObj", {
              if(!prf.$inDesign && p.hoverPop){
                 xui.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
-                });
-            }
-            if(p.activeAnim){
-                xui.asyRun(function(){
-                    b.setActiveAnim(p.activeAnim, true);
                 });
             }
             // set dataBinder for container 

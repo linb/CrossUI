@@ -2461,7 +2461,8 @@ Class('xui.Thread',null,{
             onEnd:onEnd,
             cache:{},
             status:"ini",
-            cycle:!!cycle
+            cycle:!!cycle,
+            instance:self
         });
     },
     Instance:{
@@ -2674,6 +2675,10 @@ Class('xui.Thread',null,{
         $xid:1,
         __gc : function(){
             xui.$cache.thread={};
+        },
+        get:function(id){
+            id=xui.$cache.thread[id];
+            return id && id.instance;
         },
         isAlive:function(id){
             return !!xui.$cache.thread[id];
