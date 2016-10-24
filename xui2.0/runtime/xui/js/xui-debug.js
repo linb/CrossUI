@@ -35346,8 +35346,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                     tagName : 'img',
                                     src:xui.ini.img_bg,
                                     title:'{image}',
-                                    width:'{imgWidth}',
-                                    height:'{imgHeight}',
                                     style:'{imgStyle}'
                                 }
                         },
@@ -35453,8 +35451,21 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                   node=nn.get(0),
                                   item=profile.getItemByDom(src),
                                   icon=profile.getSubNodeByItemId('ICON',item.id);
+                            
+                            // bug fix
+                             if(node.currentSrc && node.currentSrc!=path){
+                                icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
+                                nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                                node.style.visibility="hidden";
+                                node.style.display="none";
+                                item._status='error';
+                                return;
+                             }
+
                             if(item.autoItemSize||p.autoItemSize){
                                 nn.attr('width','');nn.attr('height','');
+                            }else{
+                                nn.attr('width',item.imgWidth);nn.attr('height',item.imgWidth);
                             }
 
                             icon.removeClass('xui-icon-loading');
@@ -35476,12 +35487,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
                 },
                 onError:function(profile,e,src){
+                    var item=profile.getItemByDom(src);
+                    if(item._status=='error')return;
+
                     var p=profile.properties,
                           nn=xui.use(src),
                           node=nn.get(0),
-                          item=profile.getItemByDom(src),
                           icon=profile.getSubNodeByItemId('ICON',item.id);
-
                     icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
@@ -35616,8 +35628,6 @@ Class("xui.UI.IconList", "xui.UI.List",{
                         tagName:'img',
                         src:xui.ini.img_bg,
                         title:'{image}',
-                        width:'{itemWidth}',
-                        height:'{itemHeight}',
                         style:'{imgStyle}'
                     },
                     FLAG:{
@@ -35678,8 +35688,21 @@ Class("xui.UI.IconList", "xui.UI.List",{
                                   node=nn.get(0),
                                   item=profile.getItemByDom(src),
                                   icon=profile.getSubNodeByItemId('ICON',item.id);
+
+                            // bug fix
+                            if(node.currentSrc && node.currentSrc!=path){
+                                icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
+                                nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+                                node.style.visibility="hidden";
+                                node.style.display="none";
+                                item._status='error';
+                                 return;
+                            }
+
                             if(item.autoItemSize||p.autoItemSize){
                                 nn.attr('width','');nn.attr('height','');
+                            }else{
+                                nn.attr('width',item.itemWidth);nn.attr('height',item.itemHeight);
                             }
 
                             icon.removeClass('xui-icon-loading');
@@ -35701,12 +35724,13 @@ Class("xui.UI.IconList", "xui.UI.List",{
                     }
                 },
                 onError:function(profile,e,src){
+                    var item=profile.getItemByDom(src);
+                    if(item._status=='error')return;
+
                     var p=profile.properties,
                           nn=xui.use(src),
                           node=nn.get(0),
-                          item=profile.getItemByDom(src),
                           icon=profile.getSubNodeByItemId('ICON',item.id);
-
                     icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
