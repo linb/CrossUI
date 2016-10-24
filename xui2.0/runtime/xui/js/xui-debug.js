@@ -1812,7 +1812,6 @@ new function(){
             xui.merge(xui.ini,{
                 img_dd: path+'ondrag.gif',
                 img_busy: path+'busy.gif',
-                img_icon: path+'icon.png',
                 img_pic: path+'picture.png',
                 img_handler: path+'handler.gif',
                 img_bg: path+'bg.gif',
@@ -1825,7 +1824,6 @@ new function(){
     xui.merge(xui.ini,{
         img_dd:     "data:image/gif;base64,R0lGODlhEABAAPcAAAAAAAEBAQICAgMDAwUFBAUFBQcHBwgICAkJCQwMDA8PDx4eHiQkJDAwMD8/P0JCQl1dXf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAQAEAAAAj/AP8JHPigQQMHAxMOTAAAgIABAgAkUPgPQsMABAoQCNAQAISEFw0cMMCxI4CFAAIY+Eey4b+LCgSmXCnzpECVBf49AEBgJEWVBwg8WCCgQMuEQEkuYDBgo8uBIlsyeCCgJMWWAB68fPpP5cCOAhm6TLpV4teQI0tyrTgzrcmPChNoVIuAYsKCB+3qtQsgQt+/fgPb/Ce4MOCvEfb6HbhYb1/Eigc35ptYZmW7kw1rRgy48+S9oEOLHk26tGnRnlMzTl0Yst7Mgyk+tnzWpO3JfSPo3q274eXcfjv21rxbeHDBwE32VphbeHPmvYEvBzmc9+eXxa3Hxm69OHPbtk2zNO68WvNh2q8lb6fuuix434Ola5/Nvbt53tLhH8/unXpw49vlhx90/E2HmH3XyTcgSO91FBAAOw==",
         img_busy:  "data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7",
-        img_icon:   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACmwAAApsBm2pmsgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAJgSURBVDiNZZNfSNNRFMc/s8gaizkXgrM2sicFIVJ7Cx82qsmaxAz7I/5QEyGGfxiWaJCRT1rQQxkR1KPQU5CWShiYuAedPtSmsOeI3GJsut0X3elhbv5W53Lhcrif7+V87zkGESEf1QaD4wq8scKpDZieFZkEMLgNGufpYpcdlhmUDYkWIBEpbB9MZUEEJAxpN4zjxs8SCeRg3eatnjmKLlLwaxc4CdSC8YKDoYUA2f1LHAdgD1Ck9Aw2G3afjxdOJyNAWRcsKpBXdsTyqfCusI8QYA0rNpzOEVpbX2Kz2entZS6bRVIpRNNYAKwN1WxZZovhEz38xMIZNG2eVErIZgW/f4HRUdbzJSmFtLWzzkddzftIYzvyrYRMWVNTGKUODRgbC9HczFA4TFovcq2LOIkc3NCObJfkjH1vNKpjExNxRIRIRNHS8gARwe1m/D+RbmL0sXrjCMvJg5/Ji5QODMTwep9ILivgpqf2Dr9//EDpRTo6WKSz80uF1/snoRNZhbQXHuV66Cq3WCKOILV9xPMiiQRScdcbQylBKflXJAzpFhiEYb4WDMsiddeJrqyQLsB5w0KhdGNl5abSiTyGNbjHBwRhD+E+K1g4XdrR9r0IDoeVw1MXAcq7YHEHJAvihzlwcBYf7/DwHCOVdHd/LoIjEeX018SVQjSNeaDsMjz0wVQ12ItmAZdrmGTyMLG1lbmo1cTzV5JJxOViWM+UFPW12VyFyZQ7R6MZAoGn1u3N15EIGQCTCcxmqvRI0TARDE7Q33+O8vIKQqFpmZl5BuDxGBL19dyMx4kFg0zqkb+vwqjwTYPW6AAAAABJRU5ErkJggg==",
         img_pic:    "data:image/png;base64,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",
         img_handler:"data:image/gif;base64,R0lGODlhBAAEAPcAAAAAAGSMtP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAEAAQAAAgPAP8JFCDwX4B/BAUe/BcQADs=",
         // transparent 1*1 gif and png
@@ -8477,6 +8475,7 @@ Class('xui.Event',null,{
                 "sub{vertical-align:text-bottom;}"+
                 "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
                 "input,textarea,select{*font-size:100%;}"+
+                "::-ms-clear,::-ms-reveal{display: none;width:0;height:0;}"+
                 "button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}"+
                 (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
@@ -16896,12 +16895,25 @@ Class("xui.Tips", null,{
         }
     }
 });new function(){
-    xui.builtinFontIcon={
-            "xui-icon-xui":"&#xe61b",
+
+xui.builtinFontIcon={
+            "xui-icon-xui":'&#xe61b;',
+            "xui-load-error":'&#xe682;',
+            "xui-icon-numbers":'&#xe681;',
+            "xui-icon-number0":'&#xe67c;',
+            "xui-icon-number1":'&#xe67d;',
+            "xui-icon-number2":'&#xe680;',
+            "xui-icon-number3":'&#xe67b;',
+            "xui-icon-number4":'&#xe64c;',
+            "xui-icon-number5":'&#xe61c;',
+            "xui-icon-number6":'&#xe67a;',
+            "xui-icon-number7":'&#xe65a;',
+            "xui-icon-number8":'&#xe67e;',
+            "xui-icon-number9":'&#xe67f;',
             "xui-icon-placeholder":'&#xe62c;',
             "xui-icon-empty": '&#xe62c;',
-            "xui-icon-filter":'&#xe61a',
-            "xui-icon-search":'&#xe619',
+            "xui-icon-filter":'&#xe61a;',
+            "xui-icon-search":'&#xe619;',
             "xui-uicmd-helpinput": '&#xe671;',
             "xui-icon-zoomin": '&#xe61d;',
             "xui-icon-zoomout": '&#xe61e;',
@@ -19556,6 +19568,12 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-bottom-right-radius': '0 !important',
                 '-khtml-border-bottom-right-radius': '0 !important'
             },
+            '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-readonly .xui-ui-shadow-input':{
+                $order:15,
+               '-moz-box-shadow': 'none',
+               '-webkit-box-shadow': 'none',
+               'box-shadow': 'none'
+            },
             '.xui-uiborder-circle':{
                 $order:16,
                 'border-radius':'50%',
@@ -19589,7 +19607,7 @@ Class("xui.UI",  "xui.absObj", {
                 border:'none'
             },
             '.xui-uisb':{
-                position:'absolute',
+                position:'absolute'
             },
             '.xui-uisb-none':{
                 display:'none'
@@ -19727,26 +19745,34 @@ Class("xui.UI",  "xui.absObj", {
                 display:"block",
                 'white-space': 'nowrap'
             },
-            '.xui-icon-loading':{
-                $order:7,
-                'background-image': (xui.browser.ie&&xui.browser.ver<10)?'url('+xui.ini.img_busy+')':'',
-                "background-repeat":(xui.browser.ie&&xui.browser.ver<10)?"no-repeat":'',
-                "background-position":(xui.browser.ie&&xui.browser.ver<10)?"center center":''
-            },
-            ".xui-icon-loading:before":{
-                $order:7,
-                visibility:(xui.browser.ie&&xui.browser.ver<10)?'hidden':null
-            },
             ".xui-required":{
                 "color":"#ff0000 !important"
             },
             '.xui-alert':{
                 'background-color':'#ff6600 !important'
+            }, 
+            '.xui-icon-loading':{
+                $order:7,
+                width:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                height:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                'background-image': (xui.browser.ie&&xui.browser.ver<10)?'url('+xui.ini.img_busy+')':null,
+                "background-repeat":(xui.browser.ie&&xui.browser.ver<10)?"no-repeat":null,
+                "background-position":(xui.browser.ie&&xui.browser.ver<10)?"center center":null
             },
-            ".xui-err":{
-                "background-image":"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)",
-                "background-repeat":"no-repeat",
-                "background-position":"center center"
+            ".xui-icon-loading:before":{
+                $order:7,
+                visibility:(xui.browser.ie&&xui.browser.ver<10)?'hidden':null
+            },
+            ".xui-load-error":{
+                width:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                height:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                "background-image": (xui.browser.ie&&xui.browser.ver<=8)?"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)":null,
+                "background-repeat": (xui.browser.ie&&xui.browser.ver<=8)?"no-repeat":null,
+                "background-position": (xui.browser.ie&&xui.browser.ver<=8)?"center center":null
+            },
+            ".xui-load-error:before":{
+                $order:7,
+                visibility:(xui.browser.ie&&xui.browser.ver<=8)?'hidden':null
             }
         });
     },
@@ -21337,7 +21363,8 @@ Class("xui.UI",  "xui.absObj", {
             }
             //must be here
             //Avoid Empty Image src
-            if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_bg;
+            // ensoure to trigger load event of img
+            if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_blank;
 
             if((typeof (o=hashOut.renderer)=='function') || (typeof (o=hashIn.renderer)=='function'))
                 hashOut.caption=xui.adjustRes(o.call(profile,hashIn,hashOut));
@@ -28206,15 +28233,20 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 overflow:'hidden',
                 'z-index':10
             },
-            'INPUT, LABEL':{
+            LABEL:{
+               $order:100,
+               //don't change it in custom class or style
+               'padding-top':'4px',
+               'padding-bottom':'4px'            
+            },
+            INPUT:{
                $order:100,
                //don't change it in custom class or style
                'padding-top':'4px',
                'padding-left':'4px',
                'padding-right':'4px',
-               'padding-bottom':'4px'            
-            },
-            INPUT:{
+               'padding-bottom':'4px',
+
                "background-color":"transparent",
                //"background-image":xui.browser.ie687?'url(.)':null,
                border:0,
@@ -30900,9 +30932,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 margin:0,
                 border:0,
                 background:'none',
-                width:'auto',
                 height:'100%',
-                padding:'0 2px'
+                padding:'0 2px',
+
+                // for IE67
+                display: xui.$inlineBlock,
+                zoom:xui.browser.ie67?1:null,
+                width:(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
             ICONB:{
                 left:0,
@@ -31589,6 +31626,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'listbox':
                     case 'cmdbox':
                     case 'dropbutton':
+                        t.className += ' xui-ui-noshadow';
                         t.BOX.WRAP.INPUT.type='button';
                 }
                 if(type!='none'&&type!='input'&&type!='password'&&type!='button'&&type!='spin'&&type!='currency'&&type!='number'){
@@ -35298,24 +35336,25 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         CONTENT:{
                                 tagName : 'div',
                                 $order:1,
-                                className:'xui-icon-loading',
                                 style:'{_loadbg}',
-                                //for firefox2 image in -moz-inline-box cant change height bug
-                                IBWRAP:{
-                                    tagName : 'div',
-                                    IMAGE:{
-                                        tagName : 'img',
-                                        src:xui.ini.img_bg,
-                                        title:'{image}',
-                                        width:'{imgWidth}',
-                                        height:'{imgHeight}',
-                                        style:'{imgStyle}'
-                                    }
+                                ICON:{
+                                    className:'xuifont {_imageClass}',
+                                    style:"{_fontSize}",
+                                    text:'{iconFontCode}'
+                                },
+                                IMAGE:{
+                                    tagName : 'img',
+                                    src:xui.ini.img_bg,
+                                    title:'{image}',
+                                    width:'{imgWidth}',
+                                    height:'{imgHeight}',
+                                    style:'{imgStyle}'
                                 }
                         },
                         COMMENT:{
                             tagName : 'div',
                             text: '{comment}',
+                            style:'{commentDisplay}',
                             $order:2
                         }
                     },
@@ -35352,15 +35391,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             ITEM:{
                 display:xui.$inlineBlock,
-                zoom:xui.browser.ie6?1:null,
+                zoom:xui.browser.ie67?1:null,
                 position:'relative',
                 cursor:'pointer',
                 'vertical-align':'top',
-                margin:0,
-                'border-radius':'4px'
+                margin:0
             },
             ITEMFRAME:{
-                display:xui.browser.ie?'inline-block':'block',
+                display:xui.browser.ie67?xui.$inlineBlock:'block',
+                zoom:xui.browser.ie67?1:null,
                 position:'relative',
                 overflow:'hidden',
                 border:0,
@@ -35410,15 +35449,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var img=xui.use(src).get(0),path=img.src;
                     if(path!=xui.ini.img_bg){
                             var p=profile.properties,
-                                    nn=xui.use(src),
+                                  nn=xui.use(src),
                                   node=nn.get(0),
-                                  item=profile.getItemByDom(src);
+                                  item=profile.getItemByDom(src),
+                                  icon=profile.getSubNodeByItemId('ICON',item.id);
                             if(item.autoItemSize||p.autoItemSize){
                                 nn.attr('width','');nn.attr('height','');
                             }
-                            xui(node).parent(2).removeClass('xui-icon-loading'); 
+
+                            icon.removeClass('xui-icon-loading');
+                            // hide
+                            if(!item.iconFontCode && !item.imageClass){
+                                icon.addClass("xui-display-none"); 
+                            }
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                            node.style.visibility="visible";
+
+                            // don't show img_blank
+                            if(path==xui.ini.img_blank){
+                                node.style.visibility="hidden";
+                                node.style.display="none";
+                            }else{
+                                node.style.visibility="visible";
+                                node.style.display="";
+                            }
                             item._status='loaded';
                     }
                 },
@@ -35426,11 +35479,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var p=profile.properties,
                           nn=xui.use(src),
                           node=nn.get(0),
-                          item=profile.getItemByDom(src);
-                    xui(node).parent(2).removeClass('xui-icon-loading').addClass('xui-err');
-                    if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
+                          item=profile.getItemByDom(src),
+                          icon=profile.getSubNodeByItemId('ICON',item.id);
+
+                    icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
+                    node.style.display="none";
                     item._status='error';
                 }
             }
@@ -35443,8 +35498,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     this.boxing().refresh();
                 }
             },
-            loadingImg:"",
-            errImg:"",
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -35497,24 +35550,33 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         _prepareItem:function(profile, item){
             var p = profile.properties,
-                css=xui.CSS,
-                t;
+                css=xui.CSS, t;
 
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
+            if(t=item.itemWidth)item.itemWidth=css.$forceu(t);
+            if(t=item.itemHeight)item.itemHeight=css.$forceu(t);
+            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
+            item._tabindex = p.tabindex;
+
+            if(t=item.fontSize)item._fontSize='font-size:'+t+';'
+            if(!item.iconFontCode)item._imageClass='xui-icon-loading';
+            if(item.imageClass)item._imageClass +=' ' + item.imageClass;
+
+            if(item.flagText)item._flagStyle='display:block';
 
             item.caption = item.caption || '';
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
-            item._tabindex = p.tabindex;
-            if(item.flagText)item._flagStyle='display:block';
+            if(item.comment==='')item.commentDisplay='display:none;';
+
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
-                item._itemSize='width:'+css.$forceu(item.itemWidth)+'height:'+css.$forceu(item.itemHeight);
+                item._itemSize='width:'+css.$forceu(item.itemWidth)+';height:'+css.$forceu(item.itemHeight);
             }
-            if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },
         RenderTrigger:function(){
             this.boxing()._afterInsertItems(this);
@@ -35543,19 +35605,20 @@ Class("xui.UI.IconList", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-icon-loading xui-uiborder-radius xui-uitembg xui-showfocus {itemClass} {disabled}  {readonly}',
-                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle};{_itemDisplay};{_loadbg}',
-                    //for firefox2 image in -moz-inline-box cant change height bug
-                    IBWRAP:{
-                        tagName:'div',
-                        IMAGE:{
-                            tagName:'img',
-                            src:xui.ini.img_bg,
-                            title:'{image}',
-                            width:'{itemWidth}',
-                            height:'{itemHeight}',
-                            style:'{imgStyle}'
-                        }
+                    className:'xui-uiborder-radius xui-uitembg xui-showfocus {itemClass} {disabled}  {readonly}',
+                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle};{_itemDisplay};',
+                    ICON:{
+                        className:'xuifont {_imageClass}',
+                        style:"{_fontSize}",
+                        text:'{iconFontCode}'
+                    },
+                    IMAGE:{
+                        tagName:'img',
+                        src:xui.ini.img_bg,
+                        title:'{image}',
+                        width:'{itemWidth}',
+                        height:'{itemHeight}',
+                        style:'{imgStyle}'
                     },
                     FLAG:{
                         $order:20,
@@ -35569,6 +35632,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
         this.setTemplate(t);
     },
     Static:{
+        IMGNODE:1,
         Appearances:{
             KEY:{
                 overflow:'auto',
@@ -35585,7 +35649,7 @@ Class("xui.UI.IconList", "xui.UI.List",{
             ITEM:{
                 padding:0,
                 display:xui.$inlineBlock,
-                zoom:xui.browser.ie6?1:null,
+                zoom:xui.browser.ie67?1:null,
                 position:'relative',
                 cursor:'pointer',
                 'vertical-align':'top',
@@ -35609,28 +35673,44 @@ Class("xui.UI.IconList", "xui.UI.List",{
                 onLoad:function(profile,e,src){
                     var img=xui.use(src).get(0),path=img.src;
                     if(path!=xui.ini.img_bg){
-                        var p=profile.properties,
-                             nn=xui.use(src),
-                              node=nn.get(0),
-                              item=profile.getItemByDom(src);
-                        if(item.autoItemSize||p.autoItemSize){
-                            nn.attr('width','');nn.attr('height','');
-                        }                    
-                        xui(node).parent(2).removeClass('xui-icon-loading'); 
-                        nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                        node.style.visibility="visible";
-                        item._status='loaded';
+                            var p=profile.properties,
+                                  nn=xui.use(src),
+                                  node=nn.get(0),
+                                  item=profile.getItemByDom(src),
+                                  icon=profile.getSubNodeByItemId('ICON',item.id);
+                            if(item.autoItemSize||p.autoItemSize){
+                                nn.attr('width','');nn.attr('height','');
+                            }
+
+                            icon.removeClass('xui-icon-loading');
+                            // hide
+                            if(!item.iconFontCode && !item.imageClass){
+                                icon.addClass("xui-display-none"); 
+                            }
+                            nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
+
+                            // don't show img_blank
+                            if(path==xui.ini.img_blank){
+                                node.style.visibility="hidden";
+                                node.style.display="none";
+                            }else{
+                                node.style.visibility="visible";
+                                node.style.display="";
+                            }
+                            item._status='loaded';
                     }
                 },
                 onError:function(profile,e,src){
                     var p=profile.properties,
                           nn=xui.use(src),
                           node=nn.get(0),
-                          item=profile.getItemByDom(src);
-                    xui(node).parent(2).removeClass('xui-icon-loading').addClass('xui-err');
-                    if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
+                          item=profile.getItemByDom(src),
+                          icon=profile.getSubNodeByItemId('ICON',item.id);
+
+                    icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
+                    node.style.display="none";
                     item._status='error';
                 }
             }
@@ -35643,8 +35723,6 @@ Class("xui.UI.IconList", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
-            loadingImg:"",
-            errImg:"",
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -35683,16 +35761,20 @@ Class("xui.UI.IconList", "xui.UI.List",{
         },
         _prepareItem:function(profile, item){
             var p = profile.properties,
-            css=xui.CSS,    
-            t;
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+            css=xui.CSS, t;
+
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
             if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
             if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
             item._tabindex = p.tabindex;
+
+            if(t=item.fontSize)item._fontSize='font-size:'+t+';'
+            if(!item.iconFontCode)item._imageClass='xui-icon-loading';
+            if(item.imageClass)item._imageClass +=' ' + item.imageClass;
+
             if(item.flagText)item._flagStyle='display:block';
-            if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },
         RenderTrigger:function(){
             this.boxing()._afterInsertItems(this);

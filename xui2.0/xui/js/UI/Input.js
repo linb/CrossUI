@@ -171,15 +171,20 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 overflow:'hidden',
                 'z-index':10
             },
-            'INPUT, LABEL':{
+            LABEL:{
+               $order:100,
+               //don't change it in custom class or style
+               'padding-top':'4px',
+               'padding-bottom':'4px'            
+            },
+            INPUT:{
                $order:100,
                //don't change it in custom class or style
                'padding-top':'4px',
                'padding-left':'4px',
                'padding-right':'4px',
-               'padding-bottom':'4px'            
-            },
-            INPUT:{
+               'padding-bottom':'4px',
+
                "background-color":"transparent",
                //"background-image":xui.browser.ie687?'url(.)':null,
                border:0,

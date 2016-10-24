@@ -314,6 +314,7 @@ Class("xui.CSS", null,{
                 "sub{vertical-align:text-bottom;}"+
                 "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
                 "input,textarea,select{*font-size:100%;}"+
+                "::-ms-clear,::-ms-reveal{display: none;width:0;height:0;}"+
                 "button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}"+
                 (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+

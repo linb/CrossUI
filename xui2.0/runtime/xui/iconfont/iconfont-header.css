@@ -14,6 +14,8 @@
   -moz-osx-font-smoothing: grayscale;
   vertical-align:middle;
 }
+.xui-icon-error:before { content: "\e674"  !important; }
+.xui-load-error:before { content: "\e682"  !important; }
 
 .xui-icon-placeholder:before{
 	content: "\e62c";

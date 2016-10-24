@@ -143,7 +143,6 @@ Class('App', 'xui.Com',{
                 .setHost(host,"comboinput4")
                 .setLeft(160)
                 .setTop(16)
-                .setBorder(false)
                 .setListKey("test2")
             );
             
@@ -167,7 +166,7 @@ Class('App', 'xui.Com',{
                 .setLeft(160)
                 .setTop(50)
                 .setTabindex("2")
-                .setBorder(false)
+
                 .setItems([{"id":"a", "caption":"a"}, {"id":"b", "caption":"b"}, {"id":"c", "caption":"c"}])
             );
             
@@ -177,7 +176,7 @@ Class('App', 'xui.Com',{
                 .setTop(80)
                 .setHeight(48)
                 .setTabindex("3")
-                .setBorder(false)
+
                 .setMultiLines(true)
                 .setListKey("test2")
             );
@@ -188,7 +187,7 @@ Class('App', 'xui.Com',{
                 .setLeft(160)
                 .setTop(140)
                 .setTabindex("4")
-                .setBorder(false)
+
                 .setTipsErr("Format error")
                 .setValueFormat("^-?\\d\\d*$")
                 .setItems([{"id":"1", "caption":"1"}, {"id":"2", "caption":"2"}])
@@ -199,7 +198,7 @@ Class('App', 'xui.Com',{
                 .setLeft(160)
                 .setTop(170)
                 .setTabindex("5")
-                .setBorder(false)
+
                 .setType("cmdbox")
                 .beforeComboPop("_comboinput14_beforeComboPop")
             );
@@ -209,7 +208,7 @@ Class('App', 'xui.Com',{
                 .setLeft(160)
                 .setTop(200)
                 .setTabindex("6")
-                .setBorder(false)
+
                 .setListKey("test2")
                 .setCustomFunction({"getShowValue":function (profile, value) {
                 value = value || "";
@@ -222,7 +221,7 @@ Class('App', 'xui.Com',{
                 .setLeft(160)
                 .setTop(230)
                 .setTabindex("7")
-                .setBorder(false)
+
                 .setType("time")
             );
             
@@ -231,7 +230,7 @@ Class('App', 'xui.Com',{
                 .setLeft(160)
                 .setTop(260)
                 .setTabindex("8")
-                .setBorder(false)
+
                 .setType("color")
             );
             

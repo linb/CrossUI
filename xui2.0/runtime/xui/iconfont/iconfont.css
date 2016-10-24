@@ -14,6 +14,8 @@
   -moz-osx-font-smoothing: grayscale;
   vertical-align:middle;
 }
+.xui-icon-error:before { content: "\e674"  !important; }
+.xui-load-error:before { content: "\e682"  !important; }
 
 .xui-icon-placeholder:before{
 	content: "\e62c";
@@ -63,6 +65,7 @@
 .xui-css-ie8 :before{
     content: none !important;
 }
+
 .xui-icon-search:before { content: "\e619"; }
 .xui-uicmd-helpinput:before { content: "\e671"; }
 .xui-icon-zoomin:before { content: "\e61d"; }
@@ -101,7 +104,6 @@
 .xui-icon-singleleft:before { content: "\e673"; }
 .xui-uicmd-max:before { content: "\e60d"; }
 .xui-icon-last:before { content: "\e60f"; }
-.xui-icon-error:before { content: "\e674"; }
 .xui-icon-remove:before { content: "\e627"; }
 .xui-uicmd-pin:before { content: "\e628"; }
 .xui-icon-link:before { content: "\e63b"; }
@@ -136,14 +138,24 @@
 .xui-icon-doubleleft:before { content: "\e65d"; }
 .xui-icon-doubleright:before { content: "\e65e"; }
 .xui-icon-doubleup:before { content: "\e65f"; }
+.xui-icon-number5:before { content: "\e61c"; }
+.xui-icon-number4:before { content: "\e64c"; }
+.xui-icon-number7:before { content: "\e65a"; }
+.xui-icon-number6:before { content: "\e67a"; }
+.xui-icon-number3:before { content: "\e67b"; }
+.xui-icon-number0:before { content: "\e67c"; }
 .xui-icon-filter:before { content: "\e61a"; }
 .xui-uicmd-color:before { content: "\e62e"; }
 .xui-icon-breaklink:before { content: "\e642"; }
 .xui-icon-picture:before { content: "\e643"; }
+.xui-icon-number1:before { content: "\e67d"; }
 .xui-icon-back:before { content: "\e62d"; }
 .xui-icon-dragadd:before { content: "\e614"; }
 .xui-icon-formatclear:before { content: "\e644"; }
 .xui-uicmd-select:before { content: "\e66e"; }
+.xui-icon-number8:before { content: "\e67e"; }
+.xui-icon-number9:before { content: "\e67f"; }
+.xui-icon-number2:before { content: "\e680"; }
 .xui-uicmd-file:before { content: "\e66b"; }
 .xui-icon-triangle-up:before { content: "\e676"; }
 .xui-icon-dragstop:before { content: "\e651"; }
@@ -183,4 +195,5 @@
 .xui-icon-transparent:before { content: "\e60e"; }
 .xui-icon-menu:before { content: "\e611"; }
 .xui-icon-menu-checked:before { content: "\e82d"; }
+.xui-icon-numbers:before { content: "\e681"; }
 .xui-icon-xui:before { content: "\e61b"; }

@@ -1,10 +1,23 @@
 new function(){
-    xui.builtinFontIcon={
-            "xui-icon-xui":"&#xe61b",
+
+xui.builtinFontIcon={
+            "xui-icon-xui":'&#xe61b;',
+            "xui-load-error":'&#xe682;',
+            "xui-icon-numbers":'&#xe681;',
+            "xui-icon-number0":'&#xe67c;',
+            "xui-icon-number1":'&#xe67d;',
+            "xui-icon-number2":'&#xe680;',
+            "xui-icon-number3":'&#xe67b;',
+            "xui-icon-number4":'&#xe64c;',
+            "xui-icon-number5":'&#xe61c;',
+            "xui-icon-number6":'&#xe67a;',
+            "xui-icon-number7":'&#xe65a;',
+            "xui-icon-number8":'&#xe67e;',
+            "xui-icon-number9":'&#xe67f;',
             "xui-icon-placeholder":'&#xe62c;',
             "xui-icon-empty": '&#xe62c;',
-            "xui-icon-filter":'&#xe61a',
-            "xui-icon-search":'&#xe619',
+            "xui-icon-filter":'&#xe61a;',
+            "xui-icon-search":'&#xe619;',
             "xui-uicmd-helpinput": '&#xe671;',
             "xui-icon-zoomin": '&#xe61d;',
             "xui-icon-zoomout": '&#xe61e;',
@@ -2659,6 +2672,12 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-bottom-right-radius': '0 !important',
                 '-khtml-border-bottom-right-radius': '0 !important'
             },
+            '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-readonly .xui-ui-shadow-input':{
+                $order:15,
+               '-moz-box-shadow': 'none',
+               '-webkit-box-shadow': 'none',
+               'box-shadow': 'none'
+            },
             '.xui-uiborder-circle':{
                 $order:16,
                 'border-radius':'50%',
@@ -2692,7 +2711,7 @@ Class("xui.UI",  "xui.absObj", {
                 border:'none'
             },
             '.xui-uisb':{
-                position:'absolute',
+                position:'absolute'
             },
             '.xui-uisb-none':{
                 display:'none'
@@ -2830,26 +2849,34 @@ Class("xui.UI",  "xui.absObj", {
                 display:"block",
                 'white-space': 'nowrap'
             },
-            '.xui-icon-loading':{
-                $order:7,
-                'background-image': (xui.browser.ie&&xui.browser.ver<10)?'url('+xui.ini.img_busy+')':'',
-                "background-repeat":(xui.browser.ie&&xui.browser.ver<10)?"no-repeat":'',
-                "background-position":(xui.browser.ie&&xui.browser.ver<10)?"center center":''
-            },
-            ".xui-icon-loading:before":{
-                $order:7,
-                visibility:(xui.browser.ie&&xui.browser.ver<10)?'hidden':null
-            },
             ".xui-required":{
                 "color":"#ff0000 !important"
             },
             '.xui-alert':{
                 'background-color':'#ff6600 !important'
+            }, 
+            '.xui-icon-loading':{
+                $order:7,
+                width:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                height:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                'background-image': (xui.browser.ie&&xui.browser.ver<10)?'url('+xui.ini.img_busy+')':null,
+                "background-repeat":(xui.browser.ie&&xui.browser.ver<10)?"no-repeat":null,
+                "background-position":(xui.browser.ie&&xui.browser.ver<10)?"center center":null
             },
-            ".xui-err":{
-                "background-image":"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)",
-                "background-repeat":"no-repeat",
-                "background-position":"center center"
+            ".xui-icon-loading:before":{
+                $order:7,
+                visibility:(xui.browser.ie&&xui.browser.ver<10)?'hidden':null
+            },
+            ".xui-load-error":{
+                width:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                height:(xui.browser.ie&&xui.browser.ver<=8)?'1em':null,
+                "background-image": (xui.browser.ie&&xui.browser.ver<=8)?"url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAABAAAAAQAFzGrcMAAADdSURBVCjPfdGxTsJQGIbhpw20GgN1IZQBDQnGxvu/FEU3IjEBB5SKUsGkdTiCYeGb/pw803uixum1iMJ1KZdp40dpYQWNqBERuXItRY1YrPJspmm0wNAYlZkvdPR1jTVmtJAZgUhliaWFQs9IqYwxkKhUUnf64NuTD6kBMTK8mKgkigNZaGQBJGqfVh6PyFotCWC/NxMbiUL+/xhjJ9Y5kEriVk9HbBdAKZI7A+8ebLQVhigDmNvqKg7k3kZbamceOpSmbvSkXq1xIfSfKh2lPlf/pWa7Tx3A6c86vV+v4FNOkQDWwAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMC0wMi0xMVQxMTo1MDowOC0wNjowMNYQZfsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMDYtMDUtMDVUMTM6MjI6NDAtMDU6MDC/5P4aAAAAAElFTkSuQmCC)":null,
+                "background-repeat": (xui.browser.ie&&xui.browser.ver<=8)?"no-repeat":null,
+                "background-position": (xui.browser.ie&&xui.browser.ver<=8)?"center center":null
+            },
+            ".xui-load-error:before":{
+                $order:7,
+                visibility:(xui.browser.ie&&xui.browser.ver<=8)?'hidden':null
             }
         });
     },
@@ -4440,7 +4467,8 @@ Class("xui.UI",  "xui.absObj", {
             }
             //must be here
             //Avoid Empty Image src
-            if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_bg;
+            // ensoure to trigger load event of img
+            if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_blank;
 
             if((typeof (o=hashOut.renderer)=='function') || (typeof (o=hashIn.renderer)=='function'))
                 hashOut.caption=xui.adjustRes(o.call(profile,hashIn,hashOut));

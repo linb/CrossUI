@@ -12806,30 +12806,6 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-            getLoadingImg:{
-                $desc:"得到加载图片地址",
-                $rtn:"String"
-            },
-            setLoadingImg:{
-                $desc:"设置加载图片地址",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String",
-                    $force
-                ]
-            },
-            getErrImg:{
-                $desc:"得到加载错误代替图片地址",
-                $rtn:"String"
-            },
-            setErrImg:{
-                $desc:"设置加载错误代替图片地址",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String",
-                    $force
-                ]
-            },
             getAutoItemSize:{
                 $desc:"得到子项的尺寸是否随图片的大小自动变化",
                 $rtn:"Boolean"
@@ -13009,18 +12985,6 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){alert(o.getStatus('c'));});"+
                     "xui.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
-                ]
-            },
-           getLoadingImg:{
-                $desc:"得到加载图片地址",
-                $rtn:"String"
-            },
-            setLoadingImg:{
-                $desc:"设置加载图片地址",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String",
-                    $force
                 ]
             },
             getAutoItemSize:{
@@ -19109,17 +19073,14 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'itemHeight':'画廊项高度',
             'imgWidth':'画廊图片宽度',
             'imgHeight':'画廊图片高度',
-            'autoItemSize':'画廊项自动尺寸',
-            'loadingImg':'加载中图片',
-            'errImg':'加载失败图片'
+            'autoItemSize':'画廊项自动尺寸'
         },
         'xui_UI_IconList' : {
             'itemMargin':'图像项外补丁',
             'itemPadding':'图像项内补丁',
             'itemWidth':'图像项宽度',
             'itemHeight':'图像项高度',
-            'autoItemSize':'画廊项自动尺寸',
-            'loadingImg':'加载中图片'
+            'autoItemSize':'画廊项自动尺寸'
         },
         'xui_UI_RadioBox' : {
             'checkBox':'多选框样式',

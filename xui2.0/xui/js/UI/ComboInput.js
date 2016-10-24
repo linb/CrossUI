@@ -731,9 +731,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 margin:0,
                 border:0,
                 background:'none',
-                width:'auto',
                 height:'100%',
-                padding:'0 2px'
+                padding:'0 2px',
+
+                // for IE67
+                display: xui.$inlineBlock,
+                zoom:xui.browser.ie67?1:null,
+                width:(xui.browser.ie&&xui.browser.ver<=7)?'auto':null,
+                'overflow':(xui.browser.ie&&xui.browser.ver<=7)?'visible':null
             },
             ICONB:{
                 left:0,
@@ -1420,6 +1425,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'listbox':
                     case 'cmdbox':
                     case 'dropbutton':
+                        t.className += ' xui-ui-noshadow';
                         t.BOX.WRAP.INPUT.type='button';
                 }
                 if(type!='none'&&type!='input'&&type!='password'&&type!='button'&&type!='spin'&&type!='currency'&&type!='number'){

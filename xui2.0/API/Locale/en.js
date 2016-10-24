@@ -12895,30 +12895,6 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            getLoadingImg:{
-                $desc:"Gets the loading image source",
-                $rtn:"String"
-            },
-            setLoadingImg:{
-                $desc:"Sets the loading image source",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String",
-                    $force
-                ]
-            },
-            getErrImg:{
-                $desc:"Gets the error replacement image source",
-                $rtn:"String"
-            },
-            setErrImg:{
-                $desc:"Sets the error replacement image source",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String",
-                    $force
-                ]
-            },
             getAutoItemSize:{
                 $desc:"To determine whether the size of item change with the size of the picture  automatically",
                 $rtn:"Boolean"
@@ -13098,18 +13074,6 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.asyRun(function(){alert(o.getStatus('c'));});"+
                     "xui.asyRun(function(){alert(o.getStatus('c'));},3000);"+
                     "}"
-                ]
-            },
-            getLoadingImg:{
-                $desc:"Gets the loading image source",
-                $rtn:"String"
-            },
-            setLoadingImg:{
-                $desc:"Sets the loading image source",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String",
-                    $force
                 ]
             },
             getAutoItemSize:{

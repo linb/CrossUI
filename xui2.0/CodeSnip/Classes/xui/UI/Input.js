@@ -233,7 +233,6 @@ Class('App.xui_UI_Input', 'xui.Com',{
                 .setHost(host,"input4")
                 .setLeft(122)
                 .setTop(0)
-                .setBorder(false)
                 .setValue("normal")
             );
             
@@ -242,7 +241,6 @@ Class('App.xui_UI_Input', 'xui.Com',{
                 .setLeft(442)
                 .setTop(0)
                 .setTabindex("2")
-                .setBorder(false)
                 .setType("password")
                 .setValue("password")
             );
@@ -254,7 +252,6 @@ Class('App.xui_UI_Input', 'xui.Com',{
                 .setWidth(440)
                 .setHeight(48)
                 .setTabindex("3")
-                .setBorder(false)
                 .setMultiLines(true)
                 .setValue("textarea")
             );
@@ -264,7 +261,6 @@ Class('App.xui_UI_Input', 'xui.Com',{
                 .setLeft(122)
                 .setTop(96)
                 .setTabindex("4")
-                .setBorder(false)
                 .setReadonly(true)
                 .setValue("readonly")
             );
@@ -275,7 +271,6 @@ Class('App.xui_UI_Input', 'xui.Com',{
                 .setLeft(442)
                 .setTop(90)
                 .setTabindex("5")
-                .setBorder(false)
                 .setValue("disabled")
             );
             

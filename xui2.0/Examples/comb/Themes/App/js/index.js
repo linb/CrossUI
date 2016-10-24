@@ -1172,22 +1172,58 @@ Class('App', 'xui.Module',{
             host.tabs2.append(
                 xui.create("xui.UI.Gallery")
                 .setHost(host,"xui_ui_gallery18")
+                .setAutoItemSize(true)
                 .setItems([{
                     "id" : "a",
-                    "caption" : "item a",
+                    "caption" : "image",
                     "image" : "img/demo.gif",
                     "flagText" : "1"
                 },
                 {
                     "id" : "b",
-                    "caption" : "item b",
-                    "image" : "img/demo.gif",
-                    "flagText" : "5"
+                    "caption" : "imageClass",
+                    "imageClass" : "xui-icon-xui",
+                    "fontSize":"2em",
+                    "flagText" : "2"
                 },
                 {
                     "id" : "c",
-                    "caption" : "item c",
-                    "image" : "img/demo.gif"
+                    "caption" : "iconFontCode",
+                    "iconFontCode":"&#xe61a;",
+                    "fontSize":"3em"
+                },
+                {
+                    "id" : "d",
+                    "caption" : "combo 1",
+                    "comment" : "image and imageClass",
+                    "image" : "img/demo.gif",
+                    "imageClass" : "xui-icon-search"
+                },
+                {
+                    "id" : "e",
+                    "caption" : "combo 2",
+                    "comment" : "image and iconFontCode",
+                    "image" : "img/demo.gif",
+                    "iconFontCode":"&#xe61a;"
+                },
+                {
+                    "id" : "f",
+                    "caption" : "err",
+                    "image" : "img/demo_no.gif"
+                },
+                {
+                    "id" : "g",
+                    "caption":"err 1",
+                    "comment" : "image and imageClass",
+                    "imageClass" : "xui-icon-filter",
+                    "image" : "img/demo_no.gif"
+                },
+                {
+                    "id" : "h",
+                    "caption":"err 1",
+                    "comment" : "image and iconFontCode",
+                    "iconFontCode":"&#xe61a;",
+                    "image" : "img/demo_no.gif"
                 }])
                 .setLeft("44.166599999999995em")
                 .setTop("15em")
@@ -1200,18 +1236,45 @@ Class('App', 'xui.Module',{
                 .setHost(host,"xui_ui_iconlist19")
                 .setItems([{
                     "id" : "a",
-                    "caption" : "a",
-                    "image" : "img/demo.gif"
+                    "image" : "img/demo.gif",
+                    "flagText" : "1"
                 },
                 {
                     "id" : "b",
-                    "caption" : "b",
-                    "image" : "img/demo.gif"
+                    "imageClass" : "xui-icon-xui",
+                    "fontSize":"2em",
+                    "flagText" : "2"
                 },
                 {
                     "id" : "c",
-                    "caption" : "c",
-                    "image" : "img/demo.gif"
+                    "iconFontCode":"&#xe61a;",
+                    "fontSize":"3em"
+                },
+                {
+                    "id" : "d",
+                    "image" : "img/demo.gif",
+                    "imageClass" : "xui-icon-search"
+                },
+                {
+                    "id" : "e",
+                    "image" : "img/demo.gif",
+                    "iconFontCode":"&#xe61a;"
+                },
+                {
+                    "id" : "f",
+                    "image" : "img/demo_no.gif"
+                },
+                {
+                    "id" : "g",
+                    "imageClass" : "xui-icon-filter",
+                    "image" : "img/demo_no.gif"
+                },
+                {
+                    "id" : "h",
+                    "caption":"err 1",
+                    "comment" : "image and iconFontCode",
+                    "iconFontCode":"&#xe61a;",
+                    "image" : "img/demo_no.gif"
                 }])
                 .setLeft("44.166599999999995em")
                 .setTop("3.33333em")
@@ -1482,6 +1545,66 @@ Class('App', 'xui.Module',{
                     imageClass:"xui-icon-xui",
                     caption:"xui-icon-xui",
                     id:"xui"
+                },
+                {
+                    imageClass:"xui-load-error",
+                    caption:"xui-load-error",
+                    id:"_err"
+                },
+                {
+                    imageClass:"xui-icon-numbers",
+                    caption:"xui-icon-numbers",
+                    id:"_ns"
+                },
+                {
+                    imageClass:"xui-icon-number0",
+                    caption:"xui-icon-number0",
+                    id:"_n0"
+                },
+                {
+                    imageClass:"xui-icon-number1",
+                    caption:"xui-icon-number1",
+                    id:"_n1"
+                },
+                {
+                    imageClass:"xui-icon-number2",
+                    caption:"xui-icon-number2",
+                    id:"_n2"
+                },
+                {
+                    imageClass:"xui-icon-number3",
+                    caption:"xui-icon-number3",
+                    id:"_n3"
+                },
+                {
+                    imageClass:"xui-icon-number4",
+                    caption:"xui-icon-number4",
+                    id:"_4"
+                },
+                {
+                    imageClass:"xui-icon-number5",
+                    caption:"xui-icon-number5",
+                    id:"_5"
+                },
+                {
+                    imageClass:"xui-icon-number6",
+                    caption:"xui-icon-number6",
+                    id:"_n6"
+                },
+                {
+                    imageClass:"xui-icon-number7",
+                    caption:"xui-icon-number7",
+                    id:"_n7"
+                },
+                {
+                    imageClass:"xui-icon-number8",
+                    caption:"xui-icon-number8",
+                    id:"_n8"
+                },
+                {
+                    imageClass:"xui-icon-number9",
+                    caption:"xui-icon-number9",
+                    id:"_n9"
                 },
                 {
                     "imageClass" : "xui-icon-search",
@@ -3373,6 +3496,8 @@ Class('App', 'xui.Module',{
                 .setLabelGap("0.3333333333333333em")
                 .setLabelCaption("Spin")
                 .setType("spin")
+                .setUnit('px')
+                .setImageClass("xui-icon-star")
                 , "1");
             
             host.tabs2.append(

@@ -33,24 +33,25 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                         CONTENT:{
                                 tagName : 'div',
                                 $order:1,
-                                className:'xui-icon-loading',
                                 style:'{_loadbg}',
-                                //for firefox2 image in -moz-inline-box cant change height bug
-                                IBWRAP:{
-                                    tagName : 'div',
-                                    IMAGE:{
-                                        tagName : 'img',
-                                        src:xui.ini.img_bg,
-                                        title:'{image}',
-                                        width:'{imgWidth}',
-                                        height:'{imgHeight}',
-                                        style:'{imgStyle}'
-                                    }
+                                ICON:{
+                                    className:'xuifont {_imageClass}',
+                                    style:"{_fontSize}",
+                                    text:'{iconFontCode}'
+                                },
+                                IMAGE:{
+                                    tagName : 'img',
+                                    src:xui.ini.img_bg,
+                                    title:'{image}',
+                                    width:'{imgWidth}',
+                                    height:'{imgHeight}',
+                                    style:'{imgStyle}'
                                 }
                         },
                         COMMENT:{
                             tagName : 'div',
                             text: '{comment}',
+                            style:'{commentDisplay}',
                             $order:2
                         }
                     },
@@ -87,15 +88,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             },
             ITEM:{
                 display:xui.$inlineBlock,
-                zoom:xui.browser.ie6?1:null,
+                zoom:xui.browser.ie67?1:null,
                 position:'relative',
                 cursor:'pointer',
                 'vertical-align':'top',
-                margin:0,
-                'border-radius':'4px'
+                margin:0
             },
             ITEMFRAME:{
-                display:xui.browser.ie?'inline-block':'block',
+                display:xui.browser.ie67?xui.$inlineBlock:'block',
+                zoom:xui.browser.ie67?1:null,
                 position:'relative',
                 overflow:'hidden',
                 border:0,
@@ -145,15 +146,29 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     var img=xui.use(src).get(0),path=img.src;
                     if(path!=xui.ini.img_bg){
                             var p=profile.properties,
-                                    nn=xui.use(src),
+                                  nn=xui.use(src),
                                   node=nn.get(0),
-                                  item=profile.getItemByDom(src);
+                                  item=profile.getItemByDom(src),
+                                  icon=profile.getSubNodeByItemId('ICON',item.id);
                             if(item.autoItemSize||p.autoItemSize){
                                 nn.attr('width','');nn.attr('height','');
                             }
-                            xui(node).parent(2).removeClass('xui-icon-loading'); 
+
+                            icon.removeClass('xui-icon-loading');
+                            // hide
+                            if(!item.iconFontCode && !item.imageClass){
+                                icon.addClass("xui-display-none"); 
+                            }
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                            node.style.visibility="visible";
+
+                            // don't show img_blank
+                            if(path==xui.ini.img_blank){
+                                node.style.visibility="hidden";
+                                node.style.display="none";
+                            }else{
+                                node.style.visibility="visible";
+                                node.style.display="";
+                            }
                             item._status='loaded';
                     }
                 },
@@ -161,11 +176,13 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     var p=profile.properties,
                           nn=xui.use(src),
                           node=nn.get(0),
-                          item=profile.getItemByDom(src);
-                    xui(node).parent(2).removeClass('xui-icon-loading').addClass('xui-err');
-                    if(item.errImg||p.errImg)xui(node).parent(2).css('backgroundImage','url('+(item.errImg||p.errImg)+')');
+                          item=profile.getItemByDom(src),
+                          icon=profile.getSubNodeByItemId('ICON',item.id);
+
+                    icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
+                    node.style.display="none";
                     item._status='error';
                 }
             }
@@ -178,8 +195,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
-            loadingImg:"",
-            errImg:"",
             itemMargin:{
                 ini:6,
                 action:function(v){
@@ -232,24 +247,33 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         },
         _prepareItem:function(profile, item){
             var p = profile.properties,
-                css=xui.CSS,
-                t;
+                css=xui.CSS, t;
 
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize,loadingImg,errImg'),function(i){
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
+            if(t=item.itemWidth)item.itemWidth=css.$forceu(t);
+            if(t=item.itemHeight)item.itemHeight=css.$forceu(t);
+            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
+            item._tabindex = p.tabindex;
+
+            if(t=item.fontSize)item._fontSize='font-size:'+t+';'
+            if(!item.iconFontCode)item._imageClass='xui-icon-loading';
+            if(item.imageClass)item._imageClass +=' ' + item.imageClass;
+
+            if(item.flagText)item._flagStyle='display:block';
 
             item.caption = item.caption || '';
             if(item.caption==='')item.capDisplay='display:none;';
             item.comment = item.comment || '';
-            item._tabindex = p.tabindex;
-            if(item.flagText)item._flagStyle='display:block';
+            if(item.comment==='')item.commentDisplay='display:none;';
+
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
-                item._itemSize='width:'+css.$forceu(item.itemWidth)+'height:'+css.$forceu(item.itemHeight);
+                item._itemSize='width:'+css.$forceu(item.itemWidth)+';height:'+css.$forceu(item.itemHeight);
             }
-            if(item.loadingImg||p.loadingImg)item._loadbg="background-image:url("+(item.loadingImg||p.loadingImg)+")";
         },
         RenderTrigger:function(){
             this.boxing()._afterInsertItems(this);
