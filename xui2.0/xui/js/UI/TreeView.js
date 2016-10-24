@@ -6,7 +6,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
          n.className='xuicon {imageClass}';
          n.$fonticon = '{_fi_cls_file}';
-         n.text='{fontCode}';
+         n.text='{iconFontCode}';
          this.setTemplate(t);
     },
     Static:{

@@ -1,10 +1,10 @@
 new function(){
-    // IE67 don't support :before
-    // IE8 is buggy
-    if(xui.browser.ie678){
-        // fonticon fixed
-        xui.__iefix2={
+    xui.builtinFontIcon={
+            "xui-icon-xui":"&#xe61b",
+            "xui-icon-placeholder":'&#xe62c;',
             "xui-icon-empty": '&#xe62c;',
+            "xui-icon-filter":'&#xe61a',
+            "xui-icon-search":'&#xe619',
             "xui-uicmd-helpinput": '&#xe671;',
             "xui-icon-zoomin": '&#xe61d;',
             "xui-icon-zoomout": '&#xe61e;',
@@ -125,6 +125,11 @@ new function(){
             "xui-icon-menu":'&#xe611;',
             "xui-icon-menu-checked":'&#xe82d;'
         };
+    // IE67 don't support :before
+    // IE8 is buggy
+    if(xui.browser.ie678){
+        // fonticon fixed
+        xui.__iefix2=xui.builtinFontIcon;
     }
 };
 
@@ -4385,27 +4390,53 @@ Class("xui.UI",  "xui.absObj", {
                 hashOut.readonly= (xui.isSet(hashOut.readonly) && hashOut.readonly) ?'xui-ui-itemreadonly':'';
 
             //todo:remove the extra paras
-            hashOut.imageDisplay = (hashOut.imageClass||hashOut.image)?'':'display:none';
-
-            if(!hashOut.fontCode && hashOut.imageClass){
-                if(xui.__iefix2 && xui.__iefix2[hashOut.imageClass]){
-                    hashOut.fontCode=xui.__iefix2[hashOut.imageClass];
+            hashOut.imageDisplay = (hashOut.imageClass||hashOut.image||hashOut.iconFontCode)?'':'display:none';
+            var ifc;
+            if(hashOut.iconFontCode){
+                // iconFontCode + imageClass
+                if(hashOut.imageClass){
+                    // filter built-in class
+                    var arr=hashOut.imageClass.split(/\s+/);
+                    xui.filter(arr,function(s){
+                        return !xui.builtinFontIcon[s];
+                    });
+                    hashOut.imageClass = arr.join(' ');
                 }
-            }
-            if(!hashOut.fontCode){
-                if(hashOut.image){
-                    hashOut.imageClass='xui-icon-empty';
-                    hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
-                }
-                if(hashOut.imagePos)
-                    hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
-                else if(hashOut.image)
-                    hashOut.backgroundPosition='background-position:center;';
+            }else{
+                // for ie687
+                if(hashOut.imageClass){
+                    var arr=hashOut.imageClass.split(/\s+/);
+                    xui.arr.each(arr,function(s){
+                        if(xui.builtinFontIcon[s]){
+                            ifc=xui.builtinFontIcon[s];
+                            return;
+                        }                            
+                    },null,true);
 
-                if(hashOut.imageRepeat)
-                    hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
-                else if(hashOut.image)
-                    hashOut.backgroundRepeat='background-repeat:no-repeat;';
+                    if(ifc && xui.__iefix2){
+                        hashOut.iconFontCode=ifc;
+                        xui.filter(arr,function(s){
+                            return !xui.builtinFontIcon[s];
+                        });
+                    }
+                    hashOut.imageClass = arr.join(' ');
+                }
+                if(!ifc){
+                    // imageClass + image
+                    if(hashOut.image){
+                        hashOut.imageClass='xui-icon-placeholder';
+                        hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+                    }
+                    if(hashOut.imagePos)
+                        hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
+                    else if(hashOut.image)
+                        hashOut.backgroundPosition='background-position:center;';
+
+                    if(hashOut.imageRepeat)
+                        hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
+                    else if(hashOut.image)
+                        hashOut.backgroundRepeat='background-repeat:no-repeat;';
+                }
             }
             //must be here
             //Avoid Empty Image src
@@ -4416,7 +4447,61 @@ Class("xui.UI",  "xui.absObj", {
 
             return hashOut;
         },
+        $iconAction:function(profile,oldImageClass){
+            var p=profile.properties,
+                icon=profile.getSubNode('ICON'),
+                dispaly = (p.imageClass||p.image||p.iconFontCode)?'':'display:none',
+                ifc;
 
+            // clear all first
+            icon.css('backgroundImage',"none");
+            icon.removeClass('xui-icon-placeholder');
+            if(p.imageClass)icon.removeClass(p.imageClass);
+            if(oldImageClass)icon.removeClass(oldImageClass);
+            icon.html('');
+
+            if(p.iconFontCode){
+                icon.html(p.iconFontCode);
+                // iconFontCode + imageClass
+                if(p.imageClass){
+                    // filter built-in class
+                    var arr=p.imageClass.split(/\s+/);
+                    xui.filter(arr,function(s){
+                        return !xui.builtinFontIcon[s];
+                    });
+                    icon.addClass(arr.join(' '));
+                }
+            }else{
+                // for ie687
+                if(p.imageClass){
+                    var arr=p.imageClass.split(/\s+/);
+                    xui.arr.each(arr,function(s){
+                        if(xui.builtinFontIcon[s]){
+                            ifc=xui.builtinFontIcon[s];
+                            return;
+                        }                            
+                    },null,true);
+                    if(ifc && xui.__iefix2){
+                        p.iconFontCode=ifc;
+                        xui.filter(arr,function(s){
+                            return !xui.builtinFontIcon[s];
+                        });
+                    }
+                    icon.addClass(arr.join(' '));
+                }
+                if(p.iconFontCode){
+                    icon.html(p.iconFontCode);
+                }
+                if(!ifc){
+                    // imageClass + image
+                    if(p.image){
+                        icon.addClass('xui-icon-placeholder');
+                        icon.css('backgroundImage', 'url('+xui.adjustRes(p.image)+')');
+                    }
+                }
+            }
+            icon.css('display',dispaly);
+        },
         cacheData:function(key, obj){
             xui.set(xui.$cache,['UIDATA', key], obj);
             return this;
@@ -7296,7 +7381,7 @@ new function(){
                     $order:1,
                     className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                    text:'{fontCode}'
+                    text:'{iconFontCode}'
                 },
                 CAPTION:{
                     $order:2,
@@ -7366,16 +7451,24 @@ new function(){
                 html:null,
                 image:{
                     format:'image',
-                    action: function(value){
-                        this.getSubNode('ICON')
-                            .css('display',value?'':'none')
-                            .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
+                    action: function(v){
+                        xui.UI.$iconAction(this);
                     }
                 },
                 imagePos:{
                     action: function(value){
-                        this.getSubNode('ICON')
-                            .css('backgroundPosition', value);
+                        this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                    }
+                },
+                imageClass: {
+                    combobox : xui.toArr(xui.builtinFontIcon,true),
+                    action:function(v,ov){
+                        xui.UI.$iconAction(this, ov);
+                    }
+                },
+                iconFontCode:{
+                    action:function(v){
+                        xui.UI.$iconAction(this);
                     }
                 },
                 caption:{

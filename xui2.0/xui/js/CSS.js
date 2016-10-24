@@ -399,7 +399,6 @@ Class("xui.CSS", null,{
     },
     Initialize:function(){
         var b=xui.browser,
-// cross browser reset 
             css =  ".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
@@ -465,7 +464,10 @@ Class("xui.CSS", null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"
+            ".xui-node-tips{background-color:#FDF8D2;}"+
+            // must here for get correct size
+            ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
+            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

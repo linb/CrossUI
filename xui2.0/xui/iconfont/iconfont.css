@@ -14,16 +14,12 @@
   -moz-osx-font-smoothing: grayscale;
   vertical-align:middle;
 }
-.xuifont, .xuicon{
-  font-size:1.3333333333333333em;
-  line-height:1em;
-}
 
-.xuicon{
-  margin: 0 .25em;
-  /* for IE67 */
-  *height:1em;
-  *width:1em;
+.xui-icon-placeholder:before{
+	content: "\e62c";
+	display:inline-block;
+	height:1em;
+	width:1em;
 }
 
 .xui-icon-empty:before{
@@ -67,7 +63,7 @@
 .xui-css-ie8 :before{
     content: none !important;
 }
-
+.xui-icon-search:before { content: "\e619"; }
 .xui-uicmd-helpinput:before { content: "\e671"; }
 .xui-icon-zoomin:before { content: "\e61d"; }
 .xui-icon-zoomout:before { content: "\e61e"; }
@@ -140,6 +136,7 @@
 .xui-icon-doubleleft:before { content: "\e65d"; }
 .xui-icon-doubleright:before { content: "\e65e"; }
 .xui-icon-doubleup:before { content: "\e65f"; }
+.xui-icon-filter:before { content: "\e61a"; }
 .xui-uicmd-color:before { content: "\e62e"; }
 .xui-icon-breaklink:before { content: "\e642"; }
 .xui-icon-picture:before { content: "\e643"; }
@@ -186,3 +183,4 @@
 .xui-icon-transparent:before { content: "\e60e"; }
 .xui-icon-menu:before { content: "\e611"; }
 .xui-icon-menu-checked:before { content: "\e82d"; }
+.xui-icon-xui:before { content: "\e61b"; }

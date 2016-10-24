@@ -110,7 +110,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         $order:2,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                        text:'{fontCode}'
+                                        text:'{iconFontCode}'
                                     },
                                     CAPTION:{
                                         $order:3,

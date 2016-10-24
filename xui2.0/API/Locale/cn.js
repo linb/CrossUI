@@ -9870,7 +9870,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
-            },            
+            },
             onClick:{
                 $desc:"当鼠标单击时调用",
                 $paras:[
@@ -18873,6 +18873,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'caption':'标题文字',
             'image':'图像路径',
             'imagePos':'图像背景偏移',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码',
             'hAlign':'水平对齐方式',
             'fontColor':'字体颜色',
             'fontSize':'字体大小',

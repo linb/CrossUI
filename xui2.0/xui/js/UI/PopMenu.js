@@ -289,9 +289,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
-                        className:'xuicon xui-icon-empty {imageClass}',
+                        className:'xuicon xui-icon-placeholder {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}',
-                        text:'{fontCode}'
+                        text:'{iconFontCode}'
                     },
                     CAPTION:{
                         text : '{caption}',

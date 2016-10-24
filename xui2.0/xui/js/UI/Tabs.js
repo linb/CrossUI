@@ -342,7 +342,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             $order:0,
                                             className:'xuicon {imageClass}',
                                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                            text:'{fontCode}'
+                                            text:'{iconFontCode}'
                                         },
                                         CAPTION:{
                                             text: '{caption}',

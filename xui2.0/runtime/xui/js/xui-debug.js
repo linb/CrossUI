@@ -2616,11 +2616,12 @@ Class('xui.Thread',null,{
             return self;
         },
         abort:function(flag){
-            var t=this.profile;
+            var t=this.profile,onEnd=t.onEnd,id=t.id;
             t.status="stop";
             xui.clearTimeout(t._asy);
-            xui.tryF(t.onEnd, [t.id,flag]);
             this.__gc();
+            // at last
+            xui.tryF(onEnd, [id,flag]);
         },
         links:function(thread){
             var p=this.profile, onEnd=p.onEnd, id=p.id;
@@ -8561,7 +8562,6 @@ Class('xui.Event',null,{
     },
     Initialize:function(){
         var b=xui.browser,
-// cross browser reset 
             css =  ".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
@@ -8627,7 +8627,10 @@ Class('xui.Event',null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"
+            ".xui-node-tips{background-color:#FDF8D2;}"+
+            // must here for get correct size
+            ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
+            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -16893,12 +16896,12 @@ Class("xui.Tips", null,{
         }
     }
 });new function(){
-    // IE67 don't support :before
-    // IE8 is buggy
-    if(xui.browser.ie678){
-        // fonticon fixed
-        xui.__iefix2={
+    xui.builtinFontIcon={
+            "xui-icon-xui":"&#xe61b",
+            "xui-icon-placeholder":'&#xe62c;',
             "xui-icon-empty": '&#xe62c;',
+            "xui-icon-filter":'&#xe61a',
+            "xui-icon-search":'&#xe619',
             "xui-uicmd-helpinput": '&#xe671;',
             "xui-icon-zoomin": '&#xe61d;',
             "xui-icon-zoomout": '&#xe61e;',
@@ -17019,6 +17022,11 @@ Class("xui.Tips", null,{
             "xui-icon-menu":'&#xe611;',
             "xui-icon-menu-checked":'&#xe82d;'
         };
+    // IE67 don't support :before
+    // IE8 is buggy
+    if(xui.browser.ie678){
+        // fonticon fixed
+        xui.__iefix2=xui.builtinFontIcon;
     }
 };
 
@@ -21279,27 +21287,53 @@ Class("xui.UI",  "xui.absObj", {
                 hashOut.readonly= (xui.isSet(hashOut.readonly) && hashOut.readonly) ?'xui-ui-itemreadonly':'';
 
             //todo:remove the extra paras
-            hashOut.imageDisplay = (hashOut.imageClass||hashOut.image)?'':'display:none';
-
-            if(!hashOut.fontCode && hashOut.imageClass){
-                if(xui.__iefix2 && xui.__iefix2[hashOut.imageClass]){
-                    hashOut.fontCode=xui.__iefix2[hashOut.imageClass];
+            hashOut.imageDisplay = (hashOut.imageClass||hashOut.image||hashOut.iconFontCode)?'':'display:none';
+            var ifc;
+            if(hashOut.iconFontCode){
+                // iconFontCode + imageClass
+                if(hashOut.imageClass){
+                    // filter built-in class
+                    var arr=hashOut.imageClass.split(/\s+/);
+                    xui.filter(arr,function(s){
+                        return !xui.builtinFontIcon[s];
+                    });
+                    hashOut.imageClass = arr.join(' ');
                 }
-            }
-            if(!hashOut.fontCode){
-                if(hashOut.image){
-                    hashOut.imageClass='xui-icon-empty';
-                    hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
-                }
-                if(hashOut.imagePos)
-                    hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
-                else if(hashOut.image)
-                    hashOut.backgroundPosition='background-position:center;';
+            }else{
+                // for ie687
+                if(hashOut.imageClass){
+                    var arr=hashOut.imageClass.split(/\s+/);
+                    xui.arr.each(arr,function(s){
+                        if(xui.builtinFontIcon[s]){
+                            ifc=xui.builtinFontIcon[s];
+                            return;
+                        }                            
+                    },null,true);
 
-                if(hashOut.imageRepeat)
-                    hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
-                else if(hashOut.image)
-                    hashOut.backgroundRepeat='background-repeat:no-repeat;';
+                    if(ifc && xui.__iefix2){
+                        hashOut.iconFontCode=ifc;
+                        xui.filter(arr,function(s){
+                            return !xui.builtinFontIcon[s];
+                        });
+                    }
+                    hashOut.imageClass = arr.join(' ');
+                }
+                if(!ifc){
+                    // imageClass + image
+                    if(hashOut.image){
+                        hashOut.imageClass='xui-icon-placeholder';
+                        hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+                    }
+                    if(hashOut.imagePos)
+                        hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
+                    else if(hashOut.image)
+                        hashOut.backgroundPosition='background-position:center;';
+
+                    if(hashOut.imageRepeat)
+                        hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
+                    else if(hashOut.image)
+                        hashOut.backgroundRepeat='background-repeat:no-repeat;';
+                }
             }
             //must be here
             //Avoid Empty Image src
@@ -21310,7 +21344,61 @@ Class("xui.UI",  "xui.absObj", {
 
             return hashOut;
         },
+        $iconAction:function(profile,oldImageClass){
+            var p=profile.properties,
+                icon=profile.getSubNode('ICON'),
+                dispaly = (p.imageClass||p.image||p.iconFontCode)?'':'display:none',
+                ifc;
 
+            // clear all first
+            icon.css('backgroundImage',"none");
+            icon.removeClass('xui-icon-placeholder');
+            if(p.imageClass)icon.removeClass(p.imageClass);
+            if(oldImageClass)icon.removeClass(oldImageClass);
+            icon.html('');
+
+            if(p.iconFontCode){
+                icon.html(p.iconFontCode);
+                // iconFontCode + imageClass
+                if(p.imageClass){
+                    // filter built-in class
+                    var arr=p.imageClass.split(/\s+/);
+                    xui.filter(arr,function(s){
+                        return !xui.builtinFontIcon[s];
+                    });
+                    icon.addClass(arr.join(' '));
+                }
+            }else{
+                // for ie687
+                if(p.imageClass){
+                    var arr=p.imageClass.split(/\s+/);
+                    xui.arr.each(arr,function(s){
+                        if(xui.builtinFontIcon[s]){
+                            ifc=xui.builtinFontIcon[s];
+                            return;
+                        }                            
+                    },null,true);
+                    if(ifc && xui.__iefix2){
+                        p.iconFontCode=ifc;
+                        xui.filter(arr,function(s){
+                            return !xui.builtinFontIcon[s];
+                        });
+                    }
+                    icon.addClass(arr.join(' '));
+                }
+                if(p.iconFontCode){
+                    icon.html(p.iconFontCode);
+                }
+                if(!ifc){
+                    // imageClass + image
+                    if(p.image){
+                        icon.addClass('xui-icon-placeholder');
+                        icon.css('backgroundImage', 'url('+xui.adjustRes(p.image)+')');
+                    }
+                }
+            }
+            icon.css('display',dispaly);
+        },
         cacheData:function(key, obj){
             xui.set(xui.$cache,['UIDATA', key], obj);
             return this;
@@ -24190,7 +24278,7 @@ new function(){
                     $order:1,
                     className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                    text:'{fontCode}'
+                    text:'{iconFontCode}'
                 },
                 CAPTION:{
                     $order:2,
@@ -24260,16 +24348,24 @@ new function(){
                 html:null,
                 image:{
                     format:'image',
-                    action: function(value){
-                        this.getSubNode('ICON')
-                            .css('display',value?'':'none')
-                            .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
+                    action: function(v){
+                        xui.UI.$iconAction(this);
                     }
                 },
                 imagePos:{
                     action: function(value){
-                        this.getSubNode('ICON')
-                            .css('backgroundPosition', value);
+                        this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                    }
+                },
+                imageClass: {
+                    combobox : xui.toArr(xui.builtinFontIcon,true),
+                    action:function(v,ov){
+                        xui.UI.$iconAction(this, ov);
+                    }
+                },
+                iconFontCode:{
+                    action:function(v){
+                        xui.UI.$iconAction(this);
                     }
                 },
                 caption:{
@@ -26927,7 +27023,7 @@ Class("xui.UI.Label", "xui.UI",{
                 $order:0,
                 className:'xuicon {imageClass}',
                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                text:'{fontCode}'
+                text:'{iconFontCode}'
             },
             CAPTION:{
                 text : '{caption}',
@@ -26949,20 +27045,26 @@ Class("xui.UI.Label", "xui.UI",{
             },
             image:{
                 format:'image',
-                action: function(value){
-                    var self=this,k=self.keys;
-                    self.getSubNodes('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
+                action: function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             imagePos:{
                 action: function(value){
-                    var self=this,k=self.keys;
-                    self.getSubNodes('ICON')
-                        .css('backgroundPosition', value);
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
-            },            
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
+                }
+            },
             hAlign:{
                 ini:'right',
                 listbox:['left','center','right'],
@@ -27208,7 +27310,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                     $order:1,
                     className:'xuicon {imageClass}',
                     style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                    text:'{fontCode}' 
+                    text:'{iconFontCode}' 
                 },
                 CAPTION:{
                     $order:2,
@@ -27261,16 +27363,24 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             value:false,
             image:{
                 format:'image',
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value)+')'):"");
+                action: function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             imagePos:{
                 action: function(value){
-                    this.getSubNode('ICON')
-                        .css('backgroundPosition', value);
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             caption:{
@@ -28081,8 +28191,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                'z-index':1,
                top:0,
                left:0,
-               position:'absolute',
-               'padding-top':'.25em'
+               position:'absolute'
             },
             WRAP:{
                 left:0,
@@ -28097,15 +28206,17 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 overflow:'hidden',
                 'z-index':10
             },
-            INPUT:{
+            'INPUT, LABEL':{
+               $order:100,
                //don't change it in custom class or style
                'padding-top':'4px',
                'padding-left':'4px',
                'padding-right':'4px',
-               'padding-bottom':'4px',
-
+               'padding-bottom':'4px'            
+            },
+            INPUT:{
                "background-color":"transparent",
-               "background-image":xui.browser.ie687?'url(.)':null,
+               //"background-image":xui.browser.ie687?'url(.)':null,
                border:0,
                margin:0,
                // default
@@ -28113,6 +28224,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
 
                'margin-top':xui.browser.ie67?'-1px':null,
                position:'relative',
+               'z-index':10,
                //give default size
                width:'8.5em',
 
@@ -28862,8 +28974,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label.cssRegion({
                     left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+$hborder*2):0,labelfz),
                     top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
-                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
-                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
+                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)-paddingW),labelfz),
+                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)-paddingH),labelfz)
                 });
 
             iL += (iW||0) + $hborder*2;
@@ -30528,7 +30640,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     },
     /*Initialize*/
     Initialize:function(){
-        this.addTemplateKeys(['FILE','MID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
+        this.addTemplateKeys(['ICONB','ICON','UNIT','FILE','MID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
         //modify default template for shell
         var t = this.getTemplate();
         xui.merge(t.FRAME.BORDER,{
@@ -30546,7 +30658,26 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             }
         },'all');
-        t.FRAME.BORDER.BOX.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat {_radius_input} xui-uibase';
+        var box=t.FRAME.BORDER.BOX;
+        box.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat {_radius_input} xui-uibase';
+        box.ICONB={
+            tagName:'button',
+            className:'xui-ui-unselectable xui-nofocus',
+            tabindex: '-1',
+            ICON:{
+                className:'xuifont {imageClass}',
+                //for cover xuicon
+                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                text:'{iconFontCode}'
+            }
+        };
+        box.UNIT={
+            tagName:'button',
+            tabindex: '-1',
+            className:'xui-ui-unselectable xui-nofocus',
+            text:'{unit}'
+        };
+
         t.FRAME.POOL={};
         t.className +=' {typecls}';
 
@@ -30761,6 +30892,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 // for IE8
                 overflow:'visible'
+            },
+            'ICONB, UNIT':{
+                'z-index':0,
+                position:'absolute',
+                padding:0,
+                margin:0,
+                border:0,
+                background:'none',
+                width:'auto',
+                height:'100%',
+                padding:'0 2px'
+            },
+            ICONB:{
+                left:0,
+                top:0
+            },
+            ICON:{
+                // for right size in onresize
+                width:'1em'
+            },
+            UNIT:{
+                top:0,
+                right:0
             },
             CMD:{
                 $order:2,
@@ -31135,7 +31289,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // yyyy-mm-dd
             // yyyy/mm/dd
             dateEditorTpl:"",
-            
             // for number&currency
             precision:2,
             groupingSeparator:",",
@@ -31148,6 +31301,43 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             popCtrlEvents:{
                 ini:{}
+            },
+            image:{
+                format:'image',
+                action: function(){
+                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    xui.UI.$iconAction(this);
+                    this.boxing().reLayout(true);
+                }
+            },
+            imagePos:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    xui.UI.$iconAction(this, ov);
+                    this.boxing().reLayout(true);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    xui.UI.$iconAction(this);
+                    this.boxing().reLayout(true);
+                }
+            },
+            unit:{
+                ini:"",
+                action: function(v){
+                    var ns=this;
+                    if(ns.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    ns.getSubNode('UNIT').html(v);
+                    ns.boxing().reLayout(true);
+                }
             },
             numberTpl:{
                 ini:"",
@@ -31514,12 +31704,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return value;
         },
         _onresize:function(profile,width,height){
-             var prop = profile.properties,
+            var prop = profile.properties,
                  type = prop.type,
                 // if any node use other font-size which does not equal to xui-node, use 'px' 
                 f=function(k){if(!k) return null; k=profile.getSubNode(k); return k;},
                 root=f('KEY'),
                 v1=f('INPUT'),
+                icb=f('ICONB'),
+                ut=f('UNIT'),
                 box = f('BOX'), 
                 label = f('LABEL'),
                 cmdbtn=f(prop.commandBtn!='none'?'CMD':null),
@@ -31536,7 +31728,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
                 clsname='xui-node xui-input-input',
-                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
+                icbw=isB?0:(prop.image||prop.imageClass)?icb.offsetWidth(true):0,
+                utw=isB?0:prop.unit?ut.offsetWidth(true):0;
+
+            if(icbw)v1.css('paddingLeft',adjustunit(icbw,icb));
+            if(utw)v1.css('paddingRight',adjustunit(utw,ut));
+
+            var paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
                 paddingW=isB?0:Math.round(v1._paddingW()/2)*2,
                 btnw, autoH;
 
@@ -31744,7 +31942,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $order:1,
                             className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                            text:'{fontCode}'
+                            text:'{iconFontCode}'
                         },
                         CAPTION : {
                             text:   '{caption}',
@@ -31830,16 +32028,24 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             image:{
                 format:'image',
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):"");
+                action: function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             imagePos:{
                 action: function(value){
-                    this.getSubNode('ICON')
-                        .css('backgroundPosition', value);
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             hAlign:{
@@ -32066,7 +32272,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
         //simple list
         for(i=0;i<l;i++){
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-icon-placeholder">'+(xui.__iefix2&&xui.__iefix2['xui-icon-placeholder']||'')+'</span>');
             if((i+1)%17==0)arr.push('<br />');
         }
         //data
@@ -32109,7 +32315,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         className:'xui-uibar-cmdl',
                         SPACE:{
                             className:'xuifont',
-                            $fonticon:'xui-icon-empty'
+                            $fonticon:'xui-icon-placeholder'
                         }
                     },
                     BARCMDR:{
@@ -34470,7 +34676,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $order:10,
                             className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                            text:'{fontCode}'
+                            text:'{iconFontCode}'
                         },
                         CAPTION:{
                             text : '{caption}',
@@ -35582,7 +35788,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             $order:0,
                             className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                            text:'{fontCode}'
+                            text:'{iconFontCode}'
                         },
                         CAPTION:{
                             tabindex: '{tabindex}',
@@ -35804,16 +36010,24 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             },
             image:{
                 format:'image',
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
+                action: function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             imagePos:{
                 action: function(value){
-                    this.getSubNode('ICON')
-                        .css('backgroundPosition', value);
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             html:{
@@ -36772,7 +36986,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             $order:0,
                                             className:'xuicon {imageClass}',
                                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                            text:'{fontCode}'
+                                            text:'{iconFontCode}'
                                         },
                                         CAPTION:{
                                             text: '{caption}',
@@ -38167,7 +38381,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         $order:1,
                         className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                        text:'{fontCode}'
+                        text:'{iconFontCode}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -38254,7 +38468,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                         $order:10,
                         className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                        text:'{fontCode}'
+                        text:'{iconFontCode}'
                     },
                     CAPTION:{
                         $order:11,
@@ -38656,7 +38870,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 $order:6,
                                 className:'xuicon {imageClass}',
                                 style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                text:'{fontCode}'
+                                text:'{iconFontCode}'
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
@@ -39216,7 +39430,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 oitem._pid=pid;
 
             // set 'visible' will show when parent call .height()
-            item._fi_togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-icon-empty':'xui-uicmd-none');
+            item._fi_togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-icon-placeholder':'xui-uicmd-none');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
@@ -39418,7 +39632,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
          n.className='xuicon {imageClass}';
          n.$fonticon = '{_fi_cls_file}';
-         n.text='{fontCode}';
+         n.text='{iconFontCode}';
          this.setTemplate(t);
     },
     Static:{
@@ -39808,9 +40022,9 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
-                        className:'xuicon xui-icon-empty {imageClass}',
+                        className:'xuicon xui-icon-placeholder {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}',
-                        text:'{fontCode}'
+                        text:'{iconFontCode}'
                     },
                     CAPTION:{
                         text : '{caption}',
@@ -40503,7 +40717,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     tagName:'div',
                     HANDLER:{
                         className:'xuifont',
-                        $fonticon:'xui-icon-empty',
+                        $fonticon:'xui-icon-placeholder',
                         style:'{handler}'
                     },
                     ITEMS:{
@@ -40526,7 +40740,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                         $order:1,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                        text:'{fontCode}'
+                                        text:'{iconFontCode}'
                                     },
                                     CAPTION:{
                                         $order:2,
@@ -40913,7 +41127,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         style:'{grpDisplay} {groupStyle}',
                         HANDLER:{
                             className:'xuifont',
-                            $fonticon:'xui-icon-empty',
+                            $fonticon:'xui-icon-placeholder',
                             style:'{mode2}'
                         },
                         LIST:{
@@ -40952,7 +41166,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                         $order:1,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}',
-                                        text:'{fontCode}'
+                                        text:'{iconFontCode}'
                                     },
                                     CAPTION:{
                                         $order:2,
@@ -45847,10 +46061,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         shift=keys.shiftKey,
                         ctrl=keys.ctrlKey,
                         cur = xui(src),
-                        body11 = profile.getSubNode('BODY11'),
-                        body12 = profile.getSubNode('BODY12'),
-                        body21 = profile.getSubNode('BODY21'),
-                        body22 = profile.getSubNode('BODY22'),
+                        body11 = profile.getSubNode('SCROLL11'),
+                        body12 = profile.getSubNode('SCROLL12'),
+                        body21 = profile.getSubNode('SCROLL21'),
+                        body22 = profile.getSubNode('SCROLL22'),
                         keyid=new RegExp("^"+profile.box.$Keys.CELLA+":"+profile.serialId+":"),
                         hasBody12 = !!body12.offsetWidth() ,
                         hasBody21 = !!body21.offsetWidth() ,
@@ -49461,7 +49675,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         $order:0,
                         className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                        text:'{fontCode}'
+                        text:'{iconFontCode}'
                     },
                     CAPTION:{
                         $order:1,
@@ -49853,16 +50067,24 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             image:{
                 format:'image',
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
+                action: function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             imagePos:{
                 action: function(value){
-                    this.getSubNode('ICON')
-                        .css('backgroundPosition', value);
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             // setCaption and getCaption
@@ -51187,7 +51409,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                         $order:2,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                        text:'{fontCode}'
+                                        text:'{iconFontCode}'
                                     },
                                     CAPTION:{
                                         $order:3,

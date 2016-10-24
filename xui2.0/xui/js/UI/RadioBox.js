@@ -19,7 +19,7 @@ Class("xui.UI.RadioBox", "xui.UI.List",{
                         $order:1,
                         className:'xuicon {imageClass}',
                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                        text:'{fontCode}'
+                        text:'{iconFontCode}'
                     },
                     CAPTION:{
                         text : '{caption}',

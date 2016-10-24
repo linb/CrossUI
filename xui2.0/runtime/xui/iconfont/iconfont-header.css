@@ -14,16 +14,12 @@
   -moz-osx-font-smoothing: grayscale;
   vertical-align:middle;
 }
-.xuifont, .xuicon{
-  font-size:1.3333333333333333em;
-  line-height:1em;
-}
 
-.xuicon{
-  margin: 0 .25em;
-  /* for IE67 */
-  *height:1em;
-  *width:1em;
+.xui-icon-placeholder:before{
+	content: "\e62c";
+	display:inline-block;
+	height:1em;
+	width:1em;
 }
 
 .xui-icon-empty:before{

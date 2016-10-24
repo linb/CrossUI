@@ -122,7 +122,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     tagName:'div',
                     HANDLER:{
                         className:'xuifont',
-                        $fonticon:'xui-icon-empty',
+                        $fonticon:'xui-icon-placeholder',
                         style:'{handler}'
                     },
                     ITEMS:{
@@ -145,7 +145,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                                         $order:1,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                                        text:'{fontCode}'
+                                        text:'{iconFontCode}'
                                     },
                                     CAPTION:{
                                         $order:2,

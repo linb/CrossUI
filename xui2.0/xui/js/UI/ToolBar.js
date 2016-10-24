@@ -143,7 +143,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         style:'{grpDisplay} {groupStyle}',
                         HANDLER:{
                             className:'xuifont',
-                            $fonticon:'xui-icon-empty',
+                            $fonticon:'xui-icon-placeholder',
                             style:'{mode2}'
                         },
                         LIST:{
@@ -182,7 +182,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                         $order:1,
                                         className:'xuicon {imageClass}',
                                         style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}',
-                                        text:'{fontCode}'
+                                        text:'{iconFontCode}'
                                     },
                                     CAPTION:{
                                         $order:2,

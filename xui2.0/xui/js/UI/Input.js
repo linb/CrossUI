@@ -156,8 +156,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                'z-index':1,
                top:0,
                left:0,
-               position:'absolute',
-               'padding-top':'.25em'
+               position:'absolute'
             },
             WRAP:{
                 left:0,
@@ -172,15 +171,17 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 overflow:'hidden',
                 'z-index':10
             },
-            INPUT:{
+            'INPUT, LABEL':{
+               $order:100,
                //don't change it in custom class or style
                'padding-top':'4px',
                'padding-left':'4px',
                'padding-right':'4px',
-               'padding-bottom':'4px',
-
+               'padding-bottom':'4px'            
+            },
+            INPUT:{
                "background-color":"transparent",
-               "background-image":xui.browser.ie687?'url(.)':null,
+               //"background-image":xui.browser.ie687?'url(.)':null,
                border:0,
                margin:0,
                // default
@@ -188,6 +189,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
                'margin-top':xui.browser.ie67?'-1px':null,
                position:'relative',
+               'z-index':10,
                //give default size
                width:'8.5em',
 
@@ -937,8 +939,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 label.cssRegion({
                     left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+$hborder*2):0,labelfz),
                     top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
-                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
-                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
+                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)-paddingW),labelfz),
+                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)-paddingH),labelfz)
                 });
 
             iL += (iW||0) + $hborder*2;

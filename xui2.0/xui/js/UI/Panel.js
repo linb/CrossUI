@@ -87,7 +87,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                             $order:0,
                             className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                            text:'{fontCode}'
+                            text:'{iconFontCode}'
                         },
                         CAPTION:{
                             tabindex: '{tabindex}',
@@ -309,16 +309,24 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             },
             image:{
                 format:'image',
-                action: function(value){
-                    this.getSubNode('ICON')
-                        .css('display',value?'':'none')
-                        .css('backgroundImage',value?('url('+xui.adjustRes(value||'')+')'):'');
+                action: function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             imagePos:{
                 action: function(value){
-                    this.getSubNode('ICON')
-                        .css('backgroundPosition', value);
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
                 }
             },
             html:{

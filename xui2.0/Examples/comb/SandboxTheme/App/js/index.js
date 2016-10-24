@@ -57,7 +57,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -143,7 +143,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -227,7 +227,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -311,7 +311,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -395,7 +395,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -479,7 +479,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -563,7 +563,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -648,7 +648,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -733,7 +733,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"

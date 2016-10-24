@@ -810,17 +810,17 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -1020,7 +1020,7 @@ Class('App', 'xui.Module',{
                     "id" : "node1",
                     "sub" : ["node11",{
                         "id" : "node12",
-                        "image" : "{xui.ini.img_icon}"
+                        "imageClass" : "xui-icon-xui"
                     },
                     "node13","node14"],
                     "caption" : "node1"
@@ -1474,14 +1474,29 @@ Class('App', 'xui.Module',{
                     "id" : "er"
                 },
                 {
-                    "imageClass" : "xui-icon-loading",
-                    "caption" : "xui-icon-loading",
-                    "id" : "es"
-                },
-                {
                     "imageClass" : "xui-icon-empty",
                     "caption" : "xui-icon-empty",
                     "id" : "et"
+                },
+                {
+                    imageClass:"xui-icon-xui",
+                    caption:"xui-icon-xui",
+                    id:"xui"
+                },
+                {
+                    "imageClass" : "xui-icon-search",
+                    "caption" : "xui-icon-search",
+                    "id" : "es"
+                },
+                {
+                    "imageClass" : "xui-icon-filter",
+                    "caption" : "xui-icon-filter",
+                    "id" : "es"
+                },
+                {
+                    "imageClass" : "xui-icon-loading",
+                    "caption" : "xui-icon-loading",
+                    "id" : "es"
                 },
                 {
                     "imageClass" : "xui-uicmd-helpinput",
@@ -1557,11 +1572,6 @@ Class('App', 'xui.Module',{
                     "imageClass" : "xui-icon-question",
                     "caption" : "xui-icon-question",
                     "id" : "fi"
-                },
-                {
-                    "imageClass" : "xui-icon-loading",
-                    "caption" : "xui-icon-loading",
-                    "id" : "fj"
                 },
                 {
                     "imageClass" : "xui-icon-indent",
@@ -2155,22 +2165,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -2252,22 +2262,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -2316,22 +2326,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "page1",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "page2",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "page3",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "page4",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 }])
                 .setLeft("0em")
                 .setTop("0em")
@@ -3377,22 +3387,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "item a",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "item b",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "item c",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "item d",
-                    "image" : "{xui.ini.img_icon}",
+                    "imageClass" : "xui-icon-xui",
                     "disabled" : true
                 }])
                 , "1");
@@ -3410,22 +3420,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "item a",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "item b",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "item c",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "item d",
-                    "image" : "{xui.ini.img_icon}",
+                    "imageClass" : "xui-icon-xui",
                     "disabled" : true
                 }])
                 , "1");
@@ -3535,22 +3545,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "item a",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "item b",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "item c",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "item d",
-                    "image" : "{xui.ini.img_icon}",
+                    "imageClass" : "xui-icon-xui",
                     "disabled" : true
                 }])
                 .setCommandBtn("save")
@@ -3568,22 +3578,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "item a",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "item b",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "item c",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "item d",
-                    "image" : "{xui.ini.img_icon}",
+                    "imageClass" : "xui-icon-xui",
                     "disabled" : true
                 }])
                 .setCommandBtn("delete")
@@ -3601,22 +3611,22 @@ Class('App', 'xui.Module',{
                 .setItems([{
                     "id" : "a",
                     "caption" : "item a",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "b",
                     "caption" : "item b",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "c",
                     "caption" : "item c",
-                    "image" : "{xui.ini.img_icon}"
+                    "imageClass" : "xui-icon-xui"
                 },
                 {
                     "id" : "d",
                     "caption" : "item d",
-                    "image" : "{xui.ini.img_icon}",
+                    "imageClass" : "xui-icon-xui",
                     "disabled" : true
                 }])
                 .setCommandBtn("pop")

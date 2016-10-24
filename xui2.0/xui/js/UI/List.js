@@ -153,7 +153,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             $order:10,
                             className:'xuicon {imageClass}',
                             style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
-                            text:'{fontCode}'
+                            text:'{iconFontCode}'
                         },
                         CAPTION:{
                             text : '{caption}',

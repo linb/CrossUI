@@ -471,7 +471,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     },
     /*Initialize*/
     Initialize:function(){
-        this.addTemplateKeys(['FILE','MID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
+        this.addTemplateKeys(['ICONB','ICON','UNIT','FILE','MID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
         //modify default template for shell
         var t = this.getTemplate();
         xui.merge(t.FRAME.BORDER,{
@@ -489,7 +489,26 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             }
         },'all');
-        t.FRAME.BORDER.BOX.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat {_radius_input} xui-uibase';
+        var box=t.FRAME.BORDER.BOX;
+        box.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat {_radius_input} xui-uibase';
+        box.ICONB={
+            tagName:'button',
+            className:'xui-ui-unselectable xui-nofocus',
+            tabindex: '-1',
+            ICON:{
+                className:'xuifont {imageClass}',
+                //for cover xuicon
+                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                text:'{iconFontCode}'
+            }
+        };
+        box.UNIT={
+            tagName:'button',
+            tabindex: '-1',
+            className:'xui-ui-unselectable xui-nofocus',
+            text:'{unit}'
+        };
+
         t.FRAME.POOL={};
         t.className +=' {typecls}';
 
@@ -704,6 +723,29 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 // for IE8
                 overflow:'visible'
+            },
+            'ICONB, UNIT':{
+                'z-index':0,
+                position:'absolute',
+                padding:0,
+                margin:0,
+                border:0,
+                background:'none',
+                width:'auto',
+                height:'100%',
+                padding:'0 2px'
+            },
+            ICONB:{
+                left:0,
+                top:0
+            },
+            ICON:{
+                // for right size in onresize
+                width:'1em'
+            },
+            UNIT:{
+                top:0,
+                right:0
             },
             CMD:{
                 $order:2,
@@ -1078,7 +1120,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // yyyy-mm-dd
             // yyyy/mm/dd
             dateEditorTpl:"",
-            
             // for number&currency
             precision:2,
             groupingSeparator:",",
@@ -1091,6 +1132,43 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             popCtrlEvents:{
                 ini:{}
+            },
+            image:{
+                format:'image',
+                action: function(){
+                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    xui.UI.$iconAction(this);
+                    this.boxing().reLayout(true);
+                }
+            },
+            imagePos:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageClass: {
+                combobox : xui.toArr(xui.builtinFontIcon,true),
+                action:function(v,ov){
+                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    xui.UI.$iconAction(this, ov);
+                    this.boxing().reLayout(true);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    xui.UI.$iconAction(this);
+                    this.boxing().reLayout(true);
+                }
+            },
+            unit:{
+                ini:"",
+                action: function(v){
+                    var ns=this;
+                    if(ns.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
+                    ns.getSubNode('UNIT').html(v);
+                    ns.boxing().reLayout(true);
+                }
             },
             numberTpl:{
                 ini:"",
@@ -1457,12 +1535,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             return value;
         },
         _onresize:function(profile,width,height){
-             var prop = profile.properties,
+            var prop = profile.properties,
                  type = prop.type,
                 // if any node use other font-size which does not equal to xui-node, use 'px' 
                 f=function(k){if(!k) return null; k=profile.getSubNode(k); return k;},
                 root=f('KEY'),
                 v1=f('INPUT'),
+                icb=f('ICONB'),
+                ut=f('UNIT'),
                 box = f('BOX'), 
                 label = f('LABEL'),
                 cmdbtn=f(prop.commandBtn!='none'?'CMD':null),
@@ -1479,7 +1559,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
                 clsname='xui-node xui-input-input',
-                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
+                icbw=isB?0:(prop.image||prop.imageClass)?icb.offsetWidth(true):0,
+                utw=isB?0:prop.unit?ut.offsetWidth(true):0;
+
+            if(icbw)v1.css('paddingLeft',adjustunit(icbw,icb));
+            if(utw)v1.css('paddingRight',adjustunit(utw,ut));
+
+            var paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
                 paddingW=isB?0:Math.round(v1._paddingW()/2)*2,
                 btnw, autoH;
 

@@ -71,7 +71,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
 
         //simple list
         for(i=0;i<l;i++){
-            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-icon-empty">'+(xui.__iefix2&&xui.__iefix2['xui-icon-empty']||'')+'</span>');
+            arr.push('<span  '+'id="'+key+'-SC:'+id+':'+list[i]+'" style="background-color:#'+list[i]+'" '+evs+' class="xui-node xui-span xuicon xui-uiborder-flat xui-icon-placeholder">'+(xui.__iefix2&&xui.__iefix2['xui-icon-placeholder']||'')+'</span>');
             if((i+1)%17==0)arr.push('<br />');
         }
         //data
@@ -114,7 +114,7 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                         className:'xui-uibar-cmdl',
                         SPACE:{
                             className:'xuifont',
-                            $fonticon:'xui-icon-empty'
+                            $fonticon:'xui-icon-placeholder'
                         }
                     },
                     BARCMDR:{
