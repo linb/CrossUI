@@ -11524,54 +11524,6 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-            getBtnImage :{
-                $desc:"Gets the command button's image url",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ci18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
-                    "}"
-                ]
-            },
-            setBtnImage :{
-                $desc:"Sets the command button's image url",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] :String,  image path",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ci19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
-                    "}"
-                ]
-            },
-            getBtnImagePos :{
-                $desc:"Gets command button's image position",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ci20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
-                    "}"
-                ]
-            },
-            setBtnImagePos :{
-                $desc:"Sets command button's image position",
-                $rtn:"[self]",
-                $paras:[
-                    "value [Required] : String, corresponding CSS value",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ci21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
-                    "}"
-                ]
-            },
             onFileDlgOpen:{
                 $desc:"Fired when the file upload dialog is open",
                 $paras:[

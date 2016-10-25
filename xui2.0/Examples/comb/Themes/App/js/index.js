@@ -3497,6 +3497,7 @@ Class('App', 'xui.Module',{
                 .setLabelCaption("Spin")
                 .setType("spin")
                 .setUnit('px')
+                .setUnits('px;em')
                 .setImageClass("xui-icon-star")
                 , "1");
             

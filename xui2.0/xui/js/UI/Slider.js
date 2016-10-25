@@ -439,7 +439,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             // label
             labelSize:{
-                $spaceunit:1,
+                $spaceunit:2,
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
@@ -454,7 +454,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }                
             },
             labelGap:{
-                $spaceunit:1,
+                $spaceunit:2,
                 ini:4,
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);

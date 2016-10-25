@@ -3960,59 +3960,46 @@ type:4
                 : ['inline-block']
             : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
-                : ['inline-block'],
-        //hot keys
-        xui.doc.onKeydown(function(p,e,s){
+                : ['inline-block'];
+        var fun=function(p,e,cache){
             xui.Event.$keyboard=xui.Event.getKey(e);
 
-            var event=xui.Event,set,
+             var event=xui.Event,set,hash,rtnf,rst,
                 ks=event.getKey(e);
             if(ks){
                 if(ks[0].length==1)ks[0]=ks[0].toLowerCase();
-                set = xui.$cache.hookKey[ks.join(":")];
                 //if hot function return false, stop bubble
-                if(set){
-                    // auto clear function
-                    if(set[3]){
-                        if(typeof set[3]=='function'?false===(set[3])():(!xui(set[3]).size())){
-                            delete xui.$cache.hookKey[ks.join(":")];
-                            return;
+                if(arr = cache[ks.join(":")]){
+                    xui.arr.each(arr,function(key,index){
+                        set = arr[key];
+                        if(set){
+                            if(set[3] && (typeof set[3]=='function'?false===(set[3])() : (!xui(set[3]).size()))){
+                                // do nothing and detach it
+                                delete arr[key];
+                                arr.pop();
+                            }
+                            rst = xui.tryF(set[0],set[1],set[2]);
+                            if(rst===false){
+                                rtnf=1;
+                                return false;
+                            }else if(rst===true){
+                                // do nothing and detach it
+                                delete arr[key];
+                                arr.pop();
+                            }
                         }
-                    }
-                    if(xui.tryF(set[0],set[1],set[2])===false){
-                        event.stopBubble(e);
-                        return false;
-                    }
-                }
-
-            }
-            return true;
-        },"document")
-        .onKeyup(function(p,e){
-            delete xui.Event.$keyboard;
-
-            var event=xui.Event,set,
-                ks=event.getKey(e);
-            if(ks){
-                if(ks[0].length==1)ks[0]=ks[0].toLowerCase();
-                set = xui.$cache.hookKeyUp[ks.join(":")];
-                //if hot function return false, stop bubble
-                if(set){
-                    // auto clear function
-                    if(set[3]){
-                        if(typeof set[3]=='function'?false===(set[3])():(!xui(set[3]).size())){
-                            delete xui.$cache.hookKeyUp[ks.join(":")];
-                            return;
-                        }
-                    }
-                    if(xui.tryF(set[0],set[1],set[2])===false){
+                    },null,true);
+                    if(rtnf){
                         event.stopBubble(e);
                         return false;
                     }
                 }
             }
             return true;
-        },"document");
+        };
+        //hot keys
+        xui.doc.onKeydown(function(p,e){fun(p,e,xui.$cache.hookKey)},"document")
+        .onKeyup(function(p,e){fun(p,e,xui.$cache.hookKeyUp)},"document");
 
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)

@@ -120,7 +120,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     INPUT:{
                         $order:10,
                         tagName : 'input',
-                        type : '{_type}',
+                        type : '{_inputtype}',
                         maxlength:'{maxlength}',
                         tabindex:'{tabindex}',
                         placeholder:"{placeholder}",
@@ -432,7 +432,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             // label
             labelSize:{
-                $spaceunit:1,
+                $spaceunit:2,
                 ini:'0',
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
@@ -447,7 +447,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }                
             },
             labelGap:{
-                $spaceunit:1,
+                $spaceunit:2,
                 ini:'4',
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
@@ -474,6 +474,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     {caption : 'email',id:"^[\\w\\.=-]+@[\\w\\.-]+\\.[\\w\\.-]{2,4}$"},
                     {caption : 'charOnly',id:"^[a-zA-Z]*$"},
                     {caption : 'words',id:"^[\\w ]*$"},
+                    {captoin :  'size',id:"^(([1-9]\d*\.\d+)|([1-9]\d*)|(\.\d\d*))\s*(px|em)?$"},
                     {caption : 'integer',id:"^-?\\d\\d*$"},
                     {caption : 'positiveInteger',id:"^\\d\\d*$"},
                     {caption : 'number',id:"^-?(\\d\\d*\\.\\d*$)|(^-?\\d\\d*$)|(^-?\\.\\d\\d*$)"},
@@ -617,7 +618,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
             var d=arguments.callee.upper.call(this, profile, data);
 
-            d._type = d.type || '';
+            d._inputtype = d.type || '';
             if(d.maxlength<0)d.maxlength="";
             
             if(xui.browser.kde)
@@ -829,6 +830,9 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             var p=profile.properties,
                 vf1 = (p.mask&&profile.$MaskFormat) ,
                 vf2 = p.valueFormat || profile.$valueFormat;
+            
+            if(profile.boxing()._toEditor)value=profile.boxing()._toEditor(value);
+
             if( (profile.beforeFormatCheck && (profile.boxing().beforeFormatCheck(profile, value)===false)) ||
                 // if inputs, check mask valid, or don't
                 (((value&&value.length) && profile.$Mask!==value) && (vf1 && typeof vf1=='string' && !(new RegExp(vf1)).test((value===0?'0':value)||''))) ||

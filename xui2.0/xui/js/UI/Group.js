@@ -182,7 +182,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             imageClass: {
                 combobox : xui.toArr(xui.builtinFontIcon,true),
                 action:function(v,ov){
-                    xui.UI.$iconAction(this, ov);
+                    xui.UI.$iconAction(this, 'ICON', ov);
                 }
             },
             iconFontCode:{

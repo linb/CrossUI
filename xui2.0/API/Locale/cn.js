@@ -11435,54 +11435,6 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-            getBtnImage :{
-                $desc:"获取按钮图标的url",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ci18'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
-                    "}"
-                ]
-            },
-            setBtnImage :{
-                $desc:"设置按钮图标的url",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 对应的 CSS 值",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ci19'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setBtnImage('img/img.gif'); alert(o1.getBtnImage())},1000)"+
-                    "}"
-                ]
-            },
-            getBtnImagePos :{
-                $desc:"获取按钮图标的图像偏移属性",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.ci20'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
-                    "}"
-                ]
-            },
-            setBtnImagePos :{
-                $desc:"设置按钮图标的图像偏移属性",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : String, 对应的 CSS 值",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ci21'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o1;xui(id).prepend(o1=new xui.UI.ComboInput({position:'relative',type:'cmdbox'}));"+
-                    "xui.asyRun(function(){o1.setImage('img/img.gif').setBtnImagePos('left -16px'); alert(o1.getBtnImagePos())},1000)"+
-                    "}"
-                ]
-            },
             onFileDlgOpen:{
                 $desc:"当上载文件选择对话框打开时调用",
                 $paras:[
@@ -18852,6 +18804,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_Button' : {
             'caption':'标题文字',
             'image':'图像路径',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码',
             'imagePos':'图像背景偏移',
             'hAlign':'水平对齐方式',
             'vAlign':'垂直对齐方式',
@@ -18892,8 +18846,10 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'dropListWidth':'弹出窗口宽',
             'dropListHeight':'弹出窗口高',
             'items':'下拉框项目',
-            'btnImage':'图像路径',
-            'btnImagePos':'图像背景偏移',
+            'image':'图像路径',
+            'imagePos':'图像背景偏移',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码',
             'increment':'增量值',
             'min':'最小值',
             'max':'最大值',
@@ -18914,6 +18870,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'caption':'对话框标题',
             'image':'图像路径',
             'imagePos':'图像背景偏移',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码',
             'movable':'对话框可拖动',
             'minBtn':'显示最小按钮',
             'restoreBtn':'显示恢复按钮',
@@ -18938,6 +18896,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_CheckBox' : {
             'image':'图像路径',
             'imagePos':'图像背景偏移',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码',
             'caption':'按钮标题文字'
         },
         'xui_UI_Element' : {
@@ -18970,12 +18930,16 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
             'image':'图像路径',
-            'imagePos':'图像背景偏移'
+            'imagePos':'图像背景偏移',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码'
         },
         'xui_UI_Panel' : {
             'caption':'标题文字',
             'image':'图像路径',
             'imagePos':'图像背景偏移',
+            'imageClass':'图像CSS类',
+            'iconFontCode':'图像字体码',
             'toggleBtn':'展开收缩按钮',
             'toggle':'控件展开',
             'infoBtn':'显示帮助按钮',

@@ -101,7 +101,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             imageClass: {
                 combobox : xui.toArr(xui.builtinFontIcon,true),
                 action:function(v,ov){
-                    xui.UI.$iconAction(this, ov);
+                    xui.UI.$iconAction(this, 'ICON', ov);
                 }
             },
             iconFontCode:{

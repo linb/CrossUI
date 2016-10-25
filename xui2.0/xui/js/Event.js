@@ -445,22 +445,30 @@ Class('xui.Event',null,{
             if(event.preventDefault)event.preventDefault();
             else if("returnValue" in event)event.returnValue = false;
         },
-        //key:control:shift:alt
-        keyboardHook:function(key, ctrl, shift, alt, fun, args, scope, host){
+        _kbh:function(cache, key, ctrl, shift, alt, fun, args, scope, base){
             if(key){
-                var p = xui.$cache.hookKey, k = (key||'').toLowerCase() + ":"  + (ctrl?'1':'') + ":"  +(shift?'1':'')+ ":" + (alt?'1':'');
-                if(typeof fun!='function')delete p[k];
-                else p[k]=[fun,args,scope,host];
+                var id, index, k = (key||'').toLowerCase() + ":"  + (ctrl?'1':'') + ":"  +(shift?'1':'')+ ":" + (alt?'1':'');
+                cache[k] = cache[k]||[];
+                if(typeof fun=='function'){
+                    id=xui.rand();
+                    cache[k][id]=[fun,args,scope,base]
+                    cache[k].push( id );
+                    return id;
+                }else if(typeof fun=='string'){
+                    index = xui.arr.indexOf(cache[k],cache[k][fun]);
+                    if(index!=-1)xui.arr.removeFrom(cache[k], index);
+                    delete cache[k][fun];
+                }
+                else delete cache[k];
              }
-            return this;
+             return this;
         },
-        keyboardHookUp:function(key, ctrl, shift, alt, fun,args,scope, host){
-            if(key){
-                var p = xui.$cache.hookKeyUp, k = (key||'').toLowerCase() + ":"  + (ctrl?'1':'') + ":"  +(shift?'1':'')+ ":" + (alt?'1':'');
-                if(typeof fun!='function')delete p[k];
-                else p[k]=[fun,args,scope,host];
-             }
-            return this;
+        //key:control:shift:alt
+        keyboardHook:function(key, ctrl, shift, alt, fun, args, scope, base){
+            return this. _kbh(xui.$cache.hookKey, key, ctrl, shift, alt, fun, args, scope, base);
+        },
+        keyboardHookUp:function(key, ctrl, shift, alt, fun,args,scope, base){
+            return this. _kbh(xui.$cache.hookKeyUp, key, ctrl, shift, alt, fun, args, scope, base);
         },
         getWheelDelta:function(e){
             return e.wheelDelta

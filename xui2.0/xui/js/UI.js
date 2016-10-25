@@ -4475,9 +4475,9 @@ Class("xui.UI",  "xui.absObj", {
 
             return hashOut;
         },
-        $iconAction:function(profile,oldImageClass){
+        $iconAction:function(profile,key,oldImageClass){
             var p=profile.properties,
-                icon=profile.getSubNode('ICON'),
+                icon=profile.getSubNode(key||'ICON'),
                 dispaly = (p.imageClass||p.image||p.iconFontCode)?'':'display:none',
                 ifc;
 
@@ -6030,10 +6030,10 @@ Class("xui.UI",  "xui.absObj", {
              xui.each(prop,function(o,i){
                 if(xui.$uem(prop)){
                     if(dm[i] && dm[i]['$spaceunit'])
-                        if(prop[i]==0||prop[i]=='0')prop[i]='0em';
+                        if(prop[i]===0||prop[i]=='0')prop[i]='0em';
                 }else{
                     if(dm[i] && dm[i]['$spaceunit'])
-                        if(prop[i]==0||prop[i]=='0')prop[i]='0px';
+                        if(prop[i]===0||prop[i]=='0')prop[i]='0px';
                 }
              });
 
@@ -6089,7 +6089,6 @@ Class("xui.UI",  "xui.absObj", {
                 prop.items=profile.box._adjustItems(prop.items);
                 data.items = this._prepareItems(profile, prop.items);
             }
-
 
             if('selectable' in dm)
                 data._selectable=(xui.browser.ie && xui.browser.ver<10)
@@ -7491,7 +7490,7 @@ new function(){
                 imageClass: {
                     combobox : xui.toArr(xui.builtinFontIcon,true),
                     action:function(v,ov){
-                        xui.UI.$iconAction(this, ov);
+                        xui.UI.$iconAction(this, 'ICON', ov);
                     }
                 },
                 iconFontCode:{

@@ -431,6 +431,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //for on blur disappear
                     node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
                         box._cache('blur');
+                        xui.Event.keyboardHookUp('esc');
                     });
 
                     //for esc
@@ -442,8 +443,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                         box.activate();
                         //unhook
-                        xui.Event.keyboardHook('esc');
+                        xui.Event.keyboardHookUp('esc');
                         box._cache('esc',true);
+                        return true;
                     });
                 }else if(type=='file'){
                     profile.boxing().popFileSelector();
@@ -471,7 +473,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     },
     /*Initialize*/
     Initialize:function(){
-        this.addTemplateKeys(['ICONB','ICON','UNIT','FILE','MID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
+        this.addTemplateKeys(['ICONB','ICON','UNIT','FILE','LMID','RMID','LBTN','RBTN','SPINBTN','R1','R1B','R2','R2B']);
         //modify default template for shell
         var t = this.getTemplate();
         xui.merge(t.FRAME.BORDER,{
@@ -484,7 +486,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 className:'xui-ui-unselectable xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l xui-nofocus xui-ui-btn xui-uibar xui-uigradient',
                 style:"{_cmdDisplay}",
                 SMID:{
-                    className:"xuifont {btncls}",
+                    className:"xuifont",
                     $fonticon:'{_fi_commandCls}'
                 }
             }
@@ -624,7 +626,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     $getShowValue : function(p,v){
                         var pp=p.properties;
                         if(xui.isSet(v)&&v!==""){
-                            v=xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero);
+                            v=xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero,pp.trimTailZero);
                             if(p.properties.currencyTpl)
                                 v=p.properties.currencyTpl.replace("*", v);
                         }else
@@ -633,7 +635,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     },
                     $toEditor : function(p,v){
                         var pp=p.properties;
-                        return (xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero):"";
+                        return (xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero, pp.trimTailZero):"";
                     },
                     $fromEditor : function(p,v){
                         return (xui.isSet(v)&&v!=="")?p.box._number(p, v):"";
@@ -651,14 +653,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     },
                     $getShowValue : function(p,v){
                         var pp=p.properties;
-                        v=(xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero):"";
+                        v=(xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero,pp.trimTailZero):"";
                         if(v!="" && p.properties.numberTpl)
                             v=p.properties.numberTpl.replace("*", v);
                         return v;
                     },
                     $toEditor : function(p,v){
                         var pp=p.properties;
-                        return (xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero):"";
+                        return (xui.isSet(v)&&v!=="")?xui.formatNumeric(p.box._number(p, v), pp.precision, pp.groupingSeparator, pp.decimalSeparator, pp.forceFillZero,pp.trimTailZero):"";
                     },
                     $fromEditor : function(p,v){
                         return (xui.isSet(v)&&v!=="")?p.box._number(p, v):"";
@@ -725,7 +727,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 overflow:'visible'
             },
             'ICONB, UNIT':{
-                'z-index':0,
+                'z-index':20,
+                cursor:'pointer',
                 position:'absolute',
                 padding:0,
                 margin:0,
@@ -785,7 +788,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 padding:0,
                 'z-index':2
             },
-            'SMID,MID':{
+            'SMID,LMID,RMID':{
                 $order:2,
                 cursor:'pointer',
                 padding:0,
@@ -797,6 +800,47 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         Behaviors:{
             HoverEffected:{BOX:'BOX'},
             ClickEffected:{BOX:'BOX'},
+            ICONB:{
+                onClick : function(profile, e, src){
+                    var prop=profile.properties;
+                    if(prop.disabled || prop.readonly)return;
+                    if(profile.onClickIcon)profile.boxing().onClickIcon(profile,src);
+                }
+            },
+            UNIT:{
+                onClick : function(profile, e, src){
+                    var prop=profile.properties;
+                    if(prop.disabled || prop.readonly)return;
+                    if(!prop.units)return;
+                    var o = xui.create('List',{
+                        dirtyMark:false,
+                        items:prop.units.split(/[,;\:]/),
+                        width:'auto',
+                        height:'auto',
+                        value:prop.unit
+                    });
+                    o.afterClick(function(){
+                        o.destroy(true);
+                        return false;
+                    });
+                    o.beforeUIValueSet(function(p, o, v){
+                        profile.boxing().setUnit(xui.str.trim(v));
+                    });
+                    o.render();
+                    //pop
+                    var node=o.reBoxing();
+                    node.popToTop(src,null,prop.parentID);
+                    xui.tryF(o.activate,[],o);
+                    node.setBlurTrigger(profile.key+":unit:"+profile.$xid, function(){
+                        xui.Event.keyboardHook('esc');
+                        o.destroy();
+                    });
+                    xui.Event.keyboardHookUp('esc',0,0,0,function(){
+                        xui.Event.keyboardHook('esc');
+                        o.destroy();
+                    });
+                }
+            },
             FILE:{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
@@ -1117,7 +1161,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             beforePopShow:function(profile, popCtl){},
             afterPopShow:function(profile, popCtl){},
             afterPopHide:function(profile, popCtl, type){},
-            onClick:function(profile, e, src, btn, value){}
+            onClick:function(profile, e, src, btn, value){},
+            onClickIcon:function(profile, src){},
+            beforeUnitUpdated:function(prfole,unit){}
         },
         DataModel:{
             cachePopWnd:true,
@@ -1130,7 +1176,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             groupingSeparator:",",
             decimalSeparator:".",
             forceFillZero:true,
-
+            trimTailZero:false,
             parentID:"",
             popCtrlProp:{
                 ini:{}
@@ -1141,7 +1187,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             image:{
                 format:'image',
                 action: function(){
-                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
                     xui.UI.$iconAction(this);
                     this.boxing().reLayout(true);
                 }
@@ -1154,27 +1199,36 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             imageClass: {
                 combobox : xui.toArr(xui.builtinFontIcon,true),
                 action:function(v,ov){
-                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
-                    xui.UI.$iconAction(this, ov);
+                    xui.UI.$iconAction(this, 'ICON', ov);
                     this.boxing().reLayout(true);
                 }
             },
             iconFontCode:{
                 action:function(v){
-                    if(this.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
                     xui.UI.$iconAction(this);
                     this.boxing().reLayout(true);
                 }
             },
-            unit:{
-                ini:"",
-                action: function(v){
-                    var ns=this;
-                    if(ns.getSubNode('INPUT').get(0).type.toLowerCase()=='button')return;
-                    ns.getSubNode('UNIT').html(v);
-                    ns.boxing().reLayout(true);
+            dropImageClass:{
+                action:function(v,ov){
+                    if(ov)this.getSubNode('RMID').removeClass(ov);
+                    if(v)this.getSubNode('RMID').addClass(v);
                 }
             },
+            unit:{
+                ini:"",
+                set: function(v){
+                    var ns=this;
+                    if(ns.beforeUnitUpdated && false===ns.boxing().beforeUnitUpdated(ns, v))
+                        return;
+                    ns.properties.unit=v;
+                    if(ns.renderId){
+                        ns.getSubNode('UNIT').html(v);
+                        ns.boxing().reLayout(true);
+                    }
+                }
+            },
+            units:'',
             numberTpl:{
                 ini:"",
                 action: function(){
@@ -1214,18 +1268,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         else
                             o.boxing().clearPopCache();
                     }
-                }
-            },
-            btnImage:{
-                action: function(value){
-                    this.getSubNode('MID')
-                        .css('backgroundImage',value?('url('+value+')'):'');
-                }
-            },
-            btnImagePos:{
-                action: function(value){
-                    this.getSubNode('MID')
-                        .css('backgroundPosition', value);
                 }
             },
             type:{
@@ -1336,7 +1378,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 fun=function(){
                     if(profile.destroyed)return false;
                     var v=((+prop.$UIvalue)||0)+off;
-                    v=(xui.isSet(v)&&v!=="")?xui.formatNumeric(profile.box._number(profile, v), prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero):"";
+                    v=(xui.isSet(v)&&v!=="")?xui.formatNumeric(profile.box._number(profile, v), prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero,prop.trimTailZero):"";
                     profile.boxing().setUIValue(v,null,null,'spin');
                     task.delay *=0.9;
                 };
@@ -1406,7 +1448,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             tagName:'button',
                             className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropl}',
                             style:"{_btnlDisplay}",
-                            MID:{
+                            LMID:{
                                 className:'xuifont',
                                 $fonticon:'{_fi_btnlClass}',
                                 style:'{_btnlStyle}'
@@ -1434,7 +1476,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         tagName:'button',
                         className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-nofocus {_radius_dropr}',
                         style:"{_btnrDisplay}",
-                        MID:{
+                        RMID:{
                             className:'xuifont',
                             $fonticon:'{_fi_btnrClass}'
                         }
@@ -1475,9 +1517,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             tt=(tt=='combobox'||tt=='listbox'||tt=='dropbutton')?'arrowdrop':tt;
 
             data._fi_btnlClass = "xui-icon-singleleft" ;
-            data._fi_btnrClass = tt=='counter'?'xui-icon-singleright':('xui-uicmd-' + tt);
-            if(data.btnImage)
-                data._btnrStyle = 'background: url('+data.btnImage+')' + (data.btnImagePos||'');
+            data._fi_btnrClass = tt=='counter'?'xui-icon-singleright':(data.dropImageClass||('xui-uicmd-' + tt));
+
             data._type="text";
 
             data._cmdDisplay = (a=(!data.commandBtn)||data.commandBtn=='none')?NONE:'';
@@ -1533,7 +1574,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },        
         _number:function(profile, value){
             var prop=profile.properties;
-            value=xui.toNumeric(value, prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero);
+            value=xui.toNumeric(value, prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero,prop.trimTailZero);
             if(xui.isSet(prop.max))
                 value=value>prop.max?prop.max:value;
             if(xui.isSet(prop.min))
@@ -1564,12 +1605,21 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
-                clsname='xui-node xui-input-input',
-                icbw=isB?0:(prop.image||prop.imageClass)?icb.offsetWidth(true):0,
-                utw=isB?0:prop.unit?ut.offsetWidth(true):0;
+                clsname='xui-node xui-input-input',icbw,utw;
 
-            if(icbw)v1.css('paddingLeft',adjustunit(icbw,icb));
-            if(utw)v1.css('paddingRight',adjustunit(utw,ut));
+
+           if(prop.image||prop.imageClass){
+                icb.setInlineBlock();
+                if(icbw=icb.offsetWidth(true))
+                    v1.css('paddingLeft',adjustunit(icbw,icb));
+            }
+            if(prop.unit){
+                ut.setInlineBlock();
+                if(utw=ut.offsetWidth(true))
+                    v1.css('paddingRight',adjustunit(utw,ut));
+            }
+            if(!icbw)icb.css('display','none');
+            if(!utw)ut.css('display','none');
 
             var paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
                 paddingW=isB?0:Math.round(v1._paddingW()/2)*2,

@@ -403,7 +403,7 @@ new function(){
                  value=xui.toFixedNumber(value,precision);
             return value;
         },
-        formatNumeric:function(value, precision, groupingSeparator, decimalSeparator, forceFillZero){
+        formatNumeric:function(value, precision, groupingSeparator, decimalSeparator, forceFillZero, trimTailZero){
             if(xui.isSet(precision))precision=parseInt(precision,10);
             precision=(precision||precision===0)?precision:0;
             groupingSeparator=xui.isSet(groupingSeparator)?groupingSeparator:",";
@@ -416,9 +416,9 @@ new function(){
                     if((value[1]?value[1].length:0)<precision)value[1]=(value[1]||"")+xui.str.repeat('0',precision-(value[1]?value[1].length:0));
                 }
                 value[0] = value[0].split("").reverse().join("").replace(/(\d{3})(?=\d)/g, "$1"+groupingSeparator).split("").reverse().join("");
-                return value.join(decimalSeparator);
-            }else
-                return value;
+                value = value.join(decimalSeparator);
+            }
+            return trimTailZero && value.indexOf(decimalSeparator)!=-1 ? value.replace(new RegExp('['+decimalSeparator+']?0+$'),'') : value;
         },
         /*shadow copy for hash/array
         * var a=[]; a.b='b'; a.b will not be copied

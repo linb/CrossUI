@@ -48,7 +48,7 @@ Class("xui.UI.Label", "xui.UI",{
             imageClass: {
                 combobox : xui.toArr(xui.builtinFontIcon,true),
                 action:function(v,ov){
-                    xui.UI.$iconAction(this, ov);
+                    xui.UI.$iconAction(this, 'ICON', ov);
                 }
             },
             iconFontCode:{

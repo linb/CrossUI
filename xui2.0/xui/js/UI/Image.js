@@ -112,7 +112,6 @@ Class("xui.UI.Image", "xui.UI",{
                 }
             },
             width:{
-                $spaceunit:1,
                 ini:'auto',
                 action:function(v){
                     var src=this.getRootNode(),
@@ -123,7 +122,6 @@ Class("xui.UI.Image", "xui.UI",{
                 }
             },
             height:{
-                $spaceunit:1,
                 ini:'auto',
                 action:function(v){
                     var src=this.getRootNode(),

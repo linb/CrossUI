@@ -322,13 +322,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         isDirtied:function(){
             var dirty=false;
             xui.each(this.get(0).cellMap,function(v){
-                if(v._oValue!==v.value){
+                if(v._oValue!==v.value || (('unit' in v) && v._oUnit!==v.unit)){
                     dirty=true;
                     return false;
                 }
             });
             xui.each(this.get(0).rowMap,function(v){
-                if(v._oValue!==v.value){
+                if(v._oValue!==v.value||(('unit' in v) && v._oUnit!==v.unit)){
                     dirty=true;
                     return false;
                 }
@@ -1024,8 +1024,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var profile=this.get(0),row=this.getRowbyRowId(rowId),arr=[],prop=profile.properties;
             // for cells
             xui.arr.each(row.cells,function(o){
-                if(o._oValue!==o.value){
+                if(o._oValue!==o.value||(('unit' in o) && o._oUnit!==o.unit)){
                     o._oValue=o.value;
+                    if('unit' in o)o._oUnit=o.unit
                     delete o.dirty;
                     if(prop.dirtyMark)
                         arr.push(profile.getSubNode('CELLA',o._serialId).get(0));
@@ -1043,8 +1044,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         resetColValue:function(colId){
             var profile=this.get(0),col=this.getHeaderByColId(colId),arr=[],prop=profile.properties;
             xui.arr.each(col.cells,function(o){
-                if(o._oValue!==o.value){
+                if(o._oValue!==o.value||(('unit' in o) && o._oUnit!==o.unit)){
                     o._oValue=o.value;
+                    if('unit' in o)o._oUnit=o.unit;
                     delete o.dirty;
                     if(prop.dirtyMark)
                         arr.push(profile.getSubNode('CELLA',o._serialId).get(0));
@@ -1401,7 +1403,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editor.getSubNode('INPUT').onBlur(true);
                         editor.getRoot().setBlurTrigger("tg_editor_blur:"+profile.$xid);
                         if(profile.properties){
-                            editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null).onFileDlgOpen(null);
+                            editor.beforeUnitUpdated(null).afterUIValueSet(null).beforeNextFocus(null).onCancel(null).onFileDlgOpen(null);
                             editor.setValue('',true,'editorreset');
                         }
                         delete editor.get(0).$row;
@@ -1515,10 +1517,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var prop=profile.properties;
                 xui.each(profile.cellMap,function(v){
                     v._oValue=v.value;
+                    if('unit' in v)v._oUnit=v.unit
                     delete v.dirty;
                 });
                 xui.each(profile.rowMap,function(v){
                     v._oValue=v.value;
+                    if('unit' in v)v._oUnit=v.unit;
                     delete v.dirty;
                 });
                 if(prop.dirtyMark && prop.showDirtyMark)
@@ -1528,8 +1532,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getDirtied:function(rowId, colId){
             var map={};
             xui.each(this.get(0).cellMap,function(v){
-                if(v._oValue!==v.value &&(rowId?(rowId==v._row.id):1) &&(colId?(colId==v._col.id):1)){
+                if((v._oValue!==v.value||(('unit' in v)&&v._oUnit!==v.unit)) &&(rowId?(rowId==v._row.id):1) && (colId?(colId==v._col.id):1)){
                     map[v.id]={rowId:v._row.id, colId:v._col.id, value:v.value, _oValue:v._oValue};
+                    if('unit' in v)map[v.id]._oUnit=v._oUnit;
                 }
             });
             //dont return inner value
@@ -4372,7 +4377,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src){},
-            onEditorClick:function(profile, cell, proEditor, type, src){}
+            onEditorClick:function(profile, cell, proEditor, type, src){},
+            beforeUnitUpdated:function(profile, cell, proEditor, type){}
         },
         RenderTrigger:function(){
             var ns=this, 
@@ -4880,7 +4886,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             profile.colMap[col[SubID]]=col;
 
-            var _ww=css.$px(col.width||prop._colDfWidth);
+            var _ww=css.$px(col.width)||css.$px(prop._colDfWidth);
             if('relWidth' in col){
                 col.flexSize = col.relWidth
                 delete col.relWidth;
@@ -5084,7 +5090,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 getPro(profile, cell, 'precision'),
                                 getPro(profile, cell, 'groupingSeparator'),
                                 getPro(profile, cell, 'decimalSeparator'),
-                                getPro(profile, cell, 'forceFillZero')
+                                getPro(profile, cell, 'forceFillZero'),
+                                getPro(profile, cell, 'trimTailZero')
                             );
                     }else
                         return "";
@@ -5098,7 +5105,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 xui.isSet(precision)?precision:2,
                                 getPro(profile, cell, 'groupingSeparator'),
                                 getPro(profile, cell, 'decimalSeparator'),
-                                getPro(profile, cell, 'forceFillZero')
+                                getPro(profile, cell, 'forceFillZero'),
+                                getPro(profile, cell, 'trimTailZero')
                             );
                     }else
                         return "";
@@ -5113,7 +5121,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(t[i].id===v)
                                 return t[i].caption||v;
                     return v;
-               });
+               }),
+               unit=function(caption, cell){return caption + (cell.unit?" "+cell.unit:"")};
             // get caption node
             if(node && node.get(0))node=firstColumnTree?node.last():node.first();
             switch(type){
@@ -5122,7 +5131,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'counter':
                     var v=parseFloat(cell.value);
                     cell.value=(v||v===0)?v:null;
-                    caption= capOut ||ren(profile,cell,uicell,f4);
+                    caption=unit(capOut ||ren(profile,cell,uicell,f4), cell);
                     var tpl = getPro(profile, cell, 'numberTpl');
                     if(tpl && caption)
                         caption = tpl.replace("*", caption);
@@ -5133,7 +5142,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var v=parseFloat((cell.value+"").replace(/[^\d.-]/g,''));
                     cell.value=(v||v===0)?v:null;
                     //  Note that cell value has true numeric value, while caption has currency format with commas.
-                    caption= capOut ||ren(profile,cell,uicell,f5);
+                    caption=unit(capOut ||ren(profile,cell,uicell,f5),cell);
                     var tpl = getPro(profile, cell, 'currencyTpl');
                     if(tpl && caption!=="")
                         caption = tpl.replace("*", caption);
@@ -5142,26 +5151,26 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'date':
                     cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):xui.Date.parse(cell.value);
-                    caption= capOut || ren(profile,cell,uicell,f1);
+                    caption=unit(capOut || ren(profile,cell,uicell,f1),cell);
                     if(node)
                         node.html(caption, false);
                 break;
                 case 'datetime':
                     cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):xui.Date.parse(cell.value);
-                    caption= capOut || ren(profile,cell,uicell,f0);
+                    caption=unit(capOut || ren(profile,cell,uicell,f0),cell);
                     if(node)
                         node.html(caption, false);
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
-                    caption= capOut ||ren(profile,cell,uicell,f2);
+                    caption=unit(capOut ||ren(profile,cell,uicell,f2),cell);
                     if(node)
                         node.html(caption,false);
                 break;
                 case 'color':
                     var c=xui.UI.ColorPicker._ensureValue(0,cell.value);
                     cell.value=cell.value?((c!=="transparent"?'#':'')+c):"";
-                    caption= capOut ||ren(profile,cell,uicell);
+                    caption=unit(capOut ||ren(profile,cell,uicell),cell);
                     if(cell.value){
                         t1=xui.UI.ColorPicker.getTextColor(cell.value);
                         if(node){
@@ -5185,7 +5194,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'checkbox':
                     cell.value=!!cell.value;
-                    caption=cell.value+'';
+                    caption=unit(cell.value+'',cell);
                     if(node)
                         node.tagClass('-checked', cell.value);
                     else{
@@ -5195,7 +5204,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'progress':
                     cell.value=parseFloat(cell.value)||0;
                     cell.value=Math.min(Math.max(cell.value,0),1);
-                    caption= capOut ||ren(profile,cell,uicell,f3);
+                    caption=unit(capOut ||ren(profile,cell,uicell,f3),cell);
                     if(node){
                         node.first().html(caption, false);
                         node.width(caption);
@@ -5205,12 +5214,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption= capOut ||ren(profile,cell,uicell,f6);
+                    caption=unit(capOut ||ren(profile,cell,uicell,f6),cell);
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 default:
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption= capOut ||ren(profile,cell,uicell);
+                    caption=unit(capOut ||ren(profile,cell,uicell),cell);
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
             }
 
@@ -5420,6 +5429,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //next
             cell._oValue=cell.value;
+            if('unit' in cell)cell._oUnit!=cell.unit;
         },
         _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
@@ -5651,8 +5661,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if('value' in options){
                     if(!pdm || dirtyMark===false)
                         cell._oValue=cell.value;
+                        if('unit' in cell)cell._oUnit=cell.unit;
                     else{
-                        if(cell.value===cell._oValue){
+                        if(cell.value===cell._oValue&&( !('unit' in cell) || cell._oUnit===cell.unit)){
                             if(psdm)
                                 node.removeClass('xui-ui-dirty');
                             delete cell.dirty;
@@ -5813,7 +5824,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(cell._row && (!lc || (lc._row && lc._row!=cell._row))){
                     var dirty=false;
                     xui.arr.each(cell._row.cells,function(v){
-                        if(v._oValue!==v.value){
+                        if(v._oValue!==v.value||(('unit' in v) &&v._oUnit!==v.unit)){
                             dirty=true;
                             return false;
                         }
@@ -5931,6 +5942,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editorFormat = getPro('editorFormat'),
                         editorMask = getPro('editorMask'),
                         editorReadonly = getPro('editorReadonly'),
+                        editorHAlign=getPro('editorHAlign'),
                         editorDropListWidth = getPro('editorDropListWidth'),
                         editorDropListHeight = getPro('editorDropListHeight'),
                         t,oldProp;
@@ -5968,33 +5980,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'spin':
                         case 'counter':
                         case 'currency':
-                            var precision=getPro('precision'),
-                                increment=getPro('increment'),
-                                min=getPro('min'),
-                                max=getPro('max'),
-                                maxlength=getPro('maxlength'),
-                                currencyTpl=getPro('currencyTpl'),
-                                numberTpl=getPro('numberTpl'),
-                                groupingSeparator=getPro('groupingSeparator'),
-                                decimalSeparator=getPro('decimalSeparator'),
-                                forceFillZero=getPro('forceFillZero');
                             editor.setType(type);
-                            if(type=='currency'){
-                                if(!xui.isSet(precision))precision=2;
-                                if(xui.isSet(currencyTpl))editor.setCurrencyTpl(currencyTpl);
-                            }else{
-                                if(!xui.isSet(precision)) precision=0;
-                                if(!xui.isSet(increment)) increment=1;
-                                if(xui.isSet(numberTpl))editor.setNumberTpl(numberTpl);
-                                if(type=='spin'||type=='counter')editor.setIncrement(increment);
-                                if(xui.isSet(min))editor.setMin(min);
-                                if(xui.isSet(max))editor.setMax(max);
-                                if(xui.isSet(maxlength))editor.setMaxlength(maxlength);
-                            }
-                            if(xui.isSet(precision))editor.setPrecision(precision);
-                            if(xui.isSet(groupingSeparator))editor.setFroupingSeparator(groupingSeparator);
-                            if(xui.isSet(decimalSeparator))editor.setDecimalSeparator(decimalSeparator);
-                            if(xui.isSet(forceFillZero))editor.setForceFillZero(forceFillZero);
+                            xui.each(xui.toArr('precision,increment,min,max,maxlength,currencyTpl,numberTpl,groupingSeparator,decimalSeparator,forceFillZero,trimTailZero,unit,units'),function(key,u){
+                                v=getPro(key);
+                                if(type=='currency'){
+                                    if(key=='precision'&&!v)v=2;
+                                }else{
+                                    if(key=='precision'&&!v)v=0;
+                                    if(key=='increment'&&!v)v=1;
+                                }
+
+                                if(xui.isSet(v))editor['set'+xui.str.initial(key)](v);
+                            });
                             break;
                         case 'progress':
                             editor.setType('spin').setMax(1).setMin(0).setPrecision(4).setIncrement(0.01);
@@ -6074,6 +6071,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editor.setDropListWidth(editorDropListWidth);
                     if(editor.setDropListHeight && editorDropListHeight)
                         editor.setDropListHeight(editorDropListHeight);
+                    if(editor.setHAlign&&editorHAlign)
+                        editor.setHAlign(editorHAlign);
                     if(editorFormat){
                         if(typeof editorFormat=='function' && editor.beforeFormatCheck)
                             editor.beforeFormatCheck(editorFormat);
@@ -6159,7 +6158,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
                             editor.getRoot().setBlurTrigger(profile.$xid+":editor");
                             if(profile.properties && !profile.properties.directInput){
-                                editor.afterUIValueSet(null).beforeNextFocus(null).onCancel(null).afterPopHide(null);
+                                editor.beforeUnitUpdated(null).afterUIValueSet(null).beforeNextFocus(null).onCancel(null).afterPopHide(null);
                                 editor.setValue('',true,'editorreset');
                             }
                             // clear those setting
@@ -6208,6 +6207,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     //editor change value, update cell value
                     editor
+                    .beforeUnitUpdated(function(editorPrf,v){
+                        if(profile.beforeUnitUpdated&&false===profile.boxing().beforeUnitUpdated(profile, cell, editorPrf, v))
+                            return false;
+                        profile.box._updCell(profile, cell, {value:cell.value, unit: v},profile.properties.dirtyMark,true);
+                    })
                     .afterUIValueSet(function(editorPrf,oV,nV,force,tag){
                         var type=getPro('type'),_$caption;
                         switch(type){
