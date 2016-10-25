@@ -20,7 +20,7 @@
 .xuifont-checked, .xuicon-checked{
 	color: #000; 
 }
-.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
 	color:#444;
 }
 /*background*/
@@ -33,7 +33,7 @@
 .xui-uibar-hover{
     background-color:#EEECE8;
 }
-.xui-uibar-active, .xui-uibar-checked, 
+.xui-uibar-active, .xui-uibar-checked, .xui-uibar-expand, 
 .xui-uimenu-hover, .xui-uimenu-active{
     background-color:#CFE4FE;
 }
@@ -115,9 +115,9 @@
     border-color:#bbb;
     background: #EAEAEA;
 }
-.xui-uigradient-active, .xui-uigradient-checked, 
+.xui-uigradient-active, .xui-uigradient-checked,  .xui-uigradient-expand, 
 .xui-uigradient:active, 
-.xui-uigradient-active:hover, .xui-uigradient-checked:hover{
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
     background: #ababab;
     text-shadow: none;
 }

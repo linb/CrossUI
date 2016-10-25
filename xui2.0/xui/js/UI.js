@@ -2381,11 +2381,11 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 'background-color':'#CDCDCD'
             },
-            ".xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active":{
+            ".xui-uibar-active, .xui-uibar-checked, .xui-uibar-expand, .xui-uimenu-hover, .xui-uimenu-active":{
                 $order:2,
                  "background-color":"#ABABAB"
             },
-            ".xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked,  .xui-uimenu-hover, .xui-uimenu-active":{
+            ".xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked,  .xui-uibar-expand, .xui-uimenu-hover, .xui-uimenu-active":{
                 $order:3,
                 color:"#FFF"
             },
@@ -2428,7 +2428,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
             },
-            ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover":{
+            ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient-expand, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover":{
                 $order:6,
                 'background-image_1': "linear-gradient(top,  #CDCDCD 5%,  #FFF)",
                 'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #CDCDCD), to(1, #FFF))",

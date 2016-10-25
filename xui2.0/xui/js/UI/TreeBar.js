@@ -18,11 +18,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(selmode=='single'){
                     var itemId = profile.getSubIdByItemId(uiv);
                     if(uiv && itemId)
-                        profile.getSubNode('BAR',itemId).tagClass('-checked',false);
+                        profile.getSubNode('BAR',itemId).tagClass('expand',false).tagClass('-fold');
 
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){
-                        profile.getSubNode('BAR',itemId).tagClass('-checked');
+                        profile.getSubNode('BAR',itemId).tagClass('-expand').tagClass('-fold',false);
                         //scroll
                         if(!profile._noScroll){
                             var o = profile.getSubNode('ITEM',itemId);
@@ -859,7 +859,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     var onend=function(){
                         subNs.css({display:'none',height:0});
                         markNode.tagClass('-checked', false);
-                        barNode.tagClass('-checked',false);
+                        barNode.tagClass('-expand',false).tagClass('-fold');
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
                         if(prop.dynDestory || item.dynDestory){
@@ -961,7 +961,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                         if(!empty){
                             markNode.tagClass('-checked');
-                            barNode.tagClass('-checked');
+                            barNode.tagClass('-expand').tagClass('-fold',false);
                             icon.tagClass('-fold',false).tagClass('-expand');
                         }
                         

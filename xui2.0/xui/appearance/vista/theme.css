@@ -20,7 +20,7 @@
 .xuifont-checked, .xuicon-checked{
 	color: #3393D2; 
 }
-.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
 		color:#fff;
 }
 /*background*/
@@ -33,7 +33,7 @@
 .xui-uibar-hover{
     background-color:#C5E5F6;
 }
-.xui-uibar-active,.xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+.xui-uibar-active,.xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
     background-color:#C6E0EF;
 }
 
@@ -113,9 +113,9 @@
     background-image: -moz-linear-gradient(top,  #E7F1F6 5%,  #5FEAFF 100%);
     background-image: -o-linear-gradient(top,  #E7F1F6 5%,  #5FEAFF 100%);  
 }
-.xui-uigradient-active, .xui-uigradient-checked, 
+.xui-uigradient-active, .xui-uigradient-checked,  .xui-uigradient-expand, 
 .xui-uigradient:active, 
-.xui-uigradient-active:hover, .xui-uigradient-checked:hover{
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4DD8FC', endColorstr='#E7F1F6');
     background-image: linear-gradient(top,  #4DD8FC 5%,  #E7F1F6 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #4DD8FC), to(1, #E7F1F6));

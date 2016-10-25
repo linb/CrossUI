@@ -20,7 +20,7 @@
  .xuifont-checked, .xuicon-checked{
     color:#777;
 }
-.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
     color:#fff;
 }
 /*Background*/
@@ -33,7 +33,7 @@
  .xui-uibar-hover{
     background-color:#D4D9F1;
 }
-.xui-uibar-active,.xui-uibar-checked, .xui-uimenu-hover,.xui-uimenu-active{
+.xui-uibar-active,.xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
     background-color:#3498DB;
 }
  .xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr{
@@ -185,9 +185,9 @@
     border-color:#B0CEE3;
     background: #268FD5;
 }
-.xui-uigradient-active, .xui-uigradient-checked, 
+.xui-uigradient-active, .xui-uigradient-checked,  .xui-uigradient-expand, 
 .xui-uigradient:active, 
-.xui-uigradient-active:hover, .xui-uigradient-checked:hover{
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
     background: #27ae60;
 }
 .xui-uigradient{

@@ -19272,11 +19272,11 @@ Class("xui.UI",  "xui.absObj", {
                 $order:1,
                 'background-color':'#CDCDCD'
             },
-            ".xui-uibar-active, .xui-uibar-checked, .xui-uimenu-hover, .xui-uimenu-active":{
+            ".xui-uibar-active, .xui-uibar-checked, .xui-uibar-expand, .xui-uimenu-hover, .xui-uimenu-active":{
                 $order:2,
                  "background-color":"#ABABAB"
             },
-            ".xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked,  .xui-uimenu-hover, .xui-uimenu-active":{
+            ".xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked,  .xui-uibar-expand, .xui-uimenu-hover, .xui-uimenu-active":{
                 $order:3,
                 color:"#FFF"
             },
@@ -19319,7 +19319,7 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
                 "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
             },
-            ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover":{
+            ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient-expand, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover":{
                 $order:6,
                 'background-image_1': "linear-gradient(top,  #CDCDCD 5%,  #FFF)",
                 'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #CDCDCD), to(1, #FFF))",
@@ -38775,11 +38775,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(selmode=='single'){
                     var itemId = profile.getSubIdByItemId(uiv);
                     if(uiv && itemId)
-                        profile.getSubNode('BAR',itemId).tagClass('-checked',false);
+                        profile.getSubNode('BAR',itemId).tagClass('expand',false).tagClass('-fold');
 
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){
-                        profile.getSubNode('BAR',itemId).tagClass('-checked');
+                        profile.getSubNode('BAR',itemId).tagClass('-expand').tagClass('-fold',false);
                         //scroll
                         if(!profile._noScroll){
                             var o = profile.getSubNode('ITEM',itemId);
@@ -39616,7 +39616,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     var onend=function(){
                         subNs.css({display:'none',height:0});
                         markNode.tagClass('-checked', false);
-                        barNode.tagClass('-checked',false);
+                        barNode.tagClass('-expand',false).tagClass('-fold');
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
                         if(prop.dynDestory || item.dynDestory){
@@ -39718,7 +39718,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                         if(!empty){
                             markNode.tagClass('-checked');
-                            barNode.tagClass('-checked');
+                            barNode.tagClass('-expand').tagClass('-fold',false);
                             icon.tagClass('-fold',false).tagClass('-expand');
                         }
                         
