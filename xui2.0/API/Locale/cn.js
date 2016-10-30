@@ -12917,139 +12917,6 @@ xui.set(xui.Locale,["cn","app"], {
         }
     });
 
-    xui.set(xui.Locale,["cn","doc","xui","UI","IconList"], {
-        KEY:{$desc:"本类名"},
-        $desc:"xui.UI.IconList 类",
-        constructor:{
-            $desc:"生成xui.UI.IconList 对象"
-        },
-        prototype:{
-            KEY:{$desc:"本类名"},
-            getStatus:{
-                $desc:"获取指定图标项状态",
-                $paras:[
-                    "subId [必需参数] : String, 图标项id"
-                ],
-                $rtn:"String, 'ini', 'error' or 'loaded'",
-                $snippet:[
-                    "var id='xui.temp.ga001'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.getStatus('c'));});"+
-                    "xui.asyRun(function(){alert(o.getStatus('c'));},3000);"+
-                    "}"
-                ]
-            },
-            getAutoItemSize:{
-                $desc:"得到子项的尺寸是否随图片的大小自动变化",
-                $rtn:"Boolean"
-            },
-            setAutoItemSize:{
-                $desc:"设置子项的尺寸是否随图片的大小自动变化",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Boolean",
-                    $force
-                ]
-            },
-            getItemWidth:{
-                $desc:"获取图标项宽度",
-                $rtn:"Number",
-                $snippet:[
-                    "var id='xui.temp.ga5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
-                    "}"
-                ]
-            },
-            setItemWidth:{
-                $desc:"设置图标项宽度",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Number",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ga6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemWidth(40).getItemWidth());},1000)"+
-                    "}"
-                ]
-            },
-            getItemHeight:{
-                $desc:"获取图标项高度",
-                $rtn:"Number",
-                $snippet:[
-                    "var id='xui.temp.ga7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
-                    "}"
-                ]
-            },
-            setItemHeight:{
-                $desc:"设置图标项高度",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Number",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ga8'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemHeight(40).getItemHeight());},1000)"+
-                    "}"
-                ]
-            },
-            getItemMargin:{
-                $desc:"获取图标项外补丁",
-                $rtn:"Number",
-                $snippet:[
-                    "var id='xui.temp.ga9'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
-                    "}"
-                ]
-            },
-            setItemMargin:{
-                $desc:"设置图标项外补丁",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Number",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ga10'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemMargin(10).getItemMargin());},1000)"+
-                    "}"
-                ]
-            },
-            getItemPadding:{
-                $desc:"获取图标项内补丁",
-                $rtn:"Number",
-                $snippet:[
-                    "var id='xui.temp.ga11'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
-                    "}"
-                ]
-            },
-            setItemPadding:{
-                $desc:"设置图标项内补丁",
-                $rtn:"[self]",
-                $paras:[
-                    "value [必需参数] : Number",
-                    $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.ga12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var o;xui(id).prepend(o=new xui.UI.IconList({height:'auto',items:[{id:'a',image:'img/logo.gif',caption:'a a'},{id:'b',image:'img/logo.gif',caption:'b b'},{id:'c',image:'img/logo.gif',caption:'c c'}]}));"+
-                    "xui.asyRun(function(){alert(o.setItemPadding(10).getItemPadding());},1000)"+
-                    "}"
-                ]
-            }
-        }
-    });
-
     xui.set(xui.Locale,["cn","doc","xui","UI","Panel"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Panel 类",
@@ -19039,13 +18906,6 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'imgHeight':'画廊图片高度',
             'autoItemSize':'画廊项自动尺寸'
         },
-        'xui_UI_IconList' : {
-            'itemMargin':'图像项外补丁',
-            'itemPadding':'图像项内补丁',
-            'itemWidth':'图像项宽度',
-            'itemHeight':'图像项高度',
-            'autoItemSize':'画廊项自动尺寸'
-        },
         'xui_UI_RadioBox' : {
             'checkBox':'多选框样式',
             'labelSize':'标签大小',
@@ -19499,8 +19359,6 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
               onLabelDblClick:"双击标签"
         },
         'xui_UI_Gallery' : {
-        },
-        'xui_UI_IconList' : {
         },
         'xui_UI_RadioBox' : {
               onLabelActive:"激活标签",

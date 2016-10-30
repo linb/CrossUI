@@ -395,17 +395,20 @@ Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             ".xui-nodatauri ADVCLR":{
                 background: xui.browser.ie6?null:xui.UI.$oldBg('clrbg.png', 'no-repeat left top'),
                 //for ie6
-                _filter: xui.UI.$ieOldBg('clrbg.png')
+                _filter: xui.UI.$ieOldBg('clrbg.png'),
+                '-ms-filter': xui.browser.ie8?xui.UI.$ieOldBg('clrbg.png'):null
             },
             ".xui-nodatauri ADVWHEEL":{
                 background: xui.browser.ie6?null:xui.UI.$oldBg('clr.png', 'no-repeat left top'),
                 //for ie6
-                _filter: xui.UI.$ieOldBg('clr.png')
+                _filter: xui.UI.$ieOldBg('clr.png'),
+                '-ms-filter': xui.browser.ie8?xui.UI.$ieOldBg('clr.png'):null
             },
             '.xui-nodatauri ADVMARK1, .xui-nodatauri ADVMARK2':{
                 background:xui.browser.ie6?null:xui.UI.$oldBg('picker.png', 'no-repeat left top'),
                 //for ie6
-                _filter: xui.UI.$ieOldBg('picker.png')
+                _filter: xui.UI.$ieOldBg('picker.png'),
+                '-ms-filter': xui.browser.ie8?xui.UI.$ieOldBg('picker.png'):null
             },
 
             'LIST span':{

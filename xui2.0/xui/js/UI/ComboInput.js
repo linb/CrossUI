@@ -103,18 +103,28 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         setPopWnd:function(drop){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
-            profile.$drop=profile.$poplink=drop['xui.Module']?drop.getRoot(true):drop['xui.UI']?drop.get(0):drop;
+            profile.$poplink=drop?drop['xui.Module']?drop.getRoot(true):drop['xui.UI']?drop.get(0):drop:null;
+            
+            (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["$poplink"]=function(){
+                if(profile.$poplink){
+                    xui.filter(profile.box.$drop,function(o){
+                        return o!==profile.$poplink;
+                    });
+                    profile.$poplink.boxing().destroy();
+                    profile.$poplink=null;
+                }
+            }
         },
         _cache:function(type, focus){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
             
-            var drop=profile.$drop, cached=profile.properties.cachePopWnd;
+            var drop=profile.$poplink, cached=profile.properties.cachePopWnd;
             if(drop){
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    delete profile.$drop;
+                    delete profile.$poplink;
                     if(focus)
                         profile.boxing().activate();
                 }else{
@@ -146,7 +156,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var profile=this.get(0);
             if(profile.renderId)
                 profile.getSubNode('POOL').empty();
-            delete profile.$drop;
             delete profile.$poplink;
             return this;
         },
@@ -239,7 +248,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 //open already
                 if(profile.$poplink)return;
-                var o, v,
+                var o, v, drop,
                     box = profile.boxing(),
                     main = profile.getSubNode('BOX'),
                     btn = profile.getSubNode('RBTN'),
@@ -247,7 +256,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===(profile.$drop = box.beforeComboPop(profile, pos, e, src))))
+                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -276,7 +285,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 if(pro.listKey)
                                     //function no cache
                                     if(typeof xui.get(xui.$cache,['UIDATA', pro.listKey])=='function')
-                                        profile.$drop = cachekey = null;
+                                        drop = cachekey = null;
                                     else
                                         cachekey = "!"+pro.listKey;
                                 else
@@ -288,12 +297,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             xui.filter(profile.box.$drop,function(o){
                                 return !!o.renderId;
                             });
-                            profile.$drop = profile.box.$drop[cachekey];
+                            drop = profile.box.$drop[cachekey];
                         }
                     }
 
                     //cache pop
-                    if(!profile.$drop){
+                    if(!drop){
                         switch(type){
                             case 'combobox':
                             case 'listbox':
@@ -387,16 +396,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(xui.isHash(pro.popCtrlEvents) && !xui.isEmpty(pro.popCtrlEvents))
                             o.setEvents(pro.popCtrlEvents);
 
-                        profile.$drop = o.get(0);
+                        drop = o.get(0);
 
                         //set to global cache
                         if(cachekey)
-                            profile.box.$drop[cachekey]=profile.$drop;
+                            profile.box.$drop[cachekey]=drop;
 
                         o.render();
                     }
 
-                    o=profile.$drop.boxing();
+                    o=drop.boxing();
                     o.setHost(profile);
 
                     //set pop
@@ -409,7 +418,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             break;
                         case 'date':
                         case 'datetime':
-                            var t = profile.$drop.properties;
+                            var t = drop.properties;
                             if(t=profile.properties.$UIvalue)
                                 o.setValue(new Date( parseInt(t,10)), true,'pop');
                             break;
@@ -418,9 +427,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             break;
                     }
 
-                    profile.$poplink = o.get(0);
+                    profile.boxing().setPopWnd(o);
 
-                    if(profile.beforePopShow && false===box.beforePopShow(profile, profile.$drop))
+                    if(profile.beforePopShow && false===box.beforePopShow(profile, drop))
                         return;
                     //pop
                     var node=o.reBoxing();
@@ -452,7 +461,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
 
                 if(profile.afterPopShow)
-                    box.afterPopShow(profile, profile.$drop);
+                    box.afterPopShow(profile, drop);
             });
         },
         expand:function(node){
@@ -465,10 +474,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(profile.renderId && profile.$poplink)
                 profile.boxing()._cache('call');
         },
-        getPopWnd:function(force){
+        getPopWnd:function(){
             var profile=this.get(0);
-            if(profile && profile.$drop && (force||profile.$poplink))
-                return profile.$drop.boxing();
+            if(profile && profile.$poplink)
+                return profile.$poplink.boxing();
         }
     },
     /*Initialize*/
@@ -902,7 +911,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
                     if(prop.disabled || prop.readonly)return;
-                    if(profile.onCommand && false===profile.boxing().onCommand(profile,src))
+                    if(profile.onCommand && false===profile.boxing().onCommand(profile,src,prop.commandBtn))
                         return;
                     if(prop.commandBtn=='delete'||prop.commandBtn=='remove')
                         profile.boxing().setUIValue('',true);
@@ -1156,7 +1165,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         EventHandlers:{
             onFileDlgOpen:function(profile, src){},
-            onCommand:function(profile, src){},
+            onCommand:function(profile, src, type){},
             beforeComboPop:function(profile, pos, e, src){},
             beforePopShow:function(profile, popCtl){},
             afterPopShow:function(profile, popCtl){},
@@ -1171,8 +1180,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // yyyy-mm-dd
             // yyyy/mm/dd
             dateEditorTpl:"",
-            // for number&currency
-            precision:2,
             groupingSeparator:",",
             decimalSeparator:".",
             forceFillZero:true,
@@ -1280,6 +1287,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         pro.boxing().refresh(true);
                 }
             },
+
+            // for number&currency
+            precision:2,
             increment:0.01,
             min:-Math.pow(10,15),
             // big number for date
@@ -1373,7 +1383,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var id=profile.$xid+':spin';
             if(xui.Thread.isAlive(id))return;
             var prop=profile.properties,
-                off=prop.increment*(flag?1:-1),
+                increment=Math.max( prop.increment, Math.pow(10, -prop.precision) ),
+                off=increment*(flag?1:-1),
                 task={delay:300},
                 fun=function(){
                     if(profile.destroyed)return false;
@@ -1397,14 +1408,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // set template dynamic
             if(!template){
                 template = xui.clone(profile.box.getTemplate());
-                var t=template.FRAME.BORDER, type=properties.type;
+                var t=template.FRAME.BORDER, type=properties.type,
+                     ip=t.BOX.WRAP.INPUT;
 
                 delete t.LBTN;
                 delete t.RBTN;
                 delete t.SPINBTN;
 
-                t.BOX.WRAP.INPUT.tagName='input';
-                t.BOX.WRAP.INPUT.type='text';
+                ip.tagName='input';
+                ip.type='text';
                 switch(type){
                     case "none":
                     case "input":
@@ -1412,10 +1424,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case "currency":
                     break;
                     case 'button':
-                        t.BOX.WRAP.INPUT.type='button';
+                        ip.type='button';
                     break;
                     case 'password':
-                        t.BOX.WRAP.INPUT.type='password';
+                        ip.type='password';
                     break;
                     // spin has spin buttons
                     case 'spin':
@@ -1458,7 +1470,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'file':
                         t.FILE={
                             $order:20,
-                            className:'xui-ui-unselectable {_radius_dropr}',
+                            className:'xui-ui-unselectable  {_radius_dropr}',
                             tagName:'input',
                             type:'file',
                             hidefocus:xui.browser.ie?"hidefocus":null,
@@ -1468,7 +1480,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'cmdbox':
                     case 'dropbutton':
                         t.className += ' xui-ui-noshadow';
-                        t.BOX.WRAP.INPUT.type='button';
+                        ip.type='button';
                 }
                 if(type!='none'&&type!='input'&&type!='password'&&type!='button'&&type!='spin'&&type!='currency'&&type!='number'){
                     t.RBTN={
@@ -1495,8 +1507,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'popbox':
                     case 'number':
                     case 'combobox':
-                        t.BOX.WRAP.INPUT.tagName='textarea';
-                        delete t.BOX.WRAP.INPUT.type;
+                        ip.tagName='textarea';
+                        ip.className='';
+                        delete ip.type;
                     }
                 }
 

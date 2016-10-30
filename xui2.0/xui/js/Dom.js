@@ -3099,8 +3099,8 @@ type:4
                             directionwebkit = 'left top, right bottom';
                         break;
                         case 'T':
-                            directionmoz="top";
                             direction="to bottom";
+                            directionmoz="top";
                             directionwebkit = 'left top, left bottom';
                         break;
                         case 'RT':
@@ -3108,13 +3108,13 @@ type:4
                             directionwebkit = 'right top, left bottom';
                         break;
                         case 'L':
-                            directionmoz="left";
                             direction="to right";
+                            directionmoz="left";
                             directionwebkit = 'left top, right top';
                         break;
                         case 'R':
-                            directionmoz="right";
                             direction="to left";
+                            directionmoz="right";
                             directionwebkit = 'right top, left top';
                         break;
                         case 'LB':
@@ -3122,8 +3122,8 @@ type:4
                             directionwebkit = 'left bottom, right top';
                         break;
                         case 'B':
-                            directionmoz="bottom";
                             direction="to top";
+                            directionmoz="bottom";
                             directionwebkit = 'left bottom, left top';
                         break;
                         case 'RB':

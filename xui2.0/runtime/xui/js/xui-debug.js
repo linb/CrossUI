@@ -8422,7 +8422,7 @@ Class('xui.Event',null,{
         },
         $getCSSValue:function(selector, cssKey, cssValue, ownerNode){
             var ns=this,
-                k=ns._r,
+                k=ns._r, css,
                 ds=document.styleSheets,
                 l=ds.length,m, o,v,i,j,
                 selectorText;
@@ -8440,13 +8440,19 @@ Class('xui.Event',null,{
                             if((v=o[j]).selectorText && !v.disabled){
                                 selectorText = ns._rep(v.selectorText);
                                 if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
-                                    if(!cssValue){
-                                        if(!ownerNode || (ownerNode==ds[i].ownerNode||ds[i].owningElement))
-                                            if(v.style[cssKey]!=='')
-                                                // replace is crack for opera
-                                                return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
-                                    }else if(cssValue===v.style[cssKey]){
-                                        return ds[i].ownerNode||ds[i].owningElement ;
+                                    if(!cssKey){
+                                        (css=css||[]).push(v);
+                                    }else{
+                                        if(!cssValue){
+                                            if(!ownerNode || (ownerNode==ds[i].ownerNode||ds[i].owningElement))
+                                                if(v.style[cssKey]!=='')
+                                                    // return cssValue
+                                                    // replace is crack for opera
+                                                    return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
+                                        }else if(cssValue===v.style[cssKey]){
+                                            // return css dom node
+                                            return ds[i].ownerNode||ds[i].owningElement ;
+                                        }
                                     }
                                 }
                             }
@@ -8454,6 +8460,8 @@ Class('xui.Event',null,{
                     }
                 }
             }
+            // return all stylesheets named cssKey
+            return css;
         },
         _addRules:function(selector,value){
             var ns=this,
@@ -16785,7 +16793,7 @@ Class("xui.Tips", null,{
             '.xui-dbg-con2{padding-left:.5em;border-bottom:dashed 1px #CCC;width:24.5em;}'+
             '.xui-dbg-con3{padding-left:.5em;border-bottom:dashed 1px #CCC;background:#EEE;color:#0000ff;width:24.5em;}'+
             '.xui-dbg-con4{padding-left:.5em;border-bottom:dashed 1px #CCC;background:#EEE;color:#ff0000;width:24.5em;}'+
-            '.xui-dbg-tail{overflow:hidden;position:relative;border-top:solid 1px #CCC;height:1.33333em;background:#fff;color:#0000ff;}'+
+            '.xui-dbg-tail{overflow:hidden;position:relative;border-top:solid 1px #CCC;height:1.3333333333333333em;background:#fff;color:#0000ff;}'+
             '.xui-dbg-tail input{width:100%;border:0;background:transparent;}'
         ,this.KEY);
         //fix ie6:
@@ -18954,8 +18962,8 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-image':{
                 'vertical-align':'middle',
-                width:'1.3333em',
-                height:'1.3333em',
+                width:'1.3333333333333333em',
+                height:'1.3333333333333333em',
                 'background-repeat':'no-repeat'
             },
             '.xui-uicmd-none, .xui-display-none':{
@@ -19378,7 +19386,7 @@ Class("xui.UI",  "xui.absObj", {
                 background:'none'
             },
             '.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
-                background:'#fff'
+                background:'#efefef'
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #B6B6B6'
@@ -19565,9 +19573,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-readonly .xui-ui-shadow-input':{
                 $order:15,
-               '-moz-box-shadow': 'none',
-               '-webkit-box-shadow': 'none',
-               'box-shadow': 'none'
+               '-moz-box-shadow': 'none !important',
+               '-webkit-box-shadow': 'none !important',
+               'box-shadow': 'none !important'
             },
             '.xui-uiborder-circle':{
                 $order:16,
@@ -23625,7 +23633,7 @@ Class("xui.absList", "xui.absObj",{
                 else xui.Tips.hide();
                 return false;
             }else if(profile.properties.autoTips && item && 'caption' in item){
-                if(item.caption)xui.Tips.show(pos, {tips:item.caption});
+                if(item.caption||item.comment)xui.Tips.show(pos, {tips: (item.caption||'') + (item.caption||item.comment?'<br/>':'') + (item.comment||'')});
                 else xui.Tips.hide();
                 return false;
             }else
@@ -28173,6 +28181,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     tagName : 'div',
                     INPUT:{
                         $order:10,
+                        className:'xui-ui-ellipsis',
                         tagName : 'input',
                         type : '{_inputtype}',
                         maxlength:'{maxlength}',
@@ -28702,6 +28711,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 if(properties.multiLines){
                     t=template.FRAME.BORDER.BOX.WRAP.INPUT;
                     t.tagName='textarea';
+                    t.className='';
                     delete t.type;
                 }
 
@@ -30300,7 +30310,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         setPopWnd:function(drop){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
-            profile.$drop=profile.$poplink=drop['xui.Module']?drop.getRoot(true):drop['xui.UI']?drop.get(0):drop;
+            profile.$drop=profile.$poplink=drop?drop['xui.Module']?drop.getRoot(true):drop['xui.UI']?drop.get(0):drop:null;
         },
         _cache:function(type, focus){
             if(this.isDestroyed())return ;
@@ -31368,8 +31378,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // yyyy-mm-dd
             // yyyy/mm/dd
             dateEditorTpl:"",
-            // for number&currency
-            precision:2,
             groupingSeparator:",",
             decimalSeparator:".",
             forceFillZero:true,
@@ -31477,6 +31485,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         pro.boxing().refresh(true);
                 }
             },
+
+            // for number&currency
+            precision:2,
             increment:0.01,
             min:-Math.pow(10,15),
             // big number for date
@@ -31570,7 +31581,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var id=profile.$xid+':spin';
             if(xui.Thread.isAlive(id))return;
             var prop=profile.properties,
-                off=prop.increment*(flag?1:-1),
+                increment=Math.max( prop.increment, Math.pow(10, -prop.precision) ),
+                off=increment*(flag?1:-1),
                 task={delay:300},
                 fun=function(){
                     if(profile.destroyed)return false;
@@ -31594,14 +31606,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // set template dynamic
             if(!template){
                 template = xui.clone(profile.box.getTemplate());
-                var t=template.FRAME.BORDER, type=properties.type;
+                var t=template.FRAME.BORDER, type=properties.type,
+                     ip=t.BOX.WRAP.INPUT;
 
                 delete t.LBTN;
                 delete t.RBTN;
                 delete t.SPINBTN;
 
-                t.BOX.WRAP.INPUT.tagName='input';
-                t.BOX.WRAP.INPUT.type='text';
+                ip.tagName='input';
+                ip.type='text';
                 switch(type){
                     case "none":
                     case "input":
@@ -31609,10 +31622,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case "currency":
                     break;
                     case 'button':
-                        t.BOX.WRAP.INPUT.type='button';
+                        ip.type='button';
                     break;
                     case 'password':
-                        t.BOX.WRAP.INPUT.type='password';
+                        ip.type='password';
                     break;
                     // spin has spin buttons
                     case 'spin':
@@ -31655,7 +31668,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'file':
                         t.FILE={
                             $order:20,
-                            className:'xui-ui-unselectable {_radius_dropr}',
+                            className:'xui-ui-unselectable  {_radius_dropr}',
                             tagName:'input',
                             type:'file',
                             hidefocus:xui.browser.ie?"hidefocus":null,
@@ -31665,7 +31678,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'cmdbox':
                     case 'dropbutton':
                         t.className += ' xui-ui-noshadow';
-                        t.BOX.WRAP.INPUT.type='button';
+                        ip.type='button';
                 }
                 if(type!='none'&&type!='input'&&type!='password'&&type!='button'&&type!='spin'&&type!='currency'&&type!='number'){
                     t.RBTN={
@@ -31692,8 +31705,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'popbox':
                     case 'number':
                     case 'combobox':
-                        t.BOX.WRAP.INPUT.tagName='textarea';
-                        delete t.BOX.WRAP.INPUT.type;
+                        ip.tagName='textarea';
+                        ip.className='';
+                        delete ip.type;
                     }
                 }
 
@@ -35357,7 +35371,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.getSubNodes("IMAGE").each(function(o){
                 if(o.src==xui.ini.img_bg){
                     o.src=o.title;
-                    o.title=null;
+                    o.title='';
                 }
             });
         }
@@ -35375,6 +35389,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         style:'{_itemSize};',
                         CAPTION:{
                             tagName : 'div',
+                            className:'xui-ui-ellipsis',
                             style:'{capDisplay}',
                             text: '{caption}',
                             $order:0
@@ -35397,6 +35412,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         COMMENT:{
                             tagName : 'div',
+                            className:'xui-ui-ellipsis',
                             text: '{comment}',
                             style:'{commentDisplay}',
                             $order:2
@@ -35416,6 +35432,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         };
         this.setTemplate(t);
+
+        // compitable
+        xui.UI.IconList = xui.UI.Gallery;
+        var key="xui.UI.IconList";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Static:{
         IMGNODE:1,
@@ -35430,8 +35451,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 position:'relative',
                 overflow:'auto',
                 'overflow-x': 'hidden',
-                zoom:xui.browser.ie6?1:null,
-                padding:'.5em'
+                zoom:xui.browser.ie6?1:null
             },
             ITEM:{
                 display:xui.$inlineBlock,
@@ -35508,7 +35528,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 return;
                              }
 
-                            if(item.autoItemSize||p.autoItemSize){
+                            if(item.autoImgSize||p.autoImgSize){
                                 nn.attr('width','');nn.attr('height','');
                             }else{
                                 nn.attr('width',item.imgWidth);nn.attr('height',item.imgWidth);
@@ -35522,13 +35542,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
 
                             // don't show img_blank
-                            if(path==xui.ini.img_blank){
-                                node.style.visibility="hidden";
-                                node.style.display="none";
-                            }else{
-                                node.style.visibility="visible";
-                                node.style.display="";
-                            }
+                            node.style.visibility="visible";
+                            node.style.display="";
                             item._status='loaded';
                     }
                 },
@@ -35550,7 +35565,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         DataModel:({
             tagCmds:null,
+            autoImgSize:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             autoItemSize:{
+                ini:true,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            iconOnly:{
                 ini:false,
                 action:function(){
                     this.boxing().refresh();
@@ -35625,226 +35652,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             if(item.flagText)item._flagStyle='display:block';
 
-            item.caption = item.caption || '';
-            if(item.caption==='')item.capDisplay='display:none;';
-            item.comment = item.comment || '';
-            if(item.comment==='')item.commentDisplay='display:none;';
+            if(p.iconOnly)delete item.caption;
+
+            if(( item.caption = item.caption || '')==='')item.capDisplay='display:none;';
+            if((item.comment = item.comment || '')==='')item.commentDisplay='display:none;';
 
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
                 item._itemSize='width:'+css.$forceu(item.itemWidth)+';height:'+css.$forceu(item.itemHeight);
             }
-        },
-        RenderTrigger:function(){
-            this.boxing()._afterInsertItems(this);
-        }
-    }
-});
-Class("xui.UI.IconList", "xui.UI.List",{
-    Instance:{
-        getStatus:function(id){
-            var item=this.get(0).getItemByItemId(id);
-            return (item && item._status)||'ini';
-        },
-        _afterInsertItems:function(profile){
-            profile.getSubNodes("IMAGE").each(function(o){
-                if(o.src==xui.ini.img_bg){
-                    o.src=o.title;
-                    o.title=null;
-                }
-            });
-        }
-    },
-    Initialize:function(){
-        //modify default template fro shell
-        var t = this.getTemplate();
-        t.$submap={
-            items:{
-                ITEM:{
-                    tabindex:'{_tabindex}',
-                    className:'xui-uiborder-radius xui-uitembg xui-showfocus {itemClass} {disabled}  {readonly}',
-                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle};{_itemDisplay};',
-                    ICON:{
-                        className:'xuifont {_imageClass}',
-                        style:"{_fontSize}",
-                        text:'{iconFontCode}'
-                    },
-                    IMAGE:{
-                        tagName:'img',
-                        src:xui.ini.img_bg,
-                        title:'{image}',
-                        style:'{imgStyle}'
-                    },
-                    FLAG:{
-                        $order:20,
-                        className:'xui-uiflag-1 xui-display-none {flagClass}',
-                        style:'{_flagStyle};{flagStyle}',
-                        text:'{flagText}'
-                    }
-                }
-            }
-        };
-        this.setTemplate(t);
-    },
-    Static:{
-        IMGNODE:1,
-        Appearances:{
-            KEY:{
-                overflow:'auto',
-                'overflow-x': 'hidden'
-            },
-            ITEMS:{
-                overflow:'auto',
-                'overflow-x': 'hidden',
-                position:'relative',
-                'line-height':'1.25em',
-                zoom:xui.browser.ie6?1:null,
-                padding:'.5em'
-            },
-            ITEM:{
-                padding:0,
-                display:xui.$inlineBlock,
-                zoom:xui.browser.ie67?1:null,
-                position:'relative',
-                cursor:'pointer',
-                'vertical-align':'top',
-                'background-repeat':'no-repeat',
-                'background-position':'center center'
-            },
-            IMAGE:{
-                visibility:'hidden'
-            },
-            IBWRAP:{
-                'font-size':xui.browser.ie678?0:null,
-                'line-height':xui.browser.ie678?0:null
-            },
-            FLAG:{
-                top:'-.5em',
-                right:'-.5em'
-            }
-        },
-        Behaviors:{
-            IMAGE:{
-                onLoad:function(profile,e,src){
-                    var img=xui.use(src).get(0),path=img.src;
-                    if(path!=xui.ini.img_bg){
-                            var p=profile.properties,
-                                  nn=xui.use(src),
-                                  node=nn.get(0),
-                                  item=profile.getItemByDom(src),
-                                  icon=profile.getSubNodeByItemId('ICON',item.id);
-
-                            // bug fix
-                            if(node.currentSrc && node.currentSrc!=path){
-                                icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
-                                nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                                node.style.visibility="hidden";
-                                node.style.display="none";
-                                item._status='error';
-                                 return;
-                            }
-
-                            if(item.autoItemSize||p.autoItemSize){
-                                nn.attr('width','');nn.attr('height','');
-                            }else{
-                                nn.attr('width',item.itemWidth);nn.attr('height',item.itemHeight);
-                            }
-
-                            icon.removeClass('xui-icon-loading');
-                            // hide
-                            if(!item.iconFontCode && !item.imageClass){
-                                icon.addClass("xui-display-none"); 
-                            }
-                            nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-
-                            // don't show img_blank
-                            if(path==xui.ini.img_blank){
-                                node.style.visibility="hidden";
-                                node.style.display="none";
-                            }else{
-                                node.style.visibility="visible";
-                                node.style.display="";
-                            }
-                            item._status='loaded';
-                    }
-                },
-                onError:function(profile,e,src){
-                    var item=profile.getItemByDom(src);
-                    if(item._status=='error')return;
-
-                    var p=profile.properties,
-                          nn=xui.use(src),
-                          node=nn.get(0),
-                          icon=profile.getSubNodeByItemId('ICON',item.id);
-                    icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
-                    nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                    node.style.visibility="hidden";
-                    node.style.display="none";
-                    item._status='error';
-                }
-            }
-        },
-        DataModel:({
-            tagCmds:null,
-            autoItemSize:{
-                ini:false,
-                action:function(){
-                    this.boxing().refresh();
-                }
-            },
-            itemMargin:{
-                ini:6,
-                action:function(v){
-                    if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('margin',this.$forceu(v));
-                    else
-                        this.getSubNode('ITEM',true).css(v);
-                }
-            },
-            itemPadding:{
-                ini:2,
-                action:function(v){
-                    if(typeof v!='object')
-                        this.getSubNode('ITEM',true).css('padding',this.$forceu(v));
-                    else
-                        this.getSubNode('ITEM',true).css(v);
-                }
-            },
-            itemWidth:{
-                ini:16,
-                action:function(v){
-                    this.getSubNode('IMAGE',true).width(v);
-                }
-            },
-            itemHeight:{
-                ini:16,
-                action:function(v){
-                    this.getSubNode('IMAGE',true).height(v);
-                }
-            },
-            width:200,
-            height:200
-        }),
-        EventHandlers:{
-            onCmd:null
-        },
-        _prepareItem:function(profile, item){
-            var p = profile.properties,
-            css=xui.CSS, t;
-
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,itemPadding,itemMargin,autoItemSize'),function(i){
-                item[i] = xui.isSet(item[i])?item[i]:p[i];
-            });
-            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
-            item._tabindex = p.tabindex;
-
-            if(t=item.fontSize)item._fontSize='font-size:'+t+';'
-            if(!item.iconFontCode)item._imageClass='xui-icon-loading';
-            if(item.imageClass)item._imageClass +=' ' + item.imageClass;
-
-            if(item.flagText)item._flagStyle='display:block';
         },
         RenderTrigger:function(){
             this.boxing()._afterInsertItems(this);
@@ -38775,7 +38592,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(selmode=='single'){
                     var itemId = profile.getSubIdByItemId(uiv);
                     if(uiv && itemId)
-                        profile.getSubNode('BAR',itemId).tagClass('expand',false).tagClass('-fold');
+                        profile.getSubNode('BAR',itemId).tagClass('-expand',false).tagClass('-fold');
 
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){
@@ -39782,9 +39599,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
          var t = this.getTemplate();
          t.$submap.items.ITEM.BAR.className='xui-uitembg xui-uiborder-radius xui-showfocus {cls_group} {cls_fold} {disabled} {readonly}';
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
-         n.className='xuicon {imageClass}';
          n.$fonticon = '{_fi_cls_file}';
-         n.text='{iconFontCode}';
          this.setTemplate(t);
     },
     Static:{
@@ -39868,7 +39683,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
-            item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
+
+            if(!(item.imageClass||item.image||item.iconFontCode))
+                item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
@@ -51875,8 +51692,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             item._tabindex = prop.tabindex;
             if(!item.caption)
                 item._capDisplay=dpn;
-            else
-                item.caption = item.caption.replace(/</g,"&lt;");
 
             item._bginfo="";
             if(t=item.panelBgClr||p.panelBgClr)
@@ -51906,9 +51721,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 profile._w=width;
                 profile.getSubNode("PANEL",true).each(function(panel){
                     if(panel.offsetWidth){
+                        xui(panel).width('auto');
                         var w=xui(panel).width(), prop=profile.properties;
                         if(xui.$uem(prop))w=profile.$px2em(w, panel)+'em';
-                        xui(panel).width('auto').width(w);
+                        xui(panel).width(w);
                     }
                 });
             }

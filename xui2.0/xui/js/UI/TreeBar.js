@@ -18,7 +18,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(selmode=='single'){
                     var itemId = profile.getSubIdByItemId(uiv);
                     if(uiv && itemId)
-                        profile.getSubNode('BAR',itemId).tagClass('expand',false).tagClass('-fold');
+                        profile.getSubNode('BAR',itemId).tagClass('-expand',false).tagClass('-fold');
 
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){

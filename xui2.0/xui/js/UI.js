@@ -2063,8 +2063,8 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-image':{
                 'vertical-align':'middle',
-                width:'1.3333em',
-                height:'1.3333em',
+                width:'1.3333333333333333em',
+                height:'1.3333333333333333em',
                 'background-repeat':'no-repeat'
             },
             '.xui-uicmd-none, .xui-display-none':{
@@ -2487,7 +2487,7 @@ Class("xui.UI",  "xui.absObj", {
                 background:'none'
             },
             '.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked':{
-                background:'#fff'
+                background:'#efefef'
             },
             '.xui-uiborder-flat':{
                 border:'solid 1px #B6B6B6'
@@ -2674,9 +2674,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-readonly .xui-ui-shadow-input':{
                 $order:15,
-               '-moz-box-shadow': 'none',
-               '-webkit-box-shadow': 'none',
-               'box-shadow': 'none'
+               '-moz-box-shadow': 'none !important',
+               '-webkit-box-shadow': 'none !important',
+               'box-shadow': 'none !important'
             },
             '.xui-uiborder-circle':{
                 $order:16,
@@ -6734,7 +6734,7 @@ Class("xui.absList", "xui.absObj",{
                 else xui.Tips.hide();
                 return false;
             }else if(profile.properties.autoTips && item && 'caption' in item){
-                if(item.caption)xui.Tips.show(pos, {tips:item.caption});
+                if(item.caption||item.comment)xui.Tips.show(pos, {tips: (item.caption||'') + (item.caption||item.comment?'<br/>':'') + (item.comment||'')});
                 else xui.Tips.hide();
                 return false;
             }else

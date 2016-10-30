@@ -420,8 +420,6 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             item._tabindex = prop.tabindex;
             if(!item.caption)
                 item._capDisplay=dpn;
-            else
-                item.caption = item.caption.replace(/</g,"&lt;");
 
             item._bginfo="";
             if(t=item.panelBgClr||p.panelBgClr)
@@ -451,9 +449,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 profile._w=width;
                 profile.getSubNode("PANEL",true).each(function(panel){
                     if(panel.offsetWidth){
+                        xui(panel).width('auto');
                         var w=xui(panel).width(), prop=profile.properties;
                         if(xui.$uem(prop))w=profile.$px2em(w, panel)+'em';
-                        xui(panel).width('auto').width(w);
+                        xui(panel).width(w);
                     }
                 });
             }

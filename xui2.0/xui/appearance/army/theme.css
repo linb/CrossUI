@@ -9,7 +9,7 @@
 		font-size:1.1667em;
 }
 .xuifont, .xuicon{
-  font-size:1.33333em;
+  font-size:1.3333333333333333em;
 }
 .xuifont-hover, .xuicon-hover{
 	color: #686868;
@@ -94,6 +94,7 @@
     -webkit-box-shadow:inset 0 1px 0 0 #D4E8D9;
     box-shadow:inset 0 1px 0 0 #D4E8D9;    
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D4E8D9', endColorstr='#779880');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#D4E8D9', endColorstr='#779880');
     background-image: linear-gradient(top,  #D4E8D9 5%,  #779880 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #D4E8D9), to(1, #779880));
     background-image: -webkit-linear-gradient(top, #D4E8D9 5%, #779880 100%);
@@ -103,6 +104,7 @@
 .xui-uigradient-hover, .xui-uigradient:hover{
     border-color: #8CBC96;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEDC', endColorstr='#86A78F');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEDC', endColorstr='#86A78F');
     background-image: linear-gradient(top,  #FFEEDC 5%,  #86A78F 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFEEDC), to(1, #86A78F));
     background-image: -webkit-linear-gradient(top, #FFEEDC 5%, #86A78F 100%);
@@ -113,6 +115,7 @@
 .xui-uigradient:active, 
 .xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#779880', endColorstr='#D4E8D9');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#779880', endColorstr='#D4E8D9');
     background-image: linear-gradient(top,  #779880 5%,  #D4E8D9 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #779880), to(1, #D4E8D9));
     background-image: -webkit-linear-gradient(top, #779880 5%, #D4E8D9 100%);

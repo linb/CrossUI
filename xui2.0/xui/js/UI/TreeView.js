@@ -4,9 +4,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
          var t = this.getTemplate();
          t.$submap.items.ITEM.BAR.className='xui-uitembg xui-uiborder-radius xui-showfocus {cls_group} {cls_fold} {disabled} {readonly}';
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
-         n.className='xuicon {imageClass}';
          n.$fonticon = '{_fi_cls_file}';
-         n.text='{iconFontCode}';
          this.setTemplate(t);
     },
     Static:{
@@ -90,7 +88,9 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
             //
             item.cls_fold = item.sub?profile.getClass('BAR','-fold'):'';
-            item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
+
+            if(!(item.imageClass||item.image||item.iconFontCode))
+                item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';

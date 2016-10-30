@@ -4376,7 +4376,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
             beforePopShow:function(profile, cell, proEditor, popCtl){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
-            onCommand:function(profile, cell, proEditor, src){},
+            onCommand:function(profile, cell, proEditor, src, type){},
             onEditorClick:function(profile, cell, proEditor, type, src){},
             beforeUnitUpdated:function(profile, cell, proEditor, type){}
         },
@@ -5945,6 +5945,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editorHAlign=getPro('editorHAlign'),
                         editorDropListWidth = getPro('editorDropListWidth'),
                         editorDropListHeight = getPro('editorDropListHeight'),
+                        editorCommandBtn=getPro('editorCommandBtn'),
                         t,oldProp;
 
 
@@ -6051,8 +6052,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         break;
                     }
                     if(profile.onCommand)
-                        editor.onCommand(function(editorprf, node){
-                            return profile.boxing().onCommand(profile, editorprf.$cell, editorprf, node);
+                        editor.onCommand(function(editorprf, node, type){
+                            return profile.boxing().onCommand(profile, editorprf.$cell, editorprf, node, type);
                         });
 
                     if(inline){
@@ -6073,6 +6074,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editor.setDropListHeight(editorDropListHeight);
                     if(editor.setHAlign&&editorHAlign)
                         editor.setHAlign(editorHAlign);
+                    if(editor.setCommandBtn&&editorCommandBtn)
+                        editor.setCommandBtn(editorCommandBtn);
                     if(editorFormat){
                         if(typeof editorFormat=='function' && editor.beforeFormatCheck)
                             editor.beforeFormatCheck(editorFormat);

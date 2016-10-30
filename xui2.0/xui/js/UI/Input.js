@@ -119,6 +119,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     tagName : 'div',
                     INPUT:{
                         $order:10,
+                        className:'xui-ui-ellipsis',
                         tagName : 'input',
                         type : '{_inputtype}',
                         maxlength:'{maxlength}',
@@ -648,6 +649,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 if(properties.multiLines){
                     t=template.FRAME.BORDER.BOX.WRAP.INPUT;
                     t.tagName='textarea';
+                    t.className='';
                     delete t.type;
                 }
 

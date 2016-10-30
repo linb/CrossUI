@@ -117,7 +117,7 @@ Class('xui.Debugger', null, {
             '.xui-dbg-con2{padding-left:.5em;border-bottom:dashed 1px #CCC;width:24.5em;}'+
             '.xui-dbg-con3{padding-left:.5em;border-bottom:dashed 1px #CCC;background:#EEE;color:#0000ff;width:24.5em;}'+
             '.xui-dbg-con4{padding-left:.5em;border-bottom:dashed 1px #CCC;background:#EEE;color:#ff0000;width:24.5em;}'+
-            '.xui-dbg-tail{overflow:hidden;position:relative;border-top:solid 1px #CCC;height:1.33333em;background:#fff;color:#0000ff;}'+
+            '.xui-dbg-tail{overflow:hidden;position:relative;border-top:solid 1px #CCC;height:1.3333333333333333em;background:#fff;color:#0000ff;}'+
             '.xui-dbg-tail input{width:100%;border:0;background:transparent;}'
         ,this.KEY);
         //fix ie6:

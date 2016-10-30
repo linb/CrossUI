@@ -9,7 +9,7 @@
 		font-size:1.1667em;
 }
 .xuifont, .xuicon{
-  font-size:1.33333em;
+  font-size:1.3333333333333333em;
 }
 .xuifont-hover, .xuicon-hover{
 	color: #888;
@@ -105,6 +105,7 @@
     color:#444; 
     background:none;
     filter: none;
+    -ms-filter: none;
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
     box-shadow: none;

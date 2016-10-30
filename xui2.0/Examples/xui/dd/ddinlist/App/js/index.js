@@ -49,8 +49,9 @@ Class('App', 'xui.Com',{
             );
             
             append(
-                (new xui.UI.IconList)
+                (new xui.UI.Gallery)
                 .setHost(host,"list4")
+                .setIconOnly(true)
                 .setItems([{"id":"2a", "image":"img/a.gif", "caption":"item2a", "tips":"item2 a"}, {"id":"2b", "caption":"item2b", "image":"img/b.gif", "tips":"item2 b"}, {"id":"2c", "image":"img/c.gif", "caption":"item2c", "tips":"item2 c"}])
                 .setLeft(200)
                 .setTop(50)

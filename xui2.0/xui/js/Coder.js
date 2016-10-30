@@ -399,7 +399,7 @@ Class("xui.Coder", null,{
 
             a=xui.copy(this._profiles[type]);
             //for clear begin/end, for platform
-            code = this.replace(code, [[/(\r\n|\r)/g, "\n"],[/( +)(\n)/g, "$2"],[/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;"],[/ /g,'&nbsp;']]);
+            code = this.replace(code, [[/(\r\n|\r)/g, "\n"],[/( +)(\n)/g, "$2"],[/\t/g, "\x04\x04\x04\x04"],[/ /g,'\x04']]);
 
             var arr=[]; //[[/<[^>]+>[^<]*<\/[^>]+>/,'$0']];
             var f = function(o,s,r){
@@ -407,7 +407,8 @@ Class("xui.Coder", null,{
                     if(!xui.isArr(o))o=[o];
                     xui.arr.each(o,function(o){
                         if(typeof o =='string')o="\\b(" + o + ")\\b";
-                        arr.push([o, r?r:"<span class='"+s+"'>$0<\/span>"]);
+//                        arr.push([o, r?r:"<span class='"+s+"'>$0<\/span>"]);
+                        arr.push([o, r?r:function(a){return "<span class='"+s+"'>"+a[0].replace(/\n/g,"<\/span>\n<span class='"+s+"'>")+"<\/span>";}]);
                     });
                 }
             };
@@ -456,7 +457,7 @@ Class("xui.Coder", null,{
             });
 
             code = this.replace(code,arr);
-
+            code = code.replace(/\x04/g,'&nbsp;');
             code = _encode(code);
             var strR='';
             var alist = code.split('\n');

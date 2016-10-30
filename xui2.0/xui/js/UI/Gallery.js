@@ -8,7 +8,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             profile.getSubNodes("IMAGE").each(function(o){
                 if(o.src==xui.ini.img_bg){
                     o.src=o.title;
-                    o.title=null;
+                    o.title='';
                 }
             });
         }
@@ -26,6 +26,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                         style:'{_itemSize};',
                         CAPTION:{
                             tagName : 'div',
+                            className:'xui-ui-ellipsis',
                             style:'{capDisplay}',
                             text: '{caption}',
                             $order:0
@@ -48,6 +49,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                         },
                         COMMENT:{
                             tagName : 'div',
+                            className:'xui-ui-ellipsis',
                             text: '{comment}',
                             style:'{commentDisplay}',
                             $order:2
@@ -67,6 +69,11 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             }
         };
         this.setTemplate(t);
+
+        // compitable
+        xui.UI.IconList = xui.UI.Gallery;
+        var key="xui.UI.IconList";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Static:{
         IMGNODE:1,
@@ -81,8 +88,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 position:'relative',
                 overflow:'auto',
                 'overflow-x': 'hidden',
-                zoom:xui.browser.ie6?1:null,
-                padding:'.5em'
+                zoom:xui.browser.ie6?1:null
             },
             ITEM:{
                 display:xui.$inlineBlock,
@@ -159,7 +165,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                                 return;
                              }
 
-                            if(item.autoItemSize||p.autoItemSize){
+                            if(item.autoImgSize||p.autoImgSize){
                                 nn.attr('width','');nn.attr('height','');
                             }else{
                                 nn.attr('width',item.imgWidth);nn.attr('height',item.imgWidth);
@@ -173,13 +179,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
 
                             // don't show img_blank
-                            if(path==xui.ini.img_blank){
-                                node.style.visibility="hidden";
-                                node.style.display="none";
-                            }else{
-                                node.style.visibility="visible";
-                                node.style.display="";
-                            }
+                            node.style.visibility="visible";
+                            node.style.display="";
                             item._status='loaded';
                     }
                 },
@@ -201,7 +202,19 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         },
         DataModel:({
             tagCmds:null,
+            autoImgSize:{
+                ini:false,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             autoItemSize:{
+                ini:true,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            iconOnly:{
                 ini:false,
                 action:function(){
                     this.boxing().refresh();
@@ -276,10 +289,10 @@ Class("xui.UI.Gallery", "xui.UI.List",{
 
             if(item.flagText)item._flagStyle='display:block';
 
-            item.caption = item.caption || '';
-            if(item.caption==='')item.capDisplay='display:none;';
-            item.comment = item.comment || '';
-            if(item.comment==='')item.commentDisplay='display:none;';
+            if(p.iconOnly)delete item.caption;
+
+            if(( item.caption = item.caption || '')==='')item.capDisplay='display:none;';
+            if((item.comment = item.comment || '')==='')item.commentDisplay='display:none;';
 
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';

@@ -1232,8 +1232,9 @@ Class('App', 'xui.Module',{
                 , "2");
             
             host.tabs2.append(
-                xui.create("xui.UI.IconList")
+                xui.create("xui.UI.Gallery")
                 .setHost(host,"xui_ui_iconlist19")
+                .setIconOnly(true)
                 .setItems([{
                     "id" : "a",
                     "image" : "img/demo.gif",

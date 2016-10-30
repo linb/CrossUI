@@ -253,7 +253,7 @@ Class("xui.CSS", null,{
         },
         $getCSSValue:function(selector, cssKey, cssValue, ownerNode){
             var ns=this,
-                k=ns._r,
+                k=ns._r, css,
                 ds=document.styleSheets,
                 l=ds.length,m, o,v,i,j,
                 selectorText;
@@ -271,13 +271,19 @@ Class("xui.CSS", null,{
                             if((v=o[j]).selectorText && !v.disabled){
                                 selectorText = ns._rep(v.selectorText);
                                 if(xui.arr.indexOf(selectorText.split(/\s*,\s*/g),selector)!=-1){
-                                    if(!cssValue){
-                                        if(!ownerNode || (ownerNode==ds[i].ownerNode||ds[i].owningElement))
-                                            if(v.style[cssKey]!=='')
-                                                // replace is crack for opera
-                                                return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
-                                    }else if(cssValue===v.style[cssKey]){
-                                        return ds[i].ownerNode||ds[i].owningElement ;
+                                    if(!cssKey){
+                                        (css=css||[]).push(v);
+                                    }else{
+                                        if(!cssValue){
+                                            if(!ownerNode || (ownerNode==ds[i].ownerNode||ds[i].owningElement))
+                                                if(v.style[cssKey]!=='')
+                                                    // return cssValue
+                                                    // replace is crack for opera
+                                                    return (v.style[cssKey]||"").replace(/^\"|\"$/g,'');
+                                        }else if(cssValue===v.style[cssKey]){
+                                            // return css dom node
+                                            return ds[i].ownerNode||ds[i].owningElement ;
+                                        }
                                     }
                                 }
                             }
@@ -285,6 +291,8 @@ Class("xui.CSS", null,{
                     }
                 }
             }
+            // return all stylesheets named cssKey
+            return css;
         },
         _addRules:function(selector,value){
             var ns=this,

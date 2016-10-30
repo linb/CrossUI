@@ -93,7 +93,6 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\UI\TimePicker.js /b ^
 + %relPath%xui\js\UI\List.js /b ^
 + %relPath%xui\js\UI\Gallery.js /b ^
-+ %relPath%xui\js\UI\IconList.js /b ^
 + %relPath%xui\js\UI\Panel.js /b ^
 + %relPath%xui\js\UI\PageBar.js /b ^
 + %relPath%xui\js\UI\Tabs.js /b ^
