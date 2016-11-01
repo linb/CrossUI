@@ -9,7 +9,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    useem = xui.$uem(p),
+                    useem = xui.$rem(p),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -19,19 +19,19 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                             top=left.top;
                             left=left.left;
                         }else{
-                            top=(top||top===0)?top:profile.$px(p.top);
-                            left=(left||left===0)?left:profile.$px(p.left);
+                            top=(top||top===0)?top:css.$px(p.top);
+                            left=(left||left===0)?left:css.$px(p.left);
                         }
                     break;
                     case 'center':
                         if(xui.isHash(left)){
-                            top=left.top+(left.height-profile.$px(p.height))/2;
-                            left=left.left+(left.width-profile.$px(p.width))/2;
+                            top=left.top+(left.height-css.$px(p.height))/2;
+                            left=left.left+(left.width-css.$px(p.width))/2;
                         }else{
                             var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent);
                             // here, have to use global em
-                            top=(top||top===0)?top:Math.max(0,(pr.height()-profile.$px(p.height))/2+pr.scrollTop());
-                            left=(left||left===0)?left:Math.max(0,(pr.width()-profile.$px(p.width))/2+pr.scrollLeft());
+                            top=(top||top===0)?top:Math.max(0,(pr.height()-css.$px(p.height))/2+pr.scrollTop());
+                            left=(left||left===0)?left:Math.max(0,(pr.width()-css.$px(p.width))/2+pr.scrollLeft());
                         }
                     break;
                 }
@@ -46,7 +46,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                        adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
                         xui.UI.Div._applyAutoLoad(profile);
@@ -87,8 +87,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
                         left:[t.left,left],
                         top:[t.top,top],
-                        width:[t.width, profile.$px(p.width)],
-                        height:[t.height, profile.$px(p.height)]
+                        width:[t.width, xui.CSS.$px(p.width)],
+                        height:[t.height, xui.CSS.$px(p.height)]
                     }, null,f1,300,0,'expoIn').start();
                 else
                     f1();
@@ -98,7 +98,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
-                    useem = xui.$uem(pro),
+                    css=xui.CSS,
+                    useem = xui.$rem(pro),
                     root=profile.getRoot();
 
                 var fun=function(){
@@ -119,10 +120,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     };
                     if(t)
                         profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{
-                            left:[profile.$px(pro.left),t.left],
-                            top:[profile.$px(pro.top),t.top],
-                            width:[profile.$px(pro.width),t.width],
-                            height:[profile.$px(pro.height),t.height]
+                            left:[css.$px(pro.left),t.left],
+                            top:[css.$px(pro.top),t.top],
+                            width:[css.$px(pro.width),t.width],
+                            height:[css.$px(pro.height),t.height]
                         },  null, f1,300,0,'expoOut').start();
                     else
                         f1();
@@ -394,15 +395,15 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             onDragstop:function(profile){
                 var p = profile.properties,
-                    useem = xui.$uem(p),
+                    useem = xui.$rem(p),
                     root=profile.getRoot(),
                     pos = root.cssPos(),
                     l = null, t = null;
 
-                if(profile.$px(p.left) !== pos.left)
-                    p.left = l = profile.$forceu( pos.left,null);
-                if(profile.$px(p.top) !== pos.top)
-                    p.top = t = profile.$forceu( pos.top,null);
+                if(xui.CSS.$px(p.left) !== pos.left)
+                    p.left = l = xui.CSS.$forceu( pos.left,null);
+                if(xui.CSS.$px(p.top) !== pos.top)
+                    p.top = t = xui.CSS.$forceu( pos.top,null);
 
                 root.cssPos({ left: l, top: t });
 
@@ -708,11 +709,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             width: {
                 $spaceunit:1,
-                ini:'25em'
+                ini:'20rem'
             },
             height: {
                 $spaceunit:1,
-                ini:'25em'
+                ini:'20rem'
             },
             minWidth : 200,
             minHeight : 100,
@@ -1081,8 +1082,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             if(!profile.renderId) return;
             var prop=profile.properties, 
                 root=profile.getRoot(),
-                useem=xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                useem=xui.$rem(prop),
+                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
                 nr=root.cssRegion();
 
             nr.left=adjustunit(nr.left);
@@ -1441,9 +1442,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
     			width=profile.properties.minWidth;
 
             var prop=profile.properties,
-                useem=xui.$uem(prop),
-                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                css=xui.CSS,
+                useem=xui.$rem(prop),
+                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
 
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
@@ -1455,12 +1456,12 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 v6=profile.getSubNode('MAINI'),
                 h1,h4,t;
             // caculate with px
-            if(width)width=profile.$px(width);
-            if(height)height=profile.$px(height);
-            if(size.left)size.left=profile.$px(size.left);
-            if(size.top)size.top=profile.$px(size.top);
-            if(size.width)size.width=profile.$px(size.width);
-            if(size.height)size.height=profile.$px(size.height);
+            if(width)width=css.$px(width);
+            if(height)height=css.$px(height);
+            if(size.left)size.left=css.$px(size.left);
+            if(size.top)size.top=css.$px(size.top);
+            if(size.width)size.width=css.$px(size.width);
+            if(size.height)size.height=css.$px(size.height);
 
             if(height){
                 if(height=='auto'){

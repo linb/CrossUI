@@ -451,7 +451,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(panel.offsetWidth){
                         xui(panel).width('auto');
                         var w=xui(panel).width(), prop=profile.properties;
-                        if(xui.$uem(prop))w=profile.$px2em(w, panel)+'em';
+                        if(xui.$rem(prop))w=xui.CSS.$px2rem(w)+'rem';
                         xui(panel).width(w);
                     }
                 });

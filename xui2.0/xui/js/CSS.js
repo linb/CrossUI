@@ -339,71 +339,60 @@ Class("xui.CSS", null,{
             this.addStyleSheet(css,"xui.CSSreset");
         },
         adjustFont:function(){
-            this._dftEmStr='';
+            this._dftRemStr='';
             this._getDftEmSize(true);
             if(xui.UI)
                 xui.UI.getAll().reLayout(true);
         },
-        _dftEmStr:'',
-        _dftEm:0,
-        _getDftEmSize: function(force){
+        _dftRemStr:'',
+        _dftRem:0,
+        _getDftRemSize: function(force){
             var ns=this;
-            if(force || !ns._dftEm){
-                var fz=ns.$getCSSValue('.xui-ui-ctrl','font-size');
-
-                // only can be triggerred by modifing font-size of '.xui-ui-ctrl' itslef.
-                if(!ns._dftEmStr || ns._dftEmStr!=fz){
-                    ns._dftEmStr=fz;
-                    if(ns.$isPx(fz)){
-                        ns._dftEm=parseFloat(fz);
-                    }else{
-                        var div;
-                        xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
-                        ns._dftEm=div.get(0).offsetHeight;
-                        div.remove();
-                    }
-                }
-            }
-            return ns._dftEm;
+            if(force || !ns._dftRem)
+                ns._dftRem=parseFloat(xui('html').css('font-size'))||16;
+            return ns._dftRem;
         },
-        $resetEm:function(){
-            delete xui.CSS._dftEm;
+        $resetRem:function(){
+            delete xui.CSS._dftRem;
         },
 
         $isEm:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit=='em' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
+            return /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
+        },
+        $isRem:function(value){
+            return (!value||value=='auto')? xui.SpaceUnit=='rem' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))rem$/i.test(xui.str.trim(value+''));
         },
         $isPx:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.SpaceUnit!='rem'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
         },
 
-        $em2px:function(value, node, roundPx){
-            value = (!value||value=='auto')?value:(xui.isFinite(value) || this.$isEm(value)) ? (parseFloat(value)||0) * (node?xui.isFun(node)?node():xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()) : value;
+        $rem2px:function(value, roundPx){
+            value = (!value||value=='auto')?value:(xui.isFinite(value) || this.$isRem(value)) ? (parseFloat(value)||0) * this._getDftRemSize() : value;
             return roundPx?Math.round(parseFloat(value)||0):value;
         },
-        $px2em:function(value, node, roundPx){
-            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (roundPx?Math.round(parseFloat(value)||0):(parseFloat(value)||0)) / (node?xui.isFun(node)?node():xui.isFinite(node)?node:xui(node)._getEmSize():this._getDftEmSize()||this._getDftEmSize()): value;
+        $px2rem:function(value, roundPx){
+            return (!value||value=='auto')?value:(xui.isFinite(value) || this.$isPx(value)) ?  (roundPx?Math.round(parseFloat(value)||0):(parseFloat(value)||0)) / this._getDftRemSize(): value;
         },
 
-        $px:function(value, node, roundPx){
-            value = ((!xui.isFinite(value)&&this.$isEm(value))?this.$em2px(value, node):(!value||value=='auto')?value:(parseFloat(value)||0));
+        $px:function(value, roundPx){
+            value = ((!xui.isFinite(value)&&this.$isRem(value))?this.$rem2px(value):(!value||value=='auto')?value:(parseFloat(value)||0));
             return roundPx?Math.round(parseFloat(value)||0):value;
         },
-        $em:function(value, node, roundPx){
-            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2em(value, node,roundPx):(!value||value=='auto')?value:(parseFloat(value)||0));
+        $rem:function(value, roundPx){
+            return ((xui.isFinite(value)||this.$isPx(value))?this.$px2rem(value,roundPx):(!value||value=='auto')?value:(parseFloat(value)||0));
         },
 
-        $addpx:function(a,b,node){
+        $addpx:function(a,b){
             if(a=='auto')return a;
-            if(this.$isEm(a)){
-                return this.$px2em(Math.round(this.$em2px(a,node)+parseFloat(b)),node)+'em';
+            if(this.$isRem(a)){
+                return this.$px2rem(Math.round(this.$rem2px(a)+parseFloat(b)))+'rem';
             }else{
                 return Math.round(parseFloat(a)+parseFloat(b))+'px';
             }
         },
-        $forceu:function(v,u,node,roundPx){return (!v||v=='auto')?v:(u?u=='em':xui.SpaceUnit=='em')?this.$em(v,node,roundPx!==false)+'em':Math.round(this.$px(v,node))+'px'},
+        $forceu:function(v,u,roundPx){return (!v||v=='auto')?v:(u?u=='rem':xui.SpaceUnit=='rem')?this.$rem(v,roundPx!==false)+'rem':Math.round(this.$px(v))+'px'},
        
-        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
+        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='rem'?'rem':'px')},
         $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''}
     },
     Initialize:function(){
@@ -452,7 +441,7 @@ Class("xui.CSS", null,{
             ".xui-node-h1{font-size:138.5%;}"+
             ".xui-node-h2{font-size:123.1%;}"+
             ".xui-node-h3{font-size:108%;}"+
-            ".xui-node-h1,.xui-node-h2,.xui-node-h3{margin:1em 0;}"+
+            ".xui-node-h1,.xui-node-h2,.xui-node-h3{margin:.75rem 0;}"+
             ".xui-node-h1,.xui-node-h2,.xui-node-h3,.xui-node-h4,.xui-node-h5,.xui-node-h6,.xui-node-strong{font-weight:bold;}"+
             ".xui-node-em{font-style:italic;}"+
             ".xui-node-legend{color:#000;}"+
@@ -475,15 +464,15 @@ Class("xui.CSS", null,{
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
             ".xui-node-tips{background-color:#FDF8D2;}"+
             // must here for get correct size
-            ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
-            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}"
-           ;
+            ".xuifont, .xuicon{font-size:16px;line-height:16px; font-size:1rem;line-height:1rem;}"+
+            ".xuicon{margin: 0  .1875rem;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}"
+           ;    
 
         this.addStyleSheet(css, 'xui.CSS');
         
         /*
         xui.Thread.repeat(function(t){
-            if((t=xui.CSS._dftEm) && (t!==xui.CSS._getDftEmSize(true)))xui.CSS.adjustFont();
+            if((t=xui.CSS._dftRem) && (t!==xui.CSS._getDftRemSize(true)))xui.CSS.adjustFont();
         }, 10000);
         */
     }   

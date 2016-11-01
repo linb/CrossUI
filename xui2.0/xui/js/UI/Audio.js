@@ -41,11 +41,11 @@ Class("xui.UI.Audio", "xui.UI",{
             selectable:true,
             width:{
                 $spaceunit:1,
-                ini:'18em'
+                ini:'15rem'
             },
             height:{
                 $spaceunit:1,
-                ini:'5em'
+                ini:'3rem'
             },
             src:{
                 ini:'',
@@ -125,12 +125,11 @@ Class("xui.UI.Audio", "xui.UI",{
             var H5=profile.getSubNode('H5'), 
                 size=H5.cssSize(),
                 prop=profile.properties,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
+                useem = xui.$rem(prop),
+                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
                 // caculate by px
-                ww=width?profile.$px(width):width, 
-                hh=height?profile.$px(height):height;
+                ww=width?xui.CSS.$px(width):width, 
+                hh=height?xui.CSS.$px(height):height;
 
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here

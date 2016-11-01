@@ -2,14 +2,17 @@
 .xui-ui-ctrl, .xui-ui-reset{
     color:#444; 
     font-size: 12px;
+		font-size: 0.75rem;
     font-family:arial, helvetica, clean, sans-serif; 
     font-weight:normal; 
 }
 .xui-title-node{
-		font-size:1.1667em;
+		font-size:14px;
+		font-size: 0.875rem;
 }
 .xuifont, .xuicon{
-  font-size:1.3333333333333333em;
+  font-size:16px;
+	font-size:1rem;
 }
 .xuifont-hover, .xuicon-hover{
 	color: #686868;
@@ -94,6 +97,7 @@
     -webkit-box-shadow:inset 0 1px 0 0 #FFBCAB;
     box-shadow:inset 0 1px 0 0 #FFBCAB;    
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFBCAB', endColorstr='#FF7751');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFBCAB', endColorstr='#FF7751');
     background-image: linear-gradient(top,  #FFBCAB 5%,  #FF7751 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFBCAB), to(1, #FF7751));
     background-image: -webkit-linear-gradient(top, #FFBCAB 5%, #FF7751 100%);
@@ -103,6 +107,7 @@
 .xui-uigradient-hover, .xui-uigradient:hover{
     border-color: #FCEA29;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC7BC', endColorstr='#FFA28A');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFC7BC', endColorstr='#FFA28A');
     background-image: linear-gradient(top,  #FFC7BC 5%,  #FFA28A 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFC7BC), to(1, #FFA28A));
     background-image: -webkit-linear-gradient(top, #FFC7BC 5%, #FFA28A 100%);
@@ -113,6 +118,7 @@
 .xui-uigradient:active, 
 .xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF7751', endColorstr='#FFBCAB');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF7751', endColorstr='#FFBCAB');
     background-image: linear-gradient(top,  #FF7751 5%,  #FFBCAB 100%);
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FF7751), to(1, #FFBCAB));
     background-image: -webkit-linear-gradient(top, #FF7751 5%, #FFBCAB 100%);

@@ -495,8 +495,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(p.toggle){
                         profile.getRoot().height(p.height);
                 }else{
-                    var useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    var useem = xui.$rem(p),
+                        adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
                         root = profile.getRoot(),
                         h1=profile.getSubNode('BORDER').height();
                     h1 = h1?adjustunit(h1):null;
@@ -521,9 +521,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         _onresize:function(profile,width,height){
            var prop=profile.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot();
+                useem = xui.$rem(prop),
+                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')};
 
             var isize={},
                 noFrame=prop.noFrame,
@@ -533,14 +532,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
-                panelfz = useem?v2._getEmSize():null,
                 bordersize=profile.properties.borderType!='none'?v2._borderW():0,
                 h0=bd._borderH(),
                 h1,h4,t;
 
             // caculate by px
-            if(width && width!='auto')width=profile.$px(width,null, true);
-            if(height && height!='auto')height=profile.$px(height,null, true);
+            if(width && width!='auto')width=xui.CSS.$px(width,true);
+            if(height && height!='auto')height=xui.CSS.$px(height,true);
 
             if(height){
                 if(height=='auto')
@@ -551,7 +549,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         h1=v1.offsetHeight(true);
                         h4=noFrame?0:v4.offsetHeight(true);
                         if((t=height-h0-h1-h4)>0)
-                            isize.height=adjustunit(t-bordersize, panelfz);
+                            isize.height=adjustunit(t-bordersize);
                     }else{
                         // same to ***
                         // for expand status:
@@ -573,7 +571,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     -bordersize
                     -v5._borderW()
                     -v6._borderW()
-                    , panelfz);
+                );
             }
             v2.cssSize(isize, true);
         }

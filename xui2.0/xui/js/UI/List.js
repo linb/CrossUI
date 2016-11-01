@@ -64,13 +64,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         adjustSize:function(){
             return this.each(function(profile){
                 var root = profile.getRoot(),
+                    css=xui.CSS,
                     items = profile.getSubNode('ITEMS'),
                     pp=profile.properties,
                     mh=pp.maxHeight,
-                    h_em=profile.$isEm(pp.height),
+                    h_em=css.$isRem(pp.height),
                     h,flag;
 
-                if(profile.$isEm(mh))mh=profile.$em2px(mh, items,true);
+                if(css.$isRem(mh))mh=css.$rem2px(mh, true);
 
                 if(root.css('display')=='none'){
                     flag=1;
@@ -79,7 +80,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 items.height('auto');
                 if(profile.properties.height!='auto'){
                     h=Math.min(mh, items.offsetHeight());                    
-                    if(h_em)h=profile.$px2em(h, items)+'em';
+                    if(h_em)h=css.$px2rem(h)+'rem';
                     items.height(pp.height=h);
                 }else{
                     h=items.offsetHeight();
@@ -501,11 +502,11 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             noCtrlKey:true,
             width:{
                 $spaceunit:1,
-                ini:'10em'
+                ini:'8rem'
             },
             height:{
                 $spaceunit:1,
-                ini:'15em'
+                ini:'12rem'
             },
             maxHeight:420,
             itemRow:{
@@ -622,7 +623,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             d._bordertype='xui-uiborder-'+d.borderType;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+profile.$picku();
+            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -687,43 +688,41 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
+                css=xui.CSS,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                useem = xui.$rem(prop),
+                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
                 root = profile.getRoot(),
-                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
 
                 f=function(k){return profile.getSubNode(k)},
                 items = f('ITEMS'),
                 label = f('LABEL'),
-                itemsfz = useem?items._getEmSize():null,
-                labelfz = needfz?label._getEmSize():null,
 
                 border=prop.borderType!='none'?items._borderW():0,
                 dock=prop.dock,
                 max=prop.maxHeight,
 
-                labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                labelGap=profile.$px(prop.labelGap)||0,
+                labelSize=css.$px(prop.labelSize)||0,
+                labelGap=css.$px(prop.labelGap)||0,
                 labelPos = prop.labelPos || 'left',
                 ll, tt, ww, hh;
 
             // caculate by px
-            if(width && width!='auto')width = profile.$px(width);
-            if(height && height!='auto')height = profile.$px(height);
+            if(width && width!='auto')width = css.$px(width);
+            if(height && height!='auto')height = css.$px(height);
 
             items.cssRegion({
-                left : adjustunit(ll = labelPos=='left'?labelSize:0, itemsfz),
-                top : adjustunit(tt = labelPos=='top'?labelSize:0, itemsfz),
-                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - items._paddingW('both') - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), itemsfz),
-                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - items._paddingH('both') - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), itemsfz)
+                left : adjustunit(ll = labelPos=='left'?labelSize:0),
+                top : adjustunit(tt = labelPos=='top'?labelSize:0),
+                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - items._paddingW('both') - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border))),
+                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - items._paddingH('both') - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)))
             });
 
 
             if(height=="auto"){
                 if(dock!="fill"&&dock!="cover"&&dock!="height"&&dock!="left"&&dock!="right"){
                     if(items.height()>max){
-                        items.height(adjustunit(max, itemsfz));
+                        items.height(adjustunit(max));
                         root.height('auto');
                     }
                 }
@@ -732,10 +731,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 if(width=='auto')ww=items.offsetWidth();
                 if(height=='auto')hh=items.offsetHeight();
                 label.cssRegion({
-                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz), 
-                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width))),labelfz),
-                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))),labelfz)
+                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0)),
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0)), 
+                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width)))),
+                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))))
                 });
             }
         }

@@ -536,11 +536,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             listKey:null,
             width:{
                 $spaceunit:1,
-                ini:'18em'
+                ini:'15em'
             },
             height:{
                 $spaceunit:1,
-                ini:'18em'
+                ini:'15rem'
             },
             iniFold:true,
             animCollapse:true,

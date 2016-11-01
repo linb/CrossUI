@@ -75,11 +75,11 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             },
             width:{
                 $spaceunit:1,
-                ini:'32em'
+                ini:'25rem'
             },
             height:{
                 $spaceunit:1,
-                ini:'25em'
+                ini:'20rem'
             },
             frameTemplate:{
                 ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0;">'+
@@ -291,7 +291,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+profile.$picku();
+            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -1015,33 +1015,30 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
 
-                    useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                    needfz = useem||profile.$isEm(width)||profile.$isEm(height),
-                    boxfz=useem?box._getEmSize():null,
-                    labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
+                    useem = xui.$rem(prop),
+                    adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
 
-                    labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                    labelGap=profile.$px(prop.labelGap)||0,
+                    labelSize=xui.CSS.$px(prop.labelSize)||0,
+                    labelGap=xui.CSS.$px(prop.labelGap)||0,
                     labelPos=prop.labelPos || 'left',
                     ll, tt, ww, hh;
 
                 // caculate by px
-                if(width && width!='auto')width=profile.$px(width);
-                if(height && height!='auto')height=profile.$px(height);
+                if(width && width!='auto')width=xui.CSS.$px(width);
+                if(height && height!='auto')height=xui.CSS.$px(height);
 
                 box.cssRegion({
-                    left : adjustunit(ll = labelPos=='left'?labelSize:0,boxfz),
-                    top : adjustunit(tt = labelPos=='top'?labelSize:0,boxfz),
-                    width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),boxfz),
-                    height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))),boxfz)
+                    left : adjustunit(ll = labelPos=='left'?labelSize:0),
+                    top : adjustunit(tt = labelPos=='top'?labelSize:0),
+                    width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
+                    height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
                 });
                 if(labelSize){
                     label.cssRegion({
-                        left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelfz),
-                        top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz), 
-                        width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelfz),
-                        height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
+                        left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0)),
+                        top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0)), 
+                        width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width))),
+                        height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
                     });
                 }
                 xui.asyRun(function(){
@@ -1076,7 +1073,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             size.height=adjustunit(size.height);
 
                             profile.getSubNode('EDITOR').top(adjustunit(_top)).cssSize(size,true);
-                            profile.getSubNode('DIRTYMARK').left(0+profile.$picku()).top(adjustunit(_top+1));
+                            profile.getSubNode('DIRTYMARK').left(0+xui.CSS.$picku()).top(adjustunit(_top+1));
                         }
                     }
                 }, 20/*greater than 16*/);

@@ -276,8 +276,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                         fs.height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                        useem = xui.$rem(p),
+                        adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
                         height=profile.getSubNode('LEGEND').height();
                     height = height?adjustunit(height):null;
                     profile.getRoot().height(height?height:'auto');
@@ -306,21 +306,21 @@ Class("xui.UI.Group", "xui.UI.Div",{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                useem = xui.$rem(prop),
+                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 
 
                 // caculate by px
-                ww=width?profile.$px(width):null, 
-                hh=height?profile.$px(height):null;
+                ww=width?xui.CSS.$px(width):null, 
+                hh=height?xui.CSS.$px(height):null;
 
             if(profile._toggle){
                 if(height && height!='auto'){
-                    fs.height(adjustunit(hh, fs));
+                    fs.height(adjustunit(hh));
                     hh -= profile.getSubNode('LEGEND').height()||18;
-                    panel.height(adjustunit(hh, panel) );
+                    panel.height(adjustunit(hh) );
                 }
             }else{
                 // same to ***

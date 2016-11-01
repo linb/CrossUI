@@ -1968,8 +1968,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     var fc=new FusionCharts(
                             prop.chartType, 
                             prf._chartId, 
-                            prf.$isEm(prop.width)?prf.$em2px(prop.width ,prf.getRootNode(),true):prop.width, 
-                            prf.$isEm(prop.height)?prf.$em2px(prop.height, prf.getRootNode(),true):prop.height
+                            xui.CSS.$isRem(prop.width)?xui.CSS.$rem2px(prop.width ,true):prop.width, 
+                            xui.CSS.$isRem(prop.height)?xui.CSS.$rem2px(prop.height,true):prop.height
                     ),
                      flag;
                     
@@ -2183,11 +2183,11 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             tips:null,
             width:{
                 $spaceunit:1,
-                ini:'30em'
+                ini:'25rem'
             },
             height:{
                 $spaceunit:1,
-                ini:'25em'
+                ini:'20rem'
             },
             chartType:{
                 ini:"Column2D",
@@ -2415,10 +2415,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             var size = prf.getSubNode('BOX').cssSize(),
                 prop=prf.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return prf.$forceu(v, useem?'em':'px', emRate)},
-                root = prf.getRoot(),
-                needfz = useem||prf.$isEm(width)||prf.$isEm(height),
+                useem = xui.$rem(prop),
+                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
 
                 // caculate by px
                 ww=width?prf.$px(width):width, 

@@ -260,11 +260,11 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             },
             width:{
                 $spaceunit:1,
-                ini:200
+                ini:'14rem'
             },
             height:{
                 $spaceunit:1,
-                ini:200
+                ini:'14rem'
             }
         }),
         EventHandlers:{

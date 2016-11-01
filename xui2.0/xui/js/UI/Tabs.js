@@ -813,11 +813,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             noPanel:false,
             width:{
                 $spaceunit:1,
-                ini:'18em'
+                ini:'15rem'
             },
             height:{
                 $spaceunit:1,
-                ini:'18em'
+                ini:'15rem'
             },
             position:'absolute',
             itemWidth:{
@@ -1051,19 +1051,16 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                root = profile.getRoot(),
+                useem = xui.$rem(prop),
+                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
                 list=profile.getSubNode('LIST'),
-                panelfz = useem?panel._getEmSize():null,
-                listfz = useem?list._getEmSize():null,
                 wc=null,
                 hc=null,
                 listH;
 
             // caculate by px
-            if(width && width!='auto')width=profile.$px(width, null, true);
-            if(height && height!='auto')height=profile.$px(height, null, true);
+            if(width && width!='auto')width=xui.CSS.$px(width, true);
+            if(height && height!='auto')height=xui.CSS.$px(height, true);
 
             if(!panel || panel.isEmpty())return;
             
@@ -1090,13 +1087,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }else hc=height;
 
             if(width && item._w!=width){
-                list.width(adjustunit(item._w=width, listfz));
+                list.width(adjustunit(item._w=width));
                 if(!prop.noHandler){
                     this._adjustHScroll(profile);
                 }
                 wc=width;
             }
-            if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
+            if(hc||wc)panel.height(adjustunit(hc)).onSize();
         },
         _adjustHScroll:function(profile){
             // SCROLL

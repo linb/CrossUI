@@ -892,8 +892,8 @@ xui.merge(xui,{
     $dateFormat:'',
     $rand:"_r_",
 
-    SpaceUnit:'em',
-    $uem:function(p){return ((p?p.spaceUnit:'')||xui.SpaceUnit) == 'em'},
+    SpaceUnit:'rem',
+    $rem:function(p){return xui.browser.ie678?false:((p?p.spaceUnit:'')||xui.SpaceUnit) == 'rem'},
     // for show xui.echo
     debugMode:true,
 
@@ -4185,24 +4185,16 @@ Class('xui.absObj',"xui.absBox",{
                         return this.each(function(v){
                             if(!v.properties)return;
 
-                            var t,nfz;
-                            // *** force to em
-                            if(xui.$uem(v.properties)){
+                            var t;
+                            // *** force to rem
+                            if(xui.$rem(v.properties)){
                                 if(dm[i] && dm[i]['$spaceunit'])
                                     if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value)))
-                                        // only have root dom node
-                                        if(v.getRootNode && (t=v.getRootNode())){
-                                            if(!nfz)nfz=xui(t)._getEmSize();
-                                            value=xui.CSS.$px2em(value, nfz)+'em';
-                                        }
+                                        value=xui.CSS.$px2rem(value)+'rem';
                             }else{
                                 if(dm[i] && dm[i]['$spaceunit'])
-                                    if(value!='auto'&& xui.CSS.$isEm(value))
-                                        // only have root dom node
-                                        if(v.getRootNode && (t=v.getRootNode())){
-                                            if(!nfz)nfz=xui(t)._getEmSize();
-                                            value=xui.CSS.$em2px(value, nfz, true)+'px';
-                                        }
+                                    if(value!='auto'&& xui.CSS.$isRem(value))
+                                            value=xui.CSS.$rem2px(value, true)+'px';
                             }
                             //if same return
                             if(v.properties[i] === value && !force)return;

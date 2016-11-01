@@ -125,6 +125,14 @@ Class('App', 'xui.Module',{
                     "caption" : "16 px"
                 },
                 {
+                    "id" : "0.75rem",
+                    "caption" : "0.75 rem"
+                },
+                {
+                    "id" : "0.875rem",
+                    "caption" : "0.875 rem"
+                },
+                {
                     "id" : "1rem",
                     "caption" : "1 rem"
                 },
@@ -3915,11 +3923,17 @@ Class('App', 'xui.Module',{
         _ctl_comboinput61_afteruivalueset:function (profile,oldValue,newValue){
             var ns=this;
             xui.setTheme(newValue,true,function(){
-                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"?'1rem':newValue=='webflat'?'16px':'12px',true);
+                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"||newValue=='webflat'?'1rem':'12px',true);
             });
         },
         _xui_ui_comboinput32_afteruivalueset:function (profile,oldValue,newValue){
-            xui.CSS.setStyleRules(".xui-node",{'font-size': newValue});
+            if(/rem/.test(newValue)){
+                    xui.CSS.setStyleRules(".xui-ui-ctrl",{'font-size': parseFloat(newValue)*xui.CSS._getDftRemSize() + 'px'});
+                    xui.CSS.setStyleRules(".xui-ui-reset",{'font-size': parseFloat(newValue)*xui.CSS._getDftRemSize() + 'px'});
+            }
+            xui.CSS.setStyleRules(".xui-ui-ctrl",{'font-size': newValue});
+            xui.CSS.setStyleRules(".xui-ui-reset",{'font-size': newValue});
+
             xui.CSS.adjustFont();
         }
     }
