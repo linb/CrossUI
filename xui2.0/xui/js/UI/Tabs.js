@@ -813,11 +813,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             noPanel:false,
             width:{
                 $spaceunit:1,
-                ini:'15rem'
+                ini:'18em'
             },
             height:{
                 $spaceunit:1,
-                ini:'15rem'
+                ini:'18em'
             },
             position:'absolute',
             itemWidth:{
@@ -929,7 +929,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     }
                 });
                 if(a.length)
-                    box.append(xui.UI.pack(a),value);
+                    xui.arr.each(a,function(o){
+                        box.append(xui(o),value);
+                    });
 
                 // $attached is dynamic
                 if(profile.$attached){
@@ -1051,16 +1053,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
 
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
+                panelfz = useem?panel._getEmSize():null,
+                listfz = useem?list._getEmSize():null,
                 wc=null,
                 hc=null,
                 listH;
 
             // caculate by px
-            if(width && width!='auto')width=xui.CSS.$px(width, true);
-            if(height && height!='auto')height=xui.CSS.$px(height, true);
+            if(width && width!='auto')width=profile.$px(width, null, true);
+            if(height && height!='auto')height=profile.$px(height, null, true);
 
             if(!panel || panel.isEmpty())return;
             
@@ -1087,13 +1092,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }else hc=height;
 
             if(width && item._w!=width){
-                list.width(adjustunit(item._w=width));
+                list.width(adjustunit(item._w=width, listfz));
                 if(!prop.noHandler){
                     this._adjustHScroll(profile);
                 }
                 wc=width;
             }
-            if(hc||wc)panel.height(adjustunit(hc)).onSize();
+            if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
         },
         _adjustHScroll:function(profile){
             // SCROLL

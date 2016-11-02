@@ -384,6 +384,40 @@ Class('xui.UIProfile','xui.Profile', {
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
             return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
         },
+        // wrap these functions from xui.CSS
+        getEmSize:function(){
+            return this._nodeEmSize || ( this._nodeEmSize = this.getRoot()._getEmSize() );
+        },
+        // have to call these after rendered
+        $px:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$px(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $em:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$em(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $px2em:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$px2em(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $em2px:function(value, node, roundPx){
+            var ns=this;
+            return xui.CSS.$em2px(value, node||function(){return ns.getEmSize()},roundPx);
+        },
+        $forceu:function(value,u,node,roundPx){
+            var ns=this;
+            return xui.CSS.$forceu(value,u,node||function(){return ns.getEmSize()},roundPx);
+        },
+        $addpx:function(a,b,node){
+            var ns=this;
+            return xui.CSS.$addpx(a,b,node||function(){return ns.getEmSize()});
+        },
+        $isEm:function(value){return xui.CSS.$isEm(value);},
+        $isPx:function(value){return xui.CSS.$isPx(value);},
+        $picku:function(value){return xui.CSS.$picku(value);},
+        $addu:function(value){return xui.CSS.$addu(value);},
+
         _cacheR1:/^\w[\w_-]*$/,
         setDomId:function(id){
             var t=this, c=xui.$cache.profileMap;
@@ -1822,8 +1856,8 @@ Class("xui.UI",  "xui.absObj", {
                     if(n.clientHeight){
                         if(force){
                             // ensure force 1
-                            n.style.width = 0 + xui.CSS.$picku(n.style.width);
-                            n.style.height = 0 + xui.CSS.$picku(n.style.height);
+                            n.style.width = 0 + o.$picku(n.style.width);
+                            n.style.height = 0 + o.$picku(n.style.height);
                             // ensure force 2
                             o._resize_h=o._resize_w=-1;
                         }
@@ -2293,7 +2327,7 @@ Class("xui.UI",  "xui.absObj", {
                 cursor:'default'
             },
             ".xui-title-node":{
-                'font-size':['14px','.875rem']
+                'font-size':'1.1667em'
             },
             '.xui-uiw-shell':{
 //                background:'transparent',
@@ -4369,12 +4403,7 @@ Class("xui.UI",  "xui.absObj", {
             if(!hashOut)hashOut={};
 
             var box=profile.box, dm = box.$DataModel,i,o;
-
-            //***** force to rem
-            for(i in hashIn)
-                    if(xui.CSS.$isEm(hashIn[i]))
-                        hashOut[i]=parseFloat(hashIn[i])*12/16+'rem';
-
+            
             for(i in hashIn){
                 if(i.charAt(0)=='$')continue;
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
@@ -4542,8 +4571,8 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
             spaceUnit:{
-                ini:'',
-                listbox:['','px','rem'],
+                hidden:true,
+                listbox:['','px','em'],
                 action:function(){
                         this.boxing().reLayout(true).getChildren(true, "recurse").reLayout(true);
                 }
@@ -4808,8 +4837,8 @@ Class("xui.UI",  "xui.absObj", {
             if(t&&(force||w||h)){
                 //adjust width and height
                 //w=parseFloat(w)||null;
-                w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||xui.CSS.$isPx(w))?parseFloat(w):w))||null
-                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||xui.CSS.$isPx(h))?parseFloat(h):h))||null;
+                w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||profile.$isPx(w))?parseFloat(w):w))||null
+                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||profile.$isPx(h))?parseFloat(h):h))||null;
 
                 //if it it has delay resize, overwrite arguments
                 if('_$visibility' in profile){
@@ -4847,8 +4876,8 @@ Class("xui.UI",  "xui.absObj", {
                 if(!self.$laidout){
                     self.$laidout=1;
                     var stl=self.getRootNode().style,
-                        wu = 0+xui.CSS.$picku(stl.width),
-                        hu = 0+xui.CSS.$picku(stl.height);
+                        wu = 0+self.$picku(stl.width),
+                        hu = 0+self.$picku(stl.height);
                     switch(p.dock){
                         case 'top':
                         case 'bottom':
@@ -4951,13 +4980,15 @@ Class("xui.UI",  "xui.absObj", {
                 f,t,isWin,
                 //for ie6 1px bug
                 _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
+                rootfz = needfz?node._getEmSize():null,
                 umargin={
-                    top:adjustunit(margin.top||0),
-                    left:adjustunit(margin.left||0),
-                    right:adjustunit(margin.right||0),
-                    bottom:adjustunit(margin.bottom||0)
+                    top:adjustunit(margin.top||0,rootfz),
+                    left:adjustunit(margin.left||0,rootfz),
+                    right:adjustunit(margin.right||0,rootfz),
+                    bottom:adjustunit(margin.bottom||0,rootfz)
                 };
 
             if(isSVG){
@@ -5057,6 +5088,7 @@ Class("xui.UI",  "xui.absObj", {
                                 pprop = pprf && pprf.properties,
                                 proot = pprf && pprf.getRoot(),
                                 pstyle = proot && proot.get(0) && proot.get(0).style,
+                                prootfz = pstyle && (useem||css.$isEm(pstyle&&pstyle.width)||css.$isEm(pstyle&&pstyle.height)?proot._getEmSize():null),
                                 conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
                                 conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
                                 conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
@@ -5070,8 +5102,9 @@ Class("xui.UI",  "xui.absObj", {
 
                              var pn=node.get(0),
                                 style=pn.style,
-                                useem = xui.$rem(prop),
-                                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                                useem = xui.$uem(prop),
+                                nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
+                                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
                                 ofs = isWin ? xui('body').get(0).style : style,
                                 old_of=ofs.overflow,
@@ -5083,10 +5116,10 @@ Class("xui.UI",  "xui.absObj", {
                             
 
                             //2. get width / height
-                            var width=(style&&css.$px(style.width))||node.width()||0,
-                                height=(style&&css.$px(style.height))||node.height()||0;
-                            //width=Math.max( node.scrollWidth()||0,  (style&&css.$px(style.width))||node.width()||0);
-                            //height=Math.max( node.scrollHeight()||0, (style&&css.$px(style.height))||node.height()||0);
+                            var width=(style&&css.$px(style.width,nodefz))||node.width()||0,
+                                height=(style&&css.$px(style.height,nodefz))||node.height()||0;
+                            //width=Math.max( node.scrollWidth()||0,  (style&&css.$px(style.width,nodefz))||node.width()||0);
+                            //height=Math.max( node.scrollHeight()||0, (style&&css.$px(style.height,nodefz))||node.height()||0);
 
                             // 3.reset overflow
                            if(style){
@@ -5095,14 +5128,14 @@ Class("xui.UI",  "xui.absObj", {
                                style.overflowY = old_ofy;
                            }
                             conDockSpacing={
-                                width:css.$px(conDockSpacing.width||0),
-                                height:css.$px(conDockSpacing.height||0)
+                                width:css.$px(conDockSpacing.width||0,prootfz),
+                                height:css.$px(conDockSpacing.height||0,prootfz)
                             };
                             conDockPadding={
-                                left:css.$px(conDockPadding.left||0),
-                                top:css.$px(conDockPadding.top||0),
-                                right:css.$px(conDockPadding.right||0),
-                                bottom:css.$px(conDockPadding.bottom||0)
+                                left:css.$px(conDockPadding.left||0,prootfz),
+                                top:css.$px(conDockPadding.top||0,prootfz),
+                                right:css.$px(conDockPadding.right||0,prootfz),
+                                bottom:css.$px(conDockPadding.bottom||0,prootfz)
                             };
 
                             //window resize: check time span, for window resize in firefox
@@ -5141,15 +5174,15 @@ Class("xui.UI",  "xui.absObj", {
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
-                                                        tmp= adjustMM(o.properties,"W",css.$px(o.properties.width) || node.width()) ;
+                                                        tmp= adjustMM(o.properties,"W",css.$px(o.properties.width,nodefz) || node.width()) ;
                                                         wSum +=tmp;
                                                         if(o.properties.dock!="fill"){
-                                                            hMax = Math.max(hMax, adjustMM(o.properties,"H",css.$px(o.properties.height) || node.height()));
+                                                            hMax = Math.max(hMax, adjustMM(o.properties,"H",css.$px(o.properties.height,nodefz) || node.height()));
                                                         }
                                                     }
                                                     if(perH && (key=='top'||key=='bottom'||key=='height')){
                                                         hCount++;
-                                                        hSum += adjustMM(o.properties,"H",css.$px(o.properties.height) || node.height());
+                                                        hSum += adjustMM(o.properties,"H",css.$px(o.properties.height,nodefz) || node.height());
                                                     }
                                                 }
                                             }
@@ -5168,7 +5201,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            innerW -= adjustMM(o.properties,"W",css.$px(o.properties.width) || node.width());
+                                                            innerW -= adjustMM(o.properties,"W",css.$px(o.properties.width,nodefz) || node.width());
                                                             innerH -= conDockSpacing.width;
                                                         }
                                                     }
@@ -5177,7 +5210,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            node.width(adjustunit( adjustMM(o.properties,"W",Math.min(1, (css.$px(o.properties.width) || node.width()) / wSum) * innerW)) );
+                                                            node.width(adjustunit( adjustMM(o.properties,"W",Math.min(1, (css.$px(o.properties.width,nodefz) || node.width()) / wSum) * innerW)) );
                                                         }
                                                     }
                                                 }
@@ -5194,7 +5227,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            innerH -= adjustMM(o.properties,"H",css.$px(o.properties.height) || node.height());
+                                                            innerH -= adjustMM(o.properties,"H",css.$px(o.properties.height,nodefz) || node.height());
                                                             innerH -= conDockSpacing.height;
                                                         }
                                                     }
@@ -5203,7 +5236,7 @@ Class("xui.UI",  "xui.absObj", {
                                                     if(!(o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            node.height(adjustunit( adjustMM(o.properties,"H",Math.min(1, (css.$px(o.properties.height) || node.height())/ hSum) * innerH)) );
+                                                            node.height(adjustunit( adjustMM(o.properties,"H",Math.min(1, (css.$px(o.properties.height,nodefz) || node.height())/ hSum) * innerH)) );
                                                         }
                                                     }
                                                 }
@@ -5338,19 +5371,20 @@ Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 root = node.get(0),
                                 style = root.style,
-                                useem = xui.$rem(prop),
-                                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                                useem = xui.$uem(prop),
+                                nodefz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?node._getEmSize():null,
+                                adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
-                                x = css.$px(prop._dockBorderWidth) || 0,
-                                y = css.$px(prop._dockBorderHeight) || 0,
+                                x = css.$px(prop._dockBorderWidth,nodefz) || 0,
+                                y = css.$px(prop._dockBorderHeight,nodefz) || 0,
                                 region={}, t,
                                 isSVG=profile.box['xui.svg'],bbox;
                             
                             // caculate with px
-                            margin.top = css.$px(margin.top);
-                            margin.left = css.$px(margin.left);
-                            margin.right = css.$px(margin.right);
-                            margin.bottom = css.$px(margin.bottom);
+                            margin.top = css.$px(margin.top,nodefz);
+                            margin.left = css.$px(margin.left,nodefz);
+                            margin.right = css.$px(margin.right,nodefz);
+                            margin.bottom = css.$px(margin.bottom,nodefz);
 
                             if(isSVG){
                                 bbox=ins._getBBox();
@@ -5398,7 +5432,7 @@ Class("xui.UI",  "xui.absObj", {
                                         break;
                                         default:
                                             noStretch=1;
-                                            pct = Math.min(1, Math.max(0, css.$px(stretch) ));
+                                            pct = Math.min(1, Math.max(0, css.$px(stretch,nodefz) ));
                                     }
                             }
 
@@ -5421,10 +5455,10 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'top':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width))) + (obj.$prevDiff||0);
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
                                             obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             if((obj.preX + temp - obj.oX) > obj.ww){
                                                 obj.top += obj.topHolder;
                                                 obj.topHolder=0;
@@ -5432,10 +5466,10 @@ Class("xui.UI",  "xui.absObj", {
 
                                                 // wrap to new line ,recaculate from start
                                                 obj.$prevDiff=0;
-                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width))) + (obj.$prevDiff||0);
+                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
                                                 obj.$prevDiff=0;
-                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
                                             tempW = temp - margin.left - margin.right;
                                             tempW -= spaceW;
@@ -5443,9 +5477,9 @@ Class("xui.UI",  "xui.absObj", {
                                             left=obj.preX;
                                             top=obj.top + margin.top;
                                            
-                                            if(css.$px(style.left)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.width)!==tempW)region.width=adjustunit(tempW=_adjust(tempW));
+                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
+                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
+                                            if(css.$px(style.width,nodefz)!==tempW)region.width=adjustunit(tempW=_adjust(tempW));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5461,18 +5495,18 @@ Class("xui.UI",  "xui.absObj", {
                                                 obj.topHolder=0;
                                                 obj.preX = obj.oX;
                                             }
-                                            left = sStart ? ((flt?0:obj.left)+margin.left) : css.$px(prop.left);
-                                            right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-css.$px(prop.width)-css.$px(prop.left));
+                                            left = sStart ? ((flt?0:obj.left)+margin.left) : css.$px(prop.left,nodefz);
+                                            right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                             top=(flt?0:obj.top)+margin.top;
                                             temp = obj.width - left - right - x + (obj.$prevDiff||0);
                                             delete obj.$prevDiff;                                            
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             
     
-                                            if(css.$px(style.left)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.width)!==temp)region.width=adjustunit(_adjust(temp));
+                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
+                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
+                                            if(css.$px(style.width,nodefz)!==temp)region.width=adjustunit(_adjust(temp));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG) ins._setBBox(region);
@@ -5488,10 +5522,10 @@ Class("xui.UI",  "xui.absObj", {
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width))) + (obj.$prevDiff||0);
+                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
                                             obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
                                             if((obj.preX + temp - obj.oX) > obj.ww){
                                                 obj.bottom += obj.bottomHolder;
@@ -5500,10 +5534,10 @@ Class("xui.UI",  "xui.absObj", {
 
                                                 // wrap to new line ,recaculate from start
                                                 obj.$prevDiff=0;
-                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width))) + (obj.$prevDiff||0);
+                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
                                                 obj.$prevDiff=0;
-                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
                                             tempW = temp - margin.left - margin.right;
                                             tempW -= spaceW;
@@ -5511,9 +5545,9 @@ Class("xui.UI",  "xui.absObj", {
                                             left=obj.preX;
                                             bottom=obj.bottom + margin.bottom;
                                            
-                                            if(css.$px(style.left)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.bottom)!==bottom)region.bottom=adjustunit(bottom);
-                                            if(css.$px(style.width)!==tempW)region.width=adjustunit(tempW=_adjust(tempW));
+                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
+                                            if(css.$px(style.bottom,nodefz)!==bottom)region.bottom=adjustunit(bottom);
+                                            if(css.$px(style.width,nodefz)!==tempW)region.width=adjustunit(tempW=_adjust(tempW));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5530,18 +5564,18 @@ Class("xui.UI",  "xui.absObj", {
                                                 obj.bottomHolder=0;
                                                 obj.preX = obj.oX;
                                             }
-                                            left=sStart?((flt?0:obj.left)+margin.left):css.$px(prop.left);
-                                            right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-css.$px(prop.width)-css.$px(prop.left));
+                                            left=sStart?((flt?0:obj.left)+margin.left):css.$px(prop.left,nodefz);
+                                            right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                             bottom=(flt?0:obj.bottom)+margin.bottom;
 
                                             temp=obj.width - left - right - x + (obj.$prevDiff||0);
                                             delete obj.$prevDiff;                                            
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW),nodefz)) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
-                                            if(css.$px(style.bottom)!==bottom)region.bottom=adjustunit(bottom);
-                                            if(css.$px(style.left)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.width)!==temp)region.width=adjustunit(_adjust(temp));
+                                            if(css.$px(style.bottom,nodefz)!==bottom)region.bottom=adjustunit(bottom);
+                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
+                                            if(css.$px(style.width,nodefz)!==temp)region.width=adjustunit(_adjust(temp));
                                             
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)
@@ -5573,10 +5607,10 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height))) + (obj.$prevDiff||0);
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
                                             obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
                                                 obj.left += obj.leftHolder;
@@ -5586,10 +5620,10 @@ Class("xui.UI",  "xui.absObj", {
 
                                                 // wrap to new line ,recaculate from start
                                                 obj.$prevDiff=0;
-                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height))) + (obj.$prevDiff||0);
+                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
                                                 obj.$prevDiff=0;
-                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
                                             tempH = temp - margin.top - margin.bottom;
                                             tempH -= spaceH;
@@ -5597,9 +5631,9 @@ Class("xui.UI",  "xui.absObj", {
                                             top=obj.preY;
                                             left=obj.left + margin.left;
                                            
-                                            if(css.$px(style.left)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height)!==tempH)region.height=adjustunit(tempH=_adjust(tempH));
+                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
+                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
+                                            if(css.$px(style.height,nodefz)!==tempH)region.height=adjustunit(tempH=_adjust(tempH));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5618,17 +5652,17 @@ Class("xui.UI",  "xui.absObj", {
                                             }
 
                                             left=(flt?0:obj.left)+margin.left;
-                                            top=sStart?((flt?0:obj.top)+margin.top):css.$px(prop.top);
-                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height)-css.$px(prop.top));
+                                            top=sStart?((flt?0:obj.top)+margin.top):css.$px(prop.top,nodefz);
+                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
 
                                             temp=obj.height - top - bottom - y + (obj.$prevDiff||0);
                                             delete obj.$prevDiff;                                            
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             
-                                            if(css.$px(style.left)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height)!==temp)region.height=adjustunit(_adjust(temp));
+                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
+                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
+                                            if(css.$px(style.height,nodefz)!==temp)region.height=adjustunit(_adjust(temp));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)
@@ -5660,10 +5694,10 @@ Class("xui.UI",  "xui.absObj", {
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height))) + (obj.$prevDiff||0);
+                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
                                              obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
                                             if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
                                                 obj.right += obj.rightHolder;
@@ -5673,10 +5707,10 @@ Class("xui.UI",  "xui.absObj", {
 
                                                 // wrap to new line ,recaculate from start
                                                 obj.$prevDiff=0;
-                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height))) + (obj.$prevDiff||0);
+                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
                                                  obj.$prevDiff=0;
-                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             }
                                             tempH = temp - margin.top - margin.bottom;
                                             tempH -= spaceH;
@@ -5684,9 +5718,9 @@ Class("xui.UI",  "xui.absObj", {
                                             top=obj.preY;
                                             right=obj.right + margin.right;
                                            
-                                            if(css.$px(style.right)!==right)region.right=adjustunit(right);
-                                            if(css.$px(style.top)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height)!==tempH)region.height=adjustunit(tempH=_adjust(tempH));
+                                            if(css.$px(style.right,nodefz)!==right)region.right=adjustunit(right);
+                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
+                                            if(css.$px(style.height,nodefz)!==tempH)region.height=adjustunit(tempH=_adjust(tempH));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)  ins._setBBox(region);
@@ -5705,17 +5739,17 @@ Class("xui.UI",  "xui.absObj", {
                                             }
 
                                             right=(flt?0:obj.right)+margin.right;
-                                            top=sStart?((flt?0:obj.top)+margin.top):(css.$px(prop.top));
-                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height)-css.$px(prop.top));
+                                            top=sStart?((flt?0:obj.top)+margin.top):(css.$px(prop.top,nodefz));
+                                            bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
 
                                             temp=obj.height - top - bottom - y + (obj.$prevDiff||0);
                                             delete obj.$prevDiff;                                            
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
+                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
                                             
-                                            if(css.$px(style.right)!==right)region.right=adjustunit(right);
-                                            if(css.$px(style.top)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height)!==temp)region.height=adjustunit(_adjust(temp));
+                                            if(css.$px(style.right,nodefz)!==right)region.right=adjustunit(right);
+                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
+                                            if(css.$px(style.height,nodefz)!==temp)region.height=adjustunit(_adjust(temp));
 
                                             if(!xui.isEmpty(region)){
                                                 if(isSVG)
@@ -5740,13 +5774,13 @@ Class("xui.UI",  "xui.absObj", {
                                         obj.rightHolder=0;
                                     }
 
-                                    left = sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left);
-                                    right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-css.$px(prop.width)-css.$px(prop.left));
-                                    top = prop.dock=='width'?(css.$px(prop.top) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top));
+                                    left = sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left,nodefz);
+                                    right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
+                                    top = prop.dock=='width'?(css.$px(prop.top,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top,nodefz));
                                     //later call for w/h change once
                                     temp=obj.width - left - right - x;
-                                    if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW))) temp=_adjust((t<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  t));
-                                    if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW))) temp=_adjust((t<=temp)?(profile.$dockMaxW=1,  t):(delete profile.$dockMaxW, temp));
+                                    if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  t));
+                                    if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxW=1,  t):(delete profile.$dockMaxW, temp));
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5773,13 +5807,13 @@ Class("xui.UI",  "xui.absObj", {
                                         obj.preX = obj.oX;
                                     }
 
-                                    top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top);
-                                    bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-css.$px(prop.height)-css.$px(prop.top));
-                                    left = prop.dock=='height'?(css.$px(prop.left) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left));
+                                    top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top,nodefz);
+                                    bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
+                                    left = prop.dock=='height'?(css.$px(prop.left,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left,nodefz));
                                     //later call for w/h change once
                                     temp=obj.height - top - bottom - y;
-                                    if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH))) temp = _adjust((t<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  t));
-                                    if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH))) temp=_adjust((t<=temp)?(profile.$dockMaxH=1,  t):(delete profile.$dockMaxH, temp));
+                                    if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp = _adjust((t<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  t));
+                                    if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxH=1,  t):(delete profile.$dockMaxH, temp));
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5870,31 +5904,19 @@ Class("xui.UI",  "xui.absObj", {
                 if((i in p) && p[i]==='')p[i]='auto';
             }
 
-            // *** force to rem
-            if(xui.$rem(profile.properties)){
-                for(var i in dm){
-                    if(dm[i] && dm[i]['$spaceunit']){
-                        if(p[i]!='auto'&&(xui.isFinite(p[i])||xui.CSS.$isPx(p[i])))
-                            // only have root dom node
-                            if(t=profile.getRootNode()){
-                                p[i]=xui.CSS.$px2rem(p[i])+'rem';
-                            }
-                        if(p[i]=='0rem' && parseFloat(dm[i].ini)==0)delete p[i];
-                    }
-                }
-            }else{
-                for(var i in dm){
-                    if(dm[i] && dm[i]['$spaceunit']){
-                        if(p[i]!='auto'&&xui.CSS.$isRem(p[i]))
-                            // only have root dom node
-                            if(t=profile.getRootNode()){
-                                p[i]=xui.CSS.$rem2px(p[i],true);
-                            }
-                        if(p[i]===0 && parseFloat(dm[i].ini)==0)delete p[i];
+            // *** force to rem/px
+            for(var i in dm){
+                if(dm[i] && dm[i]['$spaceunit']){
+                    if(p[i]!='auto'&&!xui.isFinite(p[i])){
+                        if(xui.CSS.$isPx(p[i])){
+                            if( parseFloat(p[i])==parseFloat(dm[i].ini) )delete p[i];
+                        }else if(xui.CSS.$isEm(p[i])){
+                            if(p[i]=='0em' && parseFloat(dm[i].ini)==0)delete p[i];
+                        }
                     }
                 }
             }
-            
+
             for(var i in xui.UI.$ps){
                 if((i in p) && xui.isNaN(p[i]))delete p[i];
             }
@@ -5962,21 +5984,6 @@ Class("xui.UI",  "xui.absObj", {
             //can't input id in properties
             if(prop.id)delete prop.id;
 
-            //***** force to rem
-            for(var i in dm)
-                if(dm[i] && dm[i]['$spaceunit'])
-                    if(xui.CSS.$isEm(prop[i]))
-                        prop[i]=parseFloat(prop[i])*12/16+'rem';
-
-            // *** force to rem
-            if(xui.browser.ie678){
-                for(var i in dm){
-                    if(dm[i] && dm[i]['$spaceunit'])
-                        if(prop[i]!='auto'&& xui.CSS.$isRem(prop[i]))
-                            prop[i]=xui.CSS.$rem2px(prop[i], true)+'px';
-                }
-            }
-
             if('required' in dm)
                 prop._required=prop.required?"xui-required":"";
 
@@ -5993,17 +6000,28 @@ Class("xui.UI",  "xui.absObj", {
             if('src' in dm && prop.src)
                 data.src = xui.adjustRes(prop.src,0,1);
             
+            // *** force to em
+             xui.each(prop,function(o,i){
+                if(xui.$uem(prop)){
+                    if(dm[i] && dm[i]['$spaceunit'])
+                        if(prop[i]===0||prop[i]=='0')prop[i]='0em';
+                }else{
+                    if(dm[i] && dm[i]['$spaceunit'])
+                        if(prop[i]===0||prop[i]=='0')prop[i]='0px';
+                }
+             });
+
             //give border width
             if('$hborder' in dm && dm.$hborder){
-                if(xui.CSS.$isRem(prop.width)){
-                    data.bWidth = xui.CSS.$px2rem( xui.CSS.$rem2px(prop.width) - prop.$hborder*2 ,true) + 'rem';
+                if(profile.$isEm(prop.width)){
+                    data.bWidth = profile.$px2em( profile.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
                 }else{
                     data.bWidth = parseFloat(prop.width) - prop.$hborder*2;
                 }
             }
             if('$vborder' in dm && dm.$vborder){
-                if(xui.CSS.$isRem(prop.height)){
-                    data.bHeight = xui.CSS.$px2rem( xui.CSS.$rem2px(prop.height) - prop.$vborder*2 ,true) + 'rem';
+                if(profile.$isEm(prop.height)){
+                    data.bHeight = profile.$px2em( profile.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
                 }else{
                     data.bHeight = parseFloat(prop.height) - prop.$vborder*2;
                 }
@@ -6012,7 +6030,7 @@ Class("xui.UI",  "xui.absObj", {
             for(var j=0,i;i=map[j];j++){
                 var t=(i in data)?data[i]:prop[i];
                 if(t || t===0){
-                    if(t!='auto')a[a.length]=i+':'+xui.CSS.$addu(t);
+                    if(t!='auto')a[a.length]=i+':'+profile.$addu(t);
                 }
             }
             // position,z-index,visibility,display
@@ -7041,11 +7059,11 @@ new function(){
             DataModel:{
                 width:{
                     $spaceunit:1,
-                    ini:'10rem'
+                    ini:'10em'
                 },
                 height:{
                     $spaceunit:1,
-                    ini:'10rem'
+                    ini:'10em'
                 },
                 shadow:{
                     ini:false,
@@ -7079,14 +7097,14 @@ new function(){
                     border = profile.getSubNode('BORDER'),
                     shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                     region,
-                    css=xui.CSS,
-                    useem = xui.$rem(prop),
-                    adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                    useem = xui.$uem(prop),
+                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                     root = profile.getRoot(),
+                    borderfz = useem?border._getEmSize():null,
 
                     //caculate with px
-                    ww=css.$px(width), 
-                    hh=css.$px(height),
+                    ww=profile.$px(width), 
+                    hh=profile.$px(height),
                     left=Math.max(0, (prop.$b_lw||0)-(prop.$hborder||0)), 
                     top=Math.max(0, (prop.$b_tw||0)-(prop.$vborder||0));
 
@@ -7095,12 +7113,12 @@ new function(){
                     /*for ie6 bug*/
                     /*for example, if single number, 100% width will add 1*/
                     /*for example, if single number, attached shadow will overlap*/
-                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(css.$px(ww/2))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)ww=(profile.$px(ww/2))*2;
                 }
                 if(hh&&'auto'!==hh){
                     hh -=Math.max((prop.$vborder||0)*2, (prop.$b_lw||0) + (prop.$b_rw||0));
 
-                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(css.$px(hh/2))*2;
+                    if(xui.browser.ie&&xui.browser.ver<=6)hh=(profile.$px(hh/2))*2;
                     /*for ie6 bug*/
                     if(xui.browser.ie&&xui.browser.ver<=6&&null===width){
                         border.ieRemedy();
@@ -7108,10 +7126,10 @@ new function(){
                     }
                 }
                 region={
-                    left:adjustunit(left), 
-                    top:adjustunit(top), 
-                    width:adjustunit(ww),
-                    height:adjustunit(hh)
+                    left:adjustunit(left ,borderfz), 
+                    top:adjustunit(top, borderfz), 
+                    width:adjustunit(ww, borderfz),
+                    height:adjustunit(hh, borderfz)
                 };
                 border.cssRegion(region);
                 if(shadow)shadow.cssRegion(region);
@@ -7197,11 +7215,11 @@ new function(){
             DataModel:{
                 width:{
                     $spaceunit:1,
-                    ini:'8rem'
+                    ini:'8em'
                 },
                 height:{
                     $spaceunit:1,
-                    ini:'1rem'
+                    ini:'1em'
                 },
                 nodeName:{
                     ini:"xui",
@@ -7531,11 +7549,11 @@ new function(){
             DataModel:{
                 width:{
                     $spaceunit:1,
-                    ini:'2rem'
+                    ini:'2em'
                 },
                 height:{
                     $spaceunit:1,
-                    ini:'1rem'
+                    ini:'1em'
                 },
                 selectable:true,
                 html:{
@@ -7821,11 +7839,11 @@ new function(){
                 },
                 width:{
                     $spaceunit:1,
-                    ini:'10rem'
+                    ini:'10em'
                 },
                 height:{
                     $spaceunit:1,
-                    ini:'10rem'
+                    ini:'10em'
                 },
                 selectable:true,
                 html:{

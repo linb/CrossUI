@@ -2411,7 +2411,7 @@ Class('App', 'xui.Module',{
                     break;
                 case 'font-size':
                     editor.setType("listbox")
-                        .setItems(["12px","14px","16px","18px","20px","22px","24px",".625rem","1rem","1.25rem","1.5rem","2rem","3rem","4rem"]);
+                        .setItems([".75rem","1rem","1.25rem","1.5rem","2rem","3rem","4rem"]);
                     break;
                 case 'font-weight':
                     editor.setType("listbox")

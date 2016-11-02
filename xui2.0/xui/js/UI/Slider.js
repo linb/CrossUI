@@ -404,11 +404,11 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             position:'absolute',
             width:{
                 $spaceunit:1,
-                ini:'12rem'
+                ini:'15em'
             },
             height:{
                 $spaceunit:1,
-                ini:'3rem'
+                ini:'4em'
             },
             steps:0,
             value:'0:0',
@@ -489,7 +489,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d._cls=profile.getClass('BOX',d.type=='vertical'?'-v':'-h');
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
+            d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
@@ -576,32 +576,37 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label = f('LABEL'),
                 cmd = f('DECREASE'),
                 
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
+                boxfz=useem?box._getEmSize():null,
+                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
+                rulerfz = useem?ruler._getEmSize():null,
+                indfz = useem?ind._getEmSize():null,
 
                 label = profile.getSubNode('LABEL'),
-                labelSize=xui.CSS.$px(prop.labelSize)||0,
-                labelGap=xui.CSS.$px(prop.labelGap)||0,
+                labelSize=profile.$px(prop.labelSize, labelfz)||0,
+                labelGap=profile.$px(prop.labelGap)||0,
                 labelPos = prop.labelPos || 'left',
                 ll, tt, ww, hh;
 
             // caculate by px
-            if(width && width!='auto')width=xui.CSS.$px(width);
-            if(height && height!='auto')height=xui.CSS.$px(height);
+            if(width && width!='auto')width=profile.$px(width);
+            if(height && height!='auto')height=profile.$px(height);
 
             box.cssRegion({
-                left : adjustunit(ll = labelPos=='left'?labelSize:0),
-                top : adjustunit(tt = labelPos=='top'?labelSize:0),
-                width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
-                height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
+                left : adjustunit(ll = labelPos=='left'?labelSize:0,boxfz),
+                top : adjustunit(tt = labelPos=='top'?labelSize:0,boxfz),
+                width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),boxfz),
+                height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))),boxfz)
             });
 
             if(labelSize)
                 label.cssRegion({
-                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0)),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0)), 
-                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width))),
-                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
+                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelSize),
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelSize), 
+                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelSize),
+                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelSize)
                 });
 
             if(type=='vertical'){
@@ -611,8 +616,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     w3=f('IND1').height();
     
                 if(hh){
-                    ruler.top(adjustunit(w1+w)).height(adjustunit(hh-w1-w2-2*w));
-                    ind.top(adjustunit(w1)).height(adjustunit(profile._size=hh-w1-w2-w3));
+                    ruler.top(adjustunit(w1+w,rulerfz)).height(adjustunit(hh-w1-w2-2*w,rulerfz));
+                    ind.top(adjustunit(w1,indfz)).height(adjustunit(profile._size=hh-w1-w2-w3,indfz));
                 }
             }else{
                 var w=ru1.width(),
@@ -621,8 +626,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     w3=f('IND1').width();
     
                 if(ww){
-                    ruler.left(adjustunit(w1+w)).width(adjustunit(ww-w1-w2-2*w));
-                    ind.left(adjustunit(w1)).width(adjustunit(profile._size=ww-w1-w2-w3));
+                    ruler.left(adjustunit(w1+w, rulerfz)).width(adjustunit(ww-w1-w2-2*w,rulerfz));
+                    ind.left(adjustunit(w1,indfz)).width(adjustunit(profile._size=ww-w1-w2-w3,indfz));
                 }
             }
         }

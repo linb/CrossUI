@@ -74,7 +74,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){
                     oitem._deep=pitem._deep+1;
-                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'rem;';
+                    item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'em;';
                     // for the last one
                     item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }

@@ -130,10 +130,6 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 'line-height':'auto',
                  background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
             },
-            'FIELDSET-checked PANEL':{
-                $order:4,
-                display:'none'
-            },
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 'font-size':'1em'
@@ -225,7 +221,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
             data.toggleDispplay=data.toggleBtn?'':nodisplay;
 
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
-            data.toggleCls = data.toggleBtn&&!data.toggle?profile.getClass('FIELDSET','-checked') + ' xui-uiborder-t':' xui-uiborder-flat xui-uiborder-radius';
+            data.toggleCls = data.toggleBtn&&!data.toggle?' xui-uiborder-t':' xui-uiborder-flat xui-uiborder-radius';
             data._fi_toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle xuifont-checked xui-uicmd-toggle-checked':'xui-uicmd-toggle';
 
             profile._toggle = !!data.toggle;
@@ -276,8 +272,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                         fs.height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = xui.$rem(p),
-                        adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                        useem = xui.$uem(p),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                         height=profile.getSubNode('LEGEND').height();
                     height = height?adjustunit(height):null;
                     profile.getRoot().height(height?height:'auto');
@@ -306,21 +302,21 @@ Class("xui.UI.Group", "xui.UI.Div",{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 
 
                 // caculate by px
-                ww=width?xui.CSS.$px(width):null, 
-                hh=height?xui.CSS.$px(height):null;
+                ww=width?profile.$px(width):null, 
+                hh=height?profile.$px(height):null;
 
             if(profile._toggle){
                 if(height && height!='auto'){
-                    fs.height(adjustunit(hh));
+                    fs.height(adjustunit(hh, fs));
                     hh -= profile.getSubNode('LEGEND').height()||18;
-                    panel.height(adjustunit(hh) );
+                    panel.height(adjustunit(hh, panel) );
                 }
             }else{
                 // same to ***

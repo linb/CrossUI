@@ -693,6 +693,9 @@ Class('xui.Dom','xui.absBox',{
                 return xui.Dom.getStyle(this.get(0), name, force);
             };
         },
+        _getEmSize:function(){
+            return this.get(0) ? parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true)) : null;
+        },
         rotate:function(v){
             if(xui.isSet(v)){
                 v=parseFloat(v)||0;
@@ -1134,7 +1137,7 @@ Class('xui.Dom','xui.absBox',{
             // get always returns to px
             else{
                 f=dom.getStyle;
-                r={left :css.$px(f(node, 'left')),  top : css.$px(f(node, 'top'))};
+                r={left :css.$px(f(node, 'left'),node),  top : css.$px(f(node, 'top'),node)};
             }
             node=null;
             return r;
@@ -1727,10 +1730,10 @@ Class('xui.Dom','xui.absBox',{
                                 if(!xui.isFinite(s)){
                                     su=s.replace(/[-\d.]*/,'')||'px';
                                     if(su!=eu){
-                                        if(su=='rem'&&eu=='px'){
-                                            s=css.$rem2px(s,node);
-                                        }else if(su=='px'&&eu=='rem'){
-                                            s=css.$px2rem(s,node);
+                                        if(su=='em'&&eu=='px'){
+                                            s=css.$em2px(s,node);
+                                        }else if(su=='px'&&eu=='em'){
+                                            s=css.$px2em(s,node);
                                         }
                                     }
                                 }
@@ -2386,8 +2389,8 @@ type:4
                 // INPUT/TEXTREA will always return % for font-size
                 if((name=='fontSize'||name2=='font-size') && /%/.test(value) && node.parentNode){
                     value=(node.parentNode.currentStyle[name]||node.parentNode.currentStyle[name2]) * parseFloat(value);
-                }else if(xui.CSS.$isRem(value)){
-                    value=xui.CSS.$px(value);;
+                }else if(xui.CSS.$isEm(value)){
+                    value=xui.CSS.$px(value, node);;
                 }
             }
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
@@ -3727,8 +3730,8 @@ type:4
             self.plugIn(o[0],function(type){
                 type=type||'both';
                 node = this.get(0);
-                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1])):0) 
-                     + ((type=='both'||type=='right'||type=='bottom')?xui.CSS.$px(fun(node, o[2])):0) || 0;
+                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1]),node):0) 
+                     + ((type=='both'||type=='right'||type=='bottom')?xui.CSS.$px(fun(node, o[2]),node):0) || 0;
             })
         });
         /*
@@ -3794,7 +3797,7 @@ type:4
                             r=getStyle(node,o[1]);
                             if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
                                 r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
-                            r=xui.CSS.$px(r)||0;
+                            r=xui.CSS.$px(r,node)||0;
                             break;
                         case 2:
                             r=node[o[6]];

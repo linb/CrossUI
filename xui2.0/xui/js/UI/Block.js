@@ -213,11 +213,11 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             },
             width:{
                 $spaceunit:1,
-                ini:'8rem'
+                ini:'10em'
             },
             height:{
                 $spaceunit:1,
-                ini:'8rem'
+                ini:'10em'
             }
         },
         Appearances:{
@@ -283,12 +283,13 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 sbs=prop.sideBarStatus,
                 sbtype=prop.sideBarType,
                 b=(prop.$iborder||0)*2,
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')};
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                panelfz = useem||profile.$isEm(width)||profile.$isEm(height)?panel._getEmSize():null,
                 // caculate by px
-                ww=width?xui.CSS.$px(size.width):size.width, 
-                hh=height?xui.CSS.$px(size.height):size.height,
-                sbsize=xui.CSS.$px(prop.sideBarSize),
+                ww=width?profile.$px(size.width):size.width, 
+                hh=height?profile.$px(size.height):size.height,
+                sbsize=profile.$px(prop.sideBarSize),
                 sbsize2=adjustunit(sbsize);
 
             size.left=size.top=0;
@@ -331,9 +332,9 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                     }
                 }
             }
-            if(size.width) size.width = adjustunit(ww -b);
+            if(size.width) size.width = adjustunit(ww -b, panelfz);
             if(size.height&&'auto'!==size.height)
-                size.height = adjustunit(hh - b);
+                size.height = adjustunit(hh - b, panelfz);
             panel.cssRegion(size,true);
         },
         _showTips:function(profile, node, pos){

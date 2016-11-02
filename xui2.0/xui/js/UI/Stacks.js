@@ -124,11 +124,14 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 item = profile.getItemByItemId(key);
             }
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
                 list=profile.getSubNode('LIST'),
+                boxfz = useem?box._getEmSize():null,
+                panelfz = useem?panel._getEmSize():null,
+                listfz = useem?list._getEmSize():null,
                 type = prop.borderType,
                 // have to use borderLeftWidth( ff will result 0 with borderWidth)
                 bw = (type=='flat'||type=='inset'||type=='outset') ? box._borderW() : 0,
@@ -140,8 +143,8 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             if(!panel || panel.isEmpty())return;
 
             // caculate by px
-            width=width?xui.CSS.$px(width, true):width;
-            height=height?xui.CSS.$px(height, true):height;
+            width=width?profile.$px(width, null,true):width;
+            height=height?profile.$px(height, null,true):height;
 
             // change value
             if(height){
@@ -149,7 +152,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 t2=t1=0;
                 xui.arr.each(prop.items,function(o){
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
-                    obj.cssRegion({bottom:'auto',top:adjustunit(t1)});
+                    obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
                     // force to get offsetHeight
                     off=obj.offsetHeight(true);
@@ -159,7 +162,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 xui.arr.each(prop.items,function(o){
                     if(o.id == key)return false;
                     obj = profile.getSubNodeByItemId('ITEM', o.id);
-                    obj.cssRegion({top:'auto',bottom:adjustunit(t2)});
+                    obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});
 
                     // offsetHeight maybe not set here
                     off=obj.offsetHeight(true);
@@ -172,21 +175,21 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     hc=temp;
                 }
 
-                box.height(adjustunit(height));
+                box.height(adjustunit(height,boxfz));
             }
             if(width){
                 width-=bw;
                 wc=width;
-                box.width(adjustunit(width));
+                box.width(adjustunit(width,boxfz));
             }    
 
             panel.cssRegion({
-                width:wc?adjustunit(wc):null,
-                height:hc?adjustunit(hc):null,
-                top:adjustunit(top),
-                left:0+xui.CSS.$picku()
+                width:wc?adjustunit(wc,panelfz):null,
+                height:hc?adjustunit(hc,panelfz):null,
+                top:adjustunit(top,panelfz),
+                left:0+profile.$picku()
             },true);
-            if(wc)list.width(adjustunit(wc));
+            if(wc)list.width(adjustunit(wc,listfz));
         },
         _adjustScroll:null
     }

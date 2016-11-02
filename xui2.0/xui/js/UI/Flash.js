@@ -57,11 +57,11 @@ Class("xui.UI.Flash", "xui.UI",{
             selectable:true,
             width:{
                 $spaceunit:1,
-                ini:'25rem'
+                ini:'30em'
             },
             height:{
                 $spaceunit:1,
-                ini:'20rem'
+                ini:'25em'
             },
             cover:false,
             src:{
@@ -167,14 +167,14 @@ Class("xui.UI.Flash", "xui.UI",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                useem=xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem=xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 size = profile.getSubNode('BOX').cssSize(),
 
                 // caculate by px
-                ww=width?xui.CSS.$px(width):width, 
-                hh=height?xui.CSS.$px(height):height;
+                ww=width?profile.$px(width):width, 
+                hh=height?profile.$px(height):height;
 
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here

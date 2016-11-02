@@ -520,7 +520,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             value:'',
             width:{
                 $spaceunit:1,
-                ini:'8rem'
+                ini:'10em'
             },
             height:{
                 $spaceunit:1,
@@ -628,7 +628,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize?"":("display:none");
-            d._labelSize=d.labelSize?'':0+xui.CSS.$picku();
+            d._labelSize=d.labelSize?'':0+profile.$picku();
     
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -884,8 +884,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 box = f('BOX'),
                 label = f('LABEL'),
 
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
+                boxfz=useem?box._getEmSize():null,
+                v1fz=useem?v1._getEmSize():null,
+                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
 
                 $hborder, $vborder,
 
@@ -897,14 +901,14 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             $hborder=$vborder=box._borderW() / 2;
             
             // caculate by px
-            if(height)height = (autoH=height=='auto') ? xui.CSS.$rem2px(1.5,true) : xui.CSS.$isRem(height) ? xui.CSS.$rem2px(height,true) : height;
-            if(width)width = xui.CSS.$isRem(width) ? xui.CSS.$rem2px(width,true) : width;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
             if(autoH)root.height(adjustunit(height));
 
-            var labelSize=xui.CSS.$px(prop.labelSize)||0,
-                labelGap=xui.CSS.$px(prop.labelGap)||0,
+            var labelSize=profile.$px(prop.labelSize,labelfz)||0,
+                labelGap=profile.$px(prop.labelGap)||0,
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
@@ -931,23 +935,23 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 iH2=hh===null?null:Math.max(0,height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0));
 
             if(null!==iW && iW-paddingW>0)
-                v1.width(adjustunit(Math.max(0,iW-paddingW)));
+                v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)
-                v1.height(adjustunit(Math.max(0,iH-paddingH)));
+                v1.height(adjustunit(Math.max(0,iH-paddingH),v1fz));
 
             box.cssRegion({
-                left:adjustunit(iL),
-                top:adjustunit(iT),
-                width:adjustunit(iW),
-                height:adjustunit(iH)
+                left:adjustunit(iL,boxfz),
+                top:adjustunit(iT,boxfz),
+                width:adjustunit(iW,boxfz),
+                height:adjustunit(iH,boxfz)
             });
             
             if(labelSize)
                 label.cssRegion({
-                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+$hborder*2):0),
-                    top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)-paddingW)),
-                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)-paddingH))
+                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+$hborder*2):0,labelfz),
+                    top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
+                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)-paddingW),labelfz),
+                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)-paddingH),labelfz)
                 });
 
             iL += (iW||0) + $hborder*2;

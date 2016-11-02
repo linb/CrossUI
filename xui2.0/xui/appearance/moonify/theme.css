@@ -7,12 +7,10 @@
     font-weight:normal; 
 }
 .xui-title-node{
-		font-size:14px;
-		font-size: 0.875rem;
+		font-size:1.1667em;
 }
 .xuifont, .xuicon{
-  font-size:16px;
-	font-size:1rem;
+  font-size:1.3333333333333333em;
 }
 .xuifont-hover, .xuicon-hover{
 	color: #fff;

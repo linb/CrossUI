@@ -86,11 +86,11 @@ Class("xui.UI.Resizer","xui.UI",{
                             var w=null,h=null,l=null,t=null;
                             if(t=size.width){
                                 node.widthBy(t);
-                                prop.width = w = xui.CSS.$forceu(svg?instance.getWidth():node.width());
+                                prop.width = w = profile.$forceu(svg?instance.getWidth():node.width());
                             }
                             if(t=size.height){
                                 node.heightBy(t);
-                                prop.height = h = xui.CSS.$forceu(svg?instance.getHeight():node.height());
+                                prop.height = h = profile.$forceu(svg?instance.getHeight():node.height());
                             }
                             xui.UI.$tryResize(profile,w,h,true);
 
@@ -101,11 +101,11 @@ Class("xui.UI.Resizer","xui.UI",{
                         if(cssPos){
                             if((t=cssPos.left) && !(prop.left=='auto'&&Math.round(parseFloat(prop.right))>=0)){
                                 node.leftBy(t);
-                                prop.left= l = xui.CSS.$forceu(svg?instance.getLeft():node.left());
+                                prop.left= l = profile.$forceu(svg?instance.getLeft():node.left());
                             }
                             if((t=cssPos.top) && !(prop.top=='auto'&&Math.round(parseFloat(prop.bottom))>=0)){
                                 node.topBy(t);
-                                prop.top = t = xui.CSS.$forceu(svg?instance.getTop():node.top());
+                                prop.top = t = profile.$forceu(svg?instance.getTop():node.top());
                             }
                             if(profile.onMove && (l!==null||t!==null))
                                 instance.onMove(profile,l,t,null,null);
@@ -655,8 +655,8 @@ Class("xui.UI.Resizer","xui.UI",{
                 t._move=t.forceMovable;
 
             t.extend =  (parseFloat(t.handlerSize)||0)/2 + (parseFloat(t.handlerOffset)||0);
-            t._handlerSize =  css.$rem(t.handlerSize)+'rem';
-            t._extend =  css.$rem(t.extend)+'rem';
+            t._handlerSize =  css.$em(t.handlerSize)+'em';
+            t._extend =  css.$em(t.extend)+'em';
 
             t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
             t._rightCofigBtn = t.rightConfigBtn?'':'display:none';

@@ -15,11 +15,11 @@ Class("xui.UI.Video", "xui.UI.Audio",{
         DataModel:{
             width:{
                 $spaceunit:1,
-                ini:'25rem'
+                ini:'34em'
             },
             height:{
                 $spaceunit:1,
-                ini:'20rem'
+                ini:'25em'
             },
             poster:{
                 format:'image',
@@ -38,14 +38,13 @@ Class("xui.UI.Video", "xui.UI.Audio",{
         },
         _onresize:function(profile,width,height){
             var H5=profile.getSubNode('H5'), 
-                css=xui.CSS,
                 size=H5.cssSize(),
                 prop=profile.properties,
-                useem =xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem =xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 // caculate by px
-                ww=css.$px(width), 
-                hh=css.$px(height);
+                ww=profile.$px(width), 
+                hh=profile.$px(height);
 
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here

@@ -71,11 +71,11 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             value:0,
             width:{
                 $spaceunit:1,
-                ini:'18rem'
+                ini:'25em'
             },
             height:{
                 $spaceunit:1,
-                ini:'1.125em'
+                ini:'1.5em'
             },
             captionTpl:{
                 ini:'* %',
@@ -118,37 +118,41 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
                 css = xui.CSS,
-                useem = xui.$rem(p),
-                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(p),
+                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 inn = profile.getSubNode('INN'),
                 cap = profile.getSubNode('CAP'),
-                fill = profile.getSubNode('FILL');
+                fill = profile.getSubNode('FILL'),
+                rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
+                innfz = useem?inn._getEmSize():null,
+                capfz = useem?cap._getEmSize():null,
+                fillfz = useem?fill._getEmSize():null;
             // caculate by px
-            if(size.width && size.width!='auto')size.width=css.$px(size.width);
-            if(size.height && size.height!='auto')size.height=css.$px(size.height);
+            if(size.width && size.width!='auto')size.width=css.$px(size.width, rootfz);
+            if(size.height && size.height!='auto')size.height=css.$px(size.height, rootfz);
 
             if(p.type=="horizontal"){
                 if(size.height){
-                    v=adjustunit(size.height);
+                    v=adjustunit(size.height, innfz);
                     inn.css({'line-height':v});
                     
-                    v=adjustunit(size.height);
+                    v=adjustunit(size.height, fillfz);
                     fill.css({height:v,'line-height':v});
                     
-                    v=adjustunit(size.height);
+                    v=adjustunit(size.height, capfz);
                     cap.css({height:v,'line-height':v});
                 }
             }else{
                 if(size.width){
-                    //inn.css({width:adjustunit(size.width)});                   
-                    fill.css({width:adjustunit(size.width)});
-                    cap.css({width:adjustunit(size.width)});
+                    //inn.css({width:adjustunit(size.width, innfz)});                   
+                    fill.css({width:adjustunit(size.width, fillfz)});
+                    cap.css({width:adjustunit(size.width, capfz)});
                 }
                 if(size.height){
-                    inn.css({'line-height':adjustunit(size.height)});
-                    fill.css({'line-height':adjustunit(size.height)});
-                    cap.css({'line-height':adjustunit(size.height)});
+                    inn.css({'line-height':adjustunit(size.height, innfz)});
+                    fill.css({'line-height':adjustunit(size.height, fillfz)});
+                    cap.css({'line-height':adjustunit(size.height, capfz)});
                 }
             }
         }

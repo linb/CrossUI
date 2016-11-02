@@ -4,12 +4,10 @@
 		font-size: 0.75rem;
 }
 .xui-title-node{
-		font-size:14px;
-		font-size: 0.875rem;
+		font-size:1.1667em;
 }
 .xuifont, .xuicon{
-  font-size:16px;
-	font-size:1rem;
+  font-size:1.3333333333333333em;
 }
 .xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
 		color:#fff;

@@ -113,38 +113,22 @@ Class('App', 'xui.Module',{
                 .setLabelGap("0.3333333333333333em")
                 .setType("listbox")
                 .setItems([{
-                    "id" : "12px",
-                    "caption" : "12px"
-                },
-                {
-                    "id" : "14px",
-                    "caption" : "14 px"
-                },
-                {
                     "id" : "16px",
                     "caption" : "16 px"
                 },
                 {
-                    "id" : "0.75rem",
-                    "caption" : "0.75 rem"
+                    "id" : "20px",
+                    "caption" : "20 px"
                 },
                 {
-                    "id" : "0.875rem",
-                    "caption" : "0.875 rem"
+                    "id" : "24px",
+                    "caption" : "24 px"
                 },
                 {
-                    "id" : "1rem",
-                    "caption" : "1 rem"
-                },
-                {
-                    "id" : "1.125rem",
-                    "caption" : "1.125 rem"
-                },
-                {
-                    "id" : "1.25rem",
-                    "caption" : "1.25 rem"
+                    "id" : "32px",
+                    "caption" : "32 px"
                 }])
-                .setValue("12px")
+                .setValue("16px")
                 .afterUIValueSet("_xui_ui_comboinput32_afteruivalueset")
                 );
             
@@ -3923,16 +3907,11 @@ Class('App', 'xui.Module',{
         _ctl_comboinput61_afteruivalueset:function (profile,oldValue,newValue){
             var ns=this;
             xui.setTheme(newValue,true,function(){
-                ns.xui_ui_comboinput32.setUIValue(newValue=="classic"||newValue=='webflat'?'1rem':'12px',true);
+                 xui.CSS.adjustFont();
             });
         },
         _xui_ui_comboinput32_afteruivalueset:function (profile,oldValue,newValue){
-            if(/rem/.test(newValue)){
-                    xui.CSS.setStyleRules(".xui-ui-ctrl",{'font-size': parseFloat(newValue)*xui.CSS._getDftRemSize() + 'px'});
-                    xui.CSS.setStyleRules(".xui-ui-reset",{'font-size': parseFloat(newValue)*xui.CSS._getDftRemSize() + 'px'});
-            }
-            xui.CSS.setStyleRules(".xui-ui-ctrl",{'font-size': newValue});
-            xui.CSS.setStyleRules(".xui-ui-reset",{'font-size': newValue});
+            xui('html').css('font-size', newValue);
 
             xui.CSS.adjustFont();
         }

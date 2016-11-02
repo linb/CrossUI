@@ -112,7 +112,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     var self=this,
                         hs = self.getSubNode('LIST'),
                         h = self.getSubNode('ITEMS'),
-                        unit = 0+xui.CSS.$picku();
+                        unit = 0+self.$picku();
                     switch(v){
                         case 'left':
                             hs.cssRegion({left:unit,top:unit,right:'auto',bottom:unit});
@@ -156,7 +156,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 listbox:['top','bottom'],
                 action:function(v){
                     var hl = this.getSubNode('ITEMS'),
-                        unit = 0+xui.CSS.$picku();
+                        unit = 0+this.$picku();
                     if(v=='top')
                         hl.cssRegion({top:unit,bottom:'auto'});
                     else
@@ -168,6 +168,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     var self = this,
                         t = self.properties,
+                        useem = xui.$uem(t),
+                        adjustunit = function(v,emRate){return self.$forceu(v, useem?'em':'px', emRate)},
                         noPanel = t.noPanel,
                         hs = self.getSubNode('LIST'),
                         hl = self.getSubNode('ITEMS'),
@@ -264,15 +266,18 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             }
 
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$rem(prop),
-                adjustunit = function(v){return xui.CSS.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                panelfz = useem?panel._getEmSize():null,
                 // caculate by px
-                ww=width?xui.CSS.$px(width, true):width, 
-                hh=(height&&height!='auto')?xui.CSS.$px(height, true):height,
+                ww=width?profile.$px(width, null, true):width, 
+                hh=(height&&height!='auto')?profile.$px(height, null, true):height,
                 root = profile.getRootNode(),
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 menu2 =  profile.getSubNode('MENU2'),
+                hsfz =  useem?hs._getEmSize():null,
+                hlfz =  useem?hl._getEmSize():null,
                 type = prop.borderType,
                 bw = (type=='flat'||type=='inset'||type=='outset') ? hs._borderW() : 0,
                 wc=null,
@@ -283,11 +288,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
                     itmsH = hs.offsetHeight(true);
                     if(width){
-                        hs.width(adjustunit(ww-bw));
-                        hl.width(adjustunit(ww-bw));
+                        hs.width(adjustunit(ww-bw, hsfz));
+                        hl.width(adjustunit(ww-bw, hlfz));
                         // for nopanel:
                         if(noPanel && height!='auto')
-                            hs.height(adjustunit(hh-bw));
+                            hs.height(adjustunit(hh-bw, hsfz));
                         
                         if(!prop.noHandler)
                             profile.box._adjustHScroll(profile);
@@ -298,7 +303,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     if(hh!='auto'){
                         // caculate by px
                         if(hh-itmsH>0)hc=hh-itmsH-bw;
-                        //hs.height(adjustunit(itmsH));
+                        //hs.height(adjustunit(itmsH, hsfz));
                     }else{
                         hc=hh;
                     }
@@ -318,22 +323,22 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
                     if(height){
                         // for nopanel:
-                        hs.height(adjustunit(hh-bw));
-                        hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0)));
+                        hs.height(adjustunit(hh-bw, hsfz));
+                        hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
     
                         hc=hh;
                     }
                     if(height || width){
-                        var v = xui.CSS.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize);
+                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz);
                         var vv = hl._paddingW() + hl._marginW();
 
                         //caculate by px
-                        left = prop.barLocation=='left'?bw+xui.CSS.$px(v+vv):0;
-                        wc = ww-xui.CSS.$px(v+vv)-bw;
+                        left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz):0;
+                        wc = ww-profile.$px(v+vv, hsfz)-bw;
 
                         if(!noPanel){
-                            hs.width( adjustunit(v + vv));
-                            hl.width( adjustunit(v + xui.Dom.getScrollBarSize()));
+                            hs.width( adjustunit(v + vv , hsfz) );
+                            hl.width( adjustunit(v + xui.Dom.getScrollBarSize(), hlfz) );
                         }
                     }
                 }
@@ -344,9 +349,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
             if(!noPanel)
                 if(panel && !panel.isEmpty())panel.cssRegion({
-                    width : wc?adjustunit(wc):null,
-                    height : hc?adjustunit(hc):null,
-                    left : adjustunit(left)
+                    width : wc?adjustunit(wc,panelfz):null,
+                    height : hc?adjustunit(hc,panelfz):null,
+                    left : adjustunit(left,panelfz)
                 },true);
         }
     }

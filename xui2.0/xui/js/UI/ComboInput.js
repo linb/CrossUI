@@ -310,7 +310,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 o = xui.create('List');
                                 o.setHost(profile).setDirtyMark(false).setItems(xui.copy(pro.items)).setListKey(pro.listKey||'');
                                 if(pro.dropListWidth) o.setWidth(pro.dropListWidth);
-                                else o.setWidth(xui.CSS.$forceu( main.offsetWidth() + btn.offsetWidth() ));
+                                else o.setWidth(profile.$forceu( main.offsetWidth() + btn.offsetWidth() ));
 
                                 o.setHeight(pro.dropListHeight||'auto');
 
@@ -733,7 +733,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 cursor:'pointer',
                 padding:0,
                 position:'absolute',
-                width:'1.125rem',
+                width:'1.5em',
 
                 // for IE8
                 overflow:'visible'
@@ -779,7 +779,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 padding:0,
                 position:'absolute',
                 height:'50%',
-                width:'1.125rem',
+                width:'1.5em',
 
                 // for IE8
                 overflow:'visible'
@@ -1599,7 +1599,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         _onresize:function(profile,width,height){
             var prop = profile.properties,
-                 css=xui.CSS,
                  type = prop.type,
                 // if any node use other font-size which does not equal to xui-node, use 'px' 
                 f=function(k){if(!k) return null; k=profile.getSubNode(k); return k;},
@@ -1613,9 +1612,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 lbtn=f(type=='counter'?'LBTN':null),
                 rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
-                useem = xui.$rem(prop),
-
-                adjustunit = function(v){return css.$forceu(v, useem?'rem':'px')},
+                useem = xui.$uem(prop),
+                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
+                boxfz=useem?box._getEmSize():null,
+                v1fz=useem?v1._getEmSize():null,
+                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
@@ -1625,12 +1627,12 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
            if(prop.image||prop.imageClass){
                 icb.setInlineBlock();
                 if(icbw=icb.offsetWidth(true))
-                    v1.css('paddingLeft',adjustunit(icbw));
+                    v1.css('paddingLeft',adjustunit(icbw,icb));
             }
             if(prop.unit){
                 ut.setInlineBlock();
                 if(utw=ut.offsetWidth(true))
-                    v1.css('paddingRight',adjustunit(utw));
+                    v1.css('paddingRight',adjustunit(utw,ut));
             }
             if(!icbw)icb.css('display','none');
             if(!utw)ut.css('display','none');
@@ -1640,19 +1642,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 btnw, autoH;
 
             $hborder=$vborder=box._borderW() / 2;
-            btnw=css._getDftRemSize() * 1.125;
+            btnw=root._getEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = (autoH=height=='auto') ? css.$rem2px(1.5,true) : css.$isRem(height) ? css.$rem2px(height,true) : height;
-            if(width)width = css.$isRem(width) ? css.$rem2px(width,true) : width;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + v1._paddingH() + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
             if(autoH)root.height(adjustunit(height));
 
             var 
                 // make it round to Integer
-                labelSize=css.$px(prop.labelSize,true)||0,
-                labelGap=css.$px(prop.labelGap,true)||0,
+                labelSize=profile.$px(prop.labelSize,labelfz,true)||0,
+                labelGap=profile.$px(prop.labelGap,null,true)||0,
                 labelPos=prop.labelPos || 'left',
                 ww=width,
                 hh=height,
@@ -1703,23 +1705,23 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 iW += (lbtn?$hborder:0) + (rbtn?$hborder:0) + (cmdbtn?$hborder:0);
             }
              if(null!==iW && iW-paddingW>0)
-                v1.width(adjustunit(Math.max(0,iW-paddingW)));
+                v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)
-                v1.height(adjustunit(Math.max(0,iH-paddingH)));
+                v1.height(adjustunit(Math.max(0,iH-paddingH),v1fz));
 
             box.cssRegion({
-                left:adjustunit(iL),
-                top:adjustunit(iT),
-                width:adjustunit(iW),
-                height:adjustunit(iH)
+                left:adjustunit(iL,boxfz),
+                top:adjustunit(iT,boxfz),
+                width:adjustunit(iW,boxfz),
+                height:adjustunit(iH,boxfz)
             });
             
             if(labelSize)
                 label.cssRegion({
-                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bwcmd+rbw+lbw+$hborder*2):0),
-                    top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0), 
-                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww))),
-                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)))
+                    left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bwcmd+rbw+lbw+$hborder*2):0,labelfz),
+                    top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
+                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
+                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
             if(iW!==null){
                 // left offset 1px
