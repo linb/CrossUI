@@ -478,8 +478,9 @@ Class("xui.UI.Resizer","xui.UI",{
             maxWidth: 5000,
 
             // with px (base: 1em=12px)
-            handlerSize:4,
-            handlerOffset:0,
+            handlerSize:8,
+            // border 1
+            handlerOffset:1,
 
             disabled:{
                 ini:false,
