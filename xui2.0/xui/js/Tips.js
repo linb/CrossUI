@@ -40,8 +40,9 @@ Class("xui.Tips", null,{
             }else if(tips._showed && tips.MOVABLE){
                 p=event.getPos(e);
                 n=tips._Node.style;
-                n.left = Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left)) +'px';
-                n.top = Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top)) +'px';
+                n.left = Math.min(tips._tpl._ww-tips._tpl._w, Math.max(0, Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left), 10))) + 'px';
+                n.top = Math.min(tips._tpl._hh-tips._tpl._h, Math.max(0, Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top), 10))) + 'px';
+                
                 tips._pos=p;
             }
         },'$Tips',-1)
@@ -188,10 +189,11 @@ Class("xui.Tips", null,{
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
+                        self._ww=xui.win.width();
+                        self._hh=xui.win.height();
+
                         //get width
-                        w=_ruler.get(0).offsetWidth + 2;
-                        if(!html)
-                            w=Math.min(tips.MAXWIDTH, w);
+                        w=Math.min(html?self._ww:tips.MAXWIDTH, _ruler.get(0).offsetWidth + 2);
 
                         //set content, AND dimension
                         var style=node.get(0).style, t1=self.n.get(0),styleI=t1.style;
@@ -201,11 +203,13 @@ Class("xui.Tips", null,{
                         t1.innerHTML=s;
                         //set dimension
                         if(xui.browser.ie){
-                            style.width=styleI.width=Math.round(w+(w%2))+'px';
+                            style.width=styleI.width=(self._w=Math.round(w+(w%2)))+'px';
                             h=t1.offsetHeight;
-                            style.height=Math.round(h-(h%2))+'px';
-                        }else
-                            styleI.width=Math.round(w)+'px';
+                            style.height=(self._h=Math.round(h-(h%2)))+'px';
+                        }else{
+                            styleI.width=(self._w=Math.round(w))+'px';
+                            self._h=self.n.height();
+                        }
 
                         if(pos===true){
                             style.visibility='visible';

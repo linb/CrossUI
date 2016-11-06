@@ -95,8 +95,9 @@ Class("xui.CSS", null,{
         },
         //if backOf==true, add to head last node
         //else add to the before position of the base styleSheet
-        addStyleSheet:function(txt, id, backOf ){
-            var e, ns=this, head = ns._getHead(),add=function(txt,id,backOf){
+        addStyleSheet:function(txt, id, backOf, force){
+            var e, ns=this, head = ns._getHead(),
+            add=function(txt,id,backOf){
                 var e = document.createElement('style');
                 e.type="text/css";
                 if(id)e.id=id;
@@ -121,8 +122,13 @@ Class("xui.CSS", null,{
                 e.styleSheet.cssText +=txt;
                 return e;
             };
-            if(id && (id=id.replace(/[^\w\-\_\.\:]/g,'_')) && (e=ns.get('id',id)))
-                return e;
+            if(id && (id=id.replace(/[^\w\-\_\.\:]/g,'_')) && (e=ns.get('id',id))){
+                if(force){
+                    e.disabled=true;
+                    head.removeChild(e);
+                }
+                else return e;
+            }
 
             if(ns._check()){
                 return merge(txt, backOf);

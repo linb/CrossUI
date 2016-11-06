@@ -284,8 +284,11 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 sbtype=prop.sideBarType,
                 b=(prop.$iborder||0)*2,
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
-                panelfz = useem||profile.$isEm(width)||profile.$isEm(height)?panel._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                panelfz = panel._getEmSize(fzrate),
+
                 // caculate by px
                 ww=width?profile.$px(size.width):size.width, 
                 hh=height?profile.$px(size.height):size.height,

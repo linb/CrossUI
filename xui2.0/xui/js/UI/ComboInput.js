@@ -1613,11 +1613,11 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
                 useem = xui.$uem(prop),
-                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
-                boxfz=useem?box._getEmSize():null,
-                v1fz=useem?v1._getEmSize():null,
-                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                v1fz=v1._getEmSize(fzrate),
+                labelfz=label._getEmSize(fzrate),
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
@@ -1642,7 +1642,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 btnw, autoH;
 
             $hborder=$vborder=box._borderW() / 2;
-            btnw=root._getEmSize() * 1.5;
+            btnw=profile.getEmSize() * 1.5;
 
             // caculate by px
             if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + v1._paddingH() + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
@@ -1710,10 +1710,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 v1.height(adjustunit(Math.max(0,iH-paddingH),v1fz));
 
             box.cssRegion({
-                left:adjustunit(iL,boxfz),
-                top:adjustunit(iT,boxfz),
-                width:adjustunit(iW,boxfz),
-                height:adjustunit(iH,boxfz)
+                left:adjustunit(iL),
+                top:adjustunit(iT),
+                width:adjustunit(iW),
+                height:adjustunit(iH)
             });
             
             if(labelSize)
@@ -1721,7 +1721,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+bwcmd+rbw+lbw+$hborder*2):0,labelfz),
                     top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
                     width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
-                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
+                    height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)-paddingH),labelfz)
                 });
             if(iW!==null){
                 // left offset 1px

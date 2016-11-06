@@ -1185,20 +1185,15 @@ Class('xui.Module','xui.absProfile',{
 
             var fun=function(){
                 var ifun=function(path){
-                    //if successes
-                    if(path){
-                        if(this.viewStyles && xui.isHash(this.viewStyles)){
-                            try{
-                                if(this.viewStyles.theme){
-                                    theme=this.viewStyles.theme;
-                                    delete this.viewStyles.theme;
-                                }
-                                xui.each(this.viewStyles,function(v,k){
+                    var a=this,
+                        t, bg, 
+                        f=function(){
+                            if(bg && xui.isHash(bg)){
+                                xui.each(bg,function(v,k){
                                     xui('html').css(k, xui.adjustRes(v));
                                 });
-                            }catch(e){}
-                        }
-                        var a=this,f=function(){
+                            }
+
                             if(!xui.isFun(a)){
                                 var e=new Error( "'"+cls+"' is not a constructor");
                                 xui.tryF(onEnd,[e,null]);
@@ -1214,6 +1209,34 @@ Class('xui.Module','xui.absProfile',{
                                 else xui.tryF(onEnd,[null,o],o);
                             }
                         };
+                    //if successes
+                    if(path){
+                        try{
+                            if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
+                                if(t.theme)theme=t.theme;
+                                if(t.lang)lang=t.lang;
+                                bg=t.background;
+                            }
+                            if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
+                                xui.CSS.setStyleRules(".xui-custom",t,true);
+                            }
+                            if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
+                                var allp={}, ctl;
+                                xui.each(t,function(v,k){
+                                    if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
+                                        ctl.setDftProp(v);
+                                    }else{
+                                        allp[k]=v;
+                                    }
+                                });
+                                if(!xui.isEmpty(allp)){
+                                    xui.UI.setDftProp(allp);
+                                }
+                            }
+                            if((t=xui.ini.$WebAPIMocker) && xui.isHash(t)){
+                                xui.APICaller.setMocker(t);
+                            }
+                        }catch(e){}
                         if(theme&&theme!="default"){
                             xui.setTheme(theme,true,function(){
                                 //get locale info

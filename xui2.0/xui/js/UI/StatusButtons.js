@@ -134,7 +134,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             
             if(t = item.itemPadding || p.itemPadding)item.itemPadding = "padding:" + t;
 
-            if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ xui.CSS.$forceu(t||'auto');
+            if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ profile.$forceu(t||'auto');
             if(t = item.itemAlign || p.itemAlign)item.itemAlign = "text-align:"+ t;
             if(item.flagText)item._flagStyle='display:block';
 

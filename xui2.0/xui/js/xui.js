@@ -1013,7 +1013,7 @@ xui.merge(xui,{
             return a||"default";
         }
     },
-    setTheme:function(key, refresh, onSucess, onFail){
+    setTheme:function(key, refresh, onSucess, onFail, tag){
         key=key||'default';
         var okey=xui.getTheme();
         if(key!=okey){
@@ -1042,7 +1042,23 @@ xui.merge(xui,{
                         xui.tryF(onSucess);
                         return;
                     }else{
-                        xui.CSS.includeLink(xui.getPath('xui.appearance.'+key,'/theme.css'),'theme:'+key);
+                        var id='theme:'+key,
+                            path=xui.getPath('xui.appearance.' +key,'');
+                        if(tag){
+                            xui.getFileAsync(path+'theme.css', 'text', function(rsp){
+                                rsp = xui.Coder.replace(rsp, [
+                                    [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
+                                    [/\{[^}]*\}/,'$0'],
+                                    [/([^\/{},]+)/, function(a){
+                                        // protect '.setting-uikey'
+                                        return xui.str.endWith(a[0],'.setting-uikey')?a[0]:a[0].replace(/([^\s>]+)/,"$1"+tag)
+                                    }]
+                                ]);
+                                rsp=rsp.replace(/url\(([^)]+)\)/g, "url("+path+"$1)");
+                                xui.CSS._appendSS(xui('head'), rsp, id, false);
+                            });
+                        }else
+                            xui.CSS.includeLink(path+'theme.css',id);
                     }
                     var count=0,fun=function(){
                         // timeout: 21 seconds
@@ -4099,9 +4115,9 @@ Class('xui.absObj',"xui.absBox",{
         // *** non-abstract child must have this
         //_objectProp:{tagVar:1,propBinder:1},
         DataModel:{
-            tag:'',
             "name":'',
             desc:'',
+            tag:'',
             tagVar:{
                 ini:{}
             },
@@ -4191,19 +4207,13 @@ Class('xui.absObj',"xui.absBox",{
                                 if(dm[i] && dm[i]['$spaceunit']){
                                     if(xui.CSS.$isEm(v.properties[i])){
                                         if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value))){
-                                            // only have root dom node
-                                            if(v.getRootNode && (t=v.getRootNode())){
-                                                if(!nfz)nfz=xui(t)._getEmSize();
-                                                value=xui.CSS.$px2em(value, nfz)+'em';
-                                            }
+                                            if(v.$px2em)
+                                                value=v.$px2em(value)+'em';
                                         }
                                     }else{
                                         if(value!='auto'&& xui.CSS.$isEm(value)){
-                                            // only have root dom node
-                                            if(v.getRootNode && (t=v.getRootNode())){
-                                                if(!nfz)nfz=xui(t)._getEmSize();
-                                                value=xui.CSS.$em2px(value, nfz, true)+'px';
-                                            }
+                                            if(v.$em2px)
+                                                value=v.$em2px(value)+'px';
                                         }
                                     }
                                 }

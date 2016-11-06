@@ -153,12 +153,6 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             BORDER:{
             },
-            LABEL:{
-               'z-index':1,
-               top:0,
-               left:0,
-               position:'absolute'
-            },
             WRAP:{
                 left:0,
                 //for firefox bug: cursor not show
@@ -174,6 +168,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             },
             LABEL:{
                $order:100,
+               'z-index':1,
+               top:0,
+               left:0,
+               position:'absolute',
                //don't change it in custom class or style
                'padding-top':'4px',
                'padding-bottom':'4px'            
@@ -886,10 +884,10 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
                 useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
-                boxfz=useem?box._getEmSize():null,
-                v1fz=useem?v1._getEmSize():null,
-                labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
+
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                v1fz=v1._getEmSize(fzrate),
+                labelfz=label._getEmSize(fzrate),
 
                 $hborder, $vborder,
 
@@ -940,17 +938,17 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 v1.height(adjustunit(Math.max(0,iH-paddingH),v1fz));
 
             box.cssRegion({
-                left:adjustunit(iL,boxfz),
-                top:adjustunit(iT,boxfz),
-                width:adjustunit(iW,boxfz),
-                height:adjustunit(iH,boxfz)
+                left:adjustunit(iL),
+                top:adjustunit(iT),
+                width:adjustunit(iW),
+                height:adjustunit(iH)
             });
             
             if(labelSize)
                 label.cssRegion({
                     left:adjustunit(ww===null?null:labelPos=='right'?(ww-labelSize+labelGap+$hborder*2):0,labelfz),
                     top: adjustunit(height===null?null:labelPos=='bottom'?(height-labelSize+labelGap):0,labelfz), 
-                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)-paddingW),labelfz),
+                    width:adjustunit(ww===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):ww)),labelfz),
                     height:adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)-paddingH),labelfz)
                 });
 

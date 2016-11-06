@@ -631,8 +631,7 @@ Class("xui.UI.Resizer","xui.UI",{
             profile.template = template;
         },
         _prepareData:function(profile){
-            var t = profile.properties, 
-                css=xui.CSS;
+            var t = profile.properties;
             //default is true
             t._visible=true;
             t._cover=false;
@@ -655,8 +654,8 @@ Class("xui.UI.Resizer","xui.UI",{
                 t._move=t.forceMovable;
 
             t.extend =  (parseFloat(t.handlerSize)||0)/2 + (parseFloat(t.handlerOffset)||0);
-            t._handlerSize =  css.$em(t.handlerSize)+'em';
-            t._extend =  css.$em(t.extend)+'em';
+            t._handlerSize =  profile.$em(t.handlerSize)+'em';
+            t._extend =  profile.$em(t.extend)+'em';
 
             t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
             t._rightCofigBtn = t.rightConfigBtn?'':'display:none';

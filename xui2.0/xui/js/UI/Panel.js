@@ -533,7 +533,10 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
-                panelfz = useem?v2._getEmSize():null,
+                
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                panelfz=v2._getEmSize(fzrate),
+
                 bordersize=profile.properties.borderType!='none'?v2._borderW():0,
                 h0=bd._borderH(),
                 h1,h4,t;

@@ -693,8 +693,8 @@ Class('xui.Dom','xui.absBox',{
                 return xui.Dom.getStyle(this.get(0), name, force);
             };
         },
-        _getEmSize:function(){
-            return this.get(0) ? parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true)) : null;
+        _getEmSize:function(rate){
+            return this.get(0) ? parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true)) * (rate||1) : null;
         },
         rotate:function(v){
             if(xui.isSet(v)){

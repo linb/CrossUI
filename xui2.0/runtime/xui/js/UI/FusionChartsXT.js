@@ -2418,8 +2418,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return prf.$forceu(v, useem?'em':'px', emRate)},
                 root = prf.getRoot(),
-                needfz = useem||prf.$isEm(width)||prf.$isEm(height),
-
+                
                 // caculate by px
                 ww=width?prf.$px(width):width, 
                 hh=height?prf.$px(height):height,

@@ -385,8 +385,10 @@ Class('xui.UIProfile','xui.Profile', {
             return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
         },
         // wrap these functions from xui.CSS
-        getEmSize:function(){
-            return this._nodeEmSize || ( this._nodeEmSize = this.getRoot()._getEmSize() );
+        getEmSize:function(force){
+            // for special parent css
+            return this.$emNode ? this.$emNode._getEmSize() 
+                : ( (!force && this._nodeEmSize) ||  ( this.getRootNode() ? (this._nodeEmSize = this.getRoot()._getEmSize()) : xui.CSS._getDftEmSize() )) ;
         },
         // have to call these after rendered
         $px:function(value, node, roundPx){
@@ -2918,6 +2920,7 @@ Class("xui.UI",  "xui.absObj", {
         $DOMID:'\x01domid\x01',
         $CLS:"\x01cls\x01",
         $MODULECLS:"\x01modulecls\x01",
+        $TAGCLASS:"\x01tagcls\x01",
         $childTag:"<!--\x03{id}\x04-->",
 
         $onSize:function(profile,e){
@@ -3186,11 +3189,11 @@ Class("xui.UI",  "xui.absObj", {
                         (lkey==profile.key ? ((xui.browser.ie && xui.browser.ver<10)?'':'{_selectable} ') : '' ) ;
                 }
                 template['class'] +=  ' ' +
-                    //custom theme
+                    //custom style
                     u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special + ' '+
-                    u.$MODULECLS +" xui-custom"
+                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special +
+                    u.$MODULECLS + u.$TAGCLASS + (prop._tagClass?' '+prop._tagClass:'') + " xui-custom"
             }
             delete template.className;
 
@@ -3290,7 +3293,8 @@ Class("xui.UI",  "xui.absObj", {
                     id:profile.serialId,
                     cls:profile.getClass('KEY'),
                     domid:profile.$domId,
-                    modulecls:moduleCls
+                    modulecls:moduleCls,
+                    tagcls:(profile.tagcls||'')
                 },
                 h2={
                     A:profile.CA,
@@ -3764,8 +3768,8 @@ Class("xui.UI",  "xui.absObj", {
                             },
                             sandboxTheme:{
                                 ini:"",
-                                action:function(v){
-                                    xui.UI._refreshSBTheme(this, v);
+                                action:function(v,ov,force,tag1, tag2){
+                                    xui.UI._refreshSBTheme(this, v, tag1, tag2);
                                 }
                             },
                             formMethod:{
@@ -3960,14 +3964,14 @@ Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        _refreshSBTheme:function(profile, cssSetting){
+        _refreshSBTheme:function(profile, cssSetting, tag, callback){
             var domId=profile.getDomId(),
                 id=domId+"sandboxtheme",
                 // escape special char
                 prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
                 applyCss=function(css){
-                    xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId), id, true);
+                    xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId,tag), id, true);
                     
                     if(profile.$inDesign){
                         profile.boxing().reLayout(true)
@@ -3979,10 +3983,11 @@ Class("xui.UI",  "xui.absObj", {
                 xui(id).remove(false);
             }
             if(cssSetting){
-                if(/^[a-zA-Z-]+$/.test(cssSetting+'')){
+                if(/^[a-zA-Z-]+$/.test(cssSetting+'') && (cssSetting+'')!=='default'){
                     var path=xui.getPath('xui.appearance.' + cssSetting,'');
                     xui.getFileAsync(path+'theme.css', 'text', function(rsp){
                         applyCss(rsp.replace(/\.setting-uikey\{[^}]+\}/,'').replace(/url\(([^)]+)\)/g, "url("+path+"$1)"));
+                        xui.tryF(callback,[profile, cssSetting]);
                     });
                 }else{
                     applyCss(cssSetting+'');
@@ -3992,8 +3997,17 @@ Class("xui.UI",  "xui.absObj", {
         _getThemePrevId:function(profile/*UIProfile or dom id*/){
             return profile?'#' + (profile['xui.UIProfile'] ? profile.getDomId() : profile).replace(/([.:])/g,"\\$1"):"";
         },
-        _adjustCSS:function(css, prevId){
+        _adjustCSS:function(css, prevId, tag){
             prevId=prevId||"";
+            if(tag){
+                css = xui.Coder.replace(css, [
+                    [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
+                    [/\{[^}]*\}/,'$0'],
+                    [/([^\/{},]+)/, function(a){
+                        return a[0].replace(/([^\s>]+)/,"$1"+tag)
+                    }]
+                ]);
+            }
             return css
                 .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'')
                 .replace(/^\s*(\.)/,function(a,b){
@@ -4146,7 +4160,7 @@ Class("xui.UI",  "xui.absObj", {
             if(!self.$cssNo){
                 self.$cssNo=1;
                 var b=xui.browser;
-                xui('body').addClass(
+                xui('body').addClass( 
                           (b.ie ? ("xui-css-ie xui-css-ie" + b.ver + " ") :
                            b.gek ? ("xui-css-gek xui-css-gek" + b.ver + " ") :
                            b.kde ? ("xui-css-kde xui-css-kde" + b.ver + " ") :
@@ -4154,7 +4168,7 @@ Class("xui.UI",  "xui.absObj", {
                         + (b.isSafari ? "xui-css-safari ": b.isChrome ? "xui-css-chrome " :"")
                         + (b.isMac ? "xui-css-mac": b.isLinux ? "xui-css-linux " :"")
                 );
-                xui('html').addClass(b.isStrict?"xui-css-base xui-css-strict xui-css-viewport":"xui-css-base xui-css-viewport");
+                xui('html').addClass("xui-css-base xui-css-viewport xui-uicontainer" + (b.isStrict?" xui-css-strict":""));
             }
             if(cache1){
                 xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon', true);
@@ -4901,7 +4915,6 @@ Class("xui.UI",  "xui.absObj", {
         $dock_map:{middle:1,center:1},
         $dock:function(profile, force, trigger){
             var node = profile.getRoot(),
-                css = xui.CSS,
                 isSVG = profile.box['xui.svg'],
                 ins = profile.boxing(),
                 i1=-1,i2=-1,i3=-1,i4=-1,
@@ -4981,9 +4994,8 @@ Class("xui.UI",  "xui.absObj", {
                 //for ie6 1px bug
                 _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
                 useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
-                needfz = useem||css.$isEm(margin.top)||css.$isEm(margin.left)||css.$isEm(margin.right)||css.$isEm(margin.bottom),
-                rootfz = needfz?node._getEmSize():null,
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                rootfz = node._getEmSize(),
                 umargin={
                     top:adjustunit(margin.top||0,rootfz),
                     left:adjustunit(margin.left||0,rootfz),
@@ -5078,6 +5090,7 @@ Class("xui.UI",  "xui.absObj", {
                         f=function(arg){
                             //get self vars
                             var me=arguments.callee,
+                                css=xui.CSS,
                                 map=xui.UI.$dock_map,
                                 arr=xui.UI.$dock_args,
                                 rePos=me.rePos,
@@ -5088,7 +5101,7 @@ Class("xui.UI",  "xui.absObj", {
                                 pprop = pprf && pprf.properties,
                                 proot = pprf && pprf.getRoot(),
                                 pstyle = proot && proot.get(0) && proot.get(0).style,
-                                prootfz = pstyle && (useem||css.$isEm(pstyle&&pstyle.width)||css.$isEm(pstyle&&pstyle.height)?proot._getEmSize():null),
+                                prootfz = pstyle && proot._getEmSize(),
                                 conDockSpacing=(pprop && ('conDockSpacing' in pprop))?pprop.conDockSpacing:{width:0,height:0},
                                 conDockPadding=(pprop && ('conDockPadding' in pprop))?pprop.conDockPadding:{left:0,top:0,right:0,bottom:0},
                                 conDockFlexFill=(pprop && ('conDockFlexFill' in pprop))?pprop.conDockFlexFill:'',
@@ -5103,7 +5116,7 @@ Class("xui.UI",  "xui.absObj", {
                              var pn=node.get(0),
                                 style=pn.style,
                                 useem = xui.$uem(prop),
-                                nodefz = useem||css.$isEm(style&&style.width)||css.$isEm(style&&style.height)?node._getEmSize():null,
+                                nodefz = node._getEmSize(),
                                 adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
                                 ofs = isWin ? xui('body').get(0).style : style,
@@ -5372,7 +5385,7 @@ Class("xui.UI",  "xui.absObj", {
                                 root = node.get(0),
                                 style = root.style,
                                 useem = xui.$uem(prop),
-                                nodefz = useem||css.$isEm(prop.width)||css.$isEm(prop.height)?node._getEmSize():null,
+                                nodefz = node._getEmSize(),
                                 adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
                                 x = css.$px(prop._dockBorderWidth,nodefz) || 0,
@@ -5908,9 +5921,9 @@ Class("xui.UI",  "xui.absObj", {
             for(var i in dm){
                 if(dm[i] && dm[i]['$spaceunit']){
                     if(p[i]!='auto'&&!xui.isFinite(p[i])){
-                        if(xui.CSS.$isPx(p[i])){
+                        if(profile.$isPx(p[i])){
                             if( parseFloat(p[i])==parseFloat(dm[i].ini) )delete p[i];
-                        }else if(xui.CSS.$isEm(p[i])){
+                        }else if(profile.$isEm(p[i])){
                             if(p[i]=='0em' && parseFloat(dm[i].ini)==0)delete p[i];
                         }
                     }
@@ -7099,9 +7112,6 @@ new function(){
                     region,
                     useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                    root = profile.getRoot(),
-                    borderfz = useem?border._getEmSize():null,
-
                     //caculate with px
                     ww=profile.$px(width), 
                     hh=profile.$px(height),
@@ -7126,10 +7136,10 @@ new function(){
                     }
                 }
                 region={
-                    left:adjustunit(left ,borderfz), 
-                    top:adjustunit(top, borderfz), 
-                    width:adjustunit(ww, borderfz),
-                    height:adjustunit(hh, borderfz)
+                    left:adjustunit(left), 
+                    top:adjustunit(top), 
+                    width:adjustunit(ww),
+                    height:adjustunit(hh)
                 };
                 border.cssRegion(region);
                 if(shadow)shadow.cssRegion(region);

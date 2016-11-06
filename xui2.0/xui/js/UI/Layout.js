@@ -818,7 +818,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 move, _handlerSize,
                 useem = xui.$uem(t),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                fzrate=profile.getEmSize()/profile.getRoot()._getEmSize();
 
             if(width)width=profile.$px(width);
             if(height)height=profile.$px(height);
@@ -966,8 +967,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     i=profile.getSubNode('ITEM', id);
                 
                 if(useem){
-                    var pfz=useem?p._getEmSize():null,
-                        ifz=useem?i._getEmSize():null;
+                    var pfz=useem?p._getEmSize(fzrate):null,
+                        ifz=useem?i._getEmSize(fzrate):null;
                     ff_w(obj[id],ifz); ff_w(obj2[id],ifz);
                     ff_h(obj[id],pfz); ff_h(obj2[id],pfz);
                 }

@@ -1072,8 +1072,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             profile.box._activeRow(profile, false);
 
             if(!(row=this.getRowbyRowId(rowId)))return;
-            if(!(dr=profile.getSubNodes(['CELLS1','CELLS2'],row._serialId)).isEmpty())
+            if(!(dr=profile.getSubNodes(['CELLS1','CELLS2'],row._serialId)).isEmpty()){
                 profile.box._activeRow(profile, dr.get(0).id);
+                dr.scrollIntoView();
+            }
             return this;
         },
         getRowMap:function(rowId){
@@ -1542,7 +1544,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getSubNodeInGrid:function(key, rowId, colId){
             var ns=this,
-                t=  (rowId && colId) ? ns.getCellbyRowCol(rowId, colId) :
+                t=  (xui.isSet(rowId) && xui.isSet(colId)) ? ns.getCellbyRowCol(rowId, colId) :
                     colId ? ns.getHeaderByColId(colId):
                     rowId ? ns.getRowbyRowId(rowId):null;
             return ns.getSubNode(key, (t&&t._serialId)||true);
@@ -4807,7 +4809,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _prepareData:function(profile){
             var data = arguments.callee.upper.call(this, profile),
                 NONE='display:none',
-                css=xui.CSS,
                 prop=profile.properties;
 
             // init row/cell cache
@@ -4837,12 +4838,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             data.grpCols=this._prepareGrpCols(profile, prop.grpCols, data.header);
             // for triggerring render
             data.grpCols1=data.grpCols2=data.grpCols;
-            data._row0DfW=data.rowHandlerWidth?('width:'+css.$forceu(data.rowHandlerWidth)):'';
+            data._row0DfW=data.rowHandlerWidth?('width:'+profile.$forceu(data.rowHandlerWidth)):'';
 
             // make sure its' size
-            if(css.$isEm(prop.headerHeight))data.headerHeight = css.$forceu(css.$px(prop.headerHeight,0,true),'em');
-            if(css.$isEm(prop.rowHeight))data.rowHeight = css.$forceu(css.$px(prop.rowHeight,0,true),'em');
-            if(css.$isEm(prop.rowHandlerWidth))data.headerHeight = css.$forceu(css.$px(prop.rowHandlerWidth,0,true),'em');
+            if(profile.$isEm(prop.headerHeight))data.headerHeight = profile.$forceu(profile.$px(prop.headerHeight,0,true),'em');
+            if(profile.$isEm(prop.rowHeight))data.rowHeight = profile.$forceu(profile.$px(prop.rowHeight,0,true),'em');
+            if(profile.$isEm(prop.rowHandlerWidth))data.headerHeight = profile.$forceu(profile.$px(prop.rowHandlerWidth,0,true),'em');
 
             arguments.callee.upper.call(this, profile);
 
@@ -4861,8 +4862,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // build header
             var SubID=xui.UI.$tag_subId,
                 prop=profile.properties,
-                css=xui.CSS,
-                headerHeight=css.$px(prop.headerHeight),
+                headerHeight=profile.$px(prop.headerHeight),
                 NONE='display:none',iid,
                 ii=1,tt,
                 oid, uicol;
@@ -4886,19 +4886,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             profile.colMap[col[SubID]]=col;
 
-            var _ww=css.$px(col.width)||css.$px(prop._colDfWidth);
+            var _ww=profile.$px(col.width)||profile.$px(prop._colDfWidth);
             if('relWidth' in col){
                 col.flexSize = col.relWidth
                 delete col.relWidth;
             }
             // width
             if(!col.flexSize){
-                if(col.hasOwnProperty('minWidth'))_ww=Math.max(_ww, css.$px(col.minWidth));
-                if(col.hasOwnProperty('maxWidth'))_ww=Math.min(_ww, css.$px(col.minWidth));
+                if(col.hasOwnProperty('minWidth'))_ww=Math.max(_ww, profile.$px(col.minWidth));
+                if(col.hasOwnProperty('maxWidth'))_ww=Math.min(_ww, profile.$px(col.minWidth));
             }
 
-            col.width = col._cellWidth = col._colWidth = css.$forceu(_ww);
-            col._hcellheight=css.$forceu(headerHeight-2);
+            col.width = col._cellWidth = col._colWidth = profile.$forceu(_ww);
+            col._hcellheight=profile.$forceu(headerHeight-2);
 
             uicol={
                 sortDisplay : NONE,
@@ -4969,9 +4969,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _prepareGrpCols:function(profile, arr, _header){
             var prop=profile.properties;
             if(prop.showHeader && arr && xui.isArr(arr)&& arr.length){
-                var css=xui.CSS,
-                    header=prop.header,
-                    headerHeight=xui.CSS.$px(prop.headerHeight),
+                var header=prop.header,
+                    headerHeight=profile.$px(prop.headerHeight),
                     SubID=xui.UI.$tag_subId,
                     NONE='display:none',
                     _ngrp=[],
@@ -4985,25 +4984,25 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _grp={};
                     w=0;
                     flag=false;
-                    _left=0;//prop.rowHandler?(xui.CSS.$px(prop.rowHandlerWidth)+2):0;
+                    _left=0;//prop.rowHandler?(profile.$px(prop.rowHandlerWidth)+2):0;
 
                     grp=arr[j];
                     xui.UI.adjustData(profile, grp, _grp);
                     for(var k=0,o;k<=grp['to'];k++){
-                        o=header[k];p=_header[k];_ww=css.$px(p._colWidth);
+                        o=header[k];p=_header[k];_ww=profile.$px(p._colWidth);
                         if(k===grp.from){
                             flag=true;
-                            _grp._hcellleft=css.$forceu(_left);
+                            _grp._hcellleft=profile.$forceu(_left);
                         }
                         _left+= _ww + 2;
                         if(flag && !o.hidden){
                             w += _ww + 2;
                         }
                     }
-                    _grp._colWidth = _grp._cellWidth = css.$forceu(w -2);
+                    _grp._colWidth = _grp._cellWidth = profile.$forceu(w -2);
 
-                    _grp._hcellheight = css.$forceu(h-2);
-                    _grp._hcelltop = css.$forceu(h*(grp._layer-1));
+                    _grp._hcellheight = profile.$forceu(h-2);
+                    _grp._hcelltop = profile.$forceu(h*(grp._layer-1));
 
                     _grp._tabindex=prop.tabindex;
                     _grp.colDDDisplay = (('colResizer' in grp)?grp.colResizer:prop.colResizer)?'':NONE;
@@ -5015,7 +5014,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 for(var k=0,n=header.length,o,p;k<n;k++){
                     o=header[k];p=_header[k];
                     if(o._grp && o._grp.length){
-                        p._hcellheight=css.$forceu(headerHeight - o._grp.length*h - 2);
+                        p._hcellheight=profile.$forceu(headerHeight - o._grp.length*h - 2);
                     }
                 }
                 return _ngrp;
@@ -5287,10 +5286,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _prepareItems:function(profile, arr, pid ,temparr){
             var self=this,
-                css=xui.CSS,
                 prop=profile.properties,
                 _treemode=prop.treeMode,
-                mm = css.$px(prop.$subMargin),
+                mm = profile.$px(prop.$subMargin),
                 a = profile.rowMap2,
                 b = profile.rowMap,
                 _layer=pid?b[pid]?(b[pid]._layer+1):0:0,
@@ -5344,11 +5342,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(row.hidden)
                     t.rowDisplay=NONE;
 
-                t._row0DfW=prop.rowHandlerWidth?('width:'+css.$forceu(prop.rowHandlerWidth)):'';
-                t._rulerW='width:'+css.$forceu(4+_layer*mm);
+                t._row0DfW=prop.rowHandlerWidth?('width:'+profile.$forceu(prop.rowHandlerWidth)):'';
+                t._rulerW='width:'+profile.$forceu(4+_layer*mm);
 
                 // use em for row Height
-                t._rowHeight = css.$forceu(row._rowHeight || row.height || prop.rowHeight, 'em');
+                t._rowHeight = profile.$forceu(row._rowHeight || row.height || prop.rowHeight, 'em');
                 row._rowHeight = t._rowHeight;
                 t._rowHeight="height:"+t._rowHeight;
 
@@ -6416,10 +6414,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 w2 = width - w1;
                 profile._leftregionw = w1;
 
-                //h1.width(adjustunit(w1,h1));
-                //s21.width(adjustunit(w1,s21));
-                h2.width(adjustunit(w2,h2));
-                s22.width(adjustunit(w2,s22));
+                //h1.width(adjustunit(w1));
+                //s21.width(adjustunit(w1));
+                h2.width(adjustunit(w2));
+                s22.width(adjustunit(w2));
 
                 // for scroll sync
                 xui.asyRun(function(){
@@ -6432,10 +6430,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },100);
 
                 // adjust height
-                s11.height(adjustunit(rr?rr:0,s11));
-                s12.height(adjustunit(rr?rr:0,s12));
-                s21.height(adjustunit(height - rh - rr,s21));
-                s22.height(adjustunit(height - rh - rr,s22));
+                s11.height(adjustunit(rr?rr:0));
+                s12.height(adjustunit(rr?rr:0));
+                s21.height(adjustunit(height - rh - rr));
+                s22.height(adjustunit(height - rh - rr));
 
 
                 // others
@@ -6462,8 +6460,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         ww=last?(last.offsetWidth+last.offsetLeft+100):0;
                         //set HI node
-                        header.parent().width(adjustunit(ww,header.parent()));
-                        body.width(adjustunit(bw=ww,body));
+                        header.parent().width(adjustunit(ww));
+                        body.width(adjustunit(bw=ww));
                     }else{
                         if(t=body.get(0).childNodes){
                             l=t.length;
@@ -6493,7 +6491,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
 
                 if(last){
-                    body.width(adjustunit(bw = last.offsetLeft,body));
+                    body.width(adjustunit(bw = last.offsetLeft));
                 }else{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
@@ -6502,7 +6500,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(o.hidden!==true)
                             w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + 2);
                     });
-                    body.width(adjustunit(bw = w,body));
+                    body.width(adjustunit(bw=w));
                 }
                 t=last=null;
 
@@ -7002,7 +7000,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 s12 = f('SCROLL12'),
                 s21 = f('SCROLL21'),
                 s22 = f('SCROLL22'),
-                borderfz = useem?border._getEmSize():null,
 
                 rh = h2.height(),
                 rr = b12.height();
@@ -7012,8 +7009,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             height=height?profile.$px(height, null, true):height;
 
             border.cssSize({
-                width:width?adjustunit(width,borderfz):null,
-                height:height?adjustunit(height,borderfz):null
+                width:width?adjustunit(width):null,
+                height:height?adjustunit(height):null
             });
 
             // adjust width
@@ -7033,18 +7030,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 w2 = width - w1;
                 profile._leftregionw = w1;
 
-                //h1.width(adjustunit(w1,h1));
-                h2.width(adjustunit(w2,h2));
-                //s21.width(adjustunit(w1,s21));
-                //s22.width(adjustunit(w2,s22));
+                //h1.width(adjustunit(w1));
+                h2.width(adjustunit(w2));
+                //s21.width(adjustunit(w1));
+                //s22.width(adjustunit(w2));
             }
 
             // adjust height
             if(height){
-                s11.height(adjustunit(rr?rr:0,s11));
-                s12.height(adjustunit(rr?rr:0,s12));
-                s21.height(adjustunit(height - rh - rr,s21));
-                s22.height(adjustunit(height - rh - rr,s22));
+                s11.height(adjustunit(rr?rr:0));
+                s12.height(adjustunit(rr?rr:0));
+                s21.height(adjustunit(height - rh - rr));
+                s22.height(adjustunit(height - rh - rr));
             }
 
             // for modify em value

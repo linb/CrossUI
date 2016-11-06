@@ -1,4 +1,4 @@
-Class("xui.UI.SVGPaper", "xui.UI.Pane",{
+Class("xui.UI.SVGPaper", "xui.UI.Div",{
     Initialize:function(){
         this.addTemplateKeys(['SVG']);
     },
@@ -50,6 +50,12 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
             },
             overflow:{
                 ini:undefined
+            },
+            shapeLayer:{
+                ini:0,
+                action:function(v){
+                    this.getSubNode('SVG').css('zIndex',v);
+                }
             }
         },
         Behaviors:{
@@ -66,8 +72,11 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
             profile._paper=Raphael(profile.$domId, w, h);
             profile._canvas=profile._paper.canvas;
             profile._canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
-//            profile._canvas.style.position='absolute';
-//            profile._canvas.style.zIndex=300;
+            var s=profile._canvas.style;
+            s.position='absolute';
+            s.left=0;
+            s.top=0;
+            s.zIndex=prop.shapeLayer;
 
             // contents
             var a=[];
@@ -94,7 +103,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Pane",{
                                  profile._frame=profile._paper.rect(0,0,1,1,0).attr({"stroke-width":"0px"});
             	  	    else if(profile.$inDesign)
                                 profile._frame=profile._paper.rect(0,0,w,h,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
-                            if(profile._frame)profile._frame._decoration=1;
+                        if(profile._frame)profile._frame._decoration=1;
                     }
                 });
             }

@@ -228,7 +228,7 @@ Class("xui.APICaller","xui.absObj",{
                 delete options.header;
             }
             // If there's mocker, we need try to adjust queryURL and other args
-            var mocker = xui.APICaller.Mocker;
+            var mocker = xui.APICaller.getMocker();
             if(mocker){
                 // remvoe header / and tail /
                 var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
@@ -471,8 +471,14 @@ Class("xui.APICaller","xui.absObj",{
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
             onError:function(profile, rspData, requestId){}
+        },
+        getMocker:function(){
+            return this._Mocker;
+        },
+        setMocker:function(obj){
+            this._Mocker=obj;
         }//,
-        //Mocker:{
+        //_Mocker:{
         //    remoteSericeURL:"",
         //    mockerURL:"",
         //    blacklist:{

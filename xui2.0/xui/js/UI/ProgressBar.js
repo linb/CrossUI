@@ -117,20 +117,22 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
-                css = xui.CSS,
                 useem = xui.$uem(p),
-                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate)},
+                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 inn = profile.getSubNode('INN'),
                 cap = profile.getSubNode('CAP'),
                 fill = profile.getSubNode('FILL'),
-                rootfz=useem||css.$isEm(width)||css.$isEm(height)?root._getEmSize():null,
-                innfz = useem?inn._getEmSize():null,
-                capfz = useem?cap._getEmSize():null,
-                fillfz = useem?fill._getEmSize():null;
+                
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                v1fz=v1._getEmSize(fzrate),
+                innfz=inn._getEmSize(fzrate),
+                capfz=cap._getEmSize(fzrate),
+                fillfz=fill._getEmSize(fzrate);
+                
             // caculate by px
-            if(size.width && size.width!='auto')size.width=css.$px(size.width, rootfz);
-            if(size.height && size.height!='auto')size.height=css.$px(size.height, rootfz);
+            if(size.width && size.width!='auto')size.width=profile.$px(size.width);
+            if(size.height && size.height!='auto')size.height=profile.$px(size.height);
 
             if(p.type=="horizontal"){
                 if(size.height){

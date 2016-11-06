@@ -1442,7 +1442,6 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             var prop=profile.properties,
                 useem=xui.$uem(prop),
-                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 size = arguments.callee.upper.apply(this,arguments),

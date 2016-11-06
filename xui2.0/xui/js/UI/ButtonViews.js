@@ -268,7 +268,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             var panel = profile.boxing().getPanel(key),
                 useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                panelfz = useem?panel._getEmSize():null,
                 // caculate by px
                 ww=width?profile.$px(width, null, true):width, 
                 hh=(height&&height!='auto')?profile.$px(height, null, true):height,
@@ -276,8 +275,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 menu2 =  profile.getSubNode('MENU2'),
-                hsfz =  useem?hs._getEmSize():null,
-                hlfz =  useem?hl._getEmSize():null,
+ 
+                fzrate=profile.getEmSize()/profile.getRoot()._getEmSize(),
+                panelfz=panel._getEmSize(fzrate),
+                hsfz=hs._getEmSize(fzrate),
+                hlfz=hl._getEmSize(fzrate),
+
                 type = prop.borderType,
                 bw = (type=='flat'||type=='inset'||type=='outset') ? hs._borderW() : 0,
                 wc=null,

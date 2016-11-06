@@ -268,16 +268,29 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             arguments.callee.upper.apply(self,arguments);
             return self;
         },
-        markItemCaption:function(subId, mark, force){
+        markItemCaption:function(subId, mark, force, tag, cls){
             var profile = this.get(0);
             subId=profile.getItemByItemId(subId+'');
 
             if((subId._dirty !=mark) || force){
                 var id = subId.id,
-                    caption = profile.getItemByItemId(id).caption;
-                profile.getSubNodeByItemId('CAPTION', id).html(
-                    profile.getItemByItemId(id).caption=mark?('*'+caption):caption.replace(/^\*/,'')
-                ).css({color:mark?'#ff0000':'','font-weight':mark?'bold':''});
+                    item = profile.getItemByItemId(id),
+                    caption = item.caption,
+                    node = profile.getSubNodeByItemId('CAPTION', id);
+                if(tag){
+                    if(xui.isFun(tag)){
+                        item.caption = tag(profile, item, mark);
+                        node.html(item.caption);
+                    }else
+                        node.html(item.caption = mark ? tag+caption : caption.replace(new RegExp("^"+tag),''));
+                }else 
+                    node.html(item.caption = mark ? '*'+caption : caption.replace(/^\*/,''));
+                if(cls){
+                    if(mark)node.addCalss(cls);
+                    else node.removeCalss(cls);
+                }else
+                    node.css({'font-weight':mark?'bold':'','font-style':mark?'italic':''});
+
                 subId._dirty=mark;
             }
             return this;
@@ -1057,8 +1070,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
-                panelfz = useem?panel._getEmSize():null,
-                listfz = useem?list._getEmSize():null,
+                
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                panelfz=panel._getEmSize(fzrate),
+                listfz=list._getEmSize(fzrate),
+                
                 wc=null,
                 hc=null,
                 listH;

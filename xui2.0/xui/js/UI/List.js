@@ -691,13 +691,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 useem = xui.$uem(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
                 root = profile.getRoot(),
-                needfz = useem||profile.$isEm(width)||profile.$isEm(height),
 
                 f=function(k){return profile.getSubNode(k)},
                 items = f('ITEMS'),
                 label = f('LABEL'),
-                itemsfz = useem?items._getEmSize():null,
-                labelfz = needfz?label._getEmSize():null,
+
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                itemsfz=items._getEmSize(fzrate),
+                labelfz=label._getEmSize(fzrate),
 
                 border=prop.borderType!='none'?items._borderW():0,
                 dock=prop.dock,

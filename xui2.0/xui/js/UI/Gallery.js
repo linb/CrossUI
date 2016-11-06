@@ -271,16 +271,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             onCmd:null
         },
         _prepareItem:function(profile, item){
-            var p = profile.properties,
-                css=xui.CSS, t;
+            var p = profile.properties, t;
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemWidth)item.itemWidth=css.$forceu(t);
-            if(t=item.itemHeight)item.itemHeight=css.$forceu(t);
-            if(t=item.itemMargin)item.itemMargin=css.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=css.$forceu(t);
+            if(t=item.itemWidth)item.itemWidth=profile.$forceu(t);
+            if(t=item.itemHeight)item.itemHeight=profile.$forceu(t);
+            if(t=item.itemMargin)item.itemMargin=profile.$forceu(t);
+            if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
             item._tabindex = p.tabindex;
 
             if(t=item.fontSize)item._fontSize='font-size:'+t+';'
@@ -297,7 +296,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(item.autoItemSize||p.autoItemSize){
                 item._itemSize='';
             }else{
-                item._itemSize='width:'+css.$forceu(item.itemWidth)+';height:'+css.$forceu(item.itemHeight);
+                item._itemSize='width:'+profile.$forceu(item.itemWidth)+';height:'+profile.$forceu(item.itemHeight);
             }
         },
         RenderTrigger:function(){

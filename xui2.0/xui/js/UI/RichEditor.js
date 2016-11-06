@@ -1017,9 +1017,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
 
                     useem = xui.$uem(prop),
                     adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
-                    needfz = useem||profile.$isEm(width)||profile.$isEm(height),
-                    boxfz=useem?box._getEmSize():null,
-                    labelfz=needfz||profile.$isEm(labelSize)?label._getEmSize():null,
+
+                    fzrate=profile.getEmSize()/root._getEmSize(),
+                    v1fz=v1._getEmSize(fzrate),
+                    labelfz=label._getEmSize(fzrate),
 
                     labelSize=profile.$px(prop.labelSize, labelfz)||0,
                     labelGap=profile.$px(prop.labelGap)||0,
@@ -1031,10 +1032,10 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 if(height && height!='auto')height=profile.$px(height);
 
                 box.cssRegion({
-                    left : adjustunit(ll = labelPos=='left'?labelSize:0,boxfz),
-                    top : adjustunit(tt = labelPos=='top'?labelSize:0,boxfz),
-                    width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0))),boxfz),
-                    height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))),boxfz)
+                    left : adjustunit(ll = labelPos=='left'?labelSize:0),
+                    top : adjustunit(tt = labelPos=='top'?labelSize:0),
+                    width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
+                    height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
                 });
                 if(labelSize){
                     label.cssRegion({

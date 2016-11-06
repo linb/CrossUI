@@ -724,9 +724,7 @@ Class("xui.svg", "xui.UI",{
                     dotAttr1 = {fill:"#fff",stroke:"#000",r:5},
                     dotAttr2 = {fill:"#fff",stroke:"#000",r:4},
                     dotAttr3 = {fill:"#fff",stroke:"#000",r:3},
-
                     dotAttr4 = {fill:"#fff",stroke:"#000",r:4},
-
                     dotAttr6 = {fill:"#bf5600",stroke:"#bf5600",r:5,"fill-opacity":0.5},
 
                     lineAttr = {stroke:"#0000FF","stroke-dasharray":". "},
@@ -1547,6 +1545,11 @@ Class("xui.svg", "xui.UI",{
                                 if(oy!=undefined)y=oy;
 
                                 prevtype2=type2;
+                            }
+                            // ensure dd point on the top
+                            for(var i=0, ii=paths.length, l, handler; i<ii; i++){
+                                handler=handlers[i];
+                                if(handler.dot)handler.dot.toFront();
                             }
                             return {
                                 el:el,

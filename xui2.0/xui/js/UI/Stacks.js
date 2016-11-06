@@ -129,9 +129,11 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
                 list=profile.getSubNode('LIST'),
-                boxfz = useem?box._getEmSize():null,
-                panelfz = useem?panel._getEmSize():null,
-                listfz = useem?list._getEmSize():null,
+
+                fzrate=profile.getEmSize()/root._getEmSize(),
+                panelfz=panel._getEmSize(fzrate),
+                listfz=list._getEmSize(fzrate),
+
                 type = prop.borderType,
                 // have to use borderLeftWidth( ff will result 0 with borderWidth)
                 bw = (type=='flat'||type=='inset'||type=='outset') ? box._borderW() : 0,
@@ -175,12 +177,12 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     hc=temp;
                 }
 
-                box.height(adjustunit(height,boxfz));
+                box.height(adjustunit(height));
             }
             if(width){
                 width-=bw;
                 wc=width;
-                box.width(adjustunit(width,boxfz));
+                box.width(adjustunit(width));
             }    
 
             panel.cssRegion({
