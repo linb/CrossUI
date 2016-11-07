@@ -747,7 +747,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 action: function(v){
                     this.getSubNode("BARCMDL").css('textAlign',v);
                 }
-            }
+            },
+            //hide props( with px)
+            $hborder:1,
+            $vborder:1
         },
         EventHandlers:{
             onRefresh:function(profile){},
