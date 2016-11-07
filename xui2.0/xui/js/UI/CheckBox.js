@@ -1,4 +1,3 @@
-
 Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         // compitable
@@ -23,7 +22,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     },
     Static:{
         Templates:{
-            className:'{_className}',
+            className:'{_className} {_alignCls}',
             style:'{_style}',
             FOCUS:{
                 tabindex: '{tabindex}',
@@ -47,6 +46,12 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         Appearances:{
             KEY:{
                 overflow:'visible'
+            },
+            'KEY-right':{
+                'text-align':'right'
+            },
+            'KEY-right MARK':{
+                float:'right'
             },
             MARK:{
                cursor:'pointer',
@@ -87,6 +92,13 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         DataModel:{
             value:false,
+            align:{
+                ini:'left',
+                listbox:['left','right'],
+                action:function(v){
+                    this.getSubNode("MARK")[v?'addClass':'removeClass'](this.getClass('KEY','-right'));
+                }
+            },
             image:{
                 format:'image',
                 action: function(v){
@@ -119,6 +131,11 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onChecked:function(profile, e, value){}
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            data._alignCls = data.align=='right'?profile.getClass('KEY','-right'):'';
+            return data;
         },
         _ensureValue:function(profile, value){
             return !!value;

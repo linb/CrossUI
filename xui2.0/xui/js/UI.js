@@ -2181,7 +2181,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
                 position:'relative',
-                'padding':'.75em 0 .25em 1em',
+                'padding':'.75em 0 .5em 1em',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{

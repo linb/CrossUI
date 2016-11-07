@@ -11,7 +11,7 @@ Class("xui.Tips", null,{
 
         //for: span(display:-moz-inline-box) cant wrap in firefox
         xui.CSS.addStyleSheet(
-            ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
+            ".xui-tips{position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
             ".xui-tips-i{overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
             ".xui-tips-c{padding:.125em .25em .25em .25em;}"+

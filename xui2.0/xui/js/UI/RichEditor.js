@@ -1019,7 +1019,6 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                     fzrate=profile.getEmSize()/root._getEmSize(),
-                    v1fz=v1._getEmSize(fzrate),
                     labelfz=label._getEmSize(fzrate),
 
                     labelSize=profile.$px(prop.labelSize, labelfz)||0,

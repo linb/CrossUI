@@ -580,10 +580,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
-                v1fz=v1._getEmSize(fzrate),
                 labelfz=label._getEmSize(fzrate),
                 rulerfz = ruler._getEmSize(fzrate),
-                indfz = ind._getEmSizefzrate(fzrate),
+                indfz = ind._getEmSize(fzrate),
 
                 label = profile.getSubNode('LABEL'),
                 labelSize=profile.$px(prop.labelSize, labelfz)||0,

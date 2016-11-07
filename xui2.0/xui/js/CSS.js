@@ -450,7 +450,7 @@ Class("xui.CSS", null,{
     },
     Initialize:function(){
         var b=xui.browser,
-            css =  ".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
+            css =  ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+

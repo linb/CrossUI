@@ -125,7 +125,6 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 fill = profile.getSubNode('FILL'),
                 
                 fzrate=profile.getEmSize()/root._getEmSize(),
-                v1fz=v1._getEmSize(fzrate),
                 innfz=inn._getEmSize(fzrate),
                 capfz=cap._getEmSize(fzrate),
                 fillfz=fill._getEmSize(fzrate);
