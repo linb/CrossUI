@@ -51,7 +51,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 'text-align':'right'
             },
             'KEY-right MARK':{
-                float:'right'
+                'float':'right'
             },
             MARK:{
                cursor:'pointer',

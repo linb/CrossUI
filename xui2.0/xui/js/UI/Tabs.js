@@ -8,6 +8,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     prop = profile.properties,
                     dm=profile.box.$DataModel,
                     mcap=profile.getSubNode('MENUCAPTION'),
+                    mcls=profile.getSubNode('MENUCLOSE'),
                     fold=function(itemId, arr){
                         var subId = profile.getSubIdByItemId(itemId),
                             item = profile.getItemByItemId(itemId);
@@ -31,6 +32,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         if(subId){
                             arr.push(subId);
                             mcap.html(item.caption);
+                            mcls.css('display',item.closeBtn?'':'none');
+                            profile._menuId = item.id;
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // show pane
                                 //box.getPanel(value).css('position','relative').show('auto','auto');
@@ -315,7 +318,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         className:'xuicon',
                         $fonticon:'xui-icon-menu'
                     },
-                    MENUCAPTION:{}
+                    MENUCAPTION:{},
+                    MENUCLOSE:{
+                        className:'xuifont',
+                        $fonticon:'xui-uicmd-close',
+                        $order:2
+                    }
                 },
                 MENU2:{
                     tagName:'div',
@@ -445,7 +453,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 top:0,
                 'white-space':'nowrap'
             },
-            'ITEMS-icon CAPTION, ITEMS-icon CMDS, ITEMS-icon2 CAPTION, ITEMS-icon2 CMDS':{
+            'ITEMS-icon CAPTION, ITEMS-icon OPT, ITEMS-icon POP, ITEMS-icon2 CAPTION, ITEMS-icon2 OPT, ITEMS-icon2 POP':{
                 display:'none'
             },
             'ITEMS-menu ITEM':{
@@ -516,8 +524,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DroppableKeys:['PANEL','KEY', 'ITEM'],
             PanelKeys:['PANEL'],
             DraggableKeys:['ITEM'],
-            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
-            ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',POP:'POP'},
+            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
+            ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
             onSize:xui.UI.$onSize,
             CAPTION:{
                 onMousedown:function(profile, e, src){
@@ -686,6 +694,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     t=null;
 
                     return false;
+                }
+            },
+            MENUCLOSE:{
+                onClick:function(profile, e, src){
+                    profile.getSubNodeByItemId("CLOSE",profile._menuId).onClick(true);
                 }
             },
             POP:{

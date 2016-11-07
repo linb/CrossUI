@@ -2317,20 +2317,6 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
                 'user-select':'text'
             },
-            '.xui-ui-ctrl, .xui-ui-reset':{
-                'font-family':'arial,helvetica,clean,sans-serif',
-                'font-style':'normal',
-                'font-weight':'normal',
-                'vertical-align':'middle',
-                 color:'#000',
-                 'font-size':['12px','0.75rem']
-            },
-            '.xui-ui-ctrl':{
-                cursor:'default'
-            },
-            ".xui-title-node":{
-                'font-size':'1.1667em'
-            },
             '.xui-uiw-shell':{
 //                background:'transparent',
                 display:xui.$inlineBlock,

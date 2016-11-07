@@ -364,6 +364,8 @@ Class("xui.CSS", null,{
                     ns._dftEmStr=fz;
                     if(ns.$isPx(fz)){
                         ns._dftEm=parseFloat(fz);
+                    }else if(ns.$isRem(fz)){
+                        ns._dftEm=parseFloat(fz)*ns._getDftRemSize();
                     }else{
                         var div;
                         xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
@@ -450,7 +452,7 @@ Class("xui.CSS", null,{
     },
     Initialize:function(){
         var b=xui.browser,
-            css =  ".xui-node{margin:0;padding:0;-webkit-text-size-adjust:none;}"+
+            css =  ".xui-node{margin:0;padding:0;line-height:1.22;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
@@ -516,9 +518,13 @@ Class("xui.CSS", null,{
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
             ".xui-node-tips{background-color:#FDF8D2;}"+
-            // must here for get correct size
+
+            // must here for get correct base font size
             ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
-            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}"
+            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}" +
+            ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; font-size:12px; font-size:0.75rem; }" + 
+            ".xui-ui-ctrl{cursor:default;}"+
+            ".xui-title-node{font-size:1.1667em;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

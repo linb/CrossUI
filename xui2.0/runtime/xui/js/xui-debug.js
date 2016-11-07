@@ -8553,6 +8553,8 @@ Class('xui.Event',null,{
                     ns._dftEmStr=fz;
                     if(ns.$isPx(fz)){
                         ns._dftEm=parseFloat(fz);
+                    }else if(ns.$isRem(fz)){
+                        ns._dftEm=parseFloat(fz)*ns._getDftRemSize();
                     }else{
                         var div;
                         xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
@@ -8639,7 +8641,7 @@ Class('xui.Event',null,{
     },
     Initialize:function(){
         var b=xui.browser,
-            css =  ".xui-node{margin:0;padding:0;line-height:1.22em;-webkit-text-size-adjust:none;}"+
+            css =  ".xui-node{margin:0;padding:0;line-height:1.22;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
@@ -8705,9 +8707,13 @@ Class('xui.Event',null,{
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
             ".xui-node-tips{background-color:#FDF8D2;}"+
-            // must here for get correct size
+
+            // must here for get correct base font size
             ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
-            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}"
+            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}" +
+            ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; font-size:12px; font-size:0.75rem; }" + 
+            ".xui-ui-ctrl{cursor:default;}"+
+            ".xui-title-node{font-size:1.1667em;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -16109,7 +16115,7 @@ Class("xui.Tips", null,{
 
         //for: span(display:-moz-inline-box) cant wrap in firefox
         xui.CSS.addStyleSheet(
-            ".xui-tips{font-size:0;line-height:0;position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
+            ".xui-tips{position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
             ".xui-tips-i{overflow:hidden;position:relative;}"+
             ".xui-tips-i span{display:inline;}"+
             ".xui-tips-c{padding:.125em .25em .25em .25em;}"+
@@ -16819,7 +16825,7 @@ Class("xui.Tips", null,{
             }
 
             if(!xui.Dom.byId(self._id2)){
-                var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-node xui-node-div xui-wrapper xui-dbg-frm xui-custom"><div class="xui-node xui-node-div xui-dbg-box xui-custom"><div id='+self._id4+' class="xui-node xui-node-div xui-uibar xui-dbg-header xui-custom">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds xui-custom"><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();">✖</a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-uibase xui-dbg-content xui-custom"></div><div class="xui-node xui-node-div xui-uibase xui-dbg-tail xui-custom"><table class="xui-node xui-node-table xui-custom"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input xui-custom" id='+self._id3+' /></td></tr></table></div></div></div>');
+                var ns=xui.create('<div id='+self._id1+' style="left:5px;top:'+(xui.win.scrollTop()+5)+'px;" class="xui-ui-reset xui-node xui-node-div xui-wrapper xui-dbg-frm xui-custom"><div class="xui-node xui-node-div xui-dbg-box xui-custom"><div id='+self._id4+' class="xui-node xui-node-div xui-uibar xui-dbg-header xui-custom">&nbsp;&nbsp;:&nbsp;)&nbsp;&nbsp;CrossUI Monitor window <span class="xui-node xui-node-span xui-dbg-cmds xui-custom"><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id2+'\').empty();">Clear</a><a class="xui-node xui-node-a xui-custom" href="javascript:;" onclick="xui(\''+self._id1+'\').remove();">✖</a></span></div><div id='+self._id2+' class="xui-node xui-node-div xui-uibase xui-dbg-content xui-custom"></div><div class="xui-node xui-node-div xui-uibase xui-dbg-tail xui-custom"><table class="xui-node xui-node-table xui-custom"><tr><td style="font-family:serif;">&nbsp;>>>&nbsp;</td><td style="width:100%"><input class="xui-node xui-node-input xui-custom" id='+self._id3+' /></td></tr></table></div></div></div>');
                 xui('body').append(ns);
                 self.$con=xui(self._id2);
                 xui(self._id4).draggable(true,null,null,null,xui(self._id4).parent(2));
@@ -19167,7 +19173,7 @@ Class("xui.UI",  "xui.absObj", {
             '.xui-uibar-top .xui-uibar-cmdl':{
                 overflow:'hidden',
                 position:'relative',
-                'padding':'.75em 0 .25em 1em',
+                'padding':'.75em 0 .5em 1em',
                 'white-space': 'nowrap'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
@@ -19302,20 +19308,6 @@ Class("xui.UI",  "xui.absObj", {
                 '-o-user-select':xui.browser.opr?'text':null,
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
                 'user-select':'text'
-            },
-            '.xui-ui-ctrl, .xui-ui-reset':{
-                'font-family':'arial,helvetica,clean,sans-serif',
-                'font-style':'normal',
-                'font-weight':'normal',
-                'vertical-align':'middle',
-                 color:'#000',
-                 'font-size':['12px','0.75rem']
-            },
-            '.xui-ui-ctrl':{
-                cursor:'default'
-            },
-            ".xui-title-node":{
-                'font-size':'1.1667em'
             },
             '.xui-uiw-shell':{
 //                background:'transparent',
@@ -25892,6 +25884,10 @@ Class("xui.UI.Resizer","xui.UI",{
                 visibility: 'visible',
                 cursor:'pointer'
             },
+            ROTATE:{
+                $order:1,
+                cursor:'crosshair'
+            },
              HANDLER:{
                 $order:0,
                 position:'absolute',
@@ -26162,8 +26158,9 @@ Class("xui.UI.Resizer","xui.UI",{
             maxWidth: 5000,
 
             // with px (base: 1em=12px)
-            handlerSize:4,
-            handlerOffset:0,
+            handlerSize:8,
+            // border 1
+            handlerOffset:1,
 
             disabled:{
                 ini:false,
@@ -26224,7 +26221,7 @@ Class("xui.UI.Resizer","xui.UI",{
                 MOVE: {tagName:'div', className:'xuifont',$fonticon:'xui-icon-dragmove', style:'top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
                 CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'top:0em;left:-1em;{_leftCofigBtn};'},
                 CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-dropdown', style:'top:0em;left:auto;right:-1em;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'top:-1.25em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
+                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'font-size: 1.5em;top:-1.25em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{_extend};margin-left:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 RT:{tagName:'div', style:'top:-{_extend};right:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 R:{tagName:'div', style:'right:-{_extend};margin-top:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
@@ -27340,7 +27337,6 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 fill = profile.getSubNode('FILL'),
                 
                 fzrate=profile.getEmSize()/root._getEmSize(),
-                v1fz=v1._getEmSize(fzrate),
                 innfz=inn._getEmSize(fzrate),
                 capfz=cap._getEmSize(fzrate),
                 fillfz=fill._getEmSize(fzrate);
@@ -27374,8 +27370,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             }
         }
     }
-});
-Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
+});Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         // compitable
         xui.UI.SCheckBox = xui.UI.CheckBox;
@@ -27399,7 +27394,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     },
     Static:{
         Templates:{
-            className:'{_className}',
+            className:'{_className} {_alignCls}',
             style:'{_style}',
             FOCUS:{
                 tabindex: '{tabindex}',
@@ -27423,6 +27418,12 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         Appearances:{
             KEY:{
                 overflow:'visible'
+            },
+            'KEY-right':{
+                'text-align':'right'
+            },
+            'KEY-right MARK':{
+                'float':'right'
             },
             MARK:{
                cursor:'pointer',
@@ -27463,6 +27464,13 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         DataModel:{
             value:false,
+            align:{
+                ini:'left',
+                listbox:['left','right'],
+                action:function(v){
+                    this.getSubNode("MARK")[v?'addClass':'removeClass'](this.getClass('KEY','-right'));
+                }
+            },
             image:{
                 format:'image',
                 action: function(v){
@@ -27495,6 +27503,11 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onChecked:function(profile, e, value){}
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            data._alignCls = data.align=='right'?profile.getClass('KEY','-right'):'';
+            return data;
         },
         _ensureValue:function(profile, value){
             return !!value;
@@ -28083,10 +28096,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
-                v1fz=v1._getEmSize(fzrate),
                 labelfz=label._getEmSize(fzrate),
                 rulerfz = ruler._getEmSize(fzrate),
-                indfz = ind._getEmSizefzrate(fzrate),
+                indfz = ind._getEmSize(fzrate),
 
                 label = profile.getSubNode('LABEL'),
                 labelSize=profile.$px(prop.labelSize, labelfz)||0,
@@ -30213,7 +30225,6 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
 
                     fzrate=profile.getEmSize()/root._getEmSize(),
-                    v1fz=v1._getEmSize(fzrate),
                     labelfz=label._getEmSize(fzrate),
 
                     labelSize=profile.$px(prop.labelSize, labelfz)||0,
