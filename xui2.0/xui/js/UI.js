@@ -2684,8 +2684,6 @@ Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%',
 
-                position:'absolute',
-                'z-index':10,
                 width:'1em',
                 height:'1em',
                 padding: '4px',

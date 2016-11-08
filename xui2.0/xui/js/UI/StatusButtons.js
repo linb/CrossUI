@@ -28,7 +28,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     },
                     FLAG:{
                         $order:13,
-                        className:'xui-uiflag-1 xui-display-none {flagClass}',
+                        className:'xui-display-none {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     }
@@ -70,7 +70,9 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             },
             FLAG:{
                 top:'-.5em',
-                right:'-.5em'
+                right:'-.5em',
+                position:'absolute',
+                'z-index':10
             }
         },
         DataModel:({
@@ -136,7 +138,9 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ profile.$forceu(t||'auto');
             if(t = item.itemAlign || p.itemAlign)item.itemAlign = "text-align:"+ t;
-            if(item.flagText)item._flagStyle='display:block';
+
+            if(item.flagText||item.flagClass)item._flagStyle='display:block';
+            if(!item.flagClass)item.flagClass='xui-uiflag-1';
 
             item._itemClass = type == "text" ? "xui-node-a" 
                 : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 

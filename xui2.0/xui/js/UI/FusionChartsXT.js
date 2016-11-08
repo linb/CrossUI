@@ -27,8 +27,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     var fc=new FusionCharts(
                             prop.chartType, 
                             prf._chartId, 
-                            prf.$isEm(prop.width)?prf.$em2px(prop.width ,prf.getRootNode(),true):prop.width, 
-                            prf.$isEm(prop.height)?prf.$em2px(prop.height, prf.getRootNode(),true):prop.height
+                            prf.$isEm(prop.width)?prf.$em2px(prop.width):prop.width, 
+                            prf.$isEm(prop.height)?prf.$em2px(prop.height):prop.height
                     ),
                      flag;
                     

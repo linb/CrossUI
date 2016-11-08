@@ -4,10 +4,6 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             this.each(function(profile){
                 if(profile.renderId){
                     var root=profile.getRoot();
-                    if(root.css('display')=='none'){
-                        profile._needadjust=1;
-                        return;
-                    }
                     var border = profile.getSubNode('BORDER'),
                         box = profile.getSubNode('BOX'),
                         bg = profile.getSubNode('BOXBGBAR'),
@@ -20,7 +16,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                        
                        items.cssSize({width:'auto',height:'auto'});
  
-                        hh = items.height() + 2/*border*/;
+                        hh = items.height() ;
                         if(xui.browser.ie67 && hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
                         nodes.each(function(n){
@@ -156,10 +152,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             this._setScroll();
 
-            if(profile._needadjust){
-                delete profile._needadjust;
-                profile.boxing().adjustSize();
-            };
+            profile.boxing().adjustSize();
 
             var f=function(){
                 var p=arguments.callee.profile;

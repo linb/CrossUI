@@ -94,7 +94,7 @@ Class('App.snip_animator', 'xui.Com',{
             .setTop(18)
             .setWidth(120)
             .setHeight(120)
-            .setSrc("http://localhost/crossui.com/rad/img/pic.png")
+            .setSrc("http://crossui.com/rad/img/pic.png")
             );
             
             append((new xui.UI.CheckBox())

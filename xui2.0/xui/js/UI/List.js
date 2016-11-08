@@ -655,7 +655,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
                     if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
 
-                    if(!c.caption)c.caption=c.id;
+                    if(!'caption' in c)c.caption=c.id;
                     if(!('tips' in c))c.tips=c.caption;
 
                     c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');

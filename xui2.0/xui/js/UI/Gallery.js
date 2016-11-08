@@ -57,7 +57,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-uiflag-1 xui-display-none {flagClass}',
+                        className:'xui-display-none {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     },
@@ -141,7 +141,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             },
             FLAG:{
                 top:'-.5em',
-                right:'-.5em'
+                right:'-.5em',
+                position:'absolute',
+                'z-index':10
             }
         },
         Behaviors:{
@@ -286,7 +288,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(!item.iconFontCode)item._imageClass='xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;
 
-            if(item.flagText)item._flagStyle='display:block';
+            if(item.flagText||item.flagClass)item._flagStyle='display:block';
+            if(!item.flagClass)item.flagClass='xui-uiflag-1';
 
             if(p.iconOnly)delete item.caption;
 
