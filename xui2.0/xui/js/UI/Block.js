@@ -63,15 +63,10 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 onClick:function(profile, e, src){
                     var p=profile.properties,
                         a=p.sideBarType,
-                        b=p.sideBarStatus;
+                        b=p.sideBarStatus,
+                        c;
                     if(p.disabled)return false;
-                    profile.boxing().setSideBarStatus(b=='fold'?'expand':'fold');
-                    
-                    var target= b=='expand'
-                        ? a=='left'?'left':a=='right'?'right':a=='top'?'up':'down'
-                        : a=='left'?'right':a=='right'?'left':a=='top'?'down':'up';
-
-                    xui.use(src).replaceClass(/(xui-icon-double)[\w]+/g,'$1' + target);
+                    profile.boxing().setSideBarStatus(c  = b=='fold'?'expand':'fold');                    
                 }
             },
             SIDEBAR:{
@@ -166,6 +161,8 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                     
                     node.removeClass(reg);
                     node.addClass('xui-uisb-'+v);
+                    
+                    ns.box._sbicon(ns,true);
 
                     if(prop.dock=='none')
                         xui.UI.$tryResize(ns, prop.width, prop.height,true);
@@ -186,6 +183,8 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                     var ns=this, 
                         prop=ns.properties;
                     ns.getRoot().tagClass('-fold', v!='expand');
+
+                    ns.box._sbicon(ns,true);
 
                     // use sync way
                     xui.UI.$doResize(ns, prop.width, prop.height,true);
@@ -238,6 +237,14 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                     xui.UI.Div._applyAutoLoad(this);
         },
+        _sbicon:function(profile, ui){
+            var p=profile.properties,
+                a=p.sideBarType,
+                target=p.sideBarStatus=='fold'
+                ? a=='left'?'left':a=='right'?'right':a=='top'?'up':'down'
+                : a=='left'?'right':a=='right'?'left':a=='top'?'down':'up';
+            return ui ? profile.getSubNode('SBBTN').replaceClass(/(xui-icon-double)[\w]+/g,'$1' + target) : 'xui-icon-double'+target;
+        },
         _setB:function(profile){
             var p=profile.properties,
                 type=p.borderType,
@@ -266,9 +273,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             data._sidebar = 'xui-uisb-' + a;
             data._sidebarStatus = b=='fold'?profile.getClass('KEY','-fold'):'';
 
-            data._fi_btn =  'xui-icon-double' + ( b=='fold'
-                ? a=='left'?'left':a=='right'?'right':a=='top'?'up':'down'
-                : a=='left'?'right':a=='right'?'left':a=='top'?'down':'up');
+            data._fi_btn =  profile.box._sbicon(profile);
 
             return data;
         },        

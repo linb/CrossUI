@@ -96,7 +96,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 ini:'left',
                 listbox:['left','right'],
                 action:function(v){
-                    this.getSubNode("MARK")[v?'addClass':'removeClass'](this.getClass('KEY','-right'));
+                    this.getSubNode("MARK")[v=='right'?'addClass':'removeClass'](this.getClass('KEY','-right'));
                 }
             },
             image:{

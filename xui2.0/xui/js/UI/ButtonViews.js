@@ -46,7 +46,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 width:'100%',
                 height:'100%',
                 'white-space': 'nowrap',
-                overflow:'hidden',
+                'overflow-x':'hidden',
                 'overflow-y':'scroll'
             },
             'ITEMS-left, ITEMS-left ITEMC':{
@@ -138,9 +138,9 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                             hs.height('auto');
                             break;
                     }
-                    self.boxing().setBarSize(self.properties.barSize,true);
                     // add 'at' to be distinguished from xui-uibar-bottom
                     hs.tagClass('(-attop|-atbottom|-atleft|-atright)',false).tagClass('-at'+v, true);
+                    this.adjustSize();
                 }
             },
             barHAlign:{
@@ -161,36 +161,20 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.cssRegion({top:unit,bottom:'auto'});
                     else
                         hl.cssRegion({bottom:unit,top:'auto'});
+                    this.adjustSize();
                 }
             },
             barSize:{
-                ini:80,
+                $spaceunit:1,
+                ini:'2em',
                 action:function(v){
-                    var self = this,
-                        t = self.properties,
-                        useem = xui.$uem(t),
-                        adjustunit = function(v,emRate){return self.$forceu(v, useem?'em':'px', emRate)},
-                        noPanel = t.noPanel,
-                        hs = self.getSubNode('LIST'),
-                        hl = self.getSubNode('ITEMS'),
-                        menu2 =  self.getSubNode('MENUICON2');
-
-                    if(t.sideBarStatus=='fold'){
-                        hl.tagClass('-icon2',true);
-                        menu2.tagClass('-checked',true);
-                    }else{
-                        hl.tagClass('-icon2',false);
-                        menu2.tagClass('-checked',false);
-                    }
-
-                    t=self.getRootNode().style;
-                    xui.UI.$tryResize(self,t.width, t.height,true);
+                    this.adjustSize();
                 }
             },
             noPanel:{
                 ini:false,
                 action:function(v){
-                    this.boxing().setBarSize(this.properties.barSize,true);
+                    this.adjustSize();
                 }
             },
             borderType:{
@@ -219,21 +203,35 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
 
                     //force to resize
-                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                    this.adjustSize();
                 }
             },
             sideBarStatus:{
                 ini:'expand',
                 listbox:['expand','fold'],
                 action:function(v){
-                   this.boxing().setBarSize(this.properties.barSize,true);
+                   var self = this,
+                        t = self.properties,
+                        useem = xui.$uem(t),
+                        adjustunit = function(v,emRate){return self.$forceu(v, useem?'em':'px', emRate)},
+                        hl = self.getSubNode('ITEMS'),
+                        menu2 =  self.getSubNode('MENUICON2');
+
+                    if(t.sideBarStatus=='fold'){
+                        hl.tagClass('-icon2',true);
+                        menu2.tagClass('-checked',true);
+                    }else{
+                        hl.tagClass('-icon2',false);
+                        menu2.tagClass('-checked',false);
+                    }
+
+                    this.adjustSize();
                 }
             },
             sideBarSize:{
                 ini:'3em',
                 action:function(v){
-                   // trigger layout
-                   this.boxing().setBarSize(this.properties.barSize,true);
+                    this.adjustSize();
                 }
             }
         },
@@ -287,12 +285,19 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hc=null,
                 top, left, itmsH;
 
+            // side bar
+            menu2.css('display','none');
+
             if(!prop.noHandler){
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
-                    itmsH = hs.offsetHeight(true);
+                    hl.css('overflow-y','hidden');
+                    itmsH = hs.height(prop.barSize||'auto').offsetHeight(true);
+                    hl.css('position','relative');
+
                     if(width){
                         hs.width(adjustunit(ww-bw, hsfz));
                         hl.width(adjustunit(ww-bw, hlfz));
+                        
                         // for nopanel:
                         if(noPanel && height!='auto')
                             hs.height(adjustunit(hh-bw, hsfz));
@@ -310,25 +315,42 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }else{
                         hc=hh;
                     }
-                    if(prop.barLocation=='bottom'){
+                    var t;
+                    if(prop.barLocation=='top'){
+                        // ensure it's the last
+                        if((t=root.firstElementChild||root.firstChild)!=hs.get(0)){
+                            if(t)root.insertBefore(hs.get(0), t);
+                            else root.appendChild(hs.get(0));
+                        }
+                    }else if(prop.barLocation=='bottom'){
                         // ensure it's the last
                         if((root.lastElementChild||root.lastChild)!=hs.get(0)){
                             root.appendChild(hs.get(0));
                         }
                     }
                 }else{
+                    //reset to default
+                    hl.css('overflow-y','scroll');
+                    // side bar
+                    menu2.css('display',prop.sideBarSize?'block':'none');
+
+                    if(!prop.noHandler)
+                        profile.getSubNode('CAPTION',true).css('width','');
+
                     // dont support auto height for 'top' or 'bottom' barLocation
                     if(hh=='auto'){
                         hh=300;
                     }
-                    // side bar
-                    menu2.css('display',prop.sideBarSize?'block':'none');
 
                     if(height){
                         // for nopanel:
                         hs.height(adjustunit(hh-bw, hsfz));
-                        hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
-    
+                        hl.height('auto');
+                        // for scroll by mouse wheel
+                        if(hl.height()>=hs.height()){
+                            hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
+                        }
+                        hl.css('position', prop.barVAlign=='bottom'?'absolute':'relative');
                         hc=hh;
                     }
                     if(height || width){
@@ -338,6 +360,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         //caculate by px
                         left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz):0;
                         wc = ww-profile.$px(v+vv, hsfz)-bw;
+
+                        hl.width('auto');
 
                         if(!noPanel){
                             hs.width( adjustunit(v + vv , hsfz) );

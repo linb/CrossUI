@@ -180,10 +180,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                             }
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
 
-                            // don't show img_blank
-                            node.style.visibility="visible";
-                            node.style.display="";
                             item._status='loaded';
+                            // don't show img_blank
+                            if(xui.ini.img_blank==path){
+                                node.style.visibility="hidden";
+                                node.style.display="none";
+                            }else{
+                                node.style.visibility="visible";
+                                node.style.display="";
+                            }
                     }
                 },
                 onError:function(profile,e,src){

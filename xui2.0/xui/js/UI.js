@@ -390,6 +390,11 @@ Class('xui.UIProfile','xui.Profile', {
             return this.$emNode ? this.$emNode._getEmSize() 
                 : ( (!force && this._nodeEmSize) ||  ( this.getRootNode() ? (this._nodeEmSize = this.getRoot()._getEmSize()) : xui.CSS._getDftEmSize() )) ;
         },
+        adjustSize:function(useProp){
+            var t=this.getRootNode();
+            if(t&&(useProp||(t=t.style)))
+                xui.UI.$tryResize(this, useProp ? this.properties.width : t.width , useProp ? this.properties.height : t.height, true);
+        },
         // have to call these after rendered
         $px:function(value, node, roundPx){
             var ns=this;
@@ -1128,6 +1133,11 @@ Class("xui.UI",  "xui.absObj", {
                     profile.$busy.remove();
                     delete profile.$busy;
                 }
+            });
+        },
+        adjustSize:function(useProp){
+            return this.each(function(prf){
+                prf.adjustSize(useProp);
             });
         },
         reLayout:function(force){
@@ -6641,10 +6651,7 @@ Class("xui.absList", "xui.absObj",{
                         ins.setValue(bv,true,'items');
                     }
                     if(o.renderId){
-                        //resize
-                        var t=o.getRootNode().style;
-                        xui.UI.$tryResize(o, t.width, t.height,true);
-                        t=null;
+                        o.adjustSize();
                     }
                 }
             },

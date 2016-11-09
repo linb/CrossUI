@@ -9621,6 +9621,54 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getSideBarType:{
+                $desc:"得到侧栏类型",
+                $rtn:"String"
+            },
+            setSideBarType:{
+                $desc:"设置侧栏类型",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, none, left, right, top ,bottom",
+                    $force
+                ]
+            },
+            getSideBarSize:{
+                $desc:"得到侧栏大小",
+                $rtn:"String"
+            },
+            setSideBarSize:{
+                $desc:"设置侧栏大小",
+                $rtn:"[Number/String]",
+                $paras:[
+                    "value [必需参数] : String, em 或 px 数字",
+                    $force
+                ]
+            },
+            getSideBarStatus:{
+                $desc:"得到侧栏状态",
+                $rtn:"String"
+            },
+            setSideBarStatus:{
+                $desc:"设置侧栏状态",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, fold 或 expand",
+                    $force
+                ]
+            },
+            getSideBarCaption:{
+                $desc:"得到侧栏标签",
+                $rtn:"String"
+            },
+            setSideBarCaption:{
+                $desc:"设置侧栏标签",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
             onClickPanel:{
                 $desc:"当鼠标单击容器时调用",
                 $paras:[
@@ -11514,6 +11562,20 @@ xui.set(xui.Locale,["cn","app"], {
         $desc:"xui.UI.Stacks 类",
         constructor:{
             $desc:"生成一个xui.UI.Stacks对象"
+        },
+        prototype:{
+            getBorderType:{
+                $desc:"获取块控件的边框种类",
+                $rtn:"String"
+            },
+            setBorderType:{
+                $desc:"设置块控件的边框种类",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'none','inset','outset','groove' 或 'ridge'",
+                    $force
+                ]
+            }
         }
     });
 
@@ -11621,6 +11683,30 @@ xui.set(xui.Locale,["cn","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
                     "xui.asyRun(function(){o.setBarSize(30); alert(o.getBarSize());},1000);"+
                     "}"
+                ]
+            },
+            getSideBarSize:{
+                $desc:"得到侧栏大小",
+                $rtn:"String"
+            },
+            setSideBarSize:{
+                $desc:"设置侧栏大小",
+                $rtn:"[Number/String]",
+                $paras:[
+                    "value [必需参数] : String, em 或 px 数字",
+                    $force
+                ]
+            },
+            getSideBarStatus:{
+                $desc:"得到侧栏状态",
+                $rtn:"String"
+            },
+            setSideBarStatus:{
+                $desc:"设置侧栏状态",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, fold 或 expand",
+                    $force
                 ]
             }
         }
@@ -14681,6 +14767,18 @@ xui.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());xui.asyRun(function(){dlg.setCaption('c cc c');},1000);"
+                ]
+            },
+            getHAlign :{
+                $desc:"获取标题水平对齐方式",
+                $rtn:"String"
+            },
+            setHAlign :{
+                $desc:"设置标题水平对齐方式",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'left', 'center' or 'right'",
+                    $force
                 ]
             },
             getInitPos:{
@@ -18648,9 +18746,13 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'iframeAutoLoad':'IFrame自动加载地址',
             'ajaxAutoLoad':'Ajax自动加载地址',
             'html':'内部HTML文本',
-            'overflow':'容器溢出属性',
+            'overflow':'容器溢出',
             'borderType':'边框类型',
-            'background':'容器背景'
+            'background':'容器背景',
+            sideBarType:'侧栏类型',
+            sideBarSize:'侧栏大小',
+            sideBarStatus:'侧栏状态',
+            sideBarCaption:'侧栏标题'
         },
         'xui_UI_Label' : {
             'caption':'标题文字',
@@ -18722,18 +18824,24 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'max':'最大值',
             'commandBtn':'命令按钮',
             'inputReadonly':'输入框只读',
-            'caption':'文本显示'
+            'caption':'文本显示',
+             'parentId':'弹出到容器',
+             unit:'单位',
+             unit:'单位选项',
+             trimTailZero:'清除右侧零'
         },
         'xui_UI_PopMenu' : {
             'hideAfterClick':'点击后隐藏',
-            'autoHide':'自动隐藏'
+            'autoHide':'自动隐藏',
+             'parentId':'弹出到容器',
+              noIcon:'无图标'
         },
         'xui_UI_Dialog' : {
             'initPos':'窗口起始位置',
             'iframeAutoLoad':'IFrame自动加载',
             'ajaxAutoLoad':'Ajax自动加载',
             'html':'内部HTML文本',
-            'overflow':'容器溢出属性',
+            'overflow':'容器溢出',
             'caption':'对话框标题',
             'image':'图像路径',
             'imagePos':'图像背景偏移',
@@ -18753,7 +18861,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'minHeight':'最小高度限制',
             'fromRegion':'对话框弹出源',
             'modal':'模式对话框',
-            'status':'对话框状态'
+            'status':'对话框状态',
+            'hAlign':'标题位置'
         },
         'xui_UI_Link' : {
             'caption':'超链接文本',
@@ -18761,6 +18870,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'target':'目标窗口'
         },
         'xui_UI_CheckBox' : {
+            'align':'对齐方式',
             'image':'图像路径',
             'imagePos':'图像背景偏移',
             'imageClass':'图像CSS类',
@@ -18774,22 +18884,20 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Span' : {
             'html':'内部HTML文本',
-            'overflow':'容器溢出属性'
+            'overflow':'容器溢出'
         },
         'xui_UI_Div' : {
             'iframeAutoLoad':'IFrame自动加载',
             'ajaxAutoLoad':'Ajax自动加载',
             'html':'内部HTML文本',
-            'overflow':'容器溢出属性'
+            'overflow':'容器溢出'
         },
         'xui_UI_Tag' : {
             'tagKey':' TAG关键字'
         },
-        'xui_UI_Pane' : {
-
-        },
         'xui_UI_SVGPaper' : {
-            'scaleChildren':'自动缩放子控件'
+            'scaleChildren':'自动缩放子控件',
+            'graphicZIndex':'图像层级'
         },
         'xui_UI_Group' : {
             'caption':'标题',
@@ -18949,7 +19057,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         'xui_UI_Tabs' : {
             'lazyAppend':'延迟加载',
             'noPanel':'无容器面板',
-            'overflow':'容器溢出属性',
+            'overflow':'容器溢出',
             'itemWidth':'固定按钮宽度',
             'itemAlign':'文字对齐方式',
             'HAlign':'按钮排列方式',
@@ -18959,17 +19067,19 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'noHandler':'无控制面版'
         },
         'xui_UI_Stacks' : {
-
+            borderType:' 边框类型'
         },
         'xui_UI_ButtonViews' : {
             'barLocation':'按钮条位置',
             'barHAlign':'按钮水平对齐',
             'barVAlign':'按钮垂直对齐',
-            'overflow':'容器溢出属性',
-            'barSize':'按钮条大小'
+            'overflow':'容器溢出',
+            'barSize':'按钮条大小',
+            sideBarSize:'侧栏大小',
+            sideBarStatus:'侧栏状态'
         },
         'xui_UI_FoldingTabs' : {
-
+            overflow:'容器溢出'
         },
         'xui_UI_TreeBar' : {
             'iniFold':'默认收缩子行',
@@ -18981,13 +19091,14 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'dynDestory':'动态销毁子行',
             'tagCmds':"命令按钮集",
             'optBtn':'显示选项按钮',
-            'togglePlaceholder':'切换按钮占位'
+            'togglePlaceholder':'切换按钮占位',
+             'tagCmdsAlign':'附带命令对齐'
         },
         'xui_UI_TreeView' : {
             noIcon:"隐藏图像"
         },
         'xui_UI_MenuBar' : {
-            'parentID':'父对象标识',
+            'parentID':'弹出到容器',
             'autoShowTime':'自动弹出时间',
             'handler':'是否有手柄'
         },
@@ -18997,7 +19108,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         },
         'xui_UI_Layout' : {
             'type':'布局类型',
-            'overflow':'容器溢出属性'
+            'overflow':'容器溢出'
         },
         'xui_UI_TreeGrid' : {
             activeRow:"活动行",
@@ -19014,6 +19125,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'rowNumbered':'显示行号',
             "editMode":"编辑模式",
             'editable':'可编辑',
+            'firstCellEditable':'首列可编辑',
             'iniFold':'默认收缩子行',
             'animCollapse':'收展动画',
             'gridHandlerCaption':'表格手柄标题',
@@ -19286,7 +19398,7 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             onClick:"鼠标点击"
         },
         'xui_UI_Block':{
-            onClick:"鼠标点击"
+            onClickPanel:"点击容器"
         },
         'xui_UI_SVGPaper' : {
         },
@@ -19486,7 +19598,9 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
         'xui_UI_Range' : {
         },
         'xui_svg' : {
-            onClick:"鼠标点击"
+            onClick:"鼠标点击",
+            onContextmenu:"上下文菜单触发",
+            onDblClick:"鼠标双击"
         },
         'xui_svg_absComb' : {
             onClick:"鼠标点击形状",

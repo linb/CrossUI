@@ -51,7 +51,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Div",{
             overflow:{
                 ini:undefined
             },
-            shapeLayer:{
+            graphicZIndex:{
                 ini:0,
                 action:function(v){
                     this.getSubNode('SVG').css('zIndex',v);
@@ -76,7 +76,7 @@ Class("xui.UI.SVGPaper", "xui.UI.Div",{
             s.position='absolute';
             s.left=0;
             s.top=0;
-            s.zIndex=prop.shapeLayer;
+            s.zIndex=prop.graphicZIndex;
 
             // contents
             var a=[];

@@ -9589,7 +9589,6 @@ xui.set(xui.Locale,["en","app"], {
     });
 
     xui.set(xui.Locale,["en","doc","xui","UI","Block"], {
-
         $desc:"xui.UI.Block Class",
         constructor:{
             $desc:"Creates a xui.UI.Block Object"
@@ -9690,6 +9689,54 @@ xui.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=(new xui.UI.Block).setBorderType('groove'));"+
                     "xui.asyRun(function(){alert(o.getBorderType())},1000);"+
                     "}"
+                ]
+            },
+            getSideBarType:{
+                $desc:"Gets side bar type",
+                $rtn:"String"
+            },
+            setSideBarType:{
+                $desc:"Sets side bar type",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, none, left, right, top ,bottom",
+                    $force
+                ]
+            },
+            getSideBarSize:{
+                $desc:"Gets side bar size",
+                $rtn:"String"
+            },
+            setSideBarSize:{
+                $desc:"Sets side bar size",
+                $rtn:"[Number/String]",
+                $paras:[
+                    "value [Required] : String, em or px ",
+                    $force
+                ]
+            },
+            getSideBarStatus:{
+                $desc:"gets side bar status",
+                $rtn:"String"
+            },
+            setSideBarStatus:{
+                $desc:"Sets side bar status",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, fold or expand",
+                    $force
+                ]
+            },
+            getSideBarCaption:{
+                $desc:"Gets side bar caption",
+                $rtn:"String"
+            },
+            setSideBarCaption:{
+                $desc:"Sets side bar caption",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
                 ]
             },
             onClickPanel:{
@@ -11604,6 +11651,20 @@ xui.set(xui.Locale,["en","app"], {
         $desc:"xui.UI.Stacks Class",
         constructor:{
             $desc:"Creates a xui.UI.Stacks Object"
+        },
+        prototype:{
+            getBorderType:{
+                $desc:"Gets border type from the current UI Object",
+                $rtn:"String"
+            },
+            setBorderType:{
+                $desc:"Sets border type to the current UI Object",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'none','inset','outset','groove'or 'ridge'",
+                    $force
+                ]
+            }
         }
     });
 
@@ -11711,6 +11772,30 @@ xui.set(xui.Locale,["en","app"], {
                     "var o;xui(id).prepend(o=new xui.UI.ButtonViews({items:[{id:'a',caption:'a a'},{id:'b',caption:'b b'},{id:'c',caption:'c c'}]}));"+
                     "xui.asyRun(function(){o.setBarSize(30); alert(o.getBarSize());},1000);"+
                     "}"
+                ]
+            },
+            getSideBarSize:{
+                $desc:"Gets side bar size",
+                $rtn:"String"
+            },
+            setSideBarSize:{
+                $desc:"Sets side bar size",
+                $rtn:"[Number/String]",
+                $paras:[
+                    "value [Required] : String, em or px ",
+                    $force
+                ]
+            },
+            getSideBarStatus:{
+                $desc:"gets side bar status",
+                $rtn:"String"
+            },
+            setSideBarStatus:{
+                $desc:"Sets side bar status",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, fold or expand",
+                    $force
                 ]
             }
         }
@@ -14769,6 +14854,18 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getCaption());xui.asyRun(function(){dlg.setCaption('c cc c');},1000);"
+                ]
+            },
+            getHAlign :{
+                $desc:"Gets caption alignment",
+                $rtn:"String"
+            },
+            setHAlign :{
+                $desc:"Sets caption alignment",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'left', 'center' or 'right'",
+                    $force
                 ]
             },
             getCloseBtn:{
