@@ -893,7 +893,7 @@ xui.merge(xui,{
     $rand:"_r_",
 
     SpaceUnit:'em',
-    $uem:function(p){return ((p?p.spaceUnit:'')||xui.SpaceUnit) == 'em'},
+    $us:function(p){return ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'em' ? 2 :  p=='px'? -2 : xui.SpaceUnit == 'em' ? 1 : -1},
     // for show xui.echo
     debugMode:true,
 
@@ -2062,7 +2062,7 @@ new function(){
                             // try to get module
                             var cls=xui.get(window,target.split(".")),ins;
                             // get first one
-                            if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
+                            if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
 
                             // handle hide / destroy
                             if(method=="show"||method=="pop"){
@@ -4205,16 +4205,9 @@ Class('xui.absObj',"xui.absBox",{
                             // *** force to em/px
                             if(!force){
                                 if(dm[i] && dm[i]['$spaceunit']){
-                                    if(xui.CSS.$isEm(v.properties[i])){
-                                        if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value))){
-                                            if(v.$px2em)
-                                                value=v.$px2em(value)+'em';
-                                        }
-                                    }else{
-                                        if(value!='auto'&& xui.CSS.$isEm(value)){
-                                            if(v.$em2px)
-                                                value=v.$em2px(value)+'px';
-                                        }
+                                    if(v.$forceu && value != 'auto'){
+                                        t=xui.$us(v);
+                                        value=v.$forceu(value,t==2?'em':t==-2?'px':null);
                                     }
                                 }
                             }
@@ -8503,6 +8496,14 @@ Class('xui.Event',null,{
         },
         resetCSS:function(){
             var b=xui.browser,
+            inlineblock= (b.gek
+                    ? b.ver<3 
+                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                        :"display:inline-block;"
+                    : b.ie6
+                        ?"display:inline-box;display:inline;"
+                    :"display:inline-block;")+
+                (b.ie?"zoom:1;":""),
             css="html{color:#444;background:#FFF;}"+
                 "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}"+
                 "table{border-collapse:collapse;border-spacing:0;}"+
@@ -8522,14 +8523,7 @@ Class('xui.Event',null,{
                 (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
-                 (b.gek
-                    ? b.ver<3 
-                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
-                        :"display:inline-block;"
-                    : b.ie6
-                        ?"display:inline-box;display:inline;"
-                    :"display:inline-block;")+
-                (b.ie?"zoom:1;":"")+
+                inlineblock+
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
         },
@@ -8630,7 +8624,7 @@ Class('xui.Event',null,{
             }
         },
         $forceu:function(v,u,node,roundPx){
-            return (!v||v=='auto') ? v:
+            return (v===''||v=='auto') ? v:
                 ( u ? u=='rem' : xui.SpaceUnit=='rem') ? this.$rem(v,node,roundPx!==false)+'rem':
                 ( u ? u=='em' : xui.SpaceUnit=='em') ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'
@@ -8641,6 +8635,14 @@ Class('xui.Event',null,{
     },
     Initialize:function(){
         var b=xui.browser,
+            inlineblock= (b.gek
+                    ? b.ver<3 
+                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                        :"display:inline-block;"
+                    : b.ie6
+                        ?"display:inline-box;display:inline;"
+                    :"display:inline-block;")+
+                (b.ie?"zoom:1;":""),
             css =  ".xui-node{margin:0;padding:0;line-height:1.22;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
@@ -8672,14 +8674,7 @@ Class('xui.Event',null,{
             ".xui-node-span, .xui-node-div{border:0;}"+
             ((b.ie && b.ver<=8)?"":".xui-node-span:not(.xui-showfocus):focus, .xui-node-div:not(.xui-showfocus):focus{outline:0;}.xui-showfocus:focus{outline-width: 1px;outline-style: dashed;}")+
             ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
-            (b.gek
-                ? b.ver<3 
-                    ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
-                    :"display:inline-block;"
-                : b.ie6
-                    ?"display:inline-box;display:inline;"
-                :"display:inline-block;")+
-            (b.ie?"zoom:1;":"")+
+            inlineblock+
             "}"+
             ".xui-node-h1,.xui-node-h2,.xui-node-h3,.xui-node-h4,.xui-node-h5,.xui-node-h6{font-size:100%;font-weight:normal;}"+
             ".xui-node-h1{font-size:138.5%;}"+
@@ -8710,10 +8705,13 @@ Class('xui.Event',null,{
 
             // must here for get correct base font size
             ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
-            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}" +
+            ".xuicon{margin: 0 .25em;"+
+            inlineblock +
+            "}" +
+            ".xuicon:before{height:1em;width:1em;}" + 
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; font-size:12px; font-size:0.75rem; }" + 
             ".xui-ui-ctrl{cursor:default;}"+
-            ".xui-title-node{font-size:1.1667em;}"
+            ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -13502,7 +13500,7 @@ Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var o,r,l,
+            var o,r,l,j,
                 self = this,
                 tp = self._pevents && self._pevents[name],
                 ti = self._events && self._events[name],
@@ -14324,8 +14322,6 @@ Class('xui.Module','xui.absProfile',{
             }
             // compitable
             if(typeof theme=='function')thowUI=theme;
-
-            var fun=function(){
                 var ifun=function(path){
                     var a=this,
                         t, bg, 
@@ -14354,6 +14350,17 @@ Class('xui.Module','xui.absProfile',{
                     //if successes
                     if(path){
                         try{
+                            // for CDN font icons
+                            if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                                xui.each(t,function(o,i){
+                                    if(o.href){
+                                        var attr={crossorigin:'anonymous'};
+                                        xui.merge(attr, o, function(v,j){return j!=='href'});
+                                        xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
+                                    }
+                                });
+                            }
+                            // for theme or background of root
                             if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
                                 if(t.theme)theme=t.theme;
                                 if(t.lang)lang=t.lang;
@@ -14395,25 +14402,26 @@ Class('xui.Module','xui.absProfile',{
                         xui.tryF(onEnd,[e,null]);
                         throw e;
                     }
-                };
-                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
-                else cls=cls+"";
-                if(/\//.test(cls) && !/\.js$/i.test(cls))
-                    cls=cls+".js";
-                if(/\.js$/i.test(cls)){
-                    xui.fetchClass(cls,ifun,
-                        function(e){
-                            xui.tryF(onEnd,[e,null]);
+                },
+                fun=function(){
+                    if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+                    else cls=cls+"";
+                    if(/\//.test(cls) && !/\.js$/i.test(cls))
+                        cls=cls+".js";
+                    if(/\.js$/i.test(cls)){
+                        xui.fetchClass(cls,ifun,
+                            function(e){
+                                xui.tryF(onEnd,[e,null]);
+                            });
+                    }else
+                        //get app class
+                        xui.SC(cls,ifun,true,null,{
+                            retry:0,
+                            onFail:function(e){
+                                xui.tryF(onEnd,[e,null]);
+                            }
                         });
-                }else
-                    //get app class
-                    xui.SC(cls,ifun,true,null,{
-                        retry:0,
-                        onFail:function(e){
-                            xui.tryF(onEnd,[e,null]);
-                        }
-                    });
-            };
+                };
             if(xui.isDomReady)
                 fun();
             else
@@ -17382,6 +17390,17 @@ Class('xui.UIProfile','xui.Profile', {
             return this.$emNode ? this.$emNode._getEmSize() 
                 : ( (!force && this._nodeEmSize) ||  ( this.getRootNode() ? (this._nodeEmSize = this.getRoot()._getEmSize()) : xui.CSS._getDftEmSize() )) ;
         },
+        adjustSize:function(useProp, asy){
+            var prf=this,
+                t=prf.getRootNode();
+            if(t&&(useProp||(t=t.style))){
+                var f=function(){
+                    xui.UI.$tryResize(prf, useProp ? prf.properties.width : t.width , useProp ? prf.properties.height : t.height, true);
+                };
+                if(asy)xui.asyRun(f);
+                f();
+            }
+        },
         // have to call these after rendered
         $px:function(value, node, roundPx){
             var ns=this;
@@ -17982,7 +18001,7 @@ Class("xui.UI",  "xui.absObj", {
                     else o.__gc();    
                     xui.arr.removeFrom( ns._nodes, i);
                 };
-                if(a)xui.Dom._vAnimate(o.getRoot(),false,a,fun);else fun();
+                if(a)xui.Dom._vAnimate(o.getRoot(),false,fun);else fun();
             },null,true);
         },
         isDestroyed:function(){
@@ -18120,6 +18139,11 @@ Class("xui.UI",  "xui.absObj", {
                     profile.$busy.remove();
                     delete profile.$busy;
                 }
+            });
+        },
+        adjustSize:function(useProp){
+            return this.each(function(prf){
+                prf.adjustSize(useProp);
             });
         },
         reLayout:function(force){
@@ -18273,7 +18297,7 @@ Class("xui.UI",  "xui.absObj", {
             return arguments.callee.upper.apply(this,["domId"]);
         },
         refresh:function(remedy){
-            var paras,node,b,p,s,$xid,serialId,fun,box,children,uiv,ns=this;
+            var paras,node,b,p,s,$xid,serialId,mcls,mxid,ar,fun,box,children,uiv,ns=this;
             return ns.each(function(o,i){
                 if(!o.renderId)return;
 
@@ -18286,11 +18310,11 @@ Class("xui.UI",  "xui.absObj", {
                 }
                 //save related id
                 $xid=o.$xid;
-                serialId=o.serialId,
-                mcls = o.moduleClass,
-                mxid = o.moduleXid;
 
-                var ar=o.$afterRefresh;
+                serialId=o.serialId;
+                mcls = o.moduleClass;
+                mxid = o.moduleXid;
+                ar=o.$afterRefresh;
 
                 if(typeof o.boxing().getUIValue=='function'){
                     uiv=o.boxing().getUIValue();
@@ -19067,7 +19091,7 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-uitembg":{
                 padding:'.25em .5em',
                 'background-color':'transparent',
-                'border':'solid 1px transparent'
+                border:'solid 1px transparent'
             },
             ".xui-uitembg-hover":{
                 $order:1,
@@ -19376,7 +19400,7 @@ Class("xui.UI",  "xui.absObj", {
             },
             ".xui-uigradient":{
                 $order:4,
-                'border': 'solid 1px #B6B6B6', 
+                border: 'solid 1px #B6B6B6', 
                 color: "#333",
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'text-decoration': 'none',
@@ -19393,7 +19417,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 // for IE6789
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
+                filter: (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
             },
             ".xui-uigradient-hover, .xui-uigradient:hover":{
                 $order:5,
@@ -19406,7 +19430,7 @@ Class("xui.UI",  "xui.absObj", {
 
                 // for IE6789
                 '-ms-filter': (xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
+                filter: (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CDCDCD', GradientType=0)":null
             },
             ".xui-uigradient-active, .xui-uigradient-checked, .xui-uigradient-expand, .xui-uigradient:active, .xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover":{
                 $order:6,
@@ -19418,11 +19442,12 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image_6': "-ms-linear-gradient(top,  #CDCDCD 5%,  #FFF 100%)",
                 // for IE6789
                 '-ms-filter':(xui.browser.ie&&xui.browser.ver==8)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null,
-                "filter": (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null
+                filter: (xui.browser.ie&&xui.browser.ver<=9)?"progid:DXImageTransform.Microsoft.gradient(startColorstr='#CDCDCD', endColorstr='#FFFFFF', GradientType=0)":null
             },
             ".xui-ui-btn":{
                 $order:7,
                 padding: "4px",
+                'white-space': 'normal',
                 cursor: 'pointer',
                 'border': 'solid 1px #B6B6B6', 
                 display: xui.$inlineBlock,
@@ -19452,7 +19477,7 @@ Class("xui.UI",  "xui.absObj", {
                 'border-top-width':'1px',
                 'border-top-color':'#F6F6F6'
             },
-            '.xui-uiborder-b':{
+            '.xui-uiborder-b, .xui-uitem-split':{
                 'border-bottom-style':'solid',
                 'border-bottom-width':'1px',
                 'border-bottom-color':'#B6B6B6'
@@ -19749,13 +19774,21 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uisb-left .xui-uisbcap, .xui-uisb-right .xui-uisbcap':{
                 'writing-mode': 'tb-rl',
-                'filter': 'flipv fliph'
+                filter: 'flipv fliph'
             }
         });
 
         xui.UI.$cache_css2 += xui.UI.buildCSSText({
+            '.xui-uitem-split':{
+                display: 'block',
+                position: 'relative',
+                overflow: 'visible',
+                'white-space': 'nowrap',
+                margin: '2px 0',
+                padding: 0
+            },
             '.xui-css-noscroll, .xui-css-noscroll body':{
-                'overflow':'hidden',
+                overflow:'hidden',
                 'overflow-x':'hidden',
                 'overflow-y':'hidden'
             },
@@ -21387,7 +21420,8 @@ Class("xui.UI",  "xui.absObj", {
         },
         /*copy item to hash, use 'without'
         exception: key start with $
-        value(start with $) get a change to get value from lang setting
+        value(start with $) get a change to get value from 
+ setting
         */
         adjustData:function(profile, hashIn, hashOut, type){
             if(!hashOut)hashOut={};
@@ -21448,6 +21482,11 @@ Class("xui.UI",  "xui.absObj", {
                         hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
                     else if(hashOut.image)
                         hashOut.backgroundPosition='background-position:center;';
+                    
+                    if(hashOut.imageBgSize)
+                        hashOut.backgroundSize='background-size:'+hashOut.imageBgSize+';';
+                    else if(hashOut.image)
+                        hashOut.backgroundSize='background-size:initial;';
 
                     if(hashOut.imageRepeat)
                         hashOut.backgroundRepeat='background-repeat:'+hashOut.imageRepeat+';';
@@ -21561,7 +21600,6 @@ Class("xui.UI",  "xui.absObj", {
                 }
             },
             spaceUnit:{
-                hidden:true,
                 listbox:['','px','em'],
                 action:function(){
                         this.boxing().reLayout(true).getChildren(true, "recurse").reLayout(true);
@@ -21969,8 +22007,8 @@ Class("xui.UI",  "xui.absObj", {
                 f,t,isWin,
                 //for ie6 1px bug
                 _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 rootfz = node._getEmSize(),
                 umargin={
                     top:adjustunit(margin.top||0,rootfz),
@@ -22091,9 +22129,9 @@ Class("xui.UI",  "xui.absObj", {
 
                              var pn=node.get(0),
                                 style=pn.style,
-                                useem = xui.$uem(prop),
+                                us = xui.$us(prop),
                                 nodefz = node._getEmSize(),
-                                adjustunit = function(v,emRate){return css.$forceu(v, useem?'em':'px', emRate||nodefz)},
+                                adjustunit = function(v,emRate){return css.$forceu(v, us>0?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
                                 ofs = isWin ? xui('body').get(0).style : style,
                                 old_of=ofs.overflow,
@@ -22360,9 +22398,9 @@ Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 root = node.get(0),
                                 style = root.style,
-                                useem = xui.$uem(prop),
+                                us = xui.$us(prop),
                                 nodefz = node._getEmSize(),
-                                adjustunit = function(v){return css.$forceu(v, useem?'em':'px', nodefz)},
+                                adjustunit = function(v){return css.$forceu(v, us>0?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
                                 x = css.$px(prop._dockBorderWidth,nodefz) || 0,
                                 y = css.$px(prop._dockBorderHeight,nodefz) || 0,
@@ -22895,13 +22933,14 @@ Class("xui.UI",  "xui.absObj", {
 
             // *** force to rem/px
             for(var i in dm){
-                if(dm[i] && dm[i]['$spaceunit']){
-                    if(p[i]!='auto'&&!xui.isFinite(p[i])){
-                        if(profile.$isPx(p[i])){
-                            if( parseFloat(p[i])==parseFloat(dm[i].ini) )delete p[i];
-                        }else if(profile.$isEm(p[i])){
-                            if(p[i]=='0em' && parseFloat(dm[i].ini)==0)delete p[i];
-                        }
+                if(dm[i].ini===p[i]) delete p[i];
+                else if(dm[i] && dm[i]['$spaceunit']){
+                    if( (dm[i].ini===0||dm[i].ini==='0'||dm[i].ini==='0px'||dm[i].ini==='0em') 
+                        && (p[i]===0||p[i]==='0'||p[i]==='0px'||p[i]==='0em') ) delete p[i];
+                    else if( (dm[i].ini + (xui.isFinite(dm[i].ini)?'px':'')) == (p[i] + (xui.isFinite(p[i])?'px':'')) ) delete p[i];
+                    else if(p[i] != 'auto'){
+                        t=xui.$us(p);
+                        p[i]=profile.$forceu(p[i],t==2?'em':t==-2?'px':null);
                     }
                 }
             }
@@ -22991,11 +23030,10 @@ Class("xui.UI",  "xui.absObj", {
             
             // *** force to em
              xui.each(prop,function(o,i){
-                if(xui.$uem(prop)){
-                    if(dm[i] && dm[i]['$spaceunit'])
+                if(dm[i] && dm[i]['$spaceunit']){
+                    if(xui.$us(prop)>0)
                         if(prop[i]===0||prop[i]=='0')prop[i]='0em';
-                }else{
-                    if(dm[i] && dm[i]['$spaceunit'])
+                    else
                         if(prop[i]===0||prop[i]=='0')prop[i]='0px';
                 }
              });
@@ -23633,10 +23671,7 @@ Class("xui.absList", "xui.absObj",{
                         ins.setValue(bv,true,'items');
                     }
                     if(o.renderId){
-                        //resize
-                        var t=o.getRootNode().style;
-                        xui.UI.$tryResize(o, t.width, t.height,true);
-                        t=null;
+                        o.adjustSize();
                     }
                 }
             },
@@ -24086,8 +24121,8 @@ new function(){
                     border = profile.getSubNode('BORDER'),
                     shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                     region,
-                    useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    us = xui.$us(prop),
+                    adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                     //caculate with px
                     ww=profile.$px(width), 
                     hh=profile.$px(height),
@@ -24367,7 +24402,7 @@ new function(){
                 ICON:{
                     $order:1,
                     className:'xuicon {imageClass}',
-                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                     text:'{iconFontCode}'
                 },
                 CAPTION:{
@@ -24447,8 +24482,13 @@ new function(){
                         this.getSubNode('ICON').css('backgroundPosition', value||'center');
                     }
                 },
+                imageBgSize:{
+                    action: function(value){
+                        this.getSubNode('ICON').css('backgroundSize', value||'');
+                    }
+                },
                 imageClass: {
-                    combobox : xui.toArr(xui.builtinFontIcon,true),
+                    ini:'',
                     action:function(v,ov){
                         xui.UI.$iconAction(this, 'ICON', ov);
                     }
@@ -24573,7 +24613,7 @@ new function(){
                 }
             },
             Behaviors:{
-                HoverEffected:{KEY:'KEY'},
+                HoverEffected:{KEY:'KEY',ICON:'ICON'},
                 onClick:function(profile, e, src){
                     var p=profile.properties;
                     if(p.disabled)return false;
@@ -25166,8 +25206,8 @@ new function(){
         _adjust:function(profile,width,height){
             var prop=profile.properties,
                 src=profile.getRootNode(),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             width=width?profile.$px(width, null, true):width;
             height=height?profile.$px(height, null, true):height;
@@ -25438,8 +25478,8 @@ new function(){
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                useem=xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us=xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 size = profile.getSubNode('BOX').cssSize(),
 
@@ -25591,8 +25631,8 @@ new function(){
             var H5=profile.getSubNode('H5'), 
                 size=H5.cssSize(),
                 prop=profile.properties,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 // caculate by px
                 ww=width?profile.$px(width):width, 
@@ -25653,8 +25693,8 @@ new function(){
             var H5=profile.getSubNode('H5'), 
                 size=H5.cssSize(),
                 prop=profile.properties,
-                useem =xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us =xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
                 ww=profile.$px(width), 
                 hh=profile.$px(height);
@@ -27029,8 +27069,8 @@ Class("xui.UI.Resizer","xui.UI",{
                 sbs=prop.sideBarStatus,
                 sbtype=prop.sideBarType,
                 b=(prop.$iborder||0)*2,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 panelfz = panel._getEmSize(fzrate),
@@ -27122,7 +27162,7 @@ Class("xui.UI.Label", "xui.UI",{
             ICON:{
                 $order:0,
                 className:'xuicon {imageClass}',
-                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -27154,8 +27194,13 @@ Class("xui.UI.Label", "xui.UI",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -27193,7 +27238,7 @@ Class("xui.UI.Label", "xui.UI",{
             }            
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY'},
+            HoverEffected:{KEY:'KEY',ICON:'ICON'},
             onClick:function(profile, e, src){
                 var p=profile.properties;
                 if(p.disabled)return false;
@@ -27332,8 +27377,8 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
-                useem = xui.$uem(p),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(p),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 inn = profile.getSubNode('INN'),
                 cap = profile.getSubNode('CAP'),
@@ -27409,7 +27454,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ICON:{
                     $order:1,
                     className:'xuicon {imageClass}',
-                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                     text:'{iconFontCode}' 
                 },
                 CAPTION:{
@@ -27444,7 +27489,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:'MARK'},
+            HoverEffected:{KEY:'MARK',ICON:'ICON'},
             ClickEffected:{KEY:'MARK'},
             NavKeys:{FOCUS:1},
             onClick:function(profile, e, src){
@@ -27485,8 +27530,13 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -27967,7 +28017,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             labelPos:{
                 ini:"left",
-                listbox:['left','top', 'right', 'bottom'],
+                listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }                
@@ -28007,7 +28057,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d._showD2=d.isRange?'':N;
             d._cls=profile.getClass('BOX',d.type=='vertical'?'-v':'-h');
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize?"":("display:none");
+            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -28095,8 +28145,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label = f('LABEL'),
                 cmd = f('DECREASE'),
                 
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 labelfz=label._getEmSize(fzrate),
@@ -28104,9 +28154,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 indfz = ind._getEmSize(fzrate),
 
                 label = profile.getSubNode('LABEL'),
-                labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                labelGap=profile.$px(prop.labelGap)||0,
-                labelPos = prop.labelPos || 'left',
+                labelPos=prop.labelPos,
+                labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
+                labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
                 ll, tt, ww, hh;
 
             // caculate by px
@@ -28593,7 +28643,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             labelPos:{
                 ini:"left",
-                listbox:['left','top', 'right', 'bottom'],
+                listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }                
@@ -28778,7 +28828,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d.hAlign=d.hAlign?("text-align:" + d.hAlign):"";
             
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize?"":("display:none");
+            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
     
             // adjustRes for labelCaption
@@ -29035,8 +29085,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 box = f('BOX'),
                 label = f('LABEL'),
 
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 v1fz=v1._getEmSize(fzrate),
@@ -29058,9 +29108,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             // for auto height
             if(autoH)root.height(adjustunit(height));
 
-            var labelSize=profile.$px(prop.labelSize,labelfz)||0,
-                labelGap=profile.$px(prop.labelGap)||0,
-                labelPos=prop.labelPos || 'left',
+            var labelPos=prop.labelPos,
+                labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
+                labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
+                
                 ww=width,
                 hh=height,
                 left=Math.max(0, (prop.$b_lw||0)-$hborder),
@@ -29346,13 +29397,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $spaceunit:2,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none'});
+                    this.getSubNode('LABEL').css({display:v&&v!='auto'?'':'none'});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
-                listbox:['left','top', 'right', 'bottom'],
+                listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }                
@@ -29499,7 +29550,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize?"":("display:none");
+            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -30224,15 +30275,15 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
 
-                    useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    us = xui.$us(prop),
+                    adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                     fzrate=profile.getEmSize()/root._getEmSize(),
                     labelfz=label._getEmSize(fzrate),
 
-                    labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                    labelGap=profile.$px(prop.labelGap)||0,
-                    labelPos=prop.labelPos || 'left',
+                    labelPos=prop.labelPos,
+                    labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
+                    labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
                     ll, tt, ww, hh;
 
                 // caculate by px
@@ -30806,7 +30857,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             ICON:{
                 className:'xuifont {imageClass}',
                 //for cover xuicon
-                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                 text:'{iconFontCode}'
             }
         };
@@ -31106,7 +31157,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
         _objectProp:{popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
-            HoverEffected:{BOX:'BOX'},
+            HoverEffected:{BOX:'BOX',ICON:'ICON',ICONB:'ICONB'},
             ClickEffected:{BOX:'BOX'},
             ICONB:{
                 onClick : function(profile, e, src){
@@ -31502,8 +31553,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                     this.boxing().reLayout(true);
@@ -31908,8 +31964,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 lbtn=f(type=='counter'?'LBTN':null),
                 rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 v1fz=v1._getEmSize(fzrate),
@@ -32093,7 +32149,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
     Static:{
         Behaviors:{
             NavKeys:{CAPTION:1},
-            HoverEffected:{TOGGLE:'TOGGLE'},
+            HoverEffected:{TOGGLE:'TOGGLE',ICON:'ICON'},
             ClickEffected:{TOGGLE:'TOGGLE'},
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
@@ -32140,7 +32196,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         ICON:{
                             $order:1,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {
@@ -32232,8 +32288,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -32329,8 +32390,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         fs.height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                        us = xui.$us(p),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         height=profile.getSubNode('LEGEND').height();
                     height = height?adjustunit(height):null;
                     profile.getRoot().height(height?height:'auto');
@@ -32359,8 +32420,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 
@@ -34855,7 +34916,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {_split} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
@@ -34877,15 +34938,18 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
+                            style:'{_capDisplay}',
                             text : '{caption}',
                             $order:20
                         },
                         EXTRA:{
+                            style:'{_extraDisplay}',
                             text : '{ext}',
                             $order:30
                         },
                         OPT:{
                             $order:50,
+                            style:'{_optDisplay}',
                             className:'xuifont',
                             $fonticon:'xui-uicmd-opt'
                         },
@@ -35001,7 +35065,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
+            HoverEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD',ICON:'ICON'},
             ClickEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
@@ -35254,7 +35318,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             labelPos:{
                 ini:"left",
-                listbox:['left','top', 'right', 'bottom'],
+                listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }                
@@ -35342,7 +35406,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             var d=arguments.callee.upper.call(this, profile),t;
             d._bordertype='xui-uiborder-'+d.borderType;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize?"":("display:none");
+            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -35354,6 +35418,10 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
+            if(item.type=='split'){
+                item._split='xui-uitem-split';
+                item._ltagDisplay=item._rtagDisplay=item.imageDisplay=item._cbDisplay=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
+            }
         },
         _prepareCmds:function(profile, item, filter){
             var p=profile.properties,
@@ -35409,8 +35477,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
 
                 f=function(k){return profile.getSubNode(k)},
@@ -35425,9 +35493,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 dock=prop.dock,
                 max=prop.maxHeight,
 
-                labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                labelGap=profile.$px(prop.labelGap)||0,
-                labelPos = prop.labelPos || 'left',
+                labelPos=prop.labelPos,
+                labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
+                labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
                 ll, tt, ww, hh;
 
             // caculate by px
@@ -35618,8 +35686,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             var p=profile.properties,
                                   nn=xui.use(src),
                                   node=nn.get(0),
-                                  item=profile.getItemByDom(src),
-                                  icon=profile.getSubNodeByItemId('ICON',item.id);
+                                  item=profile.getItemByDom(src);
+                            if(!item)return;
+                            var icon=profile.getSubNodeByItemId('ICON',item.id);
                             
                             // bug fix
                              if(node.currentSrc && node.currentSrc!=path){
@@ -35754,13 +35823,16 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             item._tabindex = p.tabindex;
 
             if(t=item.fontSize)item._fontSize='font-size:'+t+';'
-            if(!item.iconFontCode)item._imageClass='xui-icon-loading';
+            if(!item.iconFontCode && !item.imageClass)item._imageClass='xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;
 
             if(item.flagText||item.flagClass)item._flagStyle='display:block';
             if(!item.flagClass)item.flagClass='xui-uiflag-1';
 
-            if(p.iconOnly)delete item.caption;
+            if(p.iconOnly){
+                delete item.caption;
+                delete item.comment;
+            }
 
             if(( item.caption = item.caption || '')==='')item.capDisplay='display:none;';
             if((item.comment = item.comment || '')==='')item.commentDisplay='display:none;';
@@ -35864,7 +35936,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         ICON:{
                             $order:0,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -35977,7 +36049,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             PanelKeys:['PANEL'],
             DraggableKeys:['TBAR'],
             NoDraggableKeys:['INFO','OPT','CLOSE','POP','REFRESH','TOGGLE'],
-            HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE'},
+            HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE',ICON:'ICON'},
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE'},
             onSize:xui.UI.$onSize,
             INFO:{
@@ -36096,8 +36168,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -36273,8 +36350,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(p.toggle){
                         profile.getRoot().height(p.height);
                 }else{
-                    var useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    var us = xui.$us(p),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         root = profile.getRoot(),
                         h1=profile.getSubNode('BORDER').height();
                     h1 = h1?adjustunit(h1):null;
@@ -36299,8 +36376,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         _onresize:function(profile,width,height){
            var prop=profile.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot();
 
             var isize={},
@@ -36452,7 +36529,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 style:'position:absolute;display:none;',
                 POP:{
                     tagName:'div',
-                    className:'xui-uibase'
+                    className:'xui-uibase xui-ui-reset'
                 }
             },
             LABEL:{
@@ -36850,6 +36927,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 popBtn:paras.popBtn || false,
                 optBtn:paras.optBtn || false,
                 imagePos:paras.imagePos,
+                imageBgSize:paras.imageBgSize,
                 dragKey:paras.dragKey,
                 dropKeys:paras.dropKeys,
                 id : paras.id || paras.tag || xui.id()
@@ -37086,7 +37164,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         ICON:{
                                             $order:0,
                                             className:'xuicon {imageClass}',
-                                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{
@@ -37248,7 +37326,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DroppableKeys:['PANEL','KEY', 'ITEM'],
             PanelKeys:['PANEL'],
             DraggableKeys:['ITEM'],
-            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
+            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',ICON:'ICON'},
             ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
             onSize:xui.UI.$onSize,
             CAPTION:{
@@ -37560,7 +37638,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             lazyAppend:true,
 
             dock:'fill',
-            noPanel:false,
             width:{
                 $spaceunit:1,
                 ini:'18em'
@@ -37598,12 +37675,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 ini:'single',
                 listbox:['single', 'multi']
             },
+            noPanel:{
+                ini:false,
+                action:function(value){
+                    this.getSubNode('PANEL',true).css('display',value?'none':'block');
+                    this.adjustSize(null,true);
+                }
+            },
             noHandler:{
                 ini:false,
                 action:function(value){
-                    this.getSubNode('LIST').css('display',value?'none':'');
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(this, t.width, t.height, true);
+                    this.getSubNode('LIST').css('display',value?'none':'block');
+                    this.adjustSize(null,true);
                 }
             }
         },
@@ -37801,10 +37884,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
-
+            if(!item){
+                item=prop.items[0];
+                key=item&&item.id;
+            }
+            if(!item)return;
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
                 
@@ -37851,7 +37938,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
                 wc=width;
             }
-            if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
+
+            if(!prop.noPanel && (hc||wc))panel.height(adjustunit(hc,panelfz)).onSize();
         },
         _adjustHScroll:function(profile){
             // SCROLL
@@ -38040,12 +38128,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item = profile.getItemByItemId(key);
 
             if(!item){
-                key=prop.$UIvalue;
+                key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
+            if(!item){
+                item=prop.items[0];
+                key=item&&item.id;
+            }
+            if(!item)return;
+
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
                 list=profile.getSubNode('LIST'),
@@ -38258,8 +38352,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
                     // add 'at' to be distinguished from xui-uibar-bottom
                     hs.tagClass('(-attop|-atbottom|-atleft|-atright)',false).tagClass('-at'+v, true);
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(this,t.width, t.height,true);                
+                    this.adjustSize();
                 }
             },
             barHAlign:{
@@ -38280,21 +38373,14 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.cssRegion({top:unit,bottom:'auto'});
                     else
                         hl.cssRegion({bottom:unit,top:'auto'});
+                    this.adjustSize();
                 }
             },
             barSize:{
                 $spaceunit:1,
                 ini:'2em',
                 action:function(v){
-                    var t=self.getRootNode().style;
-                    xui.UI.$tryResize(this,t.width, t.height,true);
-                }
-            },
-            noPanel:{
-                ini:false,
-                action:function(v){
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(self,t.width, t.height,true);
+                    this.adjustSize();
                 }
             },
             borderType:{
@@ -38323,9 +38409,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
 
                     //force to resize
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(ns,t.width, t.height,true);
-
+                    this.adjustSize();
                 }
             },
             sideBarStatus:{
@@ -38334,8 +38418,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                    var self = this,
                         t = self.properties,
-                        useem = xui.$uem(t),
-                        adjustunit = function(v,emRate){return self.$forceu(v, useem?'em':'px', emRate)},
+                        us = xui.$us(t),
+                        adjustunit = function(v,emRate){return self.$forceu(v, us>0?'em':'px', emRate)},
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
 
@@ -38347,15 +38431,13 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         menu2.tagClass('-checked',false);
                     }
 
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(this,t.width, t.height,true);
+                    this.adjustSize();
                 }
             },
             sideBarSize:{
                 ini:'3em',
                 action:function(v){
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(this,t.width, t.height,true);
+                    this.adjustSize();
                 }
             }
         },
@@ -38380,16 +38462,22 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         _onresize:function(profile,width,height,force,key){
             var prop = profile.properties,
                 noPanel = prop.noPanel,
+                noHandler = prop.noHandler,
                 item = profile.getItemByItemId(key);
 
             if(!item){
-                key=prop.$UIvalue;
+                key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
+            if(!item){
+                item=prop.items[0];
+                key=item&&item.id;
+            }
+            if(!item)return;
 
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
                 ww=width?profile.$px(width, null, true):width, 
                 hh=(height&&height!='auto')?profile.$px(height, null, true):height,
@@ -38412,19 +38500,26 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             // side bar
             menu2.css('display','none');
 
-            if(!prop.noHandler){
+            if(noHandler){
+                wc=ww;
+                hc=hh;
+            }else{
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
                     hl.css('overflow-y','hidden');
                     itmsH = hs.height(prop.barSize||'auto').offsetHeight(true);
+                    hl.css('position','relative');
+
                     if(width){
                         hs.width(adjustunit(ww-bw, hsfz));
                         hl.width(adjustunit(ww-bw, hlfz));
                         
                         // for nopanel:
-                        if(noPanel && height!='auto')
+                        if(noPanel && height!='auto'){
                             hs.height(adjustunit(hh-bw, hsfz));
-                        
-                        if(!prop.noHandler)
+                            hl.height(adjustunit(hh-bw, hsfz));
+                        }
+
+                        if(!noHandler)
                             profile.box._adjustHScroll(profile);
 
                         left = 0;
@@ -38451,12 +38546,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         }
                     }
                 }else{
-                    //items
+                    //reset to default
                     hl.css('overflow-y','scroll');
                     // side bar
                     menu2.css('display',prop.sideBarSize?'block':'none');
 
-                    if(!prop.noHandler)
+                    if(!noHandler)
                         profile.getSubNode('CAPTION',true).css('width','');
 
                     // dont support auto height for 'top' or 'bottom' barLocation
@@ -38466,12 +38561,20 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
 
                     if(height){
                         // for nopanel:
+                        if(noPanel){
+                            hl.css('overflow-y','hidden');
+                            hs.width(adjustunit(ww-bw, hsfz));
+                            hl.width(adjustunit(ww-bw, hsfz));
+                        }
+
+                        // for nopanel:
                         hs.height(adjustunit(hh-bw, hsfz));
                         hl.height('auto');
                         // for scroll by mouse wheel
                         if(hl.height()>=hs.height()){
                             hl.height(adjustunit(hh-bw-(prop.sideBarSize?menu2.offsetHeight():0), hlfz));
                         }
+                        hl.css('position', prop.barVAlign=='bottom'?'absolute':'relative');
                         hc=hh;
                     }
                     if(height || width){
@@ -38490,17 +38593,15 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         }
                     }
                 }
-            }else{
-                wc=ww;
-                hc=hh;
             }
 
-            if(!noPanel)
-                if(panel && !panel.isEmpty())panel.cssRegion({
+            if(!noPanel){
+                panel.cssRegion({
                     width : wc?adjustunit(wc,panelfz):null,
                     height : hc?adjustunit(hc,panelfz):null,
-                    left : adjustunit(left,panelfz)
+                    left : noHandler?0:adjustunit(left,panelfz)
                 },true);
+            }
         }
     }
 });Class("xui.UI.RadioBox", "xui.UI.List",{
@@ -38770,11 +38871,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(selmode=='single'){
                     var itemId = profile.getSubIdByItemId(uiv);
                     if(uiv && itemId)
-                        profile.getSubNode('BAR',itemId).tagClass('-expand',false).tagClass('-fold');
+                        fun('BAR', uiv, false);
 
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){
-                        profile.getSubNode('BAR',itemId).tagClass('-expand').tagClass('-fold',false);
+                        fun('BAR', value, true);
                         //scroll
                         if(!profile._noScroll){
                             var o = profile.getSubNode('ITEM',itemId);
@@ -38989,15 +39090,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
+                            className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {_split} {disabled} {readonly}',
                             style:'{itemStyle}',
                             RULER:{
                                 $order:2,
-                                style:'{rulerStyle}',
+                                style:'{_ruleDisplay}{rulerStyle}',
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
                                 $order:4,
+                                style:'{_tglDisplay}',
                                 className:'xuifont',
                                 $fonticon:'{_fi_togglemark}'
                             },
@@ -39021,15 +39123,18 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
+                                style:'{_capDisplay}',
                                 className:"{disabled}  {readonly}",
                                 $order:7
                             },
                             EXTRA:{
+                                style:'{_extraDisplay}',
                                 text : '{ext}',
                                 $order:8
                             },
                             OPT:{
                                 $order:9,
+                                style:'{_optDisplay}',
                                 className:'xuifont',
                                 $fonticon:'xui-uicmd-opt'
                             },
@@ -39589,6 +39694,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.mark2Display = 'display:none';
             }
             xui.UI.List._prepareCmds(profile, item);
+
+            if(item.type=='split'){
+                item._split='xui-uitem-split';
+                item._ruleDisplay=item._ltagDisplay=item._tglDisplay=item._rtagDisplay=item.imageDisplay=item.mark2Display=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
+            }
         },
         _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
@@ -39870,6 +39980,11 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             xui.UI.List._prepareCmds(profile, item);
+            
+            if(item.type=='split'){
+                item._split='xui-uitem-split';
+                item._ruleDisplay=item._ltagDisplay=item._tglDisplay=item._rtagDisplay=item.imageDisplay=item.mark2Display=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
+            }
         },
         _tofold:function(profile,item,pid){
             var cls=profile.getClass('IMAGE');
@@ -39890,8 +40005,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items = profile.getSubNode('ITEMS'),
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
-                        useem = xui.$uem(prop),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                        us = xui.$us(prop),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});
@@ -42391,8 +42506,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 sum=0,
 
                 move, _handlerSize,
-                useem = xui.$uem(t),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(t),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 fzrate=profile.getEmSize()/profile.getRoot()._getEmSize();
 
             if(width)width=profile.$px(width);
@@ -42540,9 +42655,9 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 var p=profile.getSubNode('PANEL', id),
                     i=profile.getSubNode('ITEM', id);
                 
-                if(useem){
-                    var pfz=useem?p._getEmSize(fzrate):null,
-                        ifz=useem?i._getEmSize(fzrate):null;
+                if(us>0){
+                    var pfz=us>0?p._getEmSize(fzrate):null,
+                        ifz=us>0?i._getEmSize(fzrate):null;
                     ff_w(obj[id],ifz); ff_w(obj2[id],ifz);
                     ff_h(obj[id],pfz); ff_h(obj2[id],pfz);
                 }
@@ -44838,19 +44953,24 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                 },
+                'rows1.inhandler.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    if(v.id==profile.box._temprowid)return;
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'rows1.infirstcell.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
+                },
                 'rows2.rtagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
                 },
-                'rows1.ltagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,'row.tagCmds'+(map[v.type]||'.button'),result)
-                },
                 'rtagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
-                },
-                'ltagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
                 },
@@ -45018,6 +45138,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 $order:6,
                 'background-color':'#FFE97F'
             },
+            // hot always use CELLS2
+            "CELLS2-hot LTAGCMDS, CELLS2-hot RTAGCMDS":{
+                $order:6,
+                'display':'none'
+            },
             'CELLS1-checked, CELLS2-checked, CELLS1-checked .xui-node, CELLS2-checked .xui-node, CELL-checked, CELL-checked .xui-node':{
                  $order:6,
                 'background-color':'#ABABAB',
@@ -45176,15 +45301,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'visible'
             },
             LTAGCMDS:{
-                "padding-right":'.25em',
+                padding:0,
+                "margin-right":'.25em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
+                padding:0,
+                "margin-left":'.25em',
                 'vertical-align':'middle'
             },
             CMD:{
-                "margin-left":'.25em',
-                padding:'0 .25em',
+                "padding":0,
+                'margin':' 0 .125em',
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -47403,10 +47531,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             prop.rows=this._adjustRows(profile, prop.rows);
             data.rows11 = data.rows12 = data.rows21 = data.rows22 = this._prepareItems(profile, prop.rows);
-            xui.UI.List._prepareCmds(profile, data, function(item){
-                return !item.tag || !!item.tag.match(/\bheader\b/);
-            });
             
+            data.tagCmds = prop.colOptions.tagCmds || data.tagCmds;
+            if(data.tagCmds){
+                xui.UI.List._prepareCmds(profile, data, function(item){
+                    return !item.tag || !!item.tag.match(/\bheader\b/);
+                });
+            }
             data._columnfreezed = prop.freezedColumn?'xui-ui-shadow-r xui-uiborder-r xui-uiborder-dark':'';
             data._rowfreezed = prop.freezedRow?'xui-ui-shadow-b xui-uiborder-b xui-uiborder-dark':'';
 
@@ -47936,10 +48067,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 xui.UI.adjustData(profile, row, t);
 
-                xui.UI.List._prepareCmds(profile, t, function(item){
-                    return !item.tag || !!item.tag.match(/\brow\b/);
-                });
-                
+                t.tagCmds = t.tagCmds || prop.rowOptions.tagCmds || prop.tagCmds;
+                if(t.tagCmds){
+                    xui.UI.List._prepareCmds(profile, t, function(item){
+                        return !item.tag || !!item.tag.match(/\brow\b/);
+                    });
+                }                
                 // for cells
                 if(row.group){
                     row.cells=null;
@@ -47952,8 +48085,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
 
                 t._cellhandler={};
-                xui.merge(t._cellhandler, t, function(o){
-                    return xui.isNumb(o) || xui.isStr(o);
+                xui.merge(t._cellhandler, t, function(o,i){
+                    return xui.isNumb(o) || xui.isStr(o) || i=='ltagCmds';
                 });
 
                 rows.push(t);
@@ -48932,8 +49065,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!profile.renderId || profile.destroyed)return;
                 
                 var prop = profile.properties,
-                    useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    us = xui.$us(prop),
+                    adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                     size = profile.getSubNode("BORDER").cssSize(),
                     width = profile.$px(size.width),
                     height = profile.$px(size.height),
@@ -49540,8 +49673,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + 2):0,
                 w2,
@@ -49618,7 +49751,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    useem = xui.$uem(p),
+                    us = xui.$us(p),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -49655,7 +49788,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
                         xui.UI.Div._applyAutoLoad(profile);
@@ -49707,7 +49840,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
-                    useem = xui.$uem(pro),
+                    us = xui.$us(pro),
                     root=profile.getRoot();
 
                 var fun=function(){
@@ -49819,7 +49952,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     ICON:{
                         $order:0,
                         className:'xuicon {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -49970,7 +50103,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             DraggableKeys:['LAND'],
-            HoverEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
+            HoverEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND',ICON:'ICON'},
             ClickEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
             onMousedown:function(profile, e){
                 if(!profile.$inModal)
@@ -50003,7 +50136,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             onDragstop:function(profile){
                 var p = profile.properties,
-                    useem = xui.$uem(p),
+                    us = xui.$us(p),
                     root=profile.getRoot(),
                     pos = root.cssPos(),
                     l = null, t = null;
@@ -50221,8 +50354,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -50693,8 +50831,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(!profile.renderId) return;
             var prop=profile.properties, 
                 root=profile.getRoot(),
-                useem=xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us=xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 nr=root.cssRegion();
 
             nr.left=adjustunit(nr.left);
@@ -50748,7 +50886,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             var fs=dialog.getRoot()._getEmSize();
             w=size.width + fs*2;
-            h=size.height + fs*6;
+            h=size.height + fs*7.5;
             dialog.setCaption(caption).setWidth(w).setHeight(h);
             return {width:w, height:h};
         },
@@ -51053,8 +51191,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     			width=profile.properties.minWidth;
 
             var prop=profile.properties,
-                useem=xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us=xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
@@ -51092,8 +51230,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
                     - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
             
-            if(width&&useem)isize.width=adjustunit(isize.width);
-            if(height&&useem)isize.height=adjustunit(isize.height);
+            if(width&&us>0)isize.width=adjustunit(isize.width);
+            if(height&&us>0)isize.height=adjustunit(isize.height);
 
             v2.cssSize(isize, true);
         }
@@ -51897,7 +52035,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(panel.offsetWidth){
                         xui(panel).width('auto');
                         var w=xui(panel).width(), prop=profile.properties;
-                        if(xui.$uem(prop))w=profile.$px2em(w, panel)+'em';
+                        if(xui.$us(prop)>0)w=profile.$px2em(w, panel)+'em';
                         xui(panel).width(w);
                     }
                 });
@@ -63806,7 +63944,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
             overflow:{
                 ini:undefined
             },
-            shapeLayer:{
+            graphicZIndex:{
                 ini:0,
                 action:function(v){
                     this.getSubNode('SVG').css('zIndex',v);
@@ -63831,7 +63969,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
             s.position='absolute';
             s.left=0;
             s.top=0;
-            s.zIndex=prop.shapeLayer;
+            s.zIndex=prop.graphicZIndex;
 
             // contents
             var a=[];
@@ -63866,8 +64004,8 @@ Class("xui.svg.group", "xui.svg.absComb",{
         _onresize:function(profile,width,height){
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             // caculate by px
             width=width?profile.$px(width, null, true):width;

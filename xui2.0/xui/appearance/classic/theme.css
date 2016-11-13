@@ -62,7 +62,7 @@
 .xui-uiborder-r{
     border-right-color:#ccc;
 }
-.xui-uiborder-b{
+.xui-uiborder-b, .xui-uitem-split{
     border-bottom-color:#ccc;
 }
 .xui-uiborder-flat{
@@ -198,6 +198,10 @@
 }
 .xui-buttonviews-list-atright .xui-buttonviews-item-checked{
     border-right:solid 3px #ff0000;
+}
+.xui-buttonviews-menu2, .xui-buttonviews-itemc{
+	padding-top: .5em;
+	padding-bottom: .5em;
 }
 
 /*to adjust item size*/

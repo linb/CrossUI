@@ -36,7 +36,7 @@
 .xui-uiborder-r{
     border-right-color:#1D456D;
 }
-.xui-uiborder-b{
+.xui-uiborder-b, .xui-uitem-split{
     border-bottom-color:#1D456D;
 }
 .xui-uiborder-flat{

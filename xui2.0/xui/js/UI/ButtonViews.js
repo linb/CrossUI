@@ -171,12 +171,6 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     this.adjustSize();
                 }
             },
-            noPanel:{
-                ini:false,
-                action:function(v){
-                    this.adjustSize();
-                }
-            },
             borderType:{
                 ini:'none',
                 listbox:['none','flat','inset','outset'],
@@ -212,8 +206,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                    var self = this,
                         t = self.properties,
-                        useem = xui.$uem(t),
-                        adjustunit = function(v,emRate){return self.$forceu(v, useem?'em':'px', emRate)},
+                        us = xui.$us(t),
+                        adjustunit = function(v,emRate){return self.$forceu(v, us>0?'em':'px', emRate)},
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
 
@@ -256,16 +250,22 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         _onresize:function(profile,width,height,force,key){
             var prop = profile.properties,
                 noPanel = prop.noPanel,
+                noHandler = prop.noHandler,
                 item = profile.getItemByItemId(key);
 
             if(!item){
-                key=prop.$UIvalue;
+                key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
+            if(!item){
+                item=prop.items[0];
+                key=item&&item.id;
+            }
+            if(!item)return;
 
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
                 ww=width?profile.$px(width, null, true):width, 
                 hh=(height&&height!='auto')?profile.$px(height, null, true):height,
@@ -288,7 +288,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             // side bar
             menu2.css('display','none');
 
-            if(!prop.noHandler){
+            if(noHandler){
+                wc=ww;
+                hc=hh;
+            }else{
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
                     hl.css('overflow-y','hidden');
                     itmsH = hs.height(prop.barSize||'auto').offsetHeight(true);
@@ -299,10 +302,12 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.width(adjustunit(ww-bw, hlfz));
                         
                         // for nopanel:
-                        if(noPanel && height!='auto')
+                        if(noPanel && height!='auto'){
                             hs.height(adjustunit(hh-bw, hsfz));
-                        
-                        if(!prop.noHandler)
+                            hl.height(adjustunit(hh-bw, hsfz));
+                        }
+
+                        if(!noHandler)
                             profile.box._adjustHScroll(profile);
 
                         left = 0;
@@ -334,7 +339,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     // side bar
                     menu2.css('display',prop.sideBarSize?'block':'none');
 
-                    if(!prop.noHandler)
+                    if(!noHandler)
                         profile.getSubNode('CAPTION',true).css('width','');
 
                     // dont support auto height for 'top' or 'bottom' barLocation
@@ -343,6 +348,13 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
 
                     if(height){
+                        // for nopanel:
+                        if(noPanel){
+                            hl.css('overflow-y','hidden');
+                            hs.width(adjustunit(ww-bw, hsfz));
+                            hl.width(adjustunit(ww-bw, hsfz));
+                        }
+
                         // for nopanel:
                         hs.height(adjustunit(hh-bw, hsfz));
                         hl.height('auto');
@@ -369,17 +381,18 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         }
                     }
                 }
-            }else{
-                wc=ww;
-                hc=hh;
             }
 
-            if(!noPanel)
-                if(panel && !panel.isEmpty())panel.cssRegion({
-                    width : wc?adjustunit(wc,panelfz):null,
+            if(!noPanel){
+                panel.cssRegion({
+                    width : (wc = wc?adjustunit(wc,panelfz):null),
                     height : hc?adjustunit(hc,panelfz):null,
-                    left : adjustunit(left,panelfz)
+                    left : noHandler?0:adjustunit(left,panelfz)
                 },true);
+                if(wc){
+                    xui.UI._adjustConW(profile, panel, wc);
+                }
+            }
         }
     }
 });

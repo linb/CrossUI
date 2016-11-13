@@ -13,7 +13,7 @@ Class("xui.UI.Label", "xui.UI",{
             ICON:{
                 $order:0,
                 className:'xuicon {imageClass}',
-                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -45,8 +45,13 @@ Class("xui.UI.Label", "xui.UI",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -84,7 +89,7 @@ Class("xui.UI.Label", "xui.UI",{
             }            
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY'},
+            HoverEffected:{KEY:'KEY',ICON:'ICON'},
             onClick:function(profile, e, src){
                 var p=profile.properties;
                 if(p.disabled)return false;

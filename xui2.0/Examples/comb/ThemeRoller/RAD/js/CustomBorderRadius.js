@@ -32,10 +32,11 @@ Class('RAD.CustomBorderRadius', 'xui.Com',{
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"r_sTL")
                 .setDirtyMark(false)
+                .setLeft("0.8333333333333334em")
                 .setTop("0.8333333333333334em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.75em")
+                .setLabelSize(110)
+                .setLabelGap("5.333333333333333px")
                 .setLabelCaption("$(RAD.custom_dlg.bradius.Radius T$-Left)")
                 .setType("counter")
                 .setUnit("px")
@@ -43,17 +44,18 @@ Class('RAD.CustomBorderRadius', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .afterUIValueSet("_r_cs_afteruivalueset")
+                .onChange("_onchange")
                 );
             
             host.mainPane.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"r_sTR")
                 .setDirtyMark(false)
+                .setLeft("0.8333333333333334em")
                 .setTop("3.3333333333333335em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.75em")
+                .setLabelSize(110)
+                .setLabelGap("5.333333333333333px")
                 .setLabelCaption("$(RAD.custom_dlg.bradius.Radius T$-Right)")
                 .setType("counter")
                 .setUnit("px")
@@ -61,18 +63,18 @@ Class('RAD.CustomBorderRadius', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .afterUIValueSet("_r_cs_afteruivalueset")
+                .onChange("_onchange")
                 );
             
             host.mainPane.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"r_sBL")
                 .setDirtyMark(false)
-                .setLeft("-0.08333333333333333em")
+                .setLeft("0.75em")
                 .setTop("8.333333333333334em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.75em")
+                .setLabelSize(110)
+                .setLabelGap("5.333333333333333px")
                 .setLabelCaption("$(RAD.custom_dlg.bradius.Radius B$-Left)")
                 .setType("counter")
                 .setUnit("px")
@@ -80,17 +82,18 @@ Class('RAD.CustomBorderRadius', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .afterUIValueSet("_r_cs_afteruivalueset")
+                .onChange("_onchange")
                 );
             
             host.mainPane.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"r_sBR")
                 .setDirtyMark(false)
+                .setLeft("0.8333333333333334em")
                 .setTop("5.833333333333333em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.75em")
+                .setLabelSize(110)
+                .setLabelGap("5.333333333333333px")
                 .setLabelCaption("$(RAD.custom_dlg.bradius.Radius B$-Right)")
                 .setType("counter")
                 .setUnit("px")
@@ -98,7 +101,7 @@ Class('RAD.CustomBorderRadius', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .afterUIValueSet("_r_cs_afteruivalueset")
+                .onChange("_onchange")
                 );
             
             return children;
@@ -107,14 +110,14 @@ Class('RAD.CustomBorderRadius', 'xui.Com',{
         _getValues:function(){
             var ns=this;
             return {
-                tl:ns.r_sTL.getValue(),
-                tr:ns.r_sTR.getValue(),
-                bl:ns.r_sBL.getValue(),
-                br:ns.r_sBR.getValue()
+                tl:ns.r_sTL.getUIValue(),
+                tr:ns.r_sTR.getUIValue(),
+                bl:ns.r_sBL.getUIValue(),
+                br:ns.r_sBR.getUIValue()
             };
         },
-        _r_cs_afteruivalueset : function (profile){
-            xui.resetRun("border_radius",this.setBR,0,null,this);
+        _onchange : function (profile){
+            this.setBR();
         },
         setBR:function(){
             var values = this._getValues(),v;

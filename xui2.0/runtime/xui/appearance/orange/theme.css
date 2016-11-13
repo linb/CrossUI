@@ -49,7 +49,7 @@
 .xui-uiborder-r{
     border-right-color:#C2A181;
 }
-.xui-uiborder-b{
+.xui-uiborder-b, .xui-uitem-split{
     border-bottom-color:#C2A181;
 }
 .xui-uiborder-flat{

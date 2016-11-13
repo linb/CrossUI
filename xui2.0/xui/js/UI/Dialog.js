@@ -9,7 +9,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    useem = xui.$uem(p),
+                    us = xui.$us(p),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -46,7 +46,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     parent.append(ins);
                     var box=profile.box,
                         root=profile.getRoot(),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
                     
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
                         xui.UI.Div._applyAutoLoad(profile);
@@ -98,7 +98,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
-                    useem = xui.$uem(pro),
+                    us = xui.$us(pro),
                     root=profile.getRoot();
 
                 var fun=function(){
@@ -210,7 +210,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     ICON:{
                         $order:0,
                         className:'xuicon {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -361,7 +361,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             DraggableKeys:['LAND'],
-            HoverEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
+            HoverEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND',ICON:'ICON'},
             ClickEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
             onMousedown:function(profile, e){
                 if(!profile.$inModal)
@@ -394,7 +394,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             onDragstop:function(profile){
                 var p = profile.properties,
-                    useem = xui.$uem(p),
+                    us = xui.$us(p),
                     root=profile.getRoot(),
                     pos = root.cssPos(),
                     l = null, t = null;
@@ -612,8 +612,13 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -1084,8 +1089,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             if(!profile.renderId) return;
             var prop=profile.properties, 
                 root=profile.getRoot(),
-                useem=xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us=xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 nr=root.cssRegion();
 
             nr.left=adjustunit(nr.left);
@@ -1139,7 +1144,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             var fs=dialog.getRoot()._getEmSize();
             w=size.width + fs*2;
-            h=size.height + fs*6;
+            h=size.height + fs*7.5;
             dialog.setCaption(caption).setWidth(w).setHeight(h);
             return {width:w, height:h};
         },
@@ -1444,8 +1449,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
     			width=profile.properties.minWidth;
 
             var prop=profile.properties,
-                useem=xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us=xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
@@ -1483,10 +1488,13 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
                     - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
             
-            if(width&&useem)isize.width=adjustunit(isize.width);
-            if(height&&useem)isize.height=adjustunit(isize.height);
+            if(width&&us>0)isize.width=adjustunit(isize.width);
+            if(height&&us>0)isize.height=adjustunit(isize.height);
 
             v2.cssSize(isize, true);
+            if(width){
+                xui.UI._adjustConW(profile, v2, isize.width);
+            }
         }
     }
 });

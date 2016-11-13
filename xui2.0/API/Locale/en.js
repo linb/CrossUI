@@ -8363,6 +8363,18 @@ xui.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getSpaceUnit:{
+                $desc:"To set the space unit for position(left, top), size(width, height) etc.",
+                $rtn:"String"
+            },
+            setSpaceUnit:{
+                $desc:"To get the space unit.",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. '', 'px' , 'em'.",
+                    $force
+                ]
+            },
             getDisabled:{
                 $desc:"To determine whether this UI control is disabled or not",
                 $rtn:"Boolean",
@@ -9928,7 +9940,19 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
-            },            
+            },           
+            getImageBgSize :{
+                $desc:"Gets the image background size property value on the first UIProfile",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"Sets the image background size property value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value",
+                    $force
+                ]
+            },                          
             getFontColor :{
                 $desc:"Gets the Font Color property value on the first UIProfile",
                 $rtn:"String"
@@ -10244,6 +10268,18 @@ xui.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getImageBgSize :{
+                $desc:"Gets the image background size property value on the first UIProfile",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"Sets the image background size property value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value",
+                    $force
+                ]
+            },             
             onChecked:{
                 $desc:"Fired when CheckBox is checked",
                 $paras:[
@@ -10437,7 +10473,18 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
-
+            getImageBgSize :{
+                $desc:"Gets the image background size property value on the first UIProfile",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"Sets the image background size property value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value",
+                    $force
+                ]
+            },             
             onClick:{
                 $desc:"Fired when user click it",
                 $paras:[
@@ -11057,6 +11104,18 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getImageBgSize :{
+                $desc:"Gets the image background size property value on the first UIProfile",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"Sets the image background size property value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value",
+                    $force
+                ]
+            },             
             getToggle:{
                 $desc:"To determine whether group collapses or not",
                 $rtn:"Boolean",
@@ -13328,6 +13387,18 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getImageBgSize :{
+                $desc:"Gets the image background size property value on the first UIProfile",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"Sets the image background size property value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value",
+                    $force
+                ]
+            },             
             getToggle:{
                 $desc:"Gets the toggle property value on the first UIProfile",
                 $rtn:"Boolean",
@@ -15086,6 +15157,18 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());xui.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
+                ]
+            },
+            getImageBgSize :{
+                $desc:"Gets the image background size property value on the first UIProfile",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"Sets the image background size property value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, corresponding CSS value",
+                    $force
                 ]
             },
             getHtml:{

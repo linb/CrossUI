@@ -2284,19 +2284,24 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                 },
+                'rows1.inhandler.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    if(v.id==profile.box._temprowid)return;
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'rows1.infirstcell.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                },
+                'ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
+                },
                 'rows2.rtagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
                 },
-                'rows1.ltagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,'row.tagCmds'+(map[v.type]||'.button'),result)
-                },
                 'rtagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
-                },
-                'ltagCmds':function(profile,template,v,tag,result){
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
                 },
@@ -2464,6 +2469,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 $order:6,
                 'background-color':'#FFE97F'
             },
+            // hot always use CELLS2
+            "CELLS2-hot LTAGCMDS, CELLS2-hot RTAGCMDS":{
+                $order:6,
+                'display':'none'
+            },
             'CELLS1-checked, CELLS2-checked, CELLS1-checked .xui-node, CELLS2-checked .xui-node, CELL-checked, CELL-checked .xui-node':{
                  $order:6,
                 'background-color':'#ABABAB',
@@ -2622,15 +2632,18 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'visible'
             },
             LTAGCMDS:{
-                "padding-right":'.25em',
+                padding:0,
+                "margin-right":'.25em',
                 'vertical-align':'middle'
             },
             RTAGCMDS:{
+                padding:0,
+                "margin-left":'.25em',
                 'vertical-align':'middle'
             },
             CMD:{
-                "margin-left":'.25em',
-                padding:'0 .25em',
+                "padding":0,
+                'margin':' 0 .125em',
                 'vertical-align':'middle',
                 cursor:'pointer'
             }
@@ -4849,10 +4862,13 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             prop.rows=this._adjustRows(profile, prop.rows);
             data.rows11 = data.rows12 = data.rows21 = data.rows22 = this._prepareItems(profile, prop.rows);
-            xui.UI.List._prepareCmds(profile, data, function(item){
-                return !item.tag || !!item.tag.match(/\bheader\b/);
-            });
             
+            data.tagCmds = prop.colOptions.tagCmds || data.tagCmds;
+            if(data.tagCmds){
+                xui.UI.List._prepareCmds(profile, data, function(item){
+                    return !item.tag || !!item.tag.match(/\bheader\b/);
+                });
+            }
             data._columnfreezed = prop.freezedColumn?'xui-ui-shadow-r xui-uiborder-r xui-uiborder-dark':'';
             data._rowfreezed = prop.freezedRow?'xui-ui-shadow-b xui-uiborder-b xui-uiborder-dark':'';
 
@@ -5382,10 +5398,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 xui.UI.adjustData(profile, row, t);
 
-                xui.UI.List._prepareCmds(profile, t, function(item){
-                    return !item.tag || !!item.tag.match(/\brow\b/);
-                });
-                
+                t.tagCmds = t.tagCmds || prop.rowOptions.tagCmds || prop.tagCmds;
+                if(t.tagCmds){
+                    xui.UI.List._prepareCmds(profile, t, function(item){
+                        return !item.tag || !!item.tag.match(/\brow\b/);
+                    });
+                }                
                 // for cells
                 if(row.group){
                     row.cells=null;
@@ -5398,8 +5416,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
 
                 t._cellhandler={};
-                xui.merge(t._cellhandler, t, function(o){
-                    return xui.isNumb(o) || xui.isStr(o);
+                xui.merge(t._cellhandler, t, function(o,i){
+                    return xui.isNumb(o) || xui.isStr(o) || i=='ltagCmds';
                 });
 
                 rows.push(t);
@@ -6378,8 +6396,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!profile.renderId || profile.destroyed)return;
                 
                 var prop = profile.properties,
-                    useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    us = xui.$us(prop),
+                    adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                     size = profile.getSubNode("BORDER").cssSize(),
                     width = profile.$px(size.width),
                     height = profile.$px(size.height),
@@ -6986,8 +7004,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + 2):0,
                 w2,

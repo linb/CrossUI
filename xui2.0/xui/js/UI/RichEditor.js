@@ -137,13 +137,13 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 $spaceunit:2,
                 ini:0,
                 action: function(v){
-                    this.getSubNode('LABEL').css({display:v?'':'none'});
+                    this.getSubNode('LABEL').css({display:v&&v!='auto'?'':'none'});
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
-                listbox:['left','top', 'right', 'bottom'],
+                listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }                
@@ -290,7 +290,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize?"":("display:none");
+            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -1015,15 +1015,15 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
 
-                    useem = xui.$uem(prop),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    us = xui.$us(prop),
+                    adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                     fzrate=profile.getEmSize()/root._getEmSize(),
                     labelfz=label._getEmSize(fzrate),
 
-                    labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                    labelGap=profile.$px(prop.labelGap)||0,
-                    labelPos=prop.labelPos || 'left',
+                    labelPos=prop.labelPos,
+                    labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
+                    labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
                     ll, tt, ww, hh;
 
                 // caculate by px

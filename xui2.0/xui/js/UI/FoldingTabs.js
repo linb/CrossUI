@@ -451,8 +451,10 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(panel.offsetWidth){
                         xui(panel).width('auto');
                         var w=xui(panel).width(), prop=profile.properties;
-                        if(xui.$uem(prop))w=profile.$px2em(w, panel)+'em';
+                        if(xui.$us(prop)>0)w=profile.$px2em(w, panel)+'em';
                         xui(panel).width(w);
+
+                        xui.UI._adjustConW(profile, panel, w);
                     }
                 });
             }

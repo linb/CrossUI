@@ -126,6 +126,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 popBtn:paras.popBtn || false,
                 optBtn:paras.optBtn || false,
                 imagePos:paras.imagePos,
+                imageBgSize:paras.imageBgSize,
                 dragKey:paras.dragKey,
                 dropKeys:paras.dropKeys,
                 id : paras.id || paras.tag || xui.id()
@@ -362,7 +363,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         ICON:{
                                             $order:0,
                                             className:'xuicon {imageClass}',
-                                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{
@@ -524,7 +525,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DroppableKeys:['PANEL','KEY', 'ITEM'],
             PanelKeys:['PANEL'],
             DraggableKeys:['ITEM'],
-            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
+            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',ICON:'ICON'},
             ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
             onSize:xui.UI.$onSize,
             CAPTION:{
@@ -836,7 +837,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             lazyAppend:true,
 
             dock:'fill',
-            noPanel:false,
             width:{
                 $spaceunit:1,
                 ini:'18em'
@@ -874,12 +874,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 ini:'single',
                 listbox:['single', 'multi']
             },
+            noPanel:{
+                ini:false,
+                action:function(value){
+                    this.getSubNode('PANEL',true).css('display',value?'none':'block');
+                    this.adjustSize(null,true);
+                }
+            },
             noHandler:{
                 ini:false,
                 action:function(value){
-                    this.getSubNode('LIST').css('display',value?'none':'');
-                    var t=this.getRootNode().style;
-                    xui.UI.$tryResize(this, t.width, t.height, true);
+                    this.getSubNode('LIST').css('display',value?'none':'block');
+                    this.adjustSize(null,true);
                 }
             }
         },
@@ -1077,10 +1083,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
-
+            if(!item){
+                item=prop.items[0];
+                key=item&&item.id;
+            }
+            if(!item)return;
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
                 
@@ -1121,13 +1131,17 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }else hc=height;
 
             if(width && item._w!=width){
-                list.width(adjustunit(item._w=width, listfz));
+                list.width(wc = adjustunit(item._w=width, listfz));
                 if(!prop.noHandler){
                     this._adjustHScroll(profile);
                 }
-                wc=width;
             }
-            if(hc||wc)panel.height(adjustunit(hc,panelfz)).onSize();
+
+            if(!prop.noPanel && (hc||wc))panel.height(adjustunit(hc,panelfz)).onSize();
+
+            if(wc){
+                xui.UI._adjustConW(profile, panel, wc);
+            }
         },
         _adjustHScroll:function(profile){
             // SCROLL

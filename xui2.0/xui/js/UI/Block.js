@@ -288,8 +288,8 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 sbs=prop.sideBarStatus,
                 sbtype=prop.sideBarType,
                 b=(prop.$iborder||0)*2,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 panelfz = panel._getEmSize(fzrate),
@@ -344,6 +344,10 @@ Class("xui.UI.Block", "xui.UI.Widget",{
             if(size.height&&'auto'!==size.height)
                 size.height = adjustunit(hh - b, panelfz);
             panel.cssRegion(size,true);
+
+            if(size.width){
+                xui.UI._adjustConW(profile, panel, size.width);
+            }
         },
         _showTips:function(profile, node, pos){
             var p=profile.properties;

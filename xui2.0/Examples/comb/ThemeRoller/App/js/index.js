@@ -1713,7 +1713,7 @@ Class('App', 'xui.Module',{
                         '    border-right-width: [Border Width];' +
                         '    border-right-color: [Border Color];' +
                         '}' +
-                        '.xui-uiborder-b{' +
+                        '.xui-uiborder-b, .xui-uitem-split{' +
                         '    border-bottom-style: [Border Style];' +
                         '    border-bottom-width: [Border Width];' +
                         '    border-bottom-color: [Border Color];' +

@@ -360,7 +360,7 @@ Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var o,r,l,
+            var o,r,l,j,
                 self = this,
                 tp = self._pevents && self._pevents[name],
                 ti = self._events && self._events[name],
@@ -1182,8 +1182,6 @@ Class('xui.Module','xui.absProfile',{
             }
             // compitable
             if(typeof theme=='function')thowUI=theme;
-
-            var fun=function(){
                 var ifun=function(path){
                     var a=this,
                         t, bg, 
@@ -1212,6 +1210,17 @@ Class('xui.Module','xui.absProfile',{
                     //if successes
                     if(path){
                         try{
+                            // for CDN font icons
+                            if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                                xui.each(t,function(o,i){
+                                    if(o.href){
+                                        var attr={crossorigin:'anonymous'};
+                                        xui.merge(attr, o, function(v,j){return j!=='href'});
+                                        xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
+                                    }
+                                });
+                            }
+                            // for theme or background of root
                             if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
                                 if(t.theme)theme=t.theme;
                                 if(t.lang)lang=t.lang;
@@ -1253,25 +1262,26 @@ Class('xui.Module','xui.absProfile',{
                         xui.tryF(onEnd,[e,null]);
                         throw e;
                     }
-                };
-                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
-                else cls=cls+"";
-                if(/\//.test(cls) && !/\.js$/i.test(cls))
-                    cls=cls+".js";
-                if(/\.js$/i.test(cls)){
-                    xui.fetchClass(cls,ifun,
-                        function(e){
-                            xui.tryF(onEnd,[e,null]);
+                },
+                fun=function(){
+                    if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+                    else cls=cls+"";
+                    if(/\//.test(cls) && !/\.js$/i.test(cls))
+                        cls=cls+".js";
+                    if(/\.js$/i.test(cls)){
+                        xui.fetchClass(cls,ifun,
+                            function(e){
+                                xui.tryF(onEnd,[e,null]);
+                            });
+                    }else
+                        //get app class
+                        xui.SC(cls,ifun,true,null,{
+                            retry:0,
+                            onFail:function(e){
+                                xui.tryF(onEnd,[e,null]);
+                            }
                         });
-                }else
-                    //get app class
-                    xui.SC(cls,ifun,true,null,{
-                        retry:0,
-                        onFail:function(e){
-                            xui.tryF(onEnd,[e,null]);
-                        }
-                    });
-            };
+                };
             if(xui.isDomReady)
                 fun();
             else

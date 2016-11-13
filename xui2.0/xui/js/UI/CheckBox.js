@@ -34,7 +34,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 ICON:{
                     $order:1,
                     className:'xuicon {imageClass}',
-                    style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                     text:'{iconFontCode}' 
                 },
                 CAPTION:{
@@ -69,7 +69,7 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:'MARK'},
+            HoverEffected:{KEY:'MARK',ICON:'ICON'},
             ClickEffected:{KEY:'MARK'},
             NavKeys:{FOCUS:1},
             onClick:function(profile, e, src){
@@ -110,8 +110,13 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }

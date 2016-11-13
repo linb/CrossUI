@@ -10,8 +10,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items = profile.getSubNode('ITEMS'),
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
-                        useem = xui.$uem(prop),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                        us = xui.$us(prop),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});

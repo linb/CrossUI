@@ -7,7 +7,7 @@
   url('iconfont.svg?t=1467528113#xuifont') format('svg'); /* iOS 4.1- */
 }
 .xuifont, .xuicon{
-  font-family:"xuifont" !important;
+  font-family:"xuifont";
   font-style:normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
@@ -19,16 +19,21 @@
 
 .xui-icon-placeholder:before{
 	content: "\e62c";
-	display:inline-block;
-	height:1em;
-	width:1em;
 }
-
 .xui-icon-empty:before{
 	content: "\e62c" !important;
-	display:inline-block;
-	height:1em;
-	width:1em;
+}
+
+
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
 }
 @-webkit-keyframes fa-spin {
   0% {
@@ -40,7 +45,7 @@
     transform: rotate(359deg);
   }
 }
-@keyframes fa-spin {
+@-moz-keyframes fa-spin {
   0% {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
@@ -50,15 +55,35 @@
     transform: rotate(359deg);
   }
 }
-.xui-icon-loading:before{
-	content: "\e68d" !important;
-	display:inline-block;
-	height:1em;
-	width:1em;
+@-o-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@-ms-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+.xui-icon-loading{
+    width: 1em;
+    height: 1em;
 }
 .xui-icon-loading:before{
-    -webkit-animation: fa-spin 1.5s infinite linear;
-    animation: fa-spin 1.5s infinite linear;
+  position:absolute;
+	content: "\e68d" !important;
+  -webkit-animation: fa-spin 1.5s infinite linear;
+  animation: fa-spin 1.5s infinite linear;
 }
 
 /*special for IE8*/

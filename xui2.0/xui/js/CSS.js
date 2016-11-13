@@ -314,6 +314,14 @@ Class("xui.CSS", null,{
         },
         resetCSS:function(){
             var b=xui.browser,
+            inlineblock= (b.gek
+                    ? b.ver<3 
+                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                        :"display:inline-block;"
+                    : b.ie6
+                        ?"display:inline-box;display:inline;"
+                    :"display:inline-block;")+
+                (b.ie?"zoom:1;":""),
             css="html{color:#444;background:#FFF;}"+
                 "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}"+
                 "table{border-collapse:collapse;border-spacing:0;}"+
@@ -333,14 +341,7 @@ Class("xui.CSS", null,{
                 (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
                 "legend{color:#000;}"+
                 "span{outline-offset:-1px;"+
-                 (b.gek
-                    ? b.ver<3 
-                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
-                        :"display:inline-block;"
-                    : b.ie6
-                        ?"display:inline-box;display:inline;"
-                    :"display:inline-block;")+
-                (b.ie?"zoom:1;":"")+
+                inlineblock+
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
         },
@@ -441,7 +442,7 @@ Class("xui.CSS", null,{
             }
         },
         $forceu:function(v,u,node,roundPx){
-            return (!v||v=='auto') ? v:
+            return (v===''||v=='auto') ? v:
                 ( u ? u=='rem' : xui.SpaceUnit=='rem') ? this.$rem(v,node,roundPx!==false)+'rem':
                 ( u ? u=='em' : xui.SpaceUnit=='em') ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'
@@ -452,6 +453,14 @@ Class("xui.CSS", null,{
     },
     Initialize:function(){
         var b=xui.browser,
+            inlineblock= (b.gek
+                    ? b.ver<3 
+                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
+                        :"display:inline-block;"
+                    : b.ie6
+                        ?"display:inline-box;display:inline;"
+                    :"display:inline-block;")+
+                (b.ie?"zoom:1;":""),
             css =  ".xui-node{margin:0;padding:0;line-height:1.22;-webkit-text-size-adjust:none;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
@@ -483,14 +492,7 @@ Class("xui.CSS", null,{
             ".xui-node-span, .xui-node-div{border:0;}"+
             ((b.ie && b.ver<=8)?"":".xui-node-span:not(.xui-showfocus):focus, .xui-node-div:not(.xui-showfocus):focus{outline:0;}.xui-showfocus:focus{outline-width: 1px;outline-style: dashed;}")+
             ".xui-node-span, .xui-wrapper span"+((b.ie && b.ver<=7)?"":", .xui-v-wrapper:before, .xui-v-wrapper > .xui-v-node")+"{outline-offset:-1px;"+
-            (b.gek
-                ? b.ver<3 
-                    ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
-                    :"display:inline-block;"
-                : b.ie6
-                    ?"display:inline-box;display:inline;"
-                :"display:inline-block;")+
-            (b.ie?"zoom:1;":"")+
+            inlineblock+
             "}"+
             ".xui-node-h1,.xui-node-h2,.xui-node-h3,.xui-node-h4,.xui-node-h5,.xui-node-h6{font-size:100%;font-weight:normal;}"+
             ".xui-node-h1{font-size:138.5%;}"+
@@ -521,10 +523,13 @@ Class("xui.CSS", null,{
 
             // must here for get correct base font size
             ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
-            ".xuicon{margin: 0 .25em;"+(b.ie6||b.ie7?"height:1em;width:1em;":"")+"}" +
+            ".xuicon{margin: 0 .25em;"+
+            inlineblock +
+            "}" +
+            ".xuicon:before{height:1em;width:1em;}" + 
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; font-size:12px; font-size:0.75rem; }" + 
             ".xui-ui-ctrl{cursor:default;}"+
-            ".xui-title-node{font-size:1.1667em;}"
+            ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

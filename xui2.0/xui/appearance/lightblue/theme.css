@@ -50,7 +50,7 @@
 .xui-uiborder-r{
     border-right-color:#88A6B6;
 }
-.xui-uiborder-b{
+.xui-uiborder-b, .xui-uitem-split{
     border-bottom-color:#88A6B6;
 }
 .xui-uiborder-flat{

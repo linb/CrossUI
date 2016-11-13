@@ -111,8 +111,8 @@ Class("xui.UI.SVGPaper", "xui.UI.Div",{
         _onresize:function(profile,width,height){
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)};
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             // caculate by px
             width=width?profile.$px(width, null, true):width;

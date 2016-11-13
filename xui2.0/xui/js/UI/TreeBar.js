@@ -18,11 +18,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(selmode=='single'){
                     var itemId = profile.getSubIdByItemId(uiv);
                     if(uiv && itemId)
-                        profile.getSubNode('BAR',itemId).tagClass('-expand',false).tagClass('-fold');
+                        fun('BAR', uiv, false);
 
                     itemId = profile.getSubIdByItemId(value);
                     if(itemId){
-                        profile.getSubNode('BAR',itemId).tagClass('-expand').tagClass('-fold',false);
+                        fun('BAR', value, true);
                         //scroll
                         if(!profile._noScroll){
                             var o = profile.getSubNode('ITEM',itemId);
@@ -237,15 +237,16 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         BAR:{
                             $order:0,
                             tabindex: '{_tabindex}',
-                            className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {disabled} {readonly}',
+                            className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {_split} {disabled} {readonly}',
                             style:'{itemStyle}',
                             RULER:{
                                 $order:2,
-                                style:'{rulerStyle}',
+                                style:'{_ruleDisplay}{rulerStyle}',
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
                                 $order:4,
+                                style:'{_tglDisplay}',
                                 className:'xuifont',
                                 $fonticon:'{_fi_togglemark}'
                             },
@@ -269,15 +270,18 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             ITEMCAPTION:{
                                 text : '{caption}',
+                                style:'{_capDisplay}',
                                 className:"{disabled}  {readonly}",
                                 $order:7
                             },
                             EXTRA:{
+                                style:'{_extraDisplay}',
                                 text : '{ext}',
                                 $order:8
                             },
                             OPT:{
                                 $order:9,
+                                style:'{_optDisplay}',
                                 className:'xuifont',
                                 $fonticon:'xui-uicmd-opt'
                             },
@@ -837,6 +841,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.mark2Display = 'display:none';
             }
             xui.UI.List._prepareCmds(profile, item);
+
+            if(item.type=='split'){
+                item._split='xui-uitem-split';
+                item._ruleDisplay=item._ltagDisplay=item._tglDisplay=item._rtagDisplay=item.imageDisplay=item.mark2Display=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
+            }
         },
         _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,

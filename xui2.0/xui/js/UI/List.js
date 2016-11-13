@@ -134,7 +134,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {_split} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
@@ -156,15 +156,18 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
+                            style:'{_capDisplay}',
                             text : '{caption}',
                             $order:20
                         },
                         EXTRA:{
+                            style:'{_extraDisplay}',
                             text : '{ext}',
                             $order:30
                         },
                         OPT:{
                             $order:50,
+                            style:'{_optDisplay}',
                             className:'xuifont',
                             $fonticon:'xui-uicmd-opt'
                         },
@@ -280,7 +283,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             }
         },
         Behaviors:{
-            HoverEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
+            HoverEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD',ICON:'ICON'},
             ClickEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
@@ -533,7 +536,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             labelPos:{
                 ini:"left",
-                listbox:['left','top', 'right', 'bottom'],
+                listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
                 }                
@@ -621,7 +624,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             var d=arguments.callee.upper.call(this, profile),t;
             d._bordertype='xui-uiborder-'+d.borderType;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize?"":("display:none");
+            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -633,6 +636,10 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             this._prepareCmds(profile, item);
+            if(item.type=='split'){
+                item._split='xui-uitem-split';
+                item._ltagDisplay=item._rtagDisplay=item.imageDisplay=item._cbDisplay=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
+            }
         },
         _prepareCmds:function(profile, item, filter){
             var p=profile.properties,
@@ -688,8 +695,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
 
                 f=function(k){return profile.getSubNode(k)},
@@ -704,9 +711,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 dock=prop.dock,
                 max=prop.maxHeight,
 
-                labelSize=profile.$px(prop.labelSize, labelfz)||0,
-                labelGap=profile.$px(prop.labelGap)||0,
-                labelPos = prop.labelPos || 'left',
+                labelPos=prop.labelPos,
+                labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
+                labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
                 ll, tt, ww, hh;
 
             // caculate by px

@@ -893,7 +893,7 @@ xui.merge(xui,{
     $rand:"_r_",
 
     SpaceUnit:'em',
-    $uem:function(p){return ((p?p.spaceUnit:'')||xui.SpaceUnit) == 'em'},
+    $us:function(p){return ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'em' ? 2 :  p=='px'? -2 : xui.SpaceUnit == 'em' ? 1 : -1},
     // for show xui.echo
     debugMode:true,
 
@@ -2062,7 +2062,7 @@ new function(){
                             // try to get module
                             var cls=xui.get(window,target.split(".")),ins;
                             // get first one
-                            if(cls)for(var i in cls._pool){ins=cls._pool[i];break;}
+                            if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
 
                             // handle hide / destroy
                             if(method=="show"||method=="pop"){
@@ -4205,16 +4205,9 @@ Class('xui.absObj',"xui.absBox",{
                             // *** force to em/px
                             if(!force){
                                 if(dm[i] && dm[i]['$spaceunit']){
-                                    if(xui.CSS.$isEm(v.properties[i])){
-                                        if(value!='auto'&&(xui.isFinite(value )||xui.CSS.$isPx(value))){
-                                            if(v.$px2em)
-                                                value=v.$px2em(value)+'em';
-                                        }
-                                    }else{
-                                        if(value!='auto'&& xui.CSS.$isEm(value)){
-                                            if(v.$em2px)
-                                                value=v.$em2px(value)+'px';
-                                        }
+                                    if(v.$forceu && value != 'auto'){
+                                        t=xui.$us(v);
+                                        value=v.$forceu(value,t==2?'em':t==-2?'px':null);
                                     }
                                 }
                             }

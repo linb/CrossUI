@@ -40,8 +40,8 @@ Class("xui.UI.Video", "xui.UI.Audio",{
             var H5=profile.getSubNode('H5'), 
                 size=H5.cssSize(),
                 prop=profile.properties,
-                useem =xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us =xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
                 ww=profile.$px(width), 
                 hh=profile.$px(height);

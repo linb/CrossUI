@@ -36,7 +36,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
     Static:{
         Behaviors:{
             NavKeys:{CAPTION:1},
-            HoverEffected:{TOGGLE:'TOGGLE'},
+            HoverEffected:{TOGGLE:'TOGGLE',ICON:'ICON'},
             ClickEffected:{TOGGLE:'TOGGLE'},
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
@@ -83,7 +83,7 @@ Class("xui.UI.Group", "xui.UI.Div",{
                         ICON:{
                             $order:1,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {
@@ -175,8 +175,13 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -272,8 +277,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                         fs.height(p.height);
                 }else{
                     var css = xui.CSS,
-                        useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                        us = xui.$us(p),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         height=profile.getSubNode('LEGEND').height();
                     height = height?adjustunit(height):null;
                     profile.getRoot().height(height?height:'auto');
@@ -302,8 +307,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
             var prop=profile.properties,
                 // compare with px
                 css = xui.CSS,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fs = profile.getSubNode('FIELDSET'),
                 panel =profile.getSubNode('PANEL'), 
@@ -333,7 +338,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 }
             }
             if(width && width!='auto' && ww>=2){
-                profile.getSubNode('PANEL').width(adjustunit(ww-2));
+                panel.width(ww = adjustunit(ww-2));
+                xui.UI._adjustConW(profile, panel, ww);
             }
         }
     }

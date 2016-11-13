@@ -1955,73 +1955,79 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
     Instance:{
         refreshChart:function(dataFormat){
             return this.each(function(prf){
+                prf.boxing().busy(false,'');
                 if(prf.renderId){
-                    var prop=prf.properties,t;
-                    if(prf._chartId && (t=FusionCharts(prf._chartId))){
-                        // dispose
-                        t.dispose();
-                        // clear node
-                        prf.getSubNode('BOX').html("",false);
-                    }
+                    var fun=function(){
+                        var prop=prf.properties,t;
+                        if(prf._chartId && (t=FusionCharts(prf._chartId))){
+                            // dispose
+                            t.dispose();
+                            // clear node
+                            prf.getSubNode('BOX').html("",false);
+                        }
 
-                    // new one
-                    var fc=new FusionCharts(
-                            prop.chartType, 
-                            prf._chartId, 
-                            prf.$isEm(prop.width)?prf.$em2px(prop.width):prop.width, 
-                            prf.$isEm(prop.height)?prf.$em2px(prop.height):prop.height
-                    ),
-                     flag;
-                    
-                    switch(dataFormat){
-                        case 'XMLUrl':
-                            var xml=xui.getFileSync(prop.XMLUrl);
-                            if(xml)fc.setXMLData(xml);
-                        break;
-                        case 'JSONUrl':
-                            var json=xui.getFileSync(prop.JSONUrl);
-                            if(json)fc.setJSONData(json);
-                        break;
-                        case 'XMLData':
-                            fc.setXMLData(prop.XMLData);
-                        break;
-                        default:
-                            if(prop.XMLUrl){
+                        // new one
+                        var fc=new FusionCharts(
+                                prop.chartType, 
+                                prf._chartId, 
+                                prf.$isEm(prop.width)?prf.$em2px(prop.width):prop.width, 
+                                prf.$isEm(prop.height)?prf.$em2px(prop.height):prop.height
+                        ),
+                         flag;
+                        
+                        switch(dataFormat){
+                            case 'XMLUrl':
                                 var xml=xui.getFileSync(prop.XMLUrl);
                                 if(xml)fc.setXMLData(xml);
-                            }else if(prop.JSONUrl){
+                            break;
+                            case 'JSONUrl':
                                 var json=xui.getFileSync(prop.JSONUrl);
                                 if(json)fc.setJSONData(json);
-                            }else if(prop.XMLData){
+                            break;
+                            case 'XMLData':
                                 fc.setXMLData(prop.XMLData);
-                            }else if(!xui.isEmpty(prop.JSONData)){
-                                flag=1;
-                                fc.setJSONData(prf.box._prepareFCData(prf,prop.JSONData));
-                            }
-                    }
-                    // ensure cursor pointer
-                    if(!flag){
-                        fc.setJSONData(prf.box._prepareFCData(prf,fc.getJSONData()));
-                    }
-                    fc.setTransparent(true);
-                    fc.render(prf.getSubNode('BOX').id());
-                    // attachEvents
-                    var t=FusionCharts(prf._chartId),
-                        f1=function(a,argsMap){
-                            if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
-                        },f2=function(a,argsMap){
-                            if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
-                        },f3=function(a,argsMap){
-                            if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
-                        };
+                            break;
+                            default:
+                                if(prop.XMLUrl){
+                                    var xml=xui.getFileSync(prop.XMLUrl);
+                                    if(xml)fc.setXMLData(xml);
+                                }else if(prop.JSONUrl){
+                                    var json=xui.getFileSync(prop.JSONUrl);
+                                    if(json)fc.setJSONData(json);
+                                }else if(prop.XMLData){
+                                    fc.setXMLData(prop.XMLData);
+                                }else if(!xui.isEmpty(prop.JSONData)){
+                                    flag=1;
+                                    fc.setJSONData(prf.box._prepareFCData(prf,prop.JSONData));
+                                }
+                        }
+                        // ensure cursor pointer
+                        if(!flag){
+                            fc.setJSONData(prf.box._prepareFCData(prf,fc.getJSONData()));
+                        }
+                        fc.setTransparent(true);
+                        fc.render(prf.getSubNode('BOX').id());
+                        // attachEvents
+                        var t=FusionCharts(prf._chartId),
+                            f1=function(a,argsMap){
+                                if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
+                            },f2=function(a,argsMap){
+                                if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
+                            },f3=function(a,argsMap){
+                                if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
+                            };
 
-                    if(prf._f1)t.removeEventListener("dataplotClick",prf._f1);
-                    if(prf._f2)t.removeEventListener("dataLabelClick",prf._f2);
-                    if(prf._f3)t.removeEventListener("annotationClick",prf._f3);
-                    
-                    t.addEventListener("dataplotClick",prf._f1=f1);
-                    t.addEventListener("dataLabelClick",prf._f2=f1);
-                    t.addEventListener("annotationClick",prf._f3=f1);
+                        if(prf._f1)t.removeEventListener("dataplotClick",prf._f1);
+                        if(prf._f2)t.removeEventListener("dataLabelClick",prf._f2);
+                        if(prf._f3)t.removeEventListener("annotationClick",prf._f3);
+                        
+                        t.addEventListener("dataplotClick",prf._f1=f1);
+                        t.addEventListener("dataLabelClick",prf._f2=f1);
+                        t.addEventListener("annotationClick",prf._f3=f1);
+
+                        prf.boxing().free();
+                    };
+                    xui.resetRun('xui.UI.FusionChartsXT:'+prf.$xid,fun, 200);
                 }
             });
         },
@@ -2415,8 +2421,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             var size = prf.getSubNode('BOX').cssSize(),
                 prop=prf.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return prf.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
                 root = prf.getRoot(),
                 
                 // caculate by px

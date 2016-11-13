@@ -8383,6 +8383,18 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getSpaceUnit:{
+                $desc:"得到控件的空间（位置、大小等）单元",
+                $rtn:"String"
+            },
+            setSpaceUnit:{
+                $desc:"设置控件的空间（位置、大小等）单元",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. '', 'px' 或 'em', 默认为空",
+                    $force
+                ]
+            },
             getDisabled:{
                 $desc:"判断控件是否变灰(不可用)",
                 $rtn:"Boolean",
@@ -9919,6 +9931,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getImageBgSize :{
+                $desc:"得到背景图尺寸属性",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"设置背景图尺寸属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 背景图尺寸",
+                    $force
+                ]
+            },           
             onClick:{
                 $desc:"当鼠标单击时调用",
                 $paras:[
@@ -10175,6 +10199,18 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getImageBgSize :{
+                $desc:"得到背景图尺寸属性",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"设置背景图尺寸属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 背景图尺寸",
+                    $force
+                ]
+            },           
             onChecked:{
                 $desc:"Fired when CheckBox is checked",
                 $paras:[
@@ -10370,7 +10406,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-
+            getImageBgSize :{
+                $desc:"得到背景图尺寸属性",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"设置背景图尺寸属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 背景图尺寸",
+                    $force
+                ]
+            },           
             onClick:{
                 $desc:"当鼠标单击时调用",
                 $paras:[
@@ -10963,6 +11010,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getImageBgSize :{
+                $desc:"得到背景图尺寸属性",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"设置背景图尺寸属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 背景图尺寸",
+                    $force
+                ]
+            },           
             getToggle:{
                 $desc:"判断编组框是打开还是收缩的",
                 $rtn:"Boolean",
@@ -13240,6 +13299,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getImageBgSize :{
+                $desc:"得到背景图尺寸属性",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"设置背景图尺寸属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 背景图尺寸",
+                    $force
+                ]
+            },           
             getToggle:{
                 $desc:"判断面板处于打开还是收缩状态",
                 $rtn:"Boolean",
@@ -15005,6 +15076,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100); alert(dlg.getImagePos());xui.asyRun(function(){dlg.setImage('img/img.gif').setImagePos('left -16px');},1000);"
                 ]
             },
+            getImageBgSize :{
+                $desc:"得到背景图尺寸属性",
+                $rtn:"String"
+            },
+            setImageBgSize :{
+                $desc:"设置背景图尺寸属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 背景图尺寸",
+                    $force
+                ]
+            },           
             getHtml:{
                 $desc:"获取对话框的内部内容HTML",
                 $rtn:"String",

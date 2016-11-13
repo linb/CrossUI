@@ -125,8 +125,8 @@ Class("xui.UI.Audio", "xui.UI",{
             var H5=profile.getSubNode('H5'), 
                 size=H5.cssSize(),
                 prop=profile.properties,
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 // caculate by px
                 ww=width?profile.$px(width):width, 

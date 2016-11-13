@@ -86,7 +86,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         ICON:{
                             $order:0,
                             className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -199,7 +199,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             PanelKeys:['PANEL'],
             DraggableKeys:['TBAR'],
             NoDraggableKeys:['INFO','OPT','CLOSE','POP','REFRESH','TOGGLE'],
-            HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE'},
+            HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE',ICON:'ICON'},
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',TOGGLE:'TOGGLE'},
             onSize:xui.UI.$onSize,
             INFO:{
@@ -318,8 +318,13 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                 }
@@ -495,8 +500,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 if(p.toggle){
                         profile.getRoot().height(p.height);
                 }else{
-                    var useem = xui.$uem(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                    var us = xui.$us(p),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         root = profile.getRoot(),
                         h1=profile.getSubNode('BORDER').height();
                     h1 = h1?adjustunit(h1):null;
@@ -521,8 +526,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         _onresize:function(profile,width,height){
            var prop=profile.properties,
                 // compare with px
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot();
 
             var isize={},
@@ -579,6 +584,9 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     , panelfz);
             }
             v2.cssSize(isize, true);
+            if(width){
+                xui.UI._adjustConW(profile, v2, isize.width);
+            }
         }
     }
 });

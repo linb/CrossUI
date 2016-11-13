@@ -510,7 +510,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             ICON:{
                 className:'xuifont {imageClass}',
                 //for cover xuicon
-                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                 text:'{iconFontCode}'
             }
         };
@@ -810,7 +810,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
         _objectProp:{popCtrlProp:1,popCtrlEvents:1},
         Behaviors:{
-            HoverEffected:{BOX:'BOX'},
+            HoverEffected:{BOX:'BOX',ICON:'ICON',ICONB:'ICONB'},
             ClickEffected:{BOX:'BOX'},
             ICONB:{
                 onClick : function(profile, e, src){
@@ -1206,8 +1206,13 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     this.getSubNode('ICON').css('backgroundPosition', value||'center');
                 }
             },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
             imageClass: {
-                combobox : xui.toArr(xui.builtinFontIcon,true),
+                ini:'',
                 action:function(v,ov){
                     xui.UI.$iconAction(this, 'ICON', ov);
                     this.boxing().reLayout(true);
@@ -1612,8 +1617,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 lbtn=f(type=='counter'?'LBTN':null),
                 rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 v1fz=v1._getEmSize(fzrate),

@@ -30,25 +30,23 @@ Class('RAD.CustomTextShadow', 'xui.Com',{
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"sd_clr")
                 .setDirtyMark(false)
-                .setLeft("-0.08333333333333333em")
+                .setLeft("1.5833333333333333em")
                 .setTop("0.8333333333333334em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.833333333333334em")
+                .setLabelSize("108px")
                 .setLabelCaption("$(RAD.custom_dlg.shadow.Shadow Color)")
                 .setType("color")
-                .afterUIValueSet("_t_sd_afteruivalueset")
+                .onChange("_changed")
                 );
             
             host.bg.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"sd_hl")
                 .setDirtyMark(false)
-                .setLeft("-0.08333333333333333em")
+                .setLeft("1.5833333333333333em")
                 .setTop("3.5em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.833333333333334em")
+                .setLabelSize("108px")
                 .setLabelCaption("$(RAD.custom_dlg.shadow.Horizontal Length)")
                 .setType("counter")
                 .setUnit("px")
@@ -56,18 +54,17 @@ Class('RAD.CustomTextShadow', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .onChange("_sd_hl_onchange")
+                .onChange("_changed")
                 );
             
             host.bg.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"sd_vl")
                 .setDirtyMark(false)
-                .setLeft("-0.08333333333333333em")
+                .setLeft("1.5833333333333333em")
                 .setTop("6.416666666666667em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.833333333333334em")
+                .setLabelSize("108px")
                 .setLabelCaption("$(RAD.custom_dlg.shadow.Vertical Length)")
                 .setType("counter")
                 .setUnit("px")
@@ -75,18 +72,17 @@ Class('RAD.CustomTextShadow', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .onChange("_sd_vl_onchange")
+                .onChange("_changed")
                 );
             
             host.bg.append(
                 xui.create("xui.UI.ComboInput")
                 .setHost(host,"sd_br")
                 .setDirtyMark(false)
-                .setLeft("-0.08333333333333333em")
+                .setLeft("1.5833333333333333em")
                 .setTop("9.083333333333334em")
-                .setWidth("16.666666666666668em")
-                .setLabelSize("9em")
-                .setLabelGap("0.3333333333333333em")
+                .setWidth("15.833333333333334em")
+                .setLabelSize("108px")
                 .setLabelCaption("$(RAD.custom_dlg.shadow.Blur Radius)")
                 .setType("counter")
                 .setUnit("px")
@@ -94,7 +90,7 @@ Class('RAD.CustomTextShadow', 'xui.Com',{
                 .setIncrement(1)
                 .setMin(0)
                 .setMax(100)
-                .onChange("_sd_br_onchange")
+                .onChange("_changed")
                 );
             
             return children;
@@ -109,7 +105,7 @@ Class('RAD.CustomTextShadow', 'xui.Com',{
                 clr:ns.sd_clr.getValue()
             };
         },
-        _t_sd_afteruivalueset : function (profile){
+        _changed : function (profile){
             xui.resetRun("textShadow",this.setBR,0,null,this);
         },
         setBR:function(){

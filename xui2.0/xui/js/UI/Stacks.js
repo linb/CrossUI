@@ -120,12 +120,18 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 item = profile.getItemByItemId(key);
 
             if(!item){
-                key=prop.$UIvalue;
+                key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
+            if(!item){
+                item=prop.items[0];
+                key=item&&item.id;
+            }
+            if(!item)return;
+
             var panel = profile.boxing().getPanel(key),
-                useem = xui.$uem(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, useem?'em':'px', emRate)},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
                 list=profile.getSubNode('LIST'),
@@ -191,7 +197,10 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 top:adjustunit(top,panelfz),
                 left:0+profile.$picku()
             },true);
-            if(wc)list.width(adjustunit(wc,listfz));
+            if(wc){
+                list.width(wc = adjustunit(wc,listfz));
+                xui.UI._adjustConW(profile, panel, wc);
+            }
         },
         _adjustScroll:null
     }

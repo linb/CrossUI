@@ -1265,7 +1265,6 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "h",
                     "caption":"err 1",
-                    "comment" : "image and iconFontCode",
                     "iconFontCode":"&#xe61a;",
                     "image" : "img/demo_no.gif"
                 }])

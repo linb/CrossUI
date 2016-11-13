@@ -154,8 +154,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                             var p=profile.properties,
                                   nn=xui.use(src),
                                   node=nn.get(0),
-                                  item=profile.getItemByDom(src),
-                                  icon=profile.getSubNodeByItemId('ICON',item.id);
+                                  item=profile.getItemByDom(src);
+                            if(!item)return;
+                            var icon=profile.getSubNodeByItemId('ICON',item.id);
                             
                             // bug fix
                              if(node.currentSrc && node.currentSrc!=path){
@@ -290,13 +291,16 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             item._tabindex = p.tabindex;
 
             if(t=item.fontSize)item._fontSize='font-size:'+t+';'
-            if(!item.iconFontCode)item._imageClass='xui-icon-loading';
+            if(!item.iconFontCode && !item.imageClass)item._imageClass='xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;
 
             if(item.flagText||item.flagClass)item._flagStyle='display:block';
             if(!item.flagClass)item.flagClass='xui-uiflag-1';
 
-            if(p.iconOnly)delete item.caption;
+            if(p.iconOnly){
+                delete item.caption;
+                delete item.comment;
+            }
 
             if(( item.caption = item.caption || '')==='')item.capDisplay='display:none;';
             if((item.comment = item.comment || '')==='')item.commentDisplay='display:none;';

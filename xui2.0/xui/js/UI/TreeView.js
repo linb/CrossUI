@@ -97,6 +97,11 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             xui.UI.List._prepareCmds(profile, item);
+            
+            if(item.type=='split'){
+                item._split='xui-uitem-split';
+                item._ruleDisplay=item._ltagDisplay=item._tglDisplay=item._rtagDisplay=item.imageDisplay=item.mark2Display=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
+            }
         },
         _tofold:function(profile,item,pid){
             var cls=profile.getClass('IMAGE');
