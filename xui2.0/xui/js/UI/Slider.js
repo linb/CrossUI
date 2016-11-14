@@ -7,11 +7,29 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     fun=function(k){return profile.getSubNode(k)},
                     a=fun('IND1'),
                     b=fun('IND2'),
+                    c=fun('BG'),
+                    v=p.type=='vertical',
                     arr = profile.box._v2a(profile,value),
-                    ori=p.type=='vertical'?'top':'left';
-                a[ori](arr[0]+'%');
-                if(p.isRange)
+                    ori = v?'top':'left',
+                    orj = v?'height':'width',
+                    label;
+                if(p.isRange){
+                    a[ori](arr[0]+'%');
                     b[ori](arr[1]+'%');
+                    c[ori](arr[0]+'%')[orj]((arr[1]-arr[0])+'%');
+                    label = (p.numberTpl+"")
+                        .replace('1', xui.formatNumeric(arr[0],p.precision||0,null,null,true) )
+                        .replace('2', xui.formatNumeric(arr[1],p.precision||0,null,null,true) );
+                }else{
+                    a[ori](arr[0]+'%');
+                    c[orj](arr[0]+'%');
+                    label = (p.numberTpl+"")
+                        .replace(/1[^2]*2/, '1' )
+                        .replace('1', xui.formatNumeric(arr[0],p.precision||0,null,null,true) );
+                }
+                if(p.labelPos!='none'){
+                    profile.getSubNode('LABEL').html((xui.adjustRes(p.labelCaption,true)||"") + label );
+                }
             });
         },
         _setDirtyMark:function(){
@@ -21,7 +39,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
     Static:{
         Templates:{
             style:'{_style}',
-            className:'{_className} xui-ui-ellipsis',
+            className:'{_className} xui-ui-ellipsis {_cls}',
             LABEL:{
                 className:'{_required}',
                 style:'{labelShow};width:{_labelSize};{labelHAlign}',
@@ -29,28 +47,26 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             },
             BOX:{
                 tagName:'div',
-                className:'{_cls}',
-                BG:{
-                    tagName:'div'
-                },
                 RULER:{
                     $order:1,
                     tagName:'div',
-                    className:'xui-uiborder-flat xui-uiborder-radius',
-                    RULERLEFT:{},
-                    RULERRIGHT:{}
+                    className:'xui-uiborder-flat xui-uibase xui-uiborder-radius',
+                    BG:{
+                        tagName:'div',
+                        className:'xui-uibar xui-uiborder-radius'
+                    },
                 },
                 IND:{
                     $order:2,
                     IND1:{
-                        tagName:'button',
-                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
+                        tagName:'span',
+                        className:'xui-uibar xui-uigradient xui-ui-btn xui-uiborder-circle xuicon xui-icon-placeholder',
                         style:'{_showD}',
                         tabindex:'{tabindex}'
                     },
                     IND2:{
-                        tagName:'button',
-                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
+                        tagName:'span',
+                        className:'xui-uibar xui-uigradient xui-ui-btn xui-uiborder-circle xuicon xui-icon-placeholder',
                         style:'{_showD2}',
                         tabindex:'{tabindex}'
                     }
@@ -70,7 +86,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             }
         },
         Appearances:{
-            'IND, BT, RULER, RULERLEFT, RULERRIGHT, IND1, IND2, DECREASE, INCREASE':{
+            'IND, BT, RULER, IND1, IND2, DECREASE, INCREASE':{
                 position:'absolute'
             },
             LABEL:{
@@ -87,116 +103,97 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 width:'100%',
                 height:'100%'
             },
-            'BOX-h DECREASE, BOX-h INCREASE':{
+            'KEY-h BOX':{
+                $order:1,
+                height:'2em'
+            },
+            'KEY-v BOX':{
+                $order:2,
+                width:'2em'
+            },
+            'KEY-v LABEL':{
+                'writing-mode': 'tb-rl',
+                filter: 'flipv fliph'
+            },
+            'KEY-h DECREASE, KEY-h INCREASE':{
                 top:'50%',
                 'margin-top':'-.5em'
             },            
-            'BOX-h IND1,BOX-h IND2, BOX-v IND1,BOX-v IND2':{
+            'KEY-h IND1,KEY-h IND2, KEY-v IND1,KEY-v IND2':{
                 padding:0,
                 margin:0
             },
-            'BOX-h DECREASE':{
+            'KEY-h DECREASE':{
                 $order:1,
                 left:0
             },
-            'BOX-h INCREASE':{
+            'KEY-h INCREASE':{
                 $order:1,
                 right:0
             },
-            'BOX-h BG':{
-                top:'50%'                
+            BG:{
+                position:'absolute',
+                left:0,
+                top:0,
+                height:'100%',
+                width:'100%'
             },
-            'BOX-h IND, BOX-h RULER':{
+            'KEY-h IND':{
                 'z-index':1,
+                top:'50%',
+                height:'2px',
+                'margin-top':'-1px'
+            },
+            'KEY-h RULER':{
+                $order:2,
                 top:'50%',
                 height:'2px',
                 'margin-top':'-2px'
             },
-            'BOX-h RULER, BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-            },
-            'BOX-h RULER':{
-                $order:2
-            },
-            'BOX-h RULERLEFT, BOX-h RULERRIGHT':{
-                'z-index':1,
-                height:'2px',
-                width:'2px'
-            },
-            'BOX-h RULERLEFT':{
-                $order:2,
-                left:'-2px',
-                top:0
-            },
-            'BOX-h RULERRIGHT':{
-                $order:2,
-                right:'-2px',
-                top:0
-            },
-
-            'BOX-v DECREASE, BOX-v INCREASE':{
+            'KEY-v DECREASE, KEY-v INCREASE':{
                 $order:10,
                 left:'50%',
                 'margin-left':'-.5em'
             },            
-            'BOX-v DECREASE':{
+            'KEY-v DECREASE':{
                 $order:10,
                 top:0
             },
-            'BOX-v INCREASE':{
+            'KEY-v INCREASE':{
                 $order:10,
                 bottom:0
             },
-            'BOX-v BG':{
+            'KEY-v IND':{
                 $order:10,
-                left:'50%'                
+                'z-index':1,
+                left:'50%',
+                width:'2px',
+                'margin-left':'-1px'
             },
-            'BOX-v IND, BOX-v RULER':{
+            'KEY-v RULER':{
                 $order:10,
                 'z-index':1,
                 left:'50%',
                 width:'2px',
                 'margin-left':'-2px'
             },
-            'BOX-v RULER, BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-            },
-            'BOX-v RULER':{
-                $order:10
-            },
-            'BOX-v RULERLEFT, BOX-v RULERRIGHT':{
-                $order:10,
-                'z-index':1,
-                width:'2px',
-                height:'2px'
-            },
-            'BOX-v RULERLEFT':{
-                $order:12,
-                top:'-2px',
-                left:0
-            },
-            'BOX-v RULERRIGHT':{
-                $order:12,
-                bottom:'-2px',
-                left:0
-            },
-            'BOX-h IND1,BOX-h IND2':{
+            'KEY-h IND1,KEY-h IND2':{
                 $order:1,
                 'z-index':2,
-                height:'18px',
-                width:'8px',
                 left:0,
                 top:0,
                 cursor:'e-resize',
-                'margin-top':'-7px'
+                'margin-top':'-.5em',
+                'margin-left':'-.5em'
             },
-            'BOX-v IND1,BOX-v IND2':{
+            'KEY-v IND1,KEY-v IND2':{
                 $order:10,
                 'z-index':2,
-                width:'18px',
-                height:'8px',
                 left:0,
                 top:0,
                 cursor:'n-resize',
-                'margin-left':'-7px'
+                'margin-top':'-.5em',
+                'margin-left':'-.5em'
             }
         },
         Behaviors:{
@@ -213,10 +210,10 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         i1,i2,
                         type=p.type=='vertical',
                         k1=type?'top':'left',
-                        k2=type?'offsetTop':'offsetLeft',
-                        k3=type?'offsetHeight':'offsetWidth',
+                        k2=type?'top':'left',
+                        k3=type?'height':'width',
                         cur=p2[k1]-p1[k1],
-                        v=(cur/xui.use(src).get(0)[k3])*100;
+                        v=(cur/xui.use(src)[k3]())*100;
                     if(!p.isRange)
                         arr[0]=v;
                     else{
@@ -251,8 +248,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return;
                     var type=p.type=='vertical',
-                        k2=type?'offsetTop':'offsetLeft',
-                        k3=type?'offsetHeight':'offsetWidth',
+                        k2=type?'top':'left',
+                        k3=type?'height':'width',
                         box=profile.box;
                     xui.use(src).startDrag(e,{
                         widthIncrement:p.steps?profile._size/p.steps:null,
@@ -260,8 +257,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         targetReposition:true,
                         horizontalOnly:type?true:null,
                         verticalOnly:type?null:true,
-                        maxLeftOffset: xui.use(src).get(0)[k2],
-                        maxRightOffset: xui.use(src).parent().get(0)[k3]-xui.use(src).get(0)[k2],
+                        maxLeftOffset: xui.use(src)[k2](),
+                        maxRightOffset: xui.use(src).parent()[k3]()-xui.use(src)[k2](),
                         dragCursor:'default'
                     });
 
@@ -270,13 +267,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 beforeDragbegin:function(profile, e, src){
                     var type=profile.properties.type=='vertical';
-                    xui(src)[type?'top':'left'](profile.__x=xui.use(src).get(0)[type?'offsetTop':'offsetLeft']);
+                    xui(src)[type?'top':'left'](profile.__x=profile.$px(xui.use(src)[type?'top':'left']()));
                 },
                 onDrag:function(profile, e, src){
                     var offset=xui.DragDrop.getProfile().offset,
                         type=profile.properties.type=='vertical',
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue);
-                    arr[0]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent().get(0)[type?'offsetHeight':'offsetWidth'])*100;
+                    arr[0]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent()[type?'height':'width']())*100;
                     profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'drag');
                 },
                 onDragstop:function(profile, e, src){
@@ -306,8 +303,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     var p=profile.properties;
                     if(p.disabled || p.readonly)return;
                     var type=p.type=='vertical',
-                        k2=type?'offsetTop':'offsetLeft',
-                        k3=type?'offsetHeight':'offsetWidth',
+                        k2=type?'top':'left',
+                        k3=type?'height':'width',
                         box=profile.box;
                     xui.use(src).startDrag(e,{
                         widthIncrement:p.steps?profile._size/p.steps:null,
@@ -315,8 +312,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         targetReposition:true,
                         horizontalOnly:type?true:null,
                         verticalOnly:type?null:true,
-                        maxLeftOffset: xui.use(src).get(0)[k2],
-                        maxRightOffset: xui.use(src).parent().get(0)[k3]-xui.use(src).get(0)[k2],
+                        maxLeftOffset: xui.use(src)[k2](),
+                        maxRightOffset: xui.use(src).parent()[k3]()-xui.use(src)[k2](),
                         dragCursor:'default'
                     });
 
@@ -325,33 +322,19 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 },
                 beforeDragbegin:function(profile, e, src){
                     var type=profile.properties.type=='vertical';
-                    xui(src)[type?'top':'left'](profile.__x=xui.use(src).get(0)[type?'offsetTop':'offsetLeft']);
+                    xui(src)[type?'top':'left'](profile.__x=profile.$px(xui.use(src)[type?'top':'left']()));
                 },
                 onDrag:function(profile, e, src){
                     var offset=xui.DragDrop.getProfile().offset,
                         type=profile.properties.type=='vertical',
                         arr=profile.box._v2a(profile,profile.properties.$UIvalue);
-                    arr[1]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent().get(0)[type?'offsetHeight':'offsetWidth'])*100;
+                    arr[1]=((profile.__x+offset[type?'y':'x'])/xui.use(src).parent()[type?'height':'width']())*100;
                     profile.boxing().setUIValue(profile.box._adjustValue(profile,arr),null,null,'drag2');
                 },
                 onDragstop:function(profile, e, src){
                     xui(src).onMouseout(true,{$force:true}).onMouseup(true);
                 },
                 onClick:function(){return false}
-            },
-            RULERRIGHT:{
-                onClick:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled || p.readonly)return false;
-                    var b=profile.boxing(),
-                        c=profile.box,
-                        arr=c._v2a(profile,p.$UIvalue);
-                    if(!p.isRange)
-                        arr[0]=100;
-                    else
-                        arr[1]=100;
-                    b.setUIValue(profile.box._adjustValue(profile,arr),null,null,'click2');
-                }
             },
             DECREASE:{
                 onMousedown:function(profile){
@@ -410,6 +393,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $spaceunit:1,
                 ini:'4em'
             },
+            precision:0,
+            numberTpl:' - 1% ~ 2%',
             steps:0,
             value:'0:0',
             type:{
@@ -428,13 +413,13 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             showIncreaseHandle:{
                 ini:true,
                 action:function(v){
-                    this.boxing().refresh();
+                    this.adjustSize();
                 }
             },
             showDecreaseHandle:{
                 ini:true,
                 action:function(v){
-                    this.boxing().refresh();
+                    this.adjustSize();
                 }
             },
             // label
@@ -486,7 +471,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d._showDes=d.showDecreaseHandle?'':N,
             d._showIns=d.showIncreaseHandle?'':N,
             d._showD2=d.isRange?'':N;
-            d._cls=profile.getClass('BOX',d.type=='vertical'?'-v':'-h');
+            d._cls=profile.getClass('KEY',d.type=='vertical'?'-v':'-h');
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
@@ -494,8 +479,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
 
-            d._fi_decls = 'xui-icon-triangle-'+(d.type=='vertical'?'up':'left');
-            d._fi_incls = 'xui-icon-triangle-'+(d.type=='vertical'?'down':'right');
+            d._fi_decls = 'xui-icon-single'+(d.type=='vertical'?'up':'left');
+            d._fi_incls = 'xui-icon-single'+(d.type=='vertical'?'down':'right');
             return d;
         },
         _adjustValue:function(profile,value){
@@ -571,10 +556,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 root = f('KEY'),
                 ruler = f('RULER'),
                 ind = f('IND'),
-                ru1 = f('RULERLEFT'),
+                indb = f('IND1'),
+                offset = profile.$px('.75em'),
                 box = f('BOX'),
                 label = f('LABEL'),
-                cmd = f('DECREASE'),
+                cmd1 = f('INCREASE'),
+                cmd2 = f('DECREASE'),
                 
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
@@ -594,41 +581,60 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(width && width!='auto')width=profile.$px(width);
             if(height && height!='auto')height=profile.$px(height);
 
-            box.cssRegion({
+            box.cssPos({
                 left : adjustunit(ll = labelPos=='left'?labelSize:0),
-                top : adjustunit(tt = labelPos=='top'?labelSize:0),
-                width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
-                height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
+                top : adjustunit(tt = labelPos=='top'?labelSize:0)
             });
+            cmd2.css('display',prop.showDecreaseHandle?'':'none');
+            cmd1.css('display',prop.showIncreaseHandle?'':'none');
+
+            if(type=='vertical'){
+                box.cssSize({
+                    width : '',
+                    height : adjustunit(hh = height===null?null:Math.max(0,(height - ((labelPos=='top'||labelPos=='bottom')?labelSize:0))))
+                });
+                var w=profile.$px('1em'),
+                    w1=prop.showIncreaseHandle?w:0,
+                    w2=prop.showDecreaseHandle?w:0,
+                    w3=indb._borderH('top');
+                if(hh){
+                    ruler.top(adjustunit(w1+offset,rulerfz))
+                        .height(adjustunit(hh-w1-w2-2*offset,rulerfz));
+                    ind.top(adjustunit(w1+offset-w3,indfz))
+                        .height(adjustunit(hh-w1-w2-2*offset,indfz));
+                }
 
             if(labelSize)
                 label.cssRegion({
-                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelSize),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelSize), 
-                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelSize),
-                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelSize)
+                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(box.width()+labelGap):0),labelfz),
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz), 
+                    width: '',
+                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
+                });
+            }else{
+                box.cssSize({
+                    width : adjustunit(ww = width===null?null:Math.max(0,(width - ((labelPos=='left'||labelPos=='right')?labelSize:0)))),
+                    height : ''
+                });
+                var w=profile.$px('1em'),
+                    w1=prop.showIncreaseHandle?w:0,
+                    w2=prop.showDecreaseHandle?w:0,
+                    w3=indb._borderW('left');
+                if(ww){
+                    ruler.left(adjustunit(w1+offset, rulerfz))
+                        .width(adjustunit(ww-w1-w2-2*offset,rulerfz));
+                    ind.left(adjustunit(w1+offset-w3, indfz))
+                        .width(adjustunit(ww-w1-w2-2*offset,indfz));
+                }
+
+            if(labelSize)
+                label.cssRegion({
+                    left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelfz),
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(box.height()+labelGap):0),labelfz), 
+                    width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelfz),
+                    height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
 
-            if(type=='vertical'){
-                var w=ru1.height(),
-                    w1=prop.showDecreaseHandle?cmd.offsetHeight(true):0,
-                    w2=w1,
-                    w3=f('IND1').height();
-    
-                if(hh){
-                    ruler.top(adjustunit(w1+w,rulerfz)).height(adjustunit(hh-w1-w2-2*w,rulerfz));
-                    ind.top(adjustunit(w1,indfz)).height(adjustunit(profile._size=hh-w1-w2-w3,indfz));
-                }
-            }else{
-                var w=ru1.width(),
-                    w1=prop.showDecreaseHandle?cmd.offsetWidth(true):0,
-                    w2=w1,
-                    w3=f('IND1').width();
-    
-                if(ww){
-                    ruler.left(adjustunit(w1+w, rulerfz)).width(adjustunit(ww-w1-w2-2*w,rulerfz));
-                    ind.left(adjustunit(w1,indfz)).width(adjustunit(profile._size=ww-w1-w2-w3,indfz));
-                }
             }
         }
     }

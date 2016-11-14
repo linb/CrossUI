@@ -22,13 +22,13 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     },
     Static:{
         Templates:{
-            className:'{_className} {_alignCls}',
-            style:'{_style}',
+            className:'{_className} ',
+            style:'{_style} {_align}',
             FOCUS:{
                 tabindex: '{tabindex}',
                 MARK:{
                     $order:0,
-                    className:'xuifont',
+                    className:'{_iconPosCls} xuifont',
                     $fonticon:'xui-uicmd-check'
                 },
                 ICON:{
@@ -46,12 +46,6 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         Appearances:{
             KEY:{
                 overflow:'visible'
-            },
-            'KEY-right':{
-                'text-align':'right'
-            },
-            'KEY-right MARK':{
-                'float':'right'
             },
             MARK:{
                cursor:'pointer',
@@ -92,11 +86,18 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         DataModel:{
             value:false,
-            align:{
+            hAlign:{
+                ini:'left',
+                listbox:['left','center','right'],
+                action: function(v){
+                    this.getRoot().css('textAlign',v);
+                }
+            },
+            iconPos:{
                 ini:'left',
                 listbox:['left','right'],
                 action:function(v){
-                    this.getSubNode("MARK")[v=='right'?'addClass':'removeClass'](this.getClass('KEY','-right'));
+                    this.getSubNode("MARK").removeClass('xui-float-left xui-float-right').addClass('xui-float-'+v);
                 }
             },
             image:{
@@ -139,7 +140,8 @@ Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
-            data._alignCls = data.align=='right'?profile.getClass('KEY','-right'):'';
+            data._align = 'text-align:'+data.hAlign+';';
+            data._iconPosCls = 'xui-float-'+data.iconPos;
             return data;
         },
         _ensureValue:function(profile, value){

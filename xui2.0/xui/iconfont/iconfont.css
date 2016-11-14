@@ -222,3 +222,5 @@
 .xui-icon-menu-checked:before { content: "\e82d"; }
 .xui-icon-numbers:before { content: "\e681"; }
 .xui-icon-xui:before { content: "\e61b"; }
+.xui-icon-singledown:before { content: "\e82e"; }
+.xui-icon-singleup:before { content: "\e82f"; }

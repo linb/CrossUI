@@ -54,6 +54,8 @@ xui.builtinFontIcon={
             "xui-icon-alignleft": '&#xe647;',
             "xui-icon-singleright": '&#xe672;',
             "xui-icon-singleleft": '&#xe673;',
+            "xui-icon-singledown":"&#xe82e",
+            "xui-icon-singleup":"&#xe82f",
             "xui-uicmd-max": '&#xe60d;',
             "xui-icon-last": '&#xe60f;',
             "xui-icon-error": '&#xe674;',
@@ -1869,18 +1871,25 @@ Class("xui.UI",  "xui.absObj", {
                 if(!o.renderId)return;
                 var prop=o.properties;
                 // adjust self
-                if(prop.position=='absolute' && 'dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
-                    var n=o.getRootNode();
-                    // ensure display
-                    if(n.clientHeight){
-                        if(force){
-                            // ensure force 1
-                            n.style.width = 0 + o.$picku(n.style.width);
-                            n.style.height = 0 + o.$picku(n.style.height);
-                            // ensure force 2
-                            o._resize_h=o._resize_w=-1;
+                if(prop.position=='absolute'){
+                    if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
+                        var n=o.getRootNode();
+                        // ensure display
+                        if(n.clientHeight){
+                            if(force){
+                                // ensure force 1
+                                n.style.width = 0 + o.$picku(n.style.width);
+                                n.style.height = 0 + o.$picku(n.style.height);
+                                // ensure force 2
+                                o._resize_h=o._resize_w=-1;
+                            }
+                            xui.UI.$dock(o,true,true);
                         }
-                        xui.UI.$dock(o,true,true);
+                    }
+                }else{
+                    if(xui.get(o,['parent','properties','conDockRelative'])){
+                        var pp=o.parent;
+                        xui.UI._adjustConW(pp, pp.getRoot(), o.getRoot().parent().width(), o.getRootNode());
                     }
                 }
                 // adjust children
@@ -2002,10 +2011,13 @@ Class("xui.UI",  "xui.absObj", {
                 ini : 'absolute',
                 listbox:['','static','relative','absolute'],
                 action:function(value){
-                    this.getRoot().css('position',value);
-                    if(('dock' in this.box.$DataModel) && this.properties.dock!='none' && !this.properties.dockIgnore){
-                        this.$dockParent && xui.UI.getFromDom(this.$dockParent).adjustDock(true);
-                        this.boxing().refresh();
+                    var prf=this, prop=prf.properties;
+                    prf.getRoot().css('position',value);
+                    if(('dock' in prf.box.$DataModel) && prop.dock!='none' && !prop.dockIgnore){
+                        value = prop.dock;
+                        prop.dock='none';
+                        prf.boxing().adjustDock(true);
+                        prop.dock = value;
                     }
                 }
             },
@@ -2811,6 +2823,15 @@ Class("xui.UI",  "xui.absObj", {
                 'background-image':'url(data:image/gif;base64,R0lGODlhBwAHAPcAAAAAADDSEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAHAAcAAAgYAAMIHPhvoMB/BQkiVLgwAMKHDh9KnBgQADs=)',
                 'background-repeat':'no-repeat',
                 'background-position':'left top'
+            },
+            '.xui-float-clear':{
+                'clear':'both'
+            },
+            '.xui-float-left':{
+                'float':'left'
+            },
+            '.xui-float-right':{
+                'float':'right'
             },
             /*
             ".xui-ui-diry:after":{
@@ -4430,7 +4451,7 @@ Class("xui.UI",  "xui.absObj", {
             return self;
         },
         //for relative , static children
-        _adjustConW:function(profile, panel, w){
+        _adjustConW:function(profile, panel, w, cur){
             if(!profile.properties.conDockRelative)return;
             var prop = profile.properties,
                   pad = prop.conDockPadding,
@@ -4440,6 +4461,7 @@ Class("xui.UI",  "xui.absObj", {
             if(!l)return;
 
             c.each(function(n,i,prf,p){
+                if(cur && n!=cur)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static'){
@@ -4450,9 +4472,10 @@ Class("xui.UI",  "xui.absObj", {
                                 top:'0',
                                 right:'auto',
                                 bottom:'auto',
-                                'margin-top': (i===0 ? pad.top : spc.height)+'px',
-                                width: prf.$forceu( prf.$px(prf.properties.width = w) - pad.left - pad.right)
+                                'margin-top': (i===0 ? pad.top : spc.height)+'px'
                             });
+                            // to trigger onsize
+                            xui(n).width(prf.$forceu( prf.$px(prf.properties.width = w) - pad.left - pad.right));
                         }
                     }
                 }
@@ -4717,6 +4740,8 @@ Class("xui.UI",  "xui.absObj", {
                 ini:{left:0,top:0,right:0,bottom:0},
                 action:function(v){
                     var self=this;
+                    v=v||{};
+                    v.left=v.left||0;v.top=v.top||0;v.right=v.right||0;v.bottom=v.bottom||0;
                     if(self.properties.dock!='none')
                         xui.UI.$dock(self,true,true);
                 }
@@ -4754,7 +4779,7 @@ Class("xui.UI",  "xui.absObj", {
                 ini:"",
                 combobox:['fixed','forward','rearward','stretch','0.25','0.33','0.5'],
                 set:function(value){
-                    var o=this, t=z;
+                    var o=this, t=o.properties;
                     t.dockStretch=value;
                     if(t.dock == "fill"||t.dock == "cover"||t.dock == "width"||t.dock == "height"){
                         if(value!='forward'&&value!='rearward'&&value!='stretch'){
@@ -4938,40 +4963,44 @@ Class("xui.UI",  "xui.absObj", {
             // have to refresh this
             delete self._nodeEmSize;
 
-            if(p.position=='absolute' && p.dock && p.dock != 'none'){
-                //first time, ensure _onresize to be executed.
-                if(!self.$laidout){
-                    self.$laidout=1;
-                    var stl=self.getRootNode().style,
-                        wu = 0+self.$picku(stl.width),
-                        hu = 0+self.$picku(stl.height);
-                    switch(p.dock){
-                        case 'top':
-                        case 'bottom':
-                        case 'width':
-                            stl.width = 0;
-                            break;
-                        case 'left':
-                        case 'right':
-                        case 'height':
-                            stl.height = 0;
-                            break;
-                        default:
-                            stl.width = 0;
-                            stl.height = 0;
+            if(p.position=='absolute'){
+                if(p.dock && p.dock != 'none'){
+                    //first time, ensure _onresize to be executed.
+                    if(!self.$laidout){
+                        self.$laidout=1;
+                        var stl=self.getRootNode().style,
+                            wu = 0+self.$picku(stl.width),
+                            hu = 0+self.$picku(stl.height);
+                        switch(p.dock){
+                            case 'top':
+                            case 'bottom':
+                            case 'width':
+                                stl.width = 0;
+                                break;
+                            case 'left':
+                            case 'right':
+                            case 'height':
+                                stl.height = 0;
+                                break;
+                            default:
+                                stl.width = 0;
+                                stl.height = 0;
+                        }
                     }
+                    xui.UI.$dock(this,false,true);
                 }
-                xui.UI.$dock(this,false,true);
+            }else{
+                if(xui.get(self,['parent','properties','conDockRelative'])){
+                    var pp=self.parent;
+                    xui.UI._adjustConW(pp, self.getRoot().parent(), self.getRoot().parent().width(), self.getRootNode());
+                }
             }
         },
         $dock_args:['top','bottom','left','right','center','middle','width','height'],
         $dock_map:{middle:1,center:1},
         $dock:function(profile, force, trigger){
-            var node = profile.getRoot();
-            if(!node.get(0) || node.css('position')!='absolute')
-                return;
-
-            var isSVG = profile.box['xui.svg'],
+            var node = profile.getRoot(),
+                isSVG = profile.box['xui.svg'],
                 ins = profile.boxing(),
                 i1=-1,i2=-1,i3=-1,i4=-1,
                 p=xui((node.get(0) && node.get(0).parentNode)||profile.$dockParent),
@@ -6132,7 +6161,7 @@ Class("xui.UI",  "xui.absObj", {
             if('zIndex' in prop)a[a.length]= 'z-index:'+prop.zIndex;
             if(prop.display)a[a.length]= prop.display=='inline-block'? ('display:' + xui.$inlineBlock.join('; display:') + ';') :('display:' + prop.display);
 
-           data._style = a.join(';');
+           data._style = a.join(';') + ';';
            if(box.$Behaviors.PanelKeys && !box["xui.absList"]){
                 a=[];
                 if(prop.panelBgClr)a[a.length] = 'background-color:'+prop.panelBgClr;

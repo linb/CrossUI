@@ -4669,7 +4669,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 map=profile.rowMap,
                 hcell=profile.getSubNode('FHCELL'),
                 n,w;
-            if(typeof flag=='number')
+            if(xui.isFinite(flag) || profile.$isEm(flag)|| profile.$isPx(flag))
                 w=profile.$forceu(flag);
             else if(flag===true){
                 var ws=[],t;
