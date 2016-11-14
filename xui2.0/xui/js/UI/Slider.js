@@ -12,23 +12,29 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     arr = profile.box._v2a(profile,value),
                     ori = v?'top':'left',
                     orj = v?'height':'width',
-                    label;
+                    label, cap=xui.adjustRes(p.labelCaption,true)||"";
                 if(p.isRange){
                     a[ori](arr[0]+'%');
                     b[ori](arr[1]+'%');
                     c[ori](arr[0]+'%')[orj]((arr[1]-arr[0])+'%');
                     label = (p.numberTpl+"")
-                        .replace('1', xui.formatNumeric(arr[0],p.precision||0,null,null,true) )
-                        .replace('2', xui.formatNumeric(arr[1],p.precision||0,null,null,true) );
+                        .replace(/[*12]/g,function(a){
+                            return a=='1'?xui.formatNumeric(arr[0],p.precision||0,null,null,true):
+                            a=='2'? xui.formatNumeric(arr[1],p.precision||0,null,null,true)
+                            : cap;
+                        });
                 }else{
                     a[ori](arr[0]+'%');
                     c[orj](arr[0]+'%');
                     label = (p.numberTpl+"")
                         .replace(/1[^2]*2/, '1' )
                         .replace('1', xui.formatNumeric(arr[0],p.precision||0,null,null,true) );
+                    if(label.indexOf('*')!=-1)
+                        label=label.replace('*', cap);
+                    else label += cap;
                 }
                 if(p.labelPos!='none'){
-                    profile.getSubNode('LABEL').html((xui.adjustRes(p.labelCaption,true)||"") + label );
+                    profile.getSubNode('LABEL').html(label );
                 }
             });
         },
@@ -94,7 +100,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                top:0,
                left:0,
                position:'absolute',
-               'padding-top':'4px'
+               'padding-top':'.5em'
             },
             BOX:{
                 position:'absolute',
@@ -394,7 +400,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 ini:'4em'
             },
             precision:0,
-            numberTpl:' - 1% ~ 2%',
+            numberTpl:'* - 1% ~ 2%',
             steps:0,
             value:'0:0',
             type:{
