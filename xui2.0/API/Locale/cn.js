@@ -18721,9 +18721,10 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             panelBgImgRepeat:'背景图像重复',
             panelBgImgAttachment:'背景图像附着',
             conDockPadding:'容器停靠边距',
-            conDockSpacing:'容器停靠间隔',
-            conDockFlexFill:'容器停靠柔性填充',
-            conDockStretch:'容器停靠延展',
+            conDockSpacing:'子控件停靠间隔',
+            conDockFlexFill:'子控件停靠柔性',
+            conDockStretch:'子控件停靠延展',
+            conDockRelative:'子控件相对停靠',
             formMethod:'表单提交方法',
             formTarget:'表单提交目标',
             formAction:'表单提交动作',
@@ -18953,7 +18954,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'target':'目标窗口'
         },
         'xui_UI_CheckBox' : {
-            'align':'对齐方式',
+            'iconPos':'图标位置',
             'image':'图像路径',
             'imagePos':'图像背景偏移',
             'imageClass':'图像CSS类',
