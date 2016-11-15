@@ -62,38 +62,41 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
             });
         },
-        insertItems:function(arr, pid, base ,before, toggle){
+        insertItems:function(arr, pid/*true: the current item*/, base/*true: the current item*/,before, toggle){
             var node,data,
                 b=this._afterInsertItems;
 
             return this.each(function(profile){
                 // prepare properties format
-                var tar,r,k;
+                var tar,r,k,newsub,
+                    prop=profile.properties;
 
                 data=profile.box._adjustItems(arr);
 
-                if(!pid){
+                // current 
+                if(pid===true){
+                    v=prop.$UIValue||prop.value;
+                    if(v)v=(v+'').split(prop.valueSeparator);
+                    k=profile.getItemByItemId(v[0]);
+                    pid=k?k.id:null;
+                }
+
+                if(pid){
+                    k=profile.getItemByItemId(pid);
+                    tar = xui.isArr(k.sub)?k.sub:(newsub=true, k.sub= []);
+                }else{
                     k=profile.properties;
                     tar = k.items ||(k.items=[])
-                }else{
-                    k=profile.getItemByItemId(pid);
-                    tar = xui.isArr(k.sub)?k.sub:(k.sub= []);
                 }
                 //1
                 if(profile.renderId){
-                    if(!base){
-                        if(!pid)
-                            node=profile.getSubNode('ITEMS');
-                        else if(pid && k._inited)
-                            node=profile.getSubNodeByItemId('SUB', pid);
-                        if(node){
-                            r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
-                            if(before)
-                                node.prepend(r);
-                            else
-                                node.append(r);
-                        }
-                    }else{
+                    if(base===true){
+                        v=prop.$UIValue||prop.value;
+                        if(v)v=(v+'').split(prop.valueSeparator);
+                        k=profile.getItemByItemId(v[0]);
+                        base=k?k.id:null;
+                    }
+                    if(base){
                         node=profile.getSubNodeByItemId('ITEM', base);
                         if(node){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
@@ -101,6 +104,26 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 node.addPrev(r);
                             else
                                 node.addNext(r);
+                        }
+                    }else{
+                        if(!pid)
+                            node=profile.getSubNode('ITEMS');
+                        else if(pid){
+                            if(newsub){
+                                profile.getSubNodeByItemId('TOGGLE', pid)
+                                    .removeClass('xui-icon-placeholder xui-uicmd-none')
+                                    .addClass('xui-uicmd-toggle');
+                            }
+                            if(k._inited){
+                                node=profile.getSubNodeByItemId('SUB', pid);
+                            }
+                        }
+                        if(node){
+                            r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
+                            if(before)
+                                node.prepend(r);
+                            else
+                                node.append(r);
                         }
                     }
                 }

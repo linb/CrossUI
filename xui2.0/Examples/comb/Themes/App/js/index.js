@@ -1175,14 +1175,14 @@ Class('App', 'xui.Module',{
                     "id" : "b",
                     "caption" : "imageClass",
                     "imageClass" : "xui-icon-xui",
-                    "fontSize":"2em",
+                    "iconFontSize":"2em",
                     "flagText" : "2"
                 },
                 {
                     "id" : "c",
                     "caption" : "iconFontCode",
                     "iconFontCode":"&#xe61a;",
-                    "fontSize":"3em"
+                    "iconFontSize":"3em"
                 },
                 {
                     "id" : "d",
@@ -1235,13 +1235,13 @@ Class('App', 'xui.Module',{
                 {
                     "id" : "b",
                     "imageClass" : "xui-icon-xui",
-                    "fontSize":"2em",
+                    "iconFontSize":"2em",
                     "flagText" : "2"
                 },
                 {
                     "id" : "c",
                     "iconFontCode":"&#xe61a;",
-                    "fontSize":"3em"
+                    "iconFontSize":"3em"
                 },
                 {
                     "id" : "d",

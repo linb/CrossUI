@@ -228,12 +228,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         /*  remove some views from pageView
             arr: array for id
         */
-        removeItems:function(arr){
+        removeItems:function(arr/*default is the current*/){
             var self=this,
                 p,obj,serialId;
             self.each(function(profile){
                 var p=profile.properties;
-                arr = xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
+                arr = xui.isSet(arr)?xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator):null;
+                if(!arr)arr=((p.$UIValue||p.value)+"").split(p.valueSeparator);
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     xui.arr.each(arr,function(o){
                         // get ui serial id

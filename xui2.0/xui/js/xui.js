@@ -2124,6 +2124,9 @@ new function(){
                                         case "mailTo":
                                             xui.mailTo.apply(xui,iparams);
                                             break;
+                                        case "selectFile":
+                                            xui.Dom.selectFile.apply(xui.Dom,iparams);
+                                            break;
                                     }
                                 break;
                                 case 'msg':
@@ -2160,7 +2163,7 @@ new function(){
                                     switch(method){
                                         case "set":
                                             t=iparams[1];
-                                            if(xui.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
+                                            if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
                                                 m=t.pop().replace(/[()}\s]/g,'');
                                                 t=xui.adjustVar(t.join(".")+"}", _ns);
@@ -2168,10 +2171,10 @@ new function(){
                                                     xui.$cache.callback[iparams[0]]=[t,m];
                                             }
                                             break;
-                                        case "call":
+                                         case "call":
                                             var args=iparams.slice(3), doit;
                                             t=iparams[0];
-                                            if(xui.isStr(t)&&/[\w\.\s*]+\(\s*\)\s*\}$/.test(t)){
+                                            if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
                                                 t=t.split(/\s*\.\s*/);
                                                 m=t.pop().replace(/[()}\s]/g,'');
                                                 t=t.join(".")+"}";

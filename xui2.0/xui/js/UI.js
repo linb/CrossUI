@@ -3956,9 +3956,14 @@ Class("xui.UI",  "xui.absObj", {
                 });
 
                 t=self.prototype;
-                xui.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getDropKeys,setDropKeys,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formReset,formSubmit'.split(','),function(o){
+                xui.arr.each('getDropKeys,setDropKeys'.split(','),function(o){
                     if(!t[o])t[o]=src[o];
                 });
+                if(hash.PanelKeys){
+                    xui.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formReset,formSubmit'.split(','),function(o){
+                        if(!t[o])t[o]=src[o];
+                    });
+                }
                 self.$DataModel.dropKeys=self.$DataStruct.dropKeys='';
                 hls.onDragEnter=hls.onDragLeave=hls.beforeDrop=hls.onDrop=hls.afterDrop=hls.onDropTest=hls.onDropMarkShow=hls.onDropMarkClear=src._e4;
             }
@@ -6208,6 +6213,8 @@ Class("xui.UI",  "xui.absObj", {
                 if(typeof items[i]!='object')
                     items[i]={id:items[i]};
                 item=items[i];
+            
+                if(items[i].id==='?')items[i].id = xui.rand();
 
                 if(profile.beforePrepareItem && false===profile.boxing().beforePrepareItem(profile, item, pid, mapCache, serialId)){
                     continue;
@@ -6272,15 +6279,22 @@ Class("xui.absList", "xui.absObj",{
         [x] ,null ,true  => insert [x ] to head
         [x] ,null ,false => insert [x ] to tail
         */
-        insertItems:function(arr, base, before){
+        insertItems:function(arr, base/*true: the current item*/, before){
             var node,arr2,
-                items, index, r,
+                items, index, r, v, prop,
                 data,box,
                 b=this._afterInsertItems;
             return this.each(function(profile){
                 box=profile.box;
-
                 arr2=box._adjustItems(arr);
+                prop = profile.properties;
+
+                if(base===true){
+                        v=prop.$UIValue||prop.value;
+                        if(v)v=(v+'').split(prop.valueSeparator);
+                        k=profile.getItemByItemId(v[0]);
+                        base=k?k.id:null;
+                }
 
                 items = profile.properties.items;
                 index = xui.arr.subIndexOf(items,'id',base);
@@ -6327,7 +6341,7 @@ Class("xui.absList", "xui.absObj",{
                     profile.boxing()._afterInsertItems(profile, data, base, before);
             });
         },
-        removeItems:function(arr, key){
+        removeItems:function(arr/*default is the current*/, key){
             var obj,v,
                 b=this._afterRemoveItems;
                 remove=function(profile, arr, target, data, ns, force){
@@ -6366,7 +6380,8 @@ Class("xui.absList", "xui.absObj",{
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
-                 arr = xui.isHash(arr)?[arr.id+'']:xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator);
+                 arr = xui.isSet(arr)?xui.isHash(arr)?[arr.id+'']:xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator):'';
+                if(!arr)arr=((p.$UIValue||p.value)+"").split(p.valueSeparator);
                 xui.arr.each(arr,function(o,i){arr[i]=''+(xui.isHash(o)?o.id:o)});
                 // clear properties
                 remove(profile, p.items, arr, data);
@@ -6409,11 +6424,19 @@ Class("xui.absList", "xui.absObj",{
                 //profile.properties.value=null;
             });
         },
-        updateItem:function(itemId,options){
-            itemId=xui.isHash(itemId)?itemId.id:(itemId+'');
+        updateItem:function(itemId/*default is the current*/,options){
             var self=this,
-                profile=self.get(0),
-                box=profile.box,
+                profile=self.get(0), v, 
+                prop=profile.properties;
+
+            itemId=xui.isSet(itemId)?xui.isHash(itemId)?itemId.id:(itemId+''):null;
+            if(!itemId){
+                v=prop.$UIValue||prop.value;
+                if(v)v=(v+'').split(prop.valueSeparator);
+                v=profile.getItemByItemId(v[0]);
+                itemId=v?v.id:null;
+            }
+            var box=profile.box,
                 items=profile.properties.items,
                 rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===itemId:o==itemId},true,true,true),
                 nid,item,serialId,arr,node,oldsub,t;
@@ -6533,9 +6556,14 @@ Class("xui.absList", "xui.absObj",{
             }
             return self;
         },
-        hideItems:function(itemId){
+        hideItems:function(itemId/*default is the current*/){
             return this.each(function(profile){
-                xui.arr.each(xui.isHash(itemId)?itemId.id:xui.isArr(itemId)?itemId:(itemId+"").split(profile.properties.valueSeparator),function(i){
+                var  prop=profile.properties;
+                itemId=xui.isSet(itemId)?xui.isHash(itemId)?itemId.id:itemId:null;
+                if(!itemId){
+                    itemId=prop.$UIValue||prop.value;
+                }
+                xui.arr.each(xui.isArr(itemId)?itemId:(itemId+"").split(profile.properties.valueSeparator),function(i){
                     if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
                         i.css('display','none');
                 });
@@ -6566,6 +6594,11 @@ Class("xui.absList", "xui.absObj",{
             this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).focus();
             return this;
         },
+        scrollIntoView:function(itemId){
+            itemId=this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId);
+            if(itemId=itemId.get(0))itemId.scrollIntoView();
+            return this;
+        },
         selectItem:function(itemId){
             return this.fireItemClickEvent(xui.isHash(itemId)?itemId.id:(itemId+''));
         },
@@ -6574,65 +6607,80 @@ Class("xui.absList", "xui.absObj",{
             this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).onClick();
             return this;
         },
-        editItem:function(itemId){
-            itemId=xui.isHash(itemId)?subId.id:(itemId+'');
-            var profile=this.get(0),item,source;
+        editItem:function(itemId/*default is the current*/){
+            var profile=this.get(0),
+                prop=profile.properties,
+                item,source,v;
             if(profile&&profile.renderId&&!profile.destroyed){
-                if(item=profile.getItemByItemId(itemId)){
-                    source = profile.getSubNodeByItemId('ITEMCAPTION',itemId);
-                    if(source.isEmpty())source = profile.getSubNodeByItemId('CAPTION',itemId);
-                    if(!source.isEmpty()){
-                        var pp=source.parent(),
-                        pos = source.offset(null,pp.get(0)),
-                        size = source.cssSize(),
-                        pos2 = pp.offset(),
-                        size2 = pp.cssSize();
+                itemId=xui.isSet(itemId)?xui.isHash(itemId)?itemId.id:(itemId+''):null;
+                if(!itemId){
+                    v=prop.$UIValue||prop.value;
+                    if(v)v=(v+'').split(prop.valueSeparator);
+                    v=profile.getItemByItemId(v[0]);
+                    itemId=v?v.id:null;
+                }
+                if(itemId){
+                    if(item=profile.getItemByItemId(itemId)){
+                        source = profile.getSubNodeByItemId('ITEMCAPTION',itemId);
+                        if(source.isEmpty())source = profile.getSubNodeByItemId('CAPTION',itemId);
+                        if(!source.isEmpty()){
+                            var pp=source.parent(),
+                            pos = source.offset(null,pp.get(0)),
+                            size = source.cssSize(),
+                            pos2 = pp.offset(),
+                            size2 = pp.cssSize();
 
-                        var editor;
-                        if(profile.beforeIniEditor){
-                            editor=profile.boxing().beforeIniEditor(profile, item, source);
-                            if(editor===false)
-                                return;
-                        }
+                            // adjust
+                            pos2.left += source._paddingW('left');
+                            pos2.top += source._paddingH('top');
+                            size2.height += source._paddingH();
 
-                        if(!editor || !editor['xui.UI']){
-                            var editor=new xui.UI.ComboInput({type:"input"});
-                            editor.setWidth(Math.max(size2.width-pos.left,40))
-                                .setHeight(Math.max(size2.height, 20))
-                                .setResizer(true)
-                                .setValue(item.caption||"");
-                            if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
-                            var undo=function(){
-                                // ays is a must
-                                xui.resetRun('absList_editor_reset', function(){
-                                    if(editor&&!editor.isDestroyed()){
-                                        editor.getRoot().setBlurTrigger("absList_editor_blur",null);
-                                        editor.destroy();
-                                        editor=null;
+                            var editor;
+                            if(profile.beforeIniEditor){
+                                editor=profile.boxing().beforeIniEditor(profile, item, source);
+                                if(editor===false)
+                                    return;
+                            }
+
+                            if(!editor || !editor['xui.UI']){
+                                var editor=new xui.UI.ComboInput({type:"input"});
+                                editor.setWidth(Math.max(size2.width-pos.left,40))
+                                    .setHeight(Math.max(size2.height, 20))
+                                    .setResizer(true)
+                                    .setValue(item.caption||"");
+                                if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+                                var undo=function(){
+                                    // ays is a must
+                                    xui.resetRun('absList_editor_reset', function(){
+                                        if(editor&&!editor.isDestroyed()){
+                                            editor.getRoot().setBlurTrigger("absList_editor_blur",null);
+                                            editor.destroy();
+                                            editor=null;
+                                        }
+                                    });
+                                };
+                                editor.beforeUIValueSet(function(prf, ov, nv, force, tag){
+                                    if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
+                                        profile.boxing().updateItem(item.id, {caption:nv});
+                                        if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                        undo();
                                     }
-                                });
-                            };
-                            editor.beforeUIValueSet(function(prf, ov, nv, force, tag){
-                                if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
-                                    profile.boxing().updateItem(item.id, {caption:nv});
-                                    if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
+                                }).onCancel(function(){
                                     undo();
-                                }
-                            }).onCancel(function(){
-                                undo();
-                            });
-                            xui('body').append(editor);
-                            var root=editor.getRoot();
+                                });
+                                xui('body').append(editor);
+                                var root=editor.getRoot();
 
-                            root.popToTop({
-                                left:pos.left+pos2.left,
-                                top:pos2.top
-                            });
-                            // For scroll to undo
-                            root.setBlurTrigger("absList_editor_blur",function(){
-                                undo();
-                            });
-                            editor.activate();
+                                root.popToTop({
+                                    left:pos.left+pos2.left,
+                                    top:pos2.top
+                                });
+                                // For scroll to undo
+                                root.setBlurTrigger("absList_editor_blur",function(){
+                                    undo();
+                                });
+                                editor.activate();
+                            }
                         }
                     }
                 }

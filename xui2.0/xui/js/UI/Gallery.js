@@ -228,16 +228,22 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                     this.boxing().refresh();
                 }
             },
+            iconFontSize:{
+                ini:'',
+                action:function(v){
+                    this.getSubNode('ICON',true).css('font-size',v);
+                }
+            },
             itemMargin:{
                 ini:6,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css(v);
+                    this.getSubNode('ITEM',true).css('margin',v);
                 }
             },
             itemPadding:{
                 ini:2,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css(v);
+                    this.getSubNode('ITEM',true).css('padding',v);
                 }
             },
             itemWidth:{
@@ -281,7 +287,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
         _prepareItem:function(profile, item){
             var p = profile.properties, t;
 
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,autoItemSize'),function(i){
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
             if(t=item.itemWidth)item.itemWidth=profile.$forceu(t);
@@ -290,7 +296,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
             item._tabindex = p.tabindex;
 
-            if(t=item.fontSize)item._fontSize='font-size:'+t+';'
+            if(t=item.iconFontSize)item._fontSize='font-size:'+t+';'
             if(!item.iconFontCode && !item.imageClass)item._imageClass='xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;
 
