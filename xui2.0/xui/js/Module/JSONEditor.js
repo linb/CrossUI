@@ -4,13 +4,13 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         setValue:function(str){
             var ns=this,
                 obj=xui.isStr(str)?str?xui.unserialize(str):false:str,
-                rows=ns._json2rows(obj);
+                rows=ns._json2rows(obj, ns._rootArr = xui.isArr(obj));
          
             ns.tg.setRows(rows).free();
         },
         getValue:function(returnObj){
             var rows=this.tg.getRows();
-            var str = this._rows2json(rows);
+            var str = this._rows2json(rows, this._rootArr);
             return returnObj?xui.unserialize(str):str;
         },
         getEditor:function(){
@@ -27,6 +27,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 .setIniFold(false)
                 .setRowHandler(false)
                 .setColSortable(false)
+                .setTogglePlaceholder(true)
                 .setHeader([{
                     "id" : "key",
                     "width" : 100,
@@ -127,7 +128,7 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 xui.each(obj,function(o,i){
                     if(!obj.hasOwnProperty(i))return;
                     var row={},type=ns._getType(o);
-                    i={value:array?'[index]':i,disabled:array};
+                    i={value:array?'['+i+']':i,readonly:array};
 
                     if(type=='hash'){
                         row.sub=[];
@@ -266,45 +267,49 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
         _tg_oncmd:function (profile, row, cmdkey, e, src){
             var ns = this, 
                 tg = profile.boxing(),
-                type, nid;
+                type = row ? row._type : ns._rootArr ? 'array': 'hash',
+                ptype, prow, nid;
+
+            if(row && row._pid) {
+                prow = profile.rowMap[row._pid];
+                ptype = prow&&prow._type;
+            }else{
+                prow = {sub:profile.properties.rows};
+                ptype = ns._rootArr ? 'array': 'hash';
+            }
             switch(cmdkey){
                 case 'add': 
                     nid=xui.stamp();
                     if(row){
-                        type=xui.get(profile.rowMap, [row._serialId,'_type']);
                         if(type=="array"||type=="hash"){
-                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),disabled:type=='array'},'null','']}],row.id);
+                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),readonly:type=='array'},'null','']}],row.id);
                         }else{
                             var id=row.id;
                             xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
                                 tg.updateCellByRowCol(id, "value", "{"+('new' + ++ns._index)+":"+row.cells[1].value+"}", false, true);
                                 xui.asyRun(function(){
-                                    if(tg.isDestroyed())return;
                                     tg.editCellbyRowCol(id, "value");
                                 },200);
-                            },function(type){ 
+                            },function(type){
                                 if(type=='close')return;
                                 var id=row.id;
                                 tg.updateCellByRowCol(id, "value", "["+row.cells[1].value+"]", false, true);
                                 xui.asyRun(function(){
-                                    if(tg.isDestroyed())return;
                                     tg.editCellbyRowCol(id,"value");
                                 },200);
-                            },'As a Hash','As an Array');
+                            },'As a Hash','As an Array')
                         }
                     }else{
-                        tg.insertRows([{id:nid, cells:['new' + ++ns._index,'null','']}]);
+                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),readonly:type=='array'},'null','']}]);
                     }
                     break;
                 case 'up': 
                      nid=xui.stamp();
-                    if(row._pid) type=xui.get(profile.rowMap, [row._pid,'_type']);
-                    tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),disabled:type=='array'},'null','']}],null,row.id,true);
+                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':('new' + ++ns._index),readonly:ptype=='array'},'null','']}],null,row.id,true);
                     break;
                 case 'down':
                      nid=xui.stamp();
-                    if(row._pid) type=xui.get(profile.rowMap, [row._pid,'_type']);
-                    tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),disabled:type=='array'},'null','']}],null,row.id,false);
+                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':('new' + ++ns._index),readonly:ptype=='array'},'null','']}],null,row.id,false);
                     break;
                 case 'del': 
                    // xui.confirm('confirm','Do you want to delete this node?',function(){
@@ -312,14 +317,24 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                   //  });
                     break;
             }
-            if( nid ){
-                xui.asyRun(function(){
-                    if(tg.isDestroyed())return;
-                    tg.editCellbyRowCol(nid+'', type=='array'?"value":"key");
+            if(row && type=='array'){
+                // re index for array
+                xui.arr.each(row.sub, function(row, i){
+                    var cell=row.cells[0];
+                    profile.boxing().updateCell(cell, {caption:'['+i+']'});
                 });
             }
-
-            ns.fireEvent("onchange", [ns]); 
+            else if(prow && ptype=='array'){
+                // re index for array
+                xui.arr.each(prow.sub, function(row, i){
+                    var cell=row.cells[0];
+                    profile.boxing().updateCell(cell, {caption:'['+i+']'});
+                });
+            }
+            if( nid )
+                xui.asyRun(function(){
+                    tg.editCellbyRowCol(nid+'', ptype=='array'?"value":"key");
+                });
         },
         events:{
             onRender:function(module){

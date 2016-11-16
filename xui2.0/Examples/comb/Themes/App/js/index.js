@@ -2299,7 +2299,7 @@ Class('App', 'xui.Module',{
                 }])
                 .setLeft("0em")
                 .setTop("0em")
-                .setBarSize(28)
+                .setBarSize('auto')
                 .setValue("a")
                 , "main");
             
@@ -2461,7 +2461,7 @@ Class('App', 'xui.Module',{
                 .setLeft("0em")
                 .setTop("0em")
                 .setBarLocation("bottom")
-                .setBarSize(28)
+                 .setBarSize('auto')
                 .setValue("a")
                 , "main");
             

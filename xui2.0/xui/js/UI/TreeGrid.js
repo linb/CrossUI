@@ -1449,6 +1449,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // for ie's setBlurTrigger doesn't trigger onchange event
                         editor.getSubNode('INPUT').onBlur(true);
                         editor.getRoot().setBlurTrigger("tg_editor_blur:"+profile.$xid);
+
                         if(profile.properties){
                             editor.beforeUnitUpdated(null).afterUIValueSet(null).beforeNextFocus(null).onCancel(null).onFileDlgOpen(null);
                             editor.setValue('',true,'editorreset');
@@ -2113,7 +2114,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'xuifont {_subClass}'
+                                className:'xuifont',
+                                $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
                                 $order:1,
@@ -2183,7 +2185,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:4,
                                 style:'{_treeMode};',
-                                className:'xuifont {_subClass}'
+                                className:'xuifont',
+                                $fonticon:'{_fi_togglemark}'
                             },
                             FCELLCAPTION:{
                                 $order:5,
@@ -2236,7 +2239,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWTOGGLE:{
                                 $order:2,
                                 style:'{_treeMode};',
-                                className:'xuifont {_subClass}'
+                                className:'xuifont',
+                                $fonticon:'{_fi_togglemark}'
                             },
                             CELLCAPTION:{
                                 $order:3,
@@ -4031,7 +4035,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 listbox:["focus","sharp","hover","hoversharp","inline"]
             },
             dock:'fill',
-
+            togglePlaceholder:false,
             altRowsBg: {
                 ini:false,
                 action:function(value){
@@ -4908,7 +4912,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             prop.rows=this._adjustRows(profile, prop.rows);
             data.rows11 = data.rows12 = data.rows21 = data.rows22 = this._prepareItems(profile, prop.rows);
             
-            data.tagCmds = prop.colOptions.tagCmds || data.tagCmds;
+            data.tagCmds = xui.clone(prop.colOptions.tagCmds || data.tagCmds);
             if(data.tagCmds){
                 xui.UI.List._prepareCmds(profile, data, function(item){
                     return !item.tag || !!item.tag.match(/\bheader\b/);
@@ -5020,9 +5024,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 row._treeMode=NONE;
 
                 uicell._rulerW=_row._rulerW;
-                uicell._subClass=_row._subClass;
+                uicell._fi_togglemark=_row._fi_togglemark;
                 
-                _row._rulerW=_row._subClass='';
+                _row._rulerW=_row._fi_togglemark='';
             }
 
             return [cell, uicell];
@@ -5109,7 +5113,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t2='',
                 caption,
                 cellanode=node,
-                capOut=('caption' in cell) && xui.isDefined(cell.caption) && xui.adjustRes(cell.caption),
+                capOut=uicell&&('caption' in uicell)&&xui.isDefined(cell.caption) ? uicell.caption : (('caption' in cell) && xui.isDefined(cell.caption) && xui.adjustRes(cell.caption)),
                 reg1=/</g,
                 me=arguments.callee,
                 dcls='xui-uicell-disabled',
@@ -5420,8 +5424,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cells = t.cells = [];
 
                 t[SubID]=temp;
-//                t._subClass = row.sub?'xui-uicmd-toggle':(row._layer?'xui-uicmd-empty':'');
-                t._subClass = row.sub?'xui-uicmd-toggle':'';
+               //   t._fi_togglemark = row.sub?'xui-uicmd-toggle':(row._layer?'xui-uicmd-empty':'');
+                // t._fi_togglemark = row.sub?'xui-uicmd-toggle':'';
+                t._fi_togglemark = row.sub?('xui-uicmd-toggle'+(row._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(prop.togglePlaceholder?'xui-icon-placeholder':'xui-uicmd-none');
 
                 // id to dom item id
                 a[row.id]=temp;
@@ -5443,7 +5448,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 xui.UI.adjustData(profile, row, t);
 
-                t.tagCmds = t.tagCmds || prop.rowOptions.tagCmds || prop.tagCmds;
+                t.tagCmds = xui.clone(t.tagCmds || prop.rowOptions.tagCmds || prop.tagCmds);
                 if(t.tagCmds){
                     xui.UI.List._prepareCmds(profile, t, function(item){
                         return !item.tag || !!item.tag.match(/\brow\b/);
@@ -6244,7 +6249,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
                             delete editor.get(0).$cell;
                             delete editor.get(0)._smartnav;
-
                             //don't use disply:none, firfox has many bugs about Caret or renderer
                             editor.setVisibility('hidden');
 
@@ -6401,7 +6405,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             var bfun=function(){
                                 if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
                             },cfun=function(){
-                                if(editor)editor.getRoot().onMouseout(function(){if(editor) xui.tryF(editor.undo,[],editor);},"tg-hover-edit");
+                                if(editor)editor.getRoot().onMouseout(function(){
+                                    if(editor) xui.tryF(editor.undo,[],editor);
+                                },"tg-hover-edit");
                             },dfun=function(){
                                // if(editor) xui.tryF(editor.undo,[],editor);
                             };
@@ -6493,11 +6499,15 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },100);
 
                 // adjust height
-                s11.height(adjustunit(rr?rr:0));
-                s12.height(adjustunit(rr?rr:0));
+                s11.height(rr?adjustunit(rr):0);
+                s12.height(rr?adjustunit(rr):0);
                 s21.height(adjustunit(height - rh - rr));
                 s22.height(adjustunit(height - rh - rr));
 
+                // avoid onmouseout of CELLS2 trigger CELLS1 scroll to top
+                s11.css('display',rr&&profile._leftregionw?'':'none');
+                s12.css('display',rr?'':'none');
+                s21.css('display',profile._leftregionw?'':'none');
 
                 // others
                 s22.css('overflow','hidden');
@@ -7101,12 +7111,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // adjust height
             if(height){
-                s11.height(adjustunit(rr?rr:0));
-                s12.height(adjustunit(rr?rr:0));
+                s11.height(rr?adjustunit(rr):0);
+                s12.height(rr?adjustunit(rr):0);
                 s21.height(adjustunit(height - rh - rr));
                 s22.height(adjustunit(height - rh - rr));
+                // avoid onmouseout of CELLS2 trigger CELLS1 scroll to top
+                s11.css('display',rr?'':'none');
+                s12.css('display',rr?'':'none');
             }
-
+            if(width){
+                // avoid onmouseout of CELLS2 trigger CELLS1 scroll to top
+                s11.css('display',profile._leftregionw?'':'none');
+                s21.css('display',profile._leftregionw?'':'none');
+            }
             // for modify em value
             if(profile.$forceRelayout){
                 this._adjustColsWidth(profile);

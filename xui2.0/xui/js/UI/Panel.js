@@ -101,31 +101,31 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         INFO:{
-                            className:'xuifont',
+                            className:'xuicon',
                             $fonticon:'xui-uicmd-info',
                             style:'{infoDisplay}',
                             $order:1
                         },
                         OPT:{
-                            className:'xuifont',
+                            className:'xuicon',
                             $fonticon:'xui-uicmd-opt',
                             style:'{optDisplay}',
                             $order:1
                         },
                         POP:{
-                            className:'xuifont',
+                            className:'xuicon',
                             $fonticon:'xui-uicmd-pop',
                             style:'{popDisplay}',
                             $order:2
                         },
                         REFRESH:{
-                            className:'xuifont',
+                            className:'xuicon',
                             $fonticon:'xui-uicmd-refresh',
                             style:'{refreshDisplay}',
                             $order:3
                         },
                         CLOSE:{
-                            className:'xuifont',
+                            className:'xuicon',
                             $fonticon:'xui-uicmd-close',
                             style:'{closeDisplay}',
                             $order:4
