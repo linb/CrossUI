@@ -3634,7 +3634,7 @@ Class("xui.UI",  "xui.absObj", {
                                         return;
                                 }
                                 elems.each(function(p,i){
-                                        if((i=p.properties.$UIValue) !== p.properties.value)
+                                        if((i=p.properties.$UIvalue) !== p.properties.value)
                                         p.boxing().setValue(i, true);
                                 });
                                 if(prf.afterFormReset){
@@ -6290,7 +6290,7 @@ Class("xui.absList", "xui.absObj",{
                 prop = profile.properties;
 
                 if(base===true){
-                        v=prop.$UIValue||prop.value;
+                        v=prop.$UIvalue||prop.value;
                         if(v)v=(v+'').split(prop.valueSeparator);
                         k=profile.getItemByItemId(v[0]);
                         base=k?k.id:null;
@@ -6381,7 +6381,7 @@ Class("xui.absList", "xui.absObj",{
             return this.each(function(profile){
                 var p=profile.properties,data=[];
                  arr = xui.isSet(arr)?xui.isHash(arr)?[arr.id+'']:xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator):'';
-                if(!arr)arr=((p.$UIValue||p.value)+"").split(p.valueSeparator);
+                if(!arr)arr=((p.$UIvalue||p.value)+"").split(p.valueSeparator);
                 xui.arr.each(arr,function(o,i){arr[i]=''+(xui.isHash(o)?o.id:o)});
                 // clear properties
                 remove(profile, p.items, arr, data);
@@ -6431,7 +6431,7 @@ Class("xui.absList", "xui.absObj",{
 
             itemId=xui.isSet(itemId)?xui.isHash(itemId)?itemId.id:(itemId+''):null;
             if(!itemId){
-                v=prop.$UIValue||prop.value;
+                v=prop.$UIvalue||prop.value;
                 if(v)v=(v+'').split(prop.valueSeparator);
                 v=profile.getItemByItemId(v[0]);
                 itemId=v?v.id:null;
@@ -6561,7 +6561,7 @@ Class("xui.absList", "xui.absObj",{
                 var  prop=profile.properties;
                 itemId=xui.isSet(itemId)?xui.isHash(itemId)?itemId.id:itemId:null;
                 if(!itemId){
-                    itemId=prop.$UIValue||prop.value;
+                    itemId=prop.$UIvalue||prop.value;
                 }
                 xui.arr.each(xui.isArr(itemId)?itemId:(itemId+"").split(profile.properties.valueSeparator),function(i){
                     if(!(i=profile.getSubNodeByItemId('ITEM',i)).isEmpty())
@@ -6614,7 +6614,7 @@ Class("xui.absList", "xui.absObj",{
             if(profile&&profile.renderId&&!profile.destroyed){
                 itemId=xui.isSet(itemId)?xui.isHash(itemId)?itemId.id:(itemId+''):null;
                 if(!itemId){
-                    v=prop.$UIValue||prop.value;
+                    v=prop.$UIvalue||prop.value;
                     if(v)v=(v+'').split(prop.valueSeparator);
                     v=profile.getItemByItemId(v[0]);
                     itemId=v?v.id:null;

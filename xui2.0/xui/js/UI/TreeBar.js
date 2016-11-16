@@ -75,7 +75,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                 // current 
                 if(pid===true){
-                    v=prop.$UIValue||prop.value;
+                    v=prop.$UIvalue||prop.value;
                     if(v)v=(v+'').split(prop.valueSeparator);
                     k=profile.getItemByItemId(v[0]);
                     pid=k?k.id:null;
@@ -85,13 +85,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     k=profile.getItemByItemId(pid);
                     tar = xui.isArr(k.sub)?k.sub:(newsub=true, k.sub= []);
                 }else{
-                    k=profile.properties;
+                    k=prop;
                     tar = k.items ||(k.items=[])
                 }
                 //1
                 if(profile.renderId){
                     if(base===true){
-                        v=prop.$UIValue||prop.value;
+                        v=prop.$UIvalue||prop.value;
                         if(v)v=(v+'').split(prop.valueSeparator);
                         k=profile.getItemByItemId(v[0]);
                         base=k?k.id:null;
@@ -529,7 +529,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
                     if(!item)return false;
 
-                    if(prop.disabled|| item.disabled)return false;
+                    if(prop.disabled|| item.disabled|| item.type=='split')return false;
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
@@ -639,7 +639,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
                 
-            if(properties.disabled|| item.disabled)return false;
+            if(properties.disabled|| item.disabled|| item.type=='split')return false;
 
             if(!ignoreClick && profile.onClick)
                 box.onClick(profile,item,e,src);

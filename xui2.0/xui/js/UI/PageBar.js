@@ -293,13 +293,13 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         _click:function(profile, src){
             if(profile.properties.disabled)return false;
             var b=profile.boxing(),
-                a=(profile.properties.$UIValue||"").split(':'),
+                a=(profile.properties.$UIvalue||"").split(':'),
                 nv=parseInt(xui(src).attr('href').split('#')[1],10)||a[1]||a[0];
 
             var r = b.onClick(nv);
 
             // if didn't call setPage  in onclick event, setPage here
-            a=(profile.$UIValue||"").split(':');
+            a=(profile.$UIvalue||"").split(':');
             if(!a.length || (nv+"")!==(a[1]+"")){
                 b.setPage(nv);
             }

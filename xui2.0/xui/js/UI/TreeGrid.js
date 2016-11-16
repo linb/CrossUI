@@ -403,15 +403,40 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             return this;
         },
-        updateRow:function(rowId,options,dirtyMark,triggerEvent){
-            var ns=this, 
-                orow = ns.getRowbyRowId(rowId);
-            if(!orow)return ns;
-
-            var profile = ns.get(0), 
+        showRows:function(rowId,/*default is the current*/ flag){
+            var ns=this,
+                profile = ns.get(0), 
+                prop = profile.properties;
+            rowId = (rowId||rowId===0)?xui.isArr(rowId)?rowId:rowId.split(prop.valueSeparator):null;
+            if(!rowId)rowId=((prop.$UIvalue||prop.value)+"").split(prop.valueSeparator);
+            if(rowId&&rowId.length){
+                xui.arr.each(rowId, function(r, row){
+                    if(row=ns.getRowbyRowId(r)){
+                        if(flag===false){
+                            if(row.hidden!==true)
+                                ns.getSubNodes(['ROW1','ROW2'],row._serialId).css('display','none');
+                        }else{
+                            if(row.hidden===true)
+                                ns.getSubNodes(['ROW1','ROW2'],row._serialId).css('display','');
+                        }
+                        row.hidden=flag===false;
+                    }
+                });
+            }
+            return this;
+        },
+        updateRow:function(rowId/*default is the current*/,options,dirtyMark,triggerEvent){
+            var ns=this,
+                profile = ns.get(0), 
                 box = profile.box,
                 prop = profile.properties,
-                pdm = prop.dirtyMark,
+                prforow;
+
+            if(!rowId&&rowId!==0)rowId=((prop.$UIvalue||prop.value)+"").split(prop.valueSeparator)[0];
+            orow = ns.getRowbyRowId(rowId);
+            if(!orow)return ns;
+
+            var pdm = prop.dirtyMark,
                 psdm = pdm && prop.showDirtyMark, 
                 ishotrow = orow.id==box._temprowid,
                 sc = xui.absObj.$specialChars,
@@ -583,7 +608,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return ns;
         },
         //pid,base are id
-        insertRows:function(arr, pid, base, before){
+        insertRows:function(arr, pid/*true: the current item*/, base/*true: the current item*/, before){
             var affectUI=arguments[4],
                 c=this.constructor,
                 profile=this.get(0);
@@ -594,9 +619,19 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     ro=prop.rowOptions,
                     b=profile.rowMap, temp,
                     tar, t, k;
+                // current 
+                if(pid===true){
+                    v=prop.$UIvalue||prop.value;
+                    if(v)v=(v+'').split(prop.valueSeparator);
+                    pid=v[0];
+                }
 
                 pid = row_m&&row_m[pid];
-
+                if(base===true){
+                    v=prop.$UIvalue||prop.value;
+                    if(v)v=(v+'').split(prop.valueSeparator);
+                    base=v[0];
+                }
                 base = row_m&&row_m[base];
                 if(base){
                     t=profile.rowMap[base];
@@ -626,6 +661,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 (o.rowRenderer||ro.rowRenderer).call(null,profile,o);
                         });
                     }
+                    // normal row to tree row
+                    else if(pid && !k.inited){
+                        profile.box._getToggleNode(profile, pid)
+                                .removeClass('xui-icon-placeholder xui-uicmd-none')
+                                .addClass('xui-uicmd-toggle');
+                    }
                 }
                 //2
                 //must be here
@@ -652,7 +693,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         //delete row according to id
         //xui.UI.TreeGrid.getAll().removeRows(['2','5'])
-        removeRows:function(ids){
+        removeRows:function(ids/*default is the current*/){
             var affectUI=arguments[1],
                 self=this,
                 profile=self.get(0),
@@ -661,7 +702,10 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 nodes=[],v,count=0;
 
             //get array
-            ids = xui.isArr(ids)?ids:(ids+"").split(p.valueSeparator);
+            ids = (ids||ids===0)?xui.isArr(ids)?ids:(ids+"").split(p.valueSeparator):null;
+            if(!ids)ids=((p.$UIvalue||p.value)+"").split(p.valueSeparator);
+            if(!ids || !ids.length)return self;
+
             xui.arr.each(ids,function(o,i){
                 if(xui.isNumb(o))
                     o=p.rows[o] && p.rows[o].id;
@@ -1348,8 +1392,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             con._editCell(profile, con._getCellId(profile, rowId, colId));
             return this;
         },
-        editCell:function(cell){
-            this.constructor._editCell(this.get(0), cell);
+        editCell:function(cell/*default is the active cell*/){
+            if(cell=cell?cell:this.get(0).getSubId(this.get(0).$activeCell+''))
+                this.constructor._editCell(this.get(0), cell);
             return this;
         },
         // only support single line text input

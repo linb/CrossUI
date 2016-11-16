@@ -234,7 +234,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             self.each(function(profile){
                 var p=profile.properties;
                 arr = xui.isSet(arr)?xui.isArr(arr)?arr:(arr+"").split(p.valueSeparator):null;
-                if(!arr)arr=((p.$UIValue||p.value)+"").split(p.valueSeparator);
+                if(!arr)arr=((p.$UIvalue||p.value)+"").split(p.valueSeparator);
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
                     xui.arr.each(arr,function(o){
                         // get ui serial id
@@ -331,13 +331,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     tagName:'div',
                     className:'xui-ui-unselectable',
                     MENUICON2:{
-                        className:'xui-uiborder-hidden xui-uiborder-radius xuicon',
+                        className:'xui-uiborder-hidden xui-uiborder-radius xuicon {_iconChecked}',
                         $fonticon:'xui-icon-menu'
                     }
                 },
                 ITEMS:{
                     tagName : 'div',
-                    className:'xui-ui-unselectable',
+                    className:'xui-ui-unselectable {_specialIconCls}',
                     text:"{items}",
                     style:'{HAlign}'
                 }
@@ -915,6 +915,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(data.HAlign)
                 data.HAlign = 'text-align:'+data.HAlign+';';
             data._liststyle = data.noHandler?'display:none':'';
+            if(data.sideBarStatus=='fold'){
+                data._specialIconCls = profile.getClass('ITEMS')+'-icon2';
+                data._iconChecked = ' xui-uiborder-hidden-checked xui-icon-menu-checked ';
+            }
             return data;
         },
         _prepareItem:function(profile, item){

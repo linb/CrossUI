@@ -129,7 +129,7 @@ Class('xui.Module','xui.absProfile',{
         self.host=host||self;
         self.alias=alias;
         
-        self.$UIValue="";
+        self.$UIvalue="";
 
         self._nodes=[];
         self._ctrlpool={};
@@ -887,12 +887,12 @@ Class('xui.Module','xui.absProfile',{
 
                 var hash={};
                  xui.each(this._ctrlpool, function(prf){
-                    if('$UIValue' in prf.properties)
-                        hash[prf.alias]=prf.properties.$UIValue;
+                    if('$UIvalue' in prf.properties)
+                        hash[prf.alias]=prf.properties.$UIvalue;
                 });
                 return hash;
             }else{
-                return this.$UIValue;
+                return this.$UIvalue;
             }
         },
         setUIValue:function(values,innerUI){
@@ -910,7 +910,7 @@ Class('xui.Module','xui.absProfile',{
                     });
                 }
             }else{
-                this.$UIValue = values;
+                this.$UIvalue = values;
             }
             return this;
         },
@@ -921,7 +921,7 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
-                this.$UIValue=this.properties.value; 
+                this.$UIvalue=this.properties.value; 
             }
             return this;
         },
@@ -932,7 +932,7 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
-                this.properties.value=this.$UIValue; return this;
+                this.properties.value=this.$UIvalue; return this;
             }
             return this;
         },
@@ -950,7 +950,7 @@ Class('xui.Module','xui.absProfile',{
                 });
                  return dirtied;
             }else{
-                return this.properties.value===this.$UIValue;
+                return this.properties.value===this.$UIvalue;
             }
         },
         checkValid:function(innerUI){
