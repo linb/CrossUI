@@ -44346,7 +44346,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         delete editor.get(0)._smartnav;
                         delete editor.get(0).$editMode;
                         //don't use disply:none, firfox has many bugs about Caret or renderer
-                        editor.setVisibility('hidden');
+                        editor.hide();
                     }
                     if(row)delete row._editor;
                     profile.$curEditor=null;
@@ -44415,6 +44415,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var cellId=cell._serialId;
             this.get(0).getSubNode('CELLA', cellId).focus(true);
             return this;
+        },
+        scrollIntoView:function(){
         },
         getActiveCell:function(type){
             var ar,profile=this.get(0),m,v;
@@ -49138,7 +49140,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             delete editor.get(0).$cell;
                             delete editor.get(0)._smartnav;
                             //don't use disply:none, firfox has many bugs about Caret or renderer
-                            editor.setVisibility('hidden');
+                            editor.hide();
 
                             if(xui.isFun(editor.collapse))editor.collapse();
                         }
