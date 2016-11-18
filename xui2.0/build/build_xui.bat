@@ -126,7 +126,8 @@ rem ==================
 rem -----------------------
 rem for FusionChartsXT.js
 rem -----------------------
-copy %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
+copy %relPath%xui\js\UI\FusionChartsXT.js /b ^
++ %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.widgets.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.powercharts.js /b ^
@@ -134,7 +135,6 @@ copy %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.fint.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.ocean.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.zune.js /b ^
-+ %relPath%xui\js\UI\FusionChartsXT.js /b ^
 FusionChartsXT.js
 
 copy FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js

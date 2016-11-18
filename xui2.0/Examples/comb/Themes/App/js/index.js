@@ -1427,7 +1427,6 @@ Class('App', 'xui.Module',{
                         "caption" : "sub f 2"
                     }]
                 }])
-                .setPosition("relative")
                 );
             
             host.tabs2.append(

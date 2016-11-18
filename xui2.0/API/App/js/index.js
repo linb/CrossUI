@@ -741,20 +741,49 @@ Class('App', 'xui.Com',{
  
                 SPA.pbQ.setValue('1:1:1');
             }else{
-                var arr=[];
+                var arr=[],s,hash={};
                 if(type1==1){
-                    if(SPA.iQ2.getUIValue())
-                        SPA.iQ2.setValue('',true);
-                    xui.each(pool,function(o,i){
-                        if(i.indexOf(v)!=-1)
-                            arr.push({id:i,caption:'<font style="color:#444">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+o})
-                    });
+                    if(SPA.iQ2.getUIValue())SPA.iQ2.setValue('',true);
                 }else{
-                    if(SPA.iQ1.getUIValue())
-                        SPA.iQ1.setValue('',true);
+                    if(SPA.iQ1.getUIValue())SPA.iQ1.setValue('',true);
+                }
+                xui.each(pool,function(o,i){
+                    if(i.toLowerCase().indexOf(v.toLowerCase())!=-1){
+                        hash[i]=1;
+                        s=(o&&o.$desc)||'';
+                        if(s.indexOf('<')!=-1) s=s.split('<')[0];
+                        if(s.length>50)s=s.slice(0,50)+'...';
+                        arr.push({id:i,caption:'<font style="color:#d00000">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+s})
+                    }
+                });
+
+                if(type1==2){
+                    // find in $desc
                     xui.each(pool,function(o,i){
-                        if(o.indexOf(v)!=-1)
-                            arr.push({id:i,caption:'<font style="color:#444">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+o})
+                        if(hash[i])return;
+
+                        s=(o&&o.$desc)||'';
+                        if(s && s.toLowerCase().indexOf(v.toLowerCase())!=-1){
+                            hash[i]=1;
+                            
+                            if(s.indexOf('<')!=-1) s=s.split('<')[0];
+                            if(s.length>50)s=s.slice(0,50)+'...';
+                            arr.push({id:i,caption:'<font style="color:#134275">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+s})
+                        }
+                    });
+                    // find in $paras
+                    xui.each(pool,function(o,i){
+                        if(hash[i])return;
+
+                        xui.arr.each(o && o.$paras,function(s){
+                            if(s && s.toLowerCase().indexOf(v.toLowerCase())!=-1){
+                                s=(o&&o.$desc)||'';
+                                if(s.indexOf('<')!=-1) s=s.split('<')[0];
+                                if(s.length>50)s=s.slice(0,50)+'...';
+                                arr.push({id:i,caption:'<font style="color:#d2691e">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+s})
+                                return;
+                            }
+                        });
                     });
                 }
 
@@ -866,16 +895,10 @@ Class('App', 'xui.Com',{
             getAPI(xui.SC.get(o),o);
         });
         xui.each(hash,function(o,i){
-            hash[i]=xui.get(doc,(i+'.$desc').split('.'));
-            if(hash[i]){
-                if(hash[i].indexOf('<')!=-1)
-                    hash[i]=hash[i].split('<')[0];
-                if(hash[i].length>30)hash[i]=hash[i].slice(0,30)+'...';
-            }else
-                hash[i]='';
+            o=xui.get(doc,(i+'.').split('.'));
+            hash[i]=o;
         });
-    
-    
+        
         /*
         var no={},l=0;
         xui.each(hash,function(o,i){

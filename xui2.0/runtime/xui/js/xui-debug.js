@@ -8712,8 +8712,9 @@ Class('xui.Event',null,{
             inlineblock +
             "}" +
             ".xuicon:before{height:1em;width:1em;}" + 
-            ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; font-size:12px; font-size:0.75rem; }" + 
-            ".xui-ui-ctrl{cursor:default;}"+
+            ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
+            ".xui-ui-ctrl{cursor:default;font-size:12px; font-size:0.75rem;}"+
+            ".xui-ui-reset{font-size: inherit;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 
@@ -35150,7 +35151,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 },
                 'items.tagCmds.button':{
                     CMD:{
-                        _NativeElement:true,
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
@@ -39387,7 +39387,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 },
                 'items.tagCmds.button':{
                     CMD:{
-                        _NativeElement:true,
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
@@ -45178,7 +45177,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{_cellWidth};{cellDisplay};',
                         className:'xui-uiborder-r xui-uiborder-light {cellCls}',
                         CELLA:{
-                            _NativeElement:true,
                             tagName:'button',
                             className:'xui-node xui-showfocus xui-wrapper xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
@@ -45246,7 +45244,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 'rows.tagCmds.text':{
                     CMD:{
-                        tagName:"a",
+                        tagName:"span",
                         title:"{tips}",
                         href:xui.$DEFAULTHREF,
                         style:'{_style}{itemStyle}',
@@ -45257,7 +45255,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 'rows.tagCmds.button':{
                     CMD:{
-                        _NativeElement:true,
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',

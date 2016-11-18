@@ -200,7 +200,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 },
                 'items.tagCmds.button':{
                     CMD:{
-                        _NativeElement:true,
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',

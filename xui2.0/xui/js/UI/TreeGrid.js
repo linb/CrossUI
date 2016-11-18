@@ -2290,7 +2290,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         style:'width:{_cellWidth};{cellDisplay};',
                         className:'xui-uiborder-r xui-uiborder-light {cellCls}',
                         CELLA:{
-                            _NativeElement:true,
                             tagName:'button',
                             className:'xui-node xui-showfocus xui-wrapper xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-treegrid-tgbtn {cellClass}',
                             style:'{cellStyle}',
@@ -2358,7 +2357,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 'rows.tagCmds.text':{
                     CMD:{
-                        tagName:"a",
+                        tagName:"span",
                         title:"{tips}",
                         href:xui.$DEFAULTHREF,
                         style:'{_style}{itemStyle}',
@@ -2369,7 +2368,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 'rows.tagCmds.button':{
                     CMD:{
-                        _NativeElement:true,
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}',
