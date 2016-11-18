@@ -139,6 +139,7 @@ copy %relPath%xui\js\UI\TextEditor.js /b ^
 + %relPath%xui\js\ThirdParty\raphael.js /b ^
 + %relPath%xui\js\svg.js /b ^
 + %relPath%xui\js\UI\SVGPaper.js /b ^
++ %relPath%xui\js\UI\FusionChartsXT.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
 +  %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
 + %relPath%xui\js\ThirdParty\fusioncharts.widgets.js /b ^
@@ -147,7 +148,6 @@ copy %relPath%xui\js\UI\TextEditor.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.fint.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.ocean.js /b ^
 + %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.zune.js /b ^
-+ %relPath%xui\js\UI\FusionChartsXT.js /b ^
 adv.js
 
 java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %outPath%xui\js%advAllPath% adv.js  --charset utf-8
