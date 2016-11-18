@@ -19287,18 +19287,24 @@ showTickValues:"1",majorTMHeight:"3",majorTMColor:"#000000",minorTMNumber:"0",va
 scatter:{chart:{use3dlighting:"0",showYAxisLine:"1",yAxisLineThickness:"1",yAxisLineColor:"#999999",showAlternateHGridColor:"0",showAlternateVGridColor:"0"},categories:[{verticalLineDashed:"1",verticalLineDashLen:"1",verticalLineDashGap:"1",verticalLineThickness:"1",verticalLineColor:"#000000",category:[{}]}],vtrendlines:[{line:[{alpha:"0"}]}]},boxandwhisker2d:{chart:{valueBgColor:"#ffffff",valueBgAlpha:"90",valueBorderPadding:"-2",valueBorderRadius:"2"}},thermometer:{chart:{gaugeFillColor:"#0075c2"}},
 cylinder:{chart:{cylFillColor:"#0075c2"}},sparkline:{chart:{linecolor:"#0075c2"}},sparkcolumn:{chart:{plotFillColor:"#0075c2"}},sparkwinloss:{chart:{winColor:"#0075c2",lossColor:"#1aaf5d",drawColor:"#f2c500",scoreLessColor:"#f45b00"}},hbullet:{chart:{plotFillColor:"#0075c2",targetColor:"#1aaf5d"}},vbullet:{chart:{plotFillColor:"#0075c2",targetColor:"#1aaf5d"}}}});
 Class("xui.UI.FusionChartsXT","xui.UI",{
-    Initialize:function(){
-        var ns=this;
-        FusionCharts.addEventListener(["beforeRender","renderCancelled","beforeResize","resized","resizeCancelled","beforeDispose","disposed","disposeCancelled","pageNavigated","rotationEnd","rotationStart","centerLabelRollover","centerLabelRollout","centerLabelClick","centerLabelChanged","linkClicked","chartTypeChanged","chartClick","chartMouseMove","chartRollOver","chartRollOut","backgroundLoaded","backgroundLoadError","logoRollover","logoRollout","logoClick","logoLoaded","logoLoadError","scrollStart","scrollEnd","slicingStart","slicingEnd","dataRestored","beforeDataSubmit","dataSubmitError","dataSubmitted","dataSubmitCancelled","chartUpdated","nodeAdded","nodeUpdated","nodeDeleted","connectorAdded","connectorUpdated","connectorDeleted","labelAdded","labelDeleted","selectionRemoved","labelClick","labelRollOver","labelRollOut","labelDragStart","labelDragEnd","dataplotDragStart","dataplotDragEnd","alertComplete","realTimeUpdateComplete","realTimeUpdateError","chartCleared","zoomReset","zoomedOut","zoomedIn","zoomed","zoomModeChanged","pinned","beforeExport","exported","exportCancelled","beforePrint","printComplete","printCancelled","<static> ready","legendPointerDragStart","legendPointerDragStop","legendRangeUpdated","legendItemClicked","legendItemRollover","legendItemRollout","beforeLinkedItemOpen","linkedItemOpened","beforeLinkedItemClose","linkedItemClosed","entityRollOut","entityRollOver","entityClick","connectorRollOver","connectorRollOut","markerRollOver","markerRollOut","markerClick","printReadyStateChange","dataplotRollOver","dataplotRollOut","dataplotClick","processClick","processRollOver","processRollOut","categoryClick","categoryRollOver","categoryRollOut","milestoneClick","milestoneRollOver","milestoneRollOut","overlayButtonClick","loaded","rendered","drawComplete","renderComplete","dataInvalid","dataXMLInvalid","dataLoaded","noDataToDisplay","connectorClick","selectionStart","selectionEnd","dataLabelClick","dataLabelRollOver","dataLabelRollOut","dataLoadRequestCompleted","dataLoadError","dataLoadCancelled","dataLoadRequestCancelled","dataUpdated","dataUpdateCancelled","dataLoadRequested","beforeDataUpdate"], 
-            function(eventObject, argumentsObject){
-                ns.getAll().each(function(prf,t){
-                     if(prf.onFusionChartsEvent && prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId)) && t==eventObject.sender)
-                        prf.boxing().onFusionChartsEvent(prf,eventObject,argumentsObject);
-                });
-            }
-        );
-    },
     Instance:{
+        initialize:function(){
+            if(_.isDefined('FusionCharts') && FusionCharts.addEventListener){
+                if(!FusionCharts._xui_attaced){
+                    FusionCharts._xui_attaced = 1;
+                    FusionCharts.addEventListener(["beforeRender","renderCancelled","beforeResize","resized","resizeCancelled","beforeDispose","disposed","disposeCancelled","pageNavigated","rotationEnd","rotationStart","centerLabelRollover","centerLabelRollout","centerLabelClick","centerLabelChanged","linkClicked","chartTypeChanged","chartClick","chartMouseMove","chartRollOver","chartRollOut","backgroundLoaded","backgroundLoadError","logoRollover","logoRollout","logoClick","logoLoaded","logoLoadError","scrollStart","scrollEnd","slicingStart","slicingEnd","dataRestored","beforeDataSubmit","dataSubmitError","dataSubmitted","dataSubmitCancelled","chartUpdated","nodeAdded","nodeUpdated","nodeDeleted","connectorAdded","connectorUpdated","connectorDeleted","labelAdded","labelDeleted","selectionRemoved","labelClick","labelRollOver","labelRollOut","labelDragStart","labelDragEnd","dataplotDragStart","dataplotDragEnd","alertComplete","realTimeUpdateComplete","realTimeUpdateError","chartCleared","zoomReset","zoomedOut","zoomedIn","zoomed","zoomModeChanged","pinned","beforeExport","exported","exportCancelled","beforePrint","printComplete","printCancelled","<static> ready","legendPointerDragStart","legendPointerDragStop","legendRangeUpdated","legendItemClicked","legendItemRollover","legendItemRollout","beforeLinkedItemOpen","linkedItemOpened","beforeLinkedItemClose","linkedItemClosed","entityRollOut","entityRollOver","entityClick","connectorRollOver","connectorRollOut","markerRollOver","markerRollOut","markerClick","printReadyStateChange","dataplotRollOver","dataplotRollOut","dataplotClick","processClick","processRollOver","processRollOut","categoryClick","categoryRollOver","categoryRollOut","milestoneClick","milestoneRollOver","milestoneRollOut","overlayButtonClick","loaded","rendered","drawComplete","renderComplete","dataInvalid","dataXMLInvalid","dataLoaded","noDataToDisplay","connectorClick","selectionStart","selectionEnd","dataLabelClick","dataLabelRollOver","dataLabelRollOut","dataLoadRequestCompleted","dataLoadError","dataLoadCancelled","dataLoadRequestCancelled","dataUpdated","dataUpdateCancelled","dataLoadRequested","beforeDataUpdate"], 
+                        function(eventObject, argumentsObject){
+                            xui.UI.FusionChartsXT.getAll().each(function(prf,t){
+                                 if(prf.onFusionChartsEvent && prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId)) && t==eventObject.sender)
+                                    prf.boxing().onFusionChartsEvent(prf,eventObject,argumentsObject);
+                            });
+                        }
+                    );
+                }
+            }else{
+                throw "No FusionCharts Namespace!";
+            }
+        },
         refreshChart:function(dataFormat){
             return this.each(function(prf){
                 if(prf.renderId){
