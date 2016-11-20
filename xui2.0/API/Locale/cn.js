@@ -5686,6 +5686,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ],
                 $memo:'See constructor'
             },
+            onFragmentChanged:{
+                $desc:'当URL片段改变的时候触发本事件',
+                $paras:[
+                    'fragment : String, URL片段',
+                    'init : Boolen, 初始化',
+                    'newAdd: Function, 新设置的callback'
+                ]
+            },
             onLoadBaseClassErr:{
                 $desc:'当Module加载基类出错的时候触发本事件',
                 $paras:[
@@ -19329,7 +19337,8 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             afterIniComponents:"初始化控件后",
             onReady:"页面准备就绪",
             onRender:"部件渲染完成",
-            onDestroy:"部件销毁"
+            onDestroy:"部件销毁",
+            onFragmentChanged:"当URL片段改变"
         },
         'xui_absObj' : {
         },

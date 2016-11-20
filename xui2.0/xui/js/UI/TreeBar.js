@@ -268,13 +268,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
-                                $order:4,
+                                $order:3,
                                 style:'{_tglDisplay}',
                                 className:'xuifont',
                                 $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
-                                $order:3,
+                                $order:4,
                                 tagName:'span',
                                 style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"

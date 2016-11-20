@@ -469,11 +469,20 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
                     if(profile.properties.movable && !profile._locked){
                         profile.box._active(profile);
-                        profile.getRoot().startDrag(e, {
+                        var root=profile.getRoot(),
+                            region=root.cssRegion(),
+                            pregion=root.parent().cssRegion(),
+                            dist=profile.getEmSize();
+                        root.startDrag(e, {
                             dragDefer:2,
-                            maxTopOffset:profile.getRoot().top(),
-                            maxLeftOffset:profile.getRoot().left(),
-                            targetOffsetParent:profile.getRoot().parent()
+                            maxLeftOffset:region.left,
+                            maxRightOffset:pregion.width-region.left-dist,
+                            maxTopOffset:region.top,
+                            maxBottomOffset:pregion.height-region.top-dist,
+                            magneticDistance:dist,
+                            xMagneticLines:[0,pregion.width-region.width],
+                            yMagneticLines:[0,pregion.height-region.height],
+                            targetOffsetParent:root.parent()
                         });
                     }
                 },

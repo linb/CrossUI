@@ -35,6 +35,7 @@ Class('xui.Module','xui.absProfile',{
         // compitable
         ns['xui.Com']=ns.prototype['xui.Com']=1;
         xui.Com=ns;
+        ns.$activeClass$='xui.Module';
     },
     After:function(){
         var self=this,k, e, t, b, i;
@@ -1316,6 +1317,7 @@ Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
+            onFragmentChanged:function(fragment, init, newAdd){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},

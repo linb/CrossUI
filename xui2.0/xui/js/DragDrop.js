@@ -154,29 +154,31 @@ Class('xui.DragDrop',null,{
 
         //get left for cssPos
         _left:function(value){
+            var proxySize=this.$proxySize;
             with(this._profile){
                 if(magneticDistance>0 && xMagneticLines.length){
                     var l=xMagneticLines.length;
                     while(l--)
-                        if(Math.abs(value - xMagneticLines[l])<=magneticDistance)
-                            return xMagneticLines[l];
+                        if(Math.abs(value + proxySize - xMagneticLines[l])<=magneticDistance)
+                            return xMagneticLines[l] - proxySize;
                 }
                 if(widthIncrement>1)
-                   return Math.floor(value/widthIncrement)*widthIncrement;
+                   return Math.floor((value + proxySize)/widthIncrement)*widthIncrement - proxySize;
                 return value;
             }
         },
         //get top for cssPos
         _top:function(value){
+            var proxySize=this.$proxySize;
             with(this._profile){
                 if(magneticDistance>0 && yMagneticLines.length){
                     var l=yMagneticLines.length;
                     while(l--)
-                        if(Math.abs(value - yMagneticLines[l])<=magneticDistance)
-                            return yMagneticLines[l];
+                        if(Math.abs(value + proxySize - yMagneticLines[l])<=magneticDistance)
+                            return yMagneticLines[l] - proxySize;
                 }
                 if(heightIncrement>1)
-                    return Math.floor(value/heightIncrement)*heightIncrement;
+                    return Math.floor((value + proxySize)/heightIncrement)*heightIncrement - proxySize;
                 return value;
             }
         },

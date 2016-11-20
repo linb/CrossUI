@@ -1892,6 +1892,8 @@ new function(){
         }catch(e){
             xui.asyRun(function(){throw e})
         }
+        // init history function
+        if(xui.History)xui.History.setCallback(null);
     };
 
     if (d.addEventListener){
@@ -13179,6 +13181,7 @@ Class('xui.Module','xui.absProfile',{
         // compitable
         ns['xui.Com']=ns.prototype['xui.Com']=1;
         xui.Com=ns;
+        ns.$activeClass$='xui.Module';
     },
     After:function(){
         var self=this,k, e, t, b, i;
@@ -14460,6 +14463,7 @@ Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
+            onFragmentChanged:function(fragment, init, newAdd){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
@@ -15329,29 +15333,31 @@ Class('xui.DragDrop',null,{
 
         //get left for cssPos
         _left:function(value){
+            var proxySize=this.$proxySize;
             with(this._profile){
                 if(magneticDistance>0 && xMagneticLines.length){
                     var l=xMagneticLines.length;
                     while(l--)
-                        if(Math.abs(value - xMagneticLines[l])<=magneticDistance)
-                            return xMagneticLines[l];
+                        if(Math.abs(value + proxySize - xMagneticLines[l])<=magneticDistance)
+                            return xMagneticLines[l] - proxySize;
                 }
                 if(widthIncrement>1)
-                   return Math.floor(value/widthIncrement)*widthIncrement;
+                   return Math.floor((value + proxySize)/widthIncrement)*widthIncrement - proxySize;
                 return value;
             }
         },
         //get top for cssPos
         _top:function(value){
+            var proxySize=this.$proxySize;
             with(this._profile){
                 if(magneticDistance>0 && yMagneticLines.length){
                     var l=yMagneticLines.length;
                     while(l--)
-                        if(Math.abs(value - yMagneticLines[l])<=magneticDistance)
-                            return yMagneticLines[l];
+                        if(Math.abs(value + proxySize - yMagneticLines[l])<=magneticDistance)
+                            return yMagneticLines[l] - proxySize;
                 }
                 if(heightIncrement>1)
-                    return Math.floor(value/heightIncrement)*heightIncrement;
+                    return Math.floor((value + proxySize)/heightIncrement)*heightIncrement - proxySize;
                 return value;
             }
         },
@@ -16486,6 +16492,22 @@ Class("xui.Tips", null,{
     Static:{
         _fid:'xui:history',
         _type:(xui.browser.ie && (xui.browser.ver<8))?'iframe':("onhashchange" in window)?'event':'timer',
+        _excallback:null,
+        _callback:function(fragment, init, newAdd){
+            var ns=this, arr=[], f;
+            xui.arr.each(xui.Module._cache,function(m){
+              // by created order
+               if(m._events && ('onFragmentChanged' in m._events)){
+                   // function or pseudocode
+                   if(xui.isFun(f = m._events.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
+                       m.fireEvent('onFragmentChanged', [fragment, init, newAdd]);
+                   }
+               }
+            });
+            // the last one
+            if(xui.isFun(ns._excallback))
+                ns._excallback(fragment, init, newAdd);
+        },
         /* set callback function
         callback: function(hashStr<"string after #!">)
         */
@@ -16494,40 +16516,31 @@ Class("xui.Tips", null,{
                 hash = location.hash;
             if(hash)hash='#!' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!/,''));
             else hash="#!";
-            self._callback = callback;
+            self._excallback = callback;
 
-            if(callback){
-                self._lastFI = decodeURIComponent(hash);
-                switch(self._type){
-                    case 'event':
-                        window.onhashchange=self._checker;
-                    break;
-                    case "iframe":
-                        document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));
-                        var doc=document.getElementById(self._fid).contentWindow.document;
-                        doc.open("javascript:'<html></html>'");
-                        doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('"+hash+"');</scri" + "pt></head><body></body></html>");
-                        doc.close();
-                    case 'timer':
-                        if(self._itimer)
-                            clearInterval(self._itimer);
-                        self._itimer = setInterval(self._checker,100);
-                    break;
-                }
-                self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true);
-            }else{
-                if(self._itimer)
-                    clearInterval(self._itimer);
+            self._lastFI = decodeURIComponent(hash);
+            switch(self._type){
+                case 'event':
+                    window.onhashchange=self._checker;
+                break;
+                case "iframe":
+                    document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));
+                    var doc=document.getElementById(self._fid).contentWindow.document;
+                    doc.open("javascript:'<html></html>'");
+                    doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('"+hash+"');</scri" + "pt></head><body></body></html>");
+                    doc.close();
+                case 'timer':
+                    if(self._itimer)
+                        clearInterval(self._itimer);
+                    self._itimer = setInterval(self._checker, 200);
+                break;
             }
+            self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true, callback);
+
             return self;
         },
         _checker: function(hash){
             var self=xui.History;
-            if(typeof self._callback!='function'){
-                if(self._itimer)
-                    clearInterval(self._itimer);
-                return;
-            }
             switch(self._type){
                 case "iframe":
                     if(xui.isSet(hash))
@@ -16548,7 +16561,6 @@ Class("xui.Tips", null,{
         */
         setFI:function(fi,triggerCallback){
             var self=this;
-            if(!self._callback)return;
             // ensure encode once
             if(fi)fi='#!' + encodeURIComponent((''+decodeURIComponent(fi)).replace(/^#!/,''));
             else fi="#!";
@@ -16565,10 +16577,9 @@ Class("xui.Tips", null,{
                 case 'timer':
                     location.hash = self._lastFI = decodeURIComponent(fi);
                 if(triggerCallback!==false)
-                    xui.tryF(self._callback,[decodeURIComponent(fi.replace(/^#!/,''))]);
+                    self._callback(decodeURIComponent(fi.replace(/^#!/,'')));
                 break;
             }
-
         }
     }
 });Class('xui.ModuleFactory',null,{
@@ -24499,6 +24510,7 @@ new function(){
             xui.UI.SButton = xui.UI.Button;
             var key="xui.UI.SButton";
             xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+            this.$activeClass$='xui.UI.Button';
         },
         Instance:{
             activate:function(){
@@ -24978,6 +24990,7 @@ new function(){
             xui.UI.Pane = xui.UI.Div;
             var key="xui.UI.Pane";
             xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+            this.$activeClass$='xui.UI.Div';
         },
         Static:{
             Appearances:{
@@ -39312,13 +39325,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
-                                $order:4,
+                                $order:3,
                                 style:'{_tglDisplay}',
                                 className:'xuifont',
                                 $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
-                                $order:3,
+                                $order:4,
                                 tagName:'span',
                                 style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
@@ -50491,11 +50504,20 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(profile.properties.movable && !profile._locked){
                         profile.box._active(profile);
-                        profile.getRoot().startDrag(e, {
+                        var root=profile.getRoot(),
+                            region=root.cssRegion(),
+                            pregion=root.parent().cssRegion(),
+                            dist=profile.getEmSize();
+                        root.startDrag(e, {
                             dragDefer:2,
-                            maxTopOffset:profile.getRoot().top(),
-                            maxLeftOffset:profile.getRoot().left(),
-                            targetOffsetParent:profile.getRoot().parent()
+                            maxLeftOffset:region.left,
+                            maxRightOffset:pregion.width-region.left-dist,
+                            maxTopOffset:region.top,
+                            maxBottomOffset:pregion.height-region.top-dist,
+                            magneticDistance:dist,
+                            xMagneticLines:[0,pregion.width-region.width],
+                            yMagneticLines:[0,pregion.height-region.height],
+                            targetOffsetParent:root.parent()
                         });
                     }
                 },

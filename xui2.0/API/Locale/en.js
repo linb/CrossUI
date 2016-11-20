@@ -5626,6 +5626,14 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $memo:'See constructor'
             },
+            onFragmentChanged:{
+                $desc:'Fired when the URL fragment changed',
+                $paras:[
+                    'fragment : String, URL fragment',
+                    'init : Boolen, initialized',
+                    'newAdd: Function, the extra callback'
+                ]
+            },
             onLoadBaseClassErr:{
                 $desc:'Fired when module failed to load base Classes',
                 $paras:[

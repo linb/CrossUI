@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+Class('App', 'xui.Module',{
     Initialize:function(){
         var arr=[];
 
@@ -44,11 +44,29 @@ Class('App', 'xui.Com',{
             SPA.btnLang.setCaption(xui.getRes('app.'+xui.getLang()));
             xui.UI.Resizer.$abstract=true;
             xui.History.setCallback(function(str){
-                var str2=str.replace('#!','');
+                var str2=str.replace('#!','')
+                    // handle deprecated classes
+                    .replace('xui.Com','xui.Module')
+                    .replace('xui.UI.SLabel','xui.UI.Label')
+                    .replace('xui.UI.SButton','xui.UI.Button')
+                    .replace('xui.UI.SCheckbox','xui.UI.Checkbox')
+                    .replace('xui.UI.Pane','xui.UI.Div')
+                    .replace('xui.UI.IconList','xui.UI.Gallery');
+
                 str=str2;
                 if(!str)return;
                 var obj, t, id1, id2, id3, id4;
+
                 obj=xui.SC.get(str);
+                // try Module
+                if(!obj){
+                    var str3=str.replace('xui.Module.prototype.','xui.Module.$EventHandlers.')
+                        .replace('xui.Com.prototype.','xui.Module.$EventHandlers.');
+                    obj=xui.SC.get(str3);
+                    // add it manually
+                    if(obj)
+                        obj.$event$=1;
+                }
 //input must be a valid object path
                 while(!obj && str.indexOf('.')!=-1){
                     t=str.split('.');
@@ -646,10 +664,10 @@ Class('App', 'xui.Com',{
                         }
                     }
                     //add xui.Com event
-                    if(o.KEY=='xui.Com'){
+                    if(o.KEY=='xui.Com'||o.KEY=='xui.Module'){
                         if(!obj.events)obj.events={};
                         if(!obj.events.self)obj.events.self=[];
-                        var es=xui.Com.$EventHandlers;
+                        var es=xui.Module.$EventHandlers;
                         for(var i in es){
                             o=es[i];
                             obj.events.self.push([i,this._getFunArgs(es,i)]);
@@ -909,6 +927,6 @@ Class('App', 'xui.Com',{
     
         return SPA.$api_pool=hash;
     }, 
-    $S_CLS:{'Class':1,'xui':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, $CLS_FUN:{'Class':1,'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ComFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
+    $S_CLS:{'Class':1,'xui':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, $CLS_FUN:{'Class':1,'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ModuleFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }
 });

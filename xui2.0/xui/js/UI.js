@@ -7495,6 +7495,7 @@ new function(){
             xui.UI.SButton = xui.UI.Button;
             var key="xui.UI.SButton";
             xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+            this.$activeClass$='xui.UI.Button';
         },
         Instance:{
             activate:function(){
@@ -7974,6 +7975,7 @@ new function(){
             xui.UI.Pane = xui.UI.Div;
             var key="xui.UI.Pane";
             xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+            this.$activeClass$='xui.UI.Div';
         },
         Static:{
             Appearances:{

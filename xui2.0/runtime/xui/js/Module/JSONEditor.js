@@ -46,31 +46,38 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                 .setTagCmds([{
                     "id" : "add",
                     "type" : "text",
-                    "caption" : "↯",
-                    "location" : "right",
+                    "caption" : "",
+                    "location": "right",
+                    "itemClass":"xuicon xui-uicmd-getter",
                     "tag" : "header row",
                     "tips" : "Append a child"
                 },{
                     "id" : "up",
                     "type" : "text",
-                    "caption" : "↑",
-                    "location" : "right",
+                    "location": "right",
+                    "itemClass":"xuicon xui-icon-arrowtop",
                     "tag" : "row",
-                    "tips" : "Add a node to the front of the node"
+                    "tips" : "Add a node to the front of the node" 
                 },{
                     "id" : "down",
                     "type" : "text",
-                    "location" : "right",
-                    "caption" : "↓",
+                    "location": "right",
+                    "itemClass":"xuicon xui-icon-arrowbottom",
                     "tag" : "row",
                     "tips" : "Add a node at the back of this node"
                 },{
                     "id" : "del",
                     "type" : "text",
-                    "location" : "right",
-                    "caption" : "✕",
+                    "location": "right",
+                    "itemClass":"xuicon xui-uicmd-close",
                     "tag" : "row",
                     "tips" : "Delete this node"
+                },{
+                    "id" : "space",
+                    "type" : "text",
+                    "location": "right",
+                    "caption" : "&nbsp;&nbsp;&nbsp;&nbsp;",
+                    "tag" : "row"
                 }])
                 .setTreeMode("infirstcell")
                 .onCmd("_tg_oncmd")
