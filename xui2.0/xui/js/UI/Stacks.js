@@ -8,6 +8,11 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         delete t.LIST;
         delete t.PNAELS;
         t.$submap.items.ITEM.className = 'xui-uibar xui-uiborder-t xui-uiborder-b';
+        t.$submap.items.ITEM.ITEMI.ITEMC.HANDLE.IBWRAP.TOGGLE={
+            $order:1,
+            className:'xuifont {_tlgchecked}',
+             $fonticon:'xui-uicmd-toggle'
+        };
         this.setTemplate(t);
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },

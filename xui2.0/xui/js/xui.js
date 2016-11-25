@@ -1045,7 +1045,7 @@ xui.merge(xui,{
                         var id='theme:'+key,
                             path=xui.getPath('xui.appearance.' +key,'');
                         if(tag){
-                            xui.getFileAsync(path+'theme.css', 'text', function(rsp){
+                            xui.getFileAsync(path+'theme.css', function(rsp){
                                 rsp = xui.Coder.replace(rsp, [
                                     [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
                                     [/\{[^}]*\}/,'$0'],
@@ -1229,11 +1229,11 @@ xui.merge(xui,{
         if(!options) options={};options.method="delete";
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
-    getFileSync:function(uri, rspType, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType: rspType||"text"},options,'without')).start()||null;
+    getFileSync:function(uri, onSuccess, onFail, options){
+        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:"text"},options,'without')).start()||null;
     },
-    getFileAsync:function(uri, rspType, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: rspType||"text"},options,'without')).start();
+    getFileAsync:function(uri, onSuccess, onFail, threadid, options){
+        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: "text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))

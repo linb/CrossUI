@@ -72,12 +72,6 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     "itemClass":"xuicon xui-uicmd-close",
                     "tag" : "row",
                     "tips" : "Delete this node"
-                },{
-                    "id" : "space",
-                    "type" : "text",
-                    "location": "right",
-                    "caption" : "&nbsp;&nbsp;&nbsp;&nbsp;",
-                    "tag" : "row"
                 }])
                 .setTreeMode("infirstcell")
                 .onCmd("_tg_oncmd")
@@ -304,7 +298,8 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                                 xui.asyRun(function(){
                                     tg.editCellbyRowCol(id,"value");
                                 },200);
-                            },'As a Hash','As an Array')
+                            },'As a Hash','As an Array');
+                            return ;
                         }
                     }else{
                         tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('new' + ++ns._index),readonly:type=='array'},'null','']}]);
@@ -338,10 +333,14 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     profile.boxing().updateCell(cell, {caption:'['+i+']'});
                 });
             }
-            if( nid )
+            if( nid ){
                 xui.asyRun(function(){
                     tg.editCellbyRowCol(nid+'', ptype=='array'?"value":"key");
                 });
+            }
+            xui.asyRun(function(){
+                ns.fireEvent("onchange", [ns]);
+            },100);
         },
         events:{
             onRender:function(module){

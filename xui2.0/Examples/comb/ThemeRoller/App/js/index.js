@@ -2589,7 +2589,7 @@ Class('App', 'xui.Module',{
             delete ns._cstomCSS;
 
             xui.busy("id","Loading theme ...",true);
-            xui.getFileAsync(xui.getPath('xui.appearance.' + newValue,'/theme.css'), 'text', function(rsp){
+            xui.getFileAsync(xui.getPath('xui.appearance.' + newValue,'/theme.css'), function(rsp){
                 rsp = rsp.replace(/\.setting-uikey\{[^}]+\}/,'');
                 ns._themeRoller.setSandboxTheme(rsp + ns._prev);
 

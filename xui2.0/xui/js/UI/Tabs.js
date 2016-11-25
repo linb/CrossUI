@@ -76,9 +76,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
 
                 if(arr1.length){
+                    profile.getSubNodes(['ITEM','TOGGLE'],arr1).tagClass('-checked',false);
                     profile.getSubNodes('ITEM',arr1).tagClass('-checked',false);
                 }
                 if(arr2.length){
+                    profile.getSubNodes(['ITEM','TOGGLE'],arr2).tagClass('-checked');
                     profile.getSubNodes('ITEM',arr2).tagClass('-checked');
                 }
 
@@ -228,7 +230,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         /*  remove some views from pageView
             arr: array for id
         */
-        removeItems:function(arr/*default is the current*/){
+        removeItems:function(arr/*default is the current*/,purgeNow){
             var self=this,
                 p,obj,serialId;
             self.each(function(profile){
@@ -241,7 +243,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         serialId=profile.getSubIdByItemId(o+"");
                         if(serialId && !(obj = profile.getSubNode('PANEL', serialId) ).isEmpty() ){
                             // remove ui
-                            obj.remove();
+                            obj.remove(true, purgeNow);
                         }
                     });
             });
@@ -263,11 +265,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             return self;
         },
-        clearItems:function(){
+        clearItems:function(purgeNow){
             var self=this;
             self.each(function(profile){
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
-                    profile.getSubNode('PANEL',true).remove();
+                    profile.getSubNode('PANEL',true).remove(true, purgeNow);
             });
             self.setValue(null,true,'clear');
             arguments.callee.upper.apply(self,arguments);
@@ -362,7 +364,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         style:"white-space:nowrap;",
                                         RULER:{},
                                         ICON:{
-                                            $order:0,
+                                            $order:2,
                                             className:'xuicon {imageClass}',
                                             style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                                             text:'{iconFontCode}'
@@ -371,10 +373,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             text: '{caption}',
                                             className:"xui-title-node",
                                             style:'{itemWidth};{itemAlign}',
-                                            $order:1
+                                            $order:3
                                         },
                                         CMDS:{
-                                            $order:2,
+                                            $order:4,
                                             OPT:{
                                                 $order:1,
                                                 className:'xuifont',

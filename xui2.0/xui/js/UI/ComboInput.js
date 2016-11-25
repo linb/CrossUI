@@ -1347,10 +1347,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         cls="xui-ui-readonly";
                     if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
                         v=true;
-
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
+                    this.getRoot()[v?'addClass':'removeClass'](cls);
                     i.attr('readonly',v).css('cursor',v?'pointer':'');   
                 }
             },

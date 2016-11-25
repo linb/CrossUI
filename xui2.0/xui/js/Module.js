@@ -933,7 +933,8 @@ Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
-                this.properties.value=this.$UIvalue; return this;
+                this.properties.value=this.$UIvalue; 
+                return this;
             }
             return this;
         },
