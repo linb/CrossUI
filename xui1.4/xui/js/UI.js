@@ -1373,7 +1373,7 @@ Class("xui.UI",  "xui.absObj", {
         *     [xui.UI]
         *     [xui.UI, [xui.UI]
         **/
-        removeChildren:function(subId, bDestroy){
+        removeChildren:function(subId, bDestroy, purgeNow){
             return this.each(function(o){
                 var c=_.copy(o.children),
                     s=o.box.$DataModel.valueSeparator||";",
@@ -1400,7 +1400,7 @@ Class("xui.UI",  "xui.absObj", {
                             o.boxing().afterRemove(o,v[0],v[1],bDestroy);
 
                         if(bDestroy && !v[0].destroyed)
-                            v[0].boxing().destroy(true);
+                            v[0].boxing().destroy(true, purgeNow);
                     }
                 });
             });
@@ -5703,7 +5703,7 @@ Class("xui.absList", "xui.absObj",{
                     profile.boxing()._afterInsertItems(profile, data, base, before);
             });
         },
-        removeItems:function(arr, key){
+        removeItems:function(arr, key, purgeNow){
             var obj,v,
                 b=this._afterRemoveItems;
                 remove=function(profile, arr, target, data, ns, force){
@@ -5738,7 +5738,7 @@ Class("xui.absList", "xui.absObj",{
                             return false;
                         }
                     });
-                    ns.remove();
+                    ns.remove(true, purgeNow);
                 };
             return this.each(function(profile){
                 var p=profile.properties,data=[];
@@ -5762,12 +5762,12 @@ Class("xui.absList", "xui.absObj",{
                     profile.boxing()._afterRemoveItems(profile, data);
             });
         },
-        clearItems:function(){
+        clearItems:function(purgeNow){
             return this.each(function(profile){
                 if(profile.SubSerialIdMapItem){
                     //empty dom
                     if(profile.renderId){
-                        profile.getSubNode(profile.keys[profile.box._ITEMKEY||'ITEM'], true).remove();
+                        profile.getSubNode(profile.keys[profile.box._ITEMKEY||'ITEM'], true).remove(true, purgeNow);
                     }
                     //save subid
                     _.each(profile.SubSerialIdMapItem, function(o,serialId){
@@ -6081,21 +6081,20 @@ Class("xui.absList", "xui.absObj",{
                     // keep children objects
                     if(items && items.length){
                         if(o.children && o.children.length){
-                            children=[]
-                            _.arr.each(o.children,function(arr){
-                                children.push(ia=[arr[0].serialize(false,true),null,null]);
-                                if(ia[1]=arr[1]){
+                            // use UIProfile's serialize function for module case
+                            _.arr.each(children = o.serialize(false, true).children, function(arr){
+                                if(arr[1]){
                                     var i=_.arr.indexOf(items,arr[1]);
                                     if(i===-1)
                                         i=_.arr.subIndexOf(items,"id",arr[1]);
                                     if(i!==-1)
-                                        ia[2]=i;
+                                        arr[2]=i;
                                 }
                             });
                             // destroy all
-                            ins.removeChildren(true,true);
+                            ins.removeChildren(true,true,true);
                         }
-                        ins.clearItems();
+                        ins.clearItems(true, true);
                     }
  
                     ins.insertItems(value?_.copy(value):null);

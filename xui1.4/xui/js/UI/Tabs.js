@@ -231,7 +231,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         /*  remove some views from pageView
             arr: array for id
         */
-        removeItems:function(arr){
+        removeItems:function(arr,purgeNow){
             var self=this,
                 p,obj,serialId;
             self.each(function(profile){
@@ -243,7 +243,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         serialId=profile.getSubIdByItemId(o+"");
                         if(serialId && !(obj = profile.getSubNode('PANEL', serialId) ).isEmpty() ){
                             // remove ui
-                            obj.remove();
+                            obj.remove(true, purgeNow);
                         }
                     });
             });
@@ -266,11 +266,11 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             return self;
         },
-        clearItems:function(){
+        clearItems:function(purgeNow){
             var self=this;
             self.each(function(profile){
                 if(!profile.box.$DataModel.hasOwnProperty("noPanel") || !profile.properties.noPanel)
-                    profile.getSubNode('PANEL',true).remove();
+                    profile.getSubNode('PANEL',true).remove(true, purgeNow);
             });
             self.setValue(null,true,'clear');
             arguments.callee.upper.apply(self,arguments);
