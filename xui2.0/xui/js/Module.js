@@ -284,10 +284,9 @@ Class('xui.Module','xui.absProfile',{
             if(self.propSetAction)self.propSetAction(self.properties);
 
             if('dataBinder' in self.properties){
-                if(oDataBinder!==self.properties){
-                    if(oDataBinder)
-                        xui.DataBinder._unBind(oDataBinder, self);
-                    xui.DataBinder._bind(self.properties.dataBinder, self);
+                if(oDataBinder!==self.properties.dataBinder){
+                    if(oDataBinder)xui.DataBinder._unBind(oDataBinder, self);
+                    if(self.properties.dataBinder)xui.DataBinder._bind(self.properties.dataBinder, self);
                 }
             }
             return self;
@@ -379,7 +378,7 @@ Class('xui.Module','xui.absProfile',{
                         for(j=n;j<l;j++){
                             n=j+1;
                             o=events[j];
-                            if(typeof o=='string')o=host[o];
+                            if(typeof o=='string')o=self[o];
                             if(typeof o=='function')r=xui.tryF(o, args, host);
                             else if(xui.isHash(o)){
                                 if('onOK' in o ||'onKO' in o){
@@ -426,7 +425,7 @@ Class('xui.Module','xui.absProfile',{
                     l=events.length;
                     for(var i=0;i<l;i++){
                         o=events[i];
-                        if(typeof o=='string')o=host[o];
+                        if(typeof o=='string')o=self[o];
                         if(typeof o=='function')r=o.apply(host, args);
                         else if(xui.isHash(o))r=xui.pseudocode.exec(o,args,self);
                     }

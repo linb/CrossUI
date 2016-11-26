@@ -955,7 +955,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return profile.properties[profile.getKey(xui.use(node).id())==profile.keys.PANEL?'dropKeys':'dropKeysPanel'];
         },
         _forLazyAppend:function(profile, item, value){
-            var prop=profile.properties,box=profile.boxing();
+            var prop=profile.properties,box=profile.boxing(),
+                moduleHash={},
+                zz = prop.moduleClass+"["+prop.moduleXid+"]";
             //dynamic render
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];
@@ -968,7 +970,13 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     }
                 });
                 if(a.length)
-                    xui.arr.each(a,function(o){
+                    xui.arr.each(a,function(o,y,z){
+                        if(o.moduleClass && o.moduleXid && (y=xui.SC.get(o.moduleClass)) && (y=y.getInstance(o.moduleXid)) && y["xui.Module"]){
+                            z=o.moduleClass+"["+o.moduleXid+"]";
+                            if(zz!=z && !moduleHash[z]){
+                                moduleHash[z]=y;
+                            }
+                        }
                         box.append(xui(o),value);
                     });
 
@@ -991,6 +999,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
                     if(a.length)
                         xui.arr.each(a,function(o){
+                            if(o.moduleClass && o.moduleXid && (y=xui.SC.get(o.moduleClass)) && (y=y.getInstance(o.moduleXid)) && y["xui.Module"]){
+                                z=o.moduleClass+"["+o.moduleXid+"]";
+                                if(zz!=z && !moduleHash[z]){
+                                    moduleHash[z]=y;
+                                }
+                            }
                             box.append(xui(o),value);
                         });
                 }
@@ -1009,6 +1023,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             o.show(null, box, value, false);
                         });
                 }
+
+                 xui.each(moduleHash,function(o){
+                     o.render();
+                 });
             }
         },
         _forIniPanelView:function(profile, item){
