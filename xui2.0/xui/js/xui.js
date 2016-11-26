@@ -1230,10 +1230,10 @@ xui.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: "text"},options,'without')).start();
+        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1985,14 +1985,14 @@ new function(){
                 },
                 adjustparam=function(o){
                     if(typeof(o)=="string"){
-                        var rpc;
+                        var jsondata;
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
-                            rpc=1;
+                            jsondata=1;
                         }
                         o=xui.adjustVar(o, _ns);
                         // for file
-                        if(rpc && typeof(o)=="string")
+                        if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
                     }else if(xui.isHash(o)){
                         // one layer
@@ -2007,7 +2007,7 @@ new function(){
                 method=(conf.method+"").split("-")[0],
                 iparams=xui.clone(conf.params)||[],
                 conditions=conf.conditions||[],
-                adjust=conf.adjust||null,
+                adjust=adjustparam(conf.adjust)||null,
                 iconditions=[],
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             // handle conditions
@@ -2127,6 +2127,13 @@ new function(){
                                         case "selectFile":
                                             xui.Dom.selectFile.apply(xui.Dom,iparams);
                                             break;
+                                        case "readText":
+                                            xui.getFileAsync.apply(xui,iparams);
+                                            break;
+                                        case "readJSON":
+                                            iparams[4]={rspType:'json'};
+                                            xui.getFileAsync.apply(xui,iparams);
+                                            break;
                                     }
                                 break;
                                 case 'msg':
@@ -2139,24 +2146,27 @@ new function(){
                                     if(method=="cookie"){
                                         xui.$cache.data.Cookies=xui.Cookies.get();
                                     }else if(iparams[0].length){
+                                        var v = iparams[1];
+                                        if(iparams[2])
+                                            v=xui.get(v, iparams[2].split(/\s*\.\s*/));
                                         if(adjust){
                                             switch(adjust){
                                                 case "serialize":
-                                                    iparams[1]=xui.serialize(iparams[1]);
+                                                    v=xui.serialize(v);
                                                 break;
                                                 case "unserialize":
-                                                    iparams[1]=xui.unserialize(iparams[1]);
+                                                    v=xui.unserialize(v);
                                                 break;
                                                 case "stringify":
-                                                    iparams[1]=xui.stringify(iparams[1]);
+                                                    v=xui.stringify(v);
                                                 break;
                                                 default:
                                                     if(typeof(adjust=xui.get(adjust))=="function")
-                                                        iparams[1]=adjust(iparams[1]);
+                                                        v=adjust(v);
                                                 break;
                                             }
                                         }
-                                        xui.set(_ns, (method+"."+xui.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
+                                        xui.set(_ns, (method+"."+xui.str.trim(iparams[0])).split(/\s*\.\s*/), v);
                                     }
                                 break;
                                 case "callback":

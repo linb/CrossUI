@@ -839,6 +839,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     delete profile._noScroll;
                 }
             }
+            data._new = oitem;
             return false;
         },
         _prepareItem:function(profile, item, oitem, pid, index,len){

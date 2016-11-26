@@ -4829,6 +4829,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     b.setUIValue(arr,true,null,'drop');
                 }
             }
+            data._new = orow;
             return false;
         },
 

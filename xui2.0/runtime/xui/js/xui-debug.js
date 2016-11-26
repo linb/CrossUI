@@ -1230,10 +1230,10 @@ xui.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: "text"},options,'without')).start();
+        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1985,14 +1985,14 @@ new function(){
                 },
                 adjustparam=function(o){
                     if(typeof(o)=="string"){
-                        var rpc;
+                        var jsondata;
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
-                            rpc=1;
+                            jsondata=1;
                         }
                         o=xui.adjustVar(o, _ns);
                         // for file
-                        if(rpc && typeof(o)=="string")
+                        if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
                     }else if(xui.isHash(o)){
                         // one layer
@@ -2007,7 +2007,7 @@ new function(){
                 method=(conf.method+"").split("-")[0],
                 iparams=xui.clone(conf.params)||[],
                 conditions=conf.conditions||[],
-                adjust=conf.adjust||null,
+                adjust=adjustparam(conf.adjust)||null,
                 iconditions=[],
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             // handle conditions
@@ -2127,6 +2127,13 @@ new function(){
                                         case "selectFile":
                                             xui.Dom.selectFile.apply(xui.Dom,iparams);
                                             break;
+                                        case "readText":
+                                            xui.getFileAsync.apply(xui,iparams);
+                                            break;
+                                        case "readJSON":
+                                            iparams[4]={rspType:'json'};
+                                            xui.getFileAsync.apply(xui,iparams);
+                                            break;
                                     }
                                 break;
                                 case 'msg':
@@ -2139,24 +2146,27 @@ new function(){
                                     if(method=="cookie"){
                                         xui.$cache.data.Cookies=xui.Cookies.get();
                                     }else if(iparams[0].length){
+                                        var v = iparams[1];
+                                        if(iparams[2])
+                                            v=xui.get(v, iparams[2].split(/\s*\.\s*/));
                                         if(adjust){
                                             switch(adjust){
                                                 case "serialize":
-                                                    iparams[1]=xui.serialize(iparams[1]);
+                                                    v=xui.serialize(v);
                                                 break;
                                                 case "unserialize":
-                                                    iparams[1]=xui.unserialize(iparams[1]);
+                                                    v=xui.unserialize(v);
                                                 break;
                                                 case "stringify":
-                                                    iparams[1]=xui.stringify(iparams[1]);
+                                                    v=xui.stringify(v);
                                                 break;
                                                 default:
                                                     if(typeof(adjust=xui.get(adjust))=="function")
-                                                        iparams[1]=adjust(iparams[1]);
+                                                        v=adjust(v);
                                                 break;
                                             }
                                         }
-                                        xui.set(_ns, (method+"."+xui.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
+                                        xui.set(_ns, (method+"."+xui.str.trim(iparams[0])).split(/\s*\.\s*/), v);
                                     }
                                 break;
                                 case "callback":
@@ -8713,8 +8723,9 @@ Class('xui.Event',null,{
             "}" +
             ".xuicon:before{height:1em;width:1em;}" + 
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
-            ".xui-ui-ctrl{cursor:default;font-size:12px; font-size:0.75rem;}"+
+            //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
+            ".xui-ui-ctrl{cursor:default;font-size:12px; font-size:0.75rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 
@@ -18348,7 +18359,7 @@ Class("xui.UI",  "xui.absObj", {
                 //protect children's dom node
                 //no need to trigger layouttrigger here
                 //for example: if use getGhostDiv, upload input cant show file name
-                node=remedy?xui.Dom.getEmptyDiv():xui.$getGhostDiv();
+                node=remedy?xui.Dom.getEmptyDiv().get(0):xui.$getGhostDiv();
                 o.boxing().getChildren().reBoxing().each(function(v){
                     node.appendChild(v);
                 });
@@ -23082,9 +23093,15 @@ Class("xui.UI",  "xui.absObj", {
             // for empty object
             for(var i in profile.box._objectProp)
                 if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
-            //
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","tagVar","animConf"],function(key){
+            // special for tagVar
+            var i='tagVar';
+            if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
+
+            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","animConf"],function(key){
                 if(t=p[key]){
+                    if(!xui.isHash(t)){
+                        return;
+                    }
                     r=ds[key];
                     for(var i in t){
                         if(r[i]!==t[i]){
@@ -35596,7 +35613,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             if(oitem.id==uiv)
                 profile.boxing().setUIValue(oitem.id,true,null,'drop');
-
+            
+            data._new = oitem;
             return false;
         },
         _prepareData:function(profile){
@@ -39919,6 +39937,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     delete profile._noScroll;
                 }
             }
+            data._new = oitem;
             return false;
         },
         _prepareItem:function(profile, item, oitem, pid, index,len){
@@ -47752,6 +47771,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     b.setUIValue(arr,true,null,'drop');
                 }
             }
+            data._new = orow;
             return false;
         },
 

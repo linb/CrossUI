@@ -528,8 +528,9 @@ Class("xui.CSS", null,{
             "}" +
             ".xuicon:before{height:1em;width:1em;}" + 
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
-            ".xui-ui-ctrl{cursor:default;font-size:12px; font-size:0.75rem;}"+
+            //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
+            ".xui-ui-ctrl{cursor:default;font-size:12px; font-size:0.75rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 

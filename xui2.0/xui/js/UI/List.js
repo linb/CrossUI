@@ -616,7 +616,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
             if(oitem.id==uiv)
                 profile.boxing().setUIValue(oitem.id,true,null,'drop');
-
+            
+            data._new = oitem;
             return false;
         },
         _prepareData:function(profile){

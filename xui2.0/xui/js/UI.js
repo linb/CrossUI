@@ -1334,7 +1334,7 @@ Class("xui.UI",  "xui.absObj", {
                 //protect children's dom node
                 //no need to trigger layouttrigger here
                 //for example: if use getGhostDiv, upload input cant show file name
-                node=remedy?xui.Dom.getEmptyDiv():xui.$getGhostDiv();
+                node=remedy?xui.Dom.getEmptyDiv().get(0):xui.$getGhostDiv();
                 o.boxing().getChildren().reBoxing().each(function(v){
                     node.appendChild(v);
                 });
@@ -6068,9 +6068,15 @@ Class("xui.UI",  "xui.absObj", {
             // for empty object
             for(var i in profile.box._objectProp)
                 if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
-            //
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","tagVar","animConf"],function(key){
+            // special for tagVar
+            var i='tagVar';
+            if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
+
+            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","animConf"],function(key){
                 if(t=p[key]){
+                    if(!xui.isHash(t)){
+                        return;
+                    }
                     r=ds[key];
                     for(var i in t){
                         if(r[i]!==t[i]){

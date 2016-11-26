@@ -37,21 +37,59 @@ Class('App', 'xui.Module',{
 
     }, 
     Instance:{
+       _deprecatedFuns:{
+           //shortcuts
+           "xui.UI.TreeGrid.prototype.getHeadergetColumn":"xui.UI.TreeGrid.prototype.",
+           "xui.UI.TreeGrid.prototype.updateColumn":"xui.UI.TreeGrid.prototype.updateHeader",
+           "xui.UI.TreeGrid.prototype.getColByDom":"xui.UI.TreeGrid.prototype.getHeaderByDom",
+           "xui.UI.TreeGrid.prototype.getColByColId":"xui.UI.TreeGrid.prototype.getHeaderByColId",
+           "xui.UI.TreeGrid.prototype.getColByCell":"xui.UI.TreeGrid.prototype.getHeaderByCell",
+           "xui.query":"xui.Dom.prototype.query",
+           "xui.querySelector":"xui.Dom.prototype.querySelector",
+           "xui.querySelectorAll":"xui.Dom.prototype.querySelectorAll",
+           //deprecated
+            "xui.getCom":"xui.getModule",
+            "xui.newCom":"xui.newModule",
+            "xui.showCom":"xui.showModule",
+            "xui.ComFactory.getCom":"xui.ModuleFactory.getCom",
+            "xui.ComFactory.newCom":"xui.ModuleFactory.newCom",
+            "xui.ComFactory.showCom":"xui.ModuleFactory.showCom",
+            "xui.ComFactory.setCom":"xui.ModuleFactory.setModule",
+            "xui.ComFactory.getComFromCache":"xui.ModuleFactory.getModuleFromCache",
+            "xui.ComFactory.getCom":"xui.ModuleFactory.getModule",
+            "xui.ComFactory.newCom":"xui.ModuleFactory.newModule",
+            "xui.ComFactory.storeCom":"xui.ModuleFactory.storeModule",
+            "xui.ComFactory.prepareComs":"xui.ModuleFactory.prepareModules",
 
+            "xui.ModuleFactory.setCom":"xui.ModuleFactory.setModule",
+            "xui.ModuleFactory.getComFromCache":"xui.ModuleFactory.getModuleFromCache",
+            "xui.ModuleFactory.getCom":"xui.ModuleFactory.getModule",
+            "xui.ModuleFactory.newCom":"xui.ModuleFactory.newModule",
+            "xui.ModuleFactory.storeCom":"xui.ModuleFactory.storeModule",
+            "xui.ModuleFactory.prepareComs":"xui.ModuleFactory.prepareModules"
+        },
+        _deprecatedClasses:{
+            'xui.Com':'xui.Module',
+            'xui.UI.SLabel':'xui.UI.Label',
+            'xui.UI.SButton':'xui.UI.Button',
+            'xui.UI.SCheckbox':'xui.UI.Checkbox',
+            'xui.UI.Pane':'xui.UI.Div',
+            'xui.UI.IconList':'xui.UI.Gallery'
+        },
         events:{onRender:'_onrender'}, 
+
         _onrender:function(){
             SPA=this;
             SPA.btnLang.setCaption(xui.getRes('app.'+xui.getLang()));
             xui.UI.Resizer.$abstract=true;
             xui.History.setCallback(function(str){
-                var str2=str.replace('#!','')
-                    // handle deprecated classes
-                    .replace('xui.Com','xui.Module')
-                    .replace('xui.UI.SLabel','xui.UI.Label')
-                    .replace('xui.UI.SButton','xui.UI.Button')
-                    .replace('xui.UI.SCheckbox','xui.UI.Checkbox')
-                    .replace('xui.UI.Pane','xui.UI.Div')
-                    .replace('xui.UI.IconList','xui.UI.Gallery');
+                var str2 = str.replace('#!','');
+                // handle deprecated functions
+                str2 = SPA._deprecatedFuns[str2] || str2;
+                // handle deprecated classes
+                xui.each(SPA._deprecatedClasses,function(o,i){
+                    str2 = str2.replace(i, o);
+                });
 
                 str=str2;
                 if(!str)return;
@@ -585,9 +623,16 @@ Class('App', 'xui.Module',{
             open: 'left -176px'
         }, 
         _parse:function(id){
-            var o = xui.SC.get(id), cls, key, obj={},filter=function(s,o){
-                var me=arguments.callee, h=me.h||(me.h={upper:1,Constructor:1,Before:1,After:1,prototype:1}),
-                c=s.charAt(0);
+            var o = xui.SC.get(id), cls, key, obj={},
+                // deprecated
+                deprecated={getCom:1,newCom:1,showCom:1,getComFromCache:1,setCom:1,storeCom:1,prepareComs:1},
+
+            filter=function(s,o){
+                var me=arguments.callee, 
+                    h=me.h||(me.h={upper:1,Constructor:1,Before:1,After:1,prototype:1}),
+                    c=s.charAt(0);
+
+                if(deprecated[s])return false;
                 if(s=='KEY')return false;
                 if(c=='_'||c=="$")return false;
                 if(/\./.test(s))return false;
@@ -812,21 +857,15 @@ Class('App', 'xui.Module',{
                 SPA.listQ.setItems(arr.slice(0,20));
             }
         }, 
-
         getDoc:function(key){
-            var map={
-               "xui.UI.TreeGrid.prototype.getColumn":"xui.UI.TreeGrid.prototype.getHeader",
-               "xui.UI.TreeGrid.prototype.updateColumn":"xui.UI.TreeGrid.prototype.updateHeader",
-               "xui.UI.TreeGrid.prototype.getColByDom":"xui.UI.TreeGrid.prototype.getHeaderByDom",
-               "xui.UI.TreeGrid.prototype.getColByColId":"xui.UI.TreeGrid.prototype.getHeaderByColId",
-               "xui.UI.TreeGrid.prototype.getColByCell":"xui.UI.TreeGrid.prototype.getHeaderByCell",
-               "xui.query":"xui.Dom.prototype.query",
-               "xui.querySelector":"xui.Dom.prototype.querySelector",
-               "xui.querySelectorAll":"xui.Dom.prototype.querySelectorAll"
-            };
             if(!key)return ['',''];
             
-            if(map[key])key=map[key];
+            // handle deprecated functions
+            key = SPA._deprecatedFuns[key]||key;
+            // handle deprecated classes
+            xui.each(SPA._deprecatedClasses,function(o,i){
+                key = key.replace(i, o);
+            });
             
             var o = xui.getRes("doc."+key);
             if(typeof o == 'string')
