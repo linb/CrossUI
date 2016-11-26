@@ -1110,7 +1110,7 @@ Class("xui.UI",  "xui.absObj", {
                 //protect children's dom node
                 //no need to trigger layouttrigger here
                 //for example: if use getGhostDiv, upload input cant show file name
-                node=remedy?xui.Dom.getEmptyDiv():xui.$getGhostDiv();
+                node=remedy?xui.Dom.getEmptyDiv().get(0):xui.$getGhostDiv();
                 o.boxing().getChildren().reBoxing().each(function(v){
                     node.appendChild(v);
                 });
