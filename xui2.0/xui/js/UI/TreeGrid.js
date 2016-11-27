@@ -1437,7 +1437,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 // try to get from cache
                 editor = profile.$cache_editor['firstCellEditor'];
                 if(!editor || !editor['xui.UI'] || editor.isDestroyed()){
-                    editor=new xui.UI.ComboInput({type:"input"});
+                    editor=new xui.UI.ComboInput({type:"input",zIndex:100});
                     profile.$cache_editor['firstCellEditor'] = editor;
                 }
                 editor.setWidth(size2.width - absPos.left + 2)
@@ -1714,7 +1714,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         text:"{ltagCmds}"
                                                     },
                                                     GRIDCAPTION:{
-                                                        $order:2,
+                                                        $order:5,
                                                         text:'{gridHandlerCaption}'
                                                     },
                                                     SORT:{
@@ -1909,6 +1909,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:"{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                $order:5,
                                 className:'xui-v-node',
                                 text:"{caption}"
                             },
@@ -1959,6 +1960,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:"{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                $order:5,
                                 className:"xui-v-node",
                                 text:"{caption}"
                             },
@@ -1994,6 +1996,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:"{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
+                                $order:5,
                                 className:"xui-v-node",
                                 text:"{caption}"
                             },
@@ -2145,7 +2148,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{caption}"
                             },
                             FHANDLER:{
-                                $order:6,
+                                $order:0,
                                 tagName:'div',
                                 style:'{rowDDDisplay}'
                             }
@@ -2295,7 +2298,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:"{ltagCmds}"
                             },
                             CELLCAPTION:{
-                                $order:3,
+                                $order:5,
                                 style:'{color}',
                                 className:'xui-v-node xui-treegrid-fcellcaption',
                                 text:"{caption}"
@@ -5183,7 +5186,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         // uicell and node are not occur at the same time
         _renderCell:function(profile, cell, uicell, node,options){
             var getPro=profile.box.getCellOption,
-                firstColumnTree=profile.properties.treeMode=='infirstcell',
                 type=getPro(profile, cell, 'type'),
                 t1='',
                 t2='',
@@ -5264,7 +5266,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                }),
                unit=function(caption, cell){return caption + (cell.unit?" "+cell.unit:"")};
             // get caption node
-            if(node && node.get(0))node=firstColumnTree?node.last():node.first();
+            if(node && node.get(0))node=node.last();
             switch(type){
                 case 'number':
                 case 'spin':
@@ -5350,7 +5352,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         node.width(caption);
                     }else
                         uicell.progress=caption;
-
                 break;
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
@@ -5685,12 +5686,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(sub){
                                 if(typeof sub=='string'){
                                     subNs2.html(item.sub=sub,false);
-                                }else if(xui.isArr(sub))
+                                    // right-bottom border
+                                    subNs.addClass('xui-uiborder-r xui-uiborder-b xui-uiborder-light');
+                                }else if(sub['xui.Template']||sub['xui.UI']){
+                                    subNs2.append(item.sub=sub.render(true));
+                                    // right-bottom border
+                                    subNs.addClass('xui-uiborder-r xui-uiborder-b xui-uiborder-light');
+                                }else if(xui.isArr(sub)){
                                     b.insertRows(sub, item.id);
                                     // for []
                                     if(!item.sub)item.sub=sub;
-                                else if(sub['xui.Template']||sub['xui.UI']){
-                                    subNs2.append(item.sub=sub.render(true));
                                 }
                                 var s=0,arr=b.getUIValue(true);
                                 if(arr && arr.length){
@@ -6116,7 +6121,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 cachePopWnd:true,
                                 width:profile.$px(cell._col._colWidth)+2,
                                 height:profile.$px(cell._row._rowHeight)+1,
-                                visibility:'visible'
+                                visibility:'visible',
+                                zIndex:100
                             },'all');
                         }
                         editor=new xui.UI.ComboInput(iniprop);

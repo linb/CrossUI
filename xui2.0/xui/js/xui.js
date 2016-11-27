@@ -377,6 +377,20 @@ new function(){
                     break;
             return hash;
         },
+        compareVar:function(x,y,MAXL,MAXS){
+            if(x===y)return true;
+
+            if(xui.isObj(x)||xui.isObj(y)){
+                if((xui.isDate(x) && xui.isDate(y)) || (xui.isReg(x) && xui.isReg(y)))
+                    return x+''===y+'';
+                else if((xui.isHash(x) && xui.isHash(y)) || (xui.isArr(x) && xui.isArr(y)) ||  (xui.isArguments(x) && xui.isArguments(y))){
+                    x = xui.serialize(x,0,0,MAXL||5,MAXS||300);
+                    y = xui.serialize(y,0,0,MAXL||5,MAXS||300);
+                    return x.indexOf(xui.$_outofmilimted)==-1 && y.indexOf(xui.$_outofmilimted)==-1 && x===y;
+                }else
+                    return false;
+            }
+        },
         compareNumber:function(a,b,digits){
             return xui.toFixedNumber(a,digits) === xui.toFixedNumber(b,digits);
         },
@@ -2275,11 +2289,13 @@ new function(){
             )
             + '"'
     };
-    T[O]=function(x,filter,dateformat,deep,max){
+    T[O]=function(x,filter,dateformat,deep,max,MAXL,MAXS){
         var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1});
         deep=deep||1;
         max=max||0;
-        if(deep>xui.SERIALIZEMAXLAYER||max>xui.SERIALIZEMAXSIZE)return '"too much recursion!"';
+        MAXL=MAXL||xui.SERIALIZEMAXLAYER;
+        MAXS=MAXS||xui.SERIALIZEMAXSIZE;
+        if(deep>MAXL||max>MAXS)return xui.$_outofmilimted;
         max++;
         if (x){
             var a=[], b=[], f, i, l, v;
@@ -2298,7 +2314,7 @@ new function(){
                     else if(xui.isNull(v))b[b.length]="null";
                     else if(!xui.isDefined(v))b[b.length]="undefined";
                     else if(f=T[typeof v]){
-                        if(typeof (v=f(v,filter,dateformat,deep+1,max))==S)
+                        if(typeof (v=f(v,filter,dateformat,deep+1,max,MAXL,MAXS))==S)
                             b[b.length]=v;
                     }
                 }
@@ -2342,7 +2358,7 @@ new function(){
                             else if(xui.isNull(v))b[b.length]=T.string(i) + ':' + "null";
                             else if(!xui.isDefined(v))b[b.length]=T.string(i) + ':' + "undefined";
                             else if (f=T[typeof v]){
-                                if (typeof (v=f(v,filter,dateformat,deep+1,max))==S)
+                                if (typeof (v=f(v,filter,dateformat,deep+1,max,MAXL,MAXS))==S)
                                     b[b.length] = T.string(i) + ':' + v;
                             }
                         }
@@ -2357,15 +2373,17 @@ new function(){
     };
     T[F]=function(x){return x.$path?x.$path:String(x)};
 
+    xui.$_outofmilimted = '"\x01...\x01"';
+
     //serialize object to string (bool/string/number/array/hash/simple function)
-    xui.serialize = function (obj,filter,dateformat){
+    xui.serialize = function (obj,filter,dateformat,MAXL,MAXS){
         return xui.isNaN(obj) ? "NaN" : 
                     xui.isNull(obj) ? "null" : 
                     !xui.isDefined(obj) ? "undefined" :
-                    T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat))||'';
+                    T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat),0,0,MAXL,MAXS)||'';
     };
-    xui.stringify = function(obj,filter,dateformat){
-        return xui.fromUTF8(xui.serialize(obj,filter,dateformat));
+    xui.stringify = function(obj,filter,dateformat,MAXL,MAXS){
+        return xui.fromUTF8(xui.serialize(obj,filter,dateformat,0,0,MAXL,MAXS));
     };
     // for safe global
     var safeW;

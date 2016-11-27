@@ -963,12 +963,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(sub){
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
-                                else if(xui.isArr(sub)){
+                                else if(sub['xui.Template']||sub['xui.UI']){
+                                    subNs.append(item.sub=sub.render(true));
+                                }else if(xui.isArr(sub)){
                                     b.insertItems(sub, item.id);
                                     // for []
                                     if(!item.sub)item.sub=sub;                                    
-                                }else if(sub['xui.Template']||sub['xui.UI']){
-                                    subNs.append(item.sub=sub.render(true));
                                 }
                                 var s=0,arr=b.getUIValue(true);
                                 if(arr && arr.length){
