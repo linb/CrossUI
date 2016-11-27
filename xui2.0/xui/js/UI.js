@@ -2949,7 +2949,7 @@ Class("xui.UI",  "xui.absObj", {
         $tag_left:"{",
         $tag_right:"}",
         $tag_subId:"_serialId",
-
+        $tag_subId_c:"_serialId_c",
 
         $x01:/\x01/img,
         $x01r:/ \x01 /img,
@@ -3199,10 +3199,10 @@ Class("xui.UI",  "xui.absObj", {
             //tagName
             if(!template.tagName)template.tagName="span";
 
-            if(template.id!==null)
+            if(template.id!==null){
                 //id
-                template.id = key?lkey + ":" + u.$ID + ":" + u.$tag_left + u.$tag_subId + u.$tag_right:u.$DOMID;
-            else
+                template.id = key?lkey + ":" + u.$ID + ":" + u.$tag_left + (template.$customId?u.$tag_subId_c:u.$tag_subId) + u.$tag_right:u.$DOMID;
+            }else
                 delete template.id;
 
             if(template.className!==null){
