@@ -100,7 +100,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 prop=profile.properties,
                 hw=profile.getSubNode('FHCELL').width();
             if(hw)hw=profile.$forceu(hw);
-            //give width at here
+
+            //give width at here, and do filter
             xui.arr.each(arr,function(o){
                 o._row0DfW = hw?('width:'+hw):'';
                 xui.arr.each(o.cells,function(v,i){
@@ -408,31 +409,91 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked, recursive, stopanim||recursive, callback);
             }else{
                 xui.arr.each(profile.properties.rows,function(row){
-                    self.call(ns,row.id,expand,recursive);
+                    self.call(ns,row.id,expand,recursive, true, callback);
                 })
             }
             return this;
         },
-        showRows:function(rowId,/*default is the current*/ flag){
+        // filter: [true] => refilter
+        doRowsFilter:function(rowFilter){
+            var ns=this,
+                profile=ns.get(0);
+
+            if(!rowFilter){
+                delete profile.$rowFilter;
+                rowFilter=function(){return false};
+            }else if(xui.isFun(rowFilter)){
+                profile.$rowFilter=rowFilter;
+            }else if(rowFilter===true){
+                rowFilter=profile.$rowFilter;
+            }
+            var fun=function(){
+                var prop=profile.properties,
+                    rows=prop.rows,
+                    showRows=[],
+                    hideRows=[],
+                    fun=function(rows, showRows, hideRows){
+                        var count=0;
+                        xui.arr.each(rows,function(row){
+                            if(row.sub){
+                                // ensure open all tree nodes
+                                if(!row._checked)
+                                    ns.toggleRow(row.id, true, true, true);
+                                 // collect
+                                if(fun(row.sub, showRows, hideRows)){
+                                    count++;
+                                    if(row.hidden)showRows.push(row.id);
+                                }else{
+                                    if(!row.hidden)hideRows.push(row.id);
+                                }
+                            }else{
+                                if(rowFilter(row, profile)){
+                                    if(!row.hidden)hideRows.push(row.id);
+                                }else{
+                                    count++;
+                                    if(row.hidden)showRows.push(row.id);
+                                }
+                            }
+                        });
+                        return count;
+                    };
+                fun(rows, showRows, hideRows);
+                
+                // reflect to dom 
+                if(showRows.length)ns.showRows(showRows);
+                if(hideRows.length)ns.showRows(hideRows,false);
+
+                ns.reLayout(true);
+            };
+
+            xui.resetRun(profile.$xid+':rowfilter',fun);
+
+            return this;
+        },
+        showRows:function(rowId,/*default is the current*/ show){
             var ns=this,
                 profile = ns.get(0), 
+                showNodes=xui(),
+                hideNodes=xui(),
                 prop = profile.properties;
             rowId = (rowId||rowId===0)?xui.isArr(rowId)?rowId:rowId.split(prop.valueSeparator):null;
             if(!rowId)rowId=((prop.$UIvalue||prop.value)+"").split(prop.valueSeparator);
             if(rowId&&rowId.length){
                 xui.arr.each(rowId, function(r, row){
                     if(row=ns.getRowbyRowId(r)){
-                        if(flag===false){
-                            if(row.hidden!==true)
-                                ns.getSubNodes(['ROW1','ROW2'],row._serialId).css('display','none');
+                        if(show===false){
+                            if(!row.hidden)hideNodes.merge(ns.getSubNodes(['ROW1','ROW2'],row._serialId));
                         }else{
-                            if(row.hidden===true)
-                                ns.getSubNodes(['ROW1','ROW2'],row._serialId).css('display','');
+                            if(row.hidden)showNodes.merge(ns.getSubNodes(['ROW1','ROW2'],row._serialId));
                         }
-                        row.hidden=flag===false;
+                        row.hidden=show===false;
                     }
                 });
             }
+
+            // reflect to dom 
+            if(!showNodes.isEmpty())showNodes.css('display','');
+            if(!hideNodes.isEmpty())hideNodes.css('display','none');
             return this;
         },
         updateRow:function(rowId/*default is the current*/,options,dirtyMark,triggerEvent){
@@ -699,6 +760,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(affectUI!==false && profile.renderId&&profile.__hastmpRow){
                 profile.box.__ensurehotrow(profile,null);
             }
+
+            if(profile.$rowFilter){
+                this.doRowsFilter(true);
+            }
+
             return this;
         },
         //delete row according to id
@@ -1237,7 +1303,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(options.hasOwnProperty('visibility') && !options.hasOwnProperty('hidden'))
                             options.hidden=!options.visibility;
 
-                        if('hidden' in options){
+                        if(options.hasOwnProperty('hidden')){
                             var  b = !!options.hidden;
                             if(b){
                                 if(colh.hidden!==true){
@@ -5439,6 +5505,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ider = me._id||(me._id=new xui.id()),
                 rows=[],
                 temp,cells,t,row,v,cellResult,
+                ro =  prop.rowOptions,
                 NONE='display:none';
             _treemode= !(!_treemode || _treemode=="none");
             for(var i=0,l=arr.length;i<l;i++){
@@ -5482,6 +5549,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     t.group=1;
                     t.rowCls += ' ' + profile.getClass('CELLS1','-group') + " xui-uiborder-r xui-uiborder-light";
                 }
+                // filter: hidden                
+                var adjust=row.rowFilter||ro.rowFilter||profile.$rowFilter;
+                if(adjust)row.hidden = !!adjust(row,profile);
 
                 if(row.hidden)
                     t.rowDisplay=NONE;
@@ -5497,8 +5567,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t.rowHandlerDisplay=prop.rowHandler?'':NONE;
                 t.rowDDDisplay=(('rowResizer' in row)?row.rowResizer:prop.rowResizer)?'':NONE;
 
-                t.firstCellStyle=row.firstCellStyle||prop.rowOptions.firstCellStyle||'';
-                t.firstCellClass=row.firstCellClass||prop.rowOptions.firstCellClass||'';
+                t.firstCellStyle=row.firstCellStyle||ro.firstCellStyle||'';
+                t.firstCellClass=row.firstCellClass||ro.firstCellClass||'';
 
                 cells = t.cells = [];
 
@@ -5520,7 +5590,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 xui.UI.adjustData(profile, row, t);
 
-                t.tagCmds = xui.clone(t.tagCmds || prop.rowOptions.tagCmds || prop.tagCmds);
+                t.tagCmds = xui.clone(t.tagCmds || ro.tagCmds || prop.tagCmds);
                 if(t.tagCmds){
                     xui.UI.List._prepareCmds(profile, t, function(item){
                         return !item.tag || !!item.tag.match(/\brow\b/);
