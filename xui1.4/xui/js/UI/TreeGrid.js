@@ -5364,10 +5364,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(sub){
                                 if(typeof sub=='string'){
                                     subNs2.html(item.sub=sub,false);
-                                }else if(_.isArr(sub))
-                                    b.insertRows(sub, item.id);
-                                else if(sub['xui.Template']||sub['xui.UI']){
+                                }else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs2.append(item.sub=sub.render(true));
+                                }else if(_.isArr(sub)){
+                                    b.insertRows(sub, item.id);
+                                    // for []
+                                    if(!item.sub)item.sub=sub;
                                 }
                             }
                             //set checked items
