@@ -463,6 +463,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             TBAR:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
+
                     if(xui.Event.getBtn(e)!="left")return;
                     if(profile.getKey(xui.Event.getSrc(e).parentNode.id)==profile.keys.BARCMDR)return;
                     if(profile.properties.status=="max")return false;

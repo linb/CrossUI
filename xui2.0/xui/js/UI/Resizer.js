@@ -154,6 +154,9 @@ Class("xui.UI.Resizer","xui.UI",{
                             xui.merge(arg,t.tagVar.resizerProp,'all');
                         }
                         b._resizer(v,arg);
+                        if(this.$inDesign){
+                            this.$resizer.get(0).$inDesign=1;
+                        }
                     }else
                         b._unResizer();
                 }
@@ -745,6 +748,7 @@ Class("xui.UI.Resizer","xui.UI",{
             }
         },
         _onMousedown:function(profile, e, src, axis){
+            if(profile.$inDesign)return;
             if(profile.properties.disabled)return false;
 
             var ddparas=this._getDDParas(0, axis);

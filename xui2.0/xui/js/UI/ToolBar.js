@@ -118,8 +118,12 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 });
                 var n=profile.getSubNodeByItemId('GROUP', grpId);
                 n.css('display',value===false?'none':'');    
-                if(profile.renderId && profile.getRootNode().offsetWidth)
-                    xui.UI.$dock(profile,true,true);
+                
+                xui.resetRun(profile.$xid+':showgrp',function(){
+                    if(profile.renderId && profile.getRootNode().offsetWidth){
+                        xui.UI.$dock(profile,true,true);
+                    }
+                });
             });
         }
     },

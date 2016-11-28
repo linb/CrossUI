@@ -703,46 +703,56 @@ Class('xui.UIProfile','xui.Profile', {
         },
         //flag : remove from cache
         getSubNode:function(key, subId, tag){
-            var self=this;
+            var ns=this;
 
             // destroyed already
-            if(!self.renderId)return xui();
+            if(!ns.renderId)return xui();
 
-            var key=self.keys[key] || key,
-                r,
-                t,
-                s,
-                h=self.$_domid||(self.$_domid={});
-
+            var key=ns.keys[key] || key, r,
+                h=ns.$_domid||(ns.$_domid={});
 
             // by key only
-            if(subId===true)
-                //key==self.keys.KEY for domId!=$domId
-                r =xui([self.renderId]).query('*', 'id', key==self.keys.KEY?self.domId:new RegExp('^'+key+':'+self.serialId +(tag?("_"+tag):"")));
-            else{
+            if(subId===true){
+                //key==ns.keys.KEY for domId!=$domId
+                if(key==ns.keys.KEY)r=xui([ns.renderId]);
+                if(!r || !r.get(0)){
+                    r =xui([ns.renderId]).query('*', 'id', new RegExp('^'+key+':'+ns.serialId +(tag?("_"+tag):"")));
+                }
+            }else{
                 if(!xui.isSet(subId) && h[key] && h[key]._nodes.length==1)return h[key];
-                r = (t=xui.Dom.byId(s=self._getSubNodeId(key, subId,tag))) ? xui([t]) : ((t=self.renderId) && xui.use(t).query('*', 'id', s));
-                if(!xui.isSet(subId))h[key]=r;
+                r=xui(ns._getSubNodeId(key, subId, tag));
+                if(r._nodes.length==1 && !xui.isSet(subId))h[key]=r;
             }
             return r;
         },
         getSubNodes:function(arr,subId,tag){
             if(!xui.isDefined(subId))subId=true;
-            var a=[],s1=typeof arr=='string',s2=typeof subId=='string'||subId===true||xui.isNull(subId),o,v;
-            if(s1){
-                if(s2)
-                    Array.prototype.push.apply(a,this.getSubNode(arr,subId,tag).get());
-                else
-                    for(var j=0;v=subId[j++];)
-                        Array.prototype.push.apply(a,this.getSubNode(arr,v,tag).get());
-            }else
-                for(var i=0;o=arr[i++];){
+            var ns=this, a=[],s1=typeof arr=='string',s2=typeof subId=='string',a,o,v,push=Array.prototype.push;
+            if(subId===true||xui.isNull(subId)){
+                if(!s1){
+                    a=[];
+                    for(var i=0;o=arr[i++];)a.push(ns.keys[o] || o);
+                    arr = '('+a.join('|')+')';
+                }
+                // get call once for better performance
+                push.apply(a,ns.getSubNode(arr,true,tag).get());
+            }else{
+                if(s1){
                     if(s2)
-                        Array.prototype.push.apply(a,this.getSubNode(o,subId,tag).get());
+                        push.apply(a,ns.getSubNode(arr,subId,tag).get());
                     else
                         for(var j=0;v=subId[j++];)
-                            Array.prototype.push.apply(a,this.getSubNode(o,v,tag).get());
+                            push.apply(a,ns.getSubNode(arr,v,tag).get());
+                }else{
+                    for(var i=0;o=arr[i++];){
+                        if(s2)
+                            push.apply(a,ns.getSubNode(o,subId,tag).get());
+                        else
+                            for(var j=0;v=subId[j++];)
+                                push.apply(a,ns.getSubNode(o,v,tag).get());
+                    }
                 }
+            }
             return xui(a);
         },
         getSubNodeByItemId:function(key, itemId, tag){
@@ -1872,34 +1882,33 @@ Class("xui.UI",  "xui.absObj", {
                 var prop=o.properties;
                 if(prop.conDockRelative){
                     o.boxing().adjustSize();
-                }else{
-                    // adjust self
-                    if(prop.position=='absolute'){
-                        if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
-                            var n=o.getRootNode();
-                            // ensure display
-                            if(n.clientHeight){
-                                if(force){
-                                    // ensure force 1
-                                    n.style.width = 0 + o.$picku(n.style.width);
-                                    n.style.height = 0 + o.$picku(n.style.height);
-                                    // ensure force 2
-                                    o._resize_h=o._resize_w=-1;
-                                }
-                                xui.UI.$dock(o,true,true);
+                } 
+                // adjust self
+                if(prop.position=='absolute'){
+                    if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
+                        var n=o.getRootNode();
+                        // ensure display
+                        if(n.clientHeight){
+                            if(force){
+                                // ensure force 1
+                                n.style.width = 0 + o.$picku(n.style.width);
+                                n.style.height = 0 + o.$picku(n.style.height);
+                                // ensure force 2
+                                o._resize_h=o._resize_w=-1;
                             }
-                        }
-                    }else{
-                        if(xui.get(o,['parent','properties','conDockRelative'])){
-                            var pp=o.parent;
-                            xui.UI._adjustConW(pp, pp.getRoot(), o.getRoot().parent().width(), o.getRootNode());
+                            xui.UI.$dock(o,true,true);
                         }
                     }
-                    // adjust children
-                    if(o.$onDock){
-                        var n =o.boxing().getContainer(true);
-                        if(n&&n.onSize&&n.get(0))n.onSize();
+                }else{
+                    if(xui.get(o,['parent','properties','conDockRelative'])){
+                        var pp=o.parent;
+                        xui.UI._adjustConW(pp, pp.getRoot(), o.getRoot().parent().width(), o.getRootNode());
                     }
+                }
+                // adjust children
+                if(o.$onDock){
+                    var n =o.boxing().getContainer(true);
+                    if(n&&n.onSize&&n.get(0))n.onSize();
                 }
             });
         }
@@ -1981,11 +1990,7 @@ Class("xui.UI",  "xui.absObj", {
                                 break;
                         }
                         var pp = xui.UIProfile.getFromDom(self.$dockParent);
-                        if(pp && pp.properties.conDockFlexFill){
-                            pp.boxing().adjustDock(true);
-                        }else{
-                            xui.tryF(self.$dockFun,[args],self);
-                        }
+                        if(pp)pp.boxing().adjustDock(true);
                     }
                 }
             }
@@ -5013,6 +5018,10 @@ Class("xui.UI",  "xui.absObj", {
                 ins = profile.boxing(),
                 i1=-1,i2=-1,i3=-1,i4=-1,
                 p=xui((node.get(0) && node.get(0).parentNode)||profile.$dockParent),
+                //for ie6 1px bug
+                _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
+                us = xui.$us(prop),
+                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate, true)},
                 adjustOverflow=function(p,isWin){
                     var f,t,c,x,y;
                     if(isWin){
@@ -5069,6 +5078,84 @@ Class("xui.UI",  "xui.absObj", {
                             p.addClass(c);
                         }
                     }
+                },
+                // adjust min/max
+                checkLimits = function(css, prop, nodefz, dir, value){
+                    var t;
+                    if(parseFloat(prop['dockMin'+dir])&&(t=css.$px(prop['dockMin'+dir],nodefz))) value = _adjust(t<=value?value:t);
+                    if(parseFloat(prop['dockMax'+dir])&&(t=css.$px(prop['dockMax'+dir],nodefz))) value = _adjust(t<=value?t:value);
+                    return value;
+                },
+                apply2Ctrl = function(css, isSvg, ins, node, style, nodefz, region){
+                    // apply to UI
+                    if(('left' in region) && css.$px(style.left,nodefz)!==region.left)region.left=adjustunit(region.left);
+                    if(('top' in region) && css.$px(style.top,nodefz)!==region.top)region.top=adjustunit(region.top);
+                    if(('right' in region) && css.$px(style.right,nodefz)!==region.right)region.right=adjustunit(region.right);
+                    if(('bottom' in region) && css.$px(style.bottom,nodefz)!==region.bottom)region.bottom=adjustunit(region.bottom);
+                    if(('width' in region) && css.$px(style.width,nodefz)!==region.width)region.width=adjustunit(region.width);
+                    if(('height' in region) && css.$px(style.height,nodefz)!==region.height)region.height=adjustunit(region.height);
+                    if(!xui.isEmpty(region)){
+                        if(isSVG)  ins._setBBox(region);
+                        else node.cssRegion(region,true);
+                    }
+                },
+                applyPrevLine=function(obj, space/*spaceW*/, all/*obj.ww*/, p2/*width*/, p3/*dockMaxW*/, p4/*left*/, p5/*right*/){
+                    if(!obj.prevLine.length)return;
+                    var pct=[], size, t, l, region, node, prop, margin, style,
+                        ll=obj.prevLine.length-1, preAll = 0,
+                        start=obj[p4],
+                        css=xui.CSS;
+
+                    all -= ll*space;
+                    // get [all] available
+                    xui.arr.each(obj.prevLine,function(n){
+                        if(n.pct){
+                            pct.push(n);
+                        }else{
+                            all -= n.region[p2] + n.margin[p4] + n.margin[p5];
+                        }
+                    });
+
+                    // determine pct's size
+                    if(l=pct.length){
+                        // sum pct
+                        var pctSum=0;
+                        xui.arr.each(pct,function(n,i){
+                            pctSum += n.pct;
+                        });
+                        xui.arr.each(pct,function(n,i){
+                            prop=n.prop;
+                            region=n.region;
+                            nodefz=n.nodefz;
+
+                            // recaculate pct
+                            n.pct = n.pct / pctSum;
+
+                            // caculate size
+                            size = all*n.pct - n.margin[p4] - n.margin[p5];
+                            // adjust max only
+                            if(parseFloat(prop[p3])&&(t=css.$px(prop[p3],nodefz))) size = _adjust(t<=size?t:size);
+                            if(i==l-1){
+                                size = all - preAll;
+                                // adjust max only
+                                if(parseFloat(prop[p3])&&(t=css.$px(prop[p3],nodefz))) size = _adjust(t<=size?t:size);
+                                region[p2]=size;
+                            }else{
+                                preAll += (region[p2]=parseInt(size,10));
+                            }
+                        });
+                    }
+
+                    // determine pct's start pos, and set to UI
+                    xui.arr.each(obj.prevLine,function(n,i){
+                        region=n.region;
+                        // left, top, bottom, right
+                        region[p4]=parseInt(start  + n.margin[p4], 10);
+                        start +=  region[p2] + n.margin[p4] + n.margin[p5] + space ;
+                        apply2Ctrl(css, n.isSVG, n.ins, n.node, n.style, n.nodefz, region);
+                    });
+                    // rest the prev line
+                    obj.prevLine=[];
                 };
 
             if(!p.get(0))
@@ -5085,10 +5172,6 @@ Class("xui.UI",  "xui.absObj", {
                 region,
                 inMatrix='$inMatrix',
                 f,t,isWin,
-                //for ie6 1px bug
-                _adjust=function(v){return xui.browser.ie&&xui.browser.ver<=6?v-v%2:v},
-                us = xui.$us(prop),
-                adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 rootfz = node._getEmSize(),
                 umargin={
                     top:adjustunit(margin.top||0,rootfz),
@@ -5251,17 +5334,21 @@ Class("xui.UI",  "xui.absObj", {
                             if( arg.$dockid || !isWin || ((xui.stamp() - xui.$cache._resizeTime) > 50)){
                                 //recruit call, give a short change
                                 obj = {
+                                    // padding
                                     left: conDockPadding.left,
                                     top: conDockPadding.top,
                                     right: conDockPadding.right,
                                     bottom: conDockPadding.bottom,
+                                    // size
                                     width: width,
                                     height: height
                                 };
                                 obj.preX = obj.oX = obj.left;
                                 obj.preY = obj.oY = obj.top;
-                                obj.ww = obj.width - obj.left - obj.right + conDockSpacing.width;
-                                obj.hh = obj.height - obj.top - obj.bottom + conDockSpacing.height;
+                                obj.prevLine=[];
+                                // space avaiable
+                                obj.ww = obj.width - obj.left - obj.right;
+                                obj.hh = obj.height - obj.top - obj.bottom;
                                 obj.leftHolder=obj.topHolder=obj.rightHolder=obj.bottomHolder=0;
 
 
@@ -5381,13 +5468,12 @@ Class("xui.UI",  "xui.absObj", {
                                     obj.preY = obj.top;
 
                                     target = me[key];
-                                    var ii=0;
-                                    if(target.length){
-                                        obj.$prevDiff=0;
+                                    var ii=0,ll;
+                                    if(ll=target.length){
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
                                             if(o.properties.position=='absolute' && !o.properties.dockIgnore){
-                                                rePos(o, ii++, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockStretch);
+                                                rePos(o, ii++, ll, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockStretch);
                                             }
                                         }
                                     }
@@ -5464,7 +5550,7 @@ Class("xui.UI",  "xui.absObj", {
                             f[key]=[];
                         });
                         f.dockall=[];
-                        f.rePos=function(profile, index, obj, value, id, w, h, spaceW, spaceH, conDockStretch){
+                        f.rePos=function(profile, index, ll, obj, value, id, w, h, spaceW, spaceH, conDockStretch){
                             //if $dockid input, and not the specific node, return
                             var flag=false;
                             if(id && profile.$xid!=id)flag=true;
@@ -5564,117 +5650,115 @@ Class("xui.UI",  "xui.absObj", {
                                     if(!flag){
                                         if(noStretch){
                                             // calculate width
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
-                                            // adjust min/max
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp = _adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp = _adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            temp =  pct ? parseFloat(obj.ww*pct)  : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)) + margin.left + margin.right;
+                                            if(pct){
+                                                temp -= spaceW;
+                                                tempW = checkLimits(css, prop, nodefz, 'W', temp - margin.left - margin.right);
+                                                temp = tempW + margin.left + margin.right;
+                                            }
+
                                             // if overflow, wrap to new line
                                             if((obj.preX + temp - obj.oX) > obj.ww){
-                                                // left prev pct one to fill the left space
-                                                if(obj.$prevNode)
-                                                    obj.$prevNode.width(adjustunit(obj.$prevNode.width()+obj.ww-obj.preX));
                                                 // new line
-                                                obj.$prevDiff=0;
                                                 obj.top += obj.topHolder;
                                                 obj.topHolder=0;
                                                 obj.preX = obj.oX;
-                                                // recaculate width
-                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)));
-                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+
+                                                applyPrevLine(obj, spaceW, obj.ww, 'width', 'dockMaxW', 'left', 'right');
                                             }
-                                            tempW = temp - margin.left - margin.right;
-                                            tempW -= spaceW;
 
-                                            left=obj.preX;
-                                            top=obj.top + margin.top;
-
-                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.width,nodefz)!==tempW)region.width=adjustunit(tempW=_adjust(tempW));
-
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)  ins._setBBox(region);
-                                                else node.cssRegion(region,true);
-                                            }
+                                            obj.prevLine.push({
+                                                prop:prop,
+                                                node:node,
+                                                style:style,
+                                                nodefz:nodefz,
+                                                isSVG:isSVG,
+                                                ins:ins,
+                                                pct:pct,
+                                                margin:margin,
+                                                region:{
+                                                    top:obj.top + margin.top,
+                                                    width:temp
+                                                }
+                                            });
 
                                             // keep for next calculation
-                                            obj.preX += temp;
+                                            obj.preX += temp + spaceW;
                                             obj.topHolder = Math.max(obj.topHolder, (isSVG ? bbox.height : node.offsetHeight()) + margin.top + margin.bottom + spaceH);
                                         }else{
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.ww, 'width', 'dockMaxW', 'left', 'right');
+
                                             if(obj.topHolder){
                                                 obj.top += obj.topHolder;
-                                                obj.topHolder=0;
                                                 obj.preX = obj.oX;
                                             }
                                             left = sStart ? ((flt?0:obj.left)+margin.left) : css.$px(prop.left,nodefz);
                                             right = sEnd ? ((flt?0:obj.right)+margin.right) : (obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                             top=(flt?0:obj.top)+margin.top;
-                                            temp = obj.width - left - right - x + (obj.$prevDiff||0);
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
 
-                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.width,nodefz)!==temp)region.width=adjustunit(_adjust(temp));
+                                            temp = checkLimits(css, prop, nodefz, 'W', obj.width - left - right - x);
 
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG) ins._setBBox(region);
-                                                else node.cssRegion(region,true);
-                                            }
+                                            apply2Ctrl(css, isSVG, ins, node, style, nodefz, {
+                                                left:left,
+                                                top:top,
+                                                width:_adjust(temp)
+                                            });
 
                                             if(!flt)
                                                 obj.top += (isSVG ? bbox.height : node.offsetHeight()) + margin.top + margin.bottom + spaceH;
                                         }
-                                        if(pct)obj.$prevNode=node;
+                                        // the last pct one
+                                        if(ll==index+1){
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.ww, 'width', 'dockMaxW', 'left', 'right');
+                                        }
                                     }
                                     break;
                                 case 'bottom':
                                     if(!flag){
                                         if(noStretch){
                                             // calculate width
-                                            temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz))) + (obj.$prevDiff||0);
-                                            // adjust min/max
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            temp =  pct ? parseFloat(obj.ww*pct)  : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)) + margin.left + margin.right;
+                                            if(pct){
+                                                temp -= spaceW;
+                                                tempW = checkLimits(css, prop, nodefz, 'W', temp - margin.left - margin.right);
+                                                temp = tempW + margin.left + margin.right;
+                                            }
+
                                             // if overflow, wrap to new line
                                             if((obj.preX + temp - obj.oX) > obj.ww){
-                                                // left prev pct one to fill the left space
-                                                if(obj.$prevNode)
-                                                    obj.$prevNode.width(adjustunit(obj.$prevNode.width()+obj.ww-obj.preX));
-                                                // wrap to new line
-                                                obj.$prevDiff=0;
+                                                // new line
                                                 obj.bottom += obj.bottomHolder;
                                                 obj.bottomHolder=0;
                                                 obj.preX = obj.oX;
-                                                // recaculate width
-                                                temp = (pct ? parseFloat(obj.ww*pct) : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)));
-                                                if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+
+                                                applyPrevLine(obj, spaceW, obj.ww, 'width', 'dockMaxW', 'left', 'right');
                                             }
-                                            tempW = temp - margin.left - margin.right;
-                                            tempW -= spaceW;
 
-                                            left=obj.preX;
-                                            bottom=obj.bottom + margin.bottom;
-
-                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.bottom,nodefz)!==bottom)region.bottom=adjustunit(bottom);
-                                            if(css.$px(style.width,nodefz)!==tempW)region.width=adjustunit(tempW=_adjust(tempW));
-
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)  ins._setBBox(region);
-                                                else node.cssRegion(region,true);
-                                            }
+                                            obj.prevLine.push({
+                                                prop:prop,
+                                                node:node,
+                                                style:style,
+                                                nodefz:nodefz,
+                                                isSVG:isSVG,
+                                                ins:ins,
+                                                pct:pct,
+                                                margin:margin,
+                                                region:{
+                                                    bottom:obj.bottom + margin.bottom,
+                                                    width:temp
+                                                }
+                                            });
 
                                             // keep for next calculation
-                                            obj.preX += temp;
+                                            obj.preX += temp + spaceW;
                                             obj.bottomHolder = Math.max(obj.bottomHolder, (isSVG ? bbox.height : node.offsetHeight()) + margin.top + margin.bottom + spaceH);
                                         }
                                         else{
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.ww, 'width', 'dockMaxW', 'left', 'right');
+
                                             if(obj.bottomHolder){
                                                 obj.bottom += obj.bottomHolder;
                                                 obj.bottomHolder=0;
@@ -5684,90 +5768,82 @@ Class("xui.UI",  "xui.absObj", {
                                             right=sEnd?((flt?0:obj.right)+margin.right):(obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                             bottom=(flt?0:obj.bottom)+margin.bottom;
 
-                                            temp=obj.width - left - right - x + (obj.$prevDiff||0);
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW),nodefz)) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
-
-                                            if(css.$px(style.bottom,nodefz)!==bottom)region.bottom=adjustunit(bottom);
-                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.width,nodefz)!==temp)region.width=adjustunit(_adjust(temp));
-
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)
-                                                    ins._setBBox(region);
-                                                else
-                                                    node.cssRegion(region,true);
-                                            }
+                                            temp=checkLimits(css, prop, nodefz, 'W', obj.width - left - right);
+ 
+                                            apply2Ctrl(css, isSVG, ins, node, style, nodefz, {
+                                                left:left,
+                                                bottom:bottom,
+                                                width:_adjust(temp)
+                                            });
 
                                             if(!flt)
                                                 obj.bottom += (isSVG?bbox.height:node.offsetHeight()) + margin.top + margin.bottom + spaceH;
                                         }
-                                        if(pct)obj.$prevNode=node;
+                                        // the last pct one
+                                        if(ll==index+1){
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.ww, 'width', 'dockMaxW', 'left', 'right');
+                                        }
                                     }
                                     break;
                                 case 'left':
                                     if(!flag){
                                         if(obj.topHolder){
-                                            obj.top += obj.topHolder;
+                                            obj.top += obj.topHolder + spaceH;
                                             obj.topHolder=0;
                                             // reset preY
-                                            obj.preY = obj.top;
+                                            obj.oY = obj.preY = obj.top;
                                         }
                                         if(obj.bottomHolder){
-                                            obj.bottom += obj.bottomHolder;
+                                            obj.bottom += obj.bottomHolder + spaceH;
                                             obj.bottomHolder = 0;
                                         }
                                         // reset hh
-                                        obj.hh = obj.height - obj.top - obj.bottom + spaceH;
-
+                                        obj.hh = obj.height - obj.top - obj.bottom ;
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
                                             // calculate height
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
-                                            // adjust min/max
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            temp =  pct ? parseFloat(obj.hh*pct)  : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)) + margin.top + margin.bottom;
+                                            if(pct){
+                                                temp -= spaceH;
+                                                tempH = checkLimits(css, prop, nodefz, 'H', temp - margin.top - margin.bottom);
+                                                temp = tempH + margin.top + margin.bottom;
+                                            }
+
                                             // if overflow, wrap to new line
-                                            if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
-                                                // left prev pct one to fill the left space
-                                                if(obj.$prevNode)
-                                                    obj.$prevNode.height(adjustunit(obj.$prevNode.height()+obj.hh-obj.preY));
-                                                // wrap to new line
-                                                obj.$prevDiff=0;
-                                                
+                                            if((obj.preY + temp - obj.oY) > obj.hh){
+                                                // new line
                                                 obj.left += obj.leftHolder;
                                                 obj.leftHolder=0;
-                                                // reset preY
-                                                obj.preY = obj.top;
+                                                obj.preY = obj.oY;
 
-                                                // recaculate height
-                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)));
-                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                                applyPrevLine(obj, spaceH, obj.hh, 'height', 'dockMaxH', 'top', 'bottom');
                                             }
-                                            tempH = temp - margin.top - margin.bottom;
-                                            tempH -= spaceH;
 
-                                            top=obj.preY;
-                                            left=obj.left + margin.left;
-
-                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height,nodefz)!==tempH)region.height=adjustunit(tempH=_adjust(tempH));
-
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)  ins._setBBox(region);
-                                                else node.cssRegion(region,true);
-                                            }
+                                            obj.prevLine.push({
+                                                prop:prop,
+                                                node:node,
+                                                style:style,
+                                                nodefz:nodefz,
+                                                isSVG:isSVG,
+                                                ins:ins,
+                                                pct:pct,
+                                                margin:margin,
+                                                region:{
+                                                    left:obj.left + margin.left,
+                                                    height:temp
+                                                }
+                                            });
 
                                             // keep for next calculation
-                                            obj.preY += temp;
+                                            obj.preY += temp + spaceH;
                                             obj.leftHolder = Math.max(obj.leftHolder, (isSVG ? bbox.width : node.offsetWidth()) + margin.left + margin.right + spaceW);
                                         }
                                         else{
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.hh, 'height', 'dockMaxH', 'top', 'bottom');
+
                                             if(obj.leftHolder){
                                                 obj.left += obj.leftHolder;
                                                 obj.leftHolder=0;
@@ -5778,25 +5854,22 @@ Class("xui.UI",  "xui.absObj", {
                                             top=sStart?((flt?0:obj.top)+margin.top):css.$px(prop.top,nodefz);
                                             bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
 
-                                            temp=obj.height - top - bottom - y + (obj.$prevDiff||0);
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            temp=checkLimits(css, prop, nodefz, 'H', obj.height - top - bottom - y);
 
-                                            if(css.$px(style.left,nodefz)!==left)region.left=adjustunit(left);
-                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height,nodefz)!==temp)region.height=adjustunit(_adjust(temp));
+                                            apply2Ctrl(css, isSVG, ins, node, style, nodefz, {
+                                                left:left,
+                                                top:top,
+                                                height:_adjust(temp)
+                                            });
 
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)
-                                                    ins._setBBox(region);
-                                                else
-                                                    node.cssRegion(region,true);
-                                            }
                                             if(!flt)
                                                 obj.left += (isSVG?bbox.width:node.offsetWidth()) + margin.left + margin.right + spaceW;
                                         }
-                                        if(pct)obj.$prevNode=node;
+                                        // the last pct one
+                                        if(ll==index+1){
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.hh, 'height', 'dockMaxH', 'top', 'bottom');
+                                        }
                                     }
                                     break;
                                 case 'right':
@@ -5806,60 +5879,59 @@ Class("xui.UI",  "xui.absObj", {
                                             obj.top += obj.topHolder;
                                             obj.topHolder=0;
                                             // reset preY
-                                            obj.preY = obj.top;
+                                            obj.oY = obj.preY = obj.top;
                                         }
                                         if(obj.bottomHolder){
                                             obj.bottom += obj.bottomHolder;
                                             obj.bottomHolder = 0;
                                         }
                                         // reset hh
-                                        obj.hh = obj.height - obj.top - obj.bottom + spaceH;
+                                        obj.hh = obj.height - obj.top - obj.bottom ;
 
                                         if(obj.hh<=0)return;
 
                                         if(noStretch){
                                             // calculate height
-                                            temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz))) + (obj.$prevDiff||0);
-                                            // adjust min/max
-                                             obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            temp =  pct ? parseFloat(obj.hh*pct)  : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)) + margin.top + margin.bottom;
+                                            if(pct){
+                                                temp -= spaceH;
+                                                tempH = checkLimits(css, prop, nodefz, 'H', temp - margin.top - margin.bottom);
+                                                temp = tempH + margin.top + margin.bottom;
+                                            }
+
                                             // if overflow, wrap to new line
-                                            if((obj.preY + temp + obj.bottom - spaceH) > obj.height){
-                                                // left prev pct one to fill the left space
-                                                if(obj.$prevNode)
-                                                    obj.$prevNode.height(adjustunit(obj.$prevNode.height()+obj.hh-obj.preY));
-                                                // wrap to new line
+                                            if((obj.preY + temp - obj.oY) > obj.hh){
+                                                // new line
                                                 obj.right += obj.rightHolder;
                                                 obj.rightHolder=0;
-                                                // reset preY
-                                                obj.preY = obj.top;
+                                                obj.preY = obj.oY;
 
-                                                // recaculate height
-                                                temp = (pct ? parseFloat(obj.hh*pct) : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)));
-                                                if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                                if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                                applyPrevLine(obj, spaceH, obj.hh, 'height', 'dockMaxH', 'top', 'bottom');
                                             }
-                                            tempH = temp - margin.top - margin.bottom;
-                                            tempH -= spaceH;
 
-                                            top=obj.preY;
-                                            right=obj.right + margin.right;
-
-                                            if(css.$px(style.right,nodefz)!==right)region.right=adjustunit(right);
-                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height,nodefz)!==tempH)region.height=adjustunit(tempH=_adjust(tempH));
-
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)  ins._setBBox(region);
-                                                else node.cssRegion(region,true);
-                                            }
+                                            obj.prevLine.push({
+                                                prop:prop,
+                                                node:node,
+                                                style:style,
+                                                nodefz:nodefz,
+                                                isSVG:isSVG,
+                                                ins:ins,
+                                                pct:pct,
+                                                margin:margin,
+                                                region:{
+                                                    right:obj.right + margin.right,
+                                                    height:temp
+                                                }
+                                            });
 
                                             // keep for next calculation
-                                            obj.preY += temp;
+                                            obj.preY += temp + spaceH;
                                             obj.rightHolder = Math.max(obj.rightHolder, (isSVG ? bbox.width : node.offsetWidth()) + margin.left + margin.right + spaceW);
                                         }
                                         else{
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.hh, 'height', 'dockMaxH', 'top', 'bottom');
+
                                             if(obj.rightHolder){
                                                 obj.right += obj.rightHolder;
                                                 obj.rightHolder=0;
@@ -5870,25 +5942,22 @@ Class("xui.UI",  "xui.absObj", {
                                             top=sStart?((flt?0:obj.top)+margin.top):(css.$px(prop.top,nodefz));
                                             bottom=sEnd?((flt?0:obj.bottom)+margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
 
-                                            temp=obj.height - top - bottom - y + (obj.$prevDiff||0);
-                                            obj.$prevDiff=0;
-                                            if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp=_adjust((t<=temp)?(temp):(obj.$prevDiff=temp-t,  t));
-                                            if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(obj.$prevDiff=temp-t,  t):(temp));
+                                            temp=checkLimits(css, prop, nodefz, 'H', obj.height - top - bottom - y);
 
-                                            if(css.$px(style.right,nodefz)!==right)region.right=adjustunit(right);
-                                            if(css.$px(style.top,nodefz)!==top)region.top=adjustunit(top);
-                                            if(css.$px(style.height,nodefz)!==temp)region.height=adjustunit(_adjust(temp));
+                                            apply2Ctrl(css, isSVG, ins, node, style, nodefz, {
+                                                right:right,
+                                                top:top,
+                                                height:_adjust(temp)
+                                            });
 
-                                            if(!xui.isEmpty(region)){
-                                                if(isSVG)
-                                                    ins._setBBox(region);
-                                                else
-                                                    node.cssRegion(region,true);
-                                            }
                                             if(!flt)
                                                 obj.right += (isSVG?bbox.width:node.offsetWidth()) + margin.left + margin.right + spaceW;
                                         }
-                                        if(pct)obj.$prevNode=node;
+                                        // the last pct one
+                                        if(ll==index+1){
+                                            // new line
+                                            applyPrevLine(obj, spaceW, obj.hh, 'height', 'dockMaxH', 'top', 'bottom');
+                                        }
                                     }
                                     break;
                                 case 'width':
@@ -5907,9 +5976,7 @@ Class("xui.UI",  "xui.absObj", {
                                     right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                     top = prop.dock=='width'?(css.$px(prop.top,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top,nodefz));
                                     //later call for w/h change once
-                                    temp=obj.width - left - right - x;
-                                    if(parseFloat(prop.dockMinW)&&(t=css.$px(prop.dockMinW,nodefz))) temp=_adjust((t<=temp)?(delete profile.$dockMinW, temp):(profile.$dockMinW=1,  t));
-                                    if(parseFloat(prop.dockMaxW)&&(t=css.$px(prop.dockMaxW,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxW=1,  t):(delete profile.$dockMaxW, temp));
+                                    temp=checkLimits(css, prop, nodefz, 'W', obj.width - left - right - x);
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5939,10 +6006,9 @@ Class("xui.UI",  "xui.absObj", {
                                     top = sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top,nodefz);
                                     bottom = sEnd?((isCover?0:(flt?0:obj.bottom))  + margin.bottom):(obj.height-css.$px(prop.height,nodefz)-css.$px(prop.top,nodefz));
                                     left = prop.dock=='height'?(css.$px(prop.left,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left,nodefz));
+                                    
                                     //later call for w/h change once
-                                    temp=obj.height - top - bottom - y;
-                                    if(parseFloat(prop.dockMinH)&&(t=css.$px(prop.dockMinH,nodefz))) temp = _adjust((t<=temp)?(delete profile.$dockMinH, temp):(profile.$dockMinH=1,  t));
-                                    if(parseFloat(prop.dockMaxH)&&(t=css.$px(prop.dockMaxH,nodefz))) temp=_adjust((t<=temp)?(profile.$dockMaxH=1,  t):(delete profile.$dockMaxH, temp));
+                                    temp=checkLimits(css, prop, nodefz, 'H', obj.height - top - bottom - y);
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -5994,9 +6060,12 @@ Class("xui.UI",  "xui.absObj", {
                         profile.unLink('$dock1');
                         profile.unLink('$dock2');
                         adjustOverflow(p,isWin);
-
-                        if( p && p.get(0) && (p=xui.UIProfile.getFromDom(p.id())) )
+                        
+                        if( p && p.get(0) && (p=xui.UIProfile.getFromDom(p.id())) ){
+                            // affect dock parent
+                            p.boxing().adjustDock();
                             xui.tryF(p.clearCache,[],p);
+                        }
                         profile=fun=p=null;
                     }
                 }else{
@@ -6009,8 +6078,6 @@ Class("xui.UI",  "xui.absObj", {
             //run once now
             if(trigger)
                 p.onSize();
-//            if(value != 'none' && trigger)
-//                profile.$dockFun({width:1, height:1, $dockid:xui.arr.indexOf(['width','height','fill','cover'],value)!=-1?profile.$xid:null, $type: value});
         },
 
         _beforeSerialized:function(profile){
