@@ -101,8 +101,14 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                 TLEFT:{
                                     $order:0,
                                     tagName:'div',
-                                    TOGGLE:{
+                                    LTAGCMDS:{
                                         $order:0,
+                                        tagName:'span',
+                                        style:'{_ltagDisplay}',
+                                        text:"{ltagCmds}"
+                                    },
+                                    TOGGLE:{
+                                        $order:1,
                                         className:'xuifont {_tlgchecked}',
                                          $fonticon:'xui-uicmd-toggle'
                                     },
@@ -128,6 +134,12 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     },
                                     CMDS:{
                                         $order:2,
+                                        RTAGCMDS:{
+                                            $order:0,
+                                            tagName:'span',
+                                            style:'{_rtagDisplay}',
+                                            text:"{rtagCmds}"
+                                        },
                                         OPT:{
                                             $order:1,
                                             className:'xuifont',
@@ -176,7 +188,18 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                             TR:{tagName : 'div'}
                         }
                     }
-                }
+                },
+                'items.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
+                },
+                'items.rtagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
+                },
+                'items.tagCmds.text':xui.UI.$getTagCmdsTpl('text'),
+                'items.tagCmds.button':xui.UI.$getTagCmdsTpl('button'),
+                'items.tagCmds.image':xui.UI.$getTagCmdsTpl('image')
             }
         },
         Appearances:{
@@ -442,6 +465,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 item._checked = profile.getClass('ITEM','-checked');
                 item._tlgchecked = profile.getClass('TOGGLE','-checked');
             }
+            this._prepareCmds(profile, item);
         },
         _onresize:function(profile,width,height,force,key){
             if(force){profile._w=profile._h=null;}

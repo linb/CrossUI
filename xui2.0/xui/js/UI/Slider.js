@@ -33,7 +33,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         label=label.replace('*', cap);
                     else label += cap;
                 }
-                if(p.labelPos!='none'){
+                if(p.labelPos!='none'&&parseFloat(p.labelSize)){
                     profile.getSubNode('LABEL').html(label );
                 }
             });
@@ -454,8 +454,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             labelCaption:{
                 ini:"",
                 action: function(v){
-                    v=(xui.isSet(v)?v:"")+"";
-                    this.getSubNode('LABEL').html(xui.adjustRes(v,true));
+                     var p=this.properties;
+                     if(p.labelPos!='none'&& parseFloat(p.labelSize))
+                        this.getSubNode('LABEL').html(xui.adjustRes((xui.isSet(v)?v:"")+"", true));
                 }
             },
             labelHAlign:{
@@ -481,8 +482,9 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
             d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
+
             // adjustRes for labelCaption
-            if(d.labelCaption)
+            if(d.labelPos!='none'&& d.labelSize && d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
 
             d._fi_decls = 'xui-icon-single'+(d.type=='vertical'?'up':'left');

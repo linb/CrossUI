@@ -17,6 +17,9 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
     Static:{
+        Behaviors:{
+            DroppableKeys:['PANEL','KEY', 'ITEM']
+        },
         Appearances:{
             BOX:{
                 position:'absolute',

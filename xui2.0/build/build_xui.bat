@@ -87,13 +87,13 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\UI\HiddenInput.js /b ^
 + %relPath%xui\js\UI\RichEditor.js /b ^
 + %relPath%xui\js\UI\ComboInput.js /b ^
-+ %relPath%xui\js\UI\Group.js /b  ^
 + %relPath%xui\js\UI\ColorPicker.js /b ^
 + %relPath%xui\js\UI\DatePicker.js /b ^
 + %relPath%xui\js\UI\TimePicker.js /b ^
 + %relPath%xui\js\UI\List.js /b ^
 + %relPath%xui\js\UI\Gallery.js /b ^
 + %relPath%xui\js\UI\Panel.js /b ^
++ %relPath%xui\js\UI\Group.js /b  ^
 + %relPath%xui\js\UI\PageBar.js /b ^
 + %relPath%xui\js\UI\Tabs.js /b ^
 + %relPath%xui\js\UI\Stacks.js /b ^

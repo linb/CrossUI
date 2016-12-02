@@ -1,94 +1,82 @@
-Class("xui.UI.Group", "xui.UI.Div",{
-    Instance:{
-        activate:function(){
-            var profile = this.get(0);
-            profile.getSubNode('HANDLE').focus();
-            return this;
-        },
-        resetPanelView:function(removeChildren,destroyChildren){
-            if(!xui.isSet(removeChildren))removeChildren=true;
-            if(!xui.isSet(destroyChildren))destroyChildren=true;
-            var ins;
-            return this.each(function(profile){
-                if(profile.renderId){
-                    delete profile.$ini;
-                    if(removeChildren){
-                        ins=profile.boxing();
-                        ins.removeChildren(true,destroyChildren);
-                    }
-                    if(profile.properties.toggle)
-                        ins.setToggle(false);
-                }
-            });
-        },
-        iniPanelView:function(){
-            return this.each(function(profile){
-                if(!profile.$ini){
-                    profile.$ini=true;
-                    var p=profile.properties;
-                    if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
-                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                        xui.UI.Div._applyAutoLoad(profile);
-                }
-            });
-        }
-    },
+Class("xui.UI.Group", "xui.UI.Panel",{
     Static:{
-        Behaviors:{
-            NavKeys:{CAPTION:1},
-            HoverEffected:{TOGGLE:'TOGGLE',ICON:'ICON'},
-            ClickEffected:{TOGGLE:'TOGGLE'},
-            DroppableKeys:['PANEL'],
-            PanelKeys:['PANEL'],
-            DraggableKeys:['HANDLE'],
-            onSize:xui.UI.$onSize,
-            HANDLE:{
-                onClick:function(profile, e, src){
-                    if(profile.properties.toggleBtn){
-                        profile.box._toggle(profile, !profile.properties.toggle);
-                        return false;
-                    }
-                },
-                onKeydown : function(profile, e, src){
-                    if(xui.Event.getKey(e).key=='enter')
-                        xui(src).onClick();
-                }
-            },
-            PANEL:{
-                onClick:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return false;
-                    if(profile.onClickPanel)
-                        return profile.boxing().onClickPanel(profile, e, src);
-                }
-            }
-        },
         Templates:{
             tagName : 'div',
             style:'{_style}',
             className:'{_className}',
-            FIELDSET:{
+            BORDER:{
                 tagName : 'fieldset',
-                className: '{toggleCls}',
-                LEGEND:{
+                className: '{_fieldCls} xui-uibar-top2',
+                TBAR:{
                     tagName : 'legend',
                     style:'{_align}',
-                    HANDLE:{
-                        tabindex: '{tabindex}',
+                    BARCMDL:{
+                        LTAGCMDS:{
+                            tagName:'span',
+                            className:'xui-ltag-cmds',
+                            style:'{_ltagDisplay}',
+                            text:"{ltagCmds}"
+                        },
                         TOGGLE:{
+                            $order:1,
                             className: 'xuifont',
                             $fonticon:'{_fi_toggleCls2}',
-                            style:"{toggleDispplay}"
+                            style:'{toggleDisplay}',
+                            $order:0
                         },
                         ICON:{
-                            $order:1,
+                            $order:2,
                             className:'xuicon {imageClass}',
                             style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {
+                            tabindex: '{tabindex}',
+                            className:"xui-title-node",
                             text:   '{caption}',
+                            $order:3
+                        }
+                    },
+                    BARCMDR:{
+                    $order:4,
+                        tagName: 'div',
+                        className:'xui-uibar-cmdr xui-uibase',
+                        RTAGCMDS:{
+                            $order:0,
+                            tagName:'span',
+                            className:'xui-rtag-cmds',
+                            style:'{_rtagDisplay}',
+                            text:"{rtagCmds}"
+                        } ,
+                        INFO:{
+                            className:'xuicon',
+                            $fonticon:'xui-uicmd-info',
+                            style:'{infoDisplay}',
+                            $order:1
+                        },
+                        OPT:{
+                            className:'xuicon',
+                            $fonticon:'xui-uicmd-opt',
+                            style:'{optDisplay}',
                             $order:2
+                        },
+                        POP:{
+                            className:'xuicon',
+                            $fonticon:'xui-uicmd-pop',
+                                style:'{popDisplay}',
+                            $order:3
+                        },
+                        REFRESH:{
+                            className:'xuicon',
+                            $fonticon:'xui-uicmd-refresh',
+                            style:'{refreshDisplay}',
+                            $order:4
+                        },
+                        CLOSE:{
+                            className:'xuicon',
+                            $fonticon:'xui-uicmd-close',
+                            style:'{closeDisplay}',
+                            $order:5
                         }
                     }
                 },
@@ -99,27 +87,28 @@ Class("xui.UI.Group", "xui.UI.Div",{
                     className:'xui-uicontainer',
                     text:'{html}'+xui.UI.$childTag
                 }
-            }
+            },
+            $submap:xui.UI.$getTagCmdsTpl()
         },
         Appearances:{
             KEY:{
                 zoom:xui.browser.ie6?"1":null
             },
-            FIELDSET:{
+            BORDER:{
                 position:'relative',
                 overflow:'hidden',
                 zoom:xui.browser.ie6?"1":null
             },
-            LEGEND:{
+            TBAR:{
                 'margin-left':'.5em'
             },
-            'FIELDSET-checked LEGEND':{
+            'BORDER-checked TBAR':{
                 'margin-left':'-.5em'
             },
-            'FIELDSET-checked HANDLE':{
+            'BORDER-checked BARCMDL':{
                 'padding-left':'1em'
             },
-            HANDLE:{
+            BARCMDL:{
                 cursor:'default',
                 'padding-right':'.25em',
                 display:xui.$inlineBlock
@@ -131,108 +120,19 @@ Class("xui.UI.Group", "xui.UI.Div",{
                  background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
             },
             CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'font-size':'1em'
+                display:'inline',
+                'vertical-align':xui.browser.ie6?'baseline':'middle'
             }
         },
-
         DataModel:{
-            rotate:null,
-            selectable:true,
-            caption:{
-                ini:undefined,
-                // ui update function when setCaption
-                action: function(v){
-                    v=(xui.isSet(v)?v:"")+"";
-                    this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
-                }
-            },
-            html:{
-                action:function(v,ov,force){
-                    this.getSubNode('PANEL').html(xui.adjustRes(v,0,1),null,null,force);
-                }
-            },
-            toggleBtn:{
-                ini:true,
-                action:function(v){
-                    this.getSubNode('TOGGLE').css('display',v?'':'none');
-                }
-            },
-            toggle:{
-                ini:true,
-                action:function(v){
-                    this.box._toggle(this, v);
-                }
-            },
-            image:{
-                format:'image',
-                action: function(v){
-                    xui.UI.$iconAction(this);
-                }
-            },
-            imagePos:{
-                action: function(value){
-                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
-                }
-            },
-            imageBgSize:{
-                action: function(value){
-                    this.getSubNode('ICON').css('backgroundSize', value||'');
-                }
-            },
-            imageClass: {
-                ini:'',
-                action:function(v,ov){
-                    xui.UI.$iconAction(this, 'ICON', ov);
-                }
-            },
-            iconFontCode:{
-                action:function(v){
-                    xui.UI.$iconAction(this);
-                }
-            },
-            hAlign:{
-                ini:'left',
-                listbox:['left','center','right'],
-                action: function(v){
-                    this.getSubNode("LEGEND").css('textAlign',v);
-                }
-            }
-        },
-        LayoutTrigger:function(){
-            var self=this, t=self.properties;
-            // for expand
-            if(!t.toggle){
-                self.box._toggle(self,false,true);
-            }else{
-                // for default expand container
-                self.boxing().iniPanelView();
-            }
-        },
-        EventHandlers:{
-            onIniPanelView:function(profile){},
-            beforeFold:function(profile){},
-            beforeExpand:function(profile){},
-            afterFold:function(profile){},
-            afterExpand:function(profile){},
-            onClickPanel:function(profile, e, src){}
+            dock:'none',
+            noFrame:null,
+            borderType:null
         },
         _prepareData:function(profile){
-            var data={};
+            var data=arguments.callee.upper.call(this, profile);
             if(!profile.properties.toggle)data.height="auto";
-            data=arguments.callee.upper.call(this, profile, data);
-            var nodisplay='display:none';
-
-            data.toggleDispplay=data.toggleBtn?'':nodisplay;
-
-            data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
-            data.toggleCls = data.toggleBtn&&!data.toggle?' xui-uiborder-t':' xui-uiborder-flat xui-uiborder-radius';
-            data._fi_toggleCls2 = data.toggleBtn&&data.toggle?'xui-uicmd-toggle xuifont-checked xui-uicmd-toggle-checked':'xui-uicmd-toggle';
-
-            profile._toggle = !!data.toggle;
-
-            data._align = 'text-align:'+data.hAlign+';';
-
+            data._fieldCls = data.toggleBtn&&!data.toggle?' xui-uiborder-t':' xui-uiborder-flat xui-uiborder-radius';
             return data;
         },
         _toggle:function(profile, value, ignoreEvent){
@@ -245,7 +145,6 @@ Class("xui.UI.Group", "xui.UI.Div",{
             if(ignoreEvent || profile._toggle !== !!value){
                 //set toggle mark
                 profile._toggle = p.toggle = !!value;
-
                 if(!ignoreEvent){
                     if(value){
                         if(ins.beforeExpand && false===ins.beforeExpand(profile))return;
@@ -259,11 +158,11 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 if(p.toggleBtn)
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
                 
-                var fs=profile.getSubNode('FIELDSET')
+                var border=profile.getSubNode('BORDER')
                 if(value)
-                    fs.removeClass('xui-uiborder-t').addClass('xui-uiborder-flat xui-uiborder-radius');
+                    border.removeClass('xui-uiborder-t').addClass('xui-uiborder-flat xui-uiborder-radius');
                 else
-                    fs.removeClass('xui-uiborder-flat xui-uiborder-radius').addClass('xui-uiborder-t');
+                    border.removeClass('xui-uiborder-flat xui-uiborder-radius').addClass('xui-uiborder-t');
 
                 // same to ***
                 // for expand status:
@@ -271,19 +170,17 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 // for fold status:
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
-
                 if(p.toggle){
                         profile.getRoot().height(p.height);
-                        fs.height(p.height);
+                        border.height(p.height);
                 }else{
-                    var css = xui.CSS,
-                        us = xui.$us(p),
+                    var us = xui.$us(p),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
-                        height=profile.getSubNode('LEGEND').height();
+                        height=profile.getSubNode('TBAR').height();
                     height = height?adjustunit(height):null;
                     profile.getRoot().height(height?height:'auto');
                     if(height && height!='auto'){
-                        fs.height(height);
+                        border.height(height);
                     }
                 }
 
@@ -295,7 +192,6 @@ Class("xui.UI.Group", "xui.UI.Div",{
                         if(ins.afterFold)
                             ins.afterFold(profile);
                     }
-
                     // try redock
                     if(p.dock && p.dock!='none'){
                         ins.adjustDock(true);
@@ -306,11 +202,10 @@ Class("xui.UI.Group", "xui.UI.Div",{
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px
-                css = xui.CSS,
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
-                fs = profile.getSubNode('FIELDSET'),
+                border = profile.getSubNode('BORDER'),
                 panel =profile.getSubNode('PANEL'), 
 
                 // caculate by px
@@ -319,8 +214,8 @@ Class("xui.UI.Group", "xui.UI.Div",{
 
             if(profile._toggle){
                 if(height && height!='auto'){
-                    fs.height(adjustunit(hh, fs));
-                    hh -= profile.getSubNode('LEGEND').height()||18;
+                    border.height(adjustunit(hh, border));
+                    hh -= profile.getSubNode('TBAR').height()||18;
                     panel.height(adjustunit(hh, panel) );
                 }
             }else{
@@ -330,11 +225,11 @@ Class("xui.UI.Group", "xui.UI.Div",{
                 // for fold status:
                 //    if display => adjust ctrl's height to legend's
                 //    if non-display => adjust ctrl's height to 'auto'
-                height = profile.getSubNode('LEGEND').height();
+                height = profile.getSubNode('TBAR').height();
                 height = height?adjustunit(height):null;
                 profile.getRoot().height(height || 'auto');
                 if(height && height!='auto'){
-                    fs.height(height);
+                    border.height(height);
                 }
             }
             if(width && width!='auto' && ww>=2){

@@ -3,7 +3,7 @@ Class('App', 'xui.Com',{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools
             var host=this, children=[], append=function(child){children.push(child.get(0))};
-            
+
             append((new xui.UI.Div)
                 .setHost(host,"Div9")
                 .setLeft(24)
@@ -12,7 +12,7 @@ Class('App', 'xui.Com',{
                 .setHeight(24)
                 .setHtml("Stacks")
             );
-            
+
             append((new xui.UI.Pane)
                 .setHost(host,"panel2")
                 .setLeft(312)
@@ -23,7 +23,7 @@ Class('App', 'xui.Com',{
                 .onDrop("__ondrop")
                 .setCustomStyle({"KEY":"border:solid 1px;"})
             );
-            
+
             append((new xui.UI.Div)
                 .setHost(host,"div7")
                 .setLeft(24)
@@ -32,7 +32,7 @@ Class('App', 'xui.Com',{
                 .setHeight(24)
                 .setHtml("Panel1")
             );
-            
+
             append((new xui.UI.Div)
                 .setHost(host,"div8")
                 .setLeft(312)
@@ -41,7 +41,7 @@ Class('App', 'xui.Com',{
                 .setHeight(24)
                 .setHtml("Panel2")
             );
-            
+
             append((new xui.UI.Pane)
                 .setHost(host,"panel1")
                 .setLeft(24)
@@ -52,7 +52,7 @@ Class('App', 'xui.Com',{
                 .onDrop("__ondrop")
                 .setCustomStyle({"KEY":"border:solid 1px;"})
             );
-            
+
             host.panel1.append((new xui.UI.Button)
                 .setHost(host,"label6")
                 .setLeft(11)
@@ -61,7 +61,7 @@ Class('App', 'xui.Com',{
                 .setCaption("drag me")
                 .onRender("__onRender")
             );
-            
+
             append((new xui.UI.Div)
                 .setHost(host,"Div10")
                 .setLeft(312)
@@ -116,7 +116,7 @@ Class('App', 'xui.Com',{
                 .setLeft(312)
                 .setTop(296)
                 .setWidth(256)
-                .setDropKeys("iAny")
+                .setDropKeysPanel("iAny")
                 .setValue("view1")
                 .onDrop("__ondrop")
             );
@@ -128,7 +128,7 @@ Class('App', 'xui.Com',{
                 .setLeft(24)
                 .setTop(296)
                 .setWidth(256)
-                .setDropKeys("iAny")
+                .setDropKeysPanel("iAny")
                 .setValue("view2")
                 .onDrop("__ondrop")
             );

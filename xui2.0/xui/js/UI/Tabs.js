@@ -109,16 +109,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         ////
         addPanel:function(paras, children, item){
-            var i={},
+            var ns=this,
+                i={}, arr=[],
                 id = item&&item.id,
-                items = this.getItems(),
+                items = ns.getItems(),
                 id2=paras.id||paras.tag;
             if(items.length){
                 if(-1!=xui.arr.subIndexOf(items,'id',id2))
                     return false;
-
-                if(!id)
-                    id = items[items.length-1].id;
             }
 
             xui.merge(i, {
@@ -134,14 +132,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 id : paras.id || paras.tag || xui.id()
             });
 
-            this.insertItems([i], id);
-            var arr=[];
+            if(id) ns.insertItems([i], id, true);
+            else ns.insertItems([i]);
+            
             xui.arr.each(children,function(o){
                 arr.push(o[0]);
             });
-            this.append(xui.UI.pack(arr,false), i.id);
+            ns.append(xui.UI.pack(arr,false), i.id);
 
-            return this;
+            return ns;
         },
         removePanel:function(domId){
             var self=this,
@@ -363,6 +362,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         tagName:'div',
                                         style:"white-space:nowrap;",
                                         RULER:{},
+                                        LTAGCMDS:{
+                                            $order:1,
+                                            tagName:'span',
+                                            style:'{_ltagDisplay}',
+                                            text:"{ltagCmds}"
+                                        },
                                         ICON:{
                                             $order:2,
                                             className:'xuicon {imageClass}',
@@ -370,13 +375,19 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{
+                                            $order:3,
                                             text: '{caption}',
                                             className:"xui-title-node",
-                                            style:'{itemWidth};{itemAlign}',
-                                            $order:3
+                                            style:'{itemWidth};{itemAlign}'
                                         },
                                         CMDS:{
                                             $order:4,
+                                            RTAGCMDS:{
+                                                $order:0,
+                                                tagName:'span',
+                                                style:'{_rtagDisplay}',
+                                                text:"{rtagCmds}"
+                                            },
                                             OPT:{
                                                 $order:1,
                                                 className:'xuifont',
@@ -409,7 +420,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         style:"{_overflow};{_bginfo}",
                         text:'{html}'+xui.UI.$childTag
                     }
-                }
+                },
+                'items.ltagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
+                },
+                'items.rtagCmds':function(profile,template,v,tag,result){
+                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
+                    xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
+                },
+                'items.tagCmds.text':xui.UI.$getTagCmdsTpl('text'),
+                'items.tagCmds.button':xui.UI.$getTagCmdsTpl('button'),
+                'items.tagCmds.image':xui.UI.$getTagCmdsTpl('image')
             }
         },
         Appearances:{
@@ -521,15 +543,23 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             CMDS:{
                 'vertical-align':'middle'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0
+            },
+            CMD:{
+                padding:0,
+                margin:0
             }
         },
         Behaviors:{
             NOTIPS:["GROUP","HANDLER"],
-            DroppableKeys:['PANEL','KEY', 'ITEM'],
+            DroppableKeys:['PANEL','LIST', 'ITEM'],
             PanelKeys:['PANEL'],
             DraggableKeys:['ITEM'],
-            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',ICON:'ICON'},
-            ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP'},
+            HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',ICON:'ICON',CMD:'CMD'},
+            ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',CMD:'CMD'},
             onSize:xui.UI.$onSize,
             CAPTION:{
                 onMousedown:function(profile, e, src){
@@ -655,6 +685,18 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             return false;
                             break;
                     }
+                }
+            },
+            CMD:{
+                onClick:function(profile,e,src){
+                    var prop=profile.properties,
+                        item=profile.getItemByDom(xui.use(src).parent().get(0));
+                    if(!item)return false;
+
+                    if(prop.disabled|| item.disabled || item.type=='split')return false;
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
+                    return false;
                 }
             },
             OPT:{
@@ -890,9 +932,16 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     this.getSubNode('LIST').css('display',value?'none':'block');
                     this.adjustSize(null,true);
                 }
+            },
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
             }
         },
         EventHandlers:{
+            onCmd:function(profile,item,cmdkey,e,src){},
             onIniPanelView:function(profile, item){},
             beforePagePop:function(profile, item, options, e, src){},
             beforePageClose:function(profile, item, src){},
@@ -950,9 +999,14 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
             else if(xui.isStr(p.overflow))
                 item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
+
+            this._prepareCmds(profile, item);
         },
         getDropKeys:function(profile,node){
-            return profile.properties[profile.getKey(xui.use(node).id())==profile.keys.PANEL?'dropKeys':'dropKeysPanel'];
+            var prop=profile.properties, item=profile.getItemByDom(node);
+            return profile.getKey(xui.use(node).id())==profile.keys.PANEL 
+                ? ((item&&item.dropKeysPanel) || prop.dropKeysPanel)
+                : ((item&&item.dropKeys) || prop.dropKeys);
         },
         _forLazyAppend:function(profile, item, value){
             var prop=profile.properties,box=profile.boxing(),
@@ -1099,6 +1153,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 return rtn;
             }
         },
+        // drop item
+        _onDrop:xui.UI.List._onDrop,
         //for tabs only
         _onresize:function(profile,width,height,force,key){
               var prop=profile.properties,

@@ -19153,7 +19153,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'itemWidth':'固定按钮宽度',
             'itemAlign':'文字对齐方式',
             'HAlign':'按钮排列方式',
-            'dropKeysPanel':'可丢下位置',
+            'dropKeysPanel':'容器丢下标识',
             'selMode':'点选模式',
             'onClickPanel':"点击容器",
             'noHandler':'无控制面版'

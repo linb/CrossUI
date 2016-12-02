@@ -207,43 +207,56 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     RULER:{
                         className:'xui-ui-ruler'
                     },
+                    LTAGCMDS:{
+                        tagName:'span',
+                        className:'xui-ltag-cmds',
+                        style:'{_ltagDisplay}',
+                        text:"{ltagCmds}"
+                    },
                     ICON:{
-                        $order:0,
+                        $order:2,
                         className:'xuicon {imageClass}',
                         style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
-                        $order:1,
                         tabindex: '{tabindex}',
-                        className:'xui-title-node xui-uicaption',
-                        text:'{caption}'
+                        className:"xui-title-node",
+                        text : '{caption}',
+                        $order:3
                     }
                 },
                 BARCMDR:{
                     $order:4,
                     tagName: 'div',
                     className:'xui-uibar-cmdr',
+                    RTAGCMDS:{
+                        $order:0,
+                        tagName:'span',
+                        className:'xui-rtag-cmds',
+                        style:'{_rtagDisplay}',
+                        text:"{rtagCmds}"
+                    } ,
                     INFO:{
                         className:'xuicon',
                         $fonticon:'xui-uicmd-info',
                         style:'{infoDisplay}',
-                        $order:1
+                        $order:2
                     },
                     OPT:{
                         className:'xuicon',
                         $fonticon:'xui-uicmd-opt',
                         style:'{optDisplay}',
-                        $order:1
+                        $order:3
                     },
                     PIN:{
-                        $order:2,
+                        $order:4,
                         className:'xuicon',
                         $fonticon:'xui-uicmd-pin',
                         style:'{pinDisplay}'
                     },
                     LAND:{
-                        $order:3,
+                        $order:5,
                         className:'xuicon',
                         $fonticon:'xui-uicmd-land',
                         style:'{landDisplay}'
@@ -252,28 +265,28 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                         className:'xuicon',
                         $fonticon:'xui-uicmd-refresh',
                         style:'{refreshDisplay}',
-                        $order:4
+                        $order:6
                     },
                     MIN:{
-                        $order:5,
+                        $order:7,
                         className:'xuicon',
                         $fonticon:'xui-uicmd-min',
                         style:'{minDisplay}'
                     },
                     RESTORE:{
-                        $order:6,
+                        $order:8,
                         className:'xuicon',
                         $fonticon:'xui-uicmd-restore',
                         style:'display:none;'
                     },
                     MAX:{
-                        $order:7,
+                        $order:9,
                         className:'xuicon',
                         $fonticon:'xui-uicmd-max',
                         style:'{maxDisplay}'
                     },
                     CLOSE:{
-                        $order:8,
+                        $order:10,
                         className:'xuicon',
                         $fonticon:'xui-uicmd-close',
                         style:'{closeDisplay}'
@@ -319,6 +332,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             TABSTOP2:{$order:9}
         },'all');
+        t.$submap = xui.UI.$getTagCmdsTpl();
+
         ns.setTemplate(t);
 
         xui.alert=ns.alert;
@@ -361,8 +376,9 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             DroppableKeys:['PANEL'],
             PanelKeys:['PANEL'],
             DraggableKeys:['LAND'],
-            HoverEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND',ICON:'ICON'},
-            ClickEffected:{INFO:'INFO', OPT:'OPT', PIN:'PIN',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',CLOSE:'CLOSE',REFRESH:'REFRESH',LAND:'LAND'},
+            NoDraggableKeys:['LAND','MIN','MAX','RESTORE','PIN','INFO','OPT','CLOSE','REFRESH','CMD'],
+            HoverEffected:{LAND:'LAND',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',PIN:'PIN',INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',REFRESH:'REFRESH',CMD:'CMD',ICON:'ICON'},
+            ClickEffected:{LAND:'LAND',MIN:'MIN',MAX:'MAX',RESTORE:'RESTORE',PIN:'PIN',INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',REFRESH:'REFRESH',CMD:'CMD',ICON:'ICON'},
             onMousedown:function(profile, e){
                 if(!profile.$inModal)
                     profile.box._active(profile);
@@ -538,6 +554,20 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     profile.box._restore(profile);
                 }
             },
+            LAND:{
+                onClick:function(profile, e, src){
+                    profile.boxing().onLand(profile, e, src);
+                }
+            },
+            PANEL:{
+                onClick:function(profile, e, src){
+                    var p=profile.properties;
+                    if(p.disabled)return false;
+                    if(profile.onClickPanel)
+                        return profile.boxing().onClickPanel(profile, e, src);
+                }
+            },
+
             INFO:{
                 onClick:function(profile, e, src){
                     profile.boxing().onShowInfo(profile, e, src);
@@ -558,17 +588,13 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     profile.boxing().close();
                 }
             },
-            LAND:{
-                onClick:function(profile, e, src){
-                    profile.boxing().onLand(profile, e, src);
-                }
-            },
-            PANEL:{
-                onClick:function(profile, e, src){
-                    var p=profile.properties;
-                    if(p.disabled)return false;
-                    if(profile.onClickPanel)
-                        return profile.boxing().onClickPanel(profile, e, src);
+            CMD:{
+                onClick:function(profile,e,src){
+                    var prop=profile.properties;
+                    if(prop.disabled)return false;
+                    if(profile.onCmd)
+                        profile.boxing().onCmd(profile,xui.use(src).id().split('_')[1],e,src);
+                    return false;
                 }
             }
         },
@@ -764,22 +790,31 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     this.getSubNode("BARCMDL").css('textAlign',v);
                 }
             },
+            tagCmds:{
+                ini:[],
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             //hide props( with px)
             $hborder:1,
             $vborder:1
         },
         EventHandlers:{
-            onRefresh:function(profile){},
+            onIniPanelView:function(profile){},
             onShow:function(profile){},
-            beforeClose:function(profile){},
-            onShowInfo:function(profile, e, src){},
-            onShowOptions:function(profile, e, src){},
-            onLand:function(profile, e, src){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},
             beforeStatusChanged:function(profile, oldStatus, newStatus){},
             afterStatusChanged:function(profile, oldStatus, newStatus){},
-            onClickPanel:function(profile, e, src){}
+            onClickPanel:function(profile, e, src){},
+
+            onLand:function(profile, e, src){},
+            beforeClose:function(profile){},
+            onShowInfo:function(profile, e, src){},
+            onShowOptions:function(profile, e, src){},
+            onRefresh:function(profile){},
+            onCmd:function(profile,cmdkey,e,src){}
         },
         RenderTrigger:function(){
             var ns=this;
@@ -817,6 +852,10 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 profile.$noR=1;
             if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
+
+            if(!xui.isEmpty(data.tagCmds))
+                this._prepareCmds(profile, data);
+
             return data;
         },
 

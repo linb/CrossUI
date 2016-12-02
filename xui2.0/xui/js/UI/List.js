@@ -165,18 +165,18 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             text : '{ext}',
                             $order:30
                         },
+                        RTAGCMDS:{
+                            $order:40,
+                            tagName:'span',
+                            style:'{_rtagDisplay}',
+                            text:"{rtagCmds}"
+                        },
                         OPT:{
                             $order:50,
                             style:'{_optDisplay}',
                             className:'xuifont',
                             $fonticon:'xui-uicmd-opt'
-                        },
-                        TAGCMDS:{
-                            $order:60,
-                            tagName:'span',
-                            style:'{_rtagDisplay}',
-                            text:"{rtagCmds}"
-                        } 
+                        }
                     }
                 },
                 'items.ltagCmds':function(profile,template,v,tag,result){
@@ -187,39 +187,9 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,"items.tagCmds"+(map[v.type]||'.button'),result)
                 },
-                'items.tagCmds.text':{
-                    CMD:{
-                        tagName:"a",
-                        title:"{tips}",
-                        href:xui.$DEFAULTHREF,
-                        style:'{_style}{itemStyle}',
-                        className:'xui-node {itemClass}',
-                        tabindex: '{_tabindex}',
-                        text:"{caption}"
-                    }
-                },
-                'items.tagCmds.button':{
-                    CMD:{
-                        tagName:"button",
-                        title:"{tips}",
-                        style:'{_style}{itemStyle}',
-                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd {itemClass}',
-                        tabindex: '{_tabindex}',
-                        text:"{caption}"
-                    }
-                },
-                'items.tagCmds.image':{
-                    CMD:{
-                        tagName:"image",
-                        title:"{tips}",
-                        src:"{image}",
-                        border:"0",
-                        style:'{_style}{itemStyle}',
-                        className:'xui-node {itemClass}',
-                        tabindex: '{_tabindex}',
-                        alt:"{caption}"
-                    }
-                }
+                'items.tagCmds.text':xui.UI.$getTagCmdsTpl('text'),
+                'items.tagCmds.button':xui.UI.$getTagCmdsTpl('button'),
+                'items.tagCmds.image':xui.UI.$getTagCmdsTpl('image')
             }
         },
         Appearances:{
@@ -264,21 +234,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 right:'.167em',
                 top:'.167em',
                 display:'none'
-            },
-            LTAGCMDS:{
-                "padding-left":'.333em',
-                "padding-right":'.333em',
-                'vertical-align':'middle'
-            },
-            RTAGCMDS:{
-                "padding-left":'.333em',
-                'vertical-align':'middle'
-            },
-            CMD:{
-                "margin-left":'.167em',
-                "padding": "0 .167em",
-                'vertical-align':'middle',
-                cursor:'pointer'
             }
         },
         Behaviors:{
@@ -578,6 +533,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _onStartDrag:function(profile, e, src, pos){
             var pos=xui.Event.getPos(e);
             xui.use(src).startDrag(e, {
+                dragSource:profile.$xid,
                 dragType:'icon',
                 shadowFrom:src,
                 targetLeft:pos.left+12,
@@ -635,56 +591,12 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             var m=profile.properties.selMode;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
-            this._prepareCmds(profile, item);
+            
             if(item.type=='split'){
                 item._split='xui-uitem-split';
                 item._ltagDisplay=item._rtagDisplay=item.imageDisplay=item._cbDisplay=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
             }
-        },
-        _prepareCmds:function(profile, item, filter){
-            var p=profile.properties,
-                cmds = item.tagCmds || xui.clone(p.tagCmds,true);
-            if(cmds && cmds.length){
-                var sid=xui.UI.$tag_subId,
-                    a=[],b=[],c;
-                for(var i=0,t=cmds,l=t.length;i<l;i++){
-                    if(typeof t[i]=='string')t[i]={id:t[i]};
-                    c=t[i];
-
-                    if(filter && xui.isFun(filter)){
-                        if(!filter(c)){
-                            continue;
-                        }
-                    }else{
-                        if(item.tag && item.tag.match((new RegExp("\\b" + "no~" + c.id + "\\b"))) )
-                            continue;
-                    }
-
-                    if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
-
-                    if(!'caption' in c)c.caption=c.id;
-                    if(!('tips' in c))c.tips=c.caption;
-
-                    c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
-                    if(!c.type)c.type="button";
-                    
-                    if(c.caption)c.caption=xui.adjustRes(c.caption);
-                    if(c.tips)c.tips=xui.adjustRes(c.tips);
-                    if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
-                    c._style="";
-                    if('width' in c)c._style+=c.width + (xui.isFinite(c.width) &&"px") + ";";
-                    if('height' in c)c._style+=c.height + (xui.isFinite(c.height) &&"px")+ ";";
-                    c[sid]=(item[sid]?item[sid] :"") + '_' + c.id;
-                    if(c["location"]=="left")
-                        b.push(c);
-                    else
-                        a.push(c);
-                }
-                item.ltagCmds=b
-                item.rtagCmds=a;
-            }
-            item._ltagDisplay= item.ltagCmds?'':'display:none';
-            item._rtagDisplay= item.rtagCmds?'':'display:none';
+            this._prepareCmds(profile, item);
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;

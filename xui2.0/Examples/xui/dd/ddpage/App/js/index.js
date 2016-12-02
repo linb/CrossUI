@@ -95,7 +95,7 @@ Class('App', 'xui.Com',{
                 .setDragKey("panel")
                 .setLeft(0)
                 .setTop(0)
-                .setDropKeysPanel("panel")
+                .setDropKeys("panel")
                 .setValue("cc")
                 .onDrop("_block1_ondrop")
             , '');
@@ -135,7 +135,7 @@ Class('App', 'xui.Com',{
                 .setDragKey("panel")
                 .setLeft(0)
                 .setTop(0)
-                .setDropKeysPanel("panel")
+                .setDropKeys("panel")
                 .setBarSize("26")
                 .setValue("ba")
                 .onDrop("_block1_ondrop")
@@ -176,7 +176,7 @@ Class('App', 'xui.Com',{
                 .setDragKey("panel")
                 .setLeft(0)
                 .setTop(0)
-                .setDropKeysPanel("panel")
+                .setDropKeys("panel")
                 .setValue("ab")
                 .onDrop("_block1_ondrop")
             , '');
@@ -227,13 +227,16 @@ Class('App', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         }, 
         _block1_ondrop:function (profile, e, node, key, data, item) {
+            //self
+            if(profile.$xid == data.profile.$xid)return false;
+
             var target = profile.boxing(),
                 source = data.profile.boxing(),
                 paras = source.getPanelPara(data.domId),
-                children = source.getPanelChildren(data.domId)
-            
+                children = source.getPanelChildren(data.domId);
+
             paras.popBtn=paras.popBtn||paras.landBtn;
-            
+
             if(target.addPanel(paras, children, item))
                 source.removePanel(data.domId);
         } 

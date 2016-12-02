@@ -96,7 +96,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
-            xui.UI.List._prepareCmds(profile, item);
+            this._prepareCmds(profile, item);
             
             if(item.type=='split'){
                 item._split='xui-uitem-split';

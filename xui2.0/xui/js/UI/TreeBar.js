@@ -330,39 +330,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,'items.tagCmds'+(map[v.type]||'.button'),result)
                 },
-                'items.tagCmds.text':{
-                    CMD:{
-                        tagName:"a",
-                        title:"{tips}",
-                        href:xui.$DEFAULTHREF,
-                        style:'{_style}{itemStyle}',
-                        className:'{itemClass}',
-                        tabindex: '{_tabindex}',
-                        text:"{caption}"
-                    }
-                },
-                'items.tagCmds.button':{
-                    CMD:{
-                        tagName:"button",
-                        title:"{tips}",
-                        style:'{_style}{itemStyle}',
-                        className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd {itemClass}',
-                        tabindex: '{_tabindex}',
-                        text:"{caption}"
-                    }
-                },
-                'items.tagCmds.image':{
-                    CMD:{
-                        tagName:"image",
-                        title:"{tips}",
-                        src:"{image}",
-                        border:"0",
-                        style:'{_style}{itemStyle}',
-                        className:'{cmdClas}',
-                        tabindex: '{_tabindex}',
-                        alt:"{caption}"
-                    }
-                }
+                'items.tagCmds.text':xui.UI.$getTagCmdsTpl('text'),
+                'items.tagCmds.button':xui.UI.$getTagCmdsTpl('button'),
+                'items.tagCmds.image':xui.UI.$getTagCmdsTpl('image')
             }
         },
         Appearances:{
@@ -435,24 +405,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 top:'.167em',
                 display:'none'
             },
-            LTAGCMDS:{
-                "padding-left":'.333em',
-                "padding-right":'.333em',
-                'vertical-align':'middle'
-            },
-            RTAGCMDS:{
-                "padding-left":'.333em',
-                'vertical-align':'middle'
-            },
-            'BOX-tagcmdleft TAGCMDS':{
+            'BOX-tagcmdleft RTAGCMDS':{
                 "padding-right":'.333em',
                 "float":"left"
-            },
-            CMD:{
-                "margin-left":'.167em',
-                padding:'0 .167em',
-                'vertical-align':'middle',
-                cursor:'pointer'
             }
         },
         Behaviors:{
@@ -771,6 +726,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         _onStartDrag:function(profile, e, src, pos){
             var pos=xui.Event.getPos(e);
             xui.use(src).startDrag(e, {
+                dragSource:profile.$xid,
                 dragType:'icon',
                 shadowFrom:src,
                 targetLeft:pos.left+12,
@@ -855,7 +811,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item._fi_togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-icon-placeholder':'xui-uicmd-none');
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
-            item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             //change css class
@@ -863,7 +818,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');
                 item.mark2Display = 'display:none';
             }
-            xui.UI.List._prepareCmds(profile, item);
+            this._prepareCmds(profile, item);
 
             if(item.type=='split'){
                 item._split='xui-uitem-split';

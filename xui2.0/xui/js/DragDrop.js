@@ -246,7 +246,6 @@ Class('xui.DragDrop',null,{
             d._profile={
                 // the unqiue id for dd
                 $id:xui.rand(),
-
                 dragType:'shape',
                 dragCursor:'move',
                 targetReposition:true,

@@ -2049,7 +2049,7 @@ new function(){
                         case 'page':
                             // handle switch
                             if(method=="switch"){
-                                if(!xui.History._callback){
+                                if(!xui.History._excallback){
                                     xui.History.setCallback(function(fi,init){
                                        if(init)return;
                                        var ar=xui.urlDecode(fi||"");
