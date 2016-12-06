@@ -199,7 +199,7 @@ new function(){
             return parseInt(xui.stamp()*Math.random(),10).toString(36);
         },
         setTimeout:function(callback,delay){
-            return (delay||0)> 1000 / 60?(setTimeout(callback,delay)*-1):requestAnimationFrame(callback);
+            return (delay===false||(delay||0)>1000/60)?(setTimeout(callback,delay||0)*-1):requestAnimationFrame(callback);
         },
         clearTimeout:function(id){
             if(id>=0)cancelAnimationFrame(id);
@@ -301,7 +301,7 @@ new function(){
         */
         asyRun:function(fun, defer, args, scope){
             //defer must set in opera
-            return xui.setTimeout(typeof fun=='string' ? function(){xui.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer||0);
+            return xui.setTimeout(typeof fun=='string' ? function(){xui.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer);
         },
         asyHTML:function(content, callback, defer, size){
             var div = document.createElement('div'),
@@ -312,7 +312,7 @@ new function(){
                 while(--i && div.firstChild)
                     fragment.appendChild(div.firstChild);
                 if(div.firstChild)
-                    xui.setTimeout(arguments.callee, defer||0);
+                    xui.setTimeout(arguments.callee, defer);
                 else
                     callback(fragment);
             })();
@@ -337,7 +337,7 @@ new function(){
             var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
             if(cache[k]){xui.clearTimeout(cache[k])}
             if(typeof fun=='function')
-                cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer||0);
+                cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer);
             else delete cache[k];
         },
         //Dependencies: xui.Dom xui.Thread
@@ -3173,14 +3173,17 @@ Class('xui.JSONP','xui.absIO',{
                         ok=true;
                         if(self.rspType=='script'){
                             if(typeof self.checkKey=='string')
-                                xui.asyRun(function(){
+                                xui.setTimeout(function(){
                                     xui.exec("!function(t){"
                                         +  "if(t=xui.get(xui.JSONP,['_pool','" + id + "',0])) {"
                                         +     "if(xui.SC.get('"+self.checkKey+"'))t._onResponse();"
                                         +     "else t._loaded();"
                                         +  "}"
                                         +"}()");
-                                });
+                                // ensure using setTimeout, for the case:
+                                //    When the page loading, if you switch to the other page, and return back after timeout, the xui.JSONP._pool["1"] will be deleted
+                                //    In this case: setTimeout will be executed first (it'll clear the JSONP), and requestAnimationFrame will be executed later
+                                }, false);
                             else
                                 self._onResponse();
                         }else
@@ -3230,7 +3233,11 @@ Class('xui.JSONP','xui.absIO',{
 
             //set timeout
             if(self.timeout > 0)
-                self._flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+                self._flag = xui.asyRun(function(){
+                    if(self && !self._end){
+                        self._time()
+                    }
+                }, self.timeout);
         },
         _clear:function(){
             var self=this, n=self.node, c=self.constructor,id=self.id,_pool=c._pool;
