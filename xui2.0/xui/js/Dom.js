@@ -3492,16 +3492,19 @@ type:4
                 }
             }return false;
         },
-        _emptyDivId:"xui.empty::",
-        getEmptyDiv:function(sequence){
-            var i=1,id,rt,style,o,t,count=0,doc=document,body=doc.body,ini=function(o){
+        _emptyDivId:"xui.empty:",
+        getEmptyDiv:function(pid, sequence){
+            var i=1,id,rt,style,o,t,count=0,doc=document,
+                body = pid && (pid=xui(pid)).get(0) || doc.body,
+                ini=function(o){
                 o.id=id;
                 // position:relative; is for text wrap bug
                 xui([o]).attr('style','position:absolute;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
             };
             sequence=sequence || 1;
+            pid=body==doc.body?'':pid.n0.replace('!','');
             while(1){
-                id = this._emptyDivId + i;
+                id = this._emptyDivId + pid + ":" + i;
                 //don't remove this {
                 if(o=xui.Dom.byId(id)){
                     //Using firstChild, for performance

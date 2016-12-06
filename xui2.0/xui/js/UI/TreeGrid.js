@@ -2478,9 +2478,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
                 },
-                'rows.tagCmds.text':xui.UI.$getTagCmdsTpl(null,null,'text'),
-                'rows.tagCmds.button':xui.UI.$getTagCmdsTpl(null,null,'button'),
-                'rows.tagCmds.image':xui.UI.$getTagCmdsTpl(null,null,'image')
+                'rows.tagCmds.text':xui.UI.$getTagCmdsTpl('text'),
+                'rows.tagCmds.button':xui.UI.$getTagCmdsTpl('button'),
+                'rows.tagCmds.image':xui.UI.$getTagCmdsTpl('image')
             }
         },
         Appearances:{

@@ -96,11 +96,12 @@ Class("xui.UI.Group", "xui.UI.Panel",{
             },
             BORDER:{
                 position:'relative',
-                overflow:'hidden',
+                overflow:'visible',
                 zoom:xui.browser.ie6?"1":null
             },
             TBAR:{
-                'margin-left':'.5em'
+                'margin-left':'.5em',
+                'padding-bottom': '.1666667em'
             },
             'BORDER-checked TBAR':{
                 'margin-left':'-.5em'
@@ -122,6 +123,9 @@ Class("xui.UI.Group", "xui.UI.Panel",{
             CAPTION:{
                 display:'inline',
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
+            },
+            TOGGLE:{
+                padding:'0 .334em 0 .1667em'
             }
         },
         DataModel:{
@@ -152,8 +156,6 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                         if(ins.beforeFold && false===ins.beforeFold(profile))return;
                     }
                 }
-                //show/hide/panel
-                profile.getSubNode('PANEL').css('display',value?'':'none');
                 //chang toggle button
                 if(p.toggleBtn)
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
@@ -164,25 +166,8 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                 else
                     border.removeClass('xui-uiborder-flat xui-uiborder-radius').addClass('xui-uiborder-t');
 
-                // same to ***
-                // for expand status:
-                //    adjust ctrl's height to p.height
-                // for fold status:
-                //    if display => adjust ctrl's height to legend's
-                //    if non-display => adjust ctrl's height to 'auto'
-                if(p.toggle){
-                        profile.getRoot().height(p.height);
-                        border.height(p.height);
-                }else{
-                    var us = xui.$us(p),
-                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
-                        height=profile.getSubNode('TBAR').height();
-                    height = height?adjustunit(height):null;
-                    profile.getRoot().height(height?height:'auto');
-                    if(height && height!='auto'){
-                        border.height(height);
-                    }
-                }
+                // use onresize function
+                profile.adjustSize();
 
                 if(!ignoreEvent){
                     if(value){
@@ -192,10 +177,10 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                         if(ins.afterFold)
                             ins.afterFold(profile);
                     }
-                    // try redock
-                    if(p.dock && p.dock!='none'){
-                        ins.adjustDock(true);
-                    }
+                }
+                // try redock
+                if(p.dock && p.dock!='none'){
+                    ins.adjustDock(true);
                 }
             }
         },
@@ -213,13 +198,14 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                 hh=height?profile.$px(height):null;
 
             if(profile._toggle){
+                panel.css('display','');
                 if(height && height!='auto'){
                     border.height(adjustunit(hh, border));
                     hh -= profile.getSubNode('TBAR').height()||18;
                     panel.height(adjustunit(hh, panel) );
                 }
             }else{
-                // same to ***
+                panel.css('display','none');
                 // for expand status:
                 //    height is set in upper function
                 // for fold status:
@@ -232,7 +218,7 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                     border.height(height);
                 }
             }
-            if(width && width!='auto' && ww>=2){
+            if(width && width!='auto' && ww>=2 && profile._toggle){
                 panel.width(ww = adjustunit(ww-2));
                 xui.UI._adjustConW(profile, panel, ww);
             }

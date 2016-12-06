@@ -4314,7 +4314,7 @@ Class('xui.absObj',"xui.absBox",{
                         else{
                             var args=[], v=this.get(0);
                             if(v){
-                                var t=v[i], host=v.host || v,j,o,r;
+                                var t=v[i], host=v.host || v, holder=v.$holder, j,o,r;
                                 if(t && (!xui.isArr(t) || t.length)){
                                     if(v.$inDesign)return;
                                     if(arguments[0]!=v)args[0]=v;
@@ -4331,7 +4331,8 @@ Class('xui.absObj',"xui.absBox",{
                                         for(j=n;j<l;j++){
                                             n=j+1;
                                             o=t[j];
-                                            if(typeof o=='string')o=host[o];
+                                            if(host && typeof o=='string')o=host[o];
+                                            if(holder && typeof o=='string')o=holder[o];
                                             if(typeof o=='function')r=xui.tryF(o, args, host);
                                             else if(xui.isHash(o)){
                                                 if('onOK' in o ||'onKO' in o){

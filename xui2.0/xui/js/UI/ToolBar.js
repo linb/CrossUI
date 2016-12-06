@@ -213,10 +213,6 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 left:0,
                 top:0
             },
-            'ITEM-object':{
-                'vertical-align':'middle',
-                'margin-left':'.5em'
-            },
             RULER:{
                 padding:'0',
                 margin:'0',
@@ -377,7 +373,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             return d;
         },
         _prepareItem:function(profile, oitem, sitem, pid, index,len, mapCache, serialId){
-            var dn='display:none',
+            var ns=this,
+                dn='display:none',
                 tabindex = profile.properties.tabindex,
                 fun=function(profile, dataItem, item, pid, index,len, mapCache,serialId){
                     var id=dataItem[xui.UI.$tag_subId]=typeof serialId=='string'?serialId:('a_'+profile.pickSubId('aitem')), t;
@@ -389,22 +386,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         profile.SubSerialIdMapItem[id] = item;
                     }
 
-                    if(t=item.object){
-                        t=dataItem.object=t['xui.absBox']?t.get(0):t;
-                        //relative it.
-                        if(t['xui.UIProfile']){
-                            t.properties.position='relative';
-                            var addcls=profile.getClass('ITEM','-object'),
-                                cck = t.CC.KEY || (cck=t.CC.KEY='');
-                            if(cck.indexOf(addcls)===-1)
-                                t.CC.KEY = cck + " " + addcls;
-                        }
-                        item.$xid=t.$xid;
-                        t.$item=item;
-                        t.$holder=profile;
-                        if(!t.host||t.host===t)t.boxing().setHost(profile.host,t.alias);
-                        if(!profile.$attached)profile.$attached=[];
-                        profile.$attached.push(t);
+                    if(item.object){
+                        dataItem.object=ns._prepareInlineObj(profile, item, tabindex);
                     }else{
                         // for compitable with older versions
                         if(item.statusButton){item.type="statusButton";delete item.statusButton;}

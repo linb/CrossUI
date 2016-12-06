@@ -2586,7 +2586,8 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"生成一个DOM id以'xui.matrix::'开始的DOM对象",
             $rtn:"xui.Dom",
             $paras:[
-                "sequence [可选参数] : Number, DOM序列好. 默认为1"
+                "pid [可选参数] : String/Dom, 父容器",
+                "sequence [可选参数] : Number, DOM序列号. 默认为1"
             ],
             $snippet:[
                 "var m1=xui.Dom.getEmptyDiv(); alert(m1.id())",

@@ -282,11 +282,11 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                     nid=xui.stamp();
                     if(row){
                         if(type=="array"||type=="hash"){
-                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('*' + xui.rand()),readonly:type=='array'},'null','']}],row.id);
+                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':xui.rand(),readonly:type=='array'},'null','']}],row.id);
                         }else{
                             var id=row.id;
                             xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
-                                tg.updateCellByRowCol(id, "value", "{"+('*' + xui.rand())+":"+row.cells[1].value+"}", false, true);
+                                tg.updateCellByRowCol(id, "value", "{"+xui.rand()+":"+row.cells[1].value+"}", false, true);
                                 xui.asyRun(function(){
                                     tg.editCellbyRowCol(id, "value");
                                 },200);
@@ -301,16 +301,16 @@ Class('xui.Module.JSONEditor', 'xui.Module',{
                             return ;
                         }
                     }else{
-                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':('*' + xui.rand()),readonly:type=='array'},'null','']}]);
+                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':xui.rand(),readonly:type=='array'},'null','']}]);
                     }
                     break;
                 case 'up': 
                      nid=xui.stamp();
-                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':('*' + xui.rand()),readonly:ptype=='array'},'null','']}],null,row.id,true);
+                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':xui.rand(),readonly:ptype=='array'},'null','']}],null,row.id,true);
                     break;
                 case 'down':
                      nid=xui.stamp();
-                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':('*' + xui.rand()),readonly:ptype=='array'},'null','']}],null,row.id,false);
+                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':xui.rand(),readonly:ptype=='array'},'null','']}],null,row.id,false);
                     break;
                 case 'del': 
                    // xui.confirm('confirm','Do you want to delete this node?',function(){

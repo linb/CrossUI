@@ -2577,6 +2577,7 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"Gets an empty div in DOM, which DOM id starts with 'xui.matrix::'",
             $rtn:"xui.Dom",
             $paras:[
+                "pid [Optional] : String/Dom, the parent Node",
                 "sequence [Optional] : Number, sequence number. Default is 1"
             ],
             $snippet:[

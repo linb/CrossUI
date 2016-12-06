@@ -261,9 +261,9 @@ Class('xui.UIProfile','xui.Profile', {
                             v[0]._render(true);
 
                 if(ns.$attached){
-                    for(var i=0,v;v=ns.$attached[i++];)
-                        if(v._render)
-                            v._render(true);
+                    for(var i=0,v;v=ns.$attached[i++];){
+                        if(v._render)v._render(true);
+                    }
                     delete ns.$attached;
                 }
                 if(ns.exchildren){
@@ -379,7 +379,8 @@ Class('xui.UIProfile','xui.Profile', {
             return xui.getNodeData(this.renderId, 'element');
         },
         getRoot:function(){
-            return xui(this.renderId?[this.renderId]:[],false);
+            var ns=this;
+            return ns.renderId ? (ns['*']||(ns['*']=xui([ns.renderId],false))) : xui([],false);
         },
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
@@ -387,9 +388,11 @@ Class('xui.UIProfile','xui.Profile', {
         },
         // wrap these functions from xui.CSS
         getEmSize:function(force){
+            var prf=this,
+                root=prf.getRoot(),
+                node=root.get(0);
             // for special parent css
-            return this.$emNode ? this.$emNode._getEmSize()
-                : ( (!force && this._nodeEmSize) ||  ( this.getRootNode() ? (this._nodeEmSize = this.getRoot()._getEmSize()) : xui.CSS._getDftEmSize() )) ;
+            return (!force && prf._nodeEmSize) ||  ( node ? (prf._nodeEmSize = root._getEmSize()) : xui.CSS._getDftEmSize() ) ;
         },
         adjustSize:function(useProp, asy){
             var prf=this,
@@ -467,6 +470,7 @@ Class('xui.UIProfile','xui.Profile', {
                  t[i].__gc();
                  delete t[i];
             }
+            delete ns['*'];
 
             return ns;
         },
@@ -1347,7 +1351,7 @@ Class("xui.UI",  "xui.absObj", {
                 //protect children's dom node
                 //no need to trigger layouttrigger here
                 //for example: if use getGhostDiv, upload input cant show file name
-                node=remedy?xui.Dom.getEmptyDiv().get(0):xui.$getGhostDiv();
+                node=remedy?xui.Dom.getEmptyDiv(o.$inDesign).get(0):xui.$getGhostDiv();
                 o.boxing().getChildren().reBoxing().each(function(v){
                     node.appendChild(v);
                 });
@@ -1722,6 +1726,7 @@ Class("xui.UI",  "xui.absObj", {
                             fun(o, i, bak, true);
                     o.CC={};
                 }
+                delete o._nodeEmSize;
             });
         },
         setCustomAttr:function(key,value,nodes){
@@ -1786,17 +1791,17 @@ Class("xui.UI",  "xui.absObj", {
         },
         setCustomStyle:function(key,value,nodes){
             var me=arguments.callee,
-                fun=(me.fun||(me.fun=function(pro,key,CSObj,clear,nodes){
+                fun=(me.fun||(me.fun=function(prf,key,CSObj,clear,nodes){
                     if(!CSObj[key])return;
-                    var hkey=pro.keys[key] || key,
+                    var hkey=prf.keys[key] || key,
                         tnodes,b;
                     // get target nodes fromin given nodes
                     if(nodes){
-                        tnodes=nodes.query('*', 'id', hkey==pro.keys.KEY?pro.domId:new RegExp('^'+hkey+':'+pro.serialId));
+                        tnodes=nodes.query('*', 'id', hkey==prf.keys.KEY?prf.domId:new RegExp('^'+hkey+':'+prf.serialId));
                     }
                     // get target nodes from the whole widget
                     else{
-                        tnodes=pro.getSubNode(key,true);
+                        tnodes=prf.getSubNode(key,true);
                     }
                     if(!tnodes.isEmpty()){
                         if(xui.isStr(CSObj[key]))
@@ -1863,6 +1868,7 @@ Class("xui.UI",  "xui.absObj", {
                             fun(o, i, bak, true, nodes);
                     o.CS={};
                 }
+                delete o._nodeEmSize;
             });
         },
         setCustomBehavior:function(key, value){
@@ -1894,9 +1900,9 @@ Class("xui.UI",  "xui.absObj", {
                         if(n.clientHeight){
                             if(force){
                                 // ensure force 1
-                                n.style.width = 0 + o.$picku(n.style.width);
-                                n.style.height = 0 + o.$picku(n.style.height);
-                                // ensure force 2
+                                n.style.width = (parseFloat(o.$px(n.style.width))||0+1)+'px';
+                                n.style.height = (parseFloat(o.$px(n.style.height))||0+1)+'px';
+                                // ensure force 
                                 o._resize_h=o._resize_w=-1;
                             }
                             xui.UI.$dock(o,true,true);
@@ -2231,8 +2237,8 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top2 .xui-uibar-cmdr':{
                 position:'absolute',
-                top:'0',
-                right:'.5em',
+                top:'-.334em',
+                right:'0',
                 'text-align':'right'
             },
             '.xui-uibar-top .xui-uibar-cmdr':{
@@ -2821,6 +2827,10 @@ Class("xui.UI",  "xui.absObj", {
                 "margin-left":'.167em',
                 "padding": "0 .167em",
                 'vertical-align':'middle'
+            },
+            '.xui-inline-object':{
+                'vertical-align':'middle',
+                'margin':'0 .16666667em'
             }
         });
 
@@ -3000,7 +3010,7 @@ Class("xui.UI",  "xui.absObj", {
                 return xui.str.toDom(str);
 
             //must use empty div for RenderTriggers
-            var matrix=xui.Dom.getEmptyDiv().get(0), r=[];
+            var matrix=xui.Dom.getEmptyDiv(profile.$inDesign).get(0), r=[];
             // for control size
             matrix.style.position='relative';
             matrix.innerHTML=str;
@@ -4316,14 +4326,14 @@ Class("xui.UI",  "xui.absObj", {
             return r.join('');
         },
         _prepareCmds:function(profile, item, filter){
-            var p=profile.properties,
+            var ns=this,
+                p=profile.properties,
                 cmds = item.tagCmds || xui.clone(p.tagCmds,true);
             if(cmds && cmds.length){
-                var sid=xui.UI.$tag_subId,
-                    a=[],b=[],c;
+                var sid=xui.UI.$tag_subId,a=[],b=[],c;
                 for(var i=0,t=cmds,l=t.length;i<l;i++){
-                    if(typeof t[i]=='string')t[i]={id:t[i]};
-                    c=t[i];
+                    if(typeof t[i]=='string')c={id:t[i]};
+                    else c = xui.clone(t[i]);
 
                     if(filter && xui.isFun(filter)){
                         if(!filter(c)){
@@ -4335,20 +4345,24 @@ Class("xui.UI",  "xui.absObj", {
                     }
 
                     if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
+                    if(c.object){
+                        c.object = ns._prepareInlineObj(profile, c, p.tabindex);
+                        c.type='profile';
+                    }else{
+                        if(!'caption' in c)c.caption=c.id;
+                        if(!('tips' in c))c.tips=c.caption;
 
-                    if(!'caption' in c)c.caption=c.id;
-                    if(!('tips' in c))c.tips=c.caption;
-
-                    c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
-                    if(!c.type)c.type="text";
-                    
-                    if(c.caption)c.caption=xui.adjustRes(c.caption);
-                    if(c.tips)c.tips=xui.adjustRes(c.tips);
-                    if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
-                    c._style="";
-                    if('width' in c)c._style+=c.width + (xui.isFinite(c.width) &&"px") + ";";
-                    if('height' in c)c._style+=c.height + (xui.isFinite(c.height) &&"px")+ ";";
-                    c[sid]=(item[sid]?item[sid] :"") + '_' + c.id;
+                        c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
+                        if(!c.type)c.type="text";
+                        
+                        if(c.caption)c.caption=xui.adjustRes(c.caption);
+                        if(c.tips)c.tips=xui.adjustRes(c.tips);
+                        if(c.image)c.image=xui.adjustRes(c.image)||xui.ini.img_bg;
+                        c._style="";
+                        if('width' in c)c._style+=c.width + (xui.isFinite(c.width) &&"px") + ";";
+                        if('height' in c)c._style+=c.height + (xui.isFinite(c.height) &&"px")+ ";";
+                        c[sid]=(item[sid]?item[sid] :"") + '_' + c.id;
+                    }
                     if(c["location"]=="left")
                         b.push(c);
                     else
@@ -4586,13 +4600,15 @@ Class("xui.UI",  "xui.absObj", {
             if(!prop.conDockRelative)return;
             var pad = prop.conDockPadding,
                   spc = prop.conDockSpacing,
+                  conDockStretch = prop.conDockStretch,
                   c = panel.children(),
                   l = c.size();
             if(!l)return;
 
-            c.each(function(n,i,prf,p){
+            c.each(function(n,i,prf,p,tth){
                 if(cur && n!=cur)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
+                    tth = prf.properties.dockStretch || conDockStretch
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static'){
                         if(prf){
@@ -4782,6 +4798,7 @@ Class("xui.UI",  "xui.absObj", {
                     if(ov)
                         this.getRoot().removeClass(ov);
                     this.getRoot().addClass(v);
+                    delete this._nodeEmSize;
                 }
             },
             disableClickEffect:false,
@@ -6403,8 +6420,26 @@ Class("xui.UI",  "xui.absObj", {
             profile.prepared=true;
             return data;
         },
+        _prepareInlineObj:function(profile, item, tabindex){
+            var obj=item.object;
+            obj=obj['xui.absBox']?obj.get(0):obj['xui.UIProfile']?obj:xui.create(obj).get(0);
+            if(obj['xui.UIProfile']){
+                obj.properties.position='relative';
+                if('tabindex' in obj.properties)obj.properties.tabindex=tabindex;
+                var addcls='xui-inline-object', cck = obj.CC.KEY || (cck=obj.CC.KEY='');
+                if(cck.indexOf(addcls)===-1) obj.CC.KEY = cck + " " + addcls;
+            }
+            item.$xid=obj.$xid;
+            item.$inlineobj=obj;
+            obj.$conf=item;
+            obj.$holder=profile;
+            if(obj.alias && (!obj.host||obj.host===obj))obj.boxing().setHost(profile.host,obj.alias);
+            (profile.$attached||(profile.$attached=[])).push(obj);
+            return obj;
+        },
         _prepareItems:function(profile, items, pid, mapCache, serialId){
-            var result=[],
+            var ns=this,
+                result=[],
                 item,dataItem,t,
                 SubID=xui.UI.$tag_subId,id ,
                 tabindex = profile.properties.tabindex,
@@ -6432,24 +6467,15 @@ Class("xui.UI",  "xui.absObj", {
                     profile.ItemIdMapSubSerialId[item.id] = id;
                     profile.SubSerialIdMapItem[id] = item;
                 }
-                if(t=item.object){
-                    t=dataItem.object=t['xui.absBox']?t.get(0):t;
-                    //relative it.
-                    if(t['xui.UIProfile'])
-                        t.properties.position='relative';
-                    item.$xid=t.$xid;
-                    t.$item=item;
-                    t.$holder=profile;
-                    if(!t.host||t.host===t)t.boxing().setHost(profile.host,t.alias);
-                    if(!profile.$attached)profile.$attached=[];
-                    profile.$attached.push(t);
+                if(item.object){
+                    dataItem.object = ns._prepareInlineObj(profile, item, tabindex);
                 }else{
                     dataItem._tabindex=tabindex;
 
                     //others
                     ajd(profile, item, dataItem);
-                    if(this._prepareItem)
-                        this._prepareItem(profile, dataItem, item, pid, i,l,mapCache, serialId);
+                    if(ns._prepareItem)
+                        ns._prepareItem(profile, dataItem, item, pid, i,l,mapCache, serialId);
                 }
                 result.push(dataItem);
             }
@@ -6509,9 +6535,9 @@ Class("xui.absList", "xui.absObj",{
 
                     // try to render inner xui.UI
                     if(profile.$attached){
-                        for(var i=0,v;v=profile.$attached[i++];)
-                            if(v._render)
-                                v._render(true);
+                        for(var i=0,v;v=profile.$attached[i++];){
+                            if(v._render)v._render(true);
+                        }
                         delete profile.$attached;
                     }
 
@@ -7712,6 +7738,94 @@ Class("xui.UI.Element", "xui.UI",{
         }
     }
 });
+Class("xui.UI.Icon", "xui.UI",{
+    Static:{
+        Templates:{
+            className:'xui-node xui-wrapper {_className}',
+            style:'{_style};',
+            ICON:{
+                className:'xuicon {imageClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}',
+                text:'{iconFontCode}'
+            }
+        },
+        DataModel:{
+            selectable:null,
+            html:null,
+            attributes:null,
+            renderer:null,
+            defaultFocus:null,
+            tabindex:-1,
+            image:{
+                format:'image',
+                action: function(v){
+                    xui.UI.$iconAction(this);
+                }
+            },
+            imagePos:{
+                action: function(v){
+                    this.getSubNode('ICON').css('backgroundPosition', v||'center');
+                }
+            },
+            imageBgSize:{
+                action: function(v){
+                    this.getSubNode('ICON').css('backgroundSize', v||'');
+                }
+            },
+            imageClass: {
+                ini:'',
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, 'ICON', ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
+                }
+            },
+            iconFontSize:{
+                action:function(v){
+                    this.getSubNode('ICON').css('fontSize', v||'');
+                }
+            },
+            iconColor:{
+                type:'color',
+                action:function(v){
+                    this.getSubNode('ICON').css('color', v||'');
+                }
+            }
+        },
+        Appearances:{
+            KEY:{
+                'overflow':'visible'
+            },
+            ICON:{
+                'position':'relative',
+                display:xui.$inlineBlock,
+                zoom:xui.browser.ie?1:null
+            }
+        },
+        Behaviors:{
+            HoverEffected:{ICON:'ICON'},
+            ClickEffected:{ICON:'ICON'},
+            onClick:function(profile, e, src){
+                var p=profile.properties;
+                if(p.disabled)return false;
+                if(profile.onClick)
+                    return profile.boxing().onClick(profile, e, src);
+            }
+        },
+        EventHandlers:{
+            onClick:function(profile, e, value){}
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            if(data.iconFontSize)data._fontsize = 'font-size:'+data.iconFontSize+';';
+            if(data.iconColor)data._fontclr = 'color:'+data.iconColor+';';
+            return data;
+        }
+    }
+});
 
 Class("xui.UI.HTMLButton", "xui.UI.Element",{
     Instance:{
@@ -7862,7 +7976,6 @@ Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
                     return b.onClick(profile, e, src, p.$UIvalue);
                 if(p.type=='drop' && profile.onClickDrop)
                     return b.onClickDrop(profile, e, src, p.$UIvalue);
-
             },
             onKeydown:function(profile, e, src){
                 var keys=xui.Event.getKey(e), key = keys.key;
