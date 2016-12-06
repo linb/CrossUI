@@ -3174,8 +3174,12 @@ Class('xui.JSONP','xui.absIO',{
                         if(self.rspType=='script'){
                             if(typeof self.checkKey=='string')
                                 xui.asyRun(function(){
-                                    xui.exec("if(xui.SC.get('"+self.checkKey+"'))xui.JSONP._pool['"+id+"'][0]._onResponse();" +
-                                        "else xui.JSONP._pool['"+id+"'][0]._loaded();");
+                                    xui.exec("!function(t){"
+                                        +  "if(t=xui.get(xui.JSONP,['_pool','" + id + "',0])) {"
+                                        +     "if(xui.SC.get('"+self.checkKey+"'))t._onResponse();"
+                                        +     "else t._loaded();"
+                                        +  "}"
+                                        +"}()");
                                 });
                             else
                                 self._onResponse();
