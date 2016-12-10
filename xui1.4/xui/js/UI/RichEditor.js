@@ -412,7 +412,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             }
                             
                             var v=kprf.boxing()._getCtrlValue(); 
-                            kprf.boxing().setUIValue(v,null,null,'blur');
+                            // here: dont trigger setCtrlValue
+                            kprf.boxing().setUIValue(v,null,true,'blur');
                         },
                         gekfix=function(e){
                             // to fix firefox appendChid's bug: refresh iframe's document
@@ -847,7 +848,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
                             var v=o._getCtrlValue(); 
-                            o.setUIValue(v,null,null,'blur');
+                        // here: dont trigger setCtrlValue
+                            o.setUIValue(v,null,true,'blur');
                          _clear();
                     });
                     //for esc
@@ -984,6 +986,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                          o.setValue(v,true,'editor');
                          o.beforeUIValueSet(function(p,o,v){
                             _clear();
+                            // here: trigger setCtrlValue
                             editor.boxing().setUIValue(v,null,null,'html');
                         });
                         break;
