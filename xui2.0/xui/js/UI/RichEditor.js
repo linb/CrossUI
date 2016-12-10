@@ -208,7 +208,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 height:'100%',
                 padding:0,
                 margin:0,
-                'z-index':'0'
+                'z-index':'10'
             }
         },
         Behaviors:{
@@ -290,7 +290,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile),t;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
+            d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)
@@ -414,8 +414,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                     kprf.box._checkc(kprf);
                             }
                             
-                            var v=kprf.boxing()._getCtrlValue(); 
-                            kprf.boxing().setUIValue(v,null,null,'blur');
+                            var v=kprf.boxing()._getCtrlValue();
+                            // here: dont trigger setCtrlValue
+                            kprf.boxing().setUIValue(v,null,true,'blur');
                         },
                         gekfix=function(e){
                             // to fix firefox appendChid's bug: refresh iframe's document
@@ -706,9 +707,9 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 });
     
                 //compose
-                self.getSubNode('BOX').prepend(
-                    t=new xui.UI.ToolBar({selectable:false,handler:false,items:items,disabled:pro.disabled||pro.readonly})
-                );
+                t=new xui.UI.ToolBar({selectable:false,handler:false,items:items,disabled:pro.disabled||pro.readonly});
+                t.setCustomStyle('ITEMS','border:none');
+                self.getSubNode('BOX').prepend(t);
                 t.render(true);
                 // keep toolbar's height number here
                 profile.$_tbH=tbH=t.getRoot().offsetHeight();
@@ -849,7 +850,8 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
                             var v=o._getCtrlValue(); 
-                            o.setUIValue(v,null,null,'blur');
+                            // here: dont trigger setCtrlValue
+                            o.setUIValue(v,null,true,'blur');
                          _clear();
                     });
                     //for esc
@@ -986,6 +988,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                          o.setValue(v,true,'editor');
                          o.beforeUIValueSet(function(p,o,v){
                             _clear();
+                            // here: trigger setCtrlValue
                             editor.boxing().setUIValue(v,null,null,'html');
                         });
                         break;
@@ -1079,7 +1082,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             profile.getSubNode('DIRTYMARK').left(0+profile.$picku()).top(adjustunit(_top+1));
                         }
                     }
-                }, 20/*greater than 16*/);
+                }, 100/*greater than 16*/);
             }
         }
     }

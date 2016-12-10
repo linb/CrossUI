@@ -625,7 +625,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             d.hAlign=d.hAlign?("text-align:" + d.hAlign):"";
             
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
+            d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
     
             // adjustRes for labelCaption
@@ -908,7 +908,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             var labelPos=prop.labelPos,
                 labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
                 labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
-                
+
                 ww=width,
                 hh=height,
                 left=Math.max(0, (prop.$b_lw||0)-$hborder),

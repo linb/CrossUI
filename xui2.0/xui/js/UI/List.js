@@ -580,7 +580,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             var d=arguments.callee.upper.call(this, profile),t;
             d._bordertype='xui-uiborder-'+d.borderType;
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
+            d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
             if(d.labelCaption)

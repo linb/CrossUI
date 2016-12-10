@@ -2002,7 +2002,8 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
         _attr:['font-family','font-size','font-weight','font-style','color','background-color','background-image',
                'background-position','background-repeat','background-attachment',
                //'background-size','background-origin','background-clip',
-               'border','border-radius','text-align','text-decoration','text-shadow','box-shadow','$gradient','cursor'//,'transform'
+               'border-top','border-right','border-bottom','border-left','border-radius','padding','margin',
+                'text-align','text-decoration','text-shadow','box-shadow','$gradient','cursor','overflow','line-height'//,'transform'
               ],
         setTargetProfile:function(profile){
             var ns=this, arr=['normal'],
@@ -2019,10 +2020,10 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
             ns._targetPrf=profile;
             if(profile['xui.UIProfile'])profile.getRoot().css({left:'10px',top:'10px',visibility:'visible',display:'block'}).topZindex(true);
             xui.arr.each(ns._attr,function(key){
-                ns.tg.updateCellByRowCol(key,'normal',{value:mapNormal[key]||""},false,false);
-                ns.tg.updateCellByRowCol(key,'hover',{value:mapHover[key]||""},false,false);
-                ns.tg.updateCellByRowCol(key,'active',{value:mapActive[key]||""},false,false);
-                if(mapFocus)ns.tg.updateCellByRowCol(key,'focus',{value:mapFocus[key]||""},false,false);
+                ns.tg.updateCellByRowCol(key,'normal',{value:mapNormal[key]||"", caption:xui.isHash(mapNormal[key])?'[object]':null},false,false);
+                ns.tg.updateCellByRowCol(key,'hover',{value:mapHover[key]||"", caption:xui.isHash(mapHover[key])?'[object]':null},false,false);
+                ns.tg.updateCellByRowCol(key,'active',{value:mapActive[key]||"", caption:xui.isHash(mapActive[key])?'[object]':null},false,false);
+                if(mapFocus)ns.tg.updateCellByRowCol(key,'focus',{value:mapFocus[key]||"", caption:xui.isHash(mapFocus[key])?'[object]':null},false,false);
             });
             var opacity=(parseFloat(mapNormal.opacity)||parseFloat(mapNormal.opacity)===0)?mapNormal.opacity:1;
             ns.tg.updateCellByRowCol('opacity','normal',{value:opacity},false,false);
@@ -2055,8 +2056,8 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                         this.setProperties({
                             fromRegion:node.cssRegion(true),
                             onOK:function(obj, path){
-                                if(path &&  SPA.curProject)
-                                    path=path.replace(/\\/g,"/").replace(SPA.curProject.replace(/\\/g,"/")+"/","{/}");
+                                if(path &&  SPA.curProjectPath)
+                                    path=path.replace(/\\/g,"/").replace(SPA.curProjectPath.replace(/\\/g,"/")+"/","{/}");
                                 editorprf.boxing().setUIValue("url("+path+")");
                                 node.focus();
                             }
@@ -2111,21 +2112,25 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                 type:"combobox", editorListItems:CONF.designer_data_fontstyle
             };
             rows.push({id:'font-style',cells:[{id:'font-style',caption:"$(RAD.custom_dlg.font$-style)"},cell,cell,cell,cell]});
+
             cell={
                 type:"popbox"
             };
-            rows.push({id:'border',cells:[{id:'border',caption:"$RAD.custom_dlg.border"},cell,cell,cell,cell]});
+            rows.push({id:'border-top',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
+            rows.push({id:'border-right',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
+            rows.push({id:'border-bottom',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
+            rows.push({id:'border-left',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
             if(xui.Dom.css3Support("border-radius")){
-                cell={
-                    type:"popbox"
-                };
                 rows.push({id:'border-radius',cells:[{id:'border-radius',caption:"$(RAD.custom_dlg.border$-radius)"},cell,cell,cell,cell]});
             }
-            /*            cell={
+            rows.push({id:'padding',cells:[{id:'padding',caption:"$RAD.custom_dlg.padding"},cell,cell,cell,cell]});
+            rows.push({id:'margin',cells:[{id:'margin',caption:"$RAD.custom_dlg.margin"},cell,cell,cell,cell]});
+
+            cell={
                 type:"combobox", editorListItems:CONF.designer_data_textalign
             };
             rows.push({id:'text-align',cells:[{id:'text-align',caption:"$(RAD.custom_dlg.text$-align)"},cell,cell,cell,cell]});
-            */
+            
             cell={
                 type:"combobox", editorListItems:CONF.designer_data_textdecoration
             };
@@ -2144,7 +2149,7 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
             }
             if(xui.Dom.css3Support("gradient")){
                 cell={
-                    type:"popbox", editorReadonly:true
+                    type:"cmdbox", editorReadonly:true
                 };
                 rows.push({id:'$gradient',cells:[{id:'gradients',caption:"$RAD.custom_dlg.gradients"},cell,cell,cell,cell]});
             }
@@ -2159,6 +2164,15 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                 type:"combobox", editorListItems:CONF.designer_data_cursor
             };
             rows.push({id:'cursor',cells:[{id:'cursor',caption:"$RAD.custom_dlg.cursor"},cell,cell,cell,cell]});
+            cell={
+                type:"combobox", editorListItems:CONF.designer_data_overflow
+            };
+            rows.push({id:'overflow',cells:[{id:'overflow',caption:"$RAD.custom_dlg.overflow"},cell,cell,cell,cell]});
+            cell={
+                type:"combobox", editorListItems:[1,1.22,1.5,2]
+            };
+            rows.push({id:'line-height',cells:[{id:'line-height',caption:"$(RAD.custom_dlg.line$-height)"},cell,cell,cell,cell]});
+
             if(xui.Dom.css3Support("opacity")){
                 cell={
                     value:1,
@@ -2197,20 +2211,45 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
 
             return false;
         },
-        _tg_beforeComboPop:function(profile, cell, pro, pos, e, src){
+        _tg_beforeComboPop:function(profile, cell, editorprf, pos, e, src){
             var ns=this,
                 prf=ns._targetPrf,
                 prop=prf.properties,
-                key=cell._col.id,
-                attr=xui.get(prop,[key+"Status",cell._row.id]),
-                cls;
+                colId=cell._col.id,
+                attr={},
+                getV=function(key){return xui.get(prop,[colId+"Status",key])||""},
+                cls,t;
 
             switch(cell._row.id){
-                case "border":
-                    cls="RAD.CustomBorder";
-                    break;
+                case "border-top":
+                case "border-right":
+                case "border-bottom":
+                case "border-left":
                 case "border-radius":
-                    cls="RAD.CustomBorderRadius";
+                case "padding":
+                case "margin":
+                    attr.border = { 
+                        top: getV('border-top') || getV('border'),
+                        right: getV('border-right') || getV('border'),
+                        bottom: getV('border-bottom') || getV('border'),
+                        left: getV('border-left') || getV('border')
+                    };
+                    attr['border-radius'] = getV('border-radius');
+                    attr['padding'] = getV('padding');
+                    attr['margin'] = getV('margin');
+                    break;
+                default:
+                    attr = getV(cell._row.id);
+            }
+            switch(cell._row.id){
+                case "border-top":
+                case "border-right":
+                case "border-bottom":
+                case "border-left":
+                case "border-radius":
+                case "padding":
+                case "margin":
+                    cls="RAD.CustomBorder";
                     break;
                 case "text-shadow":
                     cls="RAD.CustomTextShadow";
@@ -2218,10 +2257,11 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                 case "box-shadow":
                     cls="RAD.CustomBoxShadow";
                     break;
-/*                case "transform":
+                /*
+                case "transform":
                     cls="RAD.CustomTransform";
                     break;
-*/
+                */
                 case "$gradient":
                     cls="RAD.CustomGradients";
                     break;
@@ -2229,23 +2269,68 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
             if(cls){
                 xui.ComFactory.getCom(cls,function(){
                     this.init(prf,attr,{
-                        pro:pro,
+                        pro:editorprf,
                         cell:cell,
                         isSvg:0,
                         grid:ns.tg
                     },2);
                     this.setEvents({
                         onChange:function(str){
-                            var pro=this.properties.pro,
-                                cell=this.properties.cell;
-                            // dont trigger cell onchange event
-                            pro.boxing().setValue(str||"",true);
-                            profile.boxing().updateCell(cell,{value:str||""},false,true);
+                            switch(cell._row.id){
+                                case "border-top":
+                                    editorprf.boxing().setUIValue(str['border']['top']||"",true);
+                                    break;
+                                case "border-right":
+                                    editorprf.boxing().setUIValue(str['border']['right']||"",true);
+                                    break;
+                                case "border-bottom":
+                                    editorprf.boxing().setUIValue(str['border']['bottom']||"",true);
+                                    break;
+                                case "border-left":
+                                    editorprf.boxing().setUIValue(str['border']['left']||"",true);
+                                    break;
+                                case "border-radius":
+                                case "padding":
+                                case "margin":
+                                    editorprf.boxing().setUIValue(str[cell._row.id]||"",true);
+                                    break;
+                                default:
+                                    if(xui.isHash(str)){
+                                        editorprf.boxing().setCaption("[object]",true);
+                                    }else if(xui.isNull(str)){
+                                            editorprf.boxing().setCaption(null,true);
+                                    }
+                                    editorprf.boxing().setUIValue(str?xui.isStr(str)?str:"[object]":"",true);
+                            }
+                            switch(cell._row.id){
+                                case "border-top":
+                                case "border-right":
+                                case "border-bottom":
+                                case "border-left":
+                                case "border-radius":
+                                case "padding":
+                                case "margin":
+                                    profile.boxing().updateCellByRowCol('padding',colId,{value:str['padding']||""},false,true);
+                                    profile.boxing().updateCellByRowCol('margin',colId,{value:str['margin']||""},false,true);
+                                    profile.boxing().updateCellByRowCol('border-radius',colId,{value:str['border-radius']||""},false,true);
+                                    profile.boxing().updateCellByRowCol('border-left',colId,{value:str['border']['left']||""},false,true);
+                                    profile.boxing().updateCellByRowCol('border-right',colId,{value:str['border']['right']||""},false,true);
+                                    profile.boxing().updateCellByRowCol('border-top',colId,{value:str['border']['top']||""},false,true);
+                                    profile.boxing().updateCellByRowCol('border-bottom',colId,{value:str['border']['bottom']||""},false,true);
+                                    break;
+                                default:
+                                    if(xui.isHash(str)){
+                                        profile.boxing().updateCell(cell,{caption:"[object]"},false,true);
+                                    }else if(xui.isNull(str)){
+                                        profile.boxing().updateCell(cell,{caption:""},false,true);
+                                    }
+                                    profile.boxing().updateCell(cell,{value:str||""},false,true);
+                            }
                         }
                     });
                     this.render();
                     var r=this.mainPane.getRoot();
-                    r.popToTop(pro.getRoot());
+                    r.popToTop(editorprf.getRoot());
                     r.setBlurTrigger(r.$xid, function(){
                         r.setBlurTrigger(r.$xid);
                         r.hide();
@@ -2334,7 +2419,14 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                 if(o.color)o.color=rep(textColorSetting[j-1]);
                 o["text-shadow"]=o["text-shadow"]?rep(textshadowSetting[j-1]):"";
                 o["box-shadow"]=o["box-shadow"]?rep(o["box-shadow"]):'none';
-                if(o.border)o.border=rep(o.border);
+                if(o.border){
+                    o.border=rep(o.border);
+                    o['border-top']=o.border;
+                    o['border-right']=o.border;
+                    o['border-bottom']=o.border;
+                    o['border-left']=o.border;
+                    delete o.border;
+                }
                 if(o['background-color'])o['background-color']=rep(o['background-color']);
                 if(o['background-image'])o['background-image']=rep(o['background-image']);
                 if(o.$gradient){
@@ -2349,7 +2441,14 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                     if(o.color)o.color=rep(textColorSetting[j-1]);
                     if(o["text-shadow"])o["text-shadow"]=rep(textshadowSetting[j-1]);
                     if(o["box-shadow"])o["box-shadow"]=rep(o["box-shadow"]);
-                    if(o.border)o.border=rep(o.border);
+                    if(o.border){
+                        o.border=rep(o.border);
+                        o['border-top']=o.border;
+                        o['border-right']=o.border;
+                        o['border-bottom']=o.border;
+                        o['border-left']=o.border;
+                        delete o.border;
+                    }
                     if(o['background-color'])o['background-color']=rep(o['background-color']);
                     if(o['background-image'])o['background-image']=rep(o['background-image']);
                     if(o.$gradient){
@@ -2365,7 +2464,14 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                     if(o.color)o.color=rep(textColorSetting[j-1]);
                     if(o["text-shadow"])o["text-shadow"]=rep(textshadowSetting[j-1]);
                     if(o["box-shadow"])o["box-shadow"]=rep(o["box-shadow"]);
-                    if(o.border)o.border=rep(o.border);
+                    if(o.border){
+                        o.border=rep(o.border);
+                        o['border-top']=o.border;
+                        o['border-right']=o.border;
+                        o['border-bottom']=o.border;
+                        o['border-left']=o.border;
+                        delete o.border;
+                    }
                     if(o['background-color'])o['background-color']=rep(o['background-color']);
                     if(o['background-image'])o['background-image']=rep(o['background-image']);
                     if(o.$gradient){
@@ -2380,7 +2486,14 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                     if(o.color)o.color=rep(textColorSetting[j-1]);
                     if(o["text-shadow"])o["text-shadow"]=rep(textshadowSetting[j-1]);
                     if(o["box-shadow"])o["box-shadow"]=rep(o["box-shadow"]);
-                    if(o.border)o.border=rep(o.border);
+                    if(o.border){
+                        o.border=rep(o.border);
+                        o['border-top']=o.border;
+                        o['border-right']=o.border;
+                        o['border-bottom']=o.border;
+                        o['border-left']=o.border;
+                        delete o.border;
+                    }
                     if(o['background-color'])o['background-color']=rep(o['background-color']);
                     if(o['background-image'])o['background-image']=rep(o['background-image']);
                 }

@@ -127,7 +127,6 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             },
             CONTENT:{
             	'text-align': 'center',
-                overflow:'hidden',
                 'white-space':'nowrap',
                 'background-repeat':'no-repeat',
                 'background-position':'center center',
@@ -159,7 +158,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                             var icon=profile.getSubNodeByItemId('ICON',item.id);
                             
                             // bug fix
-                             if(node.currentSrc && node.currentSrc!=path){
+                             if(node.currentSrc && node.currentSrc!=path && path!=xui.ini.img_blank){
                                 icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                                 nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                                 node.style.visibility="hidden";
@@ -297,7 +296,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             item._tabindex = p.tabindex;
 
             if(t=item.iconFontSize)item._fontSize='font-size:'+t+';'
-            if(!item.iconFontCode && !item.imageClass)item._imageClass='xui-icon-loading';
+            item._imageClass='';
+            if(!item.iconFontCode && !item.imageClass)item._imageClass += 'xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;
 
             if(item.flagText||item.flagClass)item._flagStyle='display:block';

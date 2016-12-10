@@ -1816,7 +1816,7 @@ Class("xui.UI",  "xui.absObj", {
                             xui.each(CSObj[key],function(v,i){
                                 if(xui.isStr(v)){
                                     // "cursor":"point"
-                                    if(v.indexOf(';')==-1){
+                                    if(i.indexOf('background')===0||v.indexOf(';')==-1){
                                          tnodes.css(i, (clear?'':(v && typeof v=="string")?xui.adjustRes(v,0,1):v)||"");
                                     }
                                     // "overflow":"overflow-x:auto;overflow-y:hidden"
@@ -1897,7 +1897,7 @@ Class("xui.UI",  "xui.absObj", {
                     if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
                         var n=o.getRootNode();
                         // ensure display
-                        if(n.clientHeight){
+                        if(n && n.clientHeight){
                             if(force){
                                 // ensure force 1
                                 n.style.width = (parseFloat(o.$px(n.style.width))||0+1)+'px';
@@ -2953,7 +2953,12 @@ Class("xui.UI",  "xui.absObj", {
             ".xui-load-error:before":{
                 $order:7,
                 visibility:(xui.browser.ie&&xui.browser.ver<=8)?'hidden':null
-            }
+            },
+            ".xui-ui-clear":{
+                $order:10,
+                border:'none',
+                background:'none'
+             }
         });
     },
     $End:function(){
@@ -3226,6 +3231,7 @@ Class("xui.UI",  "xui.absObj", {
                 r7=self.r7 || (self.r7=/([^{}]*)\{([\w]+)\}([^{}]*)/g),
                 first=false,
                 u=xui.UI,
+                ts=u.$tag_special,
                 t, o , bak, tagN, cls1, lkey;
 
             if(!template)template=profile.template;
@@ -3264,15 +3270,15 @@ Class("xui.UI",  "xui.absObj", {
                 }
                 template['class'] +=  ' ' +
                     //custom style
-                    u.$tag_special + (key||'KEY') + '_CT'+u.$tag_special + ' ' +
+                    ts + (key||'KEY') + '_CT'+ts + ' ' +
                     //custom class
-                    u.$tag_special + (key||'KEY') + '_CC'+u.$tag_special +
-                    u.$MODULECLS + u.$TAGCLASS + (prop._tagClass?' '+prop._tagClass:'') + " xui-custom"
+                    ts + (key||'KEY') + '_CC'+ts + ' '+
+                    u.$MODULECLS + ' ' + u.$TAGCLASS + (prop._tagClass?' '+prop._tagClass:'') + " xui-custom"
             }
             delete template.className;
 
             template.style = (template.style?(template.style + ';'):'')
-                + u.$tag_special + (key||'KEY') + '_CS'+u.$tag_special;
+                + ts + (key||'KEY') + '_CS'+ts;
 
             var a=[], b={},
                 tagName=template.tagName.charAt(0)!="{"?template.tagName.toLowerCase():template.tagName,
@@ -3318,7 +3324,7 @@ Class("xui.UI",  "xui.absObj", {
 
             delete template['class'];
 
-            arr[arr.length]= u.$tag_special + (key||'KEY') + '_CA'+u.$tag_special;
+            arr[arr.length]= ts + (key||'KEY') + '_CA'+ts;
             arr[arr.length]='>';
 
             if(!map2[tagName] && text)
@@ -8169,7 +8175,7 @@ Class("xui.UI.CSSBox","xui.UI.Span",{
         $initRootHidden:true,
         _objectProp:{normalStatus:1,hoverStatus:1,activeStatus:1,focusStatus:1},
         Templates:{
-            style:'padding:.5em;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:12.5em;height:5em;visibility:hidden;display:none;position:absolute;z-index:0;',
+            style:'left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';width:12.5em;height:5em;visibility:hidden;display:none;position:absolute;z-index:0;',
             className:'{_className}',
             text:'{_html}'
         },
@@ -8431,7 +8437,6 @@ Class("xui.UI.Div", "xui.UI",{
                     ns.box._applyAutoLoad(this);
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY'},
             DroppableKeys:['KEY'],
             PanelKeys:['KEY'],
             onClick:function(profile, e, src){

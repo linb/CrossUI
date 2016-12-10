@@ -499,9 +499,9 @@ Class('xui.Module','xui.absProfile',{
         render:function(triggerLayout){
             var self=this;
             if(self.renderId!='ok'){
+                self.renderId='ok';
                 self.getUIComponents().render(triggerLayout);
                 self._fireEvent('onRender');
-                self.renderId='ok';
             }
             return self;
         },

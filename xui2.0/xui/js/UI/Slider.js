@@ -480,7 +480,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             d._showD2=d.isRange?'':N;
             d._cls=profile.getClass('KEY',d.type=='vertical'?'-v':'-h');
             d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
-            d.labelShow=d.labelSize&&d.labelSize!='auto'?"":"display:none";
+            d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
 
             // adjustRes for labelCaption

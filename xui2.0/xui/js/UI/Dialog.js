@@ -1006,6 +1006,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         },
         _active:function(profile,flag){
             var self=this;
+            if(profile.$inDesign)return;
+
             if(flag!==false && xui.$cache.unique.activeWndId==profile.$xid)return;
 
             self._deActive();

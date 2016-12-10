@@ -1011,7 +1011,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         _forLazyAppend:function(profile, item, value){
             var prop=profile.properties,box=profile.boxing(),
                 moduleHash={},
-                zz = prop.moduleClass+"["+prop.moduleXid+"]";
+                zz = profile.moduleClass+"["+profile.moduleXid+"]";
             //dynamic render
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];

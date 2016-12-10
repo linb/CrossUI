@@ -253,7 +253,7 @@ xui.Locale.en.editor={
     fontsize:'Font Size',
     fontname:'Font Family',
     formatblock:'Font Block',
-    fontsizeList:'1,1(12px);2,2(13px);3,3(16px);4,4(18px);5,5(24px);6,6(32px);...,...',
+    fontsizeList:'1,1(8pt);2,2(10pt);3,3(12pt);4,4(14pt);5,5(18pt);6,6(24pt);...,...',
     fontnameList:'Arial;Arial Black;Comic Sans MS;Courier New;Impact;Tahoma;Times New Roman;Trebuchet MS;Verdana;...',
     formatblockList:'p,Normal;h1,Heading1;h2,Heading2;h3,Heading3;h4,Heading4;h5,Heading5;h6,Heading6;...,...'
 };

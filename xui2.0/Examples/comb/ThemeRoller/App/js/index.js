@@ -2091,6 +2091,7 @@ Class('App', 'xui.Module',{
                             group.append(ns._createEditor(item, subItem, stt, index, stt));
                         });
                         ctrl.append(group, item.id);
+                        group.getRoot().setInlineBlock();
                     }else{
                         ctrl.append(ns._createEditor(item, subItem, subid, 0), item.id);
                     }
@@ -2128,6 +2129,20 @@ Class('App', 'xui.Module',{
             if(!map){
                 map = subItem.map[0];
             }
+            value = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +map.clsname+(status2?('-'+status2):''), map.stylename);
+            if(!value && map.pclsname){
+                value = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +map.pclsname+(status2?('-'+status2):''), map.stylename);
+            }
+            if(!value){
+                value = xui.CSS.$getCSSValue(map.clsname+(status2?('-'+status2):''), map.stylename);
+            }
+            if(!value && map.pclsname){
+                value = xui.CSS.$getCSSValue(map.pclsname+(status2?('-'+status2):''), map.stylename);
+            }
+
+            editor.setValue(value);
+            // ini here
+            xui.set(ns._setting,[item.id, key], editor.getValue());
 
             switch(map.stylename){
                 case 'box-shadow':
@@ -2157,7 +2172,8 @@ Class('App', 'xui.Module',{
                         normalStatus ={},
                         hoverStatus ={},
                         activeStatus ={},
-                        ls1,ls2, ls=[];
+                        ls1,ls2, ls;
+                    ls=[];
                     // normal status
                     clsname=".xui-uigradient";
                     ls1 = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +clsname+(status2?('-'+status2):''));
@@ -2167,14 +2183,18 @@ Class('App', 'xui.Module',{
                     if(ls && ls.length){
                         ls = ls.reverse();
                         xui.arr.each(ls, function(value){
-                            xui.arr.each((value.style.cssText || value.style.rules).split(/\s*;\s*/),function(o, i){
+                            xui.arr.each((value.style.cssText || value.style.rules || "").split(/\s*;\s*/),function(o, i){
                                 o = o.split(/\s*:\s*/); 
-                                if(o[0])normalStatus[o[0]] = o[1];
+                                if(o[0]){
+                                    if(o[0]=='background'&& o[1]=='none')normalStatus['background-image'] = o[1];
+                                    else normalStatus[o[0]] = o[1];
+                                }
                             });                            
-                        },null,true);
+                        });
                     }
 
                     // hover status
+                    ls=[];
                     clsname = ".xui-uigradient-hover";
                     ls1 = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +clsname+(status2?('-'+status2):''));
                     ls2 = xui.CSS.$getCSSValue(clsname+(status2?('-'+status2):''));
@@ -2183,14 +2203,18 @@ Class('App', 'xui.Module',{
                     if(ls && ls.length){
                         ls = ls.reverse();
                         xui.arr.each(ls, function(value){
-                            xui.arr.each((value.style.cssText || value.style.rules).split(/\s*;\s*/),function(o, i){
+                            xui.arr.each((value.style.cssText || value.style.rules || '').split(/\s*;\s*/),function(o, i){
                                 o = o.split(/\s*:\s*/); 
-                                if(o[0])hoverStatus[o[0]] = o[1];
+                                if(o[0]){
+                                    if(o[0]=='background'&& o[1]=='none')hoverStatus['background-image'] = o[1];
+                                    else hoverStatus[o[0]] = o[1];
+                                }
                             });                            
-                        },null,true);
+                        });
                     }
 
                     // active status
+                    ls=[];
                     clsname = ".xui-uigradient-active";
                     ls1 = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +clsname+(status2?('-'+status2):''));
                     ls2 = xui.CSS.$getCSSValue(clsname+(status2?('-'+status2):''));
@@ -2199,11 +2223,14 @@ Class('App', 'xui.Module',{
                     if(ls && ls.length){
                         ls = ls.reverse();
                         xui.arr.each(ls, function(value){
-                            xui.arr.each((value.style.cssText || value.style.rules).split(/\s*;\s*/),function(o, i){
+                            xui.arr.each((value.style.cssText || value.style.rules || '').split(/\s*;\s*/),function(o, i){
                                 o = o.split(/\s*:\s*/); 
-                                if(o[0])activeStatus[o[0]] = o[1];
+                                if(o[0]){
+                                    if(o[0]=='background'&& o[1]=='none')activeStatus['background-image'] = o[1];
+                                    else activeStatus[o[0]] = o[1];
+                                }
                             });                            
-                        },null,true);
+                        });
                     }
                     xui.filter(hoverStatus,function(o,i){
                         return normalStatus[i] !== o;
@@ -2442,20 +2469,6 @@ Class('App', 'xui.Module',{
                     }                    
             }
 
-            value = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +map.clsname+(status2?('-'+status2):''), map.stylename);
-            if(!value && map.pclsname){
-                value = xui.CSS.$getCSSValue(xui.UI._getThemePrevId(ns._themeRoller.get(0)) +" " +map.pclsname+(status2?('-'+status2):''), map.stylename);
-            }
-            if(!value){
-                value = xui.CSS.$getCSSValue(map.clsname+(status2?('-'+status2):''), map.stylename);
-            }
-            if(!value && map.pclsname){
-                value = xui.CSS.$getCSSValue(map.pclsname+(status2?('-'+status2):''), map.stylename);
-            }
-
-            editor.setValue(value);
-            // ini here
-            xui.set(ns._setting,[item.id, key], editor.getValue());
 
             editor.onChange(function (profile, oldValue, newValue){
                 ns._onchange(item, subItem, profile, newValue, status);
@@ -2464,11 +2477,12 @@ Class('App', 'xui.Module',{
         },
         _updateGradient:function(gradient){
             var ns=this,
-                fun=function(hash, a){
+                fun=function(hash, clearFirst, g){
                     if(hash.$gradient && hash.$gradient.stops && hash.$gradient.stops.length){
                         delete hash['background-image'];
+                        delete hash['background'];
                     }
-                    a=a||[];
+                    var rst=clearFirst?['background-image:none']:[];
                     
                     var newO=function(){
                         var arr = this.arr=[];
@@ -2482,55 +2496,60 @@ Class('App', 'xui.Module',{
                     xui.each(hash,function(v,k){
                         switch(k){
                             case 'box-shadow':
-                                a.push("-moz-box-shadow: " + v);
-                                a.push("-webkit-box-shadow: " + v);
-                                a.push("box-shadow: " + v);
+                                rst.push("-moz-box-shadow: " + v);
+                                rst.push("-webkit-box-shadow: " + v);
+                                rst.push("box-shadow: " + v);
                                 break;
                             case '$gradient':
-                                a.push("filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='"+v.stops[0].clr+"', endColorstr='"+v.stops[1].clr+"')");
-                                a.push("-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='"+v.stops[0].clr+"', endColorstr='"+v.stops[1].clr+"')");
-                                
-                                var fakeStyle=new newO(),
-                                    fakeNode = {
-                                        nodeType:1,
-                                        style:fakeStyle
-                                    };
-                                xui.Dom.$setGradients(fakeNode, v, {
-                                    gek:1,
-                                    ver:100,
-                                    cssTag1:'-moz-'
-                                });
-                                xui.Dom.$setGradients(fakeNode, v, {
-                                    opr:1,
-                                    ver:100,
-                                    cssTag1:'-o-'
-                                });
-                                xui.Dom.$setGradients(fakeNode, v, {
-                                    isWebKit:1,
-                                    isChrome:1,
-                                    isSafari:1,
-                                    ver:100,
-                                    cssTag1:'-webkit-'
-                                });
-                                xui.arr.removeDuplicate(fakeStyle.arr);
-                                xui.arr.insertAny(a,fakeStyle.arr);
+                                if(v && v.stops&& v.stops.length){
+                                    rst.push("filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='"+v.stops[0].clr+"', endColorstr='"+(v.stops[1]||v.stops[0]).clr+"')");
+                                    rst.push("-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='"+v.stops[0].clr+"', endColorstr='"+(v.stops[1]||v.stops[0]).clr+"')");
+                                    
+                                    var fakeStyle=new newO(),
+                                        fakeNode = {
+                                            nodeType:1,
+                                            style:fakeStyle
+                                        };
+                                    xui.Dom.$setGradients(fakeNode, v, {
+                                        gek:1,
+                                        ver:100,
+                                        cssTag1:'-moz-'
+                                    });
+                                    xui.Dom.$setGradients(fakeNode, v, {
+                                        opr:1,
+                                        ver:100,
+                                        cssTag1:'-o-'
+                                    });
+                                    xui.Dom.$setGradients(fakeNode, v, {
+                                        isWebKit:1,
+                                        isChrome:1,
+                                        isSafari:1,
+                                        ver:100,
+                                        cssTag1:'-webkit-'
+                                    });
+                                    xui.arr.removeDuplicate(fakeStyle.arr);
+                                    if(fakeStyle.arr.length){
+                                        xui.arr.insertAny(rst,fakeStyle.arr);
+                                        if(g)g.length = fakeStyle.arr.length;
+                                    }
+                                } 
                                 break;
                           default :
-                              a.push(k+": "+v);
+                              rst.push(k+": "+v);
                         }
                     });
-                    return '    ' + a.join(';\n') +";";  
+                    return '    ' + rst.join(';\n') +";";  
                 },
-                t;
+                t, normalGradient={};
 
             if((t=gradient.normalStatus)){
-                xui.set(ns._setting,['Gradients Bar', '\\[normalStatus\\]'], fun(t, ["background: none"]));
+                xui.set(ns._setting,['Gradients Bar', '\\[normalStatus\\]'], fun(t,true,normalGradient));
             }
             if((t=gradient.hoverStatus)){
-                xui.set(ns._setting,['Gradients Bar', '\\[hoverStatus\\]'], fun(t));
+                xui.set(ns._setting,['Gradients Bar', '\\[hoverStatus\\]'], fun(t, !normalGradient.length));
             }
             if((t=gradient.activeStatus)){
-                xui.set(ns._setting,['Gradients Bar', '\\[activeStatus\\]'], fun(t));
+                xui.set(ns._setting,['Gradients Bar', '\\[activeStatus\\]'], fun(t, !normalGradient.length));
             }
             ns._refreshTheme();
         },
@@ -2575,11 +2594,12 @@ Class('App', 'xui.Module',{
             return (ns._prev + themeStr + (ns._cstomCSS ? "\n\n"+ns._cstomCSS.getValue() : "") + ns._tail)
                 .replace(/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,'\n\n$1\n')
                 .replace(/([},])\s*(\.)/g,function(a,b,c){
-                return b + "\n" + "" + c;
-            })
+                    return b + "\n" + "" + c;
+                })
                 .replace(/([{;])\s*(.)/g,function(a,b,c){
-                return b + '\n' + (c=='}'?'':'    ') + c;
-            });
+                    return b + '\n' + (c=='}'?'':'    ') + c;
+                })
+                .replace(/\{\s+;\s*\}/g,'{}');
         },
         _theme_afteruivalueset:function (profile,oldValue,newValue){            
             var ns=this;
@@ -2600,10 +2620,10 @@ Class('App', 'xui.Module',{
                 });
 
                 // [[ get non-standard css
-                rsp = xui.Coder.replace(rsp, [[/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/g,''],
-                                              [/\{[^}]*\}/g,'$0'],
+                rsp = xui.Coder.replace(rsp, [[/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,''],
+                                              [/\{[^}]*\}/,'$0'],
                                               [/\s+/," "],
-                                              [/\,([^\s])/g,", $1"]
+                                              [/\,([^\s])/,", $1"]
                                              ]);
                 var v=[],k=[],hash={},
                     aa1=ns._cssscope.split(/\s*\{[^}]*\}\s*/);
@@ -2657,13 +2677,6 @@ Class('App', 'xui.Module',{
                 },0, 0,0,0,0,0,0,true);
             dlg.setStatus('max');
             return false;
-        }
-    },
-    Static:{
-        designViewConf:{
-            "width" : 1280,
-            "height" : 1024,
-            "mobileFrame" : false
         }
     }
 });
