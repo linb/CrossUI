@@ -757,6 +757,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             tips:null,
             border:null,
             resizer:null,
+            dragSortable:null,
             showEffects:"Blur",
             hideEffects:"",
             autoTips:false,

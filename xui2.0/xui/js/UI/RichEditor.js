@@ -724,7 +724,7 @@ Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 self.$toolbar=t;
                 t.$hostage=self;
             }
-            xui.UI.$tryResize(profile, pro.width, pro.height,true);
+            profile.adjustSize(true);
             return tbH;
         },
         _toolbarclick:function(profile,item,group,e,src){

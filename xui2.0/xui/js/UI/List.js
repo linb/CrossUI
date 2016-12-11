@@ -452,7 +452,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     node.addClass(pretag+v);
 
                     //force to resize
-                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                    ns.adjustSize();
                 }
             },
             noCtrlKey:true,
@@ -553,8 +553,6 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             }
         },
         _onDrop:function(profile, e, src, key, data, item){
-            xui.DragDrop.setDragIcon('none');
-
             var k=profile.getKey(xui.use(src).id()),
                 po=data.profile,
                 ps=data.domId,

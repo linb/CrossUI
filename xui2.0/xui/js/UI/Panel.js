@@ -375,7 +375,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     node.addClass(pretag+v);
 
                     //force to resize
-                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                    ns.adjustSize();
                 }
             },
             noFrame:{
@@ -386,7 +386,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     ns.getSubNode('MAIN').css('paddingLeft',v?'0':'');
                     ns.getSubNode('MAINI').css('paddingRight',v?'0':'').css('backgroundImage',v?'none':'');
                     //force to resize
-                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                    ns.adjustSize();
                 }
             },
             hAlign:{
@@ -521,7 +521,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
 
                 // use onresize function
-                profile.adjustSize();
+                profile.adjustSize(true);
 
                 if(!ignoreEvent){
                     if(value){

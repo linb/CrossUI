@@ -7,8 +7,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             var pro=this.get(0);
             return arguments.callee.upper.call(this, target, subId||'main', pre, base);
         },
-        insertItems:function(arr, base, before){
-            return this._insertItems(arr, base, before);
+        insertItems:function(arr, base, before, all){
+            return this._insertItems(arr, base, before, all);
         },
         _insertItems:function(arr, base, before, all){
             var node,arr2,
@@ -27,12 +27,11 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         if(items[index].id=='main')
                             pos=before?'before':'after';
                         else
-                            pos=items[index].pos;
+                            pos=items[index].pos||'after';
                     }
-
                     arr2=box._adjustItems2(arr, pos);
                 }else{
-                    arr2=arr;
+                    arr2=box._adjustItems(arr);
                 }
 
                 //must be here
@@ -45,10 +44,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 if(profile.renderId){
                     data = box._prepareItems(profile, arr2, base);
                     r=profile._buildItems('items', data);
+                    // try to render inner xui.UI
+                    if(profile.$attached){
+                        for(var i=0,v;v=profile.$attached[i++];){
+                            if(v._render)v._render(true);
+                        }
+                        delete profile.$attached;
+                    }
                     profile.getRoot().prepend(r);
-
-                    var t=profile.getRootNode().style;
-                    xui.UI.$tryResize(profile, t.width, t.height, true);
+                    profile.adjustSize();
                     t=null;
                 }
 
@@ -57,16 +61,14 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             });
         },
         _afterRemoveItems:function(profile){
-            if(profile.renderId){
-                var t=profile.getRootNode().style;
-                xui.UI.$tryResize(profile, t.width, t.height, true);
-                t=null;
-            }
+            if(profile.renderId)
+                profile.adjustSize();
         },
         updateItem:function(subId,options){
             var self=this,
                 profile=self.get(0),
                 vertical=profile.properties.type=='vertical',
+                getN=function(key,subId){return profile.getSubNodeByItemId(key,subId)},
                 box=profile.box,
                 items=profile.properties.items,
                 rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===subId:o==subId},true,true,true),
@@ -103,7 +105,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 var bResize=false;
                 //in dom already?
-                node=profile.getSubNodeByItemId('ITEM',subId);
+                node=getN('ITEM',subId);
                 if(!node.isEmpty()){
                     if(options.hasOwnProperty('size')){
                         options.size = Math.round(parseFloat(''+options.size));
@@ -119,15 +121,18 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(options.hasOwnProperty('hidden')){
                         options.hidden = !!options.hidden;
                         if(options.hidden !== item.hidden){
-                            profile.getSubNodeByItemId('ITEM',subId).css('display',options.hidden?'none':'');
+                            getN('ITEM',subId).css('display',options.hidden?'none':'');
                             bResize=true;
                         }
                     }
                     if(options.hasOwnProperty('locked')){
                         options.locked = !!options.locked;
                         if(options.locked !== item.locked){
-                           // profile.getSubNodeByItemId('MOVE',subId).css('display',options.locked?'none':'');
-                            profile.getSubNodeByItemId('MOVE',subId).css('cursor',options.locked?'default':vertical?'n-resize':'w-resize');
+                            getN('MOVE',subId).css({
+                                display: options.locked?'none':'',
+                                cursor: options.locked?'default':vertical?'n-resize':'w-resize'
+                            });
+                            getN('CMD',subId).css('display', (('cmd' in options)?options.cmd:item.cmd)&&!options.locked?'':'none');
                             bResize=true;
                         }
                     }
@@ -139,7 +144,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(options.hasOwnProperty('cmd')){
                         options.cmd = !!options.cmd;
                         if(options.cmd !== item.cmd)
-                            profile.getSubNodeByItemId('CMD',subId).css('display',options.cmd?'':'none');
+                            getN('CMD',subId).css('display', options.cmd && !(('locked' in options)?options.locked:item.locked) ? '' : 'none');
                     }
 
                     var hash={};
@@ -165,18 +170,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         hash.overflow=v||"";
                     }
                     if(!xui.isEmpty(hash)){
-                        profile.getSubNodeByItemId('PANEL',subId).css(hash);
+                        getN('PANEL',subId).css(hash);
                     }
                 }
 
                 //merge options
                 xui.merge(item, options, 'all');
 
-                if(bResize){
-                    var t=profile.getRootNode().style;
-                    xui.UI.$tryResize(profile, t.width, t.height, true);
-                    t=null;
-                }
+                if(bResize)
+                    profile.adjustSize();
             }
             return self;
         },
@@ -202,7 +204,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             tagName:'div',
                             // give icon font for em size
                             className:'xui-ui-unselectable xui-uibar xuifont {clsmovebg} {cls2} ',
-                            style:'cursor:{_cursor}'
+                            style:'{moveDisplay};cursor:{_cursor}'
                         },
                         CMD:{
                             $order:1,
@@ -486,7 +488,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o = profile.getSubNode('ITEM',itemId),
                         panel = profile.getSubNode('PANEL',itemId),
                         move = profile.getSubNode('MOVE',itemId),
-                        _handlerSize=(t.type=='vertical'?move.offsetHeight():move.offsetWidth());
+                        _handlerSize=(item.locked?0:t.type=='vertical'?move.offsetHeight():move.offsetWidth());
 
                     if(t.type=='vertical'){
                         // restore resize mode
@@ -604,8 +606,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                         }
 
-                        var size = self.getRoot().cssSize();
-                        xui.UI.$tryResize(self, size.width, size.height,true);
+                        self.adjustSize();
                     }
                 }
             },
@@ -619,58 +620,15 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 $spaceunit:1,
                 ini:'18em'
             },
+            dragSortable:null,
             flexSize:{
                 ini: false,
                 action:function(){
-                    var prf=this,r=prf.getRoot();
-                    xui.UI.$tryResize(prf, r.width(), r.height(), true);
+                    this.adjustSize();
                 }
             },
             items:{
-                ini:[],
-                set:function(value){
-                   var o=this;
-                    if(o.renderId){
-                        var box = o.boxing(),
-                            temp = xui.$getGhostDiv(),
-                            //keep children
-                            children = xui.copy(o.children),
-                            p,vv
-                        ;
-                        o.children.length=0;
-                        xui.arr.each(children,function(o){
-                            //for flush dock
-                            delete o[0].$dockParent;
-                            //keep it in dom
-                            temp.appendChild(o[0].getRootNode());
-                        });
-
-                        //bak value
-
-                        //clear all
-                        box.clearItems();
-
-                        //set items
-                        //for adjust 'main'
-                        vv = o.box._adjustItems(value);
-                        //inset all items
-                        box._insertItems(vv,null,null,true);
-
-                        //restore children
-                        xui.arr.each(children,function(v){
-                            box.append.apply(box,v);
-                        });
-
-                        //clear
-                        temp.innerHTML='';
-                        //set value
-
-                        //resize
-                        var size = o.getRoot().cssSize();
-                        xui.UI.$tryResize(o, size.width, size.height,true);
-                    }else
-                        o.properties.items = xui.copy(value);
-                }
+                ini:[] 
             }
         },
         EventHandlers:{
@@ -699,19 +657,25 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             return arr;
         },
         _adjustItems:function(items){
-            var main, before=[], after=[];
+            var main, before=[], after=[],watershed=0;
 
             //arrage items
-            xui.arr.each(items,function(o){
+            xui.arr.each(items,function(o,i){
                 o=xui.copy(o);
                 if(o.id=='main'){
                     main=o;
+                    watershed=i;
                 }else{
-                    if(o.pos=='before')
+                    if(o.pos=='before'){
                         before.push(o);
-                    else{
+                    }else if(o.pos=='after'){
+                        after.push(o);
+                    }else if(watershed){
                         o.pos='after';
                         after.push(o);
+                    }else{
+                        o.pos='after';
+                        before.push(o);
                     }
                 }
             });
@@ -778,7 +742,8 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
                 data.display = data.hidden?'display:none':'';
                 data._cursor = data.locked?'default':(p.type=='vertical')?'n-resize':'w-resize';
-                data.cmdDisplay = data.cmd?'':'display:none';
+                data.cmdDisplay = (data.cmd&&!data.locked)?'':'display:none';
+                data.moveDisplay = !data.locked?'':'display:none';
             }
             data._bginfo="";
             if(t=data.panelBgClr||p.panelBgClr)
@@ -843,7 +808,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(o.pos=='before'){
                         itemId = profile.getSubIdByItemId(o.id);
                         move=profile.getSubNode('MOVE',itemId),
-                        _handlerSize=(t.type=='vertical'?move.offsetHeight():move.offsetWidth())
+                        _handlerSize=(o.locked?0:t.type=='vertical'?move.offsetHeight():move.offsetWidth())
                         if(o.hidden){
                             m=0;
                             obj2[itemId][width]=Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) :o._size);
@@ -875,7 +840,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(o.pos=='after'){
                         itemId = profile.getSubIdByItemId(o.id);
                         move=profile.getSubNode('MOVE',itemId),
-                        _handlerSize=(t.type=='vertical'?move.offsetHeight():move.offsetWidth())
+                        _handlerSize=(o.locked?0:t.type=='vertical'?move.offsetHeight():move.offsetWidth())
                         if(o.hidden){
                             m=0;
                             obj2[itemId][width]= Math.round(pct? parseFloat(w*Math.min(1,(o.size/sum))) : o._size);

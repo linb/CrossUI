@@ -331,6 +331,7 @@ Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         DataModel:{
             listKey:null,
+            dragSortable:null,
             autoTips:false,
             //can't change height
             height:{

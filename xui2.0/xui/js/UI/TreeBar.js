@@ -765,8 +765,6 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
         },
         _onDrop:function(profile, e, src, key, data, item){
-            xui.DragDrop.setDragIcon('none');
-
             var k=profile.getKey(xui.use(src).id()),
                 po=data.profile,
                 ps=data.domId,

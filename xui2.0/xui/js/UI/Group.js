@@ -84,7 +84,7 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                     $order:1,
                     tagName:'div',
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
-                    className:'xui-uicontainer',
+                    className:'xui-uicontainer xui-uiborder-radius-bl xui-uiborder-radius-br',
                     text:'{html}'+xui.UI.$childTag
                 }
             },
@@ -131,7 +131,12 @@ Class("xui.UI.Group", "xui.UI.Panel",{
         DataModel:{
             dock:'none',
             noFrame:null,
-            borderType:null
+            borderType:null,
+            toggleBtn:{
+                ini:true
+            },
+            $hborder:1,
+            $vborder:1
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -167,7 +172,7 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                     border.removeClass('xui-uiborder-flat xui-uiborder-radius').addClass('xui-uiborder-t');
 
                 // use onresize function
-                profile.adjustSize();
+                profile.adjustSize(true);
 
                 if(!ignoreEvent){
                     if(value){
@@ -186,6 +191,7 @@ Class("xui.UI.Group", "xui.UI.Panel",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
+                b=prop.$vborder,
                 // compare with px
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
@@ -201,8 +207,8 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                 panel.css('display','');
                 if(height && height!='auto'){
                     border.height(adjustunit(hh, border));
-                    hh -= profile.getSubNode('TBAR').height()||18;
-                    panel.height(adjustunit(hh, panel) );
+                    hh -= profile.getSubNode('TBAR').height(true);
+                    panel.height(adjustunit(hh - b, panel) );
                 }
             }else{
                 panel.css('display','none');

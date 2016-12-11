@@ -1,0 +1,88 @@
+{
+    "files":[
+        {
+            "id":"doc",
+            "caption":"Documents",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"img",
+            "caption":"Images",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"video",
+            "caption":"Videos",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"prj",
+            "caption":"Projects",
+            "imageClass":"xui-icon-file-fold"
+        }        
+
+    ],
+    "doc":[
+        {
+            "id":"pdf",
+            "caption":"Pdf",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"excel",
+            "caption":"Excel",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"word",
+            "caption":"Word",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"ppt",
+            "caption":"Ppt",
+            "imageClass":"xui-icon-file-fold"
+        },
+        {
+            "id":"txt",
+            "caption":"Txt",
+            "imageClass":"xui-icon-file-fold"
+        }
+    ],
+    "img":[{
+            "id":"img1",
+            "caption":"Picture 1",
+            "imageClass":"fa fa-image"
+        },{
+            "id":"img2",
+            "caption":"Picture 2",
+            "imageClass":"fa fa-image"
+        }],
+    "video":[{
+            "id":"v1",
+            "caption":"Video 1",
+            "imageClass":"fa fa-file-video-o"
+        }],
+    "prj":[],
+    "pdf":[],
+    "excel":[{
+            "id":"exel1",
+            "caption":"Excel 1",
+            "imageClass":"fa fa-file-excel-o"
+        }],
+    "word":[{
+            "id":"word1",
+            "caption":"Word 1",
+            "imageClass":"fa fa-file-word-o"
+        }],
+    "ppt":[{
+            "id":"ppt1",
+            "caption":"PPT 1",
+            "imageClass":"fa fa-file-ppt-o"
+        }],
+    "txt":[{
+            "id":"txt1",
+            "caption":"Text 1",
+            "imageClass":"fa fa-file-text-o"
+        }]
+}

@@ -63,7 +63,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
             HANDLE:{
                 cursor:'pointer',
                 display:'block',
-                'padding':'.5em .75em',
+                'padding':'.58333em',
                 'white-space':'nowrap'
             },
             'ITEM-checked HANDLE':{
@@ -114,7 +114,7 @@ Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     }
 
                     //force to resize
-                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                    ns.adjustSize();
                 }
             }
         },

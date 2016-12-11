@@ -441,6 +441,7 @@ Class('App', 'xui.Module',{
                 .setWidth("15em")
                 .setHeight("8.333333333333334em")
                 .setCaption("Group")
+                .setToggleBtn(true)
                 .setToggle(false)
                 , "2");
             

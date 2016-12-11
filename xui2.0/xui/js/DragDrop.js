@@ -643,7 +643,7 @@ Class('xui.DragDrop',null,{
             var d=this,
                 s1='<div style="position:absolute;z-index:'+xui.Dom.TOP_ZINDEX+';font-size:0;line-height:0;border-',
                 s2=":dashed 1px #ff6600;",
-                region=d._Region,rh=d._rh,
+                region=d._Region,rh=d._rh, st, sl, 
                 bg='backgroundColor';
             if(region && region.parent())
                 region.remove(false);
@@ -656,7 +656,7 @@ Class('xui.DragDrop',null,{
             if(target){
                 //never create, or destroy the region
                 if(!region || !region.get(0)){
-                    region=d._Region=xui.create(s1+'top'+s2+'left:0;top:0;width:100%;height:0;"></div>'+s1+'right'+s2+'right:0;top:0;height:100%;width:0;"></div>'+s1+'bottom'+s2+'bottom:0;left:0;width:100%;height:0;"></div>'+s1+'left:solid 2px #ff6600;width:0;left:0;top:0;height:100%;"></div>');
+                    region=d._Region=xui.create(s1+'top:solid 2px #ff6600;left:0;top:0;width:100%;height:0;"></div>'+s1+'right'+s2+'right:0;top:0;height:100%;width:0;"></div>'+s1+'bottom'+s2+'bottom:0;left:0;width:100%;height:0;"></div>'+s1+'left'+s2+'width:0;left:0;top:0;height:100%;"></div>');
                     rh=d._rh=xui([region.get(1),region.get(3)]);
                 }
                 target=xui(target);
@@ -664,7 +664,12 @@ Class('xui.DragDrop',null,{
                 if(target.css('display')=='block'){
                     xui.setNodeData(region.get(0),'zIndexIgnore', 1);
                     target.append(region);
-                    region.top(target.scrollTop()).left(target.scrollLeft());
+                    // ensure in the view
+                    region.top(st=target.scrollTop()).left(sl=target.scrollLeft());
+                    region.get(2).style.top='auto';region.get(1).style.left='auto';
+                    region.get(2).style.bottom='-'+st+'px';
+                    region.get(1).style.right='-'+sl+'px';
+
                     if(xui.browser.ie6 && !rh.get(0).offsetHeight)
                         rh.height(target.get(0).offsetHeight);
                 }else{

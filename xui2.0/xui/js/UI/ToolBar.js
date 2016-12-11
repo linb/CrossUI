@@ -278,6 +278,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             NoTips:["GROUP","HANDLER"],
             HoverEffected:{BTN:['BTN']},
             ClickEffected:{BTN:['BTN']},
+            DraggableKeys:["HANDLER"],
+            DroppableKeys:["GROUP","ITEMS"],
             BTN:{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
@@ -363,6 +365,25 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 }
             });
             return a;
+        },
+        _onDrop:function(profile, e, src, key, data, item){
+            var k=profile.getKey(xui.use(src).id()),
+                po=data.profile,
+                ps=data.domId,
+                oitem,
+                t=xui.absObj.$specialChars;
+
+            //remove
+            oitem=xui.clone(po.getItemByDom(ps),function(o,i){return !t[(i+'').charAt(0)]});
+            po.boxing().removeItems([oitem.id], 'GROUP', true);
+
+            if(k==profile.keys.GROUP)
+                profile.boxing().insertItems([oitem], item.id, true);
+            else
+                profile.boxing().insertItems([oitem]);
+            
+            data._new = oitem;
+            return false;
         },
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile);

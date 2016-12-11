@@ -394,12 +394,12 @@ Class('xui.UIProfile','xui.Profile', {
             // for special parent css
             return (!force && prf._nodeEmSize) ||  ( node ? (prf._nodeEmSize = root._getEmSize()) : xui.CSS._getDftEmSize() ) ;
         },
-        adjustSize:function(useProp, asy){
+        adjustSize:function(useProp, asy, flag){
             var prf=this,
                 t=prf.getRootNode();
             if(t&&(useProp||(t=t.style))){
                 var f=function(){
-                    xui.UI.$tryResize(prf, useProp ? prf.properties.width : t.width , useProp ? prf.properties.height : t.height, true);
+                    xui.UI.$tryResize(prf, useProp ? prf.properties.width : t.width , useProp ? prf.properties.height : t.height, true, flag);
                 };
                 if(asy)xui.asyRun(f);
                 f();
@@ -1160,9 +1160,9 @@ Class("xui.UI",  "xui.absObj", {
                 }
             });
         },
-        adjustSize:function(useProp){
+        adjustSize:function(useProp, asy, flag){
             return this.each(function(prf){
-                prf.adjustSize(useProp);
+                prf.adjustSize(useProp, asy, flag);
             });
         },
         reLayout:function(force){
@@ -2824,8 +2824,7 @@ Class("xui.UI",  "xui.absObj", {
                 'vertical-align':'middle'
             },
             '.xui-tag-cmd':{
-                "margin-left":'.167em',
-                "padding": "0 .167em",
+                "margin":'0 .25em',
                 'vertical-align':'middle'
             },
             '.xui-inline-object':{
@@ -6512,7 +6511,7 @@ Class("xui.absList", "xui.absObj",{
         [x] ,null ,true  => insert [x ] to head
         [x] ,null ,false => insert [x ] to tail
         */
-        insertItems:function(arr, base/*true: the current item*/, before){
+        insertItems:function(arr, base/*true: the current item*/, before, all){
             var node,arr2,
                 items, index, r, v, prop,
                 data,box,
@@ -6535,7 +6534,7 @@ Class("xui.absList", "xui.absObj",{
                 //if in dom, create it now
                 if(profile.renderId){
                     // prepare properties format
-                    data = box._prepareItems(profile, arr2, base);
+                    data = box._prepareItems(profile, arr2);
 
                     r=profile._buildItems('items', data);
 
@@ -7074,7 +7073,7 @@ Class("xui.absList", "xui.absObj",{
                         ins.clearItems(true, true);
                     }
 
-                    ins.insertItems(value?xui.copy(value):null);
+                    ins.insertItems(value?xui.copy(value):null,null,null,true);
 
                     // restore children
                     if(value && value.length && children){
@@ -7089,23 +7088,23 @@ Class("xui.absList", "xui.absObj",{
                                 // add by id
                                 if(xui.isSet(hash[arr[1]])){
                                     t=xui.create(arr[0]);
-                                    ins.append(t,arr[1]);
                                     if(o.$panelRestore)o.$panelRestore(t.get(0));
+                                    ins.append(t,arr[1]);
                                     added=1;
                                 }else{
                                     // add by index
                                     if(rhash[arr[2]]){
                                         t=xui.create(arr[0]);
-                                        ins.append(t,rhash[arr[2]]);
                                         if(o.$panelRestore)o.$panelRestore(t.get(0));
+                                        ins.append(t,rhash[arr[2]]);
                                         added=1;
                                     }
                                 }
                             }
                             if(!added){
                                 t=xui.create(arr[0]);
-                                ins.append(t,bv);
                                 if(o.$panelRestore)o.$panelRestore(t.get(0));
+                                ins.append(t,bv);
                             }
                         });
                     }

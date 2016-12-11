@@ -66,9 +66,7 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     profile.getSubNodes(['ITEM','TOGGLE'],arr2).tagClass('-checked');
                     profile.getSubNodes('ITEM',arr2).next().tagClass('-prechecked');
                 }
-
-                var t=profile.getRootNode().style;
-                xui.UI.$tryResize(profile, t.width, t.height, true);
+                profile.adjustSize();
             });
         },
         _afterInsertItems:null

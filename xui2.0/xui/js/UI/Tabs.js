@@ -41,10 +41,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                 if(item._scrollTop)
                                     box.getPanel(itemId).get(0).scrollTop=item._scrollTop;
 
-                                var t=profile.getRootNode().style;
-                                //reset width and height
-                                xui.UI.$tryResize(profile, t.width, t.height, true, value);
-                                t=null;
+                                profile.adjustSize(false, false, value);
 
                                 profile.box._forLazyAppend(profile, item, value);
                                 profile.box._forIniPanelView(profile, item);
@@ -221,9 +218,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(!(v=this.getUIValue()))
                         this.fireItemClickEvent((v=pp.items[0]) && v.id);
                 }
-                var t=profile.getRootNode().style;
-                xui.UI.$tryResize(profile, t.width, t.height, true);
-                t=null;
+                profile.adjustSize();
             }
         },
         /*  remove some views from pageView
@@ -257,9 +252,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
                 }
 
-                var t=profile.getRootNode().style;
-                xui.UI.$tryResize(profile, t.width, t.height, true);
-                t=null;
+                profile.adjustSize();
             });
 
             return self;
@@ -464,9 +457,6 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             MENU2:{
                 display:'none'
             },
-            MENUICON:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle'
-            },
             MENUCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
@@ -507,7 +497,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             ITEMC:{
                 $order:0,
-                padding:'.5em 0 .25em 0',
+                padding:'.33333333em',
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
@@ -735,9 +725,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     instance.afterPageClose(profile, bak);
 
-                    var t=profile.getRootNode().style;
-                    xui.UI.$tryResize(profile, t.width, t.height,true);
-                    t=null;
+                    profile.adjustSize();
 
                     return false;
                 }

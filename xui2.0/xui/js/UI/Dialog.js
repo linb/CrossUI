@@ -987,7 +987,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
             ins.setDock('none');
 
             // resize
-            xui.UI.$tryResize(profile, t.width, t.height,true);
+            profile.adjustSize(true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'normal', status);
         },
         _unMin:function(profile){
@@ -1002,7 +1002,7 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
 
             profile.getRoot().cssSize({width:t.width, height:t.height});
             // resize
-            xui.UI.$tryResize(profile, t.width, t.height,true);
+            profile.adjustSize(true);
         },
         _active:function(profile,flag){
             var self=this;

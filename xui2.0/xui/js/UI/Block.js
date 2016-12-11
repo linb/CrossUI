@@ -115,37 +115,49 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 action:function(v){
                     var ns=this,
                         p=ns.properties,
+                        type=p.sideBarType,
                         n1=ns.getSubNode('BORDER'), n2=ns.getSubNode('PANEL'),
                         reg=/^xui-uiborder-/,
-                        flat='xui-uiborder-flat xui-uiborder-radius',
-                        ins='xui-uiborder-inset xui-uiborder-radius',
-                        outs='xui-uiborder-outset xui-uiborder-radius',
+                        b='xui-uiborder-',
+                        r=b+'radius',
+                        i=b+'flat',
+                        o=b+'outset',
+                        f=b+'flat',
+                        ibr = type=='left'?r+'-tr '+r+'-br':type=='top'?r+'-bl '+r+'-br':type=='right'?r+'-tl '+r+'-bl':type=='bottom'?r+'-tl '+r+'-tr':r,
+                        flat=f+' ' +r,
+                        ins=i+' '+r,
+                        outs=o+' ' +r,
+                        ins2=i + ' '+ibr,
+                        outs2=o+' '+ibr,
                         root=ns.getRoot();
                     n1.removeClass(reg);
                     n2.removeClass(reg);
                     switch(v){
                         case 'flat':
                         n1.addClass(flat);
+                        n2.addClass(ibr);
                         break;
                         case 'inset':
                         n1.addClass(ins);
+                        n2.addClass(ibr);
                         break;
                         case 'outset':
                         n1.addClass(outs);
+                        n2.addClass(ibr);
                         break;
                         case 'groove':
                         n1.addClass(ins);
-                        n2.addClass(outs);
+                        n2.addClass(outs2);
                         break;
                         case 'ridge':
                         n1.addClass(outs);
-                        n2.addClass(ins);
+                        n2.addClass(ins2);
                         break;
                     }
 
                     //force to resize
                     ns.box._setB(ns);
-                    xui.UI.$tryResize(ns,root.get(0).style.width,root.get(0).style.height,true);
+                    ns.adjustSize();
                 }
             },
 
@@ -159,13 +171,14 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                         reg=/^xui-uisb-/,
                         node=ns.getSubNode('SIDEBAR');
                     
-                    node.removeClass(reg);
-                    node.addClass('xui-uisb-'+v);
-                    
+                    node.removeClass(reg).addClass('xui-uisb-'+v);
+
                     ns.box._sbicon(ns,true);
 
+                    ns.boxing().setBorderType(prop.borderType,true);
+
                     if(prop.dock=='none')
-                        xui.UI.$tryResize(ns, prop.width, prop.height,true);
+                        ns.adjustSize();
                     else
                         ns.boxing().adjustDock(true);
                 }
@@ -197,7 +210,7 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                     var ns=this, 
                         prop=ns.properties;
                     if(prop.dock=='none')
-                        xui.UI.$tryResize(ns, prop.width, prop.height,true);
+                        ns.adjustSize();
                     else
                         ns.boxing().adjustDock(true);
                 }
@@ -306,10 +319,10 @@ Class("xui.UI.Block", "xui.UI.Widget",{
                 if(sbtype=='left'||sbtype=='right'){
                     sidebar.width(sbsize2);
                     if(height&&'auto'!==height)
-                        sidebar.height(adjustunit(hh - b));
+                        sidebar.height(adjustunit(hh));
                 }else{
                     sidebar.height(sbsize2);
-                    sidebar.width(adjustunit(ww - b));
+                    sidebar.width(adjustunit(ww));
                 }
 
                 if(sbs=='fold'){

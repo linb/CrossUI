@@ -233,10 +233,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 box._adjustColsWidth(profile);
                 box._adjustColsHeight(profile);
 
-                xui.UI.$tryResize(profile, 
-                    profile.getRoot().width(),
-                    profile.getRoot().height(),
-                    true);
+                profile.adjustSize();
             }
             if(rows&&rows.length)
                 this.setRows(rows);
@@ -1334,12 +1331,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 xui.merge(colh, options, 'all');
 
-                if('flexSize' in options){
-                    xui.UI.$tryResize(profile, 
-                        profile.getRoot().width(),
-                        profile.getRoot().height(),
-                    true);
-                }
+                if('flexSize' in options)
+                    profile.adjustSize();
             }
         },
         showColumn:function(colId, flag){
@@ -2782,8 +2775,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //don't add cell in HoverEffected, for 'hover' editMode
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], FHCELL:'FHCELL',FCELL:'FHCELL',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
             ClickEffected:  {ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], CMD:'CMD'},
-            DroppableKeys:['SCROLL22','CELLS1','CELLS2','FCELL'],
             DraggableKeys:['FCELL'],
+            DroppableKeys:['SCROLL21','SCROLL22','CELLS1','CELLS2','FCELL'],
 
             onSize:xui.UI.$onSize,
             HFMARK:{
@@ -3107,10 +3100,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.getKey(xui.use(src).parent(2).id())==profile.keys.FHCELL){
                         prop.headerHeight=profile.$forceu(h);
                         profile.box._adjustColsHeight(profile);
-                        xui.UI.$tryResize(profile, 
-                            profile.getRoot().width(),
-                            profile.getRoot().height(),
-                        true);
+                        profile.adjustSize();
                     }else{
                         row.height=profile.$forceu(h);
                         profile.getSubNode("CELLS2",subId).height(row.height);
@@ -3148,10 +3138,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.box._adjustColsHeight(profile,true);
 
                         prop.headerHeight = profile.$forceu(h, profile.$picku(prop.headerHeight));
-                        xui.UI.$tryResize(profile, 
-                            profile.getRoot().width(),
-                            profile.getRoot().height(),
-                        true);
+                        profile.adjustSize();
                     }
 
                     if(profile.afterRowResized)
@@ -4247,10 +4234,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var profile=this,
                         prop=profile.properties;
                     profile.box._adjustColsHeight(profile);
-                    xui.UI.$tryResize(profile, 
-                        profile.getRoot().width(),
-                        profile.getRoot().height(),
-                    true);
+                    profile.adjustSize();
                 }
             },
             rowHeight:{
@@ -4877,6 +4861,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     row=profile.rowMap[profile.getSubId(tid)];
                 if(k==ks.FCELL && !row.sub)
                     return false;
+                if(profile.properties.rowHandler){
+                    if(k==ks.CELLS2||k==ks.SCROLL22)return false;
+                }else{
+                    if(k==ks.CELLS1||k==ks.SCROLL21)return false;
+                }
             }
             if(fp && fp.$xid==profile.$xid){
                 if(fid && profile.getSubId(fid)==profile.getSubId(tid))
@@ -4898,7 +4887,6 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             delete profile.$_ond;
         },
         _onDrop:function(profile, e, src, key, data, item){
-            xui.DragDrop.setDragIcon('none');
             if(!data.profile || !data.profile[profile.KEY])return;
             var k = profile.getKey(src),
                 po = data.profile,
@@ -4916,11 +4904,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             po.boxing().removeRows([orow.id]);
 
             //add
-            if(k==ks.SCROLL22)
+            if(k==ks.SCROLL21||k==ks.SCROLL22)
                 b.insertRows([orow], null, null, false);
             else if((k==ks.FCELL) && row.sub)
                 b.insertRows([orow], row.id, null, false);
-            else if(k==ks.CELLS2)
+            else if(k==ks.CELLS1||k==ks.CELLS2)
                 b.insertRows([orow], row._pid, row.id, true);
 
             if(arr && arr.length){

@@ -892,8 +892,8 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 $hborder, $vborder,
 
                 clsname='xui-node xui-input-input',
-                paddingH=v1._paddingH(),
-                paddingW=v1._paddingW(),
+                paddingH=Math.round(v1._paddingH()/2)*2,
+                paddingW=Math.round(v1._paddingW()/2)*2,
                 autoH;
             
             $hborder=$vborder=box._borderW() / 2;
