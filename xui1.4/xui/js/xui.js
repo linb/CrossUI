@@ -1737,8 +1737,10 @@ new function(){
         if(b.isSafari){
            if(/applewebkit\/4/.test(u))
                 b["safari"+(b.ver=2)]=true;
-           else
+           else if(/version/.test(u))
                 b[v('safari','version/')]=true;
+           else
+                b["safari"]=true;
         }else if(b.isChrome)
             b[v('chrome','chrome/')]=true;
 
