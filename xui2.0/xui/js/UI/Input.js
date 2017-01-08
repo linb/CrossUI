@@ -768,7 +768,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     //get corret string according to maskTxt
                     var a=[];
                     xui.arr.each(maskTxt.split(''),function(o,i){
-                        a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
+                        a.push( map[o]?(((new RegExp('^'+map[o]+'$')).test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i)) : maskStr.charAt(i))
                     });
     
                     //if input visible char

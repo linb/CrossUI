@@ -90,7 +90,7 @@ Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 style:'position:absolute;display:none;',
                 POP:{
                     tagName:'div',
-                    className:'xui-uibase xui-ui-reset'
+                    className:'xui-uibase xui-ui-reset xui-ui-ctrl'
                 }
             },
             LABEL:{

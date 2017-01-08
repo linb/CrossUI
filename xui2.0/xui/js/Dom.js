@@ -2341,7 +2341,7 @@ type:4
 
             value= node.style[name];
             if(force || !value || value==="initial"){
-                var me = arguments.callee,t,
+                var me =xui.Dom.getStyle,t,
                 brs=xui.browser,
                 map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1}),
                 c1 = me._c1 || (me._c1={}),
@@ -3778,9 +3778,9 @@ type:4
 
         xui.arr.each([['_W',w, '_'+p+'W', '_'+b+'W', '_'+m+'W', c+W, o+W],
         ['_H',h, '_'+p+'H', '_'+b+'H', '_'+m+'H', c+H, o+H]],function(o){
-            self.plugIn(o[0],function(node,index,value,_in){
-                var n,r,t,style=node.style,me=arguments.callee,contentBox=xui.browser.contentBox,
-                r1=me.r1 || (me.r1=/%$/),
+            var _size=function(node,index,value,_in){
+                var n,r,t,style=node.style,contentBox=xui.browser.contentBox,
+                r1=/%$/,
                 getStyle=xui.Dom.getStyle,
                 f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
@@ -3799,23 +3799,23 @@ type:4
                         case 1:
                             r=getStyle(node,o[1]);
                             if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
-                                r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
+                                r = _size(node,2,undefined,true) - (contentBox?t[o[2]]():0);
                             r=xui.CSS.$px(r,node)||0;
                             break;
                         case 2:
                             r=node[o[6]];
                             //get from css setting before css applied
                             if(!r){
-                                if(!_in)r=me(node,1,undefined,true)+(contentBox?t[o[2]]():0);
+                                if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);
                             }else r-=t[o[3]]();
                             break;
                         case 3:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=me(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(!r)r=_size(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
-                            r=me(node,3,value);
+                            r=_size(node,3,value);
                             r+=t[o[4]]();
                             break;
                     }
@@ -3835,20 +3835,21 @@ type:4
                                 }
                             break;
                         case 2:
-                            me(node, 1, value - (contentBox?xui([node])[o[2]]():0));
+                            _size(node, 1, value - (contentBox?xui([node])[o[2]]():0));
                             break;
                         case 3:
                             //back value for offsetHeight/offsetWidth slowly
-                            me(node, 1, value - (t=xui([node]))[o[3]]() - (contentBox?t[o[2]]():0));
+                            _size(node, 1, value - (t=xui([node]))[o[3]]() - (contentBox?t[o[2]]():0));
                             break;
                         case 4:
-                            me(node, 1, value - (t=xui([node]))[o[4]]() - t[o[3]]() - (contentBox?t[o[2]]():0));
+                            _size(node, 1, value - (t=xui([node]))[o[4]]() - t[o[3]]() - (contentBox?t[o[2]]():0));
                             break;
                     }
                     //if(node._bp)
                     //    node['_'+o[6]]=null;
                 }
-            })
+            };
+            self.plugIn(o[0], _size)
         });
         xui.arr.each([[c+W,'_W',2],[o+W,'_W',3],[r+W,'_W',4],
          [c+H,'_H',2],[o+H,'_H',3],[r+H,'_H',4]],function(o){

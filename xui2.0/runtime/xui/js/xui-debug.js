@@ -305,17 +305,18 @@ new function(){
         },
         asyHTML:function(content, callback, defer, size){
             var div = document.createElement('div'),
-                fragment = document.createDocumentFragment();
+                fragment = document.createDocumentFragment(),
+                f=function(){
+                    var i=size||10;
+                    while(--i && div.firstChild)
+                        fragment.appendChild(div.firstChild);
+                    if(div.firstChild)
+                        xui.setTimeout(f, defer);
+                    else
+                        callback(fragment);
+                };
             div.innerHTML = content;
-            (function(){
-                var i=size||10;
-                while(--i && div.firstChild)
-                    fragment.appendChild(div.firstChild);
-                if(div.firstChild)
-                    xui.setTimeout(arguments.callee, defer);
-                else
-                    callback(fragment);
-            })();
+            f();
         },
         isEmpty:function(hash){
             if (hash==null) return true;
@@ -334,7 +335,7 @@ new function(){
         scope: 'this' for fun
         */
         resetRun:function(key, fun, defer ,args, scope){
-            var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
+            var me=xui.resetRun, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
             if(cache[k]){xui.clearTimeout(cache[k])}
             if(typeof fun=='function')
                 cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer);
@@ -349,8 +350,8 @@ new function(){
         target: target object
         n: depth, default 1
         */
-        breakO:function(target,depth){
-            var n=depth||1, l=1+(arguments[2]||0), self=arguments.callee, _t='___gc_', i;
+        breakO:function(target,depth,_layer){
+            var n=depth||1, l=1+(_layer||0), self=xui.breakO, _t='___gc_', i;
             if(target && (typeof target=='object' || typeof target=='function') && target!==window&&target!==document&&target.nodeType!==1){
                 try{if(target.hasOwnProperty(_t))return; else target[_t]=null}catch(e){return}
                 try{for(i in target){
@@ -444,10 +445,11 @@ new function(){
         * var a=[]; a.b='b'; a.b will not be cloned
         *be careful for dead lock
         */
-        clone:function(hash,filter,deep){
-            var layer=arguments[3]||0;
+        clone:function(hash,filter,deep,_layer){
+            _layer=_layer||0;
             if(hash && (xui.isHash(hash)||xui.isArr(hash))){
-                if(xui.isObj(hash)){                var me=arguments.callee,
+                if(xui.isObj(hash)){
+                    var me=xui.clone,
                         isArr=xui.isArr(hash),
                         h=isArr?[]:{},
                         i=0,v,l;
@@ -458,16 +460,16 @@ new function(){
                     if(isArr){
                         l=hash.length;
                         for(;i<l;i++){
-                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
-                            h[h.length]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,_layer+1))continue;
+                            h[h.length]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,_layer+1):v;
                         }
                     }else{
                         for(i in hash){
                             if(filter===true?i.charAt(0)=='_':
                                 filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
-                                typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
+                                typeof filter=='function'?false===filter.call(hash,hash[i],i,_layer+1):0)
                                 continue;
-                            h[i]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                            h[i]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,_layer+1):v;
                         }
                     }
                     return h;
@@ -548,12 +550,15 @@ new function(){
                 o=a[i];
                 arr=o.split('=');
                 try{
-                    hash[decodeURIComponent(arr[0])]=decodeURIComponent(arr[1]);
+                    hash[decodeURIComponent(arr[0])]=decodeURIComponent(arr[1]||'');
                 }catch(e){
-                    hash[arr[0]]=arr[1];
+                    hash[arr[0]]=arr[1]||'';
                 }
             }
             return key?hash[key]:hash;
+        },
+        getUrlParams:function(url){
+            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+/,''));
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
@@ -1001,15 +1006,16 @@ xui.merge(xui,{
         for(i=0;t=v[i];i++)if(t.id==xui.$localeDomId)a[a.length]=t;
         l=a.length;
         f=function(){
-            (function(){
+            var ff=function(){
                 j=a.splice(0,100);
                 for(i=0;t=j[i];i++)
                     if(t.className && typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
-                    xui.setTimeout(arguments.callee,0);
+                    xui.setTimeout(ff,0);
                 xui.tryF(callback,[a.length,l]);
-            }())
+            };
+            ff();
         },
         z = 'xui.Locale.' + key,
         m=function(){
@@ -1612,7 +1618,7 @@ xui.merge(xui,{
 
     //create:function(tag, properties, events, host){
     create:function(tag,bak){
-        var arr,o,t,me=arguments.callee,r1=me.r1||(me.r1=/</);
+        var arr,o,t,me=xui.create,r1=me.r1||(me.r1=/</);
         if(typeof tag == 'string'){
             //Any class inherited from xui.absBox
             if(t=xui.absBox.$type[tag]){
@@ -1784,7 +1790,7 @@ new function(){
         if(b.isSafari){
            if(/applewebkit\/4/.test(u))
                 b["safari"+(b.ver=2)]=true;
-           else
+           else if(/version/.test(u))
                 b[v('safari','version/')]=true;
         }else if(b.isChrome)
             b[v('chrome','chrome/')]=true;
@@ -1917,18 +1923,22 @@ new function(){
     d.attachEvent("onreadystatechange", f);
         w.attachEvent("onload", f);
 
-        (function(){
+        var ff=function(){
             if(xui.isDomReady)return;
             try{
                 //for ie7 iframe(doScroll is always ok)
                 d.activeElement.id;
                 d.documentElement.doScroll('left');f()
-            }catch(e){xui.setTimeout(arguments.callee,9)}
-        })();
+            }catch(e){xui.setTimeout(ff,9)}
+        };
+        ff();
     }
 
     // to ensure
-    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(arguments.callee,9):f()})();
+    var fe=function(){
+        ((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(fe,9):f()
+   };
+   fe();
 };
 
 // for loction url info
@@ -2290,7 +2300,7 @@ new function(){
             + '"'
     };
     T[O]=function(x,filter,dateformat,deep,max,MAXL,MAXS){
-        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1});
+        var map = {prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1};
         deep=deep||1;
         max=max||0;
         MAXL=MAXL||xui.SERIALIZEMAXLAYER;
@@ -2391,23 +2401,23 @@ new function(){
     xui.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
         if(!str)return false;
+        if(!safeW){
+            var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
+            document.body.appendChild(ifr);
+            w=frames[frames.length-1].window;
+            safeW={};
+            for(var i in w)safeW[i]=null;
+            document.body.removeChild(ifr);                
+        }
+        str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
         try{
-            if(!safeW){
-                var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
-                document.body.appendChild(ifr);
-                w=frames[frames.length-1].window;
-                safeW={};
-                for(var i in w)safeW[i]=null;
-                document.body.removeChild(ifr);                
-            }
-            str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
             str=eval(str);
-            if(dateformat||(xui&&xui.$dateFormat))E(str);
-            str=str._;
-            return str;
         }catch(e){
             return false;
         }
+        if(dateformat||(xui&&xui.$dateFormat))E(str);
+        str=str._;
+        return str;
     };
 };
 
@@ -2415,9 +2425,9 @@ new function(){
 */
 new function(){
     xui.id=function(){
-        var self=this, me=arguments.callee;
-        if(self.constructor!==me || self.a)
-            return (me._ || (me._= new me)).next();
+        var self=this;
+        if(self.constructor!==xui.id || self.a)
+            return (xui.id._ || (xui.id._= new xui.id)).next();
         self.a=[-1];
         self.b=[''];
         self.value='';
@@ -3375,12 +3385,12 @@ Class('xui.XDMI','xui.absIO',{
                     }
 
                     // get data
-                    (function(){
+                    var getData = function(){
                         // second round: try to get data
                         var flag=0;
                         try{if(w.name===undefined)flag=1}catch(e){flag=1}
                         if(flag){
-                            return xui.asyRun(arguments.callee);
+                            return xui.asyRun(getData);
                         }
 
                         var data;
@@ -3403,7 +3413,8 @@ Class('xui.XDMI','xui.absIO',{
                             self._clear();
                             self._onError(new Error("XDMI return value formatting error, or no matched 'id'-- "+data));
                         }
-                    })();
+                    };
+                    getData();
                 };
             }
 
@@ -11110,7 +11121,7 @@ type:4
 
             value= node.style[name];
             if(force || !value || value==="initial"){
-                var me = arguments.callee,t,
+                var me =xui.Dom.getStyle,t,
                 brs=xui.browser,
                 map = me.map || (me.map = {'float':1,'cssFloat':1,'styleFloat':1}),
                 c1 = me._c1 || (me._c1={}),
@@ -12547,9 +12558,9 @@ type:4
 
         xui.arr.each([['_W',w, '_'+p+'W', '_'+b+'W', '_'+m+'W', c+W, o+W],
         ['_H',h, '_'+p+'H', '_'+b+'H', '_'+m+'H', c+H, o+H]],function(o){
-            self.plugIn(o[0],function(node,index,value,_in){
-                var n,r,t,style=node.style,me=arguments.callee,contentBox=xui.browser.contentBox,
-                r1=me.r1 || (me.r1=/%$/),
+            var _size=function(node,index,value,_in){
+                var n,r,t,style=node.style,contentBox=xui.browser.contentBox,
+                r1=/%$/,
                 getStyle=xui.Dom.getStyle,
                 f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
@@ -12568,23 +12579,23 @@ type:4
                         case 1:
                             r=getStyle(node,o[1]);
                             if((isNaN(parseFloat(r)) || r1.test(r))&&!_in)
-                                r = me(node,2,undefined,true) - (contentBox?t[o[2]]():0);
+                                r = _size(node,2,undefined,true) - (contentBox?t[o[2]]():0);
                             r=xui.CSS.$px(r,node)||0;
                             break;
                         case 2:
                             r=node[o[6]];
                             //get from css setting before css applied
                             if(!r){
-                                if(!_in)r=me(node,1,undefined,true)+(contentBox?t[o[2]]():0);
+                                if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);
                             }else r-=t[o[3]]();
                             break;
                         case 3:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=me(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(!r)r=_size(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
-                            r=me(node,3,value);
+                            r=_size(node,3,value);
                             r+=t[o[4]]();
                             break;
                     }
@@ -12604,20 +12615,21 @@ type:4
                                 }
                             break;
                         case 2:
-                            me(node, 1, value - (contentBox?xui([node])[o[2]]():0));
+                            _size(node, 1, value - (contentBox?xui([node])[o[2]]():0));
                             break;
                         case 3:
                             //back value for offsetHeight/offsetWidth slowly
-                            me(node, 1, value - (t=xui([node]))[o[3]]() - (contentBox?t[o[2]]():0));
+                            _size(node, 1, value - (t=xui([node]))[o[3]]() - (contentBox?t[o[2]]():0));
                             break;
                         case 4:
-                            me(node, 1, value - (t=xui([node]))[o[4]]() - t[o[3]]() - (contentBox?t[o[2]]():0));
+                            _size(node, 1, value - (t=xui([node]))[o[4]]() - t[o[3]]() - (contentBox?t[o[2]]():0));
                             break;
                     }
                     //if(node._bp)
                     //    node['_'+o[6]]=null;
                 }
-            })
+            };
+            self.plugIn(o[0], _size)
         });
         xui.arr.each([[c+W,'_W',2],[o+W,'_W',3],[r+W,'_W',4],
          [c+H,'_H',2],[o+H,'_H',3],[r+H,'_H',4]],function(o){
@@ -17976,12 +17988,18 @@ Class("xui.UI",  "xui.absObj", {
     },
     Instance:{
         hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
-            var prf=this.get(0),source=prf.boxing();
+            var prf=this.get(0),source=prf.boxing(),popmenu;
             if(!prf.box.$EventHandlers.beforeHoverEffect){
                 source.getRoot().hoverPop(node, type, beforePop,beforeHide, parent, groupid);
                 return this;
             }
             node=xui(node);
+            popmenu=xui.UIProfile.getFromDom(node.id());
+            if(popmenu&&popmenu.key==='xui.UI.PopMenu'){
+                popmenu=popmenu.boxing();
+            }else{
+                popmenu=null;
+            }
             if(!xui.isDefined(type))type='outer';
             var aysid=groupid||(source.getRoot().xid()+":"+node.xid());
             source.each(function(o){
@@ -17992,13 +18010,15 @@ Class("xui.UI",  "xui.absObj", {
                         var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                         && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                         if(!ignore){
-                            xui.setData([aysid,'$ui.hover.pop'],item);
+                            xui.setData([aysid,'$ui.hover.pop'],{item:item});
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                             if(!beforePop || false!==beforePop(prf, node, e, src, item)){
-                                node.popToTop(src, type, parent);
+                                if(popmenu) popmenu.pop(src, type, parent);
+                                else node.popToTop(src, type, parent);
                                 node.onMouseover(function(){
                                     xui(src).onMouseover(true)
-                                },'hoverPop').onMouseout(function(){
+                                },'hoverPop')
+                                node.onMouseout(function(){
                                     xui(src).onMouseout(true)
                                 },'hoverPop');
                             }
@@ -18008,7 +18028,8 @@ Class("xui.UI",  "xui.absObj", {
                             xui.setData([aysid,'$ui.hover.pop']);
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                             if(!beforeHide || false!==beforeHide(prf, node,e, src ,'host',item)){
-                                node.hide();
+                                if(popmenu) popmenu.hide();
+                                else node.hide();
                                 node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
                             }
                         });
@@ -18018,21 +18039,25 @@ Class("xui.UI",  "xui.absObj", {
             if(node){
                 node.onMouseover(type===null?null:function(e){
                     if(e.$force)return;
+                    if(!xui.getData([aysid,'$ui.hover.pop']))return;
                     xui.resetRun(aysid,null);
-                },aysid).onMouseout(type===null?null:function(prf,e,src){
+                },'hoverPop');
+                node.onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
+                    if(!xui.getData([aysid,'$ui.hover.pop']))return;
                     xui.resetRun(aysid,function(){
                         xui.setData([aysid,'$ui.hover.pop'])
                         xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                         var item=xui.getData([aysid,'$ui.hover.pop']);
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop',item)){
-                            node.hide();
+                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop',item&&item.item)){
+                            if(popmenu) popmenu.hide();
+                            else node.hide();
                             node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
                         }
                     });
-                },aysid);
+                },'hoverPop');
+                node.css('display','none');
             }
-            node.css('display','none');
             return this;
         },
         setTheme:function(key){
@@ -18201,7 +18226,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;padding-top:2em;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>');
+                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom" style="margin-top:1.2em;"></div></button>');
                     }
                     node=profile.$busy;
 
@@ -19507,9 +19532,6 @@ Class("xui.UI",  "xui.absObj", {
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'text-decoration': 'none',
                 'white-space':'nowrap',
-                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                'box-shadow':'inset 0px 1px 0px 0px #ffffff',
                 'background-image_1': "linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
                 'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #CDCDCD))",
                 'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
@@ -20201,7 +20223,7 @@ Class("xui.UI",  "xui.absObj", {
           flag: default flase => no clear not mactched symbols
         */
         $doTemplate:function(profile, template, properties, tag, result, index, realtag){
-            var self=arguments.callee,
+            var self=xui.UI.$doTemplate,
                 s,t,n,
                 x01=xui.UI.$x01,
                 x01r=' \x01 ',
@@ -21337,8 +21359,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         buildCSSText:function(hash){
             var self=this,
-                me=arguments.callee,
-                r1=me._r1||(me._r1=/(^|\s|,)([0-9A-Z_]+)/g),
+                r1=/(^|\s|,)([0-9A-Z_]+)/g,
                 h=[], r=[],
                 browser=xui.browser,
                 ie6=browser.ie6,
@@ -24929,7 +24950,19 @@ Class("xui.UI.HTMLButton", "xui.UI.Element",{
                     else this.getRoot().removeClass(cls);
                     i.attr('disabled',v?"1":null);
                 }
+            },
+            shadow:{
+                ini:false,
+                action: function(v){
+                    var node=this.getRoot();
+                    if(v) node.addClass('xui-ui-shadow');
+                    else node.removeClass('xui-ui-shadow');
+                }
             }
+        },
+        RenderTrigger:function(){
+            var self=this, p=self.properties, o=self.boxing();
+            if((!self.$noS) && p.shadow && o.setShadow)o.setShadow(true,true);
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY'}
@@ -28825,8 +28858,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     height : ''
                 });
                 var w=profile.$px('1em'),
-                    w1=prop.showIncreaseHandle?w:0,
-                    w2=prop.showDecreaseHandle?w:0,
+                    w1=prop.showDecreaseHandle?w:0,
+                    w2=prop.showIncreaseHandle?w:0,
                     w3=indb._borderW('left');
                 if(ww){
                     ruler.left(adjustunit(w1+offset, rulerfz))
@@ -29616,7 +29649,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     //get corret string according to maskTxt
                     var a=[];
                     xui.arr.each(maskTxt.split(''),function(o,i){
-                        a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
+                        a.push( map[o]?(((new RegExp('^'+map[o]+'$')).test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i)) : maskStr.charAt(i))
                     });
     
                     //if input visible char
@@ -36668,18 +36701,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
 
             var isize={},
                 noFrame=prop.noFrame,
-                bd=profile.getSubNode('BORDER'),
+                border=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
-                v2=profile.getSubNode('PANEL'),
+                panel=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
                 
                 fzrate=profile.getEmSize()/root._getEmSize(),
-                panelfz=v2._getEmSize(fzrate),
+                panelfz=panel._getEmSize(fzrate),
 
-                bordersize=profile.properties.borderType!='none'?v2._borderW():0,
-                h0=bd._borderH(),
+                bordersize=profile.properties.borderType!='none'?panel._borderW():0,
+                h0=border._borderH(),
                 h1,h4,t;
 
             // caculate by px
@@ -36687,26 +36720,26 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             if(height && height!='auto')height=profile.$px(height,null, true);
 
             if(height){
-                if(height=='auto')
-                    isize.height=height;
-                else{
+                if(profile._toggle){
+                    panel.css('display','');
+                }else{
+                    panel.css('display','none');
+                }
+                if(height=='auto'){
+                    root.height(isize.height='auto');
+                }else{
                     if(profile._toggle){
-                        v2.css('display','');
                         //force to get height
                         h1=v1.offsetHeight(true);
                         h4=noFrame?0:v4.offsetHeight(true);
                         if((t=height-h0-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
+
+                        border.height(adjustunit(height-h0, border));
+                        root.height(adjustunit(height));
                     }else{
-                        v2.css('display','none');
-                        // for expand status:
-                        //    height is set in upper function
-                        // for fold status:
-                        //    if display => adjust ctrl's height to border's
-                        //    if non-display => adjust ctrl's height to 'auto'
-                        h1 = bd.height();
-                        h1 = h1?adjustunit(h1):null;
-                        profile.getRoot().height(h1 || 'auto');
+                        border.height('auto');
+                        root.height('auto');
                     }
                 }
             }
@@ -36720,10 +36753,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     -v6._borderW()
                     , panelfz);
             }
+
             if(profile._toggle){
-                v2.cssSize(isize, true);
+                panel.cssSize(isize, true);
                 if(width){
-                    xui.UI._adjustConW(profile, v2, isize.width);
+                    xui.UI._adjustConW(profile, panel, isize.width);
                 }
             }
         }
@@ -36855,7 +36889,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             TOGGLE:{
-                padding:'0 .334em 0 .1667em'
+                padding:'0 .334em 0 0'
             }
         },
         DataModel:{
@@ -36921,39 +36955,41 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                b=prop.$vborder,
+                b=prop.$vborder*2,
                 // compare with px
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 border = profile.getSubNode('BORDER'),
                 panel =profile.getSubNode('PANEL'), 
+                root = profile.getRoot(),
 
                 // caculate by px
                 ww=width?profile.$px(width):null, 
                 hh=height?profile.$px(height):null;
-
-            if(profile._toggle){
-                panel.css('display','');
-                if(height && height!='auto'){
-                    border.height(adjustunit(hh, border));
-                    hh -= profile.getSubNode('TBAR').height(true);
-                    panel.height(adjustunit(hh - b, panel) );
+            if(height){
+                if(profile._toggle){
+                    panel.css('display','');
+                }else{
+                    panel.css('display','none');
                 }
-            }else{
-                panel.css('display','none');
-                // for expand status:
-                //    height is set in upper function
-                // for fold status:
-                //    if display => adjust ctrl's height to legend's
-                //    if non-display => adjust ctrl's height to 'auto'
-                height = profile.getSubNode('TBAR').height();
-                height = height?adjustunit(height):null;
-                profile.getRoot().height(height || 'auto');
-                if(height && height!='auto'){
-                    border.height(height);
+                if(height=='auto'){
+                    panel.height('auto');
+                    border.height('auto');
+                    root.height('auto');
+                }else{
+                    if(profile._toggle){
+                        panel.height(adjustunit(hh - profile.getSubNode('TBAR').offsetHeight(true) - b/2, panel));
+                        border.height(adjustunit(hh - b, border));
+                        root.height(adjustunit(hh));
+                    }else{
+                        // here, panel's display is 'none'
+                        border.height('auto');
+                        root.height('auto');
+                    }
                 }
             }
+
             if(width && width!='auto' && ww>=2 && profile._toggle){
                 panel.width(ww = adjustunit(ww-2));
                 xui.UI._adjustConW(profile, panel, ww);
@@ -37052,7 +37088,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 style:'position:absolute;display:none;',
                 POP:{
                     tagName:'div',
-                    className:'xui-uibase xui-ui-reset'
+                    className:'xui-uibase xui-ui-reset xui-ui-ctrl'
                 }
             },
             LABEL:{
@@ -39870,6 +39906,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             'BOX-tagcmdleft RTAGCMDS':{
                 "padding-right":'.333em',
                 "float":"left"
+            },
+            TOGGLE:{
+                padding:'0 .334em 0 0'
             }
         },
         Behaviors:{
@@ -40645,81 +40684,83 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             })
         },
         _scrollToBottom:function(){
-            return this.each(function(profile){
-                var o = profile.getSubNode('BOX'),
+            var profile=this.get(0),
+                o = profile.getSubNode('BOX'),
                 border = profile.getSubNode('BORDER'),
                 y = o.scrollTop(),
+                b=false,
                 offset,
                 h = o.scrollHeight(),
-                b=false,
                 bh = border.height();
-                if(bh<h-y){
-                    if(!profile.$scrollStep)profile.$scrollStep=1;
-
-                    if(profile.$scrollStep<5)
-                        profile.$scrollStep = profile.$scrollStep*1.01;
-
-                    y += profile.$scrollStep;
-                    if(bh>=h-y){
-                        y=h-bh;
-                        b=true;
-                    }
-                    o.scrollTop(y);
-                    if(b){
-                        profile.getSubNode('BOTTOM').css('display','none');
-                        profile.$scrollTobottom=false;
-                        profile.$scrollStep=null;
-                    }else{
-                        profile.getSubNode('TOP').css('display','block');
-                        if(profile.$scrollTobottom)
-                            xui.asyRun(arguments.callee, 0, [profile], this);
-                    }
+            if(bh<h-y){
+                y += (profile.$scrollStep = Math.max(5, (profile.$scrollStep||1)*1.005));
+                if(bh>=h-y){
+                    y=h-bh;
+                    b=true;
                 }
-            });
+                o.scrollTop(y);
+                if(b){
+                    profile.getSubNode('BOTTOM').css('display','none');
+                    profile.$scrollTobottom=false;
+                    profile.$scrollStep=1;
+                }else{
+                    profile.getSubNode('TOP').css('display','block');
+                    if(profile.$scrollTobottom)
+                        xui.asyRun(this._scrollToBottom, 0, [], this);
+                }
+            }
         },
         _scrollToTop:function(){
-            return this.each(function(profile){
-                var o = profile.getSubNode('BOX'),
+            var profile=this.get(0),
+                o = profile.getSubNode('BOX'),
                 y = o.scrollTop(),
                 b=false;
-
-                if(y>0){
-                    if(!profile.$scrollStep)profile.$scrollStep=1;
-
-                    if(profile.$scrollStep<5)
-                        profile.$scrollStep = profile.$scrollStep*1.01;
-
-                    y -= profile.$scrollStep;
-                    if(y<0){
-                        y=0;
-                        b=true;
-                    }
-                    o.scrollTop(y);
-                    if(b){
-                        profile.getSubNode('TOP').css('display','none');
-                        profile.$scrollToTop=false;
-                        profile.$scrollStep=null;
-                    }else{
-                        profile.getSubNode('BOTTOM').css('display','block');
-                        if(profile.$scrollToTop)
-                            xui.asyRun(arguments.callee, 0, [profile], this);
-                    }
+            if(y>0){
+                y -= (profile.$scrollStep = Math.max(5, (profile.$scrollStep||1)*1.005));
+                if(y<0){
+                    y=0;
+                    b=true;
                 }
-            });
+                o.scrollTop(y);
+                if(b){
+                    profile.getSubNode('TOP').css('display','none');
+                    profile.$scrollToTop=false;
+                    profile.$scrollStep=1;
+                }else{
+                    profile.getSubNode('BOTTOM').css('display','block');
+                    if(profile.$scrollToTop)
+                        xui.asyRun(this._scrollToTop, 0, [], this);
+                }
+            }
+        },
+        _initGrp:function(){
+            var profile=this.get(0),root;
+            if(!profile.$popGrp || !profile.$popGrp.length){
+                root=profile.getRoot();
+                profile.$popGrp = [root._get(0)];
+                //group blur trigger
+                root.setBlurTrigger(profile.$xid, null);
+                root.setBlurTrigger(profile.$xid, function(){
+                    if(profile.box){
+                        profile.boxing().hide();
+                        if(profile.$popGrp)
+                            profile.$popGrp.length=0;
+                    }
+                }, profile.$popGrp);
+            }
         },
         pop:function(obj, type, parent,ignoreEffects){
-            var profile=this.get(0),
+            var ns=this,
+                profile=ns.get(0),
                 p=profile.properties,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
                 cm='$childPopMenu';
             //ensure rendered
             if(!profile.renderId){
-                var o=profile.boxing().render(true);
                 //use empty idv for LayoutTrigger
-                xui.Dom.getEmptyDiv().append(o);
+                xui.Dom.getEmptyDiv().append(ns.render(true));
             }
-            var root = profile.getRoot();
 
             //clear highLight first
             if(profile.$highLight)
@@ -40728,31 +40769,14 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             // set container
             profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
 
-            root.popToTop(obj, type, profile._conainer);
+            profile.getRoot().popToTop(obj, type, profile._conainer);
 
-            this._setScroll();
+            ns._setScroll();
+            ns.adjustSize();
 
-            profile.boxing().adjustSize();
-
-            var f=function(){
-                var p=arguments.callee.profile;
-                // maybe destroyed here
-                if(p.box){
-                    p.boxing().hide();
-                    if(p.$popGrp)
-                        p.$popGrp.length=0;
-                }
-            };
-            f.profile=profile;
-
-            if(!profile.$popGrp || !profile.$popGrp.length){
-                profile.$popGrp = [root._get(0)];
-                //group blur trigger
-                root.setBlurTrigger(profile.$xid, null);
-                root.setBlurTrigger(profile.$xid, f, profile.$popGrp);
-            }
+            ns._initGrp();
             profile[cm]=profile[sms]=profile[hl]=null;
-            return this;
+            return ns;
         },
         hide:function(triggerEvent, ignoreEffects , e){
             var t,
@@ -40771,7 +40795,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     //remove trigger
                     root.setBlurTrigger(profile.$xid,null);
-                    if(profile.$hideMenuPool)
+                    if(xui.get(profile,['$hideMenuPool','_nodes',0]))
                         profile.$hideMenuPool.append(root);
                     else
                         root.css('display','none');
@@ -41104,6 +41128,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     r.onMouseout(function(p,e,src){
                                         profile.box._mouseout(profile, e, src);
                                     },null,-1);
+
+                                    profile.boxing()._initGrp();
                                     profile[popgrp].push(r._get(0));
 
                                     r.popToTop(src,2,profile._conainer);
@@ -41133,7 +41159,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                 });
                                 popp=pop.get(0);
                                 //set pool to parent
-                                popp.$hideMenuPool = profile.$hideMenuPool || profile.getSubNode('POOL');
+                                popp.$hideMenuPool = xui.get(profile,['$hideMenuPool','_nodes',0]) || profile.getSubNode('POOL');
 
                                 profile[all][itemId] = pop;
 
@@ -41144,6 +41170,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             }else popp=pop.get(0);
 
                             //input a copy of root for group trigger
+                            profile.boxing()._initGrp();
                             profile[popgrp].push(popp.getRoot()._get(0));
                             popp[popgrp] = profile[popgrp];
 
@@ -41287,11 +41314,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             TOP:{
                 onMouseover:function(profile){
                     profile.$scrollToTop=true;
+                    profile.$scrollStep=1;
                     profile.boxing()._scrollToTop();
                 },
                 onMouseout:function(profile){
                     profile.$scrollToTop=false;
-                    profile.$scrollStep=null;
+                    profile.$scrollStep=1;
                 },
                 onClick:function(profile){
                     profile.$scrollStep*=2;
@@ -41300,11 +41328,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOTTOM:{
                 onMouseover:function(profile){
                     profile.$scrollTobottom=true;
+                    profile.$scrollStep=1;
                     profile.boxing()._scrollToBottom();
                 },
                 onMouseout:function(profile){
                     profile.$scrollTobottom=false;
-                    profile.$scrollStep=null;
+                    profile.$scrollStep=1;
                 },
                 onClick:function(profile){
                     profile.$scrollStep*=2;
@@ -46002,6 +46031,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:0,
                 position:'relative',
                 overflow:'visible'
+            },
+            ROWTOGGLE:{
+                padding:'0 .334em 0 0'
             }
         },
         _objectProp:{rowOptions:1,colOptions:1},

@@ -2117,9 +2117,9 @@ Class('RAD.CustomDecoration2', 'xui.Module',{
                 type:"popbox"
             };
             rows.push({id:'border-top',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
-            rows.push({id:'border-right',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
-            rows.push({id:'border-bottom',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
-            rows.push({id:'border-left',cells:[{id:'border-top',caption:"$(RAD.custom_dlg.border$-top)"},cell,cell,cell,cell]});
+            rows.push({id:'border-right',cells:[{id:'border-right',caption:"$(RAD.custom_dlg.border$-right)"},cell,cell,cell,cell]});
+            rows.push({id:'border-bottom',cells:[{id:'border-bottom',caption:"$(RAD.custom_dlg.border$-bottom)"},cell,cell,cell,cell]});
+            rows.push({id:'border-left',cells:[{id:'border-left',caption:"$(RAD.custom_dlg.border$-left)"},cell,cell,cell,cell]});
             if(xui.Dom.css3Support("border-radius")){
                 rows.push({id:'border-radius',cells:[{id:'border-radius',caption:"$(RAD.custom_dlg.border$-radius)"},cell,cell,cell,cell]});
             }

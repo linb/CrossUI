@@ -125,7 +125,7 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                 'vertical-align':xui.browser.ie6?'baseline':'middle'
             },
             TOGGLE:{
-                padding:'0 .334em 0 .1667em'
+                padding:'0 .334em 0 0'
             }
         },
         DataModel:{
@@ -191,39 +191,41 @@ Class("xui.UI.Group", "xui.UI.Panel",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                b=prop.$vborder,
+                b=prop.$vborder*2,
                 // compare with px
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 border = profile.getSubNode('BORDER'),
                 panel =profile.getSubNode('PANEL'), 
+                root = profile.getRoot(),
 
                 // caculate by px
                 ww=width?profile.$px(width):null, 
                 hh=height?profile.$px(height):null;
-
-            if(profile._toggle){
-                panel.css('display','');
-                if(height && height!='auto'){
-                    border.height(adjustunit(hh, border));
-                    hh -= profile.getSubNode('TBAR').height(true);
-                    panel.height(adjustunit(hh - b, panel) );
+            if(height){
+                if(profile._toggle){
+                    panel.css('display','');
+                }else{
+                    panel.css('display','none');
                 }
-            }else{
-                panel.css('display','none');
-                // for expand status:
-                //    height is set in upper function
-                // for fold status:
-                //    if display => adjust ctrl's height to legend's
-                //    if non-display => adjust ctrl's height to 'auto'
-                height = profile.getSubNode('TBAR').height();
-                height = height?adjustunit(height):null;
-                profile.getRoot().height(height || 'auto');
-                if(height && height!='auto'){
-                    border.height(height);
+                if(height=='auto'){
+                    panel.height('auto');
+                    border.height('auto');
+                    root.height('auto');
+                }else{
+                    if(profile._toggle){
+                        panel.height(adjustunit(hh - profile.getSubNode('TBAR').offsetHeight(true) - b/2, panel));
+                        border.height(adjustunit(hh - b, border));
+                        root.height(adjustunit(hh));
+                    }else{
+                        // here, panel's display is 'none'
+                        border.height('auto');
+                        root.height('auto');
+                    }
                 }
             }
+
             if(width && width!='auto' && ww>=2 && profile._toggle){
                 panel.width(ww = adjustunit(ww-2));
                 xui.UI._adjustConW(profile, panel, ww);

@@ -547,18 +547,18 @@ Class("xui.UI.Panel", "xui.UI.Div",{
 
             var isize={},
                 noFrame=prop.noFrame,
-                bd=profile.getSubNode('BORDER'),
+                border=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
-                v2=profile.getSubNode('PANEL'),
+                panel=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
                 
                 fzrate=profile.getEmSize()/root._getEmSize(),
-                panelfz=v2._getEmSize(fzrate),
+                panelfz=panel._getEmSize(fzrate),
 
-                bordersize=profile.properties.borderType!='none'?v2._borderW():0,
-                h0=bd._borderH(),
+                bordersize=profile.properties.borderType!='none'?panel._borderW():0,
+                h0=border._borderH(),
                 h1,h4,t;
 
             // caculate by px
@@ -566,26 +566,26 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             if(height && height!='auto')height=profile.$px(height,null, true);
 
             if(height){
-                if(height=='auto')
-                    isize.height=height;
-                else{
+                if(profile._toggle){
+                    panel.css('display','');
+                }else{
+                    panel.css('display','none');
+                }
+                if(height=='auto'){
+                    root.height(isize.height='auto');
+                }else{
                     if(profile._toggle){
-                        v2.css('display','');
                         //force to get height
                         h1=v1.offsetHeight(true);
                         h4=noFrame?0:v4.offsetHeight(true);
                         if((t=height-h0-h1-h4)>0)
                             isize.height=adjustunit(t-bordersize, panelfz);
+
+                        border.height(adjustunit(height-h0, border));
+                        root.height(adjustunit(height));
                     }else{
-                        v2.css('display','none');
-                        // for expand status:
-                        //    height is set in upper function
-                        // for fold status:
-                        //    if display => adjust ctrl's height to border's
-                        //    if non-display => adjust ctrl's height to 'auto'
-                        h1 = bd.height();
-                        h1 = h1?adjustunit(h1):null;
-                        profile.getRoot().height(h1 || 'auto');
+                        border.height('auto');
+                        root.height('auto');
                     }
                 }
             }
@@ -599,10 +599,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                     -v6._borderW()
                     , panelfz);
             }
+
             if(profile._toggle){
-                v2.cssSize(isize, true);
+                panel.cssSize(isize, true);
                 if(width){
-                    xui.UI._adjustConW(profile, v2, isize.width);
+                    xui.UI._adjustConW(profile, panel, isize.width);
                 }
             }
         }

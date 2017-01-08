@@ -65,81 +65,83 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             })
         },
         _scrollToBottom:function(){
-            return this.each(function(profile){
-                var o = profile.getSubNode('BOX'),
+            var profile=this.get(0),
+                o = profile.getSubNode('BOX'),
                 border = profile.getSubNode('BORDER'),
                 y = o.scrollTop(),
+                b=false,
                 offset,
                 h = o.scrollHeight(),
-                b=false,
                 bh = border.height();
-                if(bh<h-y){
-                    if(!profile.$scrollStep)profile.$scrollStep=1;
-
-                    if(profile.$scrollStep<5)
-                        profile.$scrollStep = profile.$scrollStep*1.01;
-
-                    y += profile.$scrollStep;
-                    if(bh>=h-y){
-                        y=h-bh;
-                        b=true;
-                    }
-                    o.scrollTop(y);
-                    if(b){
-                        profile.getSubNode('BOTTOM').css('display','none');
-                        profile.$scrollTobottom=false;
-                        profile.$scrollStep=null;
-                    }else{
-                        profile.getSubNode('TOP').css('display','block');
-                        if(profile.$scrollTobottom)
-                            xui.asyRun(arguments.callee, 0, [profile], this);
-                    }
+            if(bh<h-y){
+                y += (profile.$scrollStep = Math.max(5, (profile.$scrollStep||1)*1.005));
+                if(bh>=h-y){
+                    y=h-bh;
+                    b=true;
                 }
-            });
+                o.scrollTop(y);
+                if(b){
+                    profile.getSubNode('BOTTOM').css('display','none');
+                    profile.$scrollTobottom=false;
+                    profile.$scrollStep=1;
+                }else{
+                    profile.getSubNode('TOP').css('display','block');
+                    if(profile.$scrollTobottom)
+                        xui.asyRun(this._scrollToBottom, 0, [], this);
+                }
+            }
         },
         _scrollToTop:function(){
-            return this.each(function(profile){
-                var o = profile.getSubNode('BOX'),
+            var profile=this.get(0),
+                o = profile.getSubNode('BOX'),
                 y = o.scrollTop(),
                 b=false;
-
-                if(y>0){
-                    if(!profile.$scrollStep)profile.$scrollStep=1;
-
-                    if(profile.$scrollStep<5)
-                        profile.$scrollStep = profile.$scrollStep*1.01;
-
-                    y -= profile.$scrollStep;
-                    if(y<0){
-                        y=0;
-                        b=true;
-                    }
-                    o.scrollTop(y);
-                    if(b){
-                        profile.getSubNode('TOP').css('display','none');
-                        profile.$scrollToTop=false;
-                        profile.$scrollStep=null;
-                    }else{
-                        profile.getSubNode('BOTTOM').css('display','block');
-                        if(profile.$scrollToTop)
-                            xui.asyRun(arguments.callee, 0, [profile], this);
-                    }
+            if(y>0){
+                y -= (profile.$scrollStep = Math.max(5, (profile.$scrollStep||1)*1.005));
+                if(y<0){
+                    y=0;
+                    b=true;
                 }
-            });
+                o.scrollTop(y);
+                if(b){
+                    profile.getSubNode('TOP').css('display','none');
+                    profile.$scrollToTop=false;
+                    profile.$scrollStep=1;
+                }else{
+                    profile.getSubNode('BOTTOM').css('display','block');
+                    if(profile.$scrollToTop)
+                        xui.asyRun(this._scrollToTop, 0, [], this);
+                }
+            }
+        },
+        _initGrp:function(){
+            var profile=this.get(0),root;
+            if(!profile.$popGrp || !profile.$popGrp.length){
+                root=profile.getRoot();
+                profile.$popGrp = [root._get(0)];
+                //group blur trigger
+                root.setBlurTrigger(profile.$xid, null);
+                root.setBlurTrigger(profile.$xid, function(){
+                    if(profile.box){
+                        profile.boxing().hide();
+                        if(profile.$popGrp)
+                            profile.$popGrp.length=0;
+                    }
+                }, profile.$popGrp);
+            }
         },
         pop:function(obj, type, parent,ignoreEffects){
-            var profile=this.get(0),
+            var ns=this,
+                profile=ns.get(0),
                 p=profile.properties,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
                 cm='$childPopMenu';
             //ensure rendered
             if(!profile.renderId){
-                var o=profile.boxing().render(true);
                 //use empty idv for LayoutTrigger
-                xui.Dom.getEmptyDiv().append(o);
+                xui.Dom.getEmptyDiv().append(ns.render(true));
             }
-            var root = profile.getRoot();
 
             //clear highLight first
             if(profile.$highLight)
@@ -148,31 +150,14 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             // set container
             profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
 
-            root.popToTop(obj, type, profile._conainer);
+            profile.getRoot().popToTop(obj, type, profile._conainer);
 
-            this._setScroll();
+            ns._setScroll();
+            ns.adjustSize();
 
-            profile.boxing().adjustSize();
-
-            var f=function(){
-                var p=arguments.callee.profile;
-                // maybe destroyed here
-                if(p.box){
-                    p.boxing().hide();
-                    if(p.$popGrp)
-                        p.$popGrp.length=0;
-                }
-            };
-            f.profile=profile;
-
-            if(!profile.$popGrp || !profile.$popGrp.length){
-                profile.$popGrp = [root._get(0)];
-                //group blur trigger
-                root.setBlurTrigger(profile.$xid, null);
-                root.setBlurTrigger(profile.$xid, f, profile.$popGrp);
-            }
+            ns._initGrp();
             profile[cm]=profile[sms]=profile[hl]=null;
-            return this;
+            return ns;
         },
         hide:function(triggerEvent, ignoreEffects , e){
             var t,
@@ -191,7 +176,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     //remove trigger
                     root.setBlurTrigger(profile.$xid,null);
-                    if(profile.$hideMenuPool)
+                    if(xui.get(profile,['$hideMenuPool','_nodes',0]))
                         profile.$hideMenuPool.append(root);
                     else
                         root.css('display','none');
@@ -524,6 +509,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     r.onMouseout(function(p,e,src){
                                         profile.box._mouseout(profile, e, src);
                                     },null,-1);
+
+                                    profile.boxing()._initGrp();
                                     profile[popgrp].push(r._get(0));
 
                                     r.popToTop(src,2,profile._conainer);
@@ -553,7 +540,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                 });
                                 popp=pop.get(0);
                                 //set pool to parent
-                                popp.$hideMenuPool = profile.$hideMenuPool || profile.getSubNode('POOL');
+                                popp.$hideMenuPool = xui.get(profile,['$hideMenuPool','_nodes',0]) || profile.getSubNode('POOL');
 
                                 profile[all][itemId] = pop;
 
@@ -564,6 +551,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             }else popp=pop.get(0);
 
                             //input a copy of root for group trigger
+                            profile.boxing()._initGrp();
                             profile[popgrp].push(popp.getRoot()._get(0));
                             popp[popgrp] = profile[popgrp];
 
@@ -707,11 +695,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             TOP:{
                 onMouseover:function(profile){
                     profile.$scrollToTop=true;
+                    profile.$scrollStep=1;
                     profile.boxing()._scrollToTop();
                 },
                 onMouseout:function(profile){
                     profile.$scrollToTop=false;
-                    profile.$scrollStep=null;
+                    profile.$scrollStep=1;
                 },
                 onClick:function(profile){
                     profile.$scrollStep*=2;
@@ -720,11 +709,12 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOTTOM:{
                 onMouseover:function(profile){
                     profile.$scrollTobottom=true;
+                    profile.$scrollStep=1;
                     profile.boxing()._scrollToBottom();
                 },
                 onMouseout:function(profile){
                     profile.$scrollTobottom=false;
-                    profile.$scrollStep=null;
+                    profile.$scrollStep=1;
                 },
                 onClick:function(profile){
                     profile.$scrollStep*=2;

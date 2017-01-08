@@ -2768,6 +2768,9 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 height:0,
                 position:'relative',
                 overflow:'visible'
+            },
+            ROWTOGGLE:{
+                padding:'0 .334em 0 0'
             }
         },
         _objectProp:{rowOptions:1,colOptions:1},

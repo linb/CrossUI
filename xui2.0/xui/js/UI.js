@@ -915,12 +915,18 @@ Class("xui.UI",  "xui.absObj", {
     },
     Instance:{
         hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
-            var prf=this.get(0),source=prf.boxing();
+            var prf=this.get(0),source=prf.boxing(),popmenu;
             if(!prf.box.$EventHandlers.beforeHoverEffect){
                 source.getRoot().hoverPop(node, type, beforePop,beforeHide, parent, groupid);
                 return this;
             }
             node=xui(node);
+            popmenu=xui.UIProfile.getFromDom(node.id());
+            if(popmenu&&popmenu.key==='xui.UI.PopMenu'){
+                popmenu=popmenu.boxing();
+            }else{
+                popmenu=null;
+            }
             if(!xui.isDefined(type))type='outer';
             var aysid=groupid||(source.getRoot().xid()+":"+node.xid());
             source.each(function(o){
@@ -931,13 +937,15 @@ Class("xui.UI",  "xui.absObj", {
                         var ignore=xui.getData([aysid,'$ui.hover.pop'])
                                         && xui.getNodeData(node.get(0)||"empty",'$ui.hover.parent')==src;
                         if(!ignore){
-                            xui.setData([aysid,'$ui.hover.pop'],item);
+                            xui.setData([aysid,'$ui.hover.pop'],{item:item});
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                             if(!beforePop || false!==beforePop(prf, node, e, src, item)){
-                                node.popToTop(src, type, parent);
+                                if(popmenu) popmenu.pop(src, type, parent);
+                                else node.popToTop(src, type, parent);
                                 node.onMouseover(function(){
                                     xui(src).onMouseover(true)
-                                },'hoverPop').onMouseout(function(){
+                                },'hoverPop')
+                                node.onMouseout(function(){
                                     xui(src).onMouseout(true)
                                 },'hoverPop');
                             }
@@ -947,7 +955,8 @@ Class("xui.UI",  "xui.absObj", {
                             xui.setData([aysid,'$ui.hover.pop']);
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                             if(!beforeHide || false!==beforeHide(prf, node,e, src ,'host',item)){
-                                node.hide();
+                                if(popmenu) popmenu.hide();
+                                else node.hide();
                                 node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
                             }
                         });
@@ -957,21 +966,25 @@ Class("xui.UI",  "xui.absObj", {
             if(node){
                 node.onMouseover(type===null?null:function(e){
                     if(e.$force)return;
+                    if(!xui.getData([aysid,'$ui.hover.pop']))return;
                     xui.resetRun(aysid,null);
-                },aysid).onMouseout(type===null?null:function(prf,e,src){
+                },'hoverPop');
+                node.onMouseout(type===null?null:function(prf,e,src){
                     if(e.$force)return;
+                    if(!xui.getData([aysid,'$ui.hover.pop']))return;
                     xui.resetRun(aysid,function(){
                         xui.setData([aysid,'$ui.hover.pop'])
                         xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
                         var item=xui.getData([aysid,'$ui.hover.pop']);
-                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop',item)){
-                            node.hide();
+                        if(!beforeHide || false!==beforeHide(prf,node, e,src,'pop',item&&item.item)){
+                            if(popmenu) popmenu.hide();
+                            else node.hide();
                             node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
                         }
                     });
-                },aysid);
+                },'hoverPop');
+                node.css('display','none');
             }
-            node.css('display','none');
             return this;
         },
         setTheme:function(key){
@@ -1140,7 +1153,7 @@ Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;padding-top:2em;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>');
+                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom" style="margin-top:1.2em;"></div></button>');
                     }
                     node=profile.$busy;
 
@@ -2446,9 +2459,6 @@ Class("xui.UI",  "xui.absObj", {
                 'text-shadow': '0px 1px 1px rgba(255,255,255,1)',
                 'text-decoration': 'none',
                 'white-space':'nowrap',
-                '-moz-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                '-webkit-box-shadow':'inset 0px 1px 0px 0px #ffffff',
-                'box-shadow':'inset 0px 1px 0px 0px #ffffff',
                 'background-image_1': "linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
                 'background-image_2': "-webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #FFF), to(1, #CDCDCD))",
                 'background-image_3': "-webkit-linear-gradient(top,  #FFF 5%,  #CDCDCD 100%)",
@@ -3140,7 +3150,7 @@ Class("xui.UI",  "xui.absObj", {
           flag: default flase => no clear not mactched symbols
         */
         $doTemplate:function(profile, template, properties, tag, result, index, realtag){
-            var self=arguments.callee,
+            var self=xui.UI.$doTemplate,
                 s,t,n,
                 x01=xui.UI.$x01,
                 x01r=' \x01 ',
@@ -4276,8 +4286,7 @@ Class("xui.UI",  "xui.absObj", {
         },
         buildCSSText:function(hash){
             var self=this,
-                me=arguments.callee,
-                r1=me._r1||(me._r1=/(^|\s|,)([0-9A-Z_]+)/g),
+                r1=/(^|\s|,)([0-9A-Z_]+)/g,
                 h=[], r=[],
                 browser=xui.browser,
                 ie6=browser.ie6,
@@ -7868,7 +7877,19 @@ Class("xui.UI.HTMLButton", "xui.UI.Element",{
                     else this.getRoot().removeClass(cls);
                     i.attr('disabled',v?"1":null);
                 }
+            },
+            shadow:{
+                ini:false,
+                action: function(v){
+                    var node=this.getRoot();
+                    if(v) node.addClass('xui-ui-shadow');
+                    else node.removeClass('xui-ui-shadow');
+                }
             }
+        },
+        RenderTrigger:function(){
+            var self=this, p=self.properties, o=self.boxing();
+            if((!self.$noS) && p.shadow && o.setShadow)o.setShadow(true,true);
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY'}

@@ -305,17 +305,18 @@ new function(){
         },
         asyHTML:function(content, callback, defer, size){
             var div = document.createElement('div'),
-                fragment = document.createDocumentFragment();
+                fragment = document.createDocumentFragment(),
+                f=function(){
+                    var i=size||10;
+                    while(--i && div.firstChild)
+                        fragment.appendChild(div.firstChild);
+                    if(div.firstChild)
+                        xui.setTimeout(f, defer);
+                    else
+                        callback(fragment);
+                };
             div.innerHTML = content;
-            (function(){
-                var i=size||10;
-                while(--i && div.firstChild)
-                    fragment.appendChild(div.firstChild);
-                if(div.firstChild)
-                    xui.setTimeout(arguments.callee, defer);
-                else
-                    callback(fragment);
-            })();
+            f();
         },
         isEmpty:function(hash){
             if (hash==null) return true;
@@ -334,7 +335,7 @@ new function(){
         scope: 'this' for fun
         */
         resetRun:function(key, fun, defer ,args, scope){
-            var me=arguments.callee, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
+            var me=xui.resetRun, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
             if(cache[k]){xui.clearTimeout(cache[k])}
             if(typeof fun=='function')
                 cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer);
@@ -349,8 +350,8 @@ new function(){
         target: target object
         n: depth, default 1
         */
-        breakO:function(target,depth){
-            var n=depth||1, l=1+(arguments[2]||0), self=arguments.callee, _t='___gc_', i;
+        breakO:function(target,depth,_layer){
+            var n=depth||1, l=1+(_layer||0), self=xui.breakO, _t='___gc_', i;
             if(target && (typeof target=='object' || typeof target=='function') && target!==window&&target!==document&&target.nodeType!==1){
                 try{if(target.hasOwnProperty(_t))return; else target[_t]=null}catch(e){return}
                 try{for(i in target){
@@ -444,10 +445,11 @@ new function(){
         * var a=[]; a.b='b'; a.b will not be cloned
         *be careful for dead lock
         */
-        clone:function(hash,filter,deep){
-            var layer=arguments[3]||0;
+        clone:function(hash,filter,deep,_layer){
+            _layer=_layer||0;
             if(hash && (xui.isHash(hash)||xui.isArr(hash))){
-                if(xui.isObj(hash)){                var me=arguments.callee,
+                if(xui.isObj(hash)){
+                    var me=xui.clone,
                         isArr=xui.isArr(hash),
                         h=isArr?[]:{},
                         i=0,v,l;
@@ -458,16 +460,16 @@ new function(){
                     if(isArr){
                         l=hash.length;
                         for(;i<l;i++){
-                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,layer+1))continue;
-                            h[h.length]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,_layer+1))continue;
+                            h[h.length]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,_layer+1):v;
                         }
                     }else{
                         for(i in hash){
                             if(filter===true?i.charAt(0)=='_':
                                 filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
-                                typeof filter=='function'?false===filter.call(hash,hash[i],i,layer+1):0)
+                                typeof filter=='function'?false===filter.call(hash,hash[i],i,_layer+1):0)
                                 continue;
-                            h[i]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,layer+1):v;
+                            h[i]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,_layer+1):v;
                         }
                     }
                     return h;
@@ -548,12 +550,15 @@ new function(){
                 o=a[i];
                 arr=o.split('=');
                 try{
-                    hash[decodeURIComponent(arr[0])]=decodeURIComponent(arr[1]);
+                    hash[decodeURIComponent(arr[0])]=decodeURIComponent(arr[1]||'');
                 }catch(e){
-                    hash[arr[0]]=arr[1];
+                    hash[arr[0]]=arr[1]||'';
                 }
             }
             return key?hash[key]:hash;
+        },
+        getUrlParams:function(url){
+            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+/,''));
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
@@ -1001,15 +1006,16 @@ xui.merge(xui,{
         for(i=0;t=v[i];i++)if(t.id==xui.$localeDomId)a[a.length]=t;
         l=a.length;
         f=function(){
-            (function(){
+            var ff=function(){
                 j=a.splice(0,100);
                 for(i=0;t=j[i];i++)
                     if(t.className && typeof(v=g(t.className))=='string')
                         t.innerHTML=v;
                 if(a.length)
-                    xui.setTimeout(arguments.callee,0);
+                    xui.setTimeout(ff,0);
                 xui.tryF(callback,[a.length,l]);
-            }())
+            };
+            ff();
         },
         z = 'xui.Locale.' + key,
         m=function(){
@@ -1612,7 +1618,7 @@ xui.merge(xui,{
 
     //create:function(tag, properties, events, host){
     create:function(tag,bak){
-        var arr,o,t,me=arguments.callee,r1=me.r1||(me.r1=/</);
+        var arr,o,t,me=xui.create,r1=me.r1||(me.r1=/</);
         if(typeof tag == 'string'){
             //Any class inherited from xui.absBox
             if(t=xui.absBox.$type[tag]){
@@ -1784,7 +1790,7 @@ new function(){
         if(b.isSafari){
            if(/applewebkit\/4/.test(u))
                 b["safari"+(b.ver=2)]=true;
-           else
+           else if(/version/.test(u))
                 b[v('safari','version/')]=true;
         }else if(b.isChrome)
             b[v('chrome','chrome/')]=true;
@@ -1917,18 +1923,22 @@ new function(){
     d.attachEvent("onreadystatechange", f);
         w.attachEvent("onload", f);
 
-        (function(){
+        var ff=function(){
             if(xui.isDomReady)return;
             try{
                 //for ie7 iframe(doScroll is always ok)
                 d.activeElement.id;
                 d.documentElement.doScroll('left');f()
-            }catch(e){xui.setTimeout(arguments.callee,9)}
-        })();
+            }catch(e){xui.setTimeout(ff,9)}
+        };
+        ff();
     }
 
     // to ensure
-    (function(){((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(arguments.callee,9):f()})();
+    var fe=function(){
+        ((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(fe,9):f()
+   };
+   fe();
 };
 
 // for loction url info
@@ -2290,7 +2300,7 @@ new function(){
             + '"'
     };
     T[O]=function(x,filter,dateformat,deep,max,MAXL,MAXS){
-        var me=arguments.callee, map = me.map || (me.map={prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1});
+        var map = {prototype:1,constructor:1,toString:1,valueOf:1,toLocaleString:1,propertyIsEnumerable:1,isPrototypeOf:1,hasOwnProperty:1};
         deep=deep||1;
         max=max||0;
         MAXL=MAXL||xui.SERIALIZEMAXLAYER;
@@ -2391,23 +2401,23 @@ new function(){
     xui.unserialize = function(str, dateformat){
         if(typeof str !="string")return str;
         if(!str)return false;
+        if(!safeW){
+            var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
+            document.body.appendChild(ifr);
+            w=frames[frames.length-1].window;
+            safeW={};
+            for(var i in w)safeW[i]=null;
+            document.body.removeChild(ifr);                
+        }
+        str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
         try{
-            if(!safeW){
-                var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
-                document.body.appendChild(ifr);
-                w=frames[frames.length-1].window;
-                safeW={};
-                for(var i in w)safeW[i]=null;
-                document.body.removeChild(ifr);                
-            }
-            str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
             str=eval(str);
-            if(dateformat||(xui&&xui.$dateFormat))E(str);
-            str=str._;
-            return str;
         }catch(e){
             return false;
         }
+        if(dateformat||(xui&&xui.$dateFormat))E(str);
+        str=str._;
+        return str;
     };
 };
 
@@ -2415,9 +2425,9 @@ new function(){
 */
 new function(){
     xui.id=function(){
-        var self=this, me=arguments.callee;
-        if(self.constructor!==me || self.a)
-            return (me._ || (me._= new me)).next();
+        var self=this;
+        if(self.constructor!==xui.id || self.a)
+            return (xui.id._ || (xui.id._= new xui.id)).next();
         self.a=[-1];
         self.b=[''];
         self.value='';
@@ -3375,12 +3385,12 @@ Class('xui.XDMI','xui.absIO',{
                     }
 
                     // get data
-                    (function(){
+                    var getData = function(){
                         // second round: try to get data
                         var flag=0;
                         try{if(w.name===undefined)flag=1}catch(e){flag=1}
                         if(flag){
-                            return xui.asyRun(arguments.callee);
+                            return xui.asyRun(getData);
                         }
 
                         var data;
@@ -3403,7 +3413,8 @@ Class('xui.XDMI','xui.absIO',{
                             self._clear();
                             self._onError(new Error("XDMI return value formatting error, or no matched 'id'-- "+data));
                         }
-                    })();
+                    };
+                    getData();
                 };
             }
 

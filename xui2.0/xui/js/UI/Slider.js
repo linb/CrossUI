@@ -625,8 +625,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     height : ''
                 });
                 var w=profile.$px('1em'),
-                    w1=prop.showIncreaseHandle?w:0,
-                    w2=prop.showDecreaseHandle?w:0,
+                    w1=prop.showDecreaseHandle?w:0,
+                    w2=prop.showIncreaseHandle?w:0,
                     w3=indb._borderW('left');
                 if(ww){
                     ruler.left(adjustunit(w1+offset, rulerfz))

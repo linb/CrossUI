@@ -1,7 +1,6 @@
-Notice: 2.0 version is NOT compitable with older versions
+Version 2.0 is NOT compatible with older versions
 
-1)Remove 'linb' namespace;
+1)Remove '_' namespace (merged '_' to 'xui');
 2)Move 'NameSpace' to xui.NameSpace;
-3)Merge '_' to 'xui';
-4)Removed Some advanced widgets: Range/Poll/TagEditor/ColLayout/Calendar/TimeLine;
-5)Remove themes 'aqua','blackwhite'; 'classic' and 'webflat' added.
+3)Removed some  widgets: Range/Poll/TagEditor/ColLayout/Calendar/TimeLine;
+4)Removed themes 'aqua','blackwhite'; added themes 'classic' and 'webflat'.

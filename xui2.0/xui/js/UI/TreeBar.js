@@ -408,6 +408,9 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             'BOX-tagcmdleft RTAGCMDS':{
                 "padding-right":'.333em',
                 "float":"left"
+            },
+            TOGGLE:{
+                padding:'0 .334em 0 0'
             }
         },
         Behaviors:{
