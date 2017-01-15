@@ -60,7 +60,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     BG:{
                         tagName:'div',
                         className:'xui-uibar xui-uiborder-radius'
-                    },
+                    }
                 },
                 IND:{
                     $order:2,

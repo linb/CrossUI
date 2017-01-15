@@ -1650,16 +1650,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
+                
                 clsname='xui-node xui-input-input',
-                icbw,utw,paddingH, paddingW,
-                btnw, autoH,
+                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
+                paddingW=isB?0:Math.round(v1._paddingW()/2)*2,                    
+
+                autoH,icbw,utw,btnw, 
                 pl=0,pr=0;
 
             $hborder=$vborder=box._borderW() / 2;
             btnw=profile.getEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + v1._paddingH() + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + Math.round(v1._paddingH()/2)*2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
@@ -1802,8 +1805,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // input last
             if(pl)v1.css('paddingLeft',adjustunit(pl,icb));
             if(pr)v1.css('paddingRight',adjustunit(pr,ut));
-            paddingH=isB?0:Math.round(v1._paddingH()/2)*2;
-            paddingW=isB?0:Math.round(v1._paddingW()/2)*2;
             if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)

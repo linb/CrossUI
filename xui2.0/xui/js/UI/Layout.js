@@ -203,7 +203,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:0,
                             tagName:'div',
                             // give icon font for em size
-                            className:'xui-ui-unselectable xui-uibar xuifont {clsmovebg} {cls2} ',
+                            className:'xui-ui-unselectable xui-uibar {clsmovebg} {cls2} ',
                             style:'{moveDisplay};cursor:{_cursor}'
                         },
                         CMD:{

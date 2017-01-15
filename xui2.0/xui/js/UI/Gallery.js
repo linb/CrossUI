@@ -109,8 +109,8 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 border:0,
                 padding:0,
                 margin:0,
-                width:'100%',
-                height:'100%',
+//                width:'100%',
+//                height:'100%',
                 '-moz-box-flex':'1'
             },
             IBWRAP:{

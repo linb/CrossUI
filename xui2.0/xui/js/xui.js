@@ -912,7 +912,12 @@ xui.merge(xui,{
     $rand:"_r_",
 
     SpaceUnit:'em',
-    $us:function(p){return ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'em' ? 2 :  p=='px'? -2 : xui.SpaceUnit == 'em' ? 1 : -1},
+    $us:function(p){
+        // ie67 always px
+        return (xui.browser.ie6||xui.browser.ie7) ? p ? -2 : -1:
+            ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'px' ? -2 :  p=='em'? 2 : 
+                xui.SpaceUnit == 'px' ? -1 : xui.SpaceUnit == 'em' ? 1 : 0;
+        },
     // for show xui.echo
     debugMode:true,
 
@@ -1309,12 +1314,12 @@ xui.merge(xui,{
                     xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
                         if(Class._last)t=c[uri]=Class._last;
                         Class._ignoreNSCache=Class._last=null;
-                        if(t){for(var i in onSuccess)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i in onFail)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                        if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         var s=xui.getClassName(uri);
                         if(t&&t.KEY!=s){
                             var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i in onAlert)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
+                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
                             xui.asyRun(function(){
                                 throw msg;
                             });
@@ -1324,7 +1329,7 @@ xui.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         Class._ignoreNSCache=1;Class._last=null;
-                        for(var i in onFail)xui.tryF(onFail[i], xui.toArr(arguments));
+                        for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
@@ -1335,14 +1340,14 @@ xui.merge(xui,{
                         var scriptnode;
                         var s=xui.getClassName(uri);
                         try{scriptnode=xui.exec(rsp, s)}
-                        catch(e){for(var i in onFail)xui.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
+                        catch(e){for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
                         if(Class._last)t=c[uri]=Class._last;
                         Class._last=null;
-                        if(t){for(var i in onSuccess)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i in onFail)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                        if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         if(t&&t.KEY!=s){
                             var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i in onAlert)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
+                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
                             xui.asyRun(function(){
                                 throw msg;
                             });
@@ -1352,7 +1357,7 @@ xui.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         Class._ignoreNSCache=Class._last=null;
-                        for(var i in onFail)xui.tryF(onFail[i], xui.toArr(arguments));
+                        for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}

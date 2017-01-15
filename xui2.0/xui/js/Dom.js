@@ -3528,8 +3528,8 @@ type:4
            "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
            "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
            "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
-           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"]/*,scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"]/*,/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
            "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
            "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
         },
@@ -3877,7 +3877,7 @@ type:4
                         case 3:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=_size(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(!r)r=_size(node,1,value,true)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
                             r=_size(node,3,value);

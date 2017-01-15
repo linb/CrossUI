@@ -53,8 +53,8 @@ new function(){
         "xui-icon-alignleft": '&#xe647;',
         "xui-icon-singleright": '&#xe672;',
         "xui-icon-singleleft": '&#xe673;',
-        "xui-icon-singledown":"&#xe82e",
-        "xui-icon-singleup":"&#xe82f",
+        "xui-icon-singledown":'&#xe82e;',
+        "xui-icon-singleup":'&#xe82f;',
         "xui-uicmd-max": '&#xe60d;',
         "xui-icon-last": '&#xe60f;',
         "xui-icon-error": '&#xe674;',
@@ -5490,6 +5490,8 @@ Class("xui.UI",  "xui.absObj", {
                             //2. get width / height
                             var width=(style&&css.$px(style.width,nodefz))||node.width()||0,
                                 height=(style&&css.$px(style.height,nodefz))||node.height()||0;
+                            if(width=='auto')width=0;
+                            if(height=='auto')height=0;
                             //width=Math.max( node.scrollWidth()||0,  (style&&css.$px(style.width,nodefz))||node.width()||0);
                             //height=Math.max( node.scrollHeight()||0, (style&&css.$px(style.height,nodefz))||node.height()||0);
 
@@ -5683,12 +5685,15 @@ Class("xui.UI",  "xui.absObj", {
                                                 // destroyed
                                                 if(!o.node)return;
 
-                                                o.width+=1;o.height+=1;
+                                                var ow=o.width,
+                                                    oh=o.height;
+                                                o.width=(parseFloat(o.width)||0+1)+xui.CSS.$picku(o.width);
+                                                o.height=(parseFloat(o.width)||0+1)+xui.CSS.$picku(o.height);
 
                                                 if(o.isSVG) o.ins._setBBox(o);
                                                 else o.node.cssRegion(o);
 
-                                                o.width-=1;o.height-=1;
+                                                o.width=ow;o.height=oh;
 
                                                 if(o.isSVG)o.ins._setBBox(o);
                                                 else o.node.cssRegion(o, true);

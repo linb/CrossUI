@@ -6680,7 +6680,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
                     w = 0;
-                    xui.each(hd,function(o){
+                    xui.arr.each(hd,function(o){
                         if(o.hidden!==true)
                             w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + 2);
                     });

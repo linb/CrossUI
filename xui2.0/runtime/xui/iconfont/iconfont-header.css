@@ -87,6 +87,14 @@
 }
 
 /*special for IE8*/
-.xui-css-ie8 :before{
+.xui-css-ie6  :before,
+.xui-css-ie7  :before,
+.xui-css-ie8  :before{
     content: none !important;
+}
+.xui-css-ie6  .xuicon,
+.xui-css-ie7  .xuicon,
+.xui-css-ie8  .xuicon{
+    width: 1em;
+    height: 1em;
 }

@@ -912,7 +912,12 @@ xui.merge(xui,{
     $rand:"_r_",
 
     SpaceUnit:'em',
-    $us:function(p){return ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'em' ? 2 :  p=='px'? -2 : xui.SpaceUnit == 'em' ? 1 : -1},
+    $us:function(p){
+        // ie67 always px
+        return (xui.browser.ie6||xui.browser.ie7) ? p ? -2 : -1:
+            ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'px' ? -2 :  p=='em'? 2 : 
+                xui.SpaceUnit == 'px' ? -1 : xui.SpaceUnit == 'em' ? 1 : 0;
+        },
     // for show xui.echo
     debugMode:true,
 
@@ -1309,12 +1314,12 @@ xui.merge(xui,{
                     xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
                         if(Class._last)t=c[uri]=Class._last;
                         Class._ignoreNSCache=Class._last=null;
-                        if(t){for(var i in onSuccess)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i in onFail)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                        if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         var s=xui.getClassName(uri);
                         if(t&&t.KEY!=s){
                             var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i in onAlert)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
+                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
                             xui.asyRun(function(){
                                 throw msg;
                             });
@@ -1324,7 +1329,7 @@ xui.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         Class._ignoreNSCache=1;Class._last=null;
-                        for(var i in onFail)xui.tryF(onFail[i], xui.toArr(arguments));
+                        for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
@@ -1335,14 +1340,14 @@ xui.merge(xui,{
                         var scriptnode;
                         var s=xui.getClassName(uri);
                         try{scriptnode=xui.exec(rsp, s)}
-                        catch(e){for(var i in onFail)xui.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
+                        catch(e){for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
                         if(Class._last)t=c[uri]=Class._last;
                         Class._last=null;
-                        if(t){for(var i in onSuccess)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i in onFail)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                        if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         if(t&&t.KEY!=s){
                             var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i in onAlert)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
+                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
                             xui.asyRun(function(){
                                 throw msg;
                             });
@@ -1352,7 +1357,7 @@ xui.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         Class._ignoreNSCache=Class._last=null;
-                        for(var i in onFail)xui.tryF(onFail[i], xui.toArr(arguments));
+                        for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
@@ -8605,7 +8610,7 @@ Class('xui.Event',null,{
         _getDftEmSize: function(force){
             var ns=this;
             if(force || !ns._dftEm){
-                var fz=ns.$getCSSValue('.xui-ui-ctrl','font-size');
+                var fz=ns.$getCSSValue('.xui-ui-ctrl','fontSize');
 
                 // only can be triggerred by modifing font-size of '.xui-ui-ctrl' itslef.
                 if(!ns._dftEmStr || ns._dftEmStr!=fz){
@@ -8639,13 +8644,13 @@ Class('xui.Event',null,{
             delete xui.CSS._dftRem;
         },
         $isEm:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit=='em' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.$us()==1 : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
         },
         $isRem:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit=='rem' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))rem$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.$us()==1 : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))rem$/i.test(xui.str.trim(value+''));
         },
         $isPx:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.$us()==1  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
         },
 
         $em2px:function(value, node, roundPx){
@@ -8690,12 +8695,12 @@ Class('xui.Event',null,{
         },
         $forceu:function(v,u,node,roundPx){
             return (v===''||v=='auto') ? v:
-                ( u ? u=='rem' : xui.SpaceUnit=='rem') ? this.$rem(v,node,roundPx!==false)+'rem':
-                ( u ? u=='em' : xui.SpaceUnit=='em') ? this.$em(v,node,roundPx!==false)+'em':
+                ( u ? u=='rem' : (xui.$us()===0)) ? this.$rem(v,node,roundPx!==false)+'rem':
+                ( u ? u=='em' : (xui.$us()==1)) ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'
         },
        
-        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
+        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.$us()==1?'em':'px')},
         $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''}
     },
     Initialize:function(){
@@ -9408,7 +9413,7 @@ Class('xui.Dom','xui.absBox',{
                                 var params={},sl=t.scrollLeft,st=t.scrollTop,limit=50,rate=40,duration=2000;
                                 if(speedx)params.scrollLeft=[sl, sl + Math.sign(speedx)*Math.min(limit,Math.abs(speedx))*rate];
                                 if(speedy)params.scrollTop=[st, st + Math.sign(speedy)*Math.min(limit,Math.abs(speedy))*rate];
-                                xui(t).animate(params, null, null,duration,null,"bounceOut").start();
+                                xui(t).animate(params, null, null,duration,null,"expoOut").start();
                             }
                             speedx=speedy=opx=opy=ox=oy=null;
                     };
@@ -12319,8 +12324,8 @@ type:4
            "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
            "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
            "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
-           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"]/*,scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"]/*,/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
            "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
            "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
         },
@@ -12668,7 +12673,7 @@ type:4
                         case 3:
                             r=node[o[6]];
                             //get from css setting before css applied
-                            if(!r)r=_size(node,1,value)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(!r)r=_size(node,1,value,true)+(contentBox?t[o[2]]():0)+t[o[3]]();
                             break;
                         case 4:
                             r=_size(node,3,value);
@@ -17204,8 +17209,8 @@ Class("xui.Tips", null,{
         "xui-icon-alignleft": '&#xe647;',
         "xui-icon-singleright": '&#xe672;',
         "xui-icon-singleleft": '&#xe673;',
-        "xui-icon-singledown":"&#xe82e",
-        "xui-icon-singleup":"&#xe82f",
+        "xui-icon-singledown":'&#xe82e;',
+        "xui-icon-singleup":'&#xe82f;',
         "xui-uicmd-max": '&#xe60d;',
         "xui-icon-last": '&#xe60f;',
         "xui-icon-error": '&#xe674;',
@@ -22641,6 +22646,8 @@ Class("xui.UI",  "xui.absObj", {
                             //2. get width / height
                             var width=(style&&css.$px(style.width,nodefz))||node.width()||0,
                                 height=(style&&css.$px(style.height,nodefz))||node.height()||0;
+                            if(width=='auto')width=0;
+                            if(height=='auto')height=0;
                             //width=Math.max( node.scrollWidth()||0,  (style&&css.$px(style.width,nodefz))||node.width()||0);
                             //height=Math.max( node.scrollHeight()||0, (style&&css.$px(style.height,nodefz))||node.height()||0);
 
@@ -22834,12 +22841,15 @@ Class("xui.UI",  "xui.absObj", {
                                                 // destroyed
                                                 if(!o.node)return;
 
-                                                o.width+=1;o.height+=1;
+                                                var ow=o.width,
+                                                    oh=o.height;
+                                                o.width=(parseFloat(o.width)||0+1)+xui.CSS.$picku(o.width);
+                                                o.height=(parseFloat(o.width)||0+1)+xui.CSS.$picku(o.height);
 
                                                 if(o.isSVG) o.ins._setBBox(o);
                                                 else o.node.cssRegion(o);
 
-                                                o.width-=1;o.height-=1;
+                                                o.width=ow;o.height=oh;
 
                                                 if(o.isSVG)o.ins._setBBox(o);
                                                 else o.node.cssRegion(o, true);
@@ -28398,7 +28408,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     BG:{
                         tagName:'div',
                         className:'xui-uibar xui-uiborder-radius'
-                    },
+                    }
                 },
                 IND:{
                     $order:2,
@@ -32783,16 +32793,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 isB=v1.get(0).type.toLowerCase()=='button',
                 $hborder, $vborder,
+                
                 clsname='xui-node xui-input-input',
-                icbw,utw,paddingH, paddingW,
-                btnw, autoH,
+                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
+                paddingW=isB?0:Math.round(v1._paddingW()/2)*2,                    
+
+                autoH,icbw,utw,btnw, 
                 pl=0,pr=0;
 
             $hborder=$vborder=box._borderW() / 2;
             btnw=profile.getEmSize() * 1.5;
 
             // caculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + v1._paddingH() + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + Math.round(v1._paddingH()/2)*2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
@@ -32935,8 +32948,6 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // input last
             if(pl)v1.css('paddingLeft',adjustunit(pl,icb));
             if(pr)v1.css('paddingRight',adjustunit(pr,ut));
-            paddingH=isB?0:Math.round(v1._paddingH()/2)*2;
-            paddingW=isB?0:Math.round(v1._paddingW()/2)*2;
             if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)
@@ -36080,8 +36091,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 border:0,
                 padding:0,
                 margin:0,
-                width:'100%',
-                height:'100%',
+//                width:'100%',
+//                height:'100%',
                 '-moz-box-flex':'1'
             },
             IBWRAP:{
@@ -42734,7 +42745,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             $order:0,
                             tagName:'div',
                             // give icon font for em size
-                            className:'xui-ui-unselectable xui-uibar xuifont {clsmovebg} {cls2} ',
+                            className:'xui-ui-unselectable xui-uibar {clsmovebg} {cls2} ',
                             style:'{moveDisplay};cursor:{_cursor}'
                         },
                         CMD:{
@@ -50161,7 +50172,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
                     w = 0;
-                    xui.each(hd,function(o){
+                    xui.arr.each(hd,function(o){
                         if(o.hidden!==true)
                             w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + 2);
                     });

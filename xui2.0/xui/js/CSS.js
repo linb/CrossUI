@@ -358,7 +358,7 @@ Class("xui.CSS", null,{
         _getDftEmSize: function(force){
             var ns=this;
             if(force || !ns._dftEm){
-                var fz=ns.$getCSSValue('.xui-ui-ctrl','font-size');
+                var fz=ns.$getCSSValue('.xui-ui-ctrl','fontSize');
 
                 // only can be triggerred by modifing font-size of '.xui-ui-ctrl' itslef.
                 if(!ns._dftEmStr || ns._dftEmStr!=fz){
@@ -392,13 +392,13 @@ Class("xui.CSS", null,{
             delete xui.CSS._dftRem;
         },
         $isEm:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit=='em' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.$us()==1 : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))em$/i.test(xui.str.trim(value+''));
         },
         $isRem:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit=='rem' : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))rem$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.$us()==1 : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))rem$/i.test(xui.str.trim(value+''));
         },
         $isPx:function(value){
-            return (!value||value=='auto')? xui.SpaceUnit!='em'  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
+            return (!value||value=='auto')? xui.$us()==1  : /^-?((\d\d*\.\d*)|(^\d\d*)|(^\.\d\d*))px$/i.test(xui.str.trim(value+''));
         },
 
         $em2px:function(value, node, roundPx){
@@ -443,12 +443,12 @@ Class("xui.CSS", null,{
         },
         $forceu:function(v,u,node,roundPx){
             return (v===''||v=='auto') ? v:
-                ( u ? u=='rem' : xui.SpaceUnit=='rem') ? this.$rem(v,node,roundPx!==false)+'rem':
-                ( u ? u=='em' : xui.SpaceUnit=='em') ? this.$em(v,node,roundPx!==false)+'em':
+                ( u ? u=='rem' : (xui.$us()===0)) ? this.$rem(v,node,roundPx!==false)+'rem':
+                ( u ? u=='em' : (xui.$us()==1)) ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'
         },
        
-        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.SpaceUnit=='em'?'em':'px')},
+        $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.$us()==1?'em':'px')},
         $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''}
     },
     Initialize:function(){
