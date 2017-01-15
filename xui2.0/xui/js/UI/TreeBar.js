@@ -247,6 +247,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     onselectstart:'return false',
                     ITEMS:{
                         tagName : 'div',
+                        className:'{_cmdsalign}',
                         text:"{items}"
                     }
                 }
@@ -287,8 +288,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             ITEMICON:{
                                 $order:6,
-                                className:'xuicon {imageClass}',
-                                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                className:'xuicon {imageClass} {picClass}',
+                                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                 text:'{iconFontCode}'
                             },
                             ITEMCAPTION:{
@@ -302,17 +303,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text : '{ext}',
                                 $order:8
                             },
-                            OPT:{
-                                $order:9,
-                                style:'{_optDisplay}',
-                                className:'xuifont',
-                                $fonticon:'xui-uicmd-opt'
-                            },
                             RTAGCMDS:{
-                                $order:10,
+                                $order:9,
                                 tagName:'span',
                                 style:'{_rtagDisplay}',
                                 text:"{rtagCmds}"
+                            },
+                            OPT:{
+                                $order:10,
+                                style:'{_optDisplay}',
+                                className:'xuifont',
+                                $fonticon:'{_fi_optClass}'
                             }
                         },
                         SUB:{
@@ -400,14 +401,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 $order:10,
                 position:'absolute',
                 left:'auto',
-                top:'auto',
+                top:'50%',
+                'margin-top':'-0.5em',
                 right:'.167em',
-                top:'.167em',
                 display:'none'
             },
-            'BOX-tagcmdleft RTAGCMDS':{
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
+            },
+            'ITEMS-tagcmdleft RTAGCMDS':{
                 "padding-right":'.333em',
                 "float":"left"
+            },
+            'ITEMS-tagcmdfloatright RTAGCMDS':{
+                "padding-right":'.333em',
+                "float":"right"
             },
             TOGGLE:{
                 padding:'0 .334em 0 0'
@@ -454,12 +464,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
                 },
                 onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
@@ -561,7 +573,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             singleOpen:false,
             dynDestory:false,
             position:'absolute',
-            optBtn:false,
+            optBtn:{
+                ini:"",
+                combobox:xui.toArr("xui-uicmd-opt,xui-icon-singleright"),
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             togglePlaceholder:false,
             tagCmds:{
                 ini:[],
@@ -571,13 +589,10 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             tagCmdsAlign:{
                 ini:"right",
-                listbox:['left','right'],
+                listbox:['left','right','floatright'],
                 action:function(v){
-                    var profile=this;
-                    if(v=="left")
-                        profile.getSubNode("BOX").addClass(profile.getClass('BOX','-tagcmdleft'));
-                    else
-                        profile.getSubNode("BOX").removeClass(profile.getClass('BOX','-tagcmdleft'));
+                    var profile=this,box=profile.getSubNode("ITEMS"),cls=profile.getClass('ITEMS','-tagcmd');
+                    box.removeClass(new RegExp(cls+'[\w]*')).addClass(profile.getClass('ITEMS','-tagcmd'+v));
                 }
             }
         },
@@ -799,6 +814,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             data._new = oitem;
             return false;
         },
+        _prepareData:function(profile){
+            var d=arguments.callee.upper.call(this, profile);
+            d._cmdsalign=profile.getClass('ITEMS','-tagcmd'+profile.properties.tagCmdsAlign);
+            return d;
+        },
         _prepareItem:function(profile, item, oitem, pid, index,len){
             var p=profile.properties,
                 map1=profile.ItemIdMapSubSerialId,
@@ -814,12 +834,18 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
+            item._fi_optClass = p.optBtn;
+
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
                 item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');
                 item.mark2Display = 'display:none';
             }
             this._prepareCmds(profile, item);
+
+            if(xui.browser.fakeTouch || xui.browser.deviceType == 'mouseOnly'){
+                item._optDisplay = p.optBtn?'display:block;':'';
+            }
 
             if(item.type=='split'){
                 item._split='xui-uitem-split';

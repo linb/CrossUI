@@ -2483,6 +2483,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 position:'absolute',
                 overflow:'hidden'
             },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
+            },
             'HFMARK, MARK':{
                 'margin-left':'.5em'
             },
@@ -6596,11 +6601,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 // for scroll sync
                 xui.asyRun(function(){
-                    b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px');
-                    s21.scrollTop(s22.scrollTop());
+                    if(!b21.isEmpty())b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px');
+                    if(!s21.isEmpty())s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px');
-                        s12.scrollLeft(s22.scrollLeft());
+                        if(!b12.isEmpty())b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px');
+                        if(!s12.isEmpty())s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);
 
@@ -7071,7 +7076,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return;
             }else{
                 overflowX='hidden';
-                if(t2.isScrollBarShowed('y'))
+                if(t2.scrollable('y'))
                     width-=xui.Dom.getScrollBarSize();
             }
             

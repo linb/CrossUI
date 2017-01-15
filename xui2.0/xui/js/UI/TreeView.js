@@ -92,6 +92,8 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
             if(!(item.imageClass||item.image||item.iconFontCode))
                 item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
 
+            item._fi_optClass = p.optBtn;
+
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';

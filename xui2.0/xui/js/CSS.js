@@ -465,7 +465,7 @@ Class("xui.CSS", null,{
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
-            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
+            (!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'?".xuifont-active, .xuicon-active{ color: #3393D2; }":"")+
             ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
             
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+

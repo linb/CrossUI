@@ -144,7 +144,16 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                 };
 
                 if(t)
-                    profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
+                    profile.$inThread = xui.Dom.animate({
+                        border:'solid 1px #555',
+                        background:'#888',
+                        opacity:.1
+                    },{
+                        left:[pro.left,t.left],
+                        top:[pro.top,t.top],
+                        width:[pro.width,t.width],
+                        height:[pro.height,t.height]
+                    }, null,fun,300,0,'expoOut').start();
                 else
                     fun();
             });
@@ -215,8 +224,8 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
                     },
                     ICON:{
                         $order:2,
-                        className:'xuicon {imageClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                        className:'xuicon {imageClass}  {picClass}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -345,6 +354,11 @@ Class("xui.UI.Dialog","xui.UI.Widget",{
         Appearances:{
             KEY:{
                 overflow:'visible'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,

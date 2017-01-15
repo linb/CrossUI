@@ -21,9 +21,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 ITEM:{
                     tabindex:'{_tabindex}',
                     className:'xui-uitembg xui-uiborder-radius xui-showfocus {itemClass} {disabled} {readonly}',
-                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle}',
+                    style:'padding:{itemPadding};margin:{itemMargin};{_itemSize};{itemStyle}',
                     ITEMFRAME:{
-                        style:'{_itemSize};',
+                        style:'{_inneritemSize}',
                         CAPTION:{
                             tagName : 'div',
                             className:'xui-ui-ellipsis',
@@ -89,6 +89,9 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 zoom:xui.browser.ie6?1:null
+            },
+            'ITEMS-nowrap':{
+                'white-space':'nowrap'
             },
             ITEM:{
                 display:xui.$inlineBlock,
@@ -207,7 +210,7 @@ Class("xui.UI.Gallery", "xui.UI.List",{
                 }
             }
         },
-        DataModel:({
+        DataModel:{
             tagCmds:null,
             autoImgSize:{
                 ini:false,
@@ -236,39 +239,39 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             itemMargin:{
                 ini:6,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css('margin',v);
+                    this.getSubNode('ITEM',true).css('margin',v||0);
                 }
             },
             itemPadding:{
                 ini:2,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css('padding',v);
+                    this.getSubNode('ITEM',true).css('padding',v||0);
                 }
             },
             itemWidth:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).width(v);
+                    this.getSubNode('ITEMFRAME',true).width(v||'');
                 }
             },
             itemHeight:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).height(v);
+                    this.getSubNode('ITEMFRAME',true).height(v||'');
                 }
             },
             imgWidth:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).width(v);
+                    this.getSubNode('IMAGE',true).width(v||'');
                 }
             },
             imgHeight:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).height(v);
+                    this.getSubNode('IMAGE',true).height(v||'');
                 }
             },
             width:{
@@ -278,21 +281,42 @@ Class("xui.UI.Gallery", "xui.UI.List",{
             height:{
                 $spaceunit:1,
                 ini:'16rem'
+            },
+            columns:{
+                ini:0,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            rows:{
+                ini:0,
+                action:function(){
+                    this.boxing().refresh();
+                }
             }
-        }),
+        },
         EventHandlers:{
             onCmd:null
         },
+        _prepareData:function(profile){
+            var d=arguments.callee.upper.call(this, profile), p=profile.properties;
+            if(p.cols)d._itemscls1=profile.getClass('ITEMS','-nowrap');
+            return d;
+        },
         _prepareItem:function(profile, item){
-            var p = profile.properties, t;
+            var p = profile.properties,
+                cols=p.columns,
+                rows=p.rows,
+                auto=item.autoItemSize||p.autoItemSize,
+                t;
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemWidth)item.itemWidth=profile.$forceu(t);
-            if(t=item.itemHeight)item.itemHeight=profile.$forceu(t);
-            if(t=item.itemMargin)item.itemMargin=profile.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
+            item.itemWidth=(!auto&&(t=item.itemWidth))?profile.$forceu(t):'';
+            item.itemHeight=(!auto&&(t=item.itemHeight))?profile.$forceu(t):'';
+            item.itemMargin=(t=item.itemMargin)?profile.$forceu(t):0;
+            item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
             item._tabindex = p.tabindex;
 
             if(t=item.iconFontSize)item._fontSize='font-size:'+t+';'
@@ -310,11 +334,15 @@ Class("xui.UI.Gallery", "xui.UI.List",{
 
             if(( item.caption = item.caption || '')==='')item.capDisplay='display:none;';
             if((item.comment = item.comment || '')==='')item.commentDisplay='display:none;';
+            item._itemSize='';
+            if(cols)
+                item._itemSize+='width:'+(100/cols+'%') +';border:0;margin-left:0;margin-right:0;padding-left:0;padding-right:0;';
+            if(rows)
+                item._itemSize+='height:'+(100/rows+'%')+';border:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;';
 
-            if(item.autoItemSize||p.autoItemSize){
-                item._itemSize='';
-            }else{
-                item._itemSize='width:'+profile.$forceu(item.itemWidth)+';height:'+profile.$forceu(item.itemHeight);
+            if(!auto){
+                item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
+                    (!rows&&item.itemHeight?('height:'+item.itemHeight):'');
             }
         },
         RenderTrigger:function(){

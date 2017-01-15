@@ -610,54 +610,115 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         $touchscroll:function(type){
-            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
-                var hash={"x":1,"y":1,"xy":1},opx=0,opy=0,ox=null,oy=null,nodes=this._nodes;
+            if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
+                var hash={"x":1,"y":1,"xy":1},opx=null,opy=null,ox=null,oy=null,speedx=0,speedy=0,nodes=this._nodes,
+                      doSwipe = function(t){
+                            if(speedx||speedy){
+                                var params={},sl=t.scrollLeft,st=t.scrollTop,limit=50,rate=40,duration=2000;
+                                if(speedx)params.scrollLeft=[sl, sl + Math.sign(speedx)*Math.min(limit,Math.abs(speedx))*rate];
+                                if(speedy)params.scrollTop=[st, st + Math.sign(speedy)*Math.min(limit,Math.abs(speedy))*rate];
+                                xui(t).animate(params, null, null,duration,null,"expoOut").start();
+                            }
+                            speedx=speedy=opx=opy=ox=oy=null;
+                    };
                 if(!hash[type])type=null;
-                xui(nodes).onTouchstart(hash[type]?function(p,e,src){
+                xui(nodes)[xui.browser.fakeTouch?'onMousedown':'onTouchstart'](hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-                    if(e.touches.length>1)return true;
-                    var s=e.touches[0],t=xui(src).get(0);
+
+                    var s,t=xui(src).get(0);
+                    var tid=xui.getNodeData(t,'_inthread');
+                    if(tid){
+                        xui.Thread(tid).abort();
+                        xui.setNodeData(t,'_inthread');
+                    }
+
+                    if(xui.browser.fakeTouch){
+                        if(xui.Event.getBtn(e)!=='left')return true;
+                        s=e;
+                    }else{
+                        if(e.touches.length>1)return true;
+                        s=e.touches[0];
+                    }
                     if(t){
-                        if(type=='xy'||type=='x')
+                        if(type=='xy'||type=='x'){
+                            ox=t.scrollXLeft;
                             opx=s.pageX;
-                        if(type=='xy'||type=='y')
+                        }
+                        if(type=='xy'||type=='y'){
+                            oy=t.scrollTop
                             opy=s.pageY;
+                        }
+                    }
+                    // ***add for fake case
+                    if(xui.browser.fakeTouch){
+                        xui.setData(['!document','$fakescroll'],1);
+                        xui.doc.onMouseup(function(p,e,src){
+                            xui.setData(['!document','$fakescroll']);
+                            xui.asyRun(function(){xui.setData(['!document','$fakescrolling']);});
+                            // ***clear for fake case
+                            xui.doc.onMouseup(null,'touchscroll');
+                            doSwipe(t);
+                        },'touchscroll');
+                        return false;
                     }
                     return true;
-                }:null);
-                xui(nodes).onTouchmove(hash[type]?function(p,e,src){
+                }:null,'touchscroll');
+
+                xui(nodes)[xui.browser.fakeTouch?'onMousemove':'onTouchmove'](hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-                    if(e.touches.length>1)return true;
-                    var s=e.touches[0],t=xui(src).get(0),x1,y1,first;
+                    if(xui.browser.fakeTouch && !xui.getData(['!document','$fakescroll']))return true;
+                    var s,t=xui(src).get(0),x1,y1,first;
+                    if(xui.browser.fakeTouch){
+                        if(xui.Event.getBtn(e)!=='left')return true;
+                        s=e;
+                    }else{
+                        if(e.touches.length>1)return true;
+                        s=e.touches[0];
+                    }
                     if(t){
                         x1=t.scrollLeft;y1=t.scrollTop;
                         if(type=='xy'||type=='x'){
-                            // for multi-layers scroll
-                            if(ox===null){
-                                first=1;
-                                ox=t.scrollLeft+s.pageX+(opx==s.pageX?0:opx>s.pageX?1:-1)*10;
+                            t.scrollLeft=ox + opx - s.pageX;
+                            if(x1==t.scrollLeft){
+                                ox=t.scrollLeft;
+                                opx=s.pageX;
+                            }else{
+                                speedx=t.scrollLeft-x1;
                             }
-                            t.scrollLeft=ox-s.pageX;
                         }
                         if(type=='xy'||type=='y'){
-                            if(oy===null){
-                                first=1;
-                                oy=t.scrollTop+s.pageY+(opy==s.pageY?0:opy>s.pageY?1:-1)*10;
+                            if(oy===null)oy=t.scrollTop+opy;
+                            t.scrollTop=oy + opy - s.pageY;
+                            if(y1==t.scrollTop){
+                                oy=t.scrollTop;
+                                opy=s.pageY;
+                            }else{
+                                speedy=t.scrollTop-y1;
                             }
-                            t.scrollTop=oy-s.pageY;
                         }
-                        return (!first)&&x1==t.scrollLeft&&y1==t.scrollTop;
+                        // effected
+                        if(xui.browser.fakeTouch){
+                            if(x1!==t.scrollLeft || y1!==t.scrollTop){
+                                xui.setData(['!document','$fakescrolling'], 1);
+                            }
+                        }
+                        return x1==t.scrollLeft && y1==t.scrollTop;
                     }
-                }:null);
+                }:null,'touchscroll');
+
                 xui(nodes).onTouchend(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
                     if(e.touches.length>1)return true;
-                    ox=oy=null;
-                }:null);
+                    doSwipe(xui(src).get(0));
+                }:null,'touchscroll');
             }
             return this;
         },
         isScrollBarShowed:function(type){
+            var n=this.get(0);
+            if(n)return type=='y'?((n.offsetWidth||0)>(n.clientWidth||0)):((n.offsetHeight||0)>(n.clientHeight||0));
+        },
+        scrollable:function(type){
             type=type=='x'?'scrollLeft':'scrollTop';
             if(this[type]()!==0)return true;
             this[type](1);
@@ -680,7 +741,7 @@ Class('xui.Dom','xui.absBox',{
                     xui.Dom.setStyle(o,name,value)
                 });
 
-                if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
                     if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
                         if(value=='auto'||value=='scroll')
                             this.$touchscroll(name=='overflow'?'xy':name=='overflow-x'?'x':'y');
@@ -1110,15 +1171,19 @@ Class('xui.Dom','xui.absBox',{
         //for quick size
         cssSize:function(size,triggerEvent) {
             var self=this, node=self.get(0),r,dom=xui.Dom,f=dom._setUnitStyle,b1,b2;
-           if(size){
-                var t;
-                b1 = size.width!==null?f(node,'width',size.width):false;
-                b2 = size.height!==null?f(node,'height',size.height):false;
-                if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onsize'))self.onSize(true, {width:b1,height:b2});
-                r=self;
-            }else
-                r={ width :self._W(node,1)||0,  height :self._H(node,1)};
-            return r;
+            if(node){
+               if(size){
+                    var t;
+                    b1 = size.width!==null?f(node,'width',size.width):false;
+                    b2 = size.height!==null?f(node,'height',size.height):false;
+                    if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onsize'))self.onSize(true, {width:b1,height:b2});
+                    r=self;
+                }else
+                    r={ width :self._W(node,1)||0,  height :self._H(node,1)};
+                return r;
+            }else{
+                return size?self:{};
+            }
         },
         //for quick move
         cssPos:function(pos, triggerEvent){
@@ -3463,8 +3528,8 @@ type:4
            "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
            "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
            "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
-           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
            "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
            "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
         },

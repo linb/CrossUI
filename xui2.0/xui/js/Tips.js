@@ -2,6 +2,7 @@
 Class("xui.Tips", null,{
     Constructor:function(){return null},
     Initialize:function(){
+        if(xui.browser.fakeTouch)return;
         var dd=xui.DragDrop,
             tips=this;
         if(dd)
@@ -262,6 +263,7 @@ Class("xui.Tips", null,{
         AUTOHIDETIME:5000,
 
         _showF:function(){
+            if(xui.browser.fakeTouch)return;
             var self=this,
                 _from=self._from,
                 node=xui.Dom.byId(self._enode),

@@ -128,7 +128,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ITEMS:{
                $order:10,
                tagName:'div',
-               className:'xui-uibase {_bordertype}',
+               className:'xui-uibase {_cmdsalign} {_bordertype} {_itemscls1}',
                text:"{items}"
             },
             $submap:{
@@ -151,8 +151,8 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         },
                         ICON:{
                             $order:10,
-                            className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            className:'xuicon {imageClass}  {picClass}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -175,7 +175,7 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             $order:50,
                             style:'{_optDisplay}',
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-opt'
+                            $fonticon:'{_fi_optClass}'
                         }
                     }
                 },
@@ -230,10 +230,23 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 $order:10,
                 position:'absolute',
                 left:'auto',
-                top:'auto',
+                top:'50%',
+                'margin-top':'-0.5em',
                 right:'.167em',
-                top:'.167em',
                 display:'none'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
+            },
+            'ITEMS-tagcmdleft RTAGCMDS':{
+                "padding-right":'.333em',
+                "float":"left"
+            },
+            'ITEMS-tagcmdfloatright RTAGCMDS':{
+                "padding-right":'.333em',
+                "float":"right"
             }
         },
         Behaviors:{
@@ -372,12 +385,14 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
                 },
                 onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
@@ -472,11 +487,25 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
             },
-            optBtn:false,
+            optBtn:{
+                ini:"",
+                combobox:xui.toArr("xui-uicmd-opt,xui-icon-singleright"),
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             tagCmds:{
                 ini:[],
                 action:function(){
                     this.boxing().refresh();
+                }
+            },
+            tagCmdsAlign:{
+                ini:"right",
+                listbox:['left','right','floatright'],
+                action:function(v){
+                    var profile=this,box=profile.getSubNode("ITEMS"),cls=profile.getClass('ITEMS','-tagcmd');
+                    box.removeClass(new RegExp(cls+'[\w]*')).addClass(profile.getClass('ITEMS','-tagcmd'+v));
                 }
             },
             // label
@@ -583,12 +612,19 @@ Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
+            d._cmdsalign=profile.getClass('ITEMS','-tagcmd'+profile.properties.tagCmdsAlign);
             return d;
         },
         _prepareItem:function(profile, item){
-            var m=profile.properties.selMode;
+            var p=profile.properties,m=p.selMode;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
+
+            if(xui.browser.fakeTouch || xui.browser.deviceType !== 'mouseOnly'){
+                item._optDisplay = p.optBtn?'display:block;':'';
+            }
+
+            item._fi_optClass = p.optBtn;
             
             if(item.type=='split'){
                 item._split='xui-uitem-split';

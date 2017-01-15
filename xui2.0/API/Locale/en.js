@@ -12646,14 +12646,14 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             getOptBtn:{
-                $desc:"To determine whether this control has an option button",
-                $rtn:"Boolean"
+                $desc:"To get the option button class",
+                $rtn:"String"
             },
             setOptBtn:{
-                $desc:"Specifys whether this control has an option button",
+                $desc:"To set the option button class",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Boolean",
+                    "value [Required] : String",
                     $force
                 ]
             },
@@ -15853,14 +15853,14 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             getOptBtn:{
-                $desc:"To determine whether this control has an option button",
-                $rtn:"Boolean"
+                $desc:"To get the option button class",
+                $rtn:"String"
             },
             setOptBtn:{
-                $desc:"Specifys whether this control has an option button",
+                $desc:"To set the option button class",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Boolean",
+                    "value [Required] : String",
                     $force
                 ]
             },

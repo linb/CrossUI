@@ -22,6 +22,10 @@ Class('xui.Event',null,{
             xuievent=event.$xuievent,
             xuitype=event.$xuitype,
             xuiall=event.$xuiall;
+        
+        if(xui.browser.fakeTouch && type=="click" && xui.getData(['!document','$fakescrolling'])){
+            return false;
+        }
 
         // simulate for DD
         if(type=="xuitouchdown"){

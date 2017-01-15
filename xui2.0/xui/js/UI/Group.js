@@ -26,8 +26,8 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                         },
                         ICON:{
                             $order:2,
-                            className:'xuicon {imageClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                            className:'xuicon {imageClass}  {picClass}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {
@@ -98,6 +98,11 @@ Class("xui.UI.Group", "xui.UI.Panel",{
                 position:'relative',
                 overflow:'visible',
                 zoom:xui.browser.ie6?"1":null
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             TBAR:{
                 'margin-left':'.5em',

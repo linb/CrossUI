@@ -12558,14 +12558,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getOptBtn:{
-                $desc:"判断是否带有选项按钮",
-                $rtn:"Boolean"
+                $desc:"返回选项按钮类",
+                $rtn:"String"
             },
             setOptBtn:{
-                $desc:"设置是否带有选项按钮",
+                $desc:"设置选项按钮类",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean",
+                    "value [必需参数] : String",
                     $force
                 ]
             },
@@ -13170,7 +13170,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var id='xui.temp.panel39'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var btn;xui(id).prepend(btn=new xui.UI.Panel);"+
-                    "xui.asyRun(function(){btn.setOptBtn(true); alert(btn.getOptBtn ())},1000)"+
+                    "xui.asyRun(function(){btn.setOptBtn('xui-uicmd-opt'); alert(btn.getOptBtn ())},1000)"+
                     "}"
                 ]
             },
@@ -15772,14 +15772,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getOptBtn:{
-                $desc:"判断是否带有选项按钮",
-                $rtn:"Boolean"
+                $desc:"得到选项按钮类",
+                $rtn:"String"
             },
             setOptBtn:{
-                $desc:"设置是否带有选项按钮",
+                $desc:"设置选项按钮类",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean",
+                    "value [必需参数] : String",
                     $force
                 ]
             },

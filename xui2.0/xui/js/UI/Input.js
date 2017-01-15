@@ -22,7 +22,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 if(node){
                     try{
                         node.focus(); 
-                        if(select || xui.browser.deviceType!='touchOnly'){
+                        if(select || (!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly')){
                             try{
                                 if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 else xui(node).caret(0,0);
@@ -331,7 +331,7 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=xui.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                if(xui.browser.deviceType!='touchOnly'){
+                                if(!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly'){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             })
@@ -371,12 +371,12 @@ Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=xui.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                if(xui.browser.deviceType!='touchOnly'){
+                                if(!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly'){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             });
                         }else{
-                            if(xui.browser.deviceType!='touchOnly'){
+                            if(!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly'){
                                 if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             }
                         }

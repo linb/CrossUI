@@ -12,8 +12,8 @@ Class("xui.UI.Label", "xui.UI",{
             style:'{_style};text-align:{hAlign}',
             ICON:{
                 $order:0,
-                className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                className:'xuicon {imageClass}  {picClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             },
             CAPTION:{

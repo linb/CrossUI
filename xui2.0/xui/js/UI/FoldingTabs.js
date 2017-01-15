@@ -112,8 +112,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     },
                                     ICON:{
                                         $order:2,
-                                        className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                        className:'xuicon {imageClass}  {picClass}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{
@@ -205,6 +205,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
             BOX:{
                     
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             ITEMS:{
                 border:0,

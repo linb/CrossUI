@@ -513,9 +513,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             className:'xui-ui-unselectable xui-nofocus xui-ui-clear',
             tabindex: '-1',
             ICON:{
-                className:'xuifont {imageClass}',
+                className:'xuifont {imageClass}  {picClass}',
                 //for cover xuicon
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             }
         };

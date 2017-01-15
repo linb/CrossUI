@@ -363,8 +363,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         },
                                         ICON:{
                                             $order:2,
-                                            className:'xuicon {imageClass}',
-                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                                            className:'xuicon {imageClass}  {picClass}',
+                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{
@@ -536,7 +536,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             'LTAGCMDS, RTAGCMDS':{
                 padding:0,
-                margin:0
+                margin:0,
+                'vertical-align': 'middle'
             },
             CMD:{
                 padding:0,

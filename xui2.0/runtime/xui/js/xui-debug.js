@@ -999,7 +999,7 @@ xui.merge(xui,{
     setAppLangKey:function(key){xui.$appLangKey=key},
     getAppLangKey:function(key){return xui.$appLangKey},
     getLang:function(){return xui.$localeKey},
-    setLang:function(key,callback){
+    setLang:function(key,onOK,callback){
         var g=xui.getRes,t,v,i,j,f,m,z,a=[],l;
         xui.$localeKey=key;
         v = xui.browser.ie ? document.all.tags('span') : document.getElementsByTagName('span');
@@ -1014,6 +1014,8 @@ xui.merge(xui,{
                 if(a.length)
                     xui.setTimeout(ff,0);
                 xui.tryF(callback,[a.length,l]);
+                if(!a.length)
+                    xui.tryF(onOK,[0,l]);
             };
             ff();
         },
@@ -1707,6 +1709,11 @@ xui.merge(xui,{
 /* xui.ini xui.browser dom ready
 */
 new function(){
+    var ini=xui.ini={};
+    //special var
+    if(window.xui_ini)
+        xui.merge(ini,window.xui_ini);
+
     //browser sniffer
     var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
         kde:/webkit/.test(u),
@@ -1754,7 +1761,10 @@ new function(){
     }else{
         b.deviceType = b.isTouch ? 'touchOnly' : 'mouseOnly';
     }
-
+    // fake touch
+    if(xui.ini.fakeTouch && b.deviceType=='mouseOnly'){
+        b.fakeTouch = true;
+    }
     xui.$secureUrl=b.isSecure&&b.ie?'javascript:""':'about:blank';
 
     xui.filter(b,function(o){return !!o});
@@ -1816,11 +1826,6 @@ new function(){
                 (n = (n=n||d.documentElement).style["-moz-box-sizing"] || n.style["box-sizing"]) ? (n=="content-box") : true;
     }();
 
-    var ini=xui.ini={};
-    //special var
-    if(window.xui_ini)
-        xui.merge(ini,window.xui_ini);
-
     if(!ini.path){
         var s,arr = document.getElementsByTagName('script'), reg = /js\/xui(-[\w]+)?\.js$/,l=arr.length;
         while(--l>=0){
@@ -1851,7 +1856,8 @@ new function(){
                 img_pic: path+'picture.png',
                 img_handler: path+'handler.gif',
                 img_bg: path+'bg.gif',
-                img_blank: path+'bg.gif'
+                img_blank: path+'bg.gif',
+                img_touchcur: path+'touchcur.png'
             },'without');
         }
         data.onload = data.onerror = null;
@@ -1862,6 +1868,7 @@ new function(){
         img_busy:  "data:image/gif;base64,R0lGODlhEAAQAOMAAAQCBHx+fLy+vOTm5ERCRMTGxISGhAQGBISChMTCxOzq7FRSVMzKzP7+/gAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQANACwAAAAAEAAQAAAESrDJSau9OOvNe1VFonCFIBRcIiQJp7BjNySDxRjMNAQBUk+FAwCAaiR6gURhsUgYhgCEZIDgDRYEwqIALTZmNay2UTB4KwKmwBIBACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRE8MlJq7046827n47RIJwBAEZ5phsikg9TMNZBHBMj7PR0DEDco7ATFA6JhA04IEh0AgUjEQgomcLY7EG1PmzZClJpiQAAIfkECQkADQAsAAAAABAAEAAABEewyUmrtcywWxn4BTcZH4CIUlGGaFMYbOsuSywuBLHIuC4LNEFrkBjIBoEAwmhRFBKKRDKQuBQEgsIAoWRWEoJEleitRKGWCAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJ6UxDM2sDgHkHcWgT5x1DOpKIhRDpQJAaqtK1iJNHkqy7RyIQSAQlw+IR5APiGAXGkiGoSoOFqqBwpAoU1yA0vJxEAAAh+QQJCQANACwAAAAAEAAQAAAES7DJWdYqMzdmWFsEsTRDMkwMoFbhMgQBcjaGCiCCJQhwkEgFG2YyQMRmjYJhmCkhNVBFoqCAQgu7nzWTECS0W4k0UQ2bz+i0en2OAAAh+QQJCQAPACwAAAAAEAAQAIMEAgR8fny8vrxEQkSkpqTk4uQUFhTU1tSsrqyMiozEwsRERkT08vQcGhy0srT+/v4ERfDJeVI6M79DcApB8jAFQy3DUIEJI7zmQ6RDZx3FKxTSQWMTl0AR23Q0o5LEYWggkEgDAGCAaqRUawbRfGq/4LB4TC5DIwAh+QQJCQANACwAAAAAEAAQAAAER7DJqUpSM7eRRkuCUGjSgAQIJyQJ+QXwxWLkAKeuxnm5VCyLVk+yIBAWQ6IRmRQABclJwcCIMg4AwGhoyAIQyYJ3O5ySo9EIACH5BAkJAA8ALAAAAAAQABAAgwQCBHx+fLy+vERCRKSmpOTi5BQWFNTW1KyurIyKjMTCxERGRPTy9BwaHLSytP7+/gRG8MlJ62SFWcuE19tUeEIRXp4Cng+2hkeSHKyUBEFSP3e+x7Od5ECg1Q6LwcB4IigHBETD4NgcngcDAGCAFR9a7g5hMCAsEQA7",
         img_pic:    "data:image/png;base64,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",
         img_handler:"data:image/gif;base64,R0lGODlhBAAEAPcAAAAAAGSMtP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAEAAQAAAgPAP8JFCDwX4B/BAUe/BcQADs=",
+        img_touchcur:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAATCAMAAACqTK3AAAAAnFBMVEVKS0sAAAD6+vr39/fj4+OsrKxQUVHk5OTY2NjV1dVgYWHm5ube3t7c3NzV1dXT09PPz8/q6ur19fXNzc2/v7/v7+/u7u6QkJB1dnbt7e1SU1Pd3d3b29vW1tbU1NTT09Ps7Ozl5eXe39/e3t709PS7u7u5ublmZ2fp6enn5+fj4+Ph4eHg4ODc3Nzc3NzZ2dnZ2dnW1tbU1NTT09Pxrtv7AAAANHRSTlPmAP78+fHnyPf26NGiizAcBfr49fPu7e3q6Oedh08oDPr5+Pj38vLp3NfBuLGUkXRrSzgYlzzxjwAAAKFJREFUGNNl0NUOwzAMQFE7sDLzSmPm/f+/LY2atVXv45FlyQac1ZPnaCfLdgdqr4TF/KATq+nJS1gOXWZE35L8wlhAHw+bjuxAiCqyOgozGDKJC1hTGKeXgM52QnsN0DYmxM9iik0oFlMuWY6JVYCY8JHk5CvoSc2/LNY3edAlOCox0laSr1Eu92WrwlPPeaWE6Ru6u/soSfapyketXjjrB1sXCDrwyo6RAAAAAElFTkSuQmCC',
         // transparent 1*1 gif and png
         img_bg:     data.src,
         img_blank: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
@@ -5900,6 +5907,10 @@ Class('xui.Event',null,{
             xuievent=event.$xuievent,
             xuitype=event.$xuitype,
             xuiall=event.$xuiall;
+        
+        if(xui.browser.fakeTouch && type=="click" && xui.getData(['!document','$fakescrolling'])){
+            return false;
+        }
 
         // simulate for DD
         if(type=="xuitouchdown"){
@@ -8701,7 +8712,7 @@ Class('xui.Event',null,{
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
-            ".xuifont-active, .xuicon-active{ color: #3393D2; }"+
+            (!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'?".xuifont-active, .xuicon-active{ color: #3393D2; }":"")+
             ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
             
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
@@ -9390,54 +9401,115 @@ Class('xui.Dom','xui.absBox',{
             }
         },
         $touchscroll:function(type){
-            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
-                var hash={"x":1,"y":1,"xy":1},opx=0,opy=0,ox=null,oy=null,nodes=this._nodes;
+            if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
+                var hash={"x":1,"y":1,"xy":1},opx=null,opy=null,ox=null,oy=null,speedx=0,speedy=0,nodes=this._nodes,
+                      doSwipe = function(t){
+                            if(speedx||speedy){
+                                var params={},sl=t.scrollLeft,st=t.scrollTop,limit=50,rate=40,duration=2000;
+                                if(speedx)params.scrollLeft=[sl, sl + Math.sign(speedx)*Math.min(limit,Math.abs(speedx))*rate];
+                                if(speedy)params.scrollTop=[st, st + Math.sign(speedy)*Math.min(limit,Math.abs(speedy))*rate];
+                                xui(t).animate(params, null, null,duration,null,"bounceOut").start();
+                            }
+                            speedx=speedy=opx=opy=ox=oy=null;
+                    };
                 if(!hash[type])type=null;
-                xui(nodes).onTouchstart(hash[type]?function(p,e,src){
+                xui(nodes)[xui.browser.fakeTouch?'onMousedown':'onTouchstart'](hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-                    if(e.touches.length>1)return true;
-                    var s=e.touches[0],t=xui(src).get(0);
+
+                    var s,t=xui(src).get(0);
+                    var tid=xui.getNodeData(t,'_inthread');
+                    if(tid){
+                        xui.Thread(tid).abort();
+                        xui.setNodeData(t,'_inthread');
+                    }
+
+                    if(xui.browser.fakeTouch){
+                        if(xui.Event.getBtn(e)!=='left')return true;
+                        s=e;
+                    }else{
+                        if(e.touches.length>1)return true;
+                        s=e.touches[0];
+                    }
                     if(t){
-                        if(type=='xy'||type=='x')
+                        if(type=='xy'||type=='x'){
+                            ox=t.scrollXLeft;
                             opx=s.pageX;
-                        if(type=='xy'||type=='y')
+                        }
+                        if(type=='xy'||type=='y'){
+                            oy=t.scrollTop
                             opy=s.pageY;
+                        }
+                    }
+                    // ***add for fake case
+                    if(xui.browser.fakeTouch){
+                        xui.setData(['!document','$fakescroll'],1);
+                        xui.doc.onMouseup(function(p,e,src){
+                            xui.setData(['!document','$fakescroll']);
+                            xui.asyRun(function(){xui.setData(['!document','$fakescrolling']);});
+                            // ***clear for fake case
+                            xui.doc.onMouseup(null,'touchscroll');
+                            doSwipe(t);
+                        },'touchscroll');
+                        return false;
                     }
                     return true;
-                }:null);
-                xui(nodes).onTouchmove(hash[type]?function(p,e,src){
+                }:null,'touchscroll');
+
+                xui(nodes)[xui.browser.fakeTouch?'onMousemove':'onTouchmove'](hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-                    if(e.touches.length>1)return true;
-                    var s=e.touches[0],t=xui(src).get(0),x1,y1,first;
+                    if(xui.browser.fakeTouch && !xui.getData(['!document','$fakescroll']))return true;
+                    var s,t=xui(src).get(0),x1,y1,first;
+                    if(xui.browser.fakeTouch){
+                        if(xui.Event.getBtn(e)!=='left')return true;
+                        s=e;
+                    }else{
+                        if(e.touches.length>1)return true;
+                        s=e.touches[0];
+                    }
                     if(t){
                         x1=t.scrollLeft;y1=t.scrollTop;
                         if(type=='xy'||type=='x'){
-                            // for multi-layers scroll
-                            if(ox===null){
-                                first=1;
-                                ox=t.scrollLeft+s.pageX+(opx==s.pageX?0:opx>s.pageX?1:-1)*10;
+                            t.scrollLeft=ox + opx - s.pageX;
+                            if(x1==t.scrollLeft){
+                                ox=t.scrollLeft;
+                                opx=s.pageX;
+                            }else{
+                                speedx=t.scrollLeft-x1;
                             }
-                            t.scrollLeft=ox-s.pageX;
                         }
                         if(type=='xy'||type=='y'){
-                            if(oy===null){
-                                first=1;
-                                oy=t.scrollTop+s.pageY+(opy==s.pageY?0:opy>s.pageY?1:-1)*10;
+                            if(oy===null)oy=t.scrollTop+opy;
+                            t.scrollTop=oy + opy - s.pageY;
+                            if(y1==t.scrollTop){
+                                oy=t.scrollTop;
+                                opy=s.pageY;
+                            }else{
+                                speedy=t.scrollTop-y1;
                             }
-                            t.scrollTop=oy-s.pageY;
                         }
-                        return (!first)&&x1==t.scrollLeft&&y1==t.scrollTop;
+                        // effected
+                        if(xui.browser.fakeTouch){
+                            if(x1!==t.scrollLeft || y1!==t.scrollTop){
+                                xui.setData(['!document','$fakescrolling'], 1);
+                            }
+                        }
+                        return x1==t.scrollLeft && y1==t.scrollTop;
                     }
-                }:null);
+                }:null,'touchscroll');
+
                 xui(nodes).onTouchend(hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
                     if(e.touches.length>1)return true;
-                    ox=oy=null;
-                }:null);
+                    doSwipe(xui(src).get(0));
+                }:null,'touchscroll');
             }
             return this;
         },
         isScrollBarShowed:function(type){
+            var n=this.get(0);
+            if(n)return type=='y'?((n.offsetWidth||0)>(n.clientWidth||0)):((n.offsetHeight||0)>(n.clientHeight||0));
+        },
+        scrollable:function(type){
             type=type=='x'?'scrollLeft':'scrollTop';
             if(this[type]()!==0)return true;
             this[type](1);
@@ -9460,7 +9532,7 @@ Class('xui.Dom','xui.absBox',{
                     xui.Dom.setStyle(o,name,value)
                 });
 
-                if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
                     if(name=='overflow'||name=='overflow-x'||name=='overflow-y'){
                         if(value=='auto'||value=='scroll')
                             this.$touchscroll(name=='overflow'?'xy':name=='overflow-x'?'x':'y');
@@ -9890,15 +9962,19 @@ Class('xui.Dom','xui.absBox',{
         //for quick size
         cssSize:function(size,triggerEvent) {
             var self=this, node=self.get(0),r,dom=xui.Dom,f=dom._setUnitStyle,b1,b2;
-           if(size){
-                var t;
-                b1 = size.width!==null?f(node,'width',size.width):false;
-                b2 = size.height!==null?f(node,'height',size.height):false;
-                if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onsize'))self.onSize(true, {width:b1,height:b2});
-                r=self;
-            }else
-                r={ width :self._W(node,1)||0,  height :self._H(node,1)};
-            return r;
+            if(node){
+               if(size){
+                    var t;
+                    b1 = size.width!==null?f(node,'width',size.width):false;
+                    b2 = size.height!==null?f(node,'height',size.height):false;
+                    if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onsize'))self.onSize(true, {width:b1,height:b2});
+                    r=self;
+                }else
+                    r={ width :self._W(node,1)||0,  height :self._H(node,1)};
+                return r;
+            }else{
+                return size?self:{};
+            }
         },
         //for quick move
         cssPos:function(pos, triggerEvent){
@@ -12243,8 +12319,8 @@ type:4
            "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
            "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
            "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
-           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],scaleX:[.2,1],scaleY:[.2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"],scaleX:[1,.2],scaleY:[1,.2]}}],
+           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"],/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
            "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
            "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
         },
@@ -14386,7 +14462,7 @@ Class('xui.Module','xui.absProfile',{
                 var ifun=function(path){
                     var a=this,
                         t, bg, 
-                        f=function(){
+                        f=function(i,l,flag){
                             if(bg && xui.isHash(bg)){
                                 xui.each(bg,function(v,k){
                                     xui('html').css(k, xui.adjustRes(v));
@@ -14449,14 +14525,14 @@ Class('xui.Module','xui.absProfile',{
                         }catch(e){}
                         if(theme&&theme!="default"){
                             xui.setTheme(theme,true,function(){
-                                //get locale info
-                                if(lang) xui.setLang(lang, f);
-                                else f();
+                                if(lang) xui.setLang(lang, f); else f();
+                            },function(){
+                                xui.alert("Can't load theme - " + theme);
+                                if(lang) xui.setLang(lang, f); else f();
                             });
                         }else{
                             //get locale info
-                            if(lang) xui.setLang(lang, f);
-                            else f();
+                            if(lang) xui.setLang(lang, f);else f();
                         }
                     }else{
                         var e=new Error("No class name");
@@ -16182,6 +16258,7 @@ Class('xui.DragDrop',null,{
 Class("xui.Tips", null,{
     Constructor:function(){return null},
     Initialize:function(){
+        if(xui.browser.fakeTouch)return;
         var dd=xui.DragDrop,
             tips=this;
         if(dd)
@@ -16442,6 +16519,7 @@ Class("xui.Tips", null,{
         AUTOHIDETIME:5000,
 
         _showF:function(){
+            if(xui.browser.fakeTouch)return;
             var self=this,
                 _from=self._from,
                 node=xui.Dom.byId(self._enode),
@@ -17290,23 +17368,35 @@ Class('xui.UIProfile','xui.Profile', {
                 }
             }
 
-            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
-                var check={'auto':1,'scroll':1};
+            if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
+                var check={'auto':1,'scroll':1},dir;
                 // for UI's appearances overflow
                 xui.each(ns.box.$Appearances,function(o,i){
+                    dir='';
                     if(check[o.overflow]){
-                        ns.getSubNode(i,true).$touchscroll('xy');
+                        dir='xy';
                     }else{
-                        if(check[o['overflow-x']]){
-                            ns.getSubNode(i,true).$touchscroll('x');
-                        }else if(check[o['overflow-y']]){
-                            ns.getSubNode(i,true).$touchscroll('y');
-                        }
+                        if(check[o['overflow-x']])dir += 'x';
+                        if(check[o['overflow-y']])dir += 'y';
                     }
+                    if(dir)ns.getSubNode(i,true).$touchscroll(dir);
                 });
                 // for UI's overflow property
-                if(check[ns.properties.overflow]){
-                    ins.setOverflow(ns.properties.overflow,true);
+                if('overflow' in ns.properties) {
+                    if(xui.browser.fakeTouch){
+                        xui.asyRun(function(){
+                            var dir='',root=ns.getRoot();
+                            if(root&&!root.isEmpty()){
+                                if(root.isScrollBarShowed('x'))dir += 'x';
+                                if(root.isScrollBarShowed('y'))dir += 'y';
+                                if(dir)root.$touchscroll(dir);
+                            }
+                        });
+                    }else{
+                        if(check[ns.properties.overflow]){
+                            ins.setOverflow(ns.properties.overflow,true);
+                        }
+                    }
                 }
             }
 
@@ -17454,6 +17544,9 @@ Class('xui.UIProfile','xui.Profile', {
         getRoot:function(){
             var ns=this;
             return ns.renderId ? (ns['*']||(ns['*']=xui([ns.renderId],false))) : xui([],false);
+        },
+        getAllNodes:function(){
+            return this.getRoot().query().merge(this.getRoot());
         },
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
@@ -19917,6 +20010,9 @@ Class("xui.UI",  "xui.absObj", {
         });
 
         xui.UI.$cache_css2 += xui.UI.buildCSSText({
+            '.xui-css-innerimage':{
+                'vertical-align': 'middle'
+            },
             '.xui-uitem-split':{
                 display: 'block',
                 position: 'relative',
@@ -20012,6 +20108,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-alert':{
                 'background-color':'#ff6600 !important'
+            },
+            '.xui-cursor-touch, .xui-cursor-touch *':{
+                cursor: 'url('+xui.ini.img_touchcur+') 8 8,auto!important'
             },
             '.xui-icon-loading':{
                 $order:7,
@@ -20556,7 +20655,7 @@ Class("xui.UI",  "xui.absObj", {
                             nodes=xui(nodes);
                             box=profile.boxing();
                             if(mode==1){
-                                if(type=='mouseover'){
+                                if(!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
                                     if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
                                         return;
                                     if(prop.disableHoverEffect)
@@ -20574,7 +20673,7 @@ Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
-                                nodes.tagClass('-'+(type=='mouseover'?'hover':type=='mousedown'?'active':type));
+                                nodes.tagClass('-'+((!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
                                     if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
@@ -21452,8 +21551,11 @@ Class("xui.UI",  "xui.absObj", {
                     }
                     if(c["location"]=="left")
                         b.push(c);
-                    else
+                    else{
                         a.push(c);
+                        if(c['locaton']=='right-float')
+                            c._exstyle='float:right;';
+                    }
                 }
                 item.ltagCmds=b
                 item.rtagCmds=a;
@@ -21774,6 +21876,7 @@ Class("xui.UI",  "xui.absObj", {
                     hashOut.imageClass = arr.join(' ');
                 }
                 if(!ifc){
+                    hashOut.picClass = 'xui-css-innerimage';
                     // imageClass + image
                     if(hashOut.image){
                         hashOut.imageClass='xui-icon-placeholder';
@@ -21795,6 +21898,8 @@ Class("xui.UI",  "xui.absObj", {
                         hashOut.backgroundRepeat='background-repeat:no-repeat;';
                 }
             }
+            if(hashOut.iconFontSize)
+                hashOut.iconFontSize='font-size:'+hashOut.iconFontSize+';';
             //must be here
             //Avoid Empty Image src
             // ensoure to trigger load event of img
@@ -24828,11 +24933,11 @@ Class("xui.UI.Element", "xui.UI",{
 Class("xui.UI.Icon", "xui.UI",{
     Static:{
         Templates:{
-            className:'xui-node xui-wrapper {_className}',
+            className:'xui-node xui-wrapper {_className}  {picClass}',
             style:'{_style};',
             ICON:{
                 className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}{iconStyle}',
                 text:'{iconFontCode}'
             }
         },
@@ -25026,8 +25131,8 @@ Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             },
             ICON:{
                 $order:1,
-                className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                className:'xuicon {imageClass}  {picClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -25461,7 +25566,7 @@ Class("xui.UI.Div", "xui.UI",{
         Appearances:{
             KEY:{
                // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
-                outline:xui.browser.gek?'none':null,
+                outline:xui.browser.gek?'none':null, 
                 zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
                 background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
                 'line-height':'auto'
@@ -27823,8 +27928,8 @@ Class("xui.UI.Label", "xui.UI",{
             style:'{_style};text-align:{hAlign}',
             ICON:{
                 $order:0,
-                className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                className:'xuicon {imageClass}  {picClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -28115,8 +28220,8 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 },
                 ICON:{
                     $order:1,
-                    className:'xuicon {imageClass}',
-                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                    className:'xuicon {imageClass}  {picClass}',
+                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                     text:'{iconFontCode}' 
                 },
                 CAPTION:{
@@ -28903,7 +29008,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 if(node){
                     try{
                         node.focus(); 
-                        if(select || xui.browser.deviceType!='touchOnly'){
+                        if(select || (!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly')){
                             try{
                                 if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 else xui(node).caret(0,0);
@@ -29212,7 +29317,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         if(!node.readOnly && node.select){
                             profile.$mouseupDelayFun=xui.asyRun(function(){
                                 delete profile.$mouseupDelayFun;
-                                if(xui.browser.deviceType!='touchOnly'){
+                                if(!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly'){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             })
@@ -29252,12 +29357,12 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         if(xui.browser.kde){
                             profile.$focusDelayFun2=xui.asyRun(function(){
                                 delete profile.$focusDelayFun2;
-                                if(xui.browser.deviceType!='touchOnly'){
+                                if(!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly'){
                                     if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                                 }
                             });
                         }else{
-                            if(xui.browser.deviceType!='touchOnly'){
+                            if(!xui.browser.fakeTouch && xui.browser.deviceType!='touchOnly'){
                                 if(node.tagName.toLowerCase()=="input" || !/[\n\r]/.test(node.value))node.select();
                             }
                         }
@@ -31541,9 +31646,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             className:'xui-ui-unselectable xui-nofocus xui-ui-clear',
             tabindex: '-1',
             ICON:{
-                className:'xuifont {imageClass}',
+                className:'xuifont {imageClass}  {picClass}',
                 //for cover xuicon
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             }
         };
@@ -35298,7 +35403,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             ITEMS:{
                $order:10,
                tagName:'div',
-               className:'xui-uibase {_bordertype}',
+               className:'xui-uibase {_cmdsalign} {_bordertype} {_itemscls1}',
                text:"{items}"
             },
             $submap:{
@@ -35321,8 +35426,8 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         },
                         ICON:{
                             $order:10,
-                            className:'xuicon {imageClass}',
-                            style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                            className:'xuicon {imageClass}  {picClass}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -35345,7 +35450,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                             $order:50,
                             style:'{_optDisplay}',
                             className:'xuifont',
-                            $fonticon:'xui-uicmd-opt'
+                            $fonticon:'{_fi_optClass}'
                         }
                     }
                 },
@@ -35400,10 +35505,23 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:10,
                 position:'absolute',
                 left:'auto',
-                top:'auto',
+                top:'50%',
+                'margin-top':'-0.5em',
                 right:'.167em',
-                top:'.167em',
                 display:'none'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
+            },
+            'ITEMS-tagcmdleft RTAGCMDS':{
+                "padding-right":'.333em',
+                "float":"left"
+            },
+            'ITEMS-tagcmdfloatright RTAGCMDS':{
+                "padding-right":'.333em',
+                "float":"right"
             }
         },
         Behaviors:{
@@ -35542,12 +35660,14 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                         return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
                 },
                 onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
@@ -35642,11 +35762,25 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
                 }
             },
-            optBtn:false,
+            optBtn:{
+                ini:"",
+                combobox:xui.toArr("xui-uicmd-opt,xui-icon-singleright"),
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             tagCmds:{
                 ini:[],
                 action:function(){
                     this.boxing().refresh();
+                }
+            },
+            tagCmdsAlign:{
+                ini:"right",
+                listbox:['left','right','floatright'],
+                action:function(v){
+                    var profile=this,box=profile.getSubNode("ITEMS"),cls=profile.getClass('ITEMS','-tagcmd');
+                    box.removeClass(new RegExp(cls+'[\w]*')).addClass(profile.getClass('ITEMS','-tagcmd'+v));
                 }
             },
             // label
@@ -35753,12 +35887,19 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // adjustRes for labelCaption
             if(d.labelCaption)
                 d.labelCaption=xui.adjustRes(d.labelCaption,true);
+            d._cmdsalign=profile.getClass('ITEMS','-tagcmd'+profile.properties.tagCmdsAlign);
             return d;
         },
         _prepareItem:function(profile, item){
-            var m=profile.properties.selMode;
+            var p=profile.properties,m=p.selMode;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
+
+            if(xui.browser.fakeTouch || xui.browser.deviceType !== 'mouseOnly'){
+                item._optDisplay = p.optBtn?'display:block;':'';
+            }
+
+            item._fi_optClass = p.optBtn;
             
             if(item.type=='split'){
                 item._split='xui-uitem-split';
@@ -35851,9 +35992,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ITEM:{
                     tabindex:'{_tabindex}',
                     className:'xui-uitembg xui-uiborder-radius xui-showfocus {itemClass} {disabled} {readonly}',
-                    style:'padding:{itemPadding};margin:{itemMargin};{itemStyle}',
+                    style:'padding:{itemPadding};margin:{itemMargin};{_itemSize};{itemStyle}',
                     ITEMFRAME:{
-                        style:'{_itemSize};',
+                        style:'{_inneritemSize}',
                         CAPTION:{
                             tagName : 'div',
                             className:'xui-ui-ellipsis',
@@ -35919,6 +36060,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 overflow:'auto',
                 'overflow-x': 'hidden',
                 zoom:xui.browser.ie6?1:null
+            },
+            'ITEMS-nowrap':{
+                'white-space':'nowrap'
             },
             ITEM:{
                 display:xui.$inlineBlock,
@@ -36037,7 +36181,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             }
         },
-        DataModel:({
+        DataModel:{
             tagCmds:null,
             autoImgSize:{
                 ini:false,
@@ -36066,39 +36210,39 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             itemMargin:{
                 ini:6,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css('margin',v);
+                    this.getSubNode('ITEM',true).css('margin',v||0);
                 }
             },
             itemPadding:{
                 ini:2,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css('padding',v);
+                    this.getSubNode('ITEM',true).css('padding',v||0);
                 }
             },
             itemWidth:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).width(v);
+                    this.getSubNode('ITEMFRAME',true).width(v||'');
                 }
             },
             itemHeight:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).height(v);
+                    this.getSubNode('ITEMFRAME',true).height(v||'');
                 }
             },
             imgWidth:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).width(v);
+                    this.getSubNode('IMAGE',true).width(v||'');
                 }
             },
             imgHeight:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).height(v);
+                    this.getSubNode('IMAGE',true).height(v||'');
                 }
             },
             width:{
@@ -36108,21 +36252,42 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             height:{
                 $spaceunit:1,
                 ini:'16rem'
+            },
+            columns:{
+                ini:0,
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
+            rows:{
+                ini:0,
+                action:function(){
+                    this.boxing().refresh();
+                }
             }
-        }),
+        },
         EventHandlers:{
             onCmd:null
         },
+        _prepareData:function(profile){
+            var d=arguments.callee.upper.call(this, profile), p=profile.properties;
+            if(p.cols)d._itemscls1=profile.getClass('ITEMS','-nowrap');
+            return d;
+        },
         _prepareItem:function(profile, item){
-            var p = profile.properties, t;
+            var p = profile.properties,
+                cols=p.columns,
+                rows=p.rows,
+                auto=item.autoItemSize||p.autoItemSize,
+                t;
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            if(t=item.itemWidth)item.itemWidth=profile.$forceu(t);
-            if(t=item.itemHeight)item.itemHeight=profile.$forceu(t);
-            if(t=item.itemMargin)item.itemMargin=profile.$forceu(t);
-            if(t=item.itemPadding)item.itemPadding=profile.$forceu(t);
+            item.itemWidth=(!auto&&(t=item.itemWidth))?profile.$forceu(t):'';
+            item.itemHeight=(!auto&&(t=item.itemHeight))?profile.$forceu(t):'';
+            item.itemMargin=(t=item.itemMargin)?profile.$forceu(t):0;
+            item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
             item._tabindex = p.tabindex;
 
             if(t=item.iconFontSize)item._fontSize='font-size:'+t+';'
@@ -36140,11 +36305,15 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             if(( item.caption = item.caption || '')==='')item.capDisplay='display:none;';
             if((item.comment = item.comment || '')==='')item.commentDisplay='display:none;';
+            item._itemSize='';
+            if(cols)
+                item._itemSize+='width:'+(100/cols+'%') +';border:0;margin-left:0;margin-right:0;padding-left:0;padding-right:0;';
+            if(rows)
+                item._itemSize+='height:'+(100/rows+'%')+';border:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;';
 
-            if(item.autoItemSize||p.autoItemSize){
-                item._itemSize='';
-            }else{
-                item._itemSize='width:'+profile.$forceu(item.itemWidth)+';height:'+profile.$forceu(item.itemHeight);
+            if(!auto){
+                item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
+                    (!rows&&item.itemHeight?('height:'+item.itemHeight):'');
             }
         },
         RenderTrigger:function(){
@@ -36238,8 +36407,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         },
                         ICON:{
                             $order:2,
-                            className:'xuicon {imageClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                            className:'xuicon {imageClass}  {picClass}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -36332,6 +36501,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         Appearances:{
             KEY:{
                 background:'transparent'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             'KEY BORDER':{
                 zoom:xui.browser.ie6?1:null
@@ -36790,8 +36964,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         },
                         ICON:{
                             $order:2,
-                            className:'xuicon {imageClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                            className:'xuicon {imageClass}  {picClass}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {
@@ -36862,6 +37036,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                 position:'relative',
                 overflow:'visible',
                 zoom:xui.browser.ie6?"1":null
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             TBAR:{
                 'margin-left':'.5em',
@@ -37723,8 +37902,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         },
                                         ICON:{
                                             $order:2,
-                                            className:'xuicon {imageClass}',
-                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                                            className:'xuicon {imageClass}  {picClass}',
+                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{
@@ -37896,7 +38075,8 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             },
             'LTAGCMDS, RTAGCMDS':{
                 padding:0,
-                margin:0
+                margin:0,
+                'vertical-align': 'middle'
             },
             CMD:{
                 padding:0,
@@ -39147,7 +39327,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hc=hh;
             }else{
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
-                    hl.css('overflow-y','hidden');
+                    if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                    }else{
+                        hl.css('overflow-y','hidden');
+                    }
                     itmsH = hs.height(prop.barSize||'auto').offsetHeight(true);
                     hl.css('position','relative');
 
@@ -39189,7 +39372,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
                 }else{
                     //reset to default
-                    hl.css('overflow-y','scroll');
+                    if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                    }else{
+                        // bug: in mobile android, it will make hs._nodes.length=0
+                        hl.css('overflow-y','scroll');
+                    }
                     // side bar
                     menu2.css('display',prop.sideBarSize?'block':'none');
 
@@ -39204,7 +39391,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hl.css('overflow-y','hidden');
+                            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                            }else{
+                                hl.css('overflow-y','hidden');
+                            }
                             hs.width(adjustunit(ww-bw, hsfz));
                             hl.width(adjustunit(ww-bw, hsfz));
                         }
@@ -39268,8 +39458,8 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     },
                     ICON:{
                         $order:1,
-                        className:'xuicon {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                        className:'xuicon {imageClass}  {picClass}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -39355,8 +39545,8 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                     tabindex: '{_tabindex}',
                     ICON:{
                         $order:10,
-                        className:'xuicon {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                        className:'xuicon {imageClass}  {picClass}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -39745,6 +39935,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     onselectstart:'return false',
                     ITEMS:{
                         tagName : 'div',
+                        className:'{_cmdsalign}',
                         text:"{items}"
                     }
                 }
@@ -39785,8 +39976,8 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             },
                             ITEMICON:{
                                 $order:6,
-                                className:'xuicon {imageClass}',
-                                style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                className:'xuicon {imageClass} {picClass}',
+                                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                 text:'{iconFontCode}'
                             },
                             ITEMCAPTION:{
@@ -39800,17 +39991,17 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 text : '{ext}',
                                 $order:8
                             },
-                            OPT:{
-                                $order:9,
-                                style:'{_optDisplay}',
-                                className:'xuifont',
-                                $fonticon:'xui-uicmd-opt'
-                            },
                             RTAGCMDS:{
-                                $order:10,
+                                $order:9,
                                 tagName:'span',
                                 style:'{_rtagDisplay}',
                                 text:"{rtagCmds}"
+                            },
+                            OPT:{
+                                $order:10,
+                                style:'{_optDisplay}',
+                                className:'xuifont',
+                                $fonticon:'{_fi_optClass}'
                             }
                         },
                         SUB:{
@@ -39898,14 +40089,23 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 $order:10,
                 position:'absolute',
                 left:'auto',
-                top:'auto',
+                top:'50%',
+                'margin-top':'-0.5em',
                 right:'.167em',
-                top:'.167em',
                 display:'none'
             },
-            'BOX-tagcmdleft RTAGCMDS':{
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
+            },
+            'ITEMS-tagcmdleft RTAGCMDS':{
                 "padding-right":'.333em',
                 "float":"left"
+            },
+            'ITEMS-tagcmdfloatright RTAGCMDS':{
+                "padding-right":'.333em',
+                "float":"right"
             },
             TOGGLE:{
                 padding:'0 .334em 0 0'
@@ -39952,12 +40152,14 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
                 },
                 onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
                 },
                 onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                     var item = profile.getItemByDom(src);
                     if(!item)return;
                     if(!profile.properties.optBtn && !item.optBtn)return;
@@ -40059,7 +40261,13 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             singleOpen:false,
             dynDestory:false,
             position:'absolute',
-            optBtn:false,
+            optBtn:{
+                ini:"",
+                combobox:xui.toArr("xui-uicmd-opt,xui-icon-singleright"),
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             togglePlaceholder:false,
             tagCmds:{
                 ini:[],
@@ -40069,13 +40277,10 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             tagCmdsAlign:{
                 ini:"right",
-                listbox:['left','right'],
+                listbox:['left','right','floatright'],
                 action:function(v){
-                    var profile=this;
-                    if(v=="left")
-                        profile.getSubNode("BOX").addClass(profile.getClass('BOX','-tagcmdleft'));
-                    else
-                        profile.getSubNode("BOX").removeClass(profile.getClass('BOX','-tagcmdleft'));
+                    var profile=this,box=profile.getSubNode("ITEMS"),cls=profile.getClass('ITEMS','-tagcmd');
+                    box.removeClass(new RegExp(cls+'[\w]*')).addClass(profile.getClass('ITEMS','-tagcmd'+v));
                 }
             }
         },
@@ -40297,6 +40502,11 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             data._new = oitem;
             return false;
         },
+        _prepareData:function(profile){
+            var d=arguments.callee.upper.call(this, profile);
+            d._cmdsalign=profile.getClass('ITEMS','-tagcmd'+profile.properties.tagCmdsAlign);
+            return d;
+        },
         _prepareItem:function(profile, item, oitem, pid, index,len){
             var p=profile.properties,
                 map1=profile.ItemIdMapSubSerialId,
@@ -40312,12 +40522,18 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
+            item._fi_optClass = p.optBtn;
+
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
                 item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');
                 item.mark2Display = 'display:none';
             }
             this._prepareCmds(profile, item);
+
+            if(xui.browser.fakeTouch || xui.browser.deviceType == 'mouseOnly'){
+                item._optDisplay = p.optBtn?'display:block;':'';
+            }
 
             if(item.type=='split'){
                 item._split='xui-uitem-split';
@@ -40598,6 +40814,8 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
 
             if(!(item.imageClass||item.image||item.iconFontCode))
                 item._fi_cls_file = 'xui-icon-file' + (item.sub?' xui-icon-file-fold':'');
+
+            item._fi_optClass = p.optBtn;
 
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
@@ -40886,8 +41104,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     style:'{itemStyle}{_itemDisplay}',
                     ICON:{
                         $order:0,
-                        className:'xuicon xui-icon-placeholder {imageClass}',
-                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {_iconDisplay}',
+                        className:'xuicon xui-icon-placeholder {imageClass}  {picClass}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{_iconDisplay}{iconStyle}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -41608,8 +41826,8 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     className:' {typeCls} {disabled}',
                                     ICON:{
                                         $order:1,
-                                        className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                        className:'xuicon {imageClass}  {picClass}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{
@@ -42039,8 +42257,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     RULER:{},
                                     ICON:{
                                         $order:1,
-                                        className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}',
+                                        className:'xuicon {imageClass}  {picClass}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{
@@ -45745,6 +45963,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 overflow:'hidden'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             'HFMARK, MARK':{
                 'margin-left':'.5em'
@@ -49859,11 +50082,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 // for scroll sync
                 xui.asyRun(function(){
-                    b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px');
-                    s21.scrollTop(s22.scrollTop());
+                    if(!b21.isEmpty())b21.css('padding-bottom', (s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px');
+                    if(!s21.isEmpty())s21.scrollTop(s22.scrollTop());
                     if(prop.freezedRow){
-                        b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px');
-                        s12.scrollLeft(s22.scrollLeft());
+                        if(!b12.isEmpty())b12.css('padding-right', (s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px');
+                        if(!s12.isEmpty())s12.scrollLeft(s22.scrollLeft());
                     }
                 },100);
 
@@ -50334,7 +50557,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return;
             }else{
                 overflowX='hidden';
-                if(t2.isScrollBarShowed('y'))
+                if(t2.scrollable('y'))
                     width-=xui.Dom.getScrollBarSize();
             }
             
@@ -50643,7 +50866,16 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 };
 
                 if(t)
-                    profile.$inThread = xui.Dom.animate({border:'solid 1px #555',background:'#888',opacity:.1},{left:[pro.left,t.left],top:[pro.top,t.top],width:[pro.width,t.width],height:[pro.height,t.height]}, null,fun,300,0,'expoOut').start();
+                    profile.$inThread = xui.Dom.animate({
+                        border:'solid 1px #555',
+                        background:'#888',
+                        opacity:.1
+                    },{
+                        left:[pro.left,t.left],
+                        top:[pro.top,t.top],
+                        width:[pro.width,t.width],
+                        height:[pro.height,t.height]
+                    }, null,fun,300,0,'expoOut').start();
                 else
                     fun();
             });
@@ -50714,8 +50946,8 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     },
                     ICON:{
                         $order:2,
-                        className:'xuicon {imageClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                        className:'xuicon {imageClass}  {picClass}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -50844,6 +51076,11 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         Appearances:{
             KEY:{
                 overflow:'visible'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             "TABSTOP1,TABSTOP2":{
                 height:0,
@@ -52508,8 +52745,8 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     },
                                     ICON:{
                                         $order:2,
-                                        className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat} {imageDisplay}',
+                                        className:'xuicon {imageClass}  {picClass}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{
@@ -52601,6 +52838,11 @@ Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             },
             BOX:{
                     
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             ITEMS:{
                 border:0,

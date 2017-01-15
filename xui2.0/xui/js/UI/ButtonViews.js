@@ -293,7 +293,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 hc=hh;
             }else{
                 if(prop.barLocation=='top'||prop.barLocation=='bottom'){
-                    hl.css('overflow-y','hidden');
+                    if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                    }else{
+                        hl.css('overflow-y','hidden');
+                    }
                     itmsH = hs.height(prop.barSize||'auto').offsetHeight(true);
                     hl.css('position','relative');
 
@@ -335,7 +338,11 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
                 }else{
                     //reset to default
-                    hl.css('overflow-y','scroll');
+                    if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                    }else{
+                        // bug: in mobile android, it will make hs._nodes.length=0
+                        hl.css('overflow-y','scroll');
+                    }
                     // side bar
                     menu2.css('display',prop.sideBarSize?'block':'none');
 
@@ -350,7 +357,10 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     if(height){
                         // for nopanel:
                         if(noPanel){
-                            hl.css('overflow-y','hidden');
+                            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
+                            }else{
+                                hl.css('overflow-y','hidden');
+                            }
                             hs.width(adjustunit(ww-bw, hsfz));
                             hl.width(adjustunit(ww-bw, hsfz));
                         }

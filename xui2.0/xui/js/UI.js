@@ -217,23 +217,35 @@ Class('xui.UIProfile','xui.Profile', {
                 }
             }
 
-            if(xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB)){
-                var check={'auto':1,'scroll':1};
+            if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
+                var check={'auto':1,'scroll':1},dir;
                 // for UI's appearances overflow
                 xui.each(ns.box.$Appearances,function(o,i){
+                    dir='';
                     if(check[o.overflow]){
-                        ns.getSubNode(i,true).$touchscroll('xy');
+                        dir='xy';
                     }else{
-                        if(check[o['overflow-x']]){
-                            ns.getSubNode(i,true).$touchscroll('x');
-                        }else if(check[o['overflow-y']]){
-                            ns.getSubNode(i,true).$touchscroll('y');
-                        }
+                        if(check[o['overflow-x']])dir += 'x';
+                        if(check[o['overflow-y']])dir += 'y';
                     }
+                    if(dir)ns.getSubNode(i,true).$touchscroll(dir);
                 });
                 // for UI's overflow property
-                if(check[ns.properties.overflow]){
-                    ins.setOverflow(ns.properties.overflow,true);
+                if('overflow' in ns.properties) {
+                    if(xui.browser.fakeTouch){
+                        xui.asyRun(function(){
+                            var dir='',root=ns.getRoot();
+                            if(root&&!root.isEmpty()){
+                                if(root.isScrollBarShowed('x'))dir += 'x';
+                                if(root.isScrollBarShowed('y'))dir += 'y';
+                                if(dir)root.$touchscroll(dir);
+                            }
+                        });
+                    }else{
+                        if(check[ns.properties.overflow]){
+                            ins.setOverflow(ns.properties.overflow,true);
+                        }
+                    }
                 }
             }
 
@@ -381,6 +393,9 @@ Class('xui.UIProfile','xui.Profile', {
         getRoot:function(){
             var ns=this;
             return ns.renderId ? (ns['*']||(ns['*']=xui([ns.renderId],false))) : xui([],false);
+        },
+        getAllNodes:function(){
+            return this.getRoot().query().merge(this.getRoot());
         },
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
@@ -2844,6 +2859,9 @@ Class("xui.UI",  "xui.absObj", {
         });
 
         xui.UI.$cache_css2 += xui.UI.buildCSSText({
+            '.xui-css-innerimage':{
+                'vertical-align': 'middle'
+            },
             '.xui-uitem-split':{
                 display: 'block',
                 position: 'relative',
@@ -2939,6 +2957,9 @@ Class("xui.UI",  "xui.absObj", {
             },
             '.xui-alert':{
                 'background-color':'#ff6600 !important'
+            },
+            '.xui-cursor-touch, .xui-cursor-touch *':{
+                cursor: 'url('+xui.ini.img_touchcur+') 8 8,auto!important'
             },
             '.xui-icon-loading':{
                 $order:7,
@@ -3483,7 +3504,7 @@ Class("xui.UI",  "xui.absObj", {
                             nodes=xui(nodes);
                             box=profile.boxing();
                             if(mode==1){
-                                if(type=='mouseover'){
+                                if(!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
                                     if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
                                         return;
                                     if(prop.disableHoverEffect)
@@ -3501,7 +3522,7 @@ Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
-                                nodes.tagClass('-'+(type=='mouseover'?'hover':type=='mousedown'?'active':type));
+                                nodes.tagClass('-'+((!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
                                     if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
@@ -4379,8 +4400,11 @@ Class("xui.UI",  "xui.absObj", {
                     }
                     if(c["location"]=="left")
                         b.push(c);
-                    else
+                    else{
                         a.push(c);
+                        if(c['locaton']=='right-float')
+                            c._exstyle='float:right;';
+                    }
                 }
                 item.ltagCmds=b
                 item.rtagCmds=a;
@@ -4701,6 +4725,7 @@ Class("xui.UI",  "xui.absObj", {
                     hashOut.imageClass = arr.join(' ');
                 }
                 if(!ifc){
+                    hashOut.picClass = 'xui-css-innerimage';
                     // imageClass + image
                     if(hashOut.image){
                         hashOut.imageClass='xui-icon-placeholder';
@@ -4722,6 +4747,8 @@ Class("xui.UI",  "xui.absObj", {
                         hashOut.backgroundRepeat='background-repeat:no-repeat;';
                 }
             }
+            if(hashOut.iconFontSize)
+                hashOut.iconFontSize='font-size:'+hashOut.iconFontSize+';';
             //must be here
             //Avoid Empty Image src
             // ensoure to trigger load event of img
@@ -7755,11 +7782,11 @@ Class("xui.UI.Element", "xui.UI",{
 Class("xui.UI.Icon", "xui.UI",{
     Static:{
         Templates:{
-            className:'xui-node xui-wrapper {_className}',
+            className:'xui-node xui-wrapper {_className}  {picClass}',
             style:'{_style};',
             ICON:{
                 className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}{iconStyle}',
                 text:'{iconFontCode}'
             }
         },
@@ -7953,8 +7980,8 @@ Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             },
             ICON:{
                 $order:1,
-                className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                className:'xuicon {imageClass}  {picClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -8388,7 +8415,7 @@ Class("xui.UI.Div", "xui.UI",{
         Appearances:{
             KEY:{
                // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
-                outline:xui.browser.gek?'none':null,
+                outline:xui.browser.gek?'none':null, 
                 zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
                 background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
                 'line-height':'auto'

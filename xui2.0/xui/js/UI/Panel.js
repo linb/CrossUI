@@ -84,8 +84,8 @@ Class("xui.UI.Panel", "xui.UI.Div",{
                         },
                         ICON:{
                             $order:2,
-                            className:'xuicon {imageClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}',
+                            className:'xuicon {imageClass}  {picClass}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -178,6 +178,11 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         Appearances:{
             KEY:{
                 background:'transparent'
+            },
+            'LTAGCMDS, RTAGCMDS':{
+                padding:0,
+                margin:0,
+                'vertical-align': 'middle'
             },
             'KEY BORDER':{
                 zoom:xui.browser.ie6?1:null

@@ -184,8 +184,8 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     RULER:{},
                                     ICON:{
                                         $order:1,
-                                        className:'xuicon {imageClass}',
-                                        style:'{backgroundImage} {backgroundPosition} {backgroundRepeat}  {imageDisplay}',
+                                        className:'xuicon {imageClass}  {picClass}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{

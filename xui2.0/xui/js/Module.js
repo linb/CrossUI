@@ -1186,7 +1186,7 @@ Class('xui.Module','xui.absProfile',{
                 var ifun=function(path){
                     var a=this,
                         t, bg, 
-                        f=function(){
+                        f=function(i,l,flag){
                             if(bg && xui.isHash(bg)){
                                 xui.each(bg,function(v,k){
                                     xui('html').css(k, xui.adjustRes(v));
@@ -1249,14 +1249,14 @@ Class('xui.Module','xui.absProfile',{
                         }catch(e){}
                         if(theme&&theme!="default"){
                             xui.setTheme(theme,true,function(){
-                                //get locale info
-                                if(lang) xui.setLang(lang, f);
-                                else f();
+                                if(lang) xui.setLang(lang, f); else f();
+                            },function(){
+                                xui.alert("Can't load theme - " + theme);
+                                if(lang) xui.setLang(lang, f); else f();
                             });
                         }else{
                             //get locale info
-                            if(lang) xui.setLang(lang, f);
-                            else f();
+                            if(lang) xui.setLang(lang, f);else f();
                         }
                     }else{
                         var e=new Error("No class name");
