@@ -1007,7 +1007,8 @@ xui.merge(xui,{
     setLang:function(key,onOK,callback){
         var g=xui.getRes,t,v,i,j,f,m,z,a=[],l;
         xui.$localeKey=key;
-        v = xui.browser.ie ? document.all.tags('span') : document.getElementsByTagName('span');
+        v = document.getElementsByTagName?document.getElementsByTagName('span'):document.all&&document.all.tags?document.all.tags('span'):null;
+        if(!v)return;
         for(i=0;t=v[i];i++)if(t.id==xui.$localeDomId)a[a.length]=t;
         l=a.length;
         f=function(){

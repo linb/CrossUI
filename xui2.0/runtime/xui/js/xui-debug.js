@@ -1007,7 +1007,8 @@ xui.merge(xui,{
     setLang:function(key,onOK,callback){
         var g=xui.getRes,t,v,i,j,f,m,z,a=[],l;
         xui.$localeKey=key;
-        v = xui.browser.ie ? document.all.tags('span') : document.getElementsByTagName('span');
+        v = document.getElementsByTagName?document.getElementsByTagName('span'):document.all&&document.all.tags?document.all.tags('span'):null;
+        if(!v)return;
         for(i=0;t=v[i];i++)if(t.id==xui.$localeDomId)a[a.length]=t;
         l=a.length;
         f=function(){
@@ -32796,7 +32797,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 
                 clsname='xui-node xui-input-input',
                 paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
-                paddingW=isB?0:Math.round(v1._paddingW()/2)*2,                    
+                paddingW=0,                   
 
                 autoH,icbw,utw,btnw, 
                 pl=0,pr=0;
@@ -32948,6 +32949,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // input last
             if(pl)v1.css('paddingLeft',adjustunit(pl,icb));
             if(pr)v1.css('paddingRight',adjustunit(pr,ut));
+
+            // must recaculate here
+            paddingW = isB?0:v1._paddingW();
             if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)

@@ -1653,7 +1653,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
                 
                 clsname='xui-node xui-input-input',
                 paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
-                paddingW=isB?0:Math.round(v1._paddingW()/2)*2,                    
+                paddingW=0,                   
 
                 autoH,icbw,utw,btnw, 
                 pl=0,pr=0;
@@ -1805,6 +1805,9 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             // input last
             if(pl)v1.css('paddingLeft',adjustunit(pl,icb));
             if(pr)v1.css('paddingRight',adjustunit(pr,ut));
+
+            // must recaculate here
+            paddingW = isB?0:v1._paddingW();
             if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)
