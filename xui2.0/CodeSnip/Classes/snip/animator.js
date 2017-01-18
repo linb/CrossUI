@@ -1,4 +1,4 @@
-Class('App.snip_animator', 'xui.Com',{
+xui.Class('App.snip_animator', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

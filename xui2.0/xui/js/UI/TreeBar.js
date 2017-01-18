@@ -1,4 +1,4 @@
-Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
+xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
     $Start:function(t){
         if(t=this.Static.RenderTrigger)t.$order = -1;
     },

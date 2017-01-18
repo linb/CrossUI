@@ -4,7 +4,7 @@
 //colMap2 => header_ItemIdMapSerialId
 //cellMap => cells_SerialIdMapItem
 //cellType: label,input,textarea,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,counter,currency,number,checkbox,progress
-Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
+xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     Instance:{
         activate:function(){
             var profile=this.get(0),t;

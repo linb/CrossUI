@@ -1,4 +1,4 @@
-Class('xui.DomProfile', 'xui.absProfile', {
+xui.Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -27,7 +27,7 @@ Class('xui.DomProfile', 'xui.absProfile', {
 
 /*xui.Dom
 */
-Class('xui.Dom','xui.absBox',{
+xui.Class('xui.Dom','xui.absBox',{
     Instance:{
         get:function(index){
             var purge=xui.$cache.domPurgeData,t=this._nodes,s;

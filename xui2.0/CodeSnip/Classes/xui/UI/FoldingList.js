@@ -1,5 +1,5 @@
 
-Class('App.xui_UI_FoldingList', 'xui.Com',{
+xui.Class('App.xui_UI_FoldingList', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

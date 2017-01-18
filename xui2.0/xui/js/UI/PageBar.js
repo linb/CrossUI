@@ -1,4 +1,4 @@
-Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
+xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){

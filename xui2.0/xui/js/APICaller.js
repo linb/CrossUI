@@ -1,4 +1,4 @@
-Class("xui.APICaller","xui.absObj",{
+xui.Class("xui.APICaller","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,

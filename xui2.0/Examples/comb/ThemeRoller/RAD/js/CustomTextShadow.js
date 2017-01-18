@@ -1,4 +1,4 @@
-Class('RAD.CustomTextShadow', 'xui.Com',{
+xui.Class('RAD.CustomTextShadow', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio

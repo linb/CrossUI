@@ -1,4 +1,4 @@
-Class('RAD.CustomBorder', 'xui.Com',{
+xui.Class('RAD.CustomBorder', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio

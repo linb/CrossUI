@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         _input3_onhotkey:function (profile, kb, e) {
             this.treegrid2.insertRows([{id:xui.id(), cells:[

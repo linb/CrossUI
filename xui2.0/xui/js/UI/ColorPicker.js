@@ -1,4 +1,4 @@
-Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
+xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
     Instance:{
         activate:function(){
             this.getSubNode('TOGGLE').focus();

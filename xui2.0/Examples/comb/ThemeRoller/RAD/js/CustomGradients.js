@@ -1,5 +1,5 @@
 // The default code is a com class (inherited from xui.Com)
-Class('RAD.CustomGradients', 'xui.Com',{
+xui.Class('RAD.CustomGradients', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio

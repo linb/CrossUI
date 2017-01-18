@@ -1,4 +1,4 @@
-Class('App', 'xui.Module',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio

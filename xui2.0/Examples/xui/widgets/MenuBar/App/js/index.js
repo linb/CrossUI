@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         _cache:{},
         iniComponents:function(){

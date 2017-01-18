@@ -1,4 +1,4 @@
-Class('xui.Debugger', null, {
+xui.Class('xui.Debugger', null, {
     Static:{
         $time:xui.stamp(),
         _id1:'xui:dbg::_frm',

@@ -1,4 +1,4 @@
-Class('RAD.CustomDecoration2', 'xui.Module',{
+xui.Class('RAD.CustomDecoration2', 'xui.Module',{
     Instance:{
         initialize : function(){
             this.autoDestroy = true;

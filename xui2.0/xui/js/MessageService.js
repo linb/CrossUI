@@ -1,4 +1,4 @@
-Class("xui.MessageService",null,{
+xui.Class("xui.MessageService",null,{
     Instance:{
         initialize:function(){
             this.$subscribers={};

@@ -1,5 +1,5 @@
 
-Class('App.xui_UI_ProgressBar', 'xui.Com',{
+xui.Class('App.xui_UI_ProgressBar', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

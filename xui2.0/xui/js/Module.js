@@ -26,7 +26,7 @@
     isDirtied:function(){},
     checkValid:function(){},
 */
-Class('xui.Module','xui.absProfile',{
+xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI){

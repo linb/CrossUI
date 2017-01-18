@@ -1,4 +1,4 @@
-Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
+xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
     Instance:{
         _setCtrlValue:function(value){
             this.each(function(profile){

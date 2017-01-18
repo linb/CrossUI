@@ -1,4 +1,4 @@
-Class('RAD.CustomBoxShadow', 'xui.Module',{
+xui.Class('RAD.CustomBoxShadow', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio

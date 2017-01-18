@@ -1,4 +1,4 @@
-Class("xui.UI.Dialog","xui.UI.Widget",{
+xui.Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
         showModal:function(parent, left, top, callback, ignoreEffects){
             this.show(parent, true, left, top, callback, ignoreEffects);

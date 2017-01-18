@@ -1,4 +1,4 @@
-Class('App.tech_form_v2', 'xui.Com',{
+xui.Class('App.tech_form_v2', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

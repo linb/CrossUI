@@ -1,4 +1,4 @@
-Class('App.Test1', 'xui.Com',{
+xui.Class('App.Test1', 'xui.Module',{
     Instance:{
         showDlg:function(){
             if(this.properties.dlgCaption)

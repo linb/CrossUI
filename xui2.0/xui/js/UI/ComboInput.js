@@ -1,4 +1,4 @@
-Class("xui.UI.ComboInput", "xui.UI.Input",{
+xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
     /*Instance*/
     Instance:{
         _adjustV:function(v){

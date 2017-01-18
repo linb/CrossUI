@@ -1,4 +1,4 @@
-Class("xui.UI.Gallery", "xui.UI.List",{
+xui.Class("xui.UI.Gallery", "xui.UI.List",{
     Instance:{
         getStatus:function(id){
             var item=this.get(0).getItemByItemId(id);

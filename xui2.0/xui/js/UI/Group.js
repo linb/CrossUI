@@ -1,4 +1,4 @@
-Class("xui.UI.Group", "xui.UI.Panel",{
+xui.Class("xui.UI.Group", "xui.UI.Panel",{
     Static:{
         Templates:{
             tagName : 'div',

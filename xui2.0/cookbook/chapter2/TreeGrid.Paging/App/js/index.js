@@ -1,5 +1,5 @@
 
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         events:{"onRender":"_onready"}, 
         iniComponents:function(){

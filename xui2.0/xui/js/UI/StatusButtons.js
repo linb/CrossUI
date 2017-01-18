@@ -1,4 +1,4 @@
-Class("xui.UI.StatusButtons", ["xui.UI.List"],{
+xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();

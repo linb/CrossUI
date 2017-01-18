@@ -1,4 +1,4 @@
-Class('App.Table', 'xui.Com',{
+xui.Class('App.Table', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

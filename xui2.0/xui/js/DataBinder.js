@@ -1,4 +1,4 @@
-Class("xui.DataBinder","xui.absObj",{
+xui.Class("xui.DataBinder","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,

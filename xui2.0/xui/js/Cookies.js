@@ -1,4 +1,4 @@
-Class("xui.Cookies", null,{
+xui.Class("xui.Cookies", null,{
     Static:{
         set:function(name,value,days,path,domain,isSecure){
             if(xui.isHash(name)){

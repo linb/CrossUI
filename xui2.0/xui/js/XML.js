@@ -1,4 +1,4 @@
-Class('xui.XML',null,{
+xui.Class('xui.XML',null,{
     Static:{
         //return xml text (for post data)
         json2xml:function(jsonObj, kf, vf){

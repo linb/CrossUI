@@ -1,4 +1,4 @@
-Class("xui.Coder", null,{
+xui.Class("xui.Coder", null,{
     Initialize:function(){
         xui.CSS.addStyleSheet(
             '.sh {font-family: "Courier New" , Courier, mono;border: 1px solid #92D1E4;background:#fff;}'+

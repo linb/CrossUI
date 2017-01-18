@@ -1,5 +1,5 @@
 //defines a class here, first
-Class("xui.Template.PrdGallery","xui.Template",{
+xui.Class("xui.Template.PrdGallery","xui.Template",{
     Constructor:function(template,properties,events,domId){
         var self=this,arr=xui.toArr(arguments);
         arr[0]=arr[0]||{

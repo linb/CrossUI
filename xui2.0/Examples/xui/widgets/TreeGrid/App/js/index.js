@@ -1,5 +1,5 @@
 
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         tg2page:0,
         //Com events

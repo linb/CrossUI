@@ -1,4 +1,4 @@
-Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
+xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
     Instance:{
         _setTB:function(type){
             var profile=this.get(0), p=profile.properties, o, t;

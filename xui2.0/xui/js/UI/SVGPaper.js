@@ -1,4 +1,4 @@
-Class("xui.UI.SVGPaper", "xui.UI.Div",{
+xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
     Initialize:function(){
         this.addTemplateKeys(['SVG']);
     },

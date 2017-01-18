@@ -1,4 +1,4 @@
-Class('App.ACom', 'xui.Com',{
+xui.Class('App.ACom', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

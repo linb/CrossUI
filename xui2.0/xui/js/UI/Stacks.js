@@ -1,4 +1,4 @@
-Class("xui.UI.Stacks", "xui.UI.Tabs",{
+xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
     Initialize:function(){
         var t=this.getTemplate(),keys=this.$Keys;
         t.BOX={tagName:'div',LIST:t.LIST, PNAELS:t.PNAELS};

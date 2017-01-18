@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         _radiobox1_onitemselected:function (profile, item, src) {
             xui.setLang(item.id, function(){

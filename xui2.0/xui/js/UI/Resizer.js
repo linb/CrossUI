@@ -1,5 +1,5 @@
 //resizer class, add a plug in to xui.Dom
-Class("xui.UI.Resizer","xui.UI",{
+xui.Class("xui.UI.Resizer","xui.UI",{
     Instance:{
         _attachTo:function(target, parent){
             var self=this, v=self.get(0);

@@ -1,4 +1,4 @@
-Class('App.tech_UI_createUI', 'xui.Com',{
+xui.Class('App.tech_UI_createUI', 'xui.Module',{
     Instance:{
         events:{onReady:'_onready'}, 
         iniComponents:function(){

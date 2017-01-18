@@ -1,4 +1,4 @@
-Class("xui.UI.Image", "xui.UI",{
+xui.Class("xui.UI.Image", "xui.UI",{
     Initialize:function(){
         var ns=this;
         ns._adjustItems = xui.absList._adjustItems;

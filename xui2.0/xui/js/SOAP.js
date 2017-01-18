@@ -1,4 +1,4 @@
-Class('xui.SOAP',null,{
+xui.Class('xui.SOAP',null,{
     Static:{
         RESULT_NODE_NAME:"return",
 

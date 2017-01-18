@@ -1,4 +1,4 @@
- Class('App.xui_UI_TimePicker', 'xui.Com',{
+xui.Class('App.xui_UI_TimePicker', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

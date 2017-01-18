@@ -1,4 +1,4 @@
-Class('App.xui_UI_ComboInput', 'xui.Com',{
+xui.Class('App.xui_UI_ComboInput', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

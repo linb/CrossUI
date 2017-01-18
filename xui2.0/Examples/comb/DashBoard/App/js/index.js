@@ -1,6 +1,6 @@
 // The default code is a module class (inherited from xui.Module)
 // Ensure that all the value of "key/value pair" does not refer to external variables
-Class('App', 'xui.Module',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         // Dependency classes
         Dependencies:[],

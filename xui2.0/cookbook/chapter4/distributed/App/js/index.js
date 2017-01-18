@@ -1,5 +1,5 @@
 
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         events:{"onReady":"_onready"}, 
         _onready:function () {

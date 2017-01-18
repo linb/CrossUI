@@ -1,4 +1,4 @@
-Class("xui.UI.Audio", "xui.UI",{
+xui.Class("xui.UI.Audio", "xui.UI",{
     Instance:{
         play:function(){
             var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.play();

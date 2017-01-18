@@ -1,4 +1,4 @@
-Class('App', 'xui.Module',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         //Com events
         events:{},

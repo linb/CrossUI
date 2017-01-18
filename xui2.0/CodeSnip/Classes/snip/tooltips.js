@@ -1,4 +1,4 @@
- Class('App.snip_tooltips', 'xui.Com',{
+xui.Class('App.snip_tooltips', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

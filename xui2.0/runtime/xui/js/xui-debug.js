@@ -1,3 +1,4 @@
+;(function(){
 /*!
 * CrossUI(xui) JavaScript Library v2.0
 * http://crossui.com
@@ -7,10 +8,12 @@
 *
 */
 // speed up references
-undefined;
+var undefined, window=this, document=window.document;
+if(!document)throw new Error("CrossUI requires a window with a document");
 
 // global : xui
-var xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)},
+// we have to keep xui for gloable var
+var xui = window.xui = function(nodes,flag){return xui.Dom.pack(nodes, flag)},
     Class=xui.Class=function(key, pkey, obj){
         var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
             _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
@@ -2498,7 +2501,7 @@ onStart: on start function
 onEnd: on end function
 cycle: is the thread circular
 */
-Class('xui.Thread',null,{
+xui.Class('xui.Thread',null,{
     Constructor:function(id, tasks, delay, callback, onStart, onEnd, cycle){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -2827,7 +2830,7 @@ ajax    +       +       -                   -                   -           -
 sajax   +       -       +                   -                   -           * JSONP
 iajax   +       +       +                   *                   *           * IDMI
 */
-Class('xui.absIO',null,{
+xui.Class('xui.absIO',null,{
     Constructor:function(uri, query, onSuccess, onFail, threadid, options){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3027,7 +3030,7 @@ Class('xui.absIO',null,{
     }
 });
 
-Class('xui.Ajax','xui.absIO',{
+xui.Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
         _unsafeHeader:"Accept-Charset,Accept-Encoding,Access-Control-Request-Headers,Access-Control-Request-Method,Connection,Content-Length,Cookie,Cookie2,Date,DNT,Expect,Host,Keep-Alive,Origin,Referer,TE,Trailer,Transfer-Encoding,Upgrade,User-Agent,Via".toLowerCase().split(","),
@@ -3165,7 +3168,7 @@ Class('xui.Ajax','xui.absIO',{
     }
 });
 // JSONP
-Class('xui.JSONP','xui.absIO',{
+xui.Class('xui.JSONP','xui.absIO',{
     Instance:{
         start:function(){
             var self=this,id,c=self.constructor, t, n, ok=false;
@@ -3326,7 +3329,7 @@ Class('xui.JSONP','xui.absIO',{
     }
 });
 // XDMI : Cross-Domain Messaging with iframes
-Class('xui.XDMI','xui.absIO',{
+xui.Class('xui.XDMI','xui.absIO',{
     Instance:{
         _useForm:true,
         start:function(){
@@ -3584,7 +3587,7 @@ new function(){
 /*xui.SC for straight call
 *  Dependencies: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
 */
-Class('xui.SC',null,{
+xui.Class('xui.SC',null,{
     Constructor:function(path, callback, isAsy, threadid, options, force){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3759,7 +3762,7 @@ Class('xui.SC',null,{
 });
 
 //xui.absBox
-Class('xui.absBox',null, {
+xui.Class('xui.absBox',null, {
     Constructor:function(){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3871,7 +3874,7 @@ Class('xui.absBox',null, {
     }
 });
 
-Class('xui.absProfile',null,{
+xui.Class('xui.absProfile',null,{
     Constructor:function(){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3971,7 +3974,7 @@ Class('xui.absProfile',null,{
     }
 });
 
-Class('xui.Profile','xui.absProfile',{
+xui.Class('xui.Profile','xui.absProfile',{
     Constructor:function(host,key,alias,box,properties,events,options){
         var upper=arguments.callee.upper,args=xui.toArr(arguments);
         upper.apply(this,args);
@@ -4115,7 +4118,7 @@ Class('xui.Profile','xui.absProfile',{
     }
 });
 
-Class('xui.absObj',"xui.absBox",{
+xui.Class('xui.absObj',"xui.absBox",{
     //properties, events, host
     Constructor:function(){
         var upper=arguments.callee.upper,args=xui.toArr(arguments);
@@ -4584,7 +4587,7 @@ Class('xui.absObj',"xui.absBox",{
     }
 });
 
-Class("xui.Timer","xui.absObj",{
+xui.Class("xui.Timer","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -4681,7 +4684,7 @@ Class("xui.Timer","xui.absObj",{
             onEnd:function(profile, threadId){}
         }
     }
-});Class("xui.APICaller","xui.absObj",{
+});xui.Class("xui.APICaller","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -5172,7 +5175,7 @@ Class("xui.Timer","xui.absObj",{
         //    }
         //}
     }
-});Class("xui.DataBinder","xui.absObj",{
+});xui.Class("xui.DataBinder","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -5892,7 +5895,7 @@ xui.Locale.en.editor={
 };/* event
 *  Dependencies: base _ ; Class ; xui ;
 */
-Class('xui.Event',null,{
+xui.Class('xui.Event',null,{
     Constructor:function(event,node,fordrag,tid){
         var self = xui.Event,
             w=window,
@@ -6905,7 +6908,7 @@ Class('xui.Event',null,{
             gestureend: gestureEvent
         };
     }
-});Class('xui.Date',null,{
+});xui.Class('xui.Date',null,{
     Initialize:function(){
         var self=this;
         self._mapKeys(self.$TIMEUNIT);
@@ -8251,7 +8254,7 @@ Class('xui.Event',null,{
             });
         }
     }
-});Class("xui.CSS", null,{
+});xui.Class("xui.CSS", null,{
     Static:{
         _r:xui.browser.ie?'rules':'cssRules',
         _baseid:'xui:css:base',
@@ -8795,7 +8798,7 @@ Class('xui.Event',null,{
         }, 10000);
         */
     }   
-});Class('xui.DomProfile', 'xui.absProfile', {
+});xui.Class('xui.DomProfile', 'xui.absProfile', {
     Constructor:function(domId){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -8824,7 +8827,7 @@ Class('xui.Event',null,{
 
 /*xui.Dom
 */
-Class('xui.Dom','xui.absBox',{
+xui.Class('xui.Dom','xui.absBox',{
     Instance:{
         get:function(index){
             var purge=xui.$cache.domPurgeData,t=this._nodes,s;
@@ -12952,7 +12955,7 @@ type:4
         },"window",-1);
 
     }
-});Class('xui.Template','xui.absProfile',{
+});xui.Class('xui.Template','xui.absProfile',{
     Constructor:function(template,properties,events,domId){
         var upper=arguments.callee.upper, args=xui.toArr(arguments);
         upper.apply(this,args);
@@ -13308,7 +13311,7 @@ type:4
     isDirtied:function(){},
     checkValid:function(){},
 */
-Class('xui.Module','xui.absProfile',{
+xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI){
@@ -14613,7 +14616,7 @@ Class('xui.Module','xui.absProfile',{
             onDestroy:function(module){}
         }
     }
-});Class("xui.Cookies", null,{
+});xui.Class("xui.Cookies", null,{
     Static:{
         set:function(name,value,days,path,domain,isSecure){
             if(xui.isHash(name)){
@@ -14650,7 +14653,7 @@ Class('xui.Module','xui.absProfile',{
             });
         }
     }
-});Class("xui.MessageService",null,{
+});xui.Class("xui.MessageService",null,{
     Instance:{
         initialize:function(){
             this.$subscribers={};
@@ -14699,7 +14702,7 @@ Class('xui.Module','xui.absProfile',{
             return (topic===null||topic===undefined)?this.$subscribers:this.$subscribers[topic];
         }
     }
-});Class('xui.XML',null,{
+});xui.Class('xui.XML',null,{
     Static:{
         //return xml text (for post data)
         json2xml:function(jsonObj, kf, vf){
@@ -14883,7 +14886,7 @@ Class('xui.Module','xui.absProfile',{
             return dom;
         }
     }
-});Class('xui.XMLRPC',null,{
+});xui.Class('xui.XMLRPC',null,{
     Static:{
         //wrapRequest(hash)
         // or wrapRequest(string, hash)
@@ -15082,7 +15085,7 @@ Class('xui.Module','xui.absProfile',{
             return xml.join('');
         }
     }
-});Class('xui.SOAP',null,{
+});xui.Class('xui.SOAP',null,{
     Static:{
         RESULT_NODE_NAME:"return",
 
@@ -15458,7 +15461,7 @@ xui.DragDrop.getProfile():
     proxyNode: xui.Dom object,
     dropElement: String, DOM element id.
 */
-Class('xui.DragDrop',null,{
+xui.Class('xui.DragDrop',null,{
     Static:{
         _eh:"_dd",
         _id:"xui.dd:proxy:",
@@ -16261,7 +16264,7 @@ Class('xui.DragDrop',null,{
         });
     }
 });//singleton
-Class("xui.Tips", null,{
+xui.Class("xui.Tips", null,{
     Constructor:function(){return null},
     Initialize:function(){
         if(xui.browser.fakeTouch)return;
@@ -16630,7 +16633,7 @@ Class("xui.Tips", null,{
             self._Node=self._curTips=self._markId = self._from=self._tpl = self._item = self._showed = null;
         }
     }
-});Class("xui.History",null,{
+});xui.Class("xui.History",null,{
     Static:{
         _fid:'xui:history',
         _type:(xui.browser.ie && (xui.browser.ver<8))?'iframe':("onhashchange" in window)?'event':'timer',
@@ -16724,7 +16727,7 @@ Class("xui.Tips", null,{
             }
         }
     }
-});Class('xui.ModuleFactory',null,{
+});xui.Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
         xui.getModule=function(cls, onEnd, threadid, cached, properties, events){
@@ -16932,7 +16935,7 @@ Class("xui.Tips", null,{
             return this;
         }
     }
-});Class('xui.Debugger', null, {
+});xui.Class('xui.Debugger', null, {
     Static:{
         $time:xui.stamp(),
         _id1:'xui:dbg::_frm',
@@ -17305,7 +17308,7 @@ Class("xui.Tips", null,{
 };
 
 //UIProfile Class
-Class('xui.UIProfile','xui.Profile', {
+xui.Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
         renderId:null,
@@ -17998,7 +18001,7 @@ Class('xui.UIProfile','xui.Profile', {
 });
 
 //UI Class
-Class("xui.UI",  "xui.absObj", {
+xui.Class("xui.UI",  "xui.absObj", {
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.UI.","").replace("xui.","")]=xui.absBox.$type[key]=key;
         return true;
@@ -20711,7 +20714,7 @@ Class("xui.UI",  "xui.absObj", {
                 }),
                 hls={},t;
             if(!xui.SC.get('xui.absContainer'))
-                Class('xui.absContainer','xui.absObj',{
+                xui.Class('xui.absContainer','xui.absObj',{
                     Instance:{
                         addPanel:function(paras, children, item){
                             var pro = xui.clone(xui.UI.Panel.$DataStruct,true);
@@ -23694,7 +23697,7 @@ Class("xui.UI",  "xui.absObj", {
 });
 
 //absList Class
-Class("xui.absList", "xui.absObj",{
+xui.Class("xui.absList", "xui.absObj",{
     Instance:{
         activate:function(){
             var profile = this.get(0),
@@ -24385,7 +24388,7 @@ Class("xui.absList", "xui.absObj",{
 });
 
 //absValue Class
-Class("xui.absValue", "xui.absObj",{
+xui.Class("xui.absValue", "xui.absObj",{
     Instance:{
         /*
         getUIValue:         return $UIvalue
@@ -24687,7 +24690,7 @@ Class("xui.absValue", "xui.absObj",{
     }
 });
 
-Class("xui.UI.Widget", "xui.UI",{
+xui.Class("xui.UI.Widget", "xui.UI",{
     Static:{
         Appearances:{
             KEY:{
@@ -24805,7 +24808,7 @@ Class("xui.UI.Widget", "xui.UI",{
     }
 });
 
-Class("xui.UI.Link", "xui.UI",{
+xui.Class("xui.UI.Link", "xui.UI",{
     Static:{
         Appearances:{
             KEY:{
@@ -24860,7 +24863,7 @@ Class("xui.UI.Link", "xui.UI",{
     }
 });
 
-Class("xui.UI.Element", "xui.UI",{
+xui.Class("xui.UI.Element", "xui.UI",{
     Static:{
         _objectProp:{attributes:1},
         Templates:{
@@ -24941,7 +24944,7 @@ Class("xui.UI.Element", "xui.UI",{
         }
     }
 });
-Class("xui.UI.Icon", "xui.UI",{
+xui.Class("xui.UI.Icon", "xui.UI",{
     Static:{
         Templates:{
             className:'xui-node xui-wrapper {_className}  {picClass}',
@@ -25030,7 +25033,7 @@ Class("xui.UI.Icon", "xui.UI",{
     }
 });
 
-Class("xui.UI.HTMLButton", "xui.UI.Element",{
+xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
     Instance:{
         activate:function(){
             this.getRoot().focus();
@@ -25086,7 +25089,7 @@ Class("xui.UI.HTMLButton", "xui.UI.Element",{
     }
 });
 
-Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
+xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
     Initialize:function(){
         // compitable
         xui.UI.SButton = xui.UI.Button;
@@ -25303,7 +25306,7 @@ Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
     }
 });
 
-Class("xui.UI.Span", "xui.UI",{
+xui.Class("xui.UI.Span", "xui.UI",{
     Static:{
         Templates:{
             className:'{_className}',
@@ -25373,7 +25376,7 @@ Class("xui.UI.Span", "xui.UI",{
     }
 });
 
-Class("xui.UI.CSSBox","xui.UI.Span",{
+xui.Class("xui.UI.CSSBox","xui.UI.Span",{
     Instance:{
         adjustDock:null,
         draggable:null,
@@ -25565,7 +25568,7 @@ Class("xui.UI.CSSBox","xui.UI.Span",{
     }
 });
 
-Class("xui.UI.Div", "xui.UI",{
+xui.Class("xui.UI.Div", "xui.UI",{
     Initialize:function(){
         // compitable
         xui.UI.Pane = xui.UI.Div;
@@ -25719,7 +25722,7 @@ Class("xui.UI.Div", "xui.UI",{
     }
 });
 
-Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
+xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
     Instance:{
         destroy:function(ignoreEffects, purgeNow){
             var o=this.get(0);
@@ -25882,7 +25885,7 @@ Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             }
         }
     }
-});Class("xui.UI.Image", "xui.UI",{
+});xui.Class("xui.UI.Image", "xui.UI",{
     Initialize:function(){
         var ns=this;
         ns._adjustItems = xui.absList._adjustItems;
@@ -26066,7 +26069,7 @@ Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             }
         }
     }
-});Class("xui.UI.Flash", "xui.UI",{
+});xui.Class("xui.UI.Flash", "xui.UI",{
     Instance:{
         refreshFlash:function(){
             var html='', cls=this.constructor;
@@ -26261,7 +26264,7 @@ Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             }
         }
     }
-});Class("xui.UI.Audio", "xui.UI",{
+});xui.Class("xui.UI.Audio", "xui.UI",{
     Instance:{
         play:function(){
             var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.play();
@@ -26408,7 +26411,7 @@ Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             }
         }
     }
-});Class("xui.UI.Video", "xui.UI.Audio",{
+});xui.Class("xui.UI.Video", "xui.UI.Audio",{
     Instance:{
     },
     Static:{
@@ -26470,7 +26473,7 @@ Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
         }
     }
 });//resizer class, add a plug in to xui.Dom
-Class("xui.UI.Resizer","xui.UI",{
+xui.Class("xui.UI.Resizer","xui.UI",{
     Instance:{
         _attachTo:function(target, parent){
             var self=this, v=self.get(0);
@@ -27540,7 +27543,7 @@ Class("xui.UI.Resizer","xui.UI",{
             profile.box._tryCursors(profile);
         }
     }
-});Class("xui.UI.Block", "xui.UI.Widget",{
+});xui.Class("xui.UI.Block", "xui.UI.Widget",{
     Initialize:function(){
         var self=this,
             t = self.getTemplate();
@@ -27925,7 +27928,7 @@ Class("xui.UI.Resizer","xui.UI",{
     }
 });
 
-Class("xui.UI.Label", "xui.UI",{
+xui.Class("xui.UI.Label", "xui.UI",{
     Initialize:function(){
         // compitable
         xui.UI.SLabel = xui.UI.Label;
@@ -28036,7 +28039,7 @@ Class("xui.UI.Label", "xui.UI",{
         }        
     }
 });
-Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
+xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){
@@ -28196,7 +28199,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             }
         }
     }
-});Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
+});xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         // compitable
         xui.UI.SCheckBox = xui.UI.CheckBox;
@@ -28347,7 +28350,7 @@ Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         }
     }
 });
-Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
+xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){
@@ -28995,7 +28998,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             }
         }
     }
-});Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
+});xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
     Instance:{
         _setTB:function(type){
             var profile=this.get(0), p=profile.properties, o, t;
@@ -29958,7 +29961,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             }
         }
     }
-});Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
+});xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
     Instance:{
         activate:function(){
             return this;
@@ -30052,7 +30055,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             return ""+(xui.isSet(value)?value:"");
         }
     }
-});Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
+});xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         this.addTemplateKeys(['TOOLBARBTN']);
     },
@@ -31142,7 +31145,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
     }
 });
 
-Class("xui.UI.ComboInput", "xui.UI.Input",{
+xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
     /*Instance*/
     Instance:{
         _adjustV:function(v){
@@ -32963,7 +32966,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         }
     }
-});Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
+});xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
     Instance:{
         activate:function(){
             this.getSubNode('TOGGLE').focus();
@@ -33956,7 +33959,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         _onresize:function(){}
     }
-});Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
+});xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
     Dependencies:['xui.Date'],
     Instance:{
         activate:function(){
@@ -34750,7 +34753,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         _onresize:function(){}
     }
-});Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
+});xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
     Dependencies:['xui.Date'],
     Instance:{
         activate:function(){
@@ -35288,7 +35291,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         _onresize:function(){}
     }
-});Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
+});xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){
@@ -35984,7 +35987,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         }
     }
-});Class("xui.UI.Gallery", "xui.UI.List",{
+});xui.Class("xui.UI.Gallery", "xui.UI.List",{
     Instance:{
         getStatus:function(id){
             var item=this.get(0).getItemByItemId(id);
@@ -36336,7 +36339,7 @@ Class("xui.UI.ComboInput", "xui.UI.Input",{
         }
     }
 });
-Class("xui.UI.Panel", "xui.UI.Div",{
+xui.Class("xui.UI.Panel", "xui.UI.Div",{
     Instance:{
         activate:function(){
             var profile = this.get(0);
@@ -36951,7 +36954,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
         }
     }
-});Class("xui.UI.Group", "xui.UI.Panel",{
+});xui.Class("xui.UI.Group", "xui.UI.Panel",{
     Static:{
         Templates:{
             tagName : 'div',
@@ -37190,7 +37193,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
             }
         }
     }
-});Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
+});xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){
@@ -37552,7 +37555,7 @@ Class("xui.UI.Panel", "xui.UI.Div",{
         this.addTemplateKeys(['POPI']);
     }
 });
-Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
+xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
     Instance:{
         _setCtrlValue:function(value){
             this.each(function(profile){
@@ -38832,7 +38835,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
         }
     }
-});Class("xui.UI.Stacks", "xui.UI.Tabs",{
+});xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
     Initialize:function(){
         var t=this.getTemplate(),keys=this.$Keys;
         t.BOX={tagName:'div',LIST:t.LIST, PNAELS:t.PNAELS};
@@ -39047,7 +39050,7 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         _adjustScroll:null
     }
 });
-Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
+xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
     Initialize:function(){        
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';
@@ -39454,7 +39457,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             }
         }
     }
-});Class("xui.UI.RadioBox", "xui.UI.List",{
+});xui.Class("xui.UI.RadioBox", "xui.UI.List",{
     Initialize:function(){
         //modify default template for shell
         var t = this.getTemplate();
@@ -39546,7 +39549,7 @@ Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         }
     }
 });
-Class("xui.UI.StatusButtons", ["xui.UI.List"],{
+xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
     Initialize:function(){
         //modify default template fro shell
         var t = this.getTemplate();
@@ -39701,7 +39704,7 @@ Class("xui.UI.StatusButtons", ["xui.UI.List"],{
     }
 });
 
-Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
+xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
     $Start:function(t){
         if(t=this.Static.RenderTrigger)t.$order = -1;
     },
@@ -40736,7 +40739,7 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         }
     }
 });
-Class("xui.UI.TreeView","xui.UI.TreeBar",{
+xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
     Initialize:function(){
         this.addTemplateKeys(['IMAGE']);
          var t = this.getTemplate();
@@ -40850,7 +40853,7 @@ Class("xui.UI.TreeView","xui.UI.TreeBar",{
         }
     }
 });
-Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
+xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
     Instance:{
         adjustSize:function(){
             this.each(function(profile){
@@ -41696,7 +41699,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         _onresize:null
     }
-});Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
+});xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
     Instance:{
         updateItem:function(subId,options){
             var self=this,
@@ -42086,7 +42089,7 @@ Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
     }
 });
 
-Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
+xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
     Instance:{
         updateItem:function(subId,options){
             if(options.type){
@@ -42544,7 +42547,7 @@ Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         }
     }
 });
-Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
+xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
     Instance:{
         getPanel:function(subId){
             return this.get(0).getSubNodeByItemId('PANEL', subId);
@@ -43500,7 +43503,7 @@ Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 //colMap2 => header_ItemIdMapSerialId
 //cellMap => cells_SerialIdMapItem
 //cellType: label,input,textarea,combobox,listbox,file,getter,helpinput,button,dropbutton,cmdbox,popbox,date,time,datetime,color,spin,counter,currency,number,checkbox,progress
-Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
+xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     Instance:{
         activate:function(){
             var profile=this.get(0),t;
@@ -50735,7 +50738,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this._adjustBody(profile,'resize');
         }
     }
-});Class("xui.UI.Dialog","xui.UI.Widget",{
+});xui.Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
         showModal:function(parent, left, top, callback, ignoreEffects){
             this.show(parent, true, left, top, callback, ignoreEffects);
@@ -52301,7 +52304,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         }
     }
 });
-Class("xui.UI.FoldingList", ["xui.UI.List"],{
+xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Instance:{
         fillContent:function(id, obj){
             var profile=this.get(0),t,item;
@@ -52646,7 +52649,7 @@ Class("xui.UI.FoldingList", ["xui.UI.List"],{
         _onresize:function(){}
     }
 });
-Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
+xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
     Instance:{
         _setCtrlValue:function(value,init){
             this.each(function(profile){
@@ -61430,7 +61433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ }
 /******/ ])
 });
-;Class("xui.svg", "xui.UI",{
+;xui.Class("xui.svg", "xui.UI",{
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.","")]=xui.absBox.$type[key]=key;
         return true;
@@ -63788,7 +63791,7 @@ return /******/ (function(modules) { // webpackBootstrap
     }
 });
 
-Class("xui.svg.circle", "xui.svg",{
+xui.Class("xui.svg.circle", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -63814,7 +63817,7 @@ Class("xui.svg.circle", "xui.svg",{
         }
     }
 });
-Class("xui.svg.ellipse", "xui.svg",{
+xui.Class("xui.svg.ellipse", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -63840,7 +63843,7 @@ Class("xui.svg.ellipse", "xui.svg",{
         }
     }
 });
-Class("xui.svg.rect", "xui.svg",{
+xui.Class("xui.svg.rect", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -63866,7 +63869,7 @@ Class("xui.svg.rect", "xui.svg",{
         }
     }
 });
-Class("xui.svg.image", "xui.svg",{
+xui.Class("xui.svg.image", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -63893,7 +63896,7 @@ Class("xui.svg.image", "xui.svg",{
         }
     }
 });
-Class("xui.svg.text", "xui.svg",{
+xui.Class("xui.svg.text", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -63919,7 +63922,7 @@ Class("xui.svg.text", "xui.svg",{
         }
     }
 });
-Class("xui.svg.path", "xui.svg",{
+xui.Class("xui.svg.path", "xui.svg",{
     Instance:{
         getPath:function(){
             var prf=this.get(0),prop=prf.properties;
@@ -63955,7 +63958,7 @@ Class("xui.svg.path", "xui.svg",{
     }
 });
 
-Class("xui.svg.absComb", "xui.svg",{
+xui.Class("xui.svg.absComb", "xui.svg",{
     Instance:{
         _setBBox:function(key,value,notify){
             var bb=xui.svg.$adjustBB(key,value);
@@ -64142,7 +64145,7 @@ Class("xui.svg.absComb", "xui.svg",{
         }
     }
 });
-Class("xui.svg.rectComb", "xui.svg.absComb",{
+xui.Class("xui.svg.rectComb", "xui.svg.absComb",{
     Static:{
         _type:'rect',
         Templates:{
@@ -64157,7 +64160,7 @@ Class("xui.svg.rectComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.circleComb", "xui.svg.absComb",{
+xui.Class("xui.svg.circleComb", "xui.svg.absComb",{
     Static:{
         _type:'circle',
         Templates:{
@@ -64172,7 +64175,7 @@ Class("xui.svg.circleComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.ellipseComb", "xui.svg.absComb",{
+xui.Class("xui.svg.ellipseComb", "xui.svg.absComb",{
     Static:{
         _type:'ellipse',
         Templates:{
@@ -64187,7 +64190,7 @@ Class("xui.svg.ellipseComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.pathComb", "xui.svg.absComb",{
+xui.Class("xui.svg.pathComb", "xui.svg.absComb",{
     Static:{
         _type:'path',
         Templates:{
@@ -64202,7 +64205,7 @@ Class("xui.svg.pathComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.imageComb", "xui.svg.absComb",{
+xui.Class("xui.svg.imageComb", "xui.svg.absComb",{
     Static:{
         IMGNODE:1,
         _type:'image',
@@ -64220,7 +64223,7 @@ Class("xui.svg.imageComb", "xui.svg.absComb",{
 });
 
 
-Class("xui.svg.connector","xui.svg.absComb",{
+xui.Class("xui.svg.connector","xui.svg.absComb",{
     Instance:{
         _getConnectAnchors:null,
         _getConnectPath:null,
@@ -64828,7 +64831,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
     }
 });
 
-Class("xui.svg.group", "xui.svg.absComb",{
+xui.Class("xui.svg.group", "xui.svg.absComb",{
     Instance:{
         _adjustText:function(){
             return this;
@@ -64984,7 +64987,7 @@ Class("xui.svg.group", "xui.svg.absComb",{
             return s;
         }
     }
-});Class("xui.UI.SVGPaper", "xui.UI.Div",{
+});xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
     Initialize:function(){
         this.addTemplateKeys(['SVG']);
     },
@@ -65210,3 +65213,9 @@ Class("xui.svg.group", "xui.svg.absComb",{
         }
     }
 });
+    if (typeof module !== 'undefined' && typeof exports === 'object') {
+        module.exports = xui;
+    } else if (typeof define === 'function' && (define.amd || define.cmd)) {
+        define(function() { return xui; });
+    }
+}).call(this || (typeof window !== 'undefined' ? window : global));

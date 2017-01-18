@@ -7,10 +7,12 @@
 *
 */
 // speed up references
-undefined;
+var undefined, window=this, document=window.document;
+if(!document)throw new Error("CrossUI requires a window with a document");
 
 // global : xui
-var xui=function(nodes,flag){return xui.Dom.pack(nodes, flag)},
+// we have to keep xui for gloable var
+var xui = window.xui = function(nodes,flag){return xui.Dom.pack(nodes, flag)},
     Class=xui.Class=function(key, pkey, obj){
         var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
             _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
@@ -2498,7 +2500,7 @@ onStart: on start function
 onEnd: on end function
 cycle: is the thread circular
 */
-Class('xui.Thread',null,{
+xui.Class('xui.Thread',null,{
     Constructor:function(id, tasks, delay, callback, onStart, onEnd, cycle){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -2827,7 +2829,7 @@ ajax    +       +       -                   -                   -           -
 sajax   +       -       +                   -                   -           * JSONP
 iajax   +       +       +                   *                   *           * IDMI
 */
-Class('xui.absIO',null,{
+xui.Class('xui.absIO',null,{
     Constructor:function(uri, query, onSuccess, onFail, threadid, options){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3027,7 +3029,7 @@ Class('xui.absIO',null,{
     }
 });
 
-Class('xui.Ajax','xui.absIO',{
+xui.Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
         _unsafeHeader:"Accept-Charset,Accept-Encoding,Access-Control-Request-Headers,Access-Control-Request-Method,Connection,Content-Length,Cookie,Cookie2,Date,DNT,Expect,Host,Keep-Alive,Origin,Referer,TE,Trailer,Transfer-Encoding,Upgrade,User-Agent,Via".toLowerCase().split(","),
@@ -3165,7 +3167,7 @@ Class('xui.Ajax','xui.absIO',{
     }
 });
 // JSONP
-Class('xui.JSONP','xui.absIO',{
+xui.Class('xui.JSONP','xui.absIO',{
     Instance:{
         start:function(){
             var self=this,id,c=self.constructor, t, n, ok=false;
@@ -3326,7 +3328,7 @@ Class('xui.JSONP','xui.absIO',{
     }
 });
 // XDMI : Cross-Domain Messaging with iframes
-Class('xui.XDMI','xui.absIO',{
+xui.Class('xui.XDMI','xui.absIO',{
     Instance:{
         _useForm:true,
         start:function(){
@@ -3584,7 +3586,7 @@ new function(){
 /*xui.SC for straight call
 *  Dependencies: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
 */
-Class('xui.SC',null,{
+xui.Class('xui.SC',null,{
     Constructor:function(path, callback, isAsy, threadid, options, force){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3759,7 +3761,7 @@ Class('xui.SC',null,{
 });
 
 //xui.absBox
-Class('xui.absBox',null, {
+xui.Class('xui.absBox',null, {
     Constructor:function(){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3871,7 +3873,7 @@ Class('xui.absBox',null, {
     }
 });
 
-Class('xui.absProfile',null,{
+xui.Class('xui.absProfile',null,{
     Constructor:function(){
         var upper=arguments.callee.upper;
         if(upper)upper.call(this);
@@ -3971,7 +3973,7 @@ Class('xui.absProfile',null,{
     }
 });
 
-Class('xui.Profile','xui.absProfile',{
+xui.Class('xui.Profile','xui.absProfile',{
     Constructor:function(host,key,alias,box,properties,events,options){
         var upper=arguments.callee.upper,args=xui.toArr(arguments);
         upper.apply(this,args);
@@ -4115,7 +4117,7 @@ Class('xui.Profile','xui.absProfile',{
     }
 });
 
-Class('xui.absObj',"xui.absBox",{
+xui.Class('xui.absObj',"xui.absBox",{
     //properties, events, host
     Constructor:function(){
         var upper=arguments.callee.upper,args=xui.toArr(arguments);
@@ -4584,7 +4586,7 @@ Class('xui.absObj',"xui.absBox",{
     }
 });
 
-Class("xui.Timer","xui.absObj",{
+xui.Class("xui.Timer","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,

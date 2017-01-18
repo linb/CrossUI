@@ -1,4 +1,4 @@
-Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
+xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
     Instance:{
         updateItem:function(subId,options){
             if(options.type){

@@ -1,4 +1,4 @@
-Class('xui.Date',null,{
+xui.Class('xui.Date',null,{
     Initialize:function(){
         var self=this;
         self._mapKeys(self.$TIMEUNIT);

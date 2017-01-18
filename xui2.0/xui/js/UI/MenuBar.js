@@ -1,4 +1,4 @@
-Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
+xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
     Instance:{
         updateItem:function(subId,options){
             var self=this,

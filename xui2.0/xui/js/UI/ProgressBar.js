@@ -1,4 +1,4 @@
-Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
+xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){

@@ -1,7 +1,7 @@
 /* event
 *  Dependencies: base _ ; Class ; xui ;
 */
-Class('xui.Event',null,{
+xui.Class('xui.Event',null,{
     Constructor:function(event,node,fordrag,tid){
         var self = xui.Event,
             w=window,

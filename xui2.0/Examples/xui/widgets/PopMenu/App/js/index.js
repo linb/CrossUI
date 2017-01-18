@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         initialize : function(){
             this.autoDestroy = true;

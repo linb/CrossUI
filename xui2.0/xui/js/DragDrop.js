@@ -143,7 +143,7 @@ xui.DragDrop.getProfile():
     proxyNode: xui.Dom object,
     dropElement: String, DOM element id.
 */
-Class('xui.DragDrop',null,{
+xui.Class('xui.DragDrop',null,{
     Static:{
         _eh:"_dd",
         _id:"xui.dd:proxy:",

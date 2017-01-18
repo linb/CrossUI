@@ -1,4 +1,4 @@
-Class("xui.CSS", null,{
+xui.Class("xui.CSS", null,{
     Static:{
         _r:xui.browser.ie?'rules':'cssRules',
         _baseid:'xui:css:base',

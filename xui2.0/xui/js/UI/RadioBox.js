@@ -1,4 +1,4 @@
-Class("xui.UI.RadioBox", "xui.UI.List",{
+xui.Class("xui.UI.RadioBox", "xui.UI.List",{
     Initialize:function(){
         //modify default template for shell
         var t = this.getTemplate();

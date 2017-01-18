@@ -1,4 +1,4 @@
-Class("xui.svg", "xui.UI",{
+xui.Class("xui.svg", "xui.UI",{
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.","")]=xui.absBox.$type[key]=key;
         return true;
@@ -2356,7 +2356,7 @@ Class("xui.svg", "xui.UI",{
     }
 });
 
-Class("xui.svg.circle", "xui.svg",{
+xui.Class("xui.svg.circle", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2382,7 +2382,7 @@ Class("xui.svg.circle", "xui.svg",{
         }
     }
 });
-Class("xui.svg.ellipse", "xui.svg",{
+xui.Class("xui.svg.ellipse", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2408,7 +2408,7 @@ Class("xui.svg.ellipse", "xui.svg",{
         }
     }
 });
-Class("xui.svg.rect", "xui.svg",{
+xui.Class("xui.svg.rect", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2434,7 +2434,7 @@ Class("xui.svg.rect", "xui.svg",{
         }
     }
 });
-Class("xui.svg.image", "xui.svg",{
+xui.Class("xui.svg.image", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2461,7 +2461,7 @@ Class("xui.svg.image", "xui.svg",{
         }
     }
 });
-Class("xui.svg.text", "xui.svg",{
+xui.Class("xui.svg.text", "xui.svg",{
     Instance:{
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2487,7 +2487,7 @@ Class("xui.svg.text", "xui.svg",{
         }
     }
 });
-Class("xui.svg.path", "xui.svg",{
+xui.Class("xui.svg.path", "xui.svg",{
     Instance:{
         getPath:function(){
             var prf=this.get(0),prop=prf.properties;
@@ -2523,7 +2523,7 @@ Class("xui.svg.path", "xui.svg",{
     }
 });
 
-Class("xui.svg.absComb", "xui.svg",{
+xui.Class("xui.svg.absComb", "xui.svg",{
     Instance:{
         _setBBox:function(key,value,notify){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2710,7 +2710,7 @@ Class("xui.svg.absComb", "xui.svg",{
         }
     }
 });
-Class("xui.svg.rectComb", "xui.svg.absComb",{
+xui.Class("xui.svg.rectComb", "xui.svg.absComb",{
     Static:{
         _type:'rect',
         Templates:{
@@ -2725,7 +2725,7 @@ Class("xui.svg.rectComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.circleComb", "xui.svg.absComb",{
+xui.Class("xui.svg.circleComb", "xui.svg.absComb",{
     Static:{
         _type:'circle',
         Templates:{
@@ -2740,7 +2740,7 @@ Class("xui.svg.circleComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.ellipseComb", "xui.svg.absComb",{
+xui.Class("xui.svg.ellipseComb", "xui.svg.absComb",{
     Static:{
         _type:'ellipse',
         Templates:{
@@ -2755,7 +2755,7 @@ Class("xui.svg.ellipseComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.pathComb", "xui.svg.absComb",{
+xui.Class("xui.svg.pathComb", "xui.svg.absComb",{
     Static:{
         _type:'path',
         Templates:{
@@ -2770,7 +2770,7 @@ Class("xui.svg.pathComb", "xui.svg.absComb",{
         }
     }
 });
-Class("xui.svg.imageComb", "xui.svg.absComb",{
+xui.Class("xui.svg.imageComb", "xui.svg.absComb",{
     Static:{
         IMGNODE:1,
         _type:'image',
@@ -2788,7 +2788,7 @@ Class("xui.svg.imageComb", "xui.svg.absComb",{
 });
 
 
-Class("xui.svg.connector","xui.svg.absComb",{
+xui.Class("xui.svg.connector","xui.svg.absComb",{
     Instance:{
         _getConnectAnchors:null,
         _getConnectPath:null,
@@ -3396,7 +3396,7 @@ Class("xui.svg.connector","xui.svg.absComb",{
     }
 });
 
-Class("xui.svg.group", "xui.svg.absComb",{
+xui.Class("xui.svg.group", "xui.svg.absComb",{
     Instance:{
         _adjustText:function(){
             return this;

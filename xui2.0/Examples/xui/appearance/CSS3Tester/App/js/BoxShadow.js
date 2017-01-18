@@ -1,5 +1,5 @@
 // The default code is a com class (inherited from xui.Com)
-Class('App.BoxShadow', 'xui.Com',{
+xui.Class('App.BoxShadow', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Tools

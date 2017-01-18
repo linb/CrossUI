@@ -1,4 +1,4 @@
-Class("xui.UI.TreeView","xui.UI.TreeBar",{
+xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
     Initialize:function(){
         this.addTemplateKeys(['IMAGE']);
          var t = this.getTemplate();

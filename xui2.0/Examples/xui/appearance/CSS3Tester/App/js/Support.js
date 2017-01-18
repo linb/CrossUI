@@ -1,4 +1,4 @@
-Class('App.Support', 'xui.Com',{
+xui.Class('App.Support', 'xui.Module',{
     Instance:{
         // To initialize internal components (mostly UI controls)
         // *** If you're not a skilled, dont modify this function manually ***

@@ -1,4 +1,4 @@
-Class('App.snip_serialize', 'xui.Com',{
+xui.Class('App.snip_serialize', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

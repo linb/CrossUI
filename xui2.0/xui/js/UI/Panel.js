@@ -1,4 +1,4 @@
-Class("xui.UI.Panel", "xui.UI.Div",{
+xui.Class("xui.UI.Panel", "xui.UI.Div",{
     Instance:{
         activate:function(){
             var profile = this.get(0);

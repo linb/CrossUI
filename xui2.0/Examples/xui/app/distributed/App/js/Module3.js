@@ -1,4 +1,4 @@
-Class('App.Module3', 'xui.Com',{
+xui.Class('App.Module3', 'xui.Module',{
     Instance:{
         customAppend:function(){
             this.dialog.show();

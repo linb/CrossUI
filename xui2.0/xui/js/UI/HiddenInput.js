@@ -1,4 +1,4 @@
-Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
+xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
     Instance:{
         activate:function(){
             return this;

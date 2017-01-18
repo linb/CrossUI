@@ -148,7 +148,7 @@ new function(){
 };
 
 //UIProfile Class
-Class('xui.UIProfile','xui.Profile', {
+xui.Class('xui.UIProfile','xui.Profile', {
     Instance:{
         //readonly please
         renderId:null,
@@ -841,7 +841,7 @@ Class('xui.UIProfile','xui.Profile', {
 });
 
 //UI Class
-Class("xui.UI",  "xui.absObj", {
+xui.Class("xui.UI",  "xui.absObj", {
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.UI.","").replace("xui.","")]=xui.absBox.$type[key]=key;
         return true;
@@ -3554,7 +3554,7 @@ Class("xui.UI",  "xui.absObj", {
                 }),
                 hls={},t;
             if(!xui.SC.get('xui.absContainer'))
-                Class('xui.absContainer','xui.absObj',{
+                xui.Class('xui.absContainer','xui.absObj',{
                     Instance:{
                         addPanel:function(paras, children, item){
                             var pro = xui.clone(xui.UI.Panel.$DataStruct,true);
@@ -6537,7 +6537,7 @@ Class("xui.UI",  "xui.absObj", {
 });
 
 //absList Class
-Class("xui.absList", "xui.absObj",{
+xui.Class("xui.absList", "xui.absObj",{
     Instance:{
         activate:function(){
             var profile = this.get(0),
@@ -7228,7 +7228,7 @@ Class("xui.absList", "xui.absObj",{
 });
 
 //absValue Class
-Class("xui.absValue", "xui.absObj",{
+xui.Class("xui.absValue", "xui.absObj",{
     Instance:{
         /*
         getUIValue:         return $UIvalue
@@ -7530,7 +7530,7 @@ Class("xui.absValue", "xui.absObj",{
     }
 });
 
-Class("xui.UI.Widget", "xui.UI",{
+xui.Class("xui.UI.Widget", "xui.UI",{
     Static:{
         Appearances:{
             KEY:{
@@ -7648,7 +7648,7 @@ Class("xui.UI.Widget", "xui.UI",{
     }
 });
 
-Class("xui.UI.Link", "xui.UI",{
+xui.Class("xui.UI.Link", "xui.UI",{
     Static:{
         Appearances:{
             KEY:{
@@ -7703,7 +7703,7 @@ Class("xui.UI.Link", "xui.UI",{
     }
 });
 
-Class("xui.UI.Element", "xui.UI",{
+xui.Class("xui.UI.Element", "xui.UI",{
     Static:{
         _objectProp:{attributes:1},
         Templates:{
@@ -7784,7 +7784,7 @@ Class("xui.UI.Element", "xui.UI",{
         }
     }
 });
-Class("xui.UI.Icon", "xui.UI",{
+xui.Class("xui.UI.Icon", "xui.UI",{
     Static:{
         Templates:{
             className:'xui-node xui-wrapper {_className}  {picClass}',
@@ -7873,7 +7873,7 @@ Class("xui.UI.Icon", "xui.UI",{
     }
 });
 
-Class("xui.UI.HTMLButton", "xui.UI.Element",{
+xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
     Instance:{
         activate:function(){
             this.getRoot().focus();
@@ -7929,7 +7929,7 @@ Class("xui.UI.HTMLButton", "xui.UI.Element",{
     }
 });
 
-Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
+xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
     Initialize:function(){
         // compitable
         xui.UI.SButton = xui.UI.Button;
@@ -8146,7 +8146,7 @@ Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
     }
 });
 
-Class("xui.UI.Span", "xui.UI",{
+xui.Class("xui.UI.Span", "xui.UI",{
     Static:{
         Templates:{
             className:'{_className}',
@@ -8216,7 +8216,7 @@ Class("xui.UI.Span", "xui.UI",{
     }
 });
 
-Class("xui.UI.CSSBox","xui.UI.Span",{
+xui.Class("xui.UI.CSSBox","xui.UI.Span",{
     Instance:{
         adjustDock:null,
         draggable:null,
@@ -8408,7 +8408,7 @@ Class("xui.UI.CSSBox","xui.UI.Span",{
     }
 });
 
-Class("xui.UI.Div", "xui.UI",{
+xui.Class("xui.UI.Div", "xui.UI",{
     Initialize:function(){
         // compitable
         xui.UI.Pane = xui.UI.Div;
@@ -8562,7 +8562,7 @@ Class("xui.UI.Div", "xui.UI",{
     }
 });
 
-Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
+xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
     Instance:{
         destroy:function(ignoreEffects, purgeNow){
             var o=this.get(0);

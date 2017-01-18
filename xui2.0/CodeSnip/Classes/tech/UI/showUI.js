@@ -1,5 +1,5 @@
 
-Class('App.tech_UI_showUI', 'xui.Com',{
+xui.Class('App.tech_UI_showUI', 'xui.Module',{
     Instance:{
         events:{onReady:'_onready'}, 
         iniComponents:function(){

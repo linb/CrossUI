@@ -1,4 +1,4 @@
-Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
+xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         this.addTemplateKeys(['TOOLBARBTN']);
     },

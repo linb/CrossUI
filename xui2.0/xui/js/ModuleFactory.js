@@ -1,4 +1,4 @@
-Class('xui.ModuleFactory',null,{
+xui.Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
         xui.getModule=function(cls, onEnd, threadid, cached, properties, events){

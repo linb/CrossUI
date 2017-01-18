@@ -1,5 +1,5 @@
 // The default code is a com class (inherited from xui.Com)
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     // Ensure that all the value of "key/value pair" does not refer to external variables
     Instance:{
         // To initialize internal components (mostly UI controls)

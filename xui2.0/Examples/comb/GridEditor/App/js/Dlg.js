@@ -1,4 +1,4 @@
-Class('App.Dlg', 'xui.Com',{
+xui.Class('App.Dlg', 'xui.Module',{
     Instance:{
         customAppend:function(){
             var self=this,

@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         //Com events
         events:{"onReady":"_onready"},

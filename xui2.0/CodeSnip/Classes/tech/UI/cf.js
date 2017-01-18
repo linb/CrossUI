@@ -1,4 +1,4 @@
-Class('App.tech_UI_cf', 'xui.Com',{
+xui.Class('App.tech_UI_cf', 'xui.Module',{
     Instance:{
         _button21_onclick:function (profile, e, value) {
             if(profile.CF.click){

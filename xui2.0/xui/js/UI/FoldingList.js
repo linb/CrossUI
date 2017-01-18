@@ -1,4 +1,4 @@
-Class("xui.UI.FoldingList", ["xui.UI.List"],{
+xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
     Instance:{
         fillContent:function(id, obj){
             var profile=this.get(0),t,item;

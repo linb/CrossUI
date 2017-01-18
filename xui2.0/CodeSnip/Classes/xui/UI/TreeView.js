@@ -1,5 +1,5 @@
 // The default code is a com class (inherited from xui.Com)
-Class('App.xui_UI_TreeView', 'xui.Com',{
+xui.Class('App.xui_UI_TreeView', 'xui.Module',{
     // Ensure that all the value of "key/value pair" does not refer to external variables
     Instance:{
         // To initialize instance(e.g. properties)

@@ -1,4 +1,4 @@
-Class("xui.UI.Video", "xui.UI.Audio",{
+xui.Class("xui.UI.Video", "xui.UI.Audio",{
     Instance:{
     },
     Static:{

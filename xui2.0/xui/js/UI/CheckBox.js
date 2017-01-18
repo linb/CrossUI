@@ -1,4 +1,4 @@
-Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
+xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Initialize:function(){
         // compitable
         xui.UI.SCheckBox = xui.UI.CheckBox;

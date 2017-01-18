@@ -1,4 +1,4 @@
-Class("xui.Template.SButton","xui.Template",{
+xui.Class("xui.Template.SButton","xui.Template",{
     Constructor:function(template,properties,events,domId){
         var self=this,arr=xui.toArr(arguments);
         arr[0]=arr[0]||'<span [event] class="xuit-sbtn"><span class="xuit-sbtn-btn"><span class="xuit-sbtn-btni"><span class="xuit-sbtn-btnc"><a class="xuit-sbtn-focus" href="javascript:;">{caption}</a></span></span></span></span>';

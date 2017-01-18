@@ -1,5 +1,5 @@
 //singleton
-Class("xui.Tips", null,{
+xui.Class("xui.Tips", null,{
     Constructor:function(){return null},
     Initialize:function(){
         if(xui.browser.fakeTouch)return;

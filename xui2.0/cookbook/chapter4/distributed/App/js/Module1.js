@@ -1,4 +1,4 @@
-Class('App.Module1', 'xui.Com',{
+xui.Class('App.Module1', 'xui.Module',{
     Instance:{
         base:["xui.UI"], 
         iniComponents:function(){

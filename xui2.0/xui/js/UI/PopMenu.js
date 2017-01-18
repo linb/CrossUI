@@ -1,4 +1,4 @@
-Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
+xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
     Instance:{
         adjustSize:function(){
             this.each(function(profile){

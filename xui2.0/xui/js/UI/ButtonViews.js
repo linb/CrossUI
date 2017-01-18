@@ -1,4 +1,4 @@
-Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
+xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
     Initialize:function(){        
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';

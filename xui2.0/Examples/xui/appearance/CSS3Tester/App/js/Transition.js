@@ -1,5 +1,5 @@
-// The default code is a com class (inherited from xui.Com)
-Class('App.Transition', 'xui.Com',{
+// The default code is a com class (inherited from xui.Module)
+xui.Class('App.Transition', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Tools

@@ -1,4 +1,4 @@
-Class('App.Test2', 'xui.Com',{
+xui.Class('App.Test2', 'xui.Module',{
     Instance:{
         properties:{
             pro1:'pro1'

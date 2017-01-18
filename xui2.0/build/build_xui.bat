@@ -31,7 +31,8 @@ xcopy %relPath%xui\iconfont\*.* %outPath%xui\iconfont\ /E /Y
 rem ==================
 rem for mini xui code
 rem ==================
-copy %relPath%xui\js\xui.js /b ^
+copy %relPath%xui\js\_begin.js /b ^
++ %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\APICaller.js /b ^
 + %relPath%xui\js\DataBinder.js /b ^
 + %relPath%xui\js\Event.js /b ^
@@ -42,6 +43,7 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\Cookies.js /b ^
 + %relPath%xui\js\History.js /b ^
 + %relPath%xui\js\Tips.js /b ^
++ %relPath%xui\js\_end.js /b ^
 xui.js
 
 java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%miniPath% xui.js
@@ -52,7 +54,8 @@ del /q xui.js
 rem ==================
 rem for all xui code
 rem ==================
-copy %relPath%xui\js\xui.js /b ^
+copy %relPath%xui\js\_begin.js /b ^
++ %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\APICaller.js /b ^
 + %relPath%xui\js\DataBinder.js /b ^
 + %relPath%xui\Locale\en.js /b ^
@@ -114,6 +117,7 @@ copy %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\ThirdParty\raphael.js /b ^
 + %relPath%xui\js\svg.js /b ^
 + %relPath%xui\js\UI\SVGPaper.js /b ^
++ %relPath%xui\js\_end.js /b ^
 xui.js
 
 java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%allPath% xui.js  --charset utf-8

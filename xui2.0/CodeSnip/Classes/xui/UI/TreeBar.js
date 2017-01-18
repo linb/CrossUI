@@ -1,4 +1,4 @@
-Class('App.xui_UI_TreeBar', 'xui.Com',{
+xui.Class('App.xui_UI_TreeBar', 'xui.Module',{
     Instance:{
         _treebar1_onitemselected:function (profile, item, src) {
             var value=profile.boxing().getUIValue();

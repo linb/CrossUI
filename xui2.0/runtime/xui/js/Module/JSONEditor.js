@@ -1,4 +1,4 @@
-Class('xui.Module.JSONEditor', 'xui.Module',{
+xui.Class('xui.Module.JSONEditor', 'xui.Module',{
     Instance:{ 
         setValue:function(str){
             var ns=this,

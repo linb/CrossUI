@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         langKey:'app', 
         _radiobox1_onitemselected:function (profile, item, src) {

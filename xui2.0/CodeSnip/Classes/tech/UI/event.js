@@ -1,4 +1,4 @@
-Class('App.tech_UI_event', 'xui.Com',{
+xui.Class('App.tech_UI_event', 'xui.Module',{
     Instance:{
         arr:[],
         iniComponents:function(){

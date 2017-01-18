@@ -1,4 +1,4 @@
-Class('App.xui_UI_CheckBox', 'xui.Com',{
+xui.Class('App.xui_UI_CheckBox', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools

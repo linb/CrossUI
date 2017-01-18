@@ -1,4 +1,4 @@
-Class('xui.Template','xui.absProfile',{
+xui.Class('xui.Template','xui.absProfile',{
     Constructor:function(template,properties,events,domId){
         var upper=arguments.callee.upper, args=xui.toArr(arguments);
         upper.apply(this,args);

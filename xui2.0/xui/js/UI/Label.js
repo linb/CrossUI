@@ -1,4 +1,4 @@
-Class("xui.UI.Label", "xui.UI",{
+xui.Class("xui.UI.Label", "xui.UI",{
     Initialize:function(){
         // compitable
         xui.UI.SLabel = xui.UI.Label;

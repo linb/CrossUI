@@ -1,4 +1,4 @@
-Class('App.tech_UI_cb', 'xui.Com',{
+xui.Class('App.tech_UI_cb', 'xui.Module',{
     Instance:{
         _button21_onclick:function (profile, e, value) {
             xui.message('click fired in normal onclick event')

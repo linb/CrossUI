@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         events:{"onCreated":"_beforecreated", "onReady":"_onready"}, 
         _beforecreated:function (com, threadid) {

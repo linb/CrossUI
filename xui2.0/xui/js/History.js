@@ -1,4 +1,4 @@
-Class("xui.History",null,{
+xui.Class("xui.History",null,{
     Static:{
         _fid:'xui:history',
         _type:(xui.browser.ie && (xui.browser.ver<8))?'iframe':("onhashchange" in window)?'event':'timer',

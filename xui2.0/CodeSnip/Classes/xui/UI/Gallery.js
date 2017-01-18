@@ -1,4 +1,4 @@
-Class('App.xui_UI_Gallery', 'xui.Com',{
+xui.Class('App.xui_UI_Gallery', 'xui.Module',{
     Instance:{
         //base Class for xui.Com
         base:["xui.UI"],

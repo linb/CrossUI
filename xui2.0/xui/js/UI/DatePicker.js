@@ -1,4 +1,4 @@
-Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
+xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
     Dependencies:['xui.Date'],
     Instance:{
         activate:function(){

@@ -1,4 +1,4 @@
-Class('App.BorderRadius', 'xui.Com',{
+xui.Class('App.BorderRadius', 'xui.Module',{
     Instance:{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Tools

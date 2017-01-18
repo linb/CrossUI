@@ -1,4 +1,4 @@
-Class('xui.XMLRPC',null,{
+xui.Class('xui.XMLRPC',null,{
     Static:{
         //wrapRequest(hash)
         // or wrapRequest(string, hash)

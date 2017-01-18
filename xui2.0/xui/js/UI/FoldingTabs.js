@@ -1,4 +1,4 @@
-Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
+xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
     Instance:{
         _setCtrlValue:function(value,init){
             this.each(function(profile){

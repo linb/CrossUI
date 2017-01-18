@@ -1,4 +1,4 @@
-Class("xui.UI.Block", "xui.UI.Widget",{
+xui.Class("xui.UI.Block", "xui.UI.Widget",{
     Initialize:function(){
         var self=this,
             t = self.getTemplate();

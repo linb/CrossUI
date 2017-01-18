@@ -1,4 +1,4 @@
-Class("xui.UI.Flash", "xui.UI",{
+xui.Class("xui.UI.Flash", "xui.UI",{
     Instance:{
         refreshFlash:function(){
             var html='', cls=this.constructor;

@@ -1,4 +1,4 @@
-Class('App', 'xui.Module',{
+xui.Class('App', 'xui.Module',{
     Initialize:function(){
         var arr=[];
 

@@ -1,4 +1,4 @@
-Class("xui.UI.FusionChartsXT","xui.UI",{
+xui.Class("xui.UI.FusionChartsXT","xui.UI",{
     Instance:{
         initialize:function(){
             if(xui.isSet(window.FusionCharts) && FusionCharts.addEventListener){

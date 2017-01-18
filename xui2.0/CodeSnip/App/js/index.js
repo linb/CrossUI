@@ -1,4 +1,4 @@
-Class('App', 'xui.Com',{
+xui.Class('App', 'xui.Module',{
     Instance:{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools
@@ -70,7 +70,7 @@ Class('App', 'xui.Com',{
             // ]]Code created by CrossUI RAD Tools
         }, 
         _onready:function () {
-            Class("Component");
+            xui.Class("Component");
             var ns=this;
             ns.treebar.setItems(CONF.widgets);
             xui.History.setCallback(function(str){
