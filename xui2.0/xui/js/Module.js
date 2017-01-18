@@ -29,7 +29,7 @@
 xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
-        xui.launch = function(cls, onEnd, lang, theme, showUI){
+        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId){
             ns.load.apply(ns, arguments);
         };
         // compitable
@@ -1175,7 +1175,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
-        load:function(cls, onEnd, lang, theme, showUI){
+        load:function(cls, onEnd, lang, theme, showUI, parent, subId){
             if(!cls){
                 var e=new Error("No cls");
                 xui.tryF(onEnd,[e,null]);
@@ -1204,7 +1204,7 @@ xui.Class('xui.Module','xui.absProfile',{
     
                                 xui.set(xui.ModuleFactory,["_cache",cls],o);
     
-                                if(showUI!==false)o.show(onEnd);
+                                if(showUI!==false)o.show(onEnd, parent, subId);
                                 else xui.tryF(onEnd,[null,o],o);
                             }
                         };
