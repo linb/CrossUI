@@ -25026,7 +25026,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
-            if(data.iconFontSize)data._fontsize = 'font-size:'+data.iconFontSize+';';
+            if(data.iconFontSize)data._fontsize = data.iconFontSize+';';
             if(data.iconColor)data._fontclr = 'color:'+data.iconColor+';';
             return data;
         }
@@ -36308,7 +36308,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
             item._tabindex = p.tabindex;
 
-            if(t=item.iconFontSize)item._fontSize='font-size:'+t+';'
+            if(t=item.iconFontSize)item._fontSize=t;
             item._imageClass='';
             if(!item.iconFontCode && !item.imageClass)item._imageClass += 'xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;

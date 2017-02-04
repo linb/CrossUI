@@ -319,7 +319,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
             item._tabindex = p.tabindex;
 
-            if(t=item.iconFontSize)item._fontSize='font-size:'+t+';'
+            if(t=item.iconFontSize)item._fontSize=t;
             item._imageClass='';
             if(!item.iconFontCode && !item.imageClass)item._imageClass += 'xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;
