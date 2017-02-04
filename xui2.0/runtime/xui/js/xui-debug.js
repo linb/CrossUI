@@ -1313,7 +1313,7 @@ xui.merge(xui,{
             // For fetching one class multiple times
             if(!f[uri]){
                 f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-                if(xui.absIO.isCrossDomain(uri)){
+                if((options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
                     Class._ignoreNSCache=1;Class._last=null;
                     xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
                         if(Class._last)t=c[uri]=Class._last;
@@ -1468,19 +1468,26 @@ xui.merge(xui,{
             key=a;
         }
 
-        var pre,ini=xui.ini;
+        var pre,ini=xui.ini,t,
+            ensureTag=function(s){
+                return s&&s.slice(-1)!="/" ? s+"/" : s ;
+            };
         if(key[0]=='xui'){
-            pre=(options&&options.xuiPath)||ini.path;
             key.shift();
             if(key.length==(folder?1:0))key.push('xui');
+            
+            pre=ensureTag((options&&options.xuiPath)||ini.path);
         }else{
-            pre=(options&&options.appPath)||ini.appPath;
             if(key.length==((folder?1:0)+1) && tag=='.js')key.push('index');
-            if((options&&options.verPath)||ini.verPath) pre += ((options&&options.verPath)||ini.verPath) + '/';
-            if(ini.ver) pre += ini.ver + '/';
+
+            if(pre=ensureTag(options&&options.appPath)){
+                if(t=(options&&options.verPath)) pre += ensureTag(t);
+                if(t=(options&&options.ver)) pre += ensureTag(t);
+            }else if(pre=ensureTag(ini.appPath)){
+                if(t=ini.verPath) pre += ensureTag(t);
+                if(t=ini.ver) pre += ensureTag(t);
+            }
         }
-        if(pre.slice(-1)!="/")
-            pre+="/";
         return pre + key.join('\/') + (tag||'\/');
     },
     getClassName:function(uri){
