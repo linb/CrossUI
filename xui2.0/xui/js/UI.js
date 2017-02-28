@@ -7054,7 +7054,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 var t=this.get(0);
                 return t[s].apply(t,arguments);
             };
-            Class._fun(o[s],s,o.KEY,null,'instance');
+            xui.Class._fun(o[s],s,o.KEY,null,'instance');
         });
     },
     Static:{

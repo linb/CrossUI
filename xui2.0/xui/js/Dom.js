@@ -4148,10 +4148,10 @@ type:4
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
-            Class.__gc();
+            xui.Class.__gc();
             xui.breakO(xui.$cache,2);
-            xui.breakO([xui,Class],3);
-            w.Class=w.xui=w.xui_ini=w._=undefined;
+            xui.breakO([xui.Class, xui],3);
+            w.xui=w.xui_ini=undefined;
         },"window",-1);
 
     }

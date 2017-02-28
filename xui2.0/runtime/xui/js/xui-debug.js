@@ -13,139 +13,140 @@ if(!document)throw new Error("CrossUI requires a window with a document");
 
 // global : xui
 // we have to keep xui for gloable var
-var xui = window.xui = function(nodes,flag){return xui.Dom.pack(nodes, flag)},
-    Class=xui.Class=function(key, pkey, obj){
-        var _Static, _parent=[], self=Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
-            _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
-        obj=obj||{};
-        //exists?
-        if(!self._ignoreNSCache && (t=xui.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
-        //clear SC
-        if(t=xui.get(w,['xui','$cache','SC']))delete t[key];
+var xui = window.xui = function(nodes,flag){return xui.Dom.pack(nodes, flag)};
 
-        //multi parents mode
-        pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
-        for(i=0; t=pkey[i]; i++)
-            if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
-                throw 'errNoParent--'+ t;
-        if(obj.Dependencies){
-            if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
-            for(i=0; t=obj.Dependencies[i]; i++)
-                if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                    throw 'errNoDependency--'+ t;
-        }
-        parent0=_parent[0];
+// Class & Namespace
+xui.Class=function(key, pkey, obj){
+    var _Static, _parent=[], self=xui.Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
+        _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
+    obj=obj||{};
+    //exists?
+    if(!self._ignoreNSCache && (t=xui.get(w, key.split('.')))&&typeof(t)=='function'&&t.$xuiclass$)return self._last=t;
+    //clear SC
+    if(t=xui.get(w,['xui','$cache','SC']))delete t[key];
 
-        // Give a change to modify the original object
-        var $Start = obj.$Start || (parent0&&parent0.$Start);
-        xui.tryF($Start, [], obj);
+    //multi parents mode
+    pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
+    for(i=0; t=pkey[i]; i++)
+        if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
+            throw 'errNoParent--'+ t;
+    if(obj.Dependencies){
+        if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
+        for(i=0; t=obj.Dependencies[i]; i++)
+            if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
+                throw 'errNoDependency--'+ t;
+    }
+    parent0=_parent[0];
 
-        // collect items
-        _Static=obj.Static||{};
-        t={};
-        for(i in _Static)
-            if(reg[i])t[i]=1;
-        for(i in t)
-            delete _Static[i];
-        
-        //before and after will pass to children
-        _Static.Before = obj.Before || (parent0&&parent0.Before);
-        _Static.After = obj.After || (parent0&&parent0.After);
-        _Static.$Start = $Start;
-        _Static.$End = obj.$End || (parent0&&parent0.$End);
-        _Static.__gc = obj.__gc || _Static.__gc || (parent0&&parent0.__gc) || function(){Class.__gc(this.$key)};
+    // Give a change to modify the original object
+    var $Start = obj.$Start || (parent0&&parent0.$Start);
+    xui.tryF($Start, [], obj);
 
-        /*set constructor first and create _this
-        upper is the first parent Class
-        */
-        var cf=function(){if(typeof this.initialize=='function')this.initialize()};
-        if(typeof obj.Constructor == 'function'){
-            _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
-            _this.Constructor = _funadj(obj.Constructor);
-        }else{
-            if(parent0){
-                // Constructor is for opera, in opear fun.toString can't get arguments sometime
-                var f=cf,str = parent0.Constructor;
-                if(str)f=new Function(str.slice(str.indexOf("(") + 1, str.indexOf(")")).split(','), str.slice(str.indexOf("{") + 1, str.lastIndexOf("}")));
-                _this = env(f, 'Constructor', key, parent0.upper,'constructor');
-                _this.Constructor = _funadj(str);
-            }else
-                _this = cf;
-        }
+    // collect items
+    _Static=obj.Static||{};
+    t={};
+    for(i in _Static)
+        if(reg[i])t[i]=1;
+    for(i in t)
+        delete _Static[i];
+    
+    //before and after will pass to children
+    _Static.Before = obj.Before || (parent0&&parent0.Before);
+    _Static.After = obj.After || (parent0&&parent0.After);
+    _Static.$Start = $Start;
+    _Static.$End = obj.$End || (parent0&&parent0.$End);
+    _Static.__gc = obj.__gc || _Static.__gc || (parent0&&parent0.__gc) || function(){xui.Class.__gc(this.$key)};
 
-        //collect parent items, keep the last one
-        _t=xui.fun();
-        for(i=_parent.length-1; t=_parent[i--];){
-            xui.merge(_t,t);
-            xui.merge(_t.prototype,t.prototype);
-        }
-        //set keys
-        _this.KEY=_this.$key=_this.prototype.KEY=_this.prototype.$key=key;
-        //envelop
-        //  from Static
-        self._wrap(_this,_Static,0,_t,'static');
-        //  from Instance
-        if(t=obj.Instance)
-            self._wrap(_this.prototype,t,1,_t.prototype,'instance');
-        //inherite from parents
-        self._inherit(_this,_t);
-        self._inherit(_this.prototype,_t.prototype);
-        _t=null;
+    /*set constructor first and create _this
+    upper is the first parent Class
+    */
+    var cf=function(){if(typeof this.initialize=='function')this.initialize()};
+    if(typeof obj.Constructor == 'function'){
+        _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
+        _this.Constructor = _funadj(obj.Constructor);
+    }else{
+        if(parent0){
+            // Constructor is for opera, in opear fun.toString can't get arguments sometime
+            var f=cf,str = parent0.Constructor;
+            if(str)f=new Function(str.slice(str.indexOf("(") + 1, str.indexOf(")")).split(','), str.slice(str.indexOf("{") + 1, str.lastIndexOf("}")));
+            _this = env(f, 'Constructor', key, parent0.upper,'constructor');
+            _this.Constructor = _funadj(str);
+        }else
+            _this = cf;
+    }
 
-        //exe before functoin
-        if(xui.tryF(_this.Before, arguments, _this)===false)
-            return false;
+    //collect parent items, keep the last one
+    _t=xui.fun();
+    for(i=_parent.length-1; t=_parent[i--];){
+        xui.merge(_t,t);
+        xui.merge(_t.prototype,t.prototype);
+    }
+    //set keys
+    _this.KEY=_this.$key=_this.prototype.KEY=_this.prototype.$key=key;
+    //envelop
+    //  from Static
+    self._wrap(_this,_Static,0,_t,'static');
+    //  from Instance
+    if(t=obj.Instance)
+        self._wrap(_this.prototype,t,1,_t.prototype,'instance');
+    //inherite from parents
+    self._inherit(_this,_t);
+    self._inherit(_this.prototype,_t.prototype);
+    _t=null;
 
-        //add child key to parents
-        for(i=0; t=_parent[i]; i++){
-            t=(t.$children || (t.$children=[]));
-            for(var j=0,k=t.length,b;j<k;j++)
-                if(t[k]==key){
-                    b=true;
-                    break;
-                }
-            if(!b)t[t.length]=key;
-        }
+    //exe before functoin
+    if(xui.tryF(_this.Before, arguments, _this)===false)
+        return false;
 
-        //set symbol
-        _this.$xui$ = _this.$xuiclass$ = 1;
-        _this.$children = [];
-        _this.$parent = _parent;
+    //add child key to parents
+    for(i=0; t=_parent[i]; i++){
+        t=(t.$children || (t.$children=[]));
+        for(var j=0,k=t.length,b;j<k;j++)
+            if(t[k]==key){
+                b=true;
+                break;
+            }
+        if(!b)t[t.length]=key;
+    }
 
-        //set constructor
-        _this.prototype.constructor = _this;
-        _this.prototype.$xui$ = 1;
-        //set key
-        _this[key] = _this.prototype[key] = true;
+    //set symbol
+    _this.$xui$ = _this.$xuiclass$ = 1;
+    _this.$children = [];
+    _this.$parent = _parent;
 
-        //allow load App.Sub first
-        _t=t=xui.get(w, key.split('.'));
-        xui.set(w, key.split('.'), _this);
-        if(Object.prototype.toString.call(_t)=='[object Object]')
-            for(i in _t)_this[i]=_t[i];
+    //set constructor
+    _this.prototype.constructor = _this;
+    _this.prototype.$xui$ = 1;
+    //set key
+    _this[key] = _this.prototype[key] = true;
 
-        //exe after function
-        xui.tryF(_this.After, [], _this);
-        //exe ini function
-        xui.tryF(obj.Initialize, [], _this);
-        xui.tryF(_this.$End, [], _this);
+    //allow load App.Sub first
+    _t=t=xui.get(w, key.split('.'));
+    xui.set(w, key.split('.'), _this);
+    if(Object.prototype.toString.call(_t)=='[object Object]')
+        for(i in _t)_this[i]=_t[i];
 
-        xui.breakO([obj.Static, obj.Instance, obj],2);
-        
-        if(!(key in _c)){
-            _c[key]=_c.length;
-            _c.push(key);
-        }
+    //exe after function
+    xui.tryF(_this.After, [], _this);
+    //exe ini function
+    xui.tryF(obj.Initialize, [], _this);
+    xui.tryF(_this.$End, [], _this);
 
-        //return Class
-        return self._last=_this;
-    };
+    xui.breakO([obj.Static, obj.Instance, obj],2);
+    
+    if(!(key in _c)){
+        _c[key]=_c.length;
+        _c.push(key);
+    }
 
-    // namespace
-    xui.Namespace=function(key){
-        var a=key.split('.'),w=window;
-        return xui.get(w, a) || xui.set(w, a, {});
-    };
+    //return Class
+    return self._last=_this;
+};
+xui.Namespace=function(key){
+    var a=key.split('.'),w=window;
+    return xui.get(w, a) || xui.set(w, a, {});
+};
+
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
 
@@ -194,6 +195,7 @@ new function(){
     if (!w.cancelAnimationFrame)
         w.cancelAnimationFrame = function(id){clearTimeout(id)};
 };
+
 new function(){
     var _to = Object.prototype.toString;
     xui.merge(xui,{
@@ -785,6 +787,7 @@ new function(){
         }
     });
 };
+
 xui.merge(xui.fun,{
     body:function(fun){
         var s=""+fun;
@@ -802,7 +805,7 @@ xui.merge(xui.fun,{
     }
 });
 
-xui.merge(Class, {
+xui.merge(xui.Class, {
     _reg:{$key:1,$parent:1,$children:1,KEY:1,Static:1,Instance:1,Constructor:1,Initialize:1},
     // give nodeType to avoid breakO
     _reg2:{'nodeType':1,'constructor':1,'prototype':1,'toString':1,'valueOf':1,'hasOwnProperty':1,'isPrototypeOf':1,'propertyIsEnumerable':1,'toLocaleString':1},
@@ -849,10 +852,10 @@ xui.merge(Class, {
         }
     },
     __gc:function(key){
-        var _c=Class._all;
+        var _c=xui.Class._all;
         if(!key){
             for(var i=_c.length-1;i>0;i--)
-                Class.__gc(_c[i]);
+                xui.Class.__gc(_c[i]);
             return;
         }
         if(typeof key=='object')key=key.KEY||"";
@@ -898,7 +901,7 @@ xui.merge(Class, {
         _c.splice(_c[key],1);
         delete _c[key];
     },
-    destroy:function(key){Class.__gc(key)}
+    destroy:function(key){xui.Class.__gc(key)}
 });
 
 //function Dependencies: xui.Dom xui.Thread
@@ -1314,10 +1317,10 @@ xui.merge(xui,{
             if(!f[uri]){
                 f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
                 if((options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
-                    Class._ignoreNSCache=1;Class._last=null;
+                    xui.Class._ignoreNSCache=1;xui.Class._last=null;
                     xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
-                        if(Class._last)t=c[uri]=Class._last;
-                        Class._ignoreNSCache=Class._last=null;
+                        if(xui.Class._last)t=c[uri]=xui.Class._last;
+                        xui.Class._ignoreNSCache=xui.Class._last=null;
                         if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         var s=xui.getClassName(uri);
@@ -1332,7 +1335,7 @@ xui.merge(xui,{
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
-                        Class._ignoreNSCache=1;Class._last=null;
+                        xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
@@ -1340,13 +1343,13 @@ xui.merge(xui,{
                     },threadid,{rspType:'script'}).start();
                 }else{
                     xui.Ajax(uri,xui.$rand+"="+xui.rand(),function(rsp){
-                        Class._ignoreNSCache=1;Class._last=null;
+                        xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         var scriptnode;
                         var s=xui.getClassName(uri);
                         try{scriptnode=xui.exec(rsp, s)}
-                        catch(e){for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);Class._last=null;}
-                        if(Class._last)t=c[uri]=Class._last;
-                        Class._last=null;
+                        catch(e){for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);xui.Class._last=null;}
+                        if(xui.Class._last)t=c[uri]=xui.Class._last;
+                        xui.Class._last=null;
                         if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         if(t&&t.KEY!=s){
@@ -1360,7 +1363,7 @@ xui.merge(xui,{
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
-                        Class._ignoreNSCache=Class._last=null;
+                        xui.Class._ignoreNSCache=xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
@@ -2487,26 +2490,25 @@ new function(){
 
 // Some basic Classes
 
-/*
-*xui.Thread
-*  Dependencies: _ ; Class ; xui
-parameters:
-id: id of this thread, if input null, thread will create a new id
-tasks: [task,task,task ...] or [{},{},{} ...]
-    task: function
-    or
-    {
-      task,      //function
-      args,      //args array for task
-      scope,     //this object for task
-      delay ,    //ms number
-      callback   //function for callback
-   }
-delay:default delay time;
-callback:default calback function;
-onStart: on start function
-onEnd: on end function
-cycle: is the thread circular
+/* xui.Thread
+    Dependencies: xui
+    parameters:
+        id: id of this thread, if input null, thread will create a new id
+        tasks: [task,task,task ...] or [{},{},{} ...]
+            task: function
+            or
+            {
+              task,      //function
+              args,      //args array for task
+              scope,     //this object for task
+              delay ,    //ms number
+              callback   //function for callback
+           }
+        delay:default delay time;
+        callback:default calback function;
+        onStart: on start function
+        onEnd: on end function
+        cycle: is the thread circular
 */
 xui.Class('xui.Thread',null,{
     Constructor:function(id, tasks, delay, callback, onStart, onEnd, cycle){
@@ -2829,13 +2831,12 @@ xui.Class('xui.Thread',null,{
 });
 
 /*xui.absIO/ajax
-*  Dependencies: _ ; Class ; xui ; xui.Thread
-*/
-/*
-        get     post    get(cross domain)   post(corss domain)  post file   return big data(corss domain)
-ajax    +       +       -                   -                   -           -
-sajax   +       -       +                   -                   -           * JSONP
-iajax   +       +       +                   *                   *           * IDMI
+    Dependencies: xui.Thread
+    
+            get     post    get(cross domain)   post(corss domain)  post file   return big data(corss domain)
+    ajax    +       +       -                   -                   -           -
+    sajax   +       -       +                   -                   -           * JSONP
+    iajax   +       +       +                   *                   *           * IDMI
 */
 xui.Class('xui.absIO',null,{
     Constructor:function(uri, query, onSuccess, onFail, threadid, options){
@@ -3036,7 +3037,7 @@ xui.Class('xui.absIO',null,{
         }
     }
 });
-
+// AJAX
 xui.Class('xui.Ajax','xui.absIO',{
     Instance:{
         _XML:null,
@@ -3174,6 +3175,7 @@ xui.Class('xui.Ajax','xui.absIO',{
         $asFunction:1
     }
 });
+
 // JSONP
 xui.Class('xui.JSONP','xui.absIO',{
     Instance:{
@@ -3335,6 +3337,7 @@ xui.Class('xui.JSONP','xui.absIO',{
         }
     }
 });
+
 // XDMI : Cross-Domain Messaging with iframes
 xui.Class('xui.XDMI','xui.absIO',{
     Instance:{
@@ -3586,13 +3589,15 @@ xui.Class('xui.XDMI','xui.absIO',{
         }
     }
 });
+
 new function(){
     // for compitable
     xui.SAjax=xui.JSONP;
     xui.IAjax=xui.XDMI;
 };
+
 /*xui.SC for straight call
-*  Dependencies: _ ; Class ; xui ; xui.Thread ; xui.absIO/ajax
+  Dependencies: xui.Thread; xui.absIO/ajax
 */
 xui.Class('xui.SC',null,{
     Constructor:function(path, callback, isAsy, threadid, options, force){
@@ -3644,8 +3649,8 @@ xui.Class('xui.SC',null,{
                             try{xui.exec(text,s)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
                     }
                 }
-                t=Class._last;
-                Class._ignoreNSCache=Class._last=null;
+                t=xui.Class._last;
+                xui.Class._ignoreNSCache=xui.Class._last=null;
                 // specified class must be in the first, maybe multi classes in code
                 // and give a change to load the last class in code, if specified class doesn't exist
                 xui.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
@@ -3673,7 +3678,7 @@ xui.Class('xui.SC',null,{
                      //load from sy ajax
                      o=xui.getPath(s,'.js','js',options);
                      options.$tag = s;
-                     Class._ignoreNSCache=1;Class._last=null;
+                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
                      var ajax;
                      //asy and not for loadSnips
                      if(isAsy && !options.$p){
@@ -4273,7 +4278,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                     //custom set
                     var $set = o.set;
                     m = ps[n];
-                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : Class._fun(function(value,force,tag,tag2){
+                    ps[n] = (typeof $set!='function' && typeof m=='function') ? m : xui.Class._fun(function(value,force,tag,tag2){
                         return this.each(function(v){
                             if(!v.properties)return;
 
@@ -4320,7 +4325,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                     // get custom getter
                     var $get = o.get;
                     m = ps[n];
-                    ps[n] = (typeof $get!='function' && typeof m=='function') ? m : Class._fun(function(){
+                    ps[n] = (typeof $get!='function' && typeof m=='function') ? m : xui.Class._fun(function(){
                         if(typeof $get=='function')
                             return $get.apply(this.get(0),arguments);
                         else
@@ -12955,10 +12960,10 @@ type:4
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
-            Class.__gc();
+            xui.Class.__gc();
             xui.breakO(xui.$cache,2);
-            xui.breakO([xui,Class],3);
-            w.Class=w.xui=w.xui_ini=w._=undefined;
+            xui.breakO([xui.Class, xui],3);
+            w.xui=w.xui_ini=undefined;
         },"window",-1);
 
     }
@@ -24221,7 +24226,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 var t=this.get(0);
                 return t[s].apply(t,arguments);
             };
-            Class._fun(o[s],s,o.KEY,null,'instance');
+            xui.Class._fun(o[s],s,o.KEY,null,'instance');
         });
     },
     Static:{
