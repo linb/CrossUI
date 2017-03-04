@@ -1753,11 +1753,11 @@ new function(){
         isLinux:/linux/.test(u),
         isSecure:location.href.toLowerCase().indexOf("https")==0,
         // detect touch for browser
-        isTouch: !!navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
+        isTouch: !!(navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
             || (("ontouchend" in d) && !(/hp-tablet/).test(u) ) 
             || (w.DocumentTouch && d instanceof DocumentTouch) 
             || w.PointerEvent 
-            || w.MSPointerEvent,
+            || w.MSPointerEvent),
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u),
         isBB:/blackberry/.test(u) || /BB[\d]+;.+\sMobile\s/.test(navigator.userAgent)
@@ -1905,7 +1905,10 @@ new function(){
 
             // adjust touchonly again
             if(xui.browser.deviceType != 'touchOnly' && !xui.Dom.getScrollBarSize()){
-                xui.browser.deviceType = 'touchOnly';
+                // in Mac, the element barsize is 0 without mouse device plugged
+                // and if you plug the mouse, barsize will be 15
+
+                //xui.browser.deviceType = 'touchOnly';
                 if(xui.UI){
                     var f2=function(c){
                         xui.arr.each(c,function(key){
