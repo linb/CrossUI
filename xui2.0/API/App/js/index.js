@@ -947,7 +947,7 @@ xui.Class('App', 'xui.Module',{
                                 hash[tag+'.prototype.'+i]=1;
                 }
             };
-        xui.arr.each(['xui','xui.fun','xui.str','xui.arr','Class'],function(o,i){
+        xui.arr.each(['xui','xui.fun','xui.str','xui.arr','xui.Class'],function(o,i){
             hash[o]=1;
             getAPI(xui.SC.get(o),o);
         });
@@ -966,6 +966,6 @@ xui.Class('App', 'xui.Module',{
     
         return SPA.$api_pool=hash;
     }, 
-    $S_CLS:{'Class':1,'xui':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, $CLS_FUN:{'Class':1,'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ModuleFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
+    $S_CLS:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, $CLS_FUN:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ModuleFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }
 });
