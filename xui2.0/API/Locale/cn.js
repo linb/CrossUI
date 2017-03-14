@@ -18231,28 +18231,28 @@ xui.set(xui.Locale,["cn","app"], {
             onDataClick:{
                 $desc:"在点击 FusionChart 数据图形的时候触发",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "argsMap: Object, 事件参数集合"
                 ]
             },
             onLabelClick:{
                 $desc:"在点击 FusionChart X轴标签的时候触发",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "argsMap: Object, 事件参数集合"
                 ]
             },
             onAnnotationClick:{
                 $desc:"在点击 FusionChart 注释的时候触发",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "argsMap: Object, 事件参数集合"
                 ]
             },
             onFusionChartsEvent:{
                 $desc:"所有 FusionChart 事件",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "eventObject: Object, FusionChartsXT事件的eventObject",
                     "argumentsObject : Object, FusionChartsXT事件的argumentsObject"
                 ],

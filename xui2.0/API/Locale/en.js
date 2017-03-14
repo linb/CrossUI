@@ -18309,28 +18309,28 @@ xui.set(xui.Locale,["en","app"], {
             onDataClick:{
                 $desc:"Fired when FusionChart's plot data was clicked",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "argsMap: Object, events arguments map"
                 ]
             },
             onLabelClick:{
                 $desc:"Fired when FusionChart's x-axis label was clicked",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "argsMap: Object, events arguments map"
                 ]
             },
             onAnnotationClick:{
                 $desc:"Fired when FusionChart's annotation was clicked",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "argsMap: Object, events arguments map"
                 ]
             },
             onFusionChartsEvent:{
                 $desc:"All FusionChart events",
                 $paras:[
-                    "prf : xui.UIProfile",
+                    $profile,
                     "eventObject: Object, FusionChartsXT event's eventObject",
                     "argumentsObject : Object, FusionChartsXT event's argumentsObject"
                 ],
