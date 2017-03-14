@@ -34,7 +34,6 @@ xui.Class('App', 'xui.Module',{
 
         //dont want to show original function code
         xui.id.$auto$=1;
-
     }, 
     Instance:{
        _deprecatedFuns:{
@@ -47,7 +46,7 @@ xui.Class('App', 'xui.Module',{
            "xui.query":"xui.Dom.prototype.query",
            "xui.querySelector":"xui.Dom.prototype.querySelector",
            "xui.querySelectorAll":"xui.Dom.prototype.querySelectorAll",
-           //deprecated
+            //deprecated
             "xui.getCom":"xui.getModule",
             "xui.newCom":"xui.newModule",
             "xui.showCom":"xui.showModule",
@@ -440,8 +439,8 @@ xui.Class('App', 'xui.Module',{
             ' <h4 id="'+okey+'_">' +
                     (con?'<span class="xui-custom-icon" style="background-position:' +pos+';"></span>':'') +
                     head +
-//for show original code
-(flag !==false?((t=xui.SC.get(key)) && (t.$event$||t.$xui$||t.$auto$) ?"":'&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="return SPA.showCode(event,\''+key+'\');">['+xui.getRes('app.oCode')+']</a>'):"") +
+                    //for show original code
+                    (flag !==false?((t=xui.SC.get(key)) && (t.$event$||t.$xui$||t.$auto$) ?"":'&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" onclick="return SPA.showCode(event,\''+key+'\');">['+xui.getRes('app.oCode')+']</a>'):"") +
                     '</h4>' +
                     (con?'<div class="con">'+con[1]+'</div>':"") +
                     (flag!==false?'<a class="totop" href="#!'+okey+'._list"> ^ </a>':'')+
@@ -919,53 +918,54 @@ xui.Class('App', 'xui.Module',{
             profile.boxing().setPage(page);
             return false;
         }, 
-
-    indexing:function(){
-        var t,
-            doc=xui.Locale[xui.getLang()].doc,
-            map1={_:1,$:1},
-            map2={prototype:1,constructor:1,toString:1,valueOf:1,upper:1,Constructor:1,After:1,Before:1,KEY:1},
-            reg=/\./,
-            hash={},
-            getAPI=function(o,tag){
-                var k=o.KEY;
-                for(var i in o){
-                    if(!map1[i.charAt(0)] && !map2[i] && !reg.test(i)){
-                        if(typeof o[i]=='function'&& o[i].$xui$)
-                            getAPI(o[i],tag+'.'+i);
-                        else{
-                            if(typeof (t=o[i])!='function' || !(t=t.$original$) || t==k)
-                                hash[tag+'.'+i]=1;
+        indexing:function(){
+            var t,
+                doc=xui.Locale[xui.getLang()].doc,
+                map1={_:1,$:1},
+                map2={prototype:1,constructor:1,toString:1,valueOf:1,upper:1,Constructor:1,After:1,Before:1,KEY:1},
+                reg=/\./,
+                hash={},
+                getAPI=function(o,tag){
+                    var k=o.KEY;
+                    for(var i in o){
+                        if(!map1[i.charAt(0)] && !map2[i] && !reg.test(i)){
+                            if(typeof o[i]=='function'&& o[i].$xui$)
+                                getAPI(o[i],tag+'.'+i);
+                            else{
+                                if(typeof (t=o[i])!='function' || !(t=t.$original$) || t==k)
+                                    hash[tag+'.'+i]=1;
+                            }
                         }
                     }
-                }
-                o=o.prototype;
-                if(o){
-                    for(var i in o)
-                        if(!map1[i.charAt(0)])
-                            if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k))
-                                hash[tag+'.prototype.'+i]=1;
-                }
-            };
-        xui.arr.each(['xui','xui.fun','xui.str','xui.arr','xui.Class'],function(o,i){
-            hash[o]=1;
-            getAPI(xui.SC.get(o),o);
-        });
-        xui.each(hash,function(o,i){
-            o=xui.get(doc,(i+'.').split('.'));
-            hash[i]=o;
-        });
+                    o=o.prototype;
+                    if(o){
+                        for(var i in o)
+                            if(!map1[i.charAt(0)])
+                                if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k))
+                                    hash[tag+'.prototype.'+i]=1;
+                    }
+                };
+            xui.arr.each(['xui','xui.fun','xui.str','xui.arr','xui.Class'],function(o,i){
+                hash[o]=1;
+                getAPI(xui.SC.get(o),o);
+            });
+            xui.each(hash,function(o,i){
+                o=xui.get(doc,(i+'.').split('.'));
+                hash[i]=o;
+            });
+            
+            /*
+            var no={},l=0;
+            xui.each(hash,function(o,i){
+                l++;
+                if(!o)no[i]=1;
+            });
+            */
         
-        /*
-        var no={},l=0;
-        xui.each(hash,function(o,i){
-            l++;
-            if(!o)no[i]=1;
-        });
-        */
-    
-        return SPA.$api_pool=hash;
-    }, 
-    $S_CLS:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, $CLS_FUN:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1}, $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ModuleFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
+            return SPA.$api_pool=hash;
+        }, 
+        $S_CLS:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, 
+        $CLS_FUN:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1},
+        $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ModuleFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }
 });
