@@ -3672,7 +3672,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(!ins.checkValid()){
                                     if(!ignoreAlert){
-                                        if(!prf.beforeInputAlert || false!==ins.prf.beforeInputAlert(profile, prf, 'invalid')){
+                                        if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'invalid')){
                                             xui.alert('$inline.invalid',xui.getRes('$inline.invalid') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
                                                 if(prf&&prf.renderId)
                                                        ins.activate();
@@ -3686,12 +3686,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                             return result;
                         },
                         checkRequired:function(ignoreAlert, subId){
-                            var result=true;
+                            var profile=this.get(0), result=true;
                             this.getFormElements(subId).each(function(prf, i){
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(prop.required && (!(i=ins.getUIValue())) && i!==0){
                                     if(!ignoreAlert){
-                                        if(!prf.beforeInputAlert || false!==ins.prf.beforeInputAlert(profile, prf, 'required')){
+                                        if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'required')){
                                             xui.alert('$inline.required',xui.getRes('$inline.required') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
                                                 if(prf&&prf.renderId)
                                                        ins.activate();
@@ -3712,8 +3712,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         return;
                                 }
                                 elems.each(function(p,i){
-                                        if((i=p.properties.$UIvalue) !== p.properties.value)
-                                        p.boxing().setValue(i, true);
+                                        if((i=p.properties.value) !== p.properties.$UIvalue)
+                                            p.boxing().resetValue(i);
                                 });
                                 if(prf.afterFormReset){
                                         prf.boxing().afterFormReset(prf, elems, subId);
