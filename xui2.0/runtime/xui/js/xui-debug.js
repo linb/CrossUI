@@ -2968,12 +2968,12 @@ xui.Class('xui.absIO',null,{
         $abstract:true,
         get:function(uri, query, onSuccess, onFail, threadid, options){
             options=options||{};
-            options.mothod="GET";
+            options.method="GET";
             return this.apply(this, arguments).start();
         },
         post:function(uri, query, onSuccess, onFail, threadid, options){
             options=options||{};
-            options.mothod="POST";
+            options.method="POST";
             return this.apply(this, arguments).start();
         },
         _id:1,
