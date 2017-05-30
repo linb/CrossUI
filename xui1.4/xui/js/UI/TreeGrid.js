@@ -814,7 +814,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 // original cell only
                                 _.arr.insertAny(row.cells, cellResult[0], pos);
                                 // insert dom node
-                                xui(base).addNext(profile._buildItems(leftRegion?'rows21.cells':'rows22.cells', [cellResult[1]]));
+                                xui(base).addNext(profile._buildItems(leftRegion?'rows1.cells':'rows2.cells', [cellResult[1]]));
                             }else{
                                 // insert cell dir
                                 _.arr.insertAny(row.cells, cell||{}, pos);
@@ -5478,7 +5478,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if('type' in options){
                     var uicell={};
                     box._adjustCell(profile, cell, uicell);
-                    node.parent().replace(profile._buildItems('rows22.cells', [uicell]));
+                    node.parent().replace(profile._buildItems('rows2.cells', [uicell]));
                     node=profile.getSubNode('CELLA', cellId);
                 }
                 box._renderCell(profile, cell, null, node, options);

@@ -1737,8 +1737,10 @@ new function(){
         if(b.isSafari){
            if(/applewebkit\/4/.test(u))
                 b["safari"+(b.ver=2)]=true;
-           else
+           else if(/version/.test(u))
                 b[v('safari','version/')]=true;
+           else
+                b["safari"]=true;
         }else if(b.isChrome)
             b[v('chrome','chrome/')]=true;
 
@@ -4533,7 +4535,8 @@ Class("xui.Timer","xui.absObj",{
             onEnd:function(profile, threadId){}
         }
     }
-});Class("xui.APICaller","xui.absObj",{
+});
+Class("xui.APICaller","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -12895,22 +12898,22 @@ Class('xui.Module','xui.absProfile',{
             self[v]=k;
         });
         e = self.prototype;
-        if('_events' in e){
-            b = e._events;
+        if('_evsClsBuildIn' in e){
+            b = e._evsClsBuildIn;
             // for parents defination
-            t = e._pevents = e._pevents||{};
+            t = e._evsPClsBuildIn || (e._evsPClsBuildIn={});
             for(i in b){
                 if(t[i]){
                     if(!_.isArr(t[i]))t[i]=[t[i]];
                     _.arr.insertAny(t[i],b[i]);
                 }else t[i]=_.clone(b[i]);
             }
-            e._events=null;
+            e._evsClsBuildIn=null;
         }
         if('events' in e){
             // for class defination
-            e._events=e.events;
-            // for instance
+            e._evsClsBuildIn=e.events;
+            // events for instance
             e.events={};
         }
         self._nameId=0;
@@ -12979,8 +12982,8 @@ Class('xui.Module','xui.absProfile',{
         self._ctrlpool={};
         self.events=events;
         self.properties={};
-        if(self._events) self._events = _.clone(self._events);
-        if(self._pevents) self._pevents = _.clone(self._pevents);
+        if(self._evsClsBuildIn) self._evsClsBuildIn = _.clone(self._evsClsBuildIn);
+        if(self._evsPClsBuildIn) self._evsPClsBuildIn = _.clone(self._evsPClsBuildIn);
 
         self.setProperties(properties);
 
@@ -13127,10 +13130,9 @@ Class('xui.Module','xui.absProfile',{
             if(self.propSetAction)self.propSetAction(self.properties);
 
             if('dataBinder' in self.properties){
-                if(oDataBinder!==self.properties){
-                    if(oDataBinder)
-                        xui.DataBinder._unBind(oDataBinder, self);
-                    xui.DataBinder._bind(self.properties.dataBinder, self);
+                if(oDataBinder!==self.properties.dataBinder){
+                    if(oDataBinder)xui.DataBinder._unBind(oDataBinder, self);
+                    if(self.properties.dataBinder)xui.DataBinder._bind(self.properties.dataBinder, self);
                 }
             }
             return self;
@@ -13206,8 +13208,8 @@ Class('xui.Module','xui.absProfile',{
         fireEvent:function(name, args, host){
             var o,r,l,
                 self = this,
-                tp = self._pevents && self._pevents[name],
-                ti = self._events && self._events[name],
+                tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
+                ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
                 t = self.events && self.events[name],
                 applyEvents=function(self, events, host, args){
                     args=args||[];
@@ -13247,19 +13249,19 @@ Class('xui.Module','xui.absProfile',{
                         return r;
                     };
                     return fun();
-                },
-                host = host||self.host||self;
-            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
-            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
-            if(t && (!_.isArr(t) || events.t))r = applyEvents(self, t, host, args);
+                };
+            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
+            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, self, args);
+            // only events can use host
+            if(t && (!_.isArr(t) || t.length))r = applyEvents(self, t,  host||self.host||self, args);
             return r;
         },
         // for inner events
         _fireEvent:function(name, args){
             var o,r,l,
                 self = this,
-                tp = self._pevents && self._pevents[name],
-                ti = self._events && self._events[name],
+                tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
+                ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
                 t = self.events && self.events[name],
                 applyEvents=function(self, events, host, args){
                     self.$lastEvent=name;
@@ -13269,16 +13271,16 @@ Class('xui.Module','xui.absProfile',{
                     l=events.length;
                     for(var i=0;i<l;i++){
                         o=events[i];
+                        //get from host first
                         if(typeof o=='string')o=host[o];
                         if(typeof o=='function')r=o.apply(host, args);
-                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args,self);
+                        else if(_.isHash(o))r=xui.pseudocode.exec(o,args, host);
                     }
-
-                },
-                host = self.host||self;
-            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, host, args);
-            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, host, args);
-            if(t && (!_.isArr(t) || events.t))r = applyEvents(self, t, host, args);
+                };
+            if(tp && (!_.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
+            if(ti && (!_.isArr(ti) || ti.length))r = applyEvents(self, ti, self, args);
+            // only events can use host
+            if(t && (!xui.isArr(t) || t.length))r = applyEvents(self, t, self.host||self, args);
             return r;
         },
         _innerCall:function(name){
@@ -17777,7 +17779,7 @@ Class("xui.UI",  "xui.absObj", {
                 //protect children's dom node
                 //no need to trigger layouttrigger here
                 //for example: if use getGhostDiv, upload input cant show file name
-                node=remedy?xui.Dom.getEmptyDiv():xui.$getGhostDiv();
+                node=remedy?xui.Dom.getEmptyDiv().get(0):xui.$getGhostDiv();
                 o.boxing().getChildren().reBoxing().each(function(v){
                     node.appendChild(v);
                 });
@@ -28847,7 +28849,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     //get corret string according to maskTxt
                     var a=[];
                     _.arr.each(maskTxt.split(''),function(o,i){
-                        a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
+                        a.push( map[o]?(((new RegExp('^'+map[o]+'$')).test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i)) : maskStr.charAt(i))
                     });
     
                     //if input visible char
@@ -29516,7 +29518,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                             }
                             
                             var v=kprf.boxing()._getCtrlValue(); 
-                            kprf.boxing().setUIValue(v,null,null,'blur');
+                            // here: dont trigger setCtrlValue
+                            kprf.boxing().setUIValue(v,null,true,'blur');
                         },
                         gekfix=function(e){
                             // to fix firefox appendChid's bug: refresh iframe's document
@@ -29951,7 +29954,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
                             var v=o._getCtrlValue(); 
-                            o.setUIValue(v,null,null,'blur');
+                        // here: dont trigger setCtrlValue
+                            o.setUIValue(v,null,true,'blur');
                          _clear();
                     });
                     //for esc
@@ -30088,6 +30092,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                          o.setValue(v,true,'editor');
                          o.beforeUIValueSet(function(p,o,v){
                             _clear();
+                            // here: trigger setCtrlValue
                             editor.boxing().setUIValue(v,null,null,'html');
                         });
                         break;
@@ -37695,7 +37700,9 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return profile.properties[profile.getKey(xui.use(node).id())==profile.keys.PANEL?'dropKeys':'dropKeysPanel'];
         },
         _forLazyAppend:function(profile, item, value){
-            var prop=profile.properties,box=profile.boxing();
+            var prop=profile.properties,box=profile.boxing(),
+                moduleHash={},
+                zz = prop.moduleClass+"["+prop.moduleXid+"]";
             //dynamic render
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];
@@ -37708,7 +37715,15 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     }
                 });
                 if(a.length)
-                    box.append(xui.UI.pack(a),value);
+                    _.arr.each(a,function(o,y,z){
+                        if(o.moduleClass && o.moduleXid && (y=xui.SC.get(o.moduleClass)) && (y=y.getInstance(o.moduleXid)) && y["xui.Module"]){
+                            z=o.moduleClass+"["+o.moduleXid+"]";
+                            if(zz!=z && !moduleHash[z]){
+                                moduleHash[z]=y;
+                            }
+                        }
+                        box.append(xui(o),value);
+                    });
 
                 // $attached is dynamic
                 if(profile.$attached){
@@ -37729,6 +37744,12 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
                     if(a.length)
                         _.arr.each(a,function(o){
+                            if(o.moduleClass && o.moduleXid && (y=xui.SC.get(o.moduleClass)) && (y=y.getInstance(o.moduleXid)) && y["xui.Module"]){
+                                z=o.moduleClass+"["+o.moduleXid+"]";
+                                if(zz!=z && !moduleHash[z]){
+                                    moduleHash[z]=y;
+                                }
+                            }
                             box.append(xui(o),value);
                         });
                 }
@@ -37747,6 +37768,10 @@ Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             o.show(null, box, value, false);
                         });
                 }
+
+                 _.each(moduleHash,function(o){
+                     o.render();
+                 });
             }
         },
         _forIniPanelView:function(profile, item){
@@ -39497,12 +39522,12 @@ Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(sub){
                                 if(typeof sub=='string')
                                     subNs.html(item.sub=sub,false);
-                                else if(_.isArr(sub)){
+                                else if(sub['xui.Template']||sub['xui.UI']){
+                                    subNs.append(item.sub=sub.render(true));
+                                }else if(_.isArr(sub)){
                                     b.insertItems(sub, item.id,null,false,false);
                                     // for []
                                     if(!item.sub)item.sub=sub;                                    
-                                }else if(sub['xui.Template']||sub['xui.UI']){
-                                    subNs.append(item.sub=sub.render(true));
                                 }
                                 var s=0,arr=b.getUIValue(true);
                                 if(arr && arr.length){
@@ -43384,7 +43409,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 // original cell only
                                 _.arr.insertAny(row.cells, cellResult[0], pos);
                                 // insert dom node
-                                xui(base).addNext(profile._buildItems(leftRegion?'rows21.cells':'rows22.cells', [cellResult[1]]));
+                                xui(base).addNext(profile._buildItems(leftRegion?'rows1.cells':'rows2.cells', [cellResult[1]]));
                             }else{
                                 // insert cell dir
                                 _.arr.insertAny(row.cells, cell||{}, pos);
@@ -47934,10 +47959,12 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(sub){
                                 if(typeof sub=='string'){
                                     subNs2.html(item.sub=sub,false);
-                                }else if(_.isArr(sub))
-                                    b.insertRows(sub, item.id);
-                                else if(sub['xui.Template']||sub['xui.UI']){
+                                }else if(sub['xui.Template']||sub['xui.UI']){
                                     subNs2.append(item.sub=sub.render(true));
+                                }else if(_.isArr(sub)){
+                                    b.insertRows(sub, item.id);
+                                    // for []
+                                    if(!item.sub)item.sub=sub;
                                 }
                             }
                             //set checked items
@@ -48046,7 +48073,7 @@ Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if('type' in options){
                     var uicell={};
                     box._adjustCell(profile, cell, uicell);
-                    node.parent().replace(profile._buildItems('rows22.cells', [uicell]));
+                    node.parent().replace(profile._buildItems('rows2.cells', [uicell]));
                     node=profile.getSubNode('CELLA', cellId);
                 }
                 box._renderCell(profile, cell, null, node, options);
