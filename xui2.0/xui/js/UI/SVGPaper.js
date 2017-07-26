@@ -62,7 +62,9 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
             onSize:xui.UI.$onSize
         },
         RenderTrigger:function(){
-            var profile=this,prop=profile.properties,w=prop.width,h=prop.height;
+            var profile=this,prop=profile.properties,
+            // force to px    
+            w=xui.CSS.$px(prop.width,null,true),h=xui.CSS.$px(prop.height,null,true);
             (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["svgClear"]=function(){
                 if(profile._paper){
                     profile._paper.clear();
@@ -119,19 +121,20 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
             height=height?profile.$px(height, null, true):height;
 
             if(scaleChildren){
-                ow=paper.width;
-                oh=paper.height;
+                ow=profile.$px(paper.width,null,true);
+                oh=profile.$px(paper.height,null,true);
             }
             if(paper){
-                if( (width && paper.width!=width) || (height && paper.height!=height) ){
+                var pw=profile.$px(paper.width,null,true), ph=profile.$px(paper.height,null,true);
+                if( (width && pw!=width) || (height && ph!=height) ){
                     var args={},node=profile.getSubNode("SVG");
                     paper.setSize(width,height);
                     if(!(width||width===0)){
-                       width=paper.width; 
+                       width=pw; 
                     }
                     args.width=width;
                     if((height||height===0)){
-                       height=paper.height; 
+                       height=ph; 
                     }
                     args.height=height;
                     

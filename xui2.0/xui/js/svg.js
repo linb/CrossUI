@@ -21,8 +21,8 @@ xui.Class("xui.svg", "xui.UI",{
                     r = ns.paper,
                     out = r.set(),
                     bbox = ns._getBBox(false),
-                    rx=(bbox.width+sw-c-4)/bbox.width,
-                    ry=(bbox.height+sw-c-4)/bbox.height,
+                    rx=!bbox.width?0:(bbox.width+sw-c-4)/bbox.width,
+                    ry=bbox.height?0:(bbox.height+sw-c-4)/bbox.height,
                     path = ns.getPath();
                 // path = ns.matrix ? Raphael.mapPath(path, ns.matrix) : path;
                 if(f!=='none' && fo!==0)
@@ -346,7 +346,7 @@ xui.Class("xui.svg", "xui.UI",{
                 var h={};
                 h[key]=attr;
                 attr=h;
-                key="KEY";
+                key=key||"KEY";
             };
             reset=reset!==false;
             return this.each(function(prf){
@@ -393,9 +393,11 @@ xui.Class("xui.svg", "xui.UI",{
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
                                     var rattr=xui.copy(attr2[tag]);
-                                    if('src' in rattr)
-                                        rattr.src = xui.adjustRes(rattr.src);
-                                    node.attr(rattr);
+                                    if(rattr){
+                                        if('src' in rattr)
+                                            rattr.src = xui.adjustRes(rattr.src);
+                                        node.attr(rattr);
+                                    }
                                 }
                             }
                         }

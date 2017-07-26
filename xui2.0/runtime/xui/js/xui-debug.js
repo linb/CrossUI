@@ -61471,8 +61471,8 @@ return /******/ (function(modules) { // webpackBootstrap
                     r = ns.paper,
                     out = r.set(),
                     bbox = ns._getBBox(false),
-                    rx=(bbox.width+sw-c-4)/bbox.width,
-                    ry=(bbox.height+sw-c-4)/bbox.height,
+                    rx=!bbox.width?0:(bbox.width+sw-c-4)/bbox.width,
+                    ry=bbox.height?0:(bbox.height+sw-c-4)/bbox.height,
                     path = ns.getPath();
                 // path = ns.matrix ? Raphael.mapPath(path, ns.matrix) : path;
                 if(f!=='none' && fo!==0)
@@ -61796,7 +61796,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 var h={};
                 h[key]=attr;
                 attr=h;
-                key="KEY";
+                key=key||"KEY";
             };
             reset=reset!==false;
             return this.each(function(prf){
@@ -61843,9 +61843,11 @@ return /******/ (function(modules) { // webpackBootstrap
                                 var paper=prf.boxing().getPaper();
                                 if(paper && (node=paper.getById(node.raphaelid))){
                                     var rattr=xui.copy(attr2[tag]);
-                                    if('src' in rattr)
-                                        rattr.src = xui.adjustRes(rattr.src);
-                                    node.attr(rattr);
+                                    if(rattr){
+                                        if('src' in rattr)
+                                            rattr.src = xui.adjustRes(rattr.src);
+                                        node.attr(rattr);
+                                    }
                                 }
                             }
                         }
@@ -65066,7 +65068,9 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             onSize:xui.UI.$onSize
         },
         RenderTrigger:function(){
-            var profile=this,prop=profile.properties,w=prop.width,h=prop.height;
+            var profile=this,prop=profile.properties,
+            // force to px    
+            w=xui.CSS.$px(prop.width,null,true),h=xui.CSS.$px(prop.height,null,true);
             (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["svgClear"]=function(){
                 if(profile._paper){
                     profile._paper.clear();
@@ -65123,19 +65127,20 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             height=height?profile.$px(height, null, true):height;
 
             if(scaleChildren){
-                ow=paper.width;
-                oh=paper.height;
+                ow=profile.$px(paper.width,null,true);
+                oh=profile.$px(paper.height,null,true);
             }
             if(paper){
-                if( (width && paper.width!=width) || (height && paper.height!=height) ){
+                var pw=profile.$px(paper.width,null,true), ph=profile.$px(paper.height,null,true);
+                if( (width && pw!=width) || (height && ph!=height) ){
                     var args={},node=profile.getSubNode("SVG");
                     paper.setSize(width,height);
                     if(!(width||width===0)){
-                       width=paper.width; 
+                       width=pw; 
                     }
                     args.width=width;
                     if((height||height===0)){
-                       height=paper.height; 
+                       height=ph; 
                     }
                     args.height=height;
                     
