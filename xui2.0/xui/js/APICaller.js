@@ -229,9 +229,9 @@ xui.Class("xui.APICaller","xui.absObj",{
             }
             // If there's mocker, we need try to adjust queryURL and other args
             var mocker = xui.APICaller.getMocker();
-            if(mocker){
-                // remvoe header / and tail /
-                var endPoint = queryArgs.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
+            if(mocker && mocker.remoteSericeURL){
+                // remove header / and tail /
+                var endPoint = queryURL.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
                 if((mocker.blacklist && !mocker.blacklist[endPoint]) || (mocker.whitelist && mocker.whitelist[endPoint])){
                     queryURL = mocker.mockerURL.replace(/[/]+$/,'') + "/" + endPoint;
                 }

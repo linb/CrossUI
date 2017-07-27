@@ -2894,9 +2894,9 @@ xui.Class('xui.absIO',null,{
         if(con.events)
             xui.merge(self, con.events);
 
-        self.query = self.customQS(self.query);
+        self.query = self.customQS(self.query, options&&options.exData);
 
-        // remove all undifiend item
+        // remove all undefined item
         if(typeof self.query=='object' && self.reqType!="xml")
             self.query=xui.copy(self.query, function(o){return o!==undefined});
 
@@ -2993,7 +2993,16 @@ xui.Class('xui.absIO',null,{
             hash=xui.clone(hash,function(o,i){return !(xui.isNaN(o)||!xui.isDefined(o))});
             return flag?((flag=xui.serialize(hash))&&(post?flag:encodeURIComponent(flag))):xui.urlEncode(hash);
         },
-        customQS:function(obj){
+        customQS:function(obj,ex){
+            if(ex){
+                if(typeof obj=='string'){
+                    obj = (obj||"") + "&" + xui.urlEncode(ex);
+                }else{
+                    xui.merge(obj,ex,'all');
+                }
+                return obj;
+            }
+
             return obj;
         },
         _if:function(doc,id,onLoad){
@@ -3326,13 +3335,15 @@ xui.Class('xui.JSONP','xui.absIO',{
             }else
                 self._onError(new Error("JSONP return value formatting error--"+obj));
         },
-        customQS:function(obj){
-            var c=this.constructor,  b=c.callback,nr=(this.rspType!='script');
-            if(typeof obj=='string')
-                return (obj||"") + (nr?("&" + b + '=xui.JSONP.No._'+this.id):'');
-            else{
+        customQS:function(obj,ex){
+            var c=this.constructor,  b=c.callback,nr=(this.rspType!='script'),r;
+            if(typeof obj=='string'){
+                obj = (obj||"") + (nr?("&" + b + '=xui.JSONP.No._'+this.id):'');
+                if(ex)obj = (obj||"") + (nr?("&" + xui.urlEncode(ex)):'');
+            }else{
                 if(nr){
                     obj[b]="xui.JSONP.No._"+this.id;
+                    if(ex)xui.merge(obj,ex,'all');
                 }
                 return obj;
             }
@@ -3580,13 +3591,13 @@ xui.Class('xui.XDMI','xui.absIO',{
             //for the last change, return a file name whether it existes or does not exist, and not cache it.
             return '/favicon.ico';
         },
-        customQS:function(obj){
+        customQS:function(obj, ex){
             var s=this,c=s.constructor,t=c.callback,w=window;
-            obj[t]='window.name';
             if(window['postMessage'])
                 obj[t]=obj.parentDomain=w.location.origin || (w.location.protocol + "//" + w.location.hostname + (w.location.port ? ':' + w.location.port: ''));
             else
                 obj[t]='window.name';
+            if(ex)xui.merge(obj,ex,'all');
             return obj;
         }
     }
