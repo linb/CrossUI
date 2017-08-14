@@ -1513,13 +1513,15 @@ xui.merge(xui,{
     _pool:[],
     getObject:function(id){return xui._pool['$'+id]},
     getObjectByAlias:function(alias){
-        var o;
+        var o,a=[],l=0;
         for(var i in xui._pool){
             o=xui._pool[i];
             if(('alias' in o)&&o.alias===alias){
-                return typeof(o.boxing)=="function"?o.boxing():o;
+                a.push(o);
+                l++;
             }
         }
+        return l===0?null:l===1?a[0]:a;
     },
     _ghostDivId:"xui.ghost::",
     $getGhostDiv:function(){
@@ -4081,8 +4083,6 @@ xui.Class('xui.Profile','xui.absProfile',{
 
             ns.unLinkAll();
             xui.tryF(ns.clearCache,[],ns);
-            var o=xui.get(ns,['box','_namePool']);
-            if(o)delete o[ns.alias];
 
             //set once
             ns.destroyed=true;
@@ -4161,7 +4161,6 @@ xui.Class('xui.absObj',"xui.absBox",{
         var self=this, me=arguments.callee,
             temp,t,k,u,m,i,j,l,v,n,b;
         self._nameId=0;
-        self._namePool={};
         self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
         self._cache=[];
         m=me.a1 || (me.a1=xui.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
@@ -4245,9 +4244,17 @@ xui.Class('xui.absObj',"xui.absBox",{
             return xui.absObj.$pickAlias(this);
         },
         $pickAlias:function(cls){
-            var t,p=cls._namePool,a=cls._nameTag;
-            while(p[t=(a+(++cls._nameId))]){}
-            return  t;
+            var a=cls._nameTag, p=cls._cache;
+            while(t=(a+(++cls._nameId))){
+                for(var i=0,l=p.length;i<l;i++){
+                    if(p[i].alias===t){
+                        t=-1;
+                        break;
+                    }
+                }
+                if(t==-1)continue;
+                else return t;
+            }
         },
         setDataModel:function(hash){
             var self=this,
@@ -4548,9 +4555,8 @@ xui.Class('xui.absObj',"xui.absBox",{
                     if(prf.host._ctrlpool)
                         delete prf.host._ctrlpool[oldAlias];
                 }
-                delete self.constructor._namePool[oldAlias];
             }
-            self.constructor._namePool[prf.alias=alias]=1;
+            prf.alias=alias;
             if(prf.box&&prf.box._syncAlias){
                 prf.box._syncAlias(prf,oldAlias,alias);
             }
@@ -4606,7 +4612,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             return this;
         }
         /*non-abstract inheritance must have those functions:*/
-        //1. destroy:function(){delete this.box._namePool[this.alias];this.get(0).__gc();}
+        //1. destroy:function(){this.get(0).__gc();}
         //2. _ini(properties, events, host, .....){/*set _nodes with profile*/return this;}
         //3. render(){return this}
     }

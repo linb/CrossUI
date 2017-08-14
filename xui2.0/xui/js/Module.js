@@ -71,7 +71,6 @@ xui.Class('xui.Module','xui.absProfile',{
             e.events={};
         }
         self._nameId=0;
-        self._namePool={};
         self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
         self._cache=[];
     },
@@ -1078,7 +1077,6 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._nodes.length=0;
         	self._ctrlpool=null;
             
-            delete con._namePool[self.alias];
             self.unLinkAll();
 
             if(!keepStructure){
@@ -1107,8 +1105,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var m=this,keep={
                 '$children':m.$children,
                 _cache:m._cache,
-                _nameId:m._nameId,
-                _namePool:m._namePool
+                _nameId:m._nameId
             },
             key=m.KEY,
             path=key.split("."),

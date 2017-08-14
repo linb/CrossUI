@@ -327,8 +327,6 @@ xui.Class('xui.UIProfile','xui.Profile', {
             //clear cache point
             delete xui.$cache.profileMap[ns.domId];
             delete xui.$cache.profileMap[ns.$domId];
-            if(ns.box)
-                delete ns.box._namePool[ns.alias];
 
             // try to clear parent host
             var o;
@@ -1079,7 +1077,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 profile,
                 t='default',
                 options,
-                np=c._namePool,
                 df1=xui.UI.__resetDftProp,
                 df2=c.__resetDftProp,
                 df3=c.$adjustProp,
@@ -1093,13 +1090,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(properties && properties.key && xui.absBox.$type[properties.key]){
                     options=properties;
                     properties=null;
-                    alias = options.alias;
-                    alias = (alias&&!np[alias])?alias:c.pickAlias();
+                    alias = options.alias || c.pickAlias();
                 }else
                     alias = c.pickAlias();
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
             }
-            np[alias]=1;
 
             for(var i in ds){
                 if(!(i in profile.properties)){

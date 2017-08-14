@@ -5,7 +5,6 @@ xui.Class("xui.DataBinder","xui.absObj",{
                 c=self.constructor,
                 profile,
                 options,
-                np=c._namePool,
                 alias,temp;
             if(properties && properties['xui.Profile']){
                 profile=properties;
@@ -14,13 +13,11 @@ xui.Class("xui.DataBinder","xui.absObj",{
                 if(properties && properties.key && xui.absBox.$type[properties.key]){
                     options=properties;
                     properties=null;
-                    alias = options.alias;
-                    alias = (alias&&!np[alias])?alias:c.pickAlias();
+                    alias = options.alias || c.pickAlias();
                 }else
                     alias = c.pickAlias();
                 profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
             }
-            np[alias]=1;
             profile._n=profile._n||[];
 
             for(var i in (temp=c.$DataStruct))
