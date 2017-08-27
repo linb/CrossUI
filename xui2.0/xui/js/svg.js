@@ -22,7 +22,7 @@ xui.Class("xui.svg", "xui.UI",{
                     out = r.set(),
                     bbox = ns._getBBox(false),
                     rx=!bbox.width?0:(bbox.width+sw-c-4)/bbox.width,
-                    ry=bbox.height?0:(bbox.height+sw-c-4)/bbox.height,
+                    ry=!bbox.height?0:(bbox.height+sw-c-4)/bbox.height,
                     path = ns.getPath();
                 // path = ns.matrix ? Raphael.mapPath(path, ns.matrix) : path;
                 if(f!=='none' && fo!==0)
