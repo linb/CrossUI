@@ -5694,6 +5694,12 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $memo:'See constructor'
             },
+            onModulePropChange:{
+                $desc:'Fired when module properties were chagned',
+                $paras:[
+                    'module : xui.Module'
+                ]
+            },
             onRender:{
                 $desc:'Fired when module is added to DOM',
                 $paras:[

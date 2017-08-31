@@ -19,7 +19,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 var sp=window['/'];
                 if(sp && sp.indexOf(':/')!=-1)
                     value=value.replace(/{\/}/g,sp);
-                var html=xui.adjustRes(value,0,1);
+                var html=profile.$useOriginalText?value:xui.adjustRes(value,0,1);
                 if(!profile.$inDesign){
                     var doc=profile.$doc, body=doc && (doc.body||doc.documentElement);
                     if(body){

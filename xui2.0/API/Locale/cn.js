@@ -5753,6 +5753,12 @@ xui.set(xui.Locale,["cn","app"], {
                 ],
                 $memo:'See constructor'
             },
+            onModulePropChange:{
+                $desc:'当 Module 属性改变后触发',
+                $paras:[
+                    'module : xui.Module 对象'
+                ]
+            },
             onRender:{
                 $desc:'当 Module 的UI部分被加到DOM时触发',
                 $paras:[
@@ -19336,7 +19342,8 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             onIniResource:"初始化资源",
             beforeIniComponents:"初始化控件前",
             afterIniComponents:"初始化控件后",
-            onReady:"页面准备就绪",
+            onReady:"模块准备就绪",
+            onModulePropChange:"模块属性改变",
             onRender:"部件渲染完成",
             onDestroy:"部件销毁",
             onFragmentChanged:"当URL片段改变"

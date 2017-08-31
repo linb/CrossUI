@@ -184,19 +184,22 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 'z-index':60,
                 cursor:'move'
             },
-            "KEY.disabled":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 200 200'><rect x='0' y='0' width='200' height='200' stroke='black' fill='transparent' stroke-width='1'></rect><path d='M200 0 L0 200 ' stroke='black' stroke-width='1'/><path d='M0 0 L200 200 ' stroke='black' stroke-width='1'/></svg>\")",
+            "KEY.readonly, KEY.disabled":{
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#bbbbbb' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")",
                 'background-repeat':'no-repeat',
                 'background-position':'center center',
-                'background-size':'100% 100%, auto',
-                'background-color':'#bbb',
-                 opacity: '0.3'
+                'background-size':'100% 100%, auto'
             },
-            "KEY.disabled.active":{
-                'background-color':'#eee'
+            "KEY.readonly.active, KEY.disabled.active":{
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#eeeeee' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")",
             },
-            "KEY.disabled div":{
+            "KEY.readonly div, KEY.disabled div":{
                 display:'none'
+            },
+            "KEY.readonly CONF1, KEY.readonly CONF2":{
+                $order:10,
+                opacity: 1,
+                display:'block'
             },
             MOVE:{
                 position:'absolute',
@@ -272,9 +275,11 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         },
         Behaviors:{
             beforeMousedown:function(profile, e, src){
+                if(profile.properties.readonly||profile.properties.disabled)return false;
                 profile.box._onMousedown(profile, e, src, "move");
             },
             onDragbegin:function(profile, e, src){
+                if(profile.properties.readonly||profile.properties.disabled)return false;
                 profile.box._onDragbegin(profile, e, src,"move");
             },
             onDrag:function(profile, e, src){
@@ -488,7 +493,13 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             handlerSize:8,
             // border 1
             handlerOffset:1,
-
+            readonly:{
+                ini:false,
+                action:function(v){
+                     if(v)this.getRoot().addClass("readonly");
+                     else this.getRoot().removeClass("readonly");
+                }
+            },
             disabled:{
                 ini:false,
                 action:function(v){

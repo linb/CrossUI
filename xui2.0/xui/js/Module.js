@@ -17,6 +17,8 @@
     onRender
     onDestroy
 
+    onModulePropChange
+
     // for values
     getValue:function(){},
     getUIValue:function(){},
@@ -138,7 +140,7 @@ xui.Class('xui.Module','xui.absProfile',{
         if(self._evsClsBuildIn) self._evsClsBuildIn = xui.clone(self._evsClsBuildIn);
         if(self._evsPClsBuildIn) self._evsPClsBuildIn = xui.clone(self._evsPClsBuildIn);
 
-        self.setProperties(properties);
+        self.setProperties(properties, null, true);
 
         self._innerCall('initialize');
 
@@ -261,12 +263,8 @@ xui.Class('xui.Module','xui.absProfile',{
         getHost:function(){
             return this.host;
         },
-        setProperties:function(key,value){
-            var self=this,
-                oDataBinder;
-            if('dataBinder' in self.properties){
-                oDataBinder = self.properties.dataBinder;
-            }
+        setProperties:function(key,value,ignoreEvent,innerDataOnly){
+            var self=this;
 
             if(!key)
                 self.properties={};
@@ -281,11 +279,26 @@ xui.Class('xui.Module','xui.absProfile',{
             }
 
             if(self.propSetAction)self.propSetAction(self.properties);
+            if(!ignoreEvent){
+                if(!innerDataOnly){
+                    var oDataBinder;
+                    if('dataBinder' in self.properties){
+                        oDataBinder = self.properties.dataBinder;
+                    }
+                    if('dataBinder' in self.properties){
+                        if(oDataBinder!==self.properties.dataBinder){
+                            if(oDataBinder)xui.DataBinder._unBind(oDataBinder, self);
+                            if(self.properties.dataBinder)xui.DataBinder._bind(self.properties.dataBinder, self);
+                        }
+                    }
+                }
 
-            if('dataBinder' in self.properties){
-                if(oDataBinder!==self.properties.dataBinder){
-                    if(oDataBinder)xui.DataBinder._unBind(oDataBinder, self);
-                    if(self.properties.dataBinder)xui.DataBinder._bind(self.properties.dataBinder, self);
+                if(self._innerModulesCreated && ('__inner_coms_prop__' in self.properties))
+                    self.setProfile(self.properties.__inner_coms_prop__);
+            
+                // the last one
+                if(!innerDataOnly){
+                    self._fireEvent('onModulePropChange');
                 }
             }
             return self;
@@ -721,20 +734,23 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 });
             self._fireEvent('afterIniComponents');
+            
             self._innerModulesCreated=true;
+            // must be here
+            self.setProperties({});
         },
         iniComponents:function(){},
 
         getProfile:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-            var hash={};
+            var hash={},t;
             xui.each(this._ctrlpool, function(prf){
-                hash[prf.alias]=prf.serialize(false,false,false);
-                delete hash[prf.alias].key;
-                delete hash[prf.alias].alias;
-                delete hash[prf.alias].events;
-                delete hash[prf.alias]['xui.Module'];
+                t=hash[prf.alias]=prf.serialize(false,false,false);
+                delete t.key;
+                delete t.alias;
+                delete t.events;
+                delete t['xui.Module'];
             });
             return hash;
         },
@@ -1323,6 +1339,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onIniResource:function(module, threadid){},
             beforeIniComponents:function(module, threadid){},
             afterIniComponents:function(module, threadid){},
+            onModulePropChange:function(module, threadid){},
             onReady:function(module, threadid){},
             onRender:function(module, threadid){},
             onDestroy:function(module){}
