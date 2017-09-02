@@ -18778,7 +18778,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'queryHeader':"头信息",
             'fakeCookies':"仿Cookies",
             'queryOptions':'自定义调用选项',
-            'proxyType':'调用代理种类',
+            'proxyType':'代理类型',
             'name':'绑定器唯一名',
             "proxyInvoker":"调用触发",
             "avoidCache":"避免缓存",

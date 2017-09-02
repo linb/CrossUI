@@ -1,3 +1,5 @@
+    
+    if(!('Class' in window))window.Class=xui.Class;
 
     if (typeof module !== 'undefined' && typeof exports === 'object') {
         module.exports = xui;

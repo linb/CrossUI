@@ -342,7 +342,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             },100);
         },
         events:{
-            onRender:function(module){
+            afterIniComponents:function(module){
                 module.tg.updateHeader("key", xui.adjustRes(module.properties.keyCaption)||"key");
                 module.tg.updateHeader("value", xui.adjustRes(module.properties.valueCaption)||"value");
                 module.tg.updateHeader("value", {type:module.properties.bigFont?'textarea':'input'});

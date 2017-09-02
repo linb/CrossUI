@@ -1626,6 +1626,17 @@ xui.Class('xui.Dom','xui.absBox',{
                 try{ns.get(0).focus()}catch(e){}
             return ns;
         },
+        blur:function(){
+            var n=this.get(0);
+            n.blur();
+            if(document.activeElement===n){
+                xui.asyRun(function(){
+                    xui('body').append(n = xui.create("<button style='position:absolute;width:1px;height:1px;left:-1000px;'></button>"));
+                    n.focus();
+                    n.remove();
+                });
+            }
+        },
         setSelectable:function(value){
             var me=arguments.callee,cls;
             this.removeClass("xui-ui-selectable").removeClass("xui-ui-unselectable");

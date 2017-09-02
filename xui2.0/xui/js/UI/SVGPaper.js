@@ -62,9 +62,11 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
             onSize:xui.UI.$onSize
         },
         RenderTrigger:function(){
-            var profile=this,prop=profile.properties,
+            var profile=this,
+                root=profile.getRootNode(),
+                prop=profile.properties,
             // force to px    
-            w=xui.CSS.$px(prop.width,null,true),h=xui.CSS.$px(prop.height,null,true);
+            w=xui.CSS.$px(prop.width,root,true),h=xui.CSS.$px(prop.height,root,true);
             (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["svgClear"]=function(){
                 if(profile._paper){
                     profile._paper.clear();
@@ -91,7 +93,7 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                 if(!Raphael.svg){
                     xui.setTimeout(function(){
                         if(profile && !profile.destroyed){
-                        	  // readd again in IE
+                        	  // read again in IE
                             profile.boxing().append(xui.svg.pack(a));
                         }
                     });
@@ -129,6 +131,14 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                 if( (width && pw!=width) || (height && ph!=height) ){
                     var args={},node=profile.getSubNode("SVG");
                     paper.setSize(width,height);
+                    
+                    if(profile.$inDesign && profile._frame){
+                        if(width||width===0)
+                            profile._frame.attr('width',width);
+                        if(height||height===0)
+                            profile._frame.attr('height',height);
+                    }
+                    
                     if(!(width||width===0)){
                        width=pw; 
                     }
@@ -140,14 +150,7 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                     
                     if((!xui.isEmpty(args)) && xui.Dom.$hasEventHandler(node.get(0),'onsize'))
                         node.onSize(true, args);
-                    
-                    if(profile.$inDesign && profile._frame){
-                        if(width||width===0)
-                            profile._frame.attr('width',width);
-                        if(height||height===0)
-                            profile._frame.attr('height',height);
-                    }
-                    
+
                     if(scaleChildren){
                         paper.forEach(function(elem){
                             var wr=width/ow,hr=height/oh,xuiElem, 
