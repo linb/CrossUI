@@ -942,6 +942,7 @@ xui.merge(xui,{
         ghostDiv:[],
         data:{},
         callback:{},
+        functions:{},
         //cache purge map for dom element
         domPurgeData:{},
         //cache DomProfile or UIProfile
@@ -1986,9 +1987,10 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope, temp, resume){
+        exec:function(conf, args, scope, temp, output, resume){
            var  t,m,n,p,k,type=conf.type||"other",
                 _ns={
+                    "output":output,
                     "temp":temp,
                     "page":scope,
                     "args":args,
@@ -2263,6 +2265,48 @@ new function(){
                 else fun();
             }
             return conf["return"];
+        },
+        /*[output] is for the result object*/
+        _callFunctions:function(funs, args, host, holder, output){
+            output=output||{};
+            var fun, rtn, resume=0, temp={},
+            recursive=function(data){
+                // set prompt's global var
+                if(xui.isStr(this))temp[this+""]=data||"";
+                //callback from [resume]
+                for(var j=resume, l=funs.length;j<l;j++){
+                    resume=j+1;
+                    fun=funs[j];
+                    if(host && typeof fun=='string')fun=host[fun];
+                    if(holder && typeof fun=='string')fun=holder[fun];
+                    if(typeof fun=='function')rtn=xui.tryF(fun, args, host);
+                    else if(xui.isHash(fun)){
+                        if('onOK' in fun ||'onKO' in fun){
+                            var resumeFun=function(key,args){
+                                if(recursive)recursive.apply(key,args);
+                            };
+                            // onOK
+                            if('onOK' in fun)onOK=(fun.params||(fun.params=[]))[parseInt(fun.onOK,10)||0]=function(){
+                               resumeFun("okData",arguments);
+                            };
+                            if('onKO' in fun)(fun.params||(fun.params=[]))[parseInt(fun.onKO,10)||0]=function(){
+                                resumeFun("koData",arguments);
+                            };
+                            if(false===(rtn=xui.pseudocode.exec(fun,args,host,temp,output,resumeFun))){
+                                resumeFun=resume=temp=recursive=null;
+                            }
+                            break;
+                        }else
+                            if(false===(rtn=xui.pseudocode.exec(fun,args,host,temp,output))){
+                                resume=j;break;
+                            }
+                    }
+                }
+                if(resume==j)resume=temp=recursive=null;
+                return rtn;
+            };
+            rtn = recursive();
+            return xui.isEmpty(output)?rtn:output;
         }/*,
         toCode:function(conf, args, scope,temp){
         }*/
@@ -4382,54 +4426,18 @@ xui.Class('xui.absObj',"xui.absBox",{
                                 delete v[i];
                             });
                         else{
-                            var args=[], v=this.get(0);
-                            if(v){
-                                var t=v[i], host=v.host || v, holder=v.$holder, j,o,r;
-                                if(t && (!xui.isArr(t) || t.length)){
-                                    if(v.$inDesign)return;
-                                    if(arguments[0]!=v)args[0]=v;
+                            var args=[], prf=this.get(0);
+                            if(prf){
+                                var events=prf[i], host=prf.host || prf;
+                                if(events && (!xui.isArr(events) || events.length)){
+                                    if(prf.$inDesign)return;
+                                    prf.$lastEvent=i;
+                                    if(arguments[0]!=prf)args[0]=prf;
                                     for(j=0;j<l;j++)args[args.length]=arguments[j];
-                                    v.$lastEvent=i;
-                                    if(!xui.isArr(t))t=[t];
-                                    l=t.length;
-                                    if(xui.isNumb(j=t[0].event))args[j]=xui.Event.getEventPara(args[j]);
-                                    var temp={};
-                                    var n=0,fun=function(data){
-                                        // set prompt's global var
-                                        if(xui.isStr(this))temp[this+""]=data||"";
-                                        //callback from [n]
-                                        for(j=n;j<l;j++){
-                                            n=j+1;
-                                            o=t[j];
-                                            if(host && typeof o=='string')o=host[o];
-                                            if(holder && typeof o=='string')o=holder[o];
-                                            if(typeof o=='function')r=xui.tryF(o, args, host);
-                                            else if(xui.isHash(o)){
-                                                if('onOK' in o ||'onKO' in o){
-                                                    var resume=function(key,args){
-                                                        if(fun)fun.apply(key,args);
-                                                    };
-                                                    // onOK
-                                                    if('onOK' in o)onOK=(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
-                                                       resume("okData",arguments);
-                                                    };
-                                                    if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
-                                                        resume("koData",arguments);
-                                                    };
-                                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp,resume))){
-                                                        n=temp=fun=null;
-                                                    }
-                                                    break;
-                                                }else
-                                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
-                                                        n=j;break;
-                                                    }
-                                            }
-                                        }
-                                        if(n==j)n=temp=fun=null;
-                                        return r;
-                                    };
-                                    return fun();
+                                    if(!xui.isArr(events))events=[events];
+                                    if(xui.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
+
+                                    return xui.pseudocode._callFunctions(events, args, host, prf.$holder);
                                 }
                             }
                         }

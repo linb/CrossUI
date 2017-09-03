@@ -263,6 +263,27 @@ xui.Class('xui.Module','xui.absProfile',{
         getHost:function(){
             return this.host;
         },
+        setFunctions:function(key,value){
+            var self=this;
+
+            if(!key)
+                delete self.functions;
+            else if(typeof key=='string')
+                self.functions[key]=value;
+            else if(xui.isHash(key)){
+                if(value/*force*/){
+                    self.functions = xui.clone(key);
+                }else{
+                    xui.merge(self.functions, key, 'all');
+                }
+            }
+        },
+        getFunctions:function(key){
+            var fs=this.functions;
+            if(fs && xui.isHash(fs)){
+                return key?fs[key]:fs;
+            }
+        },
         setProperties:function(key,value,ignoreEvent,innerDataOnly){
             var self=this;
 
@@ -350,6 +371,11 @@ xui.Class('xui.Module','xui.absProfile',{
             var c={}, p=o.box.$DataModel;
             xui.merge(c,o.properties, function(o,i){return p[i]!==o});
             if(!xui.isEmpty(c))r.properties=c;
+            if(xui.isEmpty(r.properties))delete r.properties;
+
+            //functions
+            if(!xui.isEmpty(o.functions))r.functions=c;
+            if(xui.isEmpty(r.functions))delete r.functions;
 
             //events
             if(!xui.isEmpty(t=this.getEvents()))r.events=t;
@@ -357,7 +383,6 @@ xui.Class('xui.Module','xui.absProfile',{
             xui.filter(r.events, function(o,i){
                 return o!==eh[i];
             });
-            if(xui.isEmpty(r.properties))delete r.properties;
 
             //events
             if(!xui.isEmpty(t=this.getEvents()))r.events=t;
@@ -372,82 +397,32 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var o,r,l,j,
+            var o,r,j,
                 self = this,
                 tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
-                t = self.events && self.events[name],
-                applyEvents=function(self, events, host, args){
+                tt = self.events && self.events[name],
+                applyEvents=function(prf, events, host, args){
                     args=args||[];
                     if(!xui.isArr(events))events=[events];
-                    l=events.length;
                     if(xui.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
-                    var temp={};
-                    var n=0,fun=function(data){
-                        // set prompt's global var
-                        if(xui.isStr(this))temp[this+""]=data||"";
-                        //callback from [n]
-                        for(j=n;j<l;j++){
-                            n=j+1;
-                            o=events[j];
-                            //get from host first
-                            if(typeof o=='string')o=host[o];
-                            if(typeof o=='function')r=xui.tryF(o, args, host);
-                            else if(xui.isHash(o)){
-                                if('onOK' in o ||'onKO' in o){
-                                    // onOK
-                                    if('onOK' in o)(o.params||(o.params=[]))[parseInt(o.onOK,10)||0]=function(){
-                                        if(fun)fun.apply("okData",arguments);
-                                    };
-                                    if('onKO' in o)(o.params||(o.params=[]))[parseInt(o.onKO,10)||0]=function(){
-                                        if(fun)fun.apply("koData",arguments);
-                                    };
-                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
-                                        n=temp=fun=null;
-                                    }
-                                    break;
-                                }else
-                                    if(false===(r=xui.pseudocode.exec(o,args,host,temp))){
-                                        n=j;break;
-                                    }
-                            }
-                        }
-                        if(n==j)n=temp=fun=null;
-                        return r;
-                    };
-                    return fun();
+
+                    return xui.pseudocode._callFunctions(events, args, host, prf.$holder);
                 };
+            if(self.$inDesign)return;
+            self.$lastEvent=name;
             if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
             if(ti && (!xui.isArr(ti) || ti.length))r = applyEvents(self, ti, self, args);
             // only events can use host
-            if(t && (!xui.isArr(t) || t.length))r = applyEvents(self, t,  host||self.host||self, args);
+            if(tt && (!xui.isArr(tt) || tt.length))r = applyEvents(self, tt,  host||self.host||self, args);
             return r;
         },
         // for inner events
         _fireEvent:function(name, args){
-            var o,r,l,
-                self = this,
-                tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
-                ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
-                t = self.events && self.events[name],
-                applyEvents=function(self, events, host, args){
-                    self.$lastEvent=name;
-                    args=args||[];
-                    args.splice(0,0,self,self.threadid);
-                    if(!xui.isArr(events))events=[events];
-                    l=events.length;
-                    for(var i=0;i<l;i++){
-                        o=events[i];
-                        if(typeof o=='string')o=host[o];
-                        if(typeof o=='function')r=o.apply(host, args);
-                        else if(xui.isHash(o))r=xui.pseudocode.exec(o,args, host);
-                    }
-                };
-            if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
-            if(ti && (!xui.isArr(ti) || ti.length))r = applyEvents(self, ti, self, args);
-            // only events can use host
-            if(t && (!xui.isArr(t) || t.length))r = applyEvents(self, t, self.host||self, args);
-            return r;
+            var self = this;
+            args=args||[];
+            args.splice(0,0,self,self.threadid);
+            return this.fireEvent(name, args);
         },
         _innerCall:function(name){
             var self=this;

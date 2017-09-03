@@ -6112,7 +6112,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置请求的数据源",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array. [{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    "value [必需参数] : Array. [{type:'databinder', name:'xxx',path:'xx'},{type:'form', name:'xxx',path:'xx'}]",
                     $force
                 ]
             },
@@ -6124,7 +6124,19 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置响应数据的呈现方式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Array. [{bindertype:'alert',path:'xx'},{bindertype:'log',path:'xx'},{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    "value [必需参数] : Array. [{type:'alert',name:'xx'},{type:'log',path:'xx'},{type:'databinder', name:'xxx',path:'xx'},{type:'form', name:'xxx',path:'xx'}]",
+                    $force
+                ]
+            },
+            getResponseCallback:{
+                $desc:"得到数据响应的回调函数配置",
+                $rtn:"Array"
+            },
+            setResponseCallback:{
+                $desc:"设置数据响应的回调函数配置",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Array. [{type:'global',name:'xx'},{type:'host',name:'yy'}]",
                     $force
                 ]
             },
@@ -18784,6 +18796,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             "avoidCache":"避免缓存",
             'requestDataSource':"请求数据源",
             'responseDataTarget':"数据响应目标",
+            'responseCallback':"数据回调函数",
             "requestId":"数据请求ID"
         },
         'xui_UI_CSSBox':{

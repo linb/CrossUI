@@ -68,7 +68,8 @@ xui.Class("xui.APICaller","xui.absObj",{
                 queryOptions=xui.copy(prop.queryOptions),
                 queryHeader=xui.copy(prop.queryHeader),
                 requestDataSource=prop.requestDataSource,
-                responseDataTarget=prop.responseDataTarget;
+                responseDataTarget=prop.responseDataTarget,
+                responseCallback=prop.responseCallback;
 
             queryURL = xui.adjustVar(queryURL);
 
@@ -295,6 +296,26 @@ xui.Class("xui.APICaller","xui.absObj",{
                         }
                     });
                 }
+                if(responseCallback&&responseCallback.length){
+                    xui.arr.each(responseCallback, function(o){
+                        var t,host;
+                        switch(o.type){
+                            case "host":
+                                if((t=ns.getHost()) && (t=t.functions) && (t=t[o.name])){
+                                    host = ns.getHost();
+                                }
+                            break;
+                            default:
+                                if((t=xui.$cache.functions[o.name])){
+                                    host = null;
+                                }
+                                break;
+                        }
+                        if(t && t.actions && xui.isArr(t.actions)){
+                            xui.pseudocode._callFunctions(t.actions, [rspData, ns], host);
+                        }
+                    });
+                }
                 if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
                 xui.tryF(onSuccess,arguments,this);
 
@@ -335,7 +356,7 @@ xui.Class("xui.APICaller","xui.absObj",{
         WDSLCache:{},
         $nameTag:"api_",
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1,responseCallback:1},
         destroyAll:function(){
             this.pack(xui.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -402,6 +423,9 @@ xui.Class("xui.APICaller","xui.absObj",{
             responseDataTarget:{
                 ini:[]
             },
+            responseCallback:{
+                ini:[]
+            },
 
             queryArgs:{
                 ini:{}
@@ -445,21 +469,21 @@ xui.Class("xui.APICaller","xui.absObj",{
                 inner:true,
                 trigger:function(){
                     var prf = this.get(0),
-                        bak = prf.properties.responseDataTarget;
-                    prf.properties.responseDataTarget=[];
-                    this.invoke(function(d){
-                        prf.properties.responseDataTarget = bak;
+                        prop = prf.properties,
+                        bak1 = prop.responseDataTarget,
+                        bak2 = prop.responseCallback,
+                        fun = function(d){
+                            prop.responseDataTarget = bak1;
+                            prop.responseCallback = bak2;
 
-                        d=xui.stringify(d);
-                        if(xui.Coder)d=xui.Coder.formatText(d);
-                        alert(d);
-                    },function(d){
-                        prf.properties.responseDataTarget = bak;
+                            d=xui.stringify(d);
+                            if(xui.Coder)d=xui.Coder.formatText(d);
+                            alert(d);
+                        };
 
-                        d=xui.stringify(d);
-                        if(xui.Coder)d=xui.Coder.formatText(d);
-                        alert(d);
-                    });
+                    prop.responseDataTarget=[];
+                    prop.responseCallback=[];
+                    this.invoke(fun,fun);
                 }
             }
         },

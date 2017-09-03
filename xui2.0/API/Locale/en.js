@@ -6052,7 +6052,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the datasource for request data",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Array. [{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    "value [Required] : Array. [{type:'databinder', name:'xxx',path:'xx'},{type:'form', name:'xxx',path:'xx'}]",
                     $force
                 ]
             },
@@ -6064,7 +6064,19 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the target to show the response data",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Array.  [{bindertype:'alert',path:'xx'},{bindertype:'log',path:'xx'},{bindertype:'databinder', name:'xxx',path:'xx'},{bindertype:'form', name:'xxx',path:'xx'}]",
+                    "value [Required] : Array.  [{type:'alert',path:'xx'},{type:'log',path:'xx'},{type:'databinder', name:'xxx',path:'xx'},{type:'form', name:'xxx',path:'xx'}]",
+                    $force
+                ]
+            },
+            getResponseCallback:{
+                $desc:"Gets the callback config for the response data",
+                $rtn:"Array"
+            },
+            setResponseCallback:{
+                $desc:"Sets the callback config for the response data",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Array. [{type:'global',id:'xx'},{type:'host',id:'yy'}]",
                     $force
                 ]
             },
