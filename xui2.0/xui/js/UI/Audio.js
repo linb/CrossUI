@@ -30,7 +30,16 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             className:'{_className}',
             style:'{_style}',
             H5:{
-                tagName:'audio'
+                tagName:'audio',
+                autoplay:'{_autoplay}',
+                controls:'{_controls}',
+                loop:'{_loop}',
+                muted:'{_muted}',
+
+                preload:'{preload}',
+                volume:'{volume}',
+                src:'{src}',
+                text:'Your browser does not support the audio element.'
             }
         },
         Behaviors:{
@@ -56,25 +65,26 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             controls:{
                 ini: true,
                 action:function(v){
-                    this.getSubNode("H5").attr("controls", v||null);
+                    this.getSubNode("H5").attr("controls", v?'controls':null);
                 }
             },
             preload:{
-                ini: false,
+                ini: "none",
+                listbox:["none", "metadata", "auto" ],
                 action:function(v){
-                    this.getSubNode("H5").attr("preload", v||null);
+                    this.getSubNode("H5").attr("preload", (!v||v=='none')?null:v);
                 }
             },
             loop:{
                 ini: false,
                 action:function(v){
-                    this.getSubNode("H5").attr("loop", v||null);
+                    this.getSubNode("H5").attr("loop", v?'loop':null);
                 }
             },
             muted:{
                 ini: false,
                 action:function(v){
-                    this.getSubNode("H5").attr("muted", v||null);
+                    this.getSubNode("H5").attr("muted", v?'muted':null);
                 }
             },
             volume:{
@@ -86,7 +96,7 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             autoplay:{
                 ini: false,
                 action:function(v){
-                    this.getSubNode("H5").attr("autoplay", v||null);
+                    this.getSubNode("H5").attr("autoplay", v?'autoplay':null);
                 }
             }
         },
@@ -110,13 +120,21 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                 });
             };
 
-            if(t=prop.src)H5.attr("src",t);
-            if(t=prop.controls)H5.attr("controls",t);
-            if(t=prop.preload)H5.attr("preload",t);
-            if(t=prop.loop)H5.attr("loop",t);
-            if(t=prop.muted)H5.attr("muted",t);
-            if(t=prop.autoplay)H5.attr("autoplay",t);
-            if((t=prop.volume) !== 1)H5.attr("volume",t);
+            if(!prop.controls)H5.attr("controls",null);
+            if(!prop.loop)H5.attr("loop",null);
+            if(!prop.muted)H5.attr("muted",null);
+
+            if(!prop.autoplay)H5.attr("autoplay",null);
+            else xui.asyRun(function(t){if(t=H5.get(0))t.play();});
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            if(data.autoplay)data._autoplay = "autoplay";
+            if(data.controls)data._controls = "controls";
+            if(data.loop)data._loop = "loop";
+            if(data.muted)data._muted = "muted";
+            if(data.autoplay)data._autoplay = "autoplay";
+            return data;
         },
         EventHandlers:{
             onMediaEvent:function(profile, eventType, params){}

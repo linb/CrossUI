@@ -7360,6 +7360,7 @@ xui.Class("xui.absValue", "xui.absObj",{
                     if(profile.renderId && !triggerEventOnly)box._setDirtyMark();
 
                     if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
+                    if(profile._onChange)box._onChange(profile, ovalue, value, force, tag);
                     if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
 
                     if(!prop.dirtyMark)
@@ -7500,6 +7501,7 @@ xui.Class("xui.absValue", "xui.absObj",{
             beforeUIValueSet:function(profile, oldValue, newValue, force, tag){},
             afterUIValueSet:function(profile, oldValue, newValue, force, tag){},
             onChange:function(profile, oldValue, newValue, force, tag){},
+            _onChange:function(profile, oldValue, newValue, force, tag){},
 
             beforeDirtyMark:function(profile, dirty){}
         },

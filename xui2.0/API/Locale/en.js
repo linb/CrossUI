@@ -5300,7 +5300,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fires event",
                 $rtn:"Object",
                 $paras:[
-                    "event: [Required] : String, event's name",
+                    "event [Required] : String, event's name",
                     "args [Optional]: Array, event funtion's arumgnets",
                     "host [Optional]: Object, event funtion's scope object"
                 ],
@@ -16461,7 +16461,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets the cell Object according to its id",
                 $rtn:"Ojbect",
                 $paras:[
-                    "cellId : [Required] : String",
+                    "cellId [Required] : String",
                     "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
                 ]
             },
@@ -17192,7 +17192,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets a specified column's header value",
                 $rtn:"Ojbect",
                 $paras:[
-                    "colId : [Required] : String, column id",
+                    "colId [Required] : String, column id",
                     "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
                 ],
                 $snippet:[

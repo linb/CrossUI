@@ -5360,7 +5360,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"触发自定义的事件",
                 $rtn:"Object",
                 $paras:[
-                    "event: [必需参数] : String, 自定义事件的名字",
+                    "event [必需参数] : String, 自定义事件的名字",
                     "args [可选参数]: Array, 事件的参数",
                     "host [可选参数]: Object, 事件函数的作用域对象"
                 ],
@@ -7830,7 +7830,7 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"获取拖动数据",
             $rtn:"Object",
             $paras:[
-                "profile [必需参数] : 目标概要对象",
+                "profile [必需参数] : xui.Profile, 目标概要对象",
                 "event: DOM 事件对象",
                 "node [必需参数] : 相关的DOM元素"
             ],
@@ -9109,7 +9109,7 @@ xui.set(xui.Locale,["cn","app"], {
                     $profile,
                     "name : String, 属性名",
                     "value : Object, 新属性值",
-                    "ovalue : Objecgt, 原来的属性值"
+                    "ovalue : Object, 原来的属性值"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-e'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9858,7 +9858,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置标签字体颜色",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 字体颜色",
+                    "value [必需参数] : String, 字体颜色",
                     $force
                 ]
             },            
@@ -9876,7 +9876,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置标签字体大小",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : 字体大小",
+                    "value [必需参数] : String, 字体大小",
                     $force
                 ],
                 $snippet:[
@@ -9900,7 +9900,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置标签字体粗细",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : corresponding CSS value",
+                    "value [必需参数] : String, corresponding CSS value",
                     $force
                 ],
                 $snippet:[
@@ -10070,7 +10070,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置标签的位置",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : left, right, top, bottom 之一",
+                    "value [必需参数] : String, left, right, top, bottom 之一",
                     $force
                 ]
             },
@@ -16379,7 +16379,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"由单元格id获取单元格对象",
                 $rtn:"Ojbect",
                 $paras:[
-                    "cellId : [必需参数] : String",
+                    "cellId [必需参数] : String",
                     "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
@@ -16408,8 +16408,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"获取单元格对象. 行id和列id由参数指定",
                 $rtn:"Ojbect",
                 $paras:[
-                    "rowId : [必需参数] : String, 行 id",
-                    "colId : [必需参数] : String, 列 id",
+                    "rowId  [必需参数] : String, 行 id",
+                    "colId [必需参数] : String, 列 id",
                     "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ],
                 $snippet:[
@@ -17110,7 +17110,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"获取某个列的表头值",
                 $rtn:"Ojbect",
                 $paras:[
-                    "colId : [必需参数] : String, 列 id"
+                    "colId [必需参数] : String, 列 id"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

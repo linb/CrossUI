@@ -407,7 +407,7 @@ xui.Class('xui.Module','xui.absProfile',{
                     if(!xui.isArr(events))events=[events];
                     if(xui.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
 
-                    return xui.pseudocode._callFunctions(events, args, host, prf.$holder);
+                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder);
                 };
             if(self.$inDesign)return;
             self.$lastEvent=name;
@@ -794,7 +794,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 var prop=prf.properties,
                     ins=prf.boxing(),
                     ih=hash[prf.alias]={};
-                xui.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","name",'labelCaption'],function(k){
+                xui.arr.each(["src","html","items","listKey","header","rows","target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","name",'labelCaption'],function(k){
                     if(k in prop)ih[k]=prop[k];
                 });
                 if(withValue)
@@ -814,7 +814,7 @@ xui.Class('xui.Module','xui.absProfile',{
                if(prf.alias in data){
                     ih=data[prf.alias];
                     if(ih && xui.isHash(ih) && !xui.isEmpty(ih)){
-                        xui.arr.each(["src",'html','items','lsitKey','header','rows',"target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","dateStart","name","value",'labelCaption',"caption"],function(k){
+                        xui.arr.each(["src","html","items","listKey","header","rows","target","toggle","attr","JSONData","XMLData","JSONUrl","XMLUrl","name","value",'labelCaption',"caption"],function(k){
                             if(k in prop && k in ih)ins['set'+xui.str.initial(k)](ih[k]);
                         });
                     }else

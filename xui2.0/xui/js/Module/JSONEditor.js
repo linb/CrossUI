@@ -33,6 +33,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     "type" : "input",
                     "caption" : "key",
                     "editorCacheKey" : "input",
+                    "colResizer":true,
                     "flexSize" : true
                 },{
                     "id" : "value",
@@ -343,11 +344,17 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         events:{
             afterIniComponents:function(module){
-                module.tg.updateHeader("key", xui.adjustRes(module.properties.keyCaption)||"key");
-                module.tg.updateHeader("value", xui.adjustRes(module.properties.valueCaption)||"value");
-                module.tg.updateHeader("value", {type:module.properties.bigFont?'textarea':'input'});
+                var prop=module.properties;
+                module.tg.updateHeader("key", xui.adjustRes(prop.keyCaption)||"key");
+                module.tg.updateHeader("value", xui.adjustRes(prop.valueCaption)||"value");
+                module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
                 
-                if('value' in module.properties) module.setValue(module.properties.value);
+                if('value' in prop) module.setValue(prop.value);
+                if(('tg' in module) && ('notree' in prop) && prop.notree){
+                    module.tg.setTreeMode('none');
+                    var cmds = module.tg.getTagCmds();
+                    cmds[0].tag="header";
+                }
             }
         },
         propSetAction:function(prop){
@@ -365,7 +372,8 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         $DataModel:{
             keyCaption:"key",
             valueCaption:"value",
-            bigFont:true
+            bigFont:true,
+            notree:false
         },
         $EventHandlers:{
             onchange:function(module){}

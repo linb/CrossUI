@@ -8,8 +8,18 @@ xui.Class("xui.UI.Video", "xui.UI.Audio",{
             style:'{_style}',
             H5:{
                 tagName:'video',
+                autoplay:'{_autoplay}',
+                controls:'{_controls}',
+                loop:'{_loop}',
+                muted:'{_muted}',
+
+                preload:'{preload}',
+                volume:'{volume}',
+                src:'{src}',
+
                 width:'{width}',
-                height:'{height}'
+                height:'{height}',
+                text:'Your browser does not support the audio element.'
             }
         },
         DataModel:{
