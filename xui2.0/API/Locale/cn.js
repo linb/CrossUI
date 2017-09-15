@@ -5348,8 +5348,23 @@ xui.set(xui.Locale,["cn","app"], {
         destroyAll:{
             $desc:"销毁所有实例"
         },
+        postMessage:{
+            $desc:"向模块发送消息",
+            $paras:[
+                "cls [必需参数] : String, 模块的类名",
+                "message [必需参数] : Object, 消息",
+                "sender [可选参数] : Object, 发送消息方"
+            ]
+        },
         prototype:{
             KEY:{$desc:"本类名"},
+            postMessage:{
+                $desc:"向模块发送消息",
+                $paras:[
+                    "message [必需参数] : Object, 消息",
+                    "sender [可选参数] : Object, 发送消息方"
+                ]
+            },
             autoDestroy:{
                 $desc:"本Module是否随着第一个内UI控件的销毁而销毁"
             },
@@ -5688,11 +5703,20 @@ xui.set(xui.Locale,["cn","app"], {
                 $memo:'See constructor'
             },
             onFragmentChanged:{
-                $desc:'当URL片段改变的时候触发本事件',
+                $desc:'当URL变量片段改变的时候触发本事件',
                 $paras:[
+                    'module : xui.Module 对象',
                     'fragment : String, URL片段',
                     'init : Boolen, 初始化',
                     'newAdd: Function, 新设置的callback'
+                ]
+            },
+            onMessage:{
+                $desc:'当模块收到消息时触发本事件',
+                $paras:[
+                    'module : xui.Module 对象',
+                    'message : Object, 消息',
+                    'source: Object, 消息源'
                 ]
             },
             onLoadBaseClassErr:{
@@ -19359,7 +19383,8 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             onModulePropChange:"模块属性改变",
             onRender:"部件渲染完成",
             onDestroy:"部件销毁",
-            onFragmentChanged:"当URL片段改变"
+            onFragmentChanged:"当地址片段改变",
+            onMessage:"当收到消息"
         },
         'xui_absObj' : {
         },

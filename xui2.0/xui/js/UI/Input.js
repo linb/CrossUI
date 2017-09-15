@@ -345,6 +345,13 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     }
                 },
                 onFocus:function(profile, e, src){
+                    if(profile.$ignoreFocus)return false;
+                    if(profile.beforeFocus && false===profile.boxing().beforeFocus(profile)){
+                        profile.$ignoreBlur=1;
+                        xui(src).blur();
+                        delete profile.$ignoreBlur;
+                        return false;
+                    }
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;
                     if(profile.onFocus)profile.boxing().onFocus(profile);
@@ -389,6 +396,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     b._asyCheck(profile);
                 },
                 onBlur:function(profile, e, src){
+                    if(profile.$ignoreBlur)return false;
                     xui.resetRun(profile.$xid+":asycheck");
                     if(profile.$focusDelayFun)xui.clearTimeout(profile.$focusDelayFun);
                     if(profile.$focusDelayFun2)xui.clearTimeout(profile.$focusDelayFun2);
@@ -599,6 +607,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
         },
         EventHandlers:{
+            beforeFocus:function(profile){},
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},

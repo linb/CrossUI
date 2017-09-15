@@ -5287,8 +5287,23 @@ xui.set(xui.Locale,["en","app"], {
         destroyAll:{
             $desc:"Get all instance"
         },
+        postMessage:{
+            $desc:"Post message to a Module",
+            $paras:[
+                "cls [Required] : String, the Module's class name",
+                "message [Required] : Object, the message",
+                "sender [Optional] : Object, the message sender"
+            ]
+        },
         prototype:{
             KEY:{$desc:"Class Name"},
+            postMessage:{
+                $desc:"Post message to a Module",
+                $paras:[
+                    "message [Required] : Object, the message",
+                    "sender [Optional] : Object, the message sender"
+                ]
+            },
             autoDestroy:{
                 $desc:"To determine whether the first inner UI control's detory will trigger module's destroy or not",
                 $rtn:"Boolean"
@@ -5628,11 +5643,20 @@ xui.set(xui.Locale,["en","app"], {
                 $memo:'See constructor'
             },
             onFragmentChanged:{
-                $desc:'Fired when the URL fragment changed',
+                $desc:'Fired when the URL  Fragement Identifier changed',
                 $paras:[
+                    'module : xui.Module',
                     'fragment : String, URL fragment',
                     'init : Boolen, initialized',
                     'newAdd: Function, the extra callback'
+                ]
+            },
+            onMessage:{
+                $desc:'Fired when receive a message',
+                $paras:[
+                    'module : xui.Module',
+                    'message : Object, the message',
+                    'source: Object, the message source'
                 ]
             },
             onLoadBaseClassErr:{
@@ -7322,7 +7346,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "keyboard : Object, keyboard object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -7340,7 +7364,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "keyboard : Object, keyboard object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -7358,7 +7382,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "keyboard : Object, keyboard object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -7375,7 +7399,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user drags the Object to a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7400,7 +7424,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user drags the Object leave a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7426,7 +7450,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user drop the Object to a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7451,7 +7475,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired before the user drop the Object to a valid drop target. If returns false, onDrop and afteDrop will not be triggered",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7462,7 +7486,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired after the user drop the Object to a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7473,7 +7497,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user drags the Object leave a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7498,7 +7522,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user drags the Object to a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7523,7 +7547,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user drags the Object to a valid drop target",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "dragKey : String, the DragDrop key",
                     "dragData : Object, the DragDrop data",
@@ -7548,7 +7572,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Triggered when the user start to drag",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -7564,7 +7588,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user start to drag",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -7579,7 +7603,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the user stop the dragging process",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -7596,7 +7620,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "item : Object, the data item Object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "type : String, 'mousedown'or 'mouseup'"
                 ],
@@ -7612,7 +7636,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "item : Object, the data item Object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid",
                     "type : String, 'mouseover'or 'mouseout'"
                 ],
@@ -7627,7 +7651,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the mouse hover the specified element. If returns false, the default 'set focus to the next' action will be ignored",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "k : Object, {key:keycode string, type: event type, ctrlKey:ctrl status, shiftKey:shift status, altKey:alt status}",
                     "shift: Boolean, Shift keyboard is pressed or not",
                     "src : String, the event source DOM element's xid"
@@ -9426,8 +9450,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click it",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
-                    "src : Element.xui id or Dom Element"
+                    "e : Event, Dom event object",
+                    "src : String, Element.xui id or Dom Element"
                 ]
             }
         }
@@ -9527,7 +9551,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click it",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object"
+                    "e : Event, Dom event object"
                 ],
                 $snippet:[
                     "var id='xui.temp.link7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9782,8 +9806,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click the panel",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
-                    "src : Element.xui id or Dom Element"
+                    "e : Event, Dom event object",
+                    "src : String, Element.xui id or Dom Element"
                 ]
             }
         }
@@ -10044,8 +10068,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click it",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
-                    "src : Element.xui id or Dom Element"
+                    "e : Event, Dom event object",
+                    "src : String, Element.xui id or Dom Element"
                 ]
             }
         }
@@ -10311,7 +10335,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when CheckBox is checked",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "value : Boolean, the value"
                 ],
                 $snippet:[
@@ -10516,7 +10540,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click it",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element",
                     "value : Object"
                 ],
@@ -10530,7 +10554,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click the drop button",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element",
                     "value : Object"
                 ],
@@ -10544,7 +10568,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when button is checked. xui.UI.Button Object has this event handler only when button type is 'status'",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "value : Boolean, the value"
                 ],
                 $snippet:[
@@ -11242,7 +11266,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click the panel",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -11675,7 +11699,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "pos : the mouse position",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : String, the event source DOM element's xid"
                 ],
                 $snippet:[
@@ -13511,7 +13535,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when panel handler is clicked",
                 $paras:[
                     $profile,
-                    "src: the related DOM element"
+                    "src: String, the related DOM element"
                 ],
                 $snippet:[
                     "var id='xui.temp.panel12'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -13571,7 +13595,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click the panel",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -13872,7 +13896,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "item: Object, item Object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -14307,7 +14331,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "item: Object, item Object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -14427,7 +14451,7 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "item : Object",
                     "group : Object",
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ],
                 $snippet:[
@@ -15391,7 +15415,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click the panel",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -15446,7 +15470,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when user click it",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -15500,7 +15524,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when clicked",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -15706,7 +15730,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when image is clicked",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             },
@@ -15714,7 +15738,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when image is dblclicked",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element.xui id or Dom Element"
                 ]
             }
@@ -18519,8 +18543,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"onClick event handler",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
-                    "src : Element xui id"
+                    "e : Event, Dom event object",
+                    "src : String, Element xui id"
                 ]
             }
 
@@ -18643,7 +18667,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"onClick event handler",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element xui id"
                 ]
             },
@@ -18651,7 +18675,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"onClick event handler for text element",
                 $paras:[
                     $profile,
-                    "e : Event.Dom event object",
+                    "e : Event, Dom event object",
                     "src : Element xui id"
                 ]
             }

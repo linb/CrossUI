@@ -542,10 +542,11 @@ new function(){
             return str.replace(/\\u([0-9a-f]{3})([0-9a-f])/g,function(a,b,c){return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
         },
         urlEncode:function(hash){
-            var a=[],i,o;
+            var a=[],b=[],i,o;
             for(i in hash)
                 if(xui.isDefined(o=hash[i]))
-                    a.push(encodeURIComponent(i)+'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+                    a.push((b[b.length]=encodeURIComponent(i)) +'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+            a=xui.arr.stableSort(a,function(x,y,i,j){return b[i]>b[j]?1:b[i]==b[j]?0:-1});
             return a.join('&');
         },
         urlDecode:function(str, key){
@@ -563,7 +564,7 @@ new function(){
             return key?hash[key]:hash;
         },
         getUrlParams:function(url){
-            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+/,''));
+            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,''));
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
@@ -676,7 +677,7 @@ new function(){
                     for(var i=0,l=arr.length,a=[],b=[];i<l;i++)b[i]=arr[a[i]=i];
                     if(xui.isFun(sortby))
                         a.sort(function(x,y){
-                            return sortby.call(arr,arr[x],arr[y]) || (x>y?1:-1);
+                            return sortby.call(arr,arr[x],arr[y],x,y) || (x>y?1:-1);
                         });
                     else
                         a.sort(function(x,y){
@@ -1219,6 +1220,11 @@ xui.merge(xui,{
                     obj=="{undefined}"?undefined:
                     obj=="{now}"?new Date():
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
+                    // {ab(3,"a")} 
+                    // only one level, {a.b()} is not allowed
+                    // scope allows hash only
+                    ((t=/^\s*\{([\w]+\([^)]*\))\s*\}\s*$/.exec(obj)) && xui.isHash(scope)) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope):
+                    //{a.b.c}
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
                    : xui.adjustRes(obj, false, true, true, null, scope)
@@ -1996,7 +2002,10 @@ new function(){
                     page:scope,
                     args:args,
                     functions:xui.$cache.functions,
-                    'global':xui.$cache.data
+                    'global':xui.$cache.data,
+                    // special functions
+                    getCookies:xui.Cookies.get,
+                    getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 },
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2048,7 +2057,7 @@ new function(){
                             o=o.replace("[data]","");
                             jsondata=1;
                         }
-                        o=xui.adjustVar(o, _ns);
+                        o=xui.adjustVar(o, _ns)||xui.adjustVar(o);
                         // for file
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
@@ -2068,6 +2077,7 @@ new function(){
                 adjust=adjustparam(conf.adjust)||null,
                 iconditions=[],
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+
             // cover with inline params
             if(method.indexOf("-")!=-1){
                 t=method.split("-");
@@ -2079,7 +2089,7 @@ new function(){
             // currently, support and only
             // TODO: complex conditions
             for(var i=0,l=conditions.length;i<l;i++){
-                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol)){
+                if(!comparevars(xui.adjustVar(conditions[i].left, _ns)||xui.adjustVar(conditions[i].left),xui.adjustVar(conditions[i].right, _ns)||xui.adjustVar(conditions[i].right),conditions[i].symbol)){
                     if(typeof resume=="function")resume();
                     return;
                 }
@@ -2093,12 +2103,12 @@ new function(){
                         case 'page':
                             // handle switch
                             if(method=="switch"){
-                                if(!xui.History._excallback){
-                                    xui.History.setCallback(function(fi,init){
+                                if(!xui.History._callbackTag){
+                                    xui.History._callbackTag = function(fi,init){
                                        if(init)return;
                                        var ar=xui.urlDecode(fi||"");
-                                       if(!ar.xuicom){
-                                            ar.xuicom="App";
+                                       if(!ar.cls){
+                                            ar.cls="App";
                                             ar.cache=true;
                                         }
                                         // get root only
@@ -2108,13 +2118,27 @@ new function(){
                                                 if(ar.cache)module.hide();else module.destroy();
                                             }
                                         });   
-                                        xui.showModule(ar.xuimodule);
-                                    });
+                                        xui.showModule(ar.cls);
+                                        return false;
+                                    };
                                 }
-                                
-                                var fi="xuimodule="+target;
-                                if(iparams[0])fi+="&cache="+(iparams[0]?true:false);
-                                xui.History.setFI(fi);
+                                var hash={
+                                    cls:target,
+                                    cache:!!iparams[0]
+                                };
+                                if(iparams[1] && !xui.isEmpty(iparams[1])){
+                                    hash=xui.merge(hash,iparams[1]);
+                                }
+                                xui.History.setFI(hash,true);
+                                return;
+                            }else if(method=="open"){
+                                var hash={
+                                    cls:target
+                                };
+                                if(iparams[0] && !xui.isEmpty(iparams[0])){
+                                    hash = xui.merge(hash, iparams[0]);
+                                }
+                                window.open('#!'+xui.urlEncode(hash));
                                 return;
                             }
                             // try to get module
@@ -2204,9 +2228,7 @@ new function(){
                                      else if(xui.isFun(t=xui.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
                                 case "var":
-                                    if(method=="cookie"){
-                                        xui.$cache.data.Cookies=xui.Cookies.get();
-                                    }else if(iparams[0].length){
+                                    if(iparams[0].length){
                                         var v = iparams[1];
                                         if(iparams[2])
                                             v=xui.get(v, iparams[2].split(/\s*\.\s*/));
@@ -2232,6 +2254,12 @@ new function(){
                                 break;
                                 case "callback":
                                     switch(method){
+                                        case "setCookies":
+                                            if(iparams[0]&&!xui.isEmpty(iparams[0]))xui.Cookies.set(iparams[0]);
+                                            break;
+                                        case "setFI":
+                                            if(iparams[0]&&!xui.isEmpty(iparams[0]))xui.History.setFI(iparams[0],true,true);
+                                            break;
                                         case "set":
                                             t=iparams[1];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
@@ -13732,6 +13760,9 @@ xui.Class('xui.Module','xui.absProfile',{
         getEvents:function(key){
             return key?this.events[key]:this.events;
         },
+        postMessage:function(message, sender){
+           this.fireEvent('onMessage',  [this, message, sender]);
+        },
         serialize:function(rtnString, keepHost, children){
             var t,m,
                 self=this,
@@ -13789,7 +13820,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 applyEvents=function(prf, events, host, args){
                     args=args||[];
                     if(!xui.isArr(events))events=[events];
-                    if(xui.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                    if(xui.isNumb(j=events[0].event) && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
 
                     return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder);
                 };
@@ -14542,6 +14573,13 @@ xui.Class('xui.Module','xui.absProfile',{
             for(var i in c)
                 if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
+        postMessage:function(cls, message, sender){
+           var m = xui.SC.get(cls),hash;
+            if(m && m['xui.Module'])
+                xui.arr.each(m._cache,function(o){
+                     m.fireEvent('onMessage',  [m,message, sender]);
+                });
+        },
         destroyAll:function(ignoreEffects, purgeNow){
             xui.arr.each(this._cache,function(o){
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
@@ -14689,7 +14727,8 @@ xui.Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
-            onFragmentChanged:function(fragment, init, newAdd){},
+            onFragmentChanged:function(module, fragment, init, newAdd){},
+            onMessage:function(module, message, source){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
@@ -16723,35 +16762,10 @@ xui.Class("xui.Tips", null,{
     }
 });xui.Class("xui.History",null,{
     Static:{
-        _fid:'xui:history',
-        _type:(xui.browser.ie && (xui.browser.ver<8))?'iframe':("onhashchange" in window)?'event':'timer',
-        _excallback:null,
-        _callback:function(fragment, init, newAdd){
-            var ns=this, arr=[], f;
-            xui.arr.each(xui.Module._cache,function(m){
-              // by created order
-               if(m._events && ('onFragmentChanged' in m._events)){
-                   // function or pseudocode
-                   if(xui.isFun(f = m._events.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
-                       m.fireEvent('onFragmentChanged', [fragment, init, newAdd]);
-                   }
-               }
-            });
-            // the last one
-            if(xui.isFun(ns._excallback))
-                ns._excallback(fragment, init, newAdd);
-        },
-        /* set callback function
-        callback: function(hashStr<"string after #!">)
-        */
-        setCallback: function(callback){
-            var self=this,
-                hash = location.hash;
-            if(hash)hash='#!' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!/,''));
-            else hash="#!";
-            self._excallback = callback;
-
-            self._lastFI = decodeURIComponent(hash);
+        activate:function(){
+            var self=this;
+            if(self._activited)return;
+            self._activited=1;
             switch(self._type){
                 case 'event':
                     window.onhashchange=self._checker;
@@ -16768,6 +16782,54 @@ xui.Class("xui.Tips", null,{
                     self._itimer = setInterval(self._checker, 200);
                 break;
             }
+        },
+        _fid:'xui:history',
+        _type:(xui.browser.ie && (xui.browser.ver<8))?'iframe':("onhashchange" in window)?'event':'timer',
+        _callbackTag:null,
+        _callbackArr:null,
+        _inner_callback:null,
+        _callback:function(fragment, init, newAdd){
+            var ns=this, arr, f;
+            xui.arr.each(xui.Module._cache,function(m){
+              // by created order    
+               if(m._evsClsBuildIn && ('onFragmentChanged' in m._evsClsBuildIn)){
+                   // function or pseudocode
+                   if(xui.isFun(f = m._evsClsBuildIn.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
+                       m.fireEvent('onFragmentChanged', [m,fragment, init, newAdd]);
+                   }
+               }
+               else if(m._evsPClsBuildIn && ('onFragmentChanged' in m._evsPClsBuildIn)){
+                   // function or pseudocode
+                   if(xui.isFun(f = m._evsPClsBuildIn.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
+                       m.fireEvent('onFragmentChanged', [m,fragment, init, newAdd]);
+                   }
+               }
+            });
+            // tag
+            if(xui.isFun(ns._callbackTag) && false===ns._callbackTag(fragment, init, newAdd))return;
+            // tagVar
+            arr = ns._callbackArr;
+            if(arr&&xui.isArr(arr)){
+                for(var i=0,l=arr.length;i<l;i++){
+                    if(xui.isFun(arr[i]) && false===arr[i](fragment, init, newAdd))
+                        return;
+                }
+            }
+            // the last one
+            if(xui.isFun(ns._inner_callback))ns._inner_callback(fragment, init, newAdd);
+        },
+        /* set callback function
+        callback: function(hashStr<"string after #!">)
+        */
+        setCallback: function(callback){
+            var self=this,
+                hash = location.hash;
+            if(hash)hash='#!' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!/,''));
+            else hash="#!";
+            self._inner_callback = callback;
+
+            self._lastFI = decodeURIComponent(hash);
+
             self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true, callback);
 
             return self;
@@ -16792,11 +16854,19 @@ xui.Class("xui.Tips", null,{
         },
         /*change Fragement Identifier(string after '#!')
         */
-        setFI:function(fi,triggerCallback){
+        setFI:function(fi,triggerCallback,merge){
             var self=this;
+            
+            self.activate();
+
             // ensure encode once
-            if(fi)fi='#!' + encodeURIComponent((''+decodeURIComponent(fi)).replace(/^#!/,''));
-            else fi="#!";
+            if(fi){
+                if(!xui.isHash(fi))fi=xui.urlDecode((fi+'').replace(/^#!/,'')); //encodeURIComponent((''+decodeURIComponent(fi)).replace(/^#!/,''));
+                if(merge)fi = xui.merge(fi, xui.getUrlParams(), 'without');
+                fi='#!' + xui.urlEncode(fi);
+            }else{
+                fi="#!";
+            }
             if(self._lastFI == decodeURIComponent(fi))return false;
 
             switch(self._type){
@@ -29469,6 +29539,13 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     }
                 },
                 onFocus:function(profile, e, src){
+                    if(profile.$ignoreFocus)return false;
+                    if(profile.beforeFocus && false===profile.boxing().beforeFocus(profile)){
+                        profile.$ignoreBlur=1;
+                        xui(src).blur();
+                        delete profile.$ignoreBlur;
+                        return false;
+                    }
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;
                     if(profile.onFocus)profile.boxing().onFocus(profile);
@@ -29513,6 +29590,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     b._asyCheck(profile);
                 },
                 onBlur:function(profile, e, src){
+                    if(profile.$ignoreBlur)return false;
                     xui.resetRun(profile.$xid+":asycheck");
                     if(profile.$focusDelayFun)xui.clearTimeout(profile.$focusDelayFun);
                     if(profile.$focusDelayFun2)xui.clearTimeout(profile.$focusDelayFun2);
@@ -29723,6 +29801,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             }
         },
         EventHandlers:{
+            beforeFocus:function(profile){},
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},
@@ -32286,6 +32365,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
                 },
                 onFocus:function(profile, e, src){
+                    if(profile.$ignoreFocus)return false;
+                    if(profile.beforeFocus && false===profile.boxing().beforeFocus(profile)){
+                        profile.$ignoreBlur=1;
+                        xui(src).blur();
+                        delete profile.$ignoreBlur;
+                        return false;
+                    }
                     var p=profile.properties,b=profile.box;
                     if(p.disabled || p.readonly)return false;
                     if(profile.onFocus)profile.boxing().onFocus(profile);
@@ -32338,6 +32424,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     b._asyCheck(profile);             
                 },
                 onBlur:function(profile, e, src){
+                    if(profile.$ignoreBlur)return false;
                     xui.resetRun(profile.$xid+":asycheck");
                     if(profile.$focusDelayFun)xui.clearTimeout(profile.$focusDelayFun);
                     if(profile.$focusDelayFun2)xui.clearTimeout(profile.$focusDelayFun2);
@@ -63421,7 +63508,6 @@ return /******/ (function(modules) { // webpackBootstrap
                     }
                 }
             }
-
         },
         Behaviors:{
             HotKeyAllowed:false,

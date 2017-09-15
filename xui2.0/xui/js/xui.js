@@ -541,10 +541,11 @@ new function(){
             return str.replace(/\\u([0-9a-f]{3})([0-9a-f])/g,function(a,b,c){return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
         },
         urlEncode:function(hash){
-            var a=[],i,o;
+            var a=[],b=[],i,o;
             for(i in hash)
                 if(xui.isDefined(o=hash[i]))
-                    a.push(encodeURIComponent(i)+'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+                    a.push((b[b.length]=encodeURIComponent(i)) +'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+            a=xui.arr.stableSort(a,function(x,y,i,j){return b[i]>b[j]?1:b[i]==b[j]?0:-1});
             return a.join('&');
         },
         urlDecode:function(str, key){
@@ -562,7 +563,7 @@ new function(){
             return key?hash[key]:hash;
         },
         getUrlParams:function(url){
-            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+/,''));
+            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,''));
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
@@ -675,7 +676,7 @@ new function(){
                     for(var i=0,l=arr.length,a=[],b=[];i<l;i++)b[i]=arr[a[i]=i];
                     if(xui.isFun(sortby))
                         a.sort(function(x,y){
-                            return sortby.call(arr,arr[x],arr[y]) || (x>y?1:-1);
+                            return sortby.call(arr,arr[x],arr[y],x,y) || (x>y?1:-1);
                         });
                     else
                         a.sort(function(x,y){
@@ -1218,6 +1219,11 @@ xui.merge(xui,{
                     obj=="{undefined}"?undefined:
                     obj=="{now}"?new Date():
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
+                    // {ab(3,"a")} 
+                    // only one level, {a.b()} is not allowed
+                    // scope allows hash only
+                    ((t=/^\s*\{([\w]+\([^)]*\))\s*\}\s*$/.exec(obj)) && xui.isHash(scope)) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope):
+                    //{a.b.c}
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
                    : xui.adjustRes(obj, false, true, true, null, scope)
@@ -1995,7 +2001,10 @@ new function(){
                     page:scope,
                     args:args,
                     functions:xui.$cache.functions,
-                    'global':xui.$cache.data
+                    'global':xui.$cache.data,
+                    // special functions
+                    getCookies:xui.Cookies.get,
+                    getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 },
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2047,7 +2056,7 @@ new function(){
                             o=o.replace("[data]","");
                             jsondata=1;
                         }
-                        o=xui.adjustVar(o, _ns);
+                        o=xui.adjustVar(o, _ns)||xui.adjustVar(o);
                         // for file
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
@@ -2067,6 +2076,7 @@ new function(){
                 adjust=adjustparam(conf.adjust)||null,
                 iconditions=[],
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+
             // cover with inline params
             if(method.indexOf("-")!=-1){
                 t=method.split("-");
@@ -2078,7 +2088,7 @@ new function(){
             // currently, support and only
             // TODO: complex conditions
             for(var i=0,l=conditions.length;i<l;i++){
-                if(!comparevars(xui.adjustVar(conditions[i].left, _ns),xui.adjustVar(conditions[i].right, _ns),conditions[i].symbol)){
+                if(!comparevars(xui.adjustVar(conditions[i].left, _ns)||xui.adjustVar(conditions[i].left),xui.adjustVar(conditions[i].right, _ns)||xui.adjustVar(conditions[i].right),conditions[i].symbol)){
                     if(typeof resume=="function")resume();
                     return;
                 }
@@ -2092,12 +2102,12 @@ new function(){
                         case 'page':
                             // handle switch
                             if(method=="switch"){
-                                if(!xui.History._excallback){
-                                    xui.History.setCallback(function(fi,init){
+                                if(!xui.History._callbackTag){
+                                    xui.History._callbackTag = function(fi,init){
                                        if(init)return;
                                        var ar=xui.urlDecode(fi||"");
-                                       if(!ar.xuicom){
-                                            ar.xuicom="App";
+                                       if(!ar.cls){
+                                            ar.cls="App";
                                             ar.cache=true;
                                         }
                                         // get root only
@@ -2107,13 +2117,27 @@ new function(){
                                                 if(ar.cache)module.hide();else module.destroy();
                                             }
                                         });   
-                                        xui.showModule(ar.xuimodule);
-                                    });
+                                        xui.showModule(ar.cls);
+                                        return false;
+                                    };
                                 }
-                                
-                                var fi="xuimodule="+target;
-                                if(iparams[0])fi+="&cache="+(iparams[0]?true:false);
-                                xui.History.setFI(fi);
+                                var hash={
+                                    cls:target,
+                                    cache:!!iparams[0]
+                                };
+                                if(iparams[1] && !xui.isEmpty(iparams[1])){
+                                    hash=xui.merge(hash,iparams[1]);
+                                }
+                                xui.History.setFI(hash,true);
+                                return;
+                            }else if(method=="open"){
+                                var hash={
+                                    cls:target
+                                };
+                                if(iparams[0] && !xui.isEmpty(iparams[0])){
+                                    hash = xui.merge(hash, iparams[0]);
+                                }
+                                window.open('#!'+xui.urlEncode(hash));
                                 return;
                             }
                             // try to get module
@@ -2203,9 +2227,7 @@ new function(){
                                      else if(xui.isFun(t=xui.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
                                 case "var":
-                                    if(method=="cookie"){
-                                        xui.$cache.data.Cookies=xui.Cookies.get();
-                                    }else if(iparams[0].length){
+                                    if(iparams[0].length){
                                         var v = iparams[1];
                                         if(iparams[2])
                                             v=xui.get(v, iparams[2].split(/\s*\.\s*/));
@@ -2231,6 +2253,12 @@ new function(){
                                 break;
                                 case "callback":
                                     switch(method){
+                                        case "setCookies":
+                                            if(iparams[0]&&!xui.isEmpty(iparams[0]))xui.Cookies.set(iparams[0]);
+                                            break;
+                                        case "setFI":
+                                            if(iparams[0]&&!xui.isEmpty(iparams[0]))xui.History.setFI(iparams[0],true,true);
+                                            break;
                                         case "set":
                                             t=iparams[1];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){

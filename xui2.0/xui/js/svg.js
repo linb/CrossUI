@@ -1822,7 +1822,6 @@ xui.Class("xui.svg", "xui.UI",{
                     }
                 }
             }
-
         },
         Behaviors:{
             HotKeyAllowed:false,
