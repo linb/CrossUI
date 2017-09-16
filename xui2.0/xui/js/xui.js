@@ -2070,7 +2070,7 @@ new function(){
                     return o;
                 },
                 target=conf.target,
-                method=conf.method;
+                method=conf.method,
                 iparams=xui.clone(conf.args||conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=adjustparam(conf.adjust)||null,
@@ -2324,8 +2324,9 @@ new function(){
 
         _callFunctions:function(funs, args, scope, temp, holder){
             temp=temp||{};
-            var fun, resume=0;
-            var recursive=function(data){
+            var fun, resume=0,
+            recursive=function(data){
+                var rtn;
                 // set prompt's global var
                 if(xui.isStr(this))temp[this+""]=data||"";
                 //callback from [resume]
@@ -4345,7 +4346,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             return xui.absObj.$pickAlias(this);
         },
         $pickAlias:function(cls){
-            var a=cls._nameTag, p=cls._cache;
+            var a=cls._nameTag, p=cls._cache,t;
             while(t=(a+(++cls._nameId))){
                 for(var i=0,l=p.length;i<l;i++){
                     if(p[i].alias===t){
@@ -4468,7 +4469,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }else{
                     self.$EventHandlers[i]=o;
                     var f=function(fun){
-                        var l=arguments.length;
+                        var l=arguments.length,j;
                         if(l==1 && (typeof fun == 'function' || typeof fun == 'string' || xui.isHash(fun) || xui.isArr(fun)))
                             return this.each(function(v){
                                 if(v.renderId)

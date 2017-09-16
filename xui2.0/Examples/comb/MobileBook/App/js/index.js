@@ -96,8 +96,7 @@ xui.Class('App', 'xui.Module',{
                     "ITEM":{
                         "border-radius":"0"
                     }
-                }
-                )
+                })
                 );
             
             return children;
@@ -108,8 +107,8 @@ xui.Class('App', 'xui.Module',{
                 "desc":"load page 1",
                 "type":"page",
                 "target":"App.Address",
-                "params":["{page.xui_ui_div17}"],
-                "method":"show"
+                "method":"show",
+                "args":["{page.xui_ui_div17}"]
             }]
         }
     }

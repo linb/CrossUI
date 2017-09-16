@@ -1711,7 +1711,7 @@ xui.Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
+        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, restore, times, _goback){
             var me=arguments.callee, 
                 css=xui.CSS,
                 tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
@@ -1823,7 +1823,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                 });
                 if(offtime==duration){
-                    if(returned&&!_goback){
+                    if(restore&&!_goback){
                         starttime=xui.stamp();
                         _goback=1;
                         xui.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
@@ -3506,31 +3506,31 @@ type:4
             blinkAlert:{
                 params:{opacity:[1,0]}, 
                 duration:200, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             zoomAlert:{
                 params:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
                 duration:100, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             translateXAlert:{
                 params:{translateX:[0,5]}, 
                 duration:100, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             translateYAlert:{
                 params:{translateY:[0,5]}, 
                 duration:100, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             rotateAlert:{
                 params:{rotate:[0,360]}, 
                 duration:400, 
-                returned: false
+                restore: false
             }
         },
         $preDefinedEffects:{
@@ -3740,7 +3740,7 @@ type:4
         free:function(id){
            xui.Dom.setCover(false,id);
         },
-        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, returned,times){
+        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, restore,times){
             var node = document.createElement('div');
             xui.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
@@ -3750,7 +3750,7 @@ type:4
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
-            }, duration, step, type, threadid, unit, returned, times);
+            }, duration, step, type, threadid, unit, restore, times);
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){

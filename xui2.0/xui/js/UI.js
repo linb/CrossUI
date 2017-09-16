@@ -927,6 +927,40 @@ xui.Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
+        animate:function(key, callback){
+            // only for the first profile
+            var prf=this.get(0),
+                node=prf.getRootNode(),
+                tid=xui.getNodeData(node,'_inthread'),
+                reset=xui.getNodeData(node,'_animationreset');
+            if(tid && xui.Thread.isAlive(tid)){
+                xui.Thread(tid).abort('force');
+                xui.setNodeData(node,'_inthread',null);
+            }
+            if(typeof reset=="function"){
+                reset();
+                xui.setNodeData(node,'_animationreset',null);
+            }
+            if(!key)key="blinkAlert";
+
+            var item = (xui.isHash(key) && key.params) ? key : xui.Dom.$preDefinedAnims[key];
+            if(item && item.params){
+                var onEnd;
+                if(xui.isFun(callback)){
+                    if(xui.isFun(item.onEnd)){
+                        onEnd=function(){
+                            item.onEnd.apply(this,arguments);
+                            callback.apply(this,arguments);
+                        };
+                    }else{
+                        onEnd=callback;
+                    }
+                }else if(xui.isFun(item.onEnd)){
+                    onEnd=item.onEnd;;
+                }
+                prf.getRoot().animate(item.params, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
+            }
+        },
         hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
             var prf=this.get(0),source=prf.boxing(),popmenu;
             if(!prf.box.$EventHandlers.beforeHoverEffect){
@@ -1297,7 +1331,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     b,
                     root=o.getRoot(),
                     // attention animation
-                    attention=function(){
+                    attention=1?null:function(){
                         if(o && !o.destroyed && t.activeAnim){
                             xui.asyRun(function(){
                                 if(o && !o.destroyed)
@@ -2953,7 +2987,13 @@ xui.Class("xui.UI",  "xui.absObj", {
             '.xui-alert':{
                 'background-color':'#ff6600 !important'
             },
-            '.xui-cursor-touch, .xui-cursor-touch *':{
+             ".xui-uisyle-mobile":{
+                "background-clip": "padding-box",
+                border: "10px solid #333333",
+                "border-radius": "12px",
+                "box-shadow": "0 0 15px rgba(0, 0, 0, 0.28), 0 1px 1px rgba(255, 255, 255, 0.45) inset, 0 0 2px rgba(255, 255, 255, 0.2) inset"
+            },
+            ".xui-uisyle-mobile, .xui-uisyle-mobile *, .xui-cursor-touch, .xui-cursor-touch *": {
                 cursor: 'url('+xui.ini.img_touchcur+') 8 8,auto!important'
             },
             '.xui-icon-loading':{
@@ -5005,31 +5045,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }
             },
-            animConf:{
-                hidden:true,
-                ini:{}
-            },
             activeAnim:{
                 ini:"",
-                action:function(v){
-                    // stop first
-                    var prf=this,
-                        node=prf.getRootNode(),
-                        tid=xui.getNodeData(node,'_inthread'),
-                         reset=xui.getNodeData(node,'_animationreset');
-                    if(tid && xui.Thread.isAlive(tid)){
-                        xui.Thread(tid).abort('force');
-                        xui.setNodeData(node,'_inthread',null);
-                    }
-                    if(typeof reset=="function"){
-                        reset();
-                        xui.setNodeData(node,'_animationreset',null);
-                    }
-                    if(v){
-                        var items=this.properties.animConf, item=items[v];
-                        if(!item)item=xui.Dom.$preDefinedAnims[v];
-                        if(item && item.params)prf.getRoot().animate(item.params, item.onStart, item.onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.returned, item.times).start();
-                    }
+                action:function(key){
+                    this.boxing().animate(key);
                 }
             }
         },
@@ -6321,7 +6340,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var i='tagVar';
             if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
 
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","animConf"],function(key){
+            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"],function(key){
                 if(t=p[key]){
                     if(!xui.isHash(t)){
                         return;
@@ -6464,6 +6483,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         _prepareInlineObj:function(profile, item, tabindex){
             var obj=item.object;
             obj=obj['xui.absBox']?obj.get(0):obj['xui.UIProfile']?obj:xui.create(obj).get(0);
+            if(obj.destroyed)return null;
             if(obj['xui.UIProfile']){
                 obj.properties.position='relative';
                 if('tabindex' in obj.properties)obj.properties.tabindex=tabindex;

@@ -400,12 +400,13 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var o,r,j,
+            var r,
                 self = this,
                 tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
                 tt = self.events && self.events[name],
                 applyEvents=function(prf, events, host, args){
+                    var j;
                     args=args||[];
                     if(!xui.isArr(events))events=[events];
                     if(xui.isNumb(j=events[0].event) && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);

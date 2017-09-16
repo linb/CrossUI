@@ -47,18 +47,19 @@ width=device-width, height=device-height" />
         <!--link rel="stylesheet" type="text/css" href="CSS/default.css" /-->
         <title>Powered by CrossUI SPA Builder</title>
 </head>
-<body>
-    <div id="loading" style='padding-top:2em;text-align:center;'>
-        <img id='loadingimg' alt="Loading..." title="Loading..." src="img/logo.png" />
-    </div>
-</body>
+    <body>
+        <div id="frame" style='position:relative;width:352px;height:704px;margin:0 auto;background-size:cover;background-image:url(img/frame2.png)'>
+            <div id='content' class='xui-cursor-touch' style='position:absolute;top: 88px;left:27px;width:298px;height:530px;'>
+                <img id='loadingimg' alt="Loading..." title="Loading..." style="padding-top:20px;" src="img/logo.png" />
+            </div>        
+        </div>
+    </body>
 </html>
 <script type="text/javascript">
     if(/#.*touch\=(1|true)/.test(location.href))window.xui_ini={fakeTouch:1};
     document.body.className +=" xui-cursor-touch";
 </script>
-<script type="text/javascript" src="../../../runtime/xui/js/xui-debug.js"></script>
-<script type="text/javascript" src="xuiconf.js"></script>
+<script type="text/javascript" src="../../runtime/xui/js/xui-debug.js"></script>
 <script type="text/javascript">
     var args = xui.getUrlParams(),
           onEnd = function(){xui('loading').remove();};
@@ -66,9 +67,9 @@ width=device-width, height=device-height" />
       xui.ini.$FontIconsCDN=args.ficdn;
     }
     if(args&&args.cls){
-        xui.launch(args.cls, onEnd, args && args.lang||'', args && args.theme||'webflat');
+        xui.launch(args.cls, onEnd, args && args.lang||'', args && args.theme||'webflat',null,xui('content'));
         document.title += " [" + args.cls + "]";
     }else{
-        xui.launch('App/js/index.js', onEnd, args && args.lang||'', args && args.theme||'webflat');
+        xui.launch('App/js/index.js', onEnd, args && args.lang||'', args && args.theme||'webflat',null,xui('content'));
     }
 </script>

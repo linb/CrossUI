@@ -246,7 +246,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             upper=null;
             return rtn;
         },
-        _drop:function(e, src, baseNode){
+        _drop:function(e, src, baseNode,ignoreEvent){
             return this.each(function(profile){
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
@@ -261,7 +261,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -434,7 +434,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(profile.beforePopShow && false===box.beforePopShow(profile, drop))
+                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop))
                         return;
                     //pop
                     var node=o.reBoxing();
@@ -465,14 +465,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().popFileSelector();
                 }
 
-                if(profile.afterPopShow)
+                if(!ignoreEvent && profile.afterPopShow)
                     box.afterPopShow(profile, drop);
             });
         },
-        expand:function(node){
+        expand:function(node, ignoreEvent){
             var profile=this.get(0);
             if(profile.renderId)
-                profile.boxing()._drop(null,node,node);
+                profile.boxing()._drop(null,node,node,ignoreEvent);
         },
         collapse:function(){
             var profile=this.get(0);

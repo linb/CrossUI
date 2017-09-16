@@ -2071,7 +2071,7 @@ new function(){
                     return o;
                 },
                 target=conf.target,
-                method=conf.method;
+                method=conf.method,
                 iparams=xui.clone(conf.args||conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=adjustparam(conf.adjust)||null,
@@ -2325,8 +2325,9 @@ new function(){
 
         _callFunctions:function(funs, args, scope, temp, holder){
             temp=temp||{};
-            var fun, resume=0;
-            var recursive=function(data){
+            var fun, resume=0,
+            recursive=function(data){
+                var rtn;
                 // set prompt's global var
                 if(xui.isStr(this))temp[this+""]=data||"";
                 //callback from [resume]
@@ -4346,7 +4347,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             return xui.absObj.$pickAlias(this);
         },
         $pickAlias:function(cls){
-            var a=cls._nameTag, p=cls._cache;
+            var a=cls._nameTag, p=cls._cache,t;
             while(t=(a+(++cls._nameId))){
                 for(var i=0,l=p.length;i<l;i++){
                     if(p[i].alias===t){
@@ -4469,7 +4470,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }else{
                     self.$EventHandlers[i]=o;
                     var f=function(fun){
-                        var l=arguments.length;
+                        var l=arguments.length,j;
                         if(l==1 && (typeof fun == 'function' || typeof fun == 'string' || xui.isHash(fun) || xui.isArr(fun)))
                             return this.each(function(v){
                                 if(v.renderId)
@@ -10627,7 +10628,7 @@ xui.Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, returned, times, _goback){
+        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, restore, times, _goback){
             var me=arguments.callee, 
                 css=xui.CSS,
                 tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
@@ -10739,7 +10740,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                 });
                 if(offtime==duration){
-                    if(returned&&!_goback){
+                    if(restore&&!_goback){
                         starttime=xui.stamp();
                         _goback=1;
                         xui.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
@@ -12422,31 +12423,31 @@ type:4
             blinkAlert:{
                 params:{opacity:[1,0]}, 
                 duration:200, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             zoomAlert:{
                 params:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
                 duration:100, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             translateXAlert:{
                 params:{translateX:[0,5]}, 
                 duration:100, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             translateYAlert:{
                 params:{translateY:[0,5]}, 
                 duration:100, 
-                returned: true, 
+                restore: true, 
                 times:3
             },
             rotateAlert:{
                 params:{rotate:[0,360]}, 
                 duration:400, 
-                returned: false
+                restore: false
             }
         },
         $preDefinedEffects:{
@@ -12656,7 +12657,7 @@ type:4
         free:function(id){
            xui.Dom.setCover(false,id);
         },
-        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, returned,times){
+        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, restore,times){
             var node = document.createElement('div');
             xui.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
@@ -12666,7 +12667,7 @@ type:4
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
                 node=null;
-            }, duration, step, type, threadid, unit, returned, times);
+            }, duration, step, type, threadid, unit, restore, times);
         },
         //plugin event function to xui.Dom
         $enableEvents:function(name){
@@ -13812,12 +13813,13 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var o,r,j,
+            var r,
                 self = this,
                 tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
                 tt = self.events && self.events[name],
                 applyEvents=function(prf, events, host, args){
+                    var j;
                     args=args||[];
                     if(!xui.isArr(events))events=[events];
                     if(xui.isNumb(j=events[0].event) && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
@@ -18245,6 +18247,40 @@ xui.Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
+        animate:function(key, callback){
+            // only for the first profile
+            var prf=this.get(0),
+                node=prf.getRootNode(),
+                tid=xui.getNodeData(node,'_inthread'),
+                reset=xui.getNodeData(node,'_animationreset');
+            if(tid && xui.Thread.isAlive(tid)){
+                xui.Thread(tid).abort('force');
+                xui.setNodeData(node,'_inthread',null);
+            }
+            if(typeof reset=="function"){
+                reset();
+                xui.setNodeData(node,'_animationreset',null);
+            }
+            if(!key)key="blinkAlert";
+
+            var item = (xui.isHash(key) && key.params) ? key : xui.Dom.$preDefinedAnims[key];
+            if(item && item.params){
+                var onEnd;
+                if(xui.isFun(callback)){
+                    if(xui.isFun(item.onEnd)){
+                        onEnd=function(){
+                            item.onEnd.apply(this,arguments);
+                            callback.apply(this,arguments);
+                        };
+                    }else{
+                        onEnd=callback;
+                    }
+                }else if(xui.isFun(item.onEnd)){
+                    onEnd=item.onEnd;;
+                }
+                prf.getRoot().animate(item.params, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
+            }
+        },
         hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
             var prf=this.get(0),source=prf.boxing(),popmenu;
             if(!prf.box.$EventHandlers.beforeHoverEffect){
@@ -18615,7 +18651,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     b,
                     root=o.getRoot(),
                     // attention animation
-                    attention=function(){
+                    attention=1?null:function(){
                         if(o && !o.destroyed && t.activeAnim){
                             xui.asyRun(function(){
                                 if(o && !o.destroyed)
@@ -20271,7 +20307,13 @@ xui.Class("xui.UI",  "xui.absObj", {
             '.xui-alert':{
                 'background-color':'#ff6600 !important'
             },
-            '.xui-cursor-touch, .xui-cursor-touch *':{
+             ".xui-uisyle-mobile":{
+                "background-clip": "padding-box",
+                border: "10px solid #333333",
+                "border-radius": "12px",
+                "box-shadow": "0 0 15px rgba(0, 0, 0, 0.28), 0 1px 1px rgba(255, 255, 255, 0.45) inset, 0 0 2px rgba(255, 255, 255, 0.2) inset"
+            },
+            ".xui-uisyle-mobile, .xui-uisyle-mobile *, .xui-cursor-touch, .xui-cursor-touch *": {
                 cursor: 'url('+xui.ini.img_touchcur+') 8 8,auto!important'
             },
             '.xui-icon-loading':{
@@ -22323,31 +22365,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }
             },
-            animConf:{
-                hidden:true,
-                ini:{}
-            },
             activeAnim:{
                 ini:"",
-                action:function(v){
-                    // stop first
-                    var prf=this,
-                        node=prf.getRootNode(),
-                        tid=xui.getNodeData(node,'_inthread'),
-                         reset=xui.getNodeData(node,'_animationreset');
-                    if(tid && xui.Thread.isAlive(tid)){
-                        xui.Thread(tid).abort('force');
-                        xui.setNodeData(node,'_inthread',null);
-                    }
-                    if(typeof reset=="function"){
-                        reset();
-                        xui.setNodeData(node,'_animationreset',null);
-                    }
-                    if(v){
-                        var items=this.properties.animConf, item=items[v];
-                        if(!item)item=xui.Dom.$preDefinedAnims[v];
-                        if(item && item.params)prf.getRoot().animate(item.params, item.onStart, item.onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.returned, item.times).start();
-                    }
+                action:function(key){
+                    this.boxing().animate(key);
                 }
             }
         },
@@ -23639,7 +23660,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var i='tagVar';
             if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
 
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder","animConf"],function(key){
+            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"],function(key){
                 if(t=p[key]){
                     if(!xui.isHash(t)){
                         return;
@@ -23782,6 +23803,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         _prepareInlineObj:function(profile, item, tabindex){
             var obj=item.object;
             obj=obj['xui.absBox']?obj.get(0):obj['xui.UIProfile']?obj:xui.create(obj).get(0);
+            if(obj.destroyed)return null;
             if(obj['xui.UIProfile']){
                 obj.properties.position='relative';
                 if('tabindex' in obj.properties)obj.properties.tabindex=tabindex;
@@ -31596,7 +31618,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             upper=null;
             return rtn;
         },
-        _drop:function(e, src, baseNode){
+        _drop:function(e, src, baseNode,ignoreEvent){
             return this.each(function(profile){
                 var pro = profile.properties, type=pro.type, cacheDrop=pro.cachePopWnd;
                 if(pro.disabled||pro.readonly)return;
@@ -31611,7 +31633,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if((profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -31784,7 +31806,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(profile.beforePopShow && false===box.beforePopShow(profile, drop))
+                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop))
                         return;
                     //pop
                     var node=o.reBoxing();
@@ -31815,14 +31837,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().popFileSelector();
                 }
 
-                if(profile.afterPopShow)
+                if(!ignoreEvent && profile.afterPopShow)
                     box.afterPopShow(profile, drop);
             });
         },
-        expand:function(node){
+        expand:function(node, ignoreEvent){
             var profile=this.get(0);
             if(profile.renderId)
-                profile.boxing()._drop(null,node,node);
+                profile.boxing()._drop(null,node,node,ignoreEvent);
         },
         collapse:function(){
             var profile=this.get(0);
