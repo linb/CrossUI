@@ -356,7 +356,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 overflow:'visible'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:0,
+                padding:'0 .125em',
                 margin:0,
                 'vertical-align': 'middle'
             },

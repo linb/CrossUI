@@ -348,7 +348,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 module.tg.updateHeader("key", xui.adjustRes(prop.keyCaption)||"key");
                 module.tg.updateHeader("value", xui.adjustRes(prop.valueCaption)||"value");
                 module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
-                
+
                 if('value' in prop) module.setValue(prop.value);
                 if(('tg' in module) && ('notree' in prop) && prop.notree){
                     module.tg.setTreeMode('none');
@@ -359,7 +359,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         propSetAction:function(prop){
             var module=this;
-            if(module.renderId && module.tg && module.tg.getRootNode()){
+            if(module._innerModulesCreated && module.tg){
                 if('keyCaption' in prop) module.tg.updateHeader("key", xui.adjustRes(prop.keyCaption)||"");
                 if('valueCaption' in prop) module.tg.updateHeader("value", xui.adjustRes(prop.valueCaption)||"");
                 if('bigFont' in prop) module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});

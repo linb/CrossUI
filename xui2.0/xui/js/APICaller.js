@@ -63,10 +63,10 @@ xui.Class("xui.APICaller","xui.absObj",{
                 proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
                 queryPasswrod=prop.queryPasswrod,
-                queryArgs=xui.copy(prop.queryArgs),
+                queryArgs=xui.clone(prop.queryArgs),
                 oAuth2Token=prop.oAuth2Token,
-                queryOptions=xui.copy(prop.queryOptions),
-                queryHeader=xui.copy(prop.queryHeader),
+                queryOptions=xui.clone(prop.queryOptions),
+                queryHeader=xui.clone(prop.queryHeader),
                 requestDataSource=prop.requestDataSource,
                 responseDataTarget=prop.responseDataTarget,
                 responseCallback=prop.responseCallback;
@@ -85,15 +85,16 @@ xui.Class("xui.APICaller","xui.absObj",{
             // merge request data
             if(requestDataSource&&requestDataSource.length){
                 for(var i in requestDataSource){
-                    var o=requestDataSource[i],t;
+                    var o=requestDataSource[i],t,v,path;
                     switch(o.type){
                         case "databinder":
                             if(t = xui.DataBinder.getFromName(o.name)){
                                 if(!t.updateDataFromUI()){
                                     return;
                                 }else{
-                                    if(o.path) xui.set(queryArgs, o.path.split('.'),t.getData());
-                                    else xui.merge(queryArgs, t.getData(), 'without');
+                                    path=(o.path||"").split('.');
+                                    if(xui.isHash(v = xui.get(queryArgs, path)))xui.merge(v, t.getData(), 'without');
+                                    else xui.set(queryArgs, path,t.getData());
                                 }
                             }
                             break;
@@ -102,8 +103,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                                 if(!t.checkValid() || !t.checkRequired()){
                                     return;
                                 }else{
-                                    if(o.path)  xui.set(queryArgs, o.path.split('.'), t.getFormValues());
-                                    else xui.merge(queryArgs, t.getFormValues(), 'without');
+                                    path=(o.path||"").split('.');
+                                    if(xui.isHash(v = xui.get(queryArgs, path)))xui.merge(v, t.getFormValues(), 'without');
+                                    else xui.set(queryArgs, path,t.getFormValues());
                                 }
                             }
                             break;

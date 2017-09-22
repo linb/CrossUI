@@ -17027,6 +17027,9 @@ xui.set(xui.Locale,["en","app"], {
             },
             getActiveRow:{
                 $desc:"Gets the current active row",
+                $paras:[
+                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                ],
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.grid1311'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17115,7 +17118,7 @@ xui.set(xui.Locale,["en","app"], {
             getRows :{
                 $desc:"Gets the all rows of this grid",
                 $paras:[
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17217,7 +17220,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Ojbect",
                 $paras:[
                     "colId [Required] : String, column id",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get header's data; 'min': get header's min data; else, return the memory one"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17270,7 +17273,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "rowId [Required] : String",
-                    "type [Optional] : String, 'data': get rows' data; 'map' get map data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17286,7 +17289,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [Required] : Object",
-                    "type [Optional] : String, 'data': get rows' data; 'map' get map data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
                 ]
             },
             getHeaderByCell:{
@@ -17294,7 +17297,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [Required] : Object",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get header's data; 'min': get header's min data; else, return the memory one"
                 ]
             },
             getHeaderbyCell:{
@@ -17341,14 +17344,17 @@ xui.set(xui.Locale,["en","app"], {
             },
             getRowMap:{
                 $desc:"Gets the active or specified  row's map",
-                $rtn:"Object"
+                $rtn:"Object",
+                $paras:[
+                    "rowId [Optional] : String, [null] represents the current actived row"
+                ]
             },
             setRowMap :{
                 $desc:"Uses map to set the active or specified row",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Object.  key/value paires",
-                    $force
+                    "rowId [Optional] : String, [null] represents the current actived row",
+                    "hash [Required] : Object.  key/value paires"
                 ]
             },
             getRowNumbered :{

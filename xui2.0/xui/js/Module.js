@@ -604,7 +604,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 }catch(e){}
                 if(arr.length){
                     if(self.Required&&xui.isArr(self.Required)){
-                        self.Required.concat(arr);
+                        self.Required=self.Required.concat(arr);
                     }else{
                         self.Required=arr;
                     }
@@ -719,7 +719,7 @@ xui.Class('xui.Module','xui.absProfile',{
             self.setProperties({});
         },
         iniComponents:function(){},
-
+        
         getProfile:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 

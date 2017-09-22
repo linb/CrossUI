@@ -214,7 +214,8 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 display:'block',
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
-                position:'relative'
+                position:'relative',
+                'white-space': 'nowrap'
             },
             MARK:{
                $order:1,
@@ -224,7 +225,8 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             CAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 padding:'.167em',
-                'font-size':'1em'
+                'font-size':'1em',
+                'white-space': 'normal'
             },
             OPT:{
                 $order:10,
@@ -236,7 +238,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 display:'none'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:0,
+                padding:'0 .125em',
                 margin:0,
                 'vertical-align': 'middle'
             },

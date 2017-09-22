@@ -23,6 +23,12 @@ class MYSQL{
         if (mysqli_connect_errno($this->link_id))
             throw new LINB_E("Cant connect to server: $host.");
 
+        if(function_exists("mysqli_set_charset")){
+            mysqli_set_charset( $this->link_id, 'utf8' );
+        }else{
+            mysqli_query( $this->link_id, 'SET NAMES "utf8" COLLATE "utf8_general_ci"' );
+        }
+
         $this->host = $host;
         $this->user = $user;
         $this->pass = $pass;

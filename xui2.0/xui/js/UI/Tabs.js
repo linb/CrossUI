@@ -358,6 +358,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         LTAGCMDS:{
                                             $order:1,
                                             tagName:'span',
+                                            className:'xui-ltag-cmds',
                                             style:'{_ltagDisplay}',
                                             text:"{ltagCmds}"
                                         },
@@ -378,6 +379,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                             RTAGCMDS:{
                                                 $order:0,
                                                 tagName:'span',
+                                                className:'xui-rtag-cmds',
                                                 style:'{_rtagDisplay}',
                                                 text:"{rtagCmds}"
                                             },
@@ -535,7 +537,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'vertical-align':'middle'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:0,
+                padding:'0 .125em',
                 margin:0,
                 'vertical-align': 'middle'
             },

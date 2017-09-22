@@ -191,7 +191,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         Templates:{
             tagName:'div',
             style:'{_style}',
-            className:'{_className}',
+            className:'{_className} {_trans}',
             text:"{items}",
             $submap:{
                 items:{
@@ -229,6 +229,11 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 overflow:'hidden',
                 left:0,
                 top:0
+            },
+            "KEY-trans, KEY-trans > ITEM, KEY-trans > ITEM > PANEL, KEY-trans > ITEM > MOVE, KEY-trans > ITEM > CMD":{
+                $order:100,
+                "background-color":"transparent",
+                "border":"none"
             },
             MOVE:{
                 $order:0,
@@ -451,7 +456,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         sum=0, cur,
                         innerW=null,innerH=null,mainItem;
                     for (var i=0,l=t.items.length; i<l; i++){
-                        sum += t.items[i].size || 80;
+                        if(!t.items[i].hidden)sum+= t.items[i].size || 80;
                         if(t.items[i].id=="main")mainItem=t.items[i];
                     }
                     //add offset and refresh
@@ -627,6 +632,12 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     this.adjustSize();
                 }
             },
+            transparent:{
+                ini:false,
+               action:function(v){
+                    this.getRoot().tagClass('-trans', !!v);
+               }
+            },
             items:{
                 ini:[] 
             }
@@ -701,9 +712,11 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     {id:'before', pos:'before', locked:false, size:60, min: 50, max:200},
                     {id:'after',pos:'after', locked:false, size:60, min: 50, max:200}
                 ]);
-
             prop.items = this._adjustItems(prop.items);
-            return arguments.callee.upper.call(this, profile);
+
+            var data = arguments.callee.upper.call(this, profile);
+            data._trans=data.transparent?profile.getClass("KEY","-trans"):"";
+            return data;
         },
         _prepareItems:function(profile, items){
             var data = arguments.callee.upper.apply(this, arguments);
@@ -797,7 +810,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 obj[itemId] = {};
                 obj2[itemId] = {};
 //                obj3[itemId] = o;
-                if(pct)sum+=o.size||80;
+                if(pct && !o.hidden)sum+=o.size||80;
             });
 
             var fun=function(prop,w,width,left,right,offset,forceoffset){

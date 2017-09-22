@@ -16945,6 +16945,9 @@ xui.set(xui.Locale,["cn","app"], {
             },
             getActiveRow:{
                 $desc:"得到当前的活动行",
+                $paras:[
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                ],
                 $rtn:"Object",
                 $snippet:[
                     "var id='xui.temp.grid1311'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17033,7 +17036,7 @@ xui.set(xui.Locale,["cn","app"], {
             getRows :{
                 $desc:"获取表格的所有行",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17187,7 +17190,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "rowId [必需参数] : String",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17203,7 +17206,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object",
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             getHeaderByCell:{
@@ -17211,7 +17214,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object",
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到带有行id的map; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到行数据;  'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
                 ]
             },
             getHeaderbyCell:{
@@ -17259,14 +17262,17 @@ xui.set(xui.Locale,["cn","app"], {
             },
             getRowMap:{
                 $desc:"得到当前活动行或指定行的键值对",
-                $rtn:"Object"                
+                $paras:[
+                    "rowId [可选参数] : String, 输入null表示当前选中行"
+                ],
+                $rtn:"Object"
             },
             setRowMap :{
                 $desc:"以键值对的格式设置当前活动或给定行",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object. 键值对",
-                    $force
+                    "rowId [可选参数] : String, 输入null表示当前选中行",
+                    "hash [必需参数] : Object. 键值对"
                 ]
             },
             getRowNumbered :{

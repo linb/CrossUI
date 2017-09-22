@@ -2146,10 +2146,10 @@ new function(){
                             if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
 
                             // handle hide / destroy
-                            if(method=="show"||method=="pop"){
+                            if(method=="show"||method=="popUp"){
                                 // special for xui.Module.show
                                 iparams.unshift(function(err,module){
-                                    if(method=="pop" && !err){
+                                    if(method=="popUp" && !err){
                                         t=module.getUIComponents(true);
                                         if((t=t.getRoot())&&(t=t.get(0)))
                                             xui(t).pop(iparams[1]||_ns.args[0]);
@@ -2168,10 +2168,12 @@ new function(){
                             break;
                         case 'control':
                         case 'module':
-                            if(method=="pop"){
+                            if(method=="popUp"){
                                  t=xui.get(scope,[target]);
                                  if((t=t.getRoot())&&(t=t.get(0)))
                                     xui(t).pop(iparams[1]||_ns.args[0]);
+                            }else if(method=="disable"||method=="enable"){
+                                if(xui.isFun(t=xui.get(scope,[target,"setDisabled"])))t.apply(scope[target],[method=="disable",true]);
                             }else{
                                 if(method=="setProperties"){
                                     // [0] is native var, [1] is expression var
@@ -2343,10 +2345,10 @@ new function(){
                             };
                             // onOK
                             if('onOK' in fun)onOK=(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
-                               resumeFun("okData",arguments);
+                               if(resumeFun)resumeFun("okData",arguments);
                             };
                             if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
-                                resumeFun("koData",arguments);
+                                if(resumeFun)resumeFun("koData",arguments);
                             };
                             if(false===(rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun))){
                                 resumeFun=resume=temp=recursive=null;

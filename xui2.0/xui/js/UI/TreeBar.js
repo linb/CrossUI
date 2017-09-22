@@ -395,7 +395,8 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             ITEMCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
-                padding:'.167em'
+                padding:'.167em',
+                'white-space': 'normal'
             },
             OPT:{
                 $order:10,
@@ -407,7 +408,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 display:'none'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:0,
+                padding:'0 .125em',
                 margin:0,
                 'vertical-align': 'middle'
             },
