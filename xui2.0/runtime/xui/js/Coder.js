@@ -320,15 +320,15 @@ xui.Class("xui.Coder", null,{
                 code=xui.Coder.replace(code,arr);
                 if(!reverse){
                     arr=[
-                        [/([\[])\s*([\{])/.source, function(a,i){return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
-                        [/[\{]/.source, function(a,i){return a[i]+'\n'+space[++deep]}],
+                        [/([\[\{])\s*([\[\{])/.source, function(a,i){return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
+                        [/[\[\{]/.source, function(a,i){return a[i]+'\n'+space[++deep]}],
                         [/[\x02\;]/.source, function(a,i){return a[i]+'\n'+space[deep]}],
                         [/(\,)([\x03\x04\w_\-]+\:)/.source, function(a,i){return a[i+1]+'\n'+space[deep]+a[i+2]}],
                         [/\x01/.source, function(a,i){return '\n'+space[deep]+a[i]}],
-                        [/([\}])\s*([\]])\s*([\,]*)/.source, function(a,i){return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
-                        [/([\}])\s*([\]])\s*([\;]*)/.source, function(a,i){return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
-                        [/[\}]\s*[\,]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
-                        [/[\}]\s*[\;]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }]
+                        [/([\]\}])\s*([\]\}])\s*([\,]*)/.source, function(a,i){return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
+                        [/([\]\}])\s*([\]\}])\s*([\;]*)/.source, function(a,i){return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
+                        [/[\]\}]\s*[\,]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
+                        [/[\]\}]\s*[\;]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }]
                     ];
                     if(type!='css'){
                         arr.push([/for\s*\([\w ]+\sin\s/.source, "$0"],
@@ -364,7 +364,7 @@ xui.Class("xui.Coder", null,{
                     [/( *)(\x01[d]\d+\x02)/.source, function(s,i){s[i+1]=s[i+1]||'';return s[i+1] + cache.d[s[i+2]].replace(/(\n)(\s*)/g,'$1'+s[i+1])}],
                     [/\x03[g]\d+\x04/.source, function(s,i){return cache.g[s[i]].replace(/\s*,\s*/g,','+(reverse?'':' '))}],
                     [/[\x01\x03]([\w])\d+[\x02\x04]/.source, function(s,i){return cache[s[i+1]][s[i]]}],
-                    [/\}\s*([\)])/.source,'}$1']
+                    [/([\]\}])\s*([\)])/.source,'$1$2']
                 ]);
  
                 //return special chars

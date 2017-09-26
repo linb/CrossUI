@@ -1611,8 +1611,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this.get(0).getSubNode('CELLA', cellId).focus(true);
             return this;
         },
-        scrollIntoView:function(){
-        },
         getActiveCell:function(type){
             var ar,profile=this.get(0),m,v;
             if(profile.properties.activeMode!='cell')return;
@@ -1869,7 +1867,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 }
                             }
                         },
-                        TRLOCKED:{
+                        TRLOCKED1:{
                             tagName:'tr',
                             TDBODY11:{
                                 tagName:'td',
@@ -1944,10 +1942,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 tagName:'td'
                             },
                             TDTAIL2:{
-                                tagName:'td',
-                                FOOTER:{
-                                    $order:2
-                                }
+                                tagName:'td'
                             }
                         }
                     }
@@ -2840,7 +2835,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
 
-            TRLOCKED:{
+            TRLOCKED1:{
                 onMouseover:function(profile, e, src){
                     profile.box.$cancelHoverEditor(profile);
                 }

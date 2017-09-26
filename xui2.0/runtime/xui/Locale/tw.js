@@ -11,8 +11,10 @@
     Expand:'展開',
     noFlash:'No Flash PlugIn!',
     transparent:'透明',
-    required:'有必須字段沒有填寫',
-    invalid:'有无效字段'
+    required:'有必須字段',
+    required2:'有必須字段沒有填寫',
+    invalid:'无效字段',
+    invalid2:'有无效字段'
 };
 xui.Locale.tw.date={
     WEEKS:{

@@ -6270,6 +6270,14 @@ xui.set(xui.Locale,["cn","app"], {
                     "requestId : String"
                 ]
             },
+            beforeData:{
+                $desc:"在得到数据之前调用.  返回false可以阻止进一步动作",
+                $paras:[
+                    "profile : xui.Profile",
+                    "rspData : Object, 从远程调用返回的数据",
+                    "requestId : String"
+                ]
+            },
             onData:{
                 $desc:"在得到数据之后调用",
                 $paras:[
@@ -19445,6 +19453,7 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             beforeInputAlert:"在输入验证提示前"
          },
         'xui_APICaller' : {
+            beforeData:"获得数据之前",
             onData:"数据获得成功",
             onError:"数据获得失败",
             beforeInvoke:"远程调用之前",

@@ -6209,6 +6209,14 @@ xui.set(xui.Locale,["en","app"], {
                     "requestId : String"
                 ]
             },
+            beforeData:{
+                $desc:"Fired before data returns. If returns false, the further actions will be ignored",
+                $paras:[
+                    "profile : xui.Profile",
+                    "rspData : Object, the data from remoting call",
+                    "requestId : String"
+                ]
+            },
             onData:{
                 $desc:"Fired when data returns",
                 $paras:[

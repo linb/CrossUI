@@ -3718,7 +3718,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 if(!ins.checkValid()){
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'invalid')){
-                                            xui.alert('$inline.invalid',xui.getRes('$inline.invalid') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
+                                            xui.alert('$inline.invalid',xui.getRes('$inline.invalid2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
                                                 if(prf&&prf.renderId)
                                                        ins.activate();
                                             });
@@ -3737,7 +3737,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 if(prop.required && (!(i=ins.getUIValue())) && i!==0){
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'required')){
-                                            xui.alert('$inline.required',xui.getRes('$inline.required') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
+                                            xui.alert('$inline.required',xui.getRes('$inline.required2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
                                                 if(prf&&prf.renderId)
                                                        ins.activate();
                                             });

@@ -9,8 +9,10 @@
     no:'No',
     noFlash:'No Flash PlugIn!',
     transparent:'transparent',
-    required:'There is required field need to be filled out',
-    invalid:'There is invalid field'
+    required:'Required field',
+    required2:'There is required field need to be filled out',
+    invalid:'Invalid field',
+    invalid2:'There is invalid field'
 };
 xui.Locale.en.date={
     WEEKS:{

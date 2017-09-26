@@ -11,8 +11,10 @@
     Expand:'展开',
     noFlash:'需要Flash!',
     transparent:'透明',
-    required:'有必须字段没有填写',
-    invalid:'有无效字段'
+    required:'必填字段',
+    required2:'有必须字段没有填写',
+    invalid:'无效字段',
+    invalid2:'有无效字段'
 };
 xui.Locale.cn.date={
     WEEKS:{

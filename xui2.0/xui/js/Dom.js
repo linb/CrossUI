@@ -727,8 +727,9 @@ xui.Class('xui.Dom','xui.absBox',{
             return true;
         },
         scrollIntoView:function(){
-            if(this.get(0))this.get(0).scrollIntoView();
-            return this;
+            return  this.each(function(o){
+                o.scrollIntoView();
+            });
         },
         /*
         name format: 'xxxYxx', not 'xxx-yyy'
@@ -3972,11 +3973,13 @@ type:4
                     });
                 else{
                     var v=this.get(0);
-                    if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
-                        if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
+                    if(v){
+                        if(v===window || v===document){
+                            if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
+                            if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
+                        }
+                        return v[o];
                     }
-                    return v[o];
                 }
             })
         });

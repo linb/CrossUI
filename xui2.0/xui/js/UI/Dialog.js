@@ -1167,11 +1167,11 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             return xui.merge(prop, nr, function(o,i){return prop[i]!='auto'});
         },
 
-        _adjust:function(dialog,caption, content, left, top){
-            caption = caption ||'';
-            if(!xui.isSet(content)){
-                content = xui.adjustRes(caption);
-                caption = "";
+        _adjust:function(dialog,caption, content, dftTilte, left, top){
+            caption = xui.adjustRes(caption ||'');
+            if(!xui.isSet(content)||content===""){
+                content = caption;
+                caption = dftTilte||"";
             }
 
             var node = dialog.$div.reBoxing(),
@@ -1272,7 +1272,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             
             dialog.$btn.setCaption("&nbsp;&nbsp;"+(btnCap || xui.wrapRes('$inline.ok'))+"&nbsp;&nbsp;");
 
-            var size=xui.UI.Dialog._adjust(dialog,title, content);
+            var size=xui.UI.Dialog._adjust(dialog,title, content, "Alert");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
@@ -1356,7 +1356,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             delete dialog._$_clicked;
             dialog.$btn1.setCaption("&nbsp;&nbsp;"+(btnCapYes || xui.wrapRes('$inline.yes'))+"&nbsp;&nbsp;");
             dialog.$btn2.setCaption("&nbsp;&nbsp;"+(btnCapNo || xui.wrapRes('$inline.no'))+"&nbsp;&nbsp;");
-            var size=xui.UI.Dialog._adjust(dialog, title, caption);
+            var size=xui.UI.Dialog._adjust(dialog, title, caption, "Confirm");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
@@ -1411,7 +1411,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
 
             dialog.append(cmd).append(div).render();
 
-            var size=xui.UI.Dialog._adjust(dialog, title, content);
+            var size=xui.UI.Dialog._adjust(dialog, title, content, "Message");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');

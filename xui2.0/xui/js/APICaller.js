@@ -112,8 +112,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                     }
                 }
             }
-
-
+            // the global handler
+            if(xui.$cache.functions.APICaller_beforeInvoke && false===xui.$cache.functions.APICaller_beforeInvoke(prf, requestId))
+                return;
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
@@ -133,6 +134,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
                        if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+
+                        // the global handler
+                        if(xui.$cache.functions.APICaller_onError)xui.$cache.functions.APICaller_Error(prf, rspData);
                         if(prf.onError)prf.boxing().onError(prf, rspData);
                         xui.tryF(onFail,arguments,this);
                         xui.tryF(onEnd,arguments,this);
@@ -271,7 +275,13 @@ xui.Class("xui.APICaller","xui.absObj",{
                     if(xui.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
-
+                // the global handler
+                if(xui.$cache.functions.APICaller_beforeData && false===xui.$cache.functions.APICaller_beforeData(prf, rspData, requestId||this.uid)){
+                    return false;
+                }
+                if(prf.beforeData && false===prf.boxing().beforeData(prf, rspData, requestId||this.uid)){
+                    return false;
+                }
                 if(responseDataTarget&&responseDataTarget.length){
                     xui.arr.each(responseDataTarget, function(o){
                         var data = o.path?xui.get(rspData,o.path.split('.')):rspData,t;
@@ -493,6 +503,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             beforeInvoke:function(profile, requestId){},
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
+            beforeData:function(profile, rspData, requestId){},
             onError:function(profile, rspData, requestId){}
         },
         getMocker:function(){

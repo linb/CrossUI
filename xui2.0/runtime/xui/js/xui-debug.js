@@ -4899,8 +4899,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                     }
                 }
             }
-
-
+            // the global handler
+            if(xui.$cache.functions.APICaller_beforeInvoke && false===xui.$cache.functions.APICaller_beforeInvoke(prf, requestId))
+                return;
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
@@ -4920,6 +4921,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
                        if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+
+                        // the global handler
+                        if(xui.$cache.functions.APICaller_onError)xui.$cache.functions.APICaller_Error(prf, rspData);
                         if(prf.onError)prf.boxing().onError(prf, rspData);
                         xui.tryF(onFail,arguments,this);
                         xui.tryF(onEnd,arguments,this);
@@ -5058,7 +5062,13 @@ xui.Class("xui.APICaller","xui.absObj",{
                     if(xui.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
-
+                // the global handler
+                if(xui.$cache.functions.APICaller_beforeData && false===xui.$cache.functions.APICaller_beforeData(prf, rspData, requestId||this.uid)){
+                    return false;
+                }
+                if(prf.beforeData && false===prf.boxing().beforeData(prf, rspData, requestId||this.uid)){
+                    return false;
+                }
                 if(responseDataTarget&&responseDataTarget.length){
                     xui.arr.each(responseDataTarget, function(o){
                         var data = o.path?xui.get(rspData,o.path.split('.')):rspData,t;
@@ -5280,6 +5290,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             beforeInvoke:function(profile, requestId){},
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
+            beforeData:function(profile, rspData, requestId){},
             onError:function(profile, rspData, requestId){}
         },
         getMocker:function(){
@@ -5766,8 +5777,10 @@ xui.Class("xui.APICaller","xui.absObj",{
     no:'No',
     noFlash:'No Flash PlugIn!',
     transparent:'transparent',
-    required:'There is required field need to be filled out',
-    invalid:'There is invalid field'
+    required:'Required field',
+    required2:'There is required field need to be filled out',
+    invalid:'Invalid field',
+    invalid2:'There is invalid field'
 };
 xui.Locale.en.date={
     WEEKS:{
@@ -9648,8 +9661,9 @@ xui.Class('xui.Dom','xui.absBox',{
             return true;
         },
         scrollIntoView:function(){
-            if(this.get(0))this.get(0).scrollIntoView();
-            return this;
+            return  this.each(function(o){
+                o.scrollIntoView();
+            });
         },
         /*
         name format: 'xxxYxx', not 'xxx-yyy'
@@ -12893,11 +12907,13 @@ type:4
                     });
                 else{
                     var v=this.get(0);
-                    if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
-                        if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
+                    if(v){
+                        if(v===window || v===document){
+                            if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
+                            if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
+                        }
+                        return v[o];
                     }
-                    return v[o];
                 }
             })
         });
@@ -21042,7 +21058,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 if(!ins.checkValid()){
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'invalid')){
-                                            xui.alert('$inline.invalid',xui.getRes('$inline.invalid') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
+                                            xui.alert('$inline.invalid',xui.getRes('$inline.invalid2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
                                                 if(prf&&prf.renderId)
                                                        ins.activate();
                                             });
@@ -21061,7 +21077,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 if(prop.required && (!(i=ins.getUIValue())) && i!==0){
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'required')){
-                                            xui.alert('$inline.required',xui.getRes('$inline.required') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
+                                            xui.alert('$inline.required',xui.getRes('$inline.required2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
                                                 if(prf&&prf.renderId)
                                                        ins.activate();
                                             });
@@ -45378,8 +45394,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this.get(0).getSubNode('CELLA', cellId).focus(true);
             return this;
         },
-        scrollIntoView:function(){
-        },
         getActiveCell:function(type){
             var ar,profile=this.get(0),m,v;
             if(profile.properties.activeMode!='cell')return;
@@ -45636,7 +45650,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 }
                             }
                         },
-                        TRLOCKED:{
+                        TRLOCKED1:{
                             tagName:'tr',
                             TDBODY11:{
                                 tagName:'td',
@@ -45711,10 +45725,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 tagName:'td'
                             },
                             TDTAIL2:{
-                                tagName:'td',
-                                FOOTER:{
-                                    $order:2
-                                }
+                                tagName:'td'
                             }
                         }
                     }
@@ -46607,7 +46618,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
 
-            TRLOCKED:{
+            TRLOCKED1:{
                 onMouseover:function(profile, e, src){
                     profile.box.$cancelHoverEditor(profile);
                 }
@@ -52234,11 +52245,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return xui.merge(prop, nr, function(o,i){return prop[i]!='auto'});
         },
 
-        _adjust:function(dialog,caption, content, left, top){
-            caption = caption ||'';
-            if(!xui.isSet(content)){
-                content = xui.adjustRes(caption);
-                caption = "";
+        _adjust:function(dialog,caption, content, dftTilte, left, top){
+            caption = xui.adjustRes(caption ||'');
+            if(!xui.isSet(content)||content===""){
+                content = caption;
+                caption = dftTilte||"";
             }
 
             var node = dialog.$div.reBoxing(),
@@ -52339,7 +52350,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             
             dialog.$btn.setCaption("&nbsp;&nbsp;"+(btnCap || xui.wrapRes('$inline.ok'))+"&nbsp;&nbsp;");
 
-            var size=xui.UI.Dialog._adjust(dialog,title, content);
+            var size=xui.UI.Dialog._adjust(dialog,title, content, "Alert");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
@@ -52423,7 +52434,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             delete dialog._$_clicked;
             dialog.$btn1.setCaption("&nbsp;&nbsp;"+(btnCapYes || xui.wrapRes('$inline.yes'))+"&nbsp;&nbsp;");
             dialog.$btn2.setCaption("&nbsp;&nbsp;"+(btnCapNo || xui.wrapRes('$inline.no'))+"&nbsp;&nbsp;");
-            var size=xui.UI.Dialog._adjust(dialog, title, caption);
+            var size=xui.UI.Dialog._adjust(dialog, title, caption, "Confirm");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
@@ -52478,7 +52489,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             dialog.append(cmd).append(div).render();
 
-            var size=xui.UI.Dialog._adjust(dialog, title, content);
+            var size=xui.UI.Dialog._adjust(dialog, title, content, "Message");
 
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');

@@ -10,8 +10,10 @@
     Expand:'拡大します',
     noFlash:'No Flash PlugIn!',
     transparent:'トランスペアレント',
-    required:'フィールドに記入する必要はありません',
-    invalid:'無効フィールド'
+    required:'必須フィールドがあります',
+    required2:'フィールドに記入する必要はありません',
+    invalid:'無効フィールド',
+    invalid2:'無効フィールド'
 };
 xui.Locale.ja.date={
     WEEKS:{
