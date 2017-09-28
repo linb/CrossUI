@@ -6865,8 +6865,9 @@ xui.Class("xui.absList", "xui.absObj",{
             }
             return self;
         },
-        // filter: [true] => refilter
-        doFilter:function(itemFilter){
+        // filter: [true] => filter out
+        // value: the target value
+        doFilter:function(itemFilter, value){
             var ns=this,
                 profile=ns.get(0);
             if(profile){
@@ -6898,7 +6899,7 @@ xui.Class("xui.absList", "xui.absObj",{
                                         if(!item.hidden)hideItems.push(item.id);
                                     }
                                 }else{
-                                    if(itemFilter(item, profile)){
+                                    if(itemFilter(item, value, profile)){
                                         if(!item.hidden)hideItems.push(item.id);
                                     }else{
                                         count++;

@@ -366,7 +366,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return this._getObjByDom(src, "cell");
         },
         /*rows related*/
-        //type: 'original', 'data', 'min'
+        //type: 'original', 'data', 'map', 'min'
         getRows:function(type){
             var v=this.get(0).properties.rows,a,b;
             if(!xui.isArr(v))return [];
@@ -418,7 +418,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return this;
         },
         // filter: [true] => refilter
-        doFilter:function(rowFilter){
+        doFilter:function(rowFilter, value){
             var ns=this,
                 profile=ns.get(0);
             if(profile){
@@ -450,7 +450,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                         if(!row.hidden)hideRows.push(row.id);
                                     }
                                 }else{
-                                    if(rowFilter(row, profile)){
+                                    if(rowFilter(row, value, profile)){
                                         if(!row.hidden)hideRows.push(row.id);
                                     }else{
                                         count++;
@@ -4388,8 +4388,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     ins.setRows(rows);
                 },
-                get:function(){
-                    var o=this, prop=o.properties, header=prop.header, rows=prop.rows,
+                get:function(row){
+                    var o=this, prop=o.properties, header=prop.header, 
+                        one = row&&row.cells&&xui.isArr(row.cells),
+                        rows=  one ? [row] : xui.isArr(row)&&row[0]&&row[0].cells&&xui.isArr(row[0].cells) ? row: prop.rows,
                         l=header.length, h=rows.length;
                         columns=[],
                         data=[];
@@ -4406,7 +4408,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             data.push(hash);             
                         }
                     }
-                    return data;
+                    return one?data[0]:data;
                 }
             },
             tagCmds:{

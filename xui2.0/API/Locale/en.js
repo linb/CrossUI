@@ -3903,6 +3903,15 @@ xui.set(xui.Locale,["en","app"], {
         resetCSS:{
             $desc:"Add reset CSS to the current page"
         },
+        adjustFont:{
+            $desc:"调整当前窗口的基础字体",
+            $paras:[
+                "fontSize [Optional] : String, font size",
+                "fontFamily [Optional] : String, font family",
+                "fontWeight [Optional] : String, font weight",
+                "fontStyle [Optional] : String, font style"
+            ]
+        },
         addStyleSheet:{
             $desc:"Adds a &lt;style> element to DOM &lt;head>",
             $rtn:"Element",
@@ -6548,6 +6557,14 @@ xui.set(xui.Locale,["en","app"], {
 
     xui.set(xui.Locale,["en","doc","xui","absList"], {
         prototype:{
+            doFilter:{
+                $desc:"to filter the list",
+                $rtn:"[self]",
+                $paras:[
+                    "itemFilter [Required] : Function, The filter function. function(item, value, profile){if(item.tag == 'a') return true;}",
+                    "value [Optional]: Object, The filter value"
+                ]
+            },
             fireItemClickEvent:{
                 $desc:"To fires the click event on the specified item",
                 $rtn:"[self]",
@@ -18612,6 +18629,18 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"Creates a xui.svg.text Object"
         },
         prototype:{
+            getText :{
+                $desc:"Get text",
+                $rtn:"String"
+            },
+            setText :{
+                $desc:"Set text",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            }
         }
     });
 
@@ -18651,6 +18680,18 @@ xui.set(xui.Locale,["en","app"], {
                     "atrr [Required] : Object, attributes object",
                     "reset [Optional] : Boolean, to determine whether reset other attributes by its default value or not. Default is [true]",
                     "notify [Optional] : Boolean, to determine whether notify other elements of the control or not. Default is [true]"
+                ]
+            },
+            getText :{
+                $desc:"Get text",
+                $rtn:"String"
+            },
+            setText :{
+                $desc:"Set text",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
                 ]
             },
             getHAlign :{

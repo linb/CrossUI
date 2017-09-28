@@ -1062,10 +1062,8 @@ xui.merge(xui,{
                         style=null;
                     }
                 }
-                if(refresh!==false){
+                if(refresh!==false)
                     xui.CSS.adjustFont();
-                    if(xui.UI)xui.UI.getAll().reLayout(true);
-                 }
                 xui.tryF(onSucess);
             };
             if(key=='default'){
@@ -1220,10 +1218,10 @@ xui.merge(xui,{
                     obj=="{now}"?new Date():
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
                     // {ab(3,"a")} 
-                    // only one level, {a.b()} is not allowed
+                    // only one level, {a.b(3)} is not allowed
                     // scope allows hash only
                     ((t=/^\s*\{([\w]+\([^)]*\))\s*\}\s*$/.exec(obj)) && xui.isHash(scope)) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope):
-                    //{a.b.c}
+                    //{a.b.c} or {prf.boxing().getValue()}
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
                    : xui.adjustRes(obj, false, true, true, null, scope)
@@ -3264,7 +3262,10 @@ xui.Class('xui.Ajax','xui.absIO',{
                 var ns=this,obj,status = ns._XML.status;
                 _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
                 // try to get js object, or the original
-                _response=rspType=="json"?((obj=xui.unserialize(_txtresponse))===false?_txtresponse:obj):_txtresponse;
+                _response = rspType=="json" ?
+                    /^\s*\</.test(_txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(_txtresponse))) && obj.data ? obj.data    
+                    : ((obj=xui.unserialize(_txtresponse))===false?_txtresponse:obj) 
+                    : _txtresponse;
 
                 // crack for some local case ( OK but status is 0 in no-IE browser)
                 if(!status && xui._localReg.test(xui._localParts[1])){

@@ -345,7 +345,12 @@ xui.Class("xui.CSS", null,{
                 "}";
             this.addStyleSheet(css,"xui.CSSreset");
         },
-        adjustFont:function(){
+        adjustFont:function(fontSize, fontFamily, fontWeight, fontStyle){
+            if(fontSize)xui('html').css('font-size', fontSize);
+            if(fontFamily)xui('html').css('font-family', fontFamily);
+            if(fontWeight)xui('html').css('font-weight', fontWeight);
+            if(fontStyle)xui('html').css('font-style', fontStyle);
+
             this._dftEmStr='';
             this._getDftEmSize(true);
             this._dftRemStr='';

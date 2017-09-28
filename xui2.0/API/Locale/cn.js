@@ -3915,6 +3915,15 @@ xui.set(xui.Locale,["cn","app"], {
         resetCSS:{
             $desc:"给当前文档添加reset CSS"
         },
+        adjustFont:{
+            $desc:"调整当前窗口的基础字体",
+            $paras:[
+                "fontSize [可选参数] : String, 字号",
+                "fontFamily [可选参数] : String, 字体",
+                "fontWeight [可选参数] : String, 字体加粗",
+                "fontStyle [可选参数] : String, 字体风格"
+            ]
+        },
         addStyleSheet:{
             $desc:"添加一个&lt;style>元素到&lt;head>区域中",
             $rtn:"Element",
@@ -6607,6 +6616,14 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","absList"], {
         prototype:{
+            doFilter:{
+                $desc:"过滤条目",
+                $rtn:"[self]",
+                $paras:[
+                    "itemFilter [必需参数] : Function, 过滤函数. function(item, value, profile){if(item.tag == 'a') return true;}",
+                    "value [可选参数] : Object, 过滤目标值"
+                ]
+            },
             activate:{
                 $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
@@ -18531,6 +18548,18 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.svg.text对象"
         },
         prototype:{
+            getText :{
+                $desc:"获取文字",
+                $rtn:"String"
+            },
+            setText :{
+                $desc:"设置文字",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            }
         }
     });
 
@@ -18570,6 +18599,18 @@ xui.set(xui.Locale,["cn","app"], {
                     "atrr [必须参数] : Object, 属性键值对",
                     "reset [可选参数] : Boolean, 是否要同时设置其他属性(用默认值). 默认是[true]",
                     "notify [可选参数] : Boolean, 是否要通知控件的其他节点属性的变化. 默认是[true]"
+                ]
+            },
+            getText :{
+                $desc:"获取文字",
+                $rtn:"String"
+            },
+            setText :{
+                $desc:"设置文字",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
                 ]
             },
             getHAlign :{

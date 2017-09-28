@@ -263,7 +263,9 @@ xui.Class("xui.APICaller","xui.absObj",{
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
                 var mapb;
                 // ensure to json
-                if(!xui.isHash(rspData) && !xui.isStr(rspData)){
+                if((responseType=="XML"||responseType=="SOAP") && !xui.isHash(rspData)){
+                    if(xui.isStr(rspData))
+                        rspData=xui.XML.parseXML(rspData);
                     if(responseType=="XML")
                         rspData=xui.XMLRPC.parseResponse(rspData);
                     else if(responseType=="SOAP")

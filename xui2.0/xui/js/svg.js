@@ -2475,7 +2475,18 @@ xui.Class("xui.svg.text", "xui.svg",{
         DataModel:{
             attr:{
                 ini:{x:0,y:0,text:"text"}
-            }
+            },
+            text:{
+                ini:undefined,
+                hidden:true,
+                get:function(){
+                    var att=this.boxing().getAttr('KEY');
+                    return att&&att.text;
+                },
+                set:function(value){
+                        this.boxing().setAttr('KEY',{text:value||""},false);
+                }
+            },
         },
         Templates:{
             tagName:'text'
@@ -2596,6 +2607,7 @@ xui.Class("xui.svg.absComb", "xui.svg",{
                     if(i=='href'||i=='target')return false;
                 });
             }
+            delete prop.text;
             return o;
         },
         DataModel:{
@@ -2621,6 +2633,17 @@ xui.Class("xui.svg.absComb", "xui.svg",{
                 action: function(){
                     // adjust text postion
                     this.boxing()._adjustText();
+                }
+            },
+            text:{
+                ini:undefined,
+                hidden:true,
+                get:function(){
+                    var att=this.boxing().getAttr('TEXT');
+                    return att&&att.text;
+                },
+                set:function(value){
+                        this.boxing().setAttr('TEXT',{text:value||""},false);
                 }
             },
             shadow:true
@@ -2923,11 +2946,11 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 obj2=null;
             };
 
-/*
-            el = paper.text(attr.x, attr.y, att2.text);
-            el.node.id=prf.box.KEY+"-TEXT:"+prf.serialId+":";
-            s.push(el);
-*/
+            /*
+                        el = paper.text(attr.x, attr.y, att2.text);
+                        el.node.id=prf.box.KEY+"-TEXT:"+prf.serialId+":";
+                        s.push(el);
+            */
             return s;
         },
         _syncAttr:function(prf,options,shapeChanged){
