@@ -2872,13 +2872,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                 filter: 'flipv fliph'
             },
             '.xui-ltag-cmds':{
-                margin:'0',
-                "padding":'0 .125em',
+                margin:0,
+                padding:0,
                 'vertical-align':'middle'
             },
             '.xui-rtag-cmds':{
-                margin:'0',
-                "padding":'0 .125em',
+                margin:0,
+                padding:0,
                 'vertical-align':'middle'
             },
             '.xui-tag-cmd':{
@@ -3682,6 +3682,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getFormElements:function(subId, dirtiedOnly){
                             var a=this.getChildren(subId, false),
                                 elems = xui.absValue.pack(a);
+                            xui.filter(elems._nodes, function(prf){
+                                return !!xui.get(prf,['properties','formInput']);
+                            });
                             if(dirtiedOnly){
                                 var arr=[],ins,t;
                                 elems.each(function(p,z){
@@ -3751,13 +3754,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         formClear:function(subId){
                             return this.each(function(prf){
-                                prf.boxing().getFormElements().resetValue(null);
+                                prf.boxing().getFormElements(subId).resetValue(null);
                             });
                         },
                         formReset:function(subId){
                             return this.each(function(prf){
                                 var p = prf.properties,
-                                     elems = prf.boxing().getFormElements();
+                                     elems = prf.boxing().getFormElements(subId);
                                 if(prf.beforeFormReset && false===prf.boxing().beforeFormReset(prf, elems, subId)){
                                         return;
                                 }
@@ -3769,6 +3772,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         prf.boxing().afterFormReset(prf, elems, subId);
                                 }
                             });
+                        },
+                        updateFormValues:function(subId){
+                            ns.getFormElements(subId).updateValue();
                         },
                         formSubmit:function(ignoreAlert, subId){
                             var ns=this;
@@ -3804,7 +3810,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     apicaller = xui.APICaller.getFromName(p.formTarget);
                                 }
                                 if(apicaller){
-                                    apicaller.setQueryArgs(data);
+                                    apicaller.setQueryData(data,p.formDataPath);
                                     apicaller.invoke();
                                 }else{
                                     xui.Dom.submit(p.formAction, data, p.formMethod, p.formTarget, p.formEnctype);
@@ -3946,6 +3952,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 ini:'Alert',
                                 combobox:['Alert','_blank','_self','_parent','_top','[framename]','[APICaller]','function(d){xui.log(d)}']
                             },
+                           formDataPath:"",
                            formAction:"",
                            formEnctype:{
                                 ini:'application/x-www-form-urlencoded',
@@ -4107,7 +4114,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formAction,formEnctype'.split(','),function(o){
+                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+xui.str.initial(o);
@@ -5669,9 +5676,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                                             }
                                         }
                                     }
-                                    if(pprf&&!perW)delete pprf._conDockFlexFillW;
-                                    if(pprf&&!perH)delete pprf._conDockFlexFillH;
                                 }
+                                if(pprf._conDockFlexFillW)delete pprf._conDockFlexFillW;
+                                if(pprf._conDockFlexFillH)delete pprf._conDockFlexFillH;
 
                                 // repos && resize
                                 for(k=0;key=arr[k++];){
@@ -7508,6 +7515,7 @@ xui.Class("xui.absValue", "xui.absObj",{
                     if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
+            formInput:true,
             dirtyMark:true,
             showDirtyMark:true
         },

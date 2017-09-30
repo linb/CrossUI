@@ -704,6 +704,19 @@ new function(){
                         arr.splice(i,1);
                 return arr;
             },
+            intersection:function (a, b){
+              var ai=0, bi=0, result = [];
+              while( ai < a.length && bi < b.length ){
+                 if(a[ai]<b[bi] )ai++;
+                 else if(a[ai]>b[bi] )bi++;
+                 else{
+                   result.push(a[ai]);
+                   ai++;
+                   bi++;
+                 }
+              }
+              return result;
+            },
             /*
              insert something to array
              arr: any
@@ -1294,6 +1307,12 @@ xui.merge(xui,{
         }
     },
     mailTo:function(email, subject,body,cc,bcc){
+       if(xui.isHash(subject)){
+            bcc = subject.bcc||"";
+            cc = subject.cc||"";
+            body = subject.body||"";
+            subject = subject.subject||"";
+       }
        var url = 'mailto:'+email+
             '?subject=' +encodeURIComponent(xui.adjustRes(subject||""))
             + '&body= ' + encodeURIComponent(xui.adjustRes(body||""))
@@ -2067,6 +2086,7 @@ new function(){
                     }
                     return o;
                 },
+                redirection=conf.redirection,
                 target=conf.target,
                 method=conf.method,
                 iparams=xui.clone(conf.args||conf.params)||[],
@@ -2091,11 +2111,16 @@ new function(){
                     return;
                 }
             }
+            if(redirection && (arr = redirection.split(":")) && xui.isArr(arr) && arr.length == 3 ){
+                type = arr[0]||"";
+                target = arr[1]||"";
+                method = arr[2]||"";
+            }
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
                 for(var i=(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
                     iparams[i]=adjustparam(iparams[i]);
-                var fun=function(){
+                var fun=function(arr){
                     switch(type){
                         case 'page':
                             // handle switch
@@ -2203,7 +2228,7 @@ new function(){
                                             window.close();
                                             break;
                                         case "open":
-                                            window.open(iparams[0],iparams[1],iparams[2],iparams[3]);
+                                            xui.Dom.submit(iparams[0],iparams[1],iparams[2],iparams[3]);
                                             break;
                                         case "mailTo":
                                             xui.mailTo.apply(xui,iparams);

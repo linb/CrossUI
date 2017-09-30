@@ -318,17 +318,19 @@ xui.Class("xui.Coder", null,{
                 }
                 // prepare space
                 code=xui.Coder.replace(code,arr);
+                var Brackets={};
                 if(!reverse){
                     arr=[
-                        [/([\[\{])\s*([\[\{])/.source, function(a,i){return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
-                        [/[\[\{]/.source, function(a,i){return a[i]+'\n'+space[++deep]}],
+                        [/([\[\{])\s*([\[\{])/.source, function(a,i){Brackets[deep+2]=a[i+2]=='['; return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
+                        [/[\[\{]/.source, function(a,i){Brackets[deep+1]=a[i]=='['; return a[i]+'\n'+space[++deep]}],
                         [/[\x02\;]/.source, function(a,i){return a[i]+'\n'+space[deep]}],
                         [/(\,)([\x03\x04\w_\-]+\:)/.source, function(a,i){return a[i+1]+'\n'+space[deep]+a[i+2]}],
+                        [/,/.source, function(a,i){return Brackets[deep]? ',\n'+space[deep] : ','}],
                         [/\x01/.source, function(a,i){return '\n'+space[deep]+a[i]}],
-                        [/([\]\}])\s*([\]\}])\s*([\,]*)/.source, function(a,i){return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
-                        [/([\]\}])\s*([\]\}])\s*([\;]*)/.source, function(a,i){return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
-                        [/[\]\}]\s*[\,]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
-                        [/[\]\}]\s*[\;]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }]
+                        [/([\]\}])\s*([\]\}])\s*([\,]*)/.source, function(a,i){if(Brackets[deep]&&a[i+1]==']')Brackets[deep-1]=0; return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
+                        [/([\]\}])\s*([\]\}])\s*([\;]*)/.source, function(a,i){if(Brackets[deep]&&a[i+1]==']')Brackets[deep-1]=0; return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
+                        [/[\]\}]\s*[\,]*/.source, function(a,i){if(Brackets[deep]&&a[i]==']')Brackets[deep]=0; return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
+                        [/[\]\}]\s*[\;]*/.source, function(a,i){if(Brackets[deep]&&a[i]==']')Brackets[deep]=0; return '\n'+space[--deep]+a[i]+'\n'+space[deep] }]
                     ];
                     if(type!='css'){
                         arr.push([/for\s*\([\w ]+\sin\s/.source, "$0"],
@@ -344,7 +346,8 @@ xui.Class("xui.Coder", null,{
                     // add detail
                     code=xui.Coder.replace(code,[
                         [/ *[\n\r]/.source,'\n'],
-                        [/\{\s+\}/.source,'{}'],
+                        [/\{\s+\}/.source,'{ }'],
+                        [/\[\s+\]/.source,'[ ]'],
                         [/\}\n *(else|catch|finnally)/.source, '}$1'],
                         //protect number
                         [reg.NUMBER, '$0'],

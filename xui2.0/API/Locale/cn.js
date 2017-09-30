@@ -156,6 +156,14 @@ xui.set(xui.Locale,["cn","app"], {
                     "var a=[1,2,3]; xui.arr.insertAny(a,[5,5],1,true);alert(xui.serialize(a))"
                 ]
             },
+            intersection:{
+                $desc:"得到两个数组的交集",
+                $rtn:'Array',
+                $paras: [
+                    "arr1 [必需参数]: Array",
+                    "arr2 [必需参数]: Array"
+                ]
+            },
             removeFrom:{
                 $desc:"移除数组的一部分",
                 $rtn:'Array',
@@ -6185,6 +6193,14 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            setQueryData:{
+                $desc:"按照给定的路径，为 Web API 设置请求数据",
+                $rtn:"[self]",
+                $paras:[
+                    "data [必需参数] : Object, xxx",
+                    "path [可选参数] : String, 路径, 例如 [a.b] => {a:{b:xxx}}"
+                ]
+            },
             getOAuth2Token:{
                 $desc:"获取数据请求的 OAuth2Token",
                 $rtn:"String"
@@ -6893,6 +6909,18 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件是否有标识脏的功能",
                 $rtn:"[self]",
                 $memo:"如果 dirtyMark和showDirtyMark 都为 [true], 控件值改变的时候可能会在界面出现脏标识"
+            },
+            getFormInput:{
+                $desc:"获取输入性控件是否作为Form的输入",
+                $rtn:"Boolean"
+            },
+            setFormInput:{
+                $desc:"设置输入性控件是否作为Form的输入",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean",
+                    $force
+                ]
             },
             getRequired:{
                 $desc:"获取输入性控件是否要必须输入",
@@ -17428,6 +17456,30 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getHotRowCellCap:{
+                $desc:"得到Grid[热行]的默认必须单元格符号",
+                $rtn:"String"
+            },
+            setHotRowCellCap:{
+                $desc:"设置Grid[热行]的默认必须单元格符号",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getHotRowRequired:{
+                $desc:"得到Grid[热行]的必须填写列（valueSeparator分割）",
+                $rtn:"String"
+            },
+            setHotRowRequired:{
+                $desc:"设置Grid[热行]的必须填写列（valueSeparator分割）",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
             resetGridValue:{
                 $desc:"重新设置所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
@@ -18833,6 +18885,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             conDockRelative:'子控件相对停靠',
             formMethod:'表单提交方法',
             formTarget:'表单提交目标',
+            formDataPath:'APICaller的数据路径',
             formAction:'表单提交动作',
             formEnctype:'表单提交加密类型'
         },

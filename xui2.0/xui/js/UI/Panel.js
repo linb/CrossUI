@@ -180,7 +180,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 background:'transparent'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:'0 .125em',
+                padding:0,
                 margin:0,
                 'vertical-align': 'middle'
             },

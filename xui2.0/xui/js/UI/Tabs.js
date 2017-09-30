@@ -537,7 +537,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 'vertical-align':'middle'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:'0 .125em',
+                padding:0,
                 margin:0,
                 'vertical-align': 'middle'
             },

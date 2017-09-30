@@ -50,6 +50,12 @@ xui.Class("xui.APICaller","xui.absObj",{
                 self.setName(alias);
             return arguments.callee.upper.apply(self,arguments);
         },
+        setQueryData:function(data, path){
+            return this.each(function(prf){
+                if(path)xui.set(prf.properties.queryArgs, (path||"").split("."), data);
+                else prf.properties.queryArgs=data||{};
+            });
+        },
         invoke:function(onSuccess, onFail, onStart, onEnd, mode, threadid, options){
             var ns=this,
                 con=ns.constructor,
@@ -69,7 +75,11 @@ xui.Class("xui.APICaller","xui.absObj",{
                 queryHeader=xui.clone(prop.queryHeader),
                 requestDataSource=prop.requestDataSource,
                 responseDataTarget=prop.responseDataTarget,
-                responseCallback=prop.responseCallback;
+                responseCallback=prop.responseCallback,
+                funs=xui.$cache.functions,
+                t1=funs.APICaller_beforeInvoke,
+                t2=funs.APICaller_beforeData,
+                t3=funs.APICaller_onError;
 
             queryURL = xui.adjustVar(queryURL);
 
@@ -113,8 +123,12 @@ xui.Class("xui.APICaller","xui.absObj",{
                 }
             }
             // the global handler
-            if(xui.$cache.functions.APICaller_beforeInvoke && false===xui.$cache.functions.APICaller_beforeInvoke(prf, requestId))
+            if(xui.isFun(t1) && false===t1(requestId, prf))
                 return;
+            else if( xui.isHash(t1) && xui.isArr(t1.actions)
+                        && false===xui.pseudocode._callFunctions(t1.actions,  [requestId, prf], ns.getHost())
+                    )
+                    return;
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
                 return;
@@ -133,11 +147,13 @@ xui.Class("xui.APICaller","xui.absObj",{
                 if(!con.WDSLCache)con.WDSLCache={};
                 if(!con.WDSLCache[queryURL]){
                     var wsdl=xui.SOAP.getWsdl(queryURL,function(rspData){
-                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                       if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId);
 
                         // the global handler
-                        if(xui.$cache.functions.APICaller_onError)xui.$cache.functions.APICaller_Error(prf, rspData);
-                        if(prf.onError)prf.boxing().onError(prf, rspData);
+                        if(xui.isFun(t3))t3(rspData, requestId, prf);
+                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3.actions,  [rspData, requestId, prf], ns.getHost());
+
+                        if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                         xui.tryF(onFail,arguments,this);
                         xui.tryF(onEnd,arguments,this);
                     });
@@ -261,7 +277,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 };
             }
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
-                var mapb;
+                var mapb,t;
                 // ensure to json
                 if((responseType=="XML"||responseType=="SOAP") && !xui.isHash(rspData)){
                     if(xui.isStr(rspData))
@@ -273,15 +289,20 @@ xui.Class("xui.APICaller","xui.absObj",{
                 }
                 // Normally, Gives a change to modify the "rspData"
                 if(prf.afterInvoke){
-                    mapb = prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                    mapb = prf.boxing().afterInvoke(prf, rspData, requestId);
                     if(xui.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
+                
                 // the global handler
-                if(xui.$cache.functions.APICaller_beforeData && false===xui.$cache.functions.APICaller_beforeData(prf, rspData, requestId||this.uid)){
+                if(xui.isFun(t2) && false===t2(rspData, requestId, prf)){
+                    return false;
+                }else if( xui.isHash(t2) && xui.isArr(t2.actions)
+                        && false===xui.pseudocode._callFunctions(t2.actions,  [rspData, requestId, prf], ns.getHost())
+                    ){
                     return false;
                 }
-                if(prf.beforeData && false===prf.boxing().beforeData(prf, rspData, requestId||this.uid)){
+                if(prf.beforeData && false===prf.boxing().beforeData(prf, rspData, requestId)){
                     return false;
                 }
                 if(responseDataTarget&&responseDataTarget.length){
@@ -303,7 +324,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                                 }
                                 break;
                             case "form":
-                                if((t = xui.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
+                                if((t = xui.get(prf,["host",o.name])) && t.Class['xui.absContainer'] /*&& t.getRootNode()*/){
                                     t.setFormValues(data);
                                 }
                                 break;
@@ -330,11 +351,11 @@ xui.Class("xui.APICaller","xui.absObj",{
                         }
                     });
                 }
-                if(prf.onData)prf.boxing().onData(prf, rspData, requestId||this.uid);
+                if(prf.onData)prf.boxing().onData(prf, rspData, requestId);
                 xui.tryF(onSuccess,arguments,this);
 
             }, function(rspData){
-                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId||this.uid);
+                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId);
 
                 if(responseDataTarget&&responseDataTarget.length){
                     xui.arr.each(responseDataTarget, function(o, t){
@@ -351,7 +372,11 @@ xui.Class("xui.APICaller","xui.absObj",{
                     });
                 }
                
-                if(prf.onError)prf.boxing().onError(prf, rspData, requestId||this.uid);
+                // the global handler
+                if(xui.isFun(t3))t3(rspData, requestId, prf);
+                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3.actions,  [rspData, requestId, prf], ns.getHost());
+
+                if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                 xui.tryF(onFail,arguments,this);
             }, threadid, options]);
 

@@ -408,7 +408,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 display:'none'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:'0 .125em',
+                padding:0,
                 margin:0,
                 'vertical-align': 'middle'
             },

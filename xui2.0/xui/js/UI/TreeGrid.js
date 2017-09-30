@@ -627,11 +627,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(t=options.firstCellStyle) (tt=ns.getSubNode('FCELL',rid)).first().attr('style',tt.attr('style')+";"+t);
                         if(t=options.firstCellClass) ns.getSubNode('FCELL',rid).first().addClass(t);
 
-                        if(options.hasOwnProperty('value') && !options.hasOwnProperty('caption')){
+                        if(options.hasOwnProperty('value') && !xui.isSet(options.caption) ) {
                             options.caption = options.value +"";
                         }
                         if(options.hasOwnProperty('caption'))
-                            ns.getSubNode('FCELLCAPTION',rid).get(0).innerHTML=options.caption;
+                            ns.getSubNode('FCELLCAPTION',rid).get(0).innerHTML=options.caption||"";
 
                         if(options.hasOwnProperty('rowResizer')){
                             t=!!options.rowResizer;
@@ -1211,6 +1211,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getRowMap:function(rowId){
             var prf=this.get(0),ins=prf.boxing(),p=prf.properties,t,hash;
+            if(xui.isHash(rowId))rowId=rowId.id;
             if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
                 if(p.activeMode="row"){
                     if(t=ins.getActiveRow())rowId=t.id;
@@ -1221,6 +1222,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return ins.getRowbyRowId(rowId, "map");
         },
         setRowMap:function(rowId, hash, dirtyMark, triggerEvent){
+            if(xui.isHash(rowId))rowId=rowId.id;
             return this.each(function(prf){
                 var ins=prf.boxing(),p=prf.properties,t;
                 if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
@@ -1232,8 +1234,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
                 if(rowId){
                     var row=ins.getRowbyRowId(rowId),
-                        rowId=row.id,
                         header=ins.getHeader('min');
+                    rowId=row.id;
                     xui.arr.each(row.cells,function(t,j){
                         ins.updateCellByRowCol(rowId, header[j], hash[header[j]], dirtyMark, triggerEvent);
                     });
@@ -2508,7 +2510,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'hidden'
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:'0 .125em',
+                padding:0,
                 margin:0,
                 'vertical-align': 'middle'
             },
@@ -3861,6 +3863,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         cellsid = cellNode.parent().id(),
                         subId = profile.getSubId(cellsid),
                         row = cell ? cell._row : profile.rowMap[profile.getSubId(src)], 
+                        ishotrow = row && row.id==profile.box._temprowid,
                         region = cell ? (cell._row._region + "" + cell._col._region) : (row._region + "1"),
                         t;
 
@@ -3940,7 +3943,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
                             return false;
                         }else if(inner){
-                            first.focus();
+                            toDown();
                         }
                     },
                     verticalNav=function(up){
@@ -3979,13 +3982,68 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 if(count==max+1)count=1;
                             }
                         }
+                        //get node
+                        var node = xui( (region=="12"||region=="22" ? profile.$allrowscache2 : profile.$allrowscache1)[index]).first(),
+                            node2=node;
+                        // it's normal cell
+                        if(count>1)
+                            node2=node2.next(count-1);
+                        // no normal cell(group)
+                        if(node2.isEmpty())
+                            node2=node;
+                        // get CELLA
+                        if(node2 && !node2.isEmpty())
+                            node2=node2.first();
+                        // focus
+                        if(!node2.isEmpty())
+                            return  [node2, newLine];
+                        return null;
+                    },
+                    toUp=function(){
+                        var tnode;
+                        if(src!=first.xid()){
+                            if(cur.get(0)==first12.get(0) || cur.get(0)==first22.get(0)){
+                                if(hasBody21){
+                                    tnode=last21;
+                                }else{
+                                    tnode=last11;                             
+                                }
+                            }
+                            if(!tnode){
+                                tnode=verticalNav(true)[0];
+                            }
+                        }else{
+                            tnode=last;
+                        }
+                        if(tnode)tnode.focus();
+                    },
+                    toDown=function(){
+                        var newLine, tnode;
+                        if(src!=last.xid()){
+                            if(cur.get(0)==last11.get(0) || cur.get(0)==last21.get(0)){
+                                if(hasBody12){
+                                    tnode = first12;
+                                }else{
+                                    tnode=first22;                         
+                                }
+                            }
+                            if(!tnode){
+                                tnode=verticalNav();
+                                newLine=tnode[1];
+                                tnode=tnode[0];
+                            }
+                        }else{
+                            tnode=first;
+                            newLine=1;
+                        }
+
                         if(newLine && p.hotRowMode!='none'){
                             var colId;
                             if(!cell){
                                 var row=profile.rowMap[profile.getSubId(src)];
                                 if(!row)return false;
-                            }else
-                                colId=cell._col.id;
+                            }
+                            colId = (p.hotRowRequired||'').split(p.valueSeparator)[0] || (cell && cell._col && cell._col.id);
 
                             var addhotrow=true;
                             // if it's just the active row
@@ -4002,70 +4060,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 // dont focus to next cell
                                 return false;
                             }
-                        }
-                        //get node
-                        var node = xui( (region=="12"||region=="22" ? profile.$allrowscache2 : profile.$allrowscache1)[index]).first(),
-                            node2=node;
-                        // it's normal cell
-                        if(count>1)
-                            node2=node2.next(count-1);
-                        // no normal cell(group)
-                        if(node2.isEmpty())
-                            node2=node;
-                        // get CELLA
-                        if(node2 && !node2.isEmpty())
-                            node2=node2.first();
-                        // focus
-                        if(!node2.isEmpty())
-                            node2.focus();
-                    },
-                    toUp=function(){
-                        if(src!=first.xid()){
-                            var ok;
-                            if(cur.get(0)==first12.get(0) || cur.get(0)==first22.get(0)){
-                                if(hasBody21){
-                                    last21.focus();
-                                    ok=1;
-                                }else{
-                                    last11.focus();
-                                    ok=1;                                    
-                                }
-                            }
-                            if(!ok){
-                                verticalNav(true);
-                            }
                         }else{
-                            last.focus();
-                        }
-                    },
-                    toDown=function(){
-                        if(src!=last.xid()){
-                            var ok;
-                            if(cur.get(0)==last11.get(0) || cur.get(0)==last21.get(0)){
-                                if(hasBody12){
-                                    first12.focus();
-                                    ok=1;
-                                }else{
-                                    first22.focus();
-                                    ok=1;                                    
-                                }
-                            }
-                            if(!ok){
-                                verticalNav();
-                            }
-                        }else{
-                            first.focus();
+                            if(tnode)tnode.focus();
                         }
                     };
                     switch(key){
                     //tab to next/pre
                     case 'tab':
                         if(shift){
-                            if(false===toLeft()){
+                            if(false===toLeft(ishotrow)){
                                 return false;
                             }
                         }else{
-                            if(false===toRight()){
+                            if(false===toRight(ishotrow)){
                                 return false;
                             }
                         }
@@ -4489,6 +4496,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             },
             hotRowNumber:'[*]',
+            hotRowCellCap:'(*)',
+            hotRowRequired:'',
             noCtrlKey:true
         },
         EventHandlers:{
@@ -4695,8 +4704,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             profile.__needchecktmprow=true;
 
-            var row=[],
+            var cells=[],
+                row={cells:cells},
+                required=(prop.hotRowRequired||"").split(prop.valueSeparator),
+                newcell={_$caption:prop.hotRowCellCap},
                 ins=profile.boxing();
+            if(required.length){
+                xui.arr.each(prop.header,function(col, i){
+                    if(xui.arr.indexOf(required, col.id)!=-1){
+                        cells[i]=newcell;
+                    }
+                });
+            }
+
             if(profile.onInitHotRow)
                 row=ins.onInitHotRow(profile)||row;
 
@@ -4733,17 +4753,25 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             var ins=profile.boxing(),
                 rowId=this._temprowid,
+                required=(prop.hotRowRequired||"").split(prop.valueSeparator),
                 tempRow=ins.getRowbyRowId(rowId),
-                result=prop.hotRowMode=='show'
-                    ?trigger=='keydown'?true:null
-                    :trigger?true:false;
+                result=!!trigger;
             if(!tempRow)
                 return;
-
+            if(required.length){
+                for(var i=0,j,cell,l=required.length;i<l;i++){
+                    j=xui.arr.subIndexOf(prop.header, 'id',required[i]);
+                    cell=tempRow.cells[j];
+                    if( j!=-1 && !(xui.isHash(cell) ? cell.value : cell) ){
+                        result=null;
+                        break;
+                    }
+                }
+            }
             if(profile.beforeHotRowAdded){
                 var result2=ins.beforeHotRowAdded(profile, tempRow, !trigger);
                 if(xui.isDefined(result2))
-                    result=result2;
+                    result=result2===true?result2:result2===false?result2:null;
             }
 
             // do nothing
@@ -4808,14 +4836,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         _sethotrowoutterblur:function(profile, clear){
+            var f=function(k){return profile.getSubNode(k).get(0) };
             profile.getSubNode('ROWS22').setBlurTrigger(profile.$domId+':ROWS22',clear?null:function(pos,e){
-                var trigger = xui.Event.getSrc(e)==profile.getSubNode('SCROLL22').get(0)?'focusin':null;
+                var node=xui.Event.getSrc(e), 
+                    trigger = node==f('SCROLL11') || node==f('SCROLL12') || node==f('SCROLL21') || node==f('SCROLL22') ?'focusin':'focusout';
                 profile.__tmpRowBlurTrigger=xui.asyRun(function(){
                     // destroyed
                     if(!profile.box)return;
                     profile.box._checkNewLine(profile,trigger);
                 });
-            },null,null,true);
+            },xui([f('ROWS11'),f('ROWS12'),f('ROWS21'),f('ROWS22')]),null,true);
             if(clear){
                 if(profile.__tmpRowBlurTrigger){
                     xui.clearTimeout(profile.__tmpRowBlurTrigger);
@@ -5900,8 +5930,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     if(editor)editor.setValue(cell.value,true,'editorini');
                 }
-                if(('caption' in options) && xui.isDefined(options.caption) && editor && editor.setCaption)
-                    editor.setCaption(options.caption,true);
+                if(('caption' in options) && editor && editor.setCaption){
+                    editor.setCaption(options.caption||null,true);
+                }
 
                 cell._dirty=1;
             }
@@ -6467,7 +6498,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 _$caption=editorPrf.boxing().getShowValue();
                                 break;
                         }
-                        var options={value:nV};
+                        var options={
+                            value:nV
+                        };
+                        // reset caption here
+                        delete cell.caption;
 
                         if(xui.isDefined(_$caption))
                             options._$caption=_$caption;
@@ -7202,10 +7237,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }else if(type=='map'){
                     var header=profile.properties.header,h={};
                     xui.each(row.cells||row,function(cell,j){
-                        h[header[j].id]=('caption' in cell) && xui.isDefined(cell.caption) ? {
-                                caption:cell.caption,
-                                value:('value' in cell)?cell.value:cell
-                            }:('value' in cell)?cell.value:cell;
+                        h[header[j].id]=('value' in cell)?cell.value:cell;
                     });
                     return h;
                 }else

@@ -155,6 +155,14 @@ xui.set(xui.Locale,["en","app"], {
                     "var a=[1,2,3]; xui.arr.insertAny(a,[5,5],1,true);alert(xui.serialize(a))"
                 ]
             },
+            intersection:{
+                $desc:"Gets intersection",
+                $rtn:'Array',
+                $paras: [
+                    "arr1 [Required]: Array",
+                    "arr2 [Required]: Array"
+                ]
+            },
             removeFrom:{
                 $desc:"Removes a section of elements from an array",
                 $rtn:'Array',
@@ -6125,6 +6133,14 @@ xui.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            setQueryData:{
+                $desc:"Sets the query data for the Web API",
+                $rtn:"[self]",
+                $paras:[
+                    "data [Required] : Object, xxx",
+                    "path [Optional] : String, the target path [a.b] => {a:{b:xxx}}"
+                ]
+            },
             getOAuth2Token:{
                 $desc:"Gets the OAuth2Token for the Web API",
                 $rtn:"String"
@@ -6823,6 +6839,18 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the dirtyMark property value on the first UIProfile",
                 $rtn:"[self]",
                 $memo:"If dirtyMark and showDirtyMark are [true], the component maybe show the dirty mark in UI when its value was changed"
+            },
+            getFormInput:{
+                $desc:"To determine whether the valuable control is a form input or not",
+                $rtn:"Boolean"
+            },
+            setFormInput:{
+                $desc:"To specify whether the valuable control is a form input or not",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean",
+                    $force
+                ]
             },
             getRequired:{
                 $desc:"Gets the valuable control's required prop",
@@ -17504,6 +17532,30 @@ xui.set(xui.Locale,["en","app"], {
             },
             setHotRowNumber:{
                 $desc:"Sets the Grid's hot row's number string",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getHotRowCellCap:{
+                $desc:"Gets the Grid's hot row's required cell string",
+                $rtn:"String"
+            },
+            setHotRowCellCap:{
+                $desc:"Sets the Grid's hot row's required cell string",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getHotRowRequired:{
+                $desc:"Gets the Grid's hot row's required columns (use valueSeparator for multi)",
+                $rtn:"String"
+            },
+            setHotRowRequired:{
+                $desc:"Sets the Grid's hot row's required columns (use valueSeparator for multi)",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",

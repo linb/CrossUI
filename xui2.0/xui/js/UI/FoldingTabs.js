@@ -207,7 +207,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:'0 .125em',
+                padding:0,
                 margin:0,
                 'vertical-align': 'middle'
             },

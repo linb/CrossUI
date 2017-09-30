@@ -100,7 +100,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                 zoom:xui.browser.ie6?"1":null
             },
             'LTAGCMDS, RTAGCMDS':{
-                padding:'0 .125em',
+                padding:0,
                 margin:0,
                 'vertical-align': 'middle'
             },
