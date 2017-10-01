@@ -103,11 +103,11 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                       //date
                         /^new Date\([0-9 \,]*\)$/i.test(v) ? ['date', xui.serialize(xui.unserialize(v))] :
                       //function
-                        /^((\s*function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))\s*$/i.test(v) ? ['function',v] :
+                        /^((\s*function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))\s*$/i.test(v) && xui.isFun(xui.unserialize(v)) ? ['function',v] :
                       //hash
-                        /^\{[\s\S]*\}$/.test(v) ? ['hash',xui.stringify(xui.unserialize(v))] :
+                        /^\{[\s\S]*\}$/.test(v) && xui.isHash(xui.unserialize(v)) ? ['hash',xui.stringify(xui.unserialize(v))] :
                       //array
-                        /^\[[\s\S]*\]$/.test(v) ? ['array', xui.stringify(xui.unserialize(v))] :
+                        /^\[[\s\S]*\]$/.test(v) && xui.isArr(xui.unserialize(v)) ? ['array', xui.stringify(xui.unserialize(v))] :
                       ['string', n];
                   }
               }catch(e){
@@ -215,11 +215,11 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                       //date
                         /^new Date\([0-9 \,]*\)$/i.test(v)  ||
                       //function
-                        /^((function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))$/i.test(v)  ||
+                        (/^((function\s*([\w$]+\s*)?\(\s*([\w$\s,]*)\s*\)\s*)(\{([^\{\}]*)\}))$/i.test(v) && xui.isFun(xui.unserialize(v)))  ||
                       //hash
-                        /^\{[\s\S]*\}$/.test(v)  ||
+                        (/^\{[\s\S]*\}$/.test(v) && xui.isHash(xui.unserialize(v))) ||
                       //array
-                        /^\[[\s\S]*\]$/.test(v)  );
+                        (/^\[[\s\S]*\]$/.test(v)  ) && xui.isArr(xui.unserialize(v))) ;
         },
         _tg_beforecellupdated:function (profile, cell, options) {
             var ns=this,

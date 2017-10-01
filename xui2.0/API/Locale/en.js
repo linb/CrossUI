@@ -17337,6 +17337,20 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            udpateCellValue:{
+                $desc:"Updates the cell",
+                $rtn:"[self]",
+                $paras:[
+                    "cell [Required] : Object/String"
+                ]
+            },
+            resetCellValue:{
+                $desc:"Resets the cell",
+                $rtn:"[self]",
+                $paras:[
+                    "cell [Required] : Object/String"
+                ]
+            },
             getRowbyCell:{
                 $desc:"Gets a row item Object according to a cell Object",
                 $rtn:"Object",
@@ -17407,7 +17421,9 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "rowId [Optional] : String, [null] represents the current actived row",
-                    "hash [Required] : Object.  key/value paires"
+                    "hash [Required] : Object.  key/value paires",
+                    "dirtyMark [Optional] : Boolean, Make dirty mark not not. Default is [true]",
+                    "triggerEvent [Optional] : Boolean, trigger event not not. Default is [false]"
                 ]
             },
             getRowNumbered :{
@@ -17562,7 +17578,7 @@ xui.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
-            resetGridValue:{
+            updateGridValue:{
                 $desc:"Resets all cells' value in the grid, and clears all dirty marks",
                 $rtn:"[self]",
                 $snippet:[
@@ -17571,18 +17587,18 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "xui.asyRun(function(){o.resetGridValue();},1000);"+
+                    "xui.asyRun(function(){o.updateGridValue();},1000);"+
                     "}"
                 ]
             },
-            resetColValue:{
+            updateColValue:{
                 $desc:"Resets all cells' value in a col, and clears those dirty marks",
                 $rtn:"[self]",
                 $paras:[
                     "colId [Required] : String, the column's id string"
                 ]
             },
-            resetRowValue:{
+            updateRowValue:{
                 $desc:"Resets all cells' value in a row, and clears those dirty marks",
                 $rtn:"[self]",
                 $paras:[
@@ -17594,7 +17610,7 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "xui.asyRun(function(){o.resetRowValue('row1')},1000);"+
+                    "xui.asyRun(function(){o.updateRowValue('row1')},1000);"+
                     "}"
                 ]
             },

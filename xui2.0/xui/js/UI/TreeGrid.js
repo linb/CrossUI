@@ -140,7 +140,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(a&&a.length){
                                 for(var i=0,l=a.length;i<l;i++){
                                     if(profile&&profile.box&&!profile.destroyed&&a[i]&&a[i]._row)
-                                        profile.box._editCell(profile,a[i]);
+                                        profile.box._editCell(profile,a[i],null,true);
                                 }
                                 xui.asyRun(fun);
                             }
@@ -1151,7 +1151,27 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             return this;
         },
-        resetRowValue:function(rowId){
+
+        // reset all cells' value, and clear all dirty mark
+        updateGridValue:function(){
+            return this.each(function(profile){
+                var prop=profile.properties;
+                delete profile._dirty;
+                xui.each(profile.rowMap,function(v){
+                    v._oValue=v.value;
+                    if('unit' in v)v._oUnit=v.unit;
+                    delete v._dirty;
+                });
+                xui.each(profile.cellMap,function(v){
+                    v._oValue=v.value;
+                    if('unit' in v)v._oUnit=v.unit
+                    delete v._dirty;
+                });
+                if(prop.dirtyMark && prop.showDirtyMark)
+                    profile.getSubNode('CELLA',true).removeClass('xui-ui-dirty');
+            })
+        },
+        updateRowValue:function(rowId){
             var profile=this.get(0),row=this.getRowbyRowId(rowId),arr=[],prop=profile.properties;
             // for cells
             xui.arr.each(row.cells,function(o){
@@ -1172,7 +1192,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(prop.dirtyMark && prop.showDirtyMark)
                 xui(arr).removeClass('xui-ui-dirty');
         },
-        resetColValue:function(colId){
+        updateColValue:function(colId){
             var profile=this.get(0),col=this.getHeaderByColId(colId),arr=[],prop=profile.properties;
             xui.arr.each(col.cells,function(o){
                 if(o._oValue!==o.value||(('unit' in o) && o._oUnit!==o.unit)){
@@ -1185,6 +1205,32 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
             if(prop.dirtyMark && prop.showDirtyMark)
                 xui(arr).removeClass('xui-ui-dirty');
+        },
+        updateCellValue:function(cell){
+            var ns=this, profile=ns.get(0), prop=profile.properties;
+            if(typeof cell=='string')cell=ns.getCell(cell);
+            if(cell._oValue!==cell.value||(('unit' in cell) && cell._oUnit!==cell.unit)){
+                cell._oValue=cell.value;
+                if('unit' in cell)cell._oUnit=cell.unit;
+                delete cell._dirty;
+                if(prop.dirtyMark)
+                    profile.getSubNode('CELLA',cell._serialId).removeClass('xui-ui-dirty');
+            }
+            return ns;
+        },
+        //resetGridValue
+        //resetRow
+        //resetCol
+        resetCellValue:function(cell){
+            var ns=this, profile=ns.get(0), prop=profile.properties;
+            if(typeof cell=='string')cell=ns.getCell(cell);
+            if(cell._oValue!==cell.value||(('unit' in cell) && cell._oUnit!==cell.unit)){
+                cell.value=cell._oValue;
+                if('unit' in cell)cell.unit=cell._oUnit;
+                delete cell._dirty;
+                profile.box._renderCell(profile, cell, {}, profile.getSubNode('CELLA', cell._serialId));
+            }
+            return ns;
         },
         getActiveRow:function(type){
             var ar,profile=this.get(0);
@@ -1237,7 +1283,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         header=ins.getHeader('min');
                     rowId=row.id;
                     xui.arr.each(row.cells,function(t,j){
-                        ins.updateCellByRowCol(rowId, header[j], hash[header[j]], dirtyMark, triggerEvent);
+                        j=header[j];
+                        if(j in hash)ins.updateCellByRowCol(rowId, j, hash[j], dirtyMark, triggerEvent);
                     });
                 }
                 p.rowMap=hash;
@@ -1644,25 +1691,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
 
         /*others*/
-        // reset all cells' value, and clear all dirty mark
-        resetGridValue:function(){
-            return this.each(function(profile){
-                var prop=profile.properties;
-                delete profile._dirty;
-                xui.each(profile.rowMap,function(v){
-                    v._oValue=v.value;
-                    if('unit' in v)v._oUnit=v.unit;
-                    delete v._dirty;
-                });
-                xui.each(profile.cellMap,function(v){
-                    v._oValue=v.value;
-                    if('unit' in v)v._oUnit=v.unit
-                    delete v._dirty;
-                });
-                if(prop.dirtyMark && prop.showDirtyMark)
-                    profile.getSubNode('CELLA',true).removeClass('xui-ui-dirty');
-            })
-        },
         getDirtied:function(rowId, colId){
             var map={};
             xui.each(this.get(0).cellMap,function(v){
@@ -1694,11 +1722,26 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getEditCell:function(){
             return xui.get(this.get(0),["$cellInEditor"]);
         },
-        offEditor:function(){
+        offEditor:function(refresh){
             var profile=this.get(0),editor;
-            if(profile&&profile.$curEditor){
-                editor=profile.$curEditor;
+            if(!profile)return;
+            if(editor = profile.$curEditor){
                 xui.tryF(editor.undo,[],editor);
+            }
+            xui.each(profile.cellMap,function(cell){
+                if(editor = cell._editor){
+                    editor.destroy();
+                    delete cell._editor;
+                }
+            });
+                
+            if(refresh){
+                var getPro=profile.box.getCellOption;
+                xui.each(profile.cellMap,function(o){
+                       if(getPro(profile, o, "editable") && 
+                           (getPro(profile, o, "editMode")=="inline" || getPro(profile, o, "type")=='dropbutton' ))
+                            profile.box._editCell(profile,o,null,true);
+                });
             }
         },
         adjustEditor:function(adjustFun){
@@ -6118,7 +6161,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
         },
-        _editCell:function(profile, cellId, byhover){
+        _editCell:function(profile, cellId, byhover, inactive){
             var cell = typeof cellId=='string'?(profile.cellMap[cellId]||profile.cellMap[profile.cellMap2[cellId]]):cellId;
             if(!cell)return;
             // real cellId
@@ -6160,17 +6203,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // -1. for special type
             if(inline && cell._editor){
-                cell._editor.activate();
+                if(!inactive)cell._editor.activate();
                 return;
             }else if(type=='checkbox'||type=='button'){
-                profile.getSubNode('CELLA', cellId).focus();
+                if(!inactive)profile.getSubNode('CELLA', cellId).focus();
                 return;
             }
 
             // 1. customEditor in cell/row or header
             if((editor = getPro('customEditor')) && typeof editor.iniEditor=='function'){
                 editor.iniEditor(profile, cell, cellNode);
-                xui.tryF(editor.activate,[],editor);
+                if(!inactive)xui.tryF(editor.activate,[],editor);
                 if(profile.onBeginEdit)
                     profile.boxing().onBeginEdit(profile, cell, editor, 'cell');
             }else{
@@ -6186,7 +6229,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 // 3. for lable type only, give it an chance to customEditor/beforeIniEditor
                 if(type=='label'){
-                    profile.getSubNode('CELLA', cellId).focus();
+                    if(!inactive)profile.getSubNode('CELLA', cellId).focus();
                     return;
                 }
 
@@ -6326,8 +6369,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!inline && editorCacheKey)
                         profile.$cache_editor[editorCacheKey] = editor;
 
-                    if(editor.setInputReadonly && editorReadonly)
-                        editor.setInputReadonly(true);
+                    if(editor.setInputReadonly)
+                        editor.setInputReadonly(!!editorReadonly);
                     if(editor.setDropListWidth && editorDropListWidth)
                         editor.setDropListWidth(editorDropListWidth);
                     if(editor.setDropListHeight && editorDropListHeight)
@@ -6400,24 +6443,25 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     editor.get(0)._smartnav=true;
 
                     //undo function is a must
-                    editor.undo=inline?null:function(refocus){
+                    editor.undo=inline?null:function(refocus, inactive){
                         var editor=this;
                         // execute once
                         editor.undo=null;
                         // row dirty alert
                         if(profile.box)
                             profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
+                        if(!inactive){
+                            if(editor.get(0) && editor.get(0).box){
+                                // for ie's setBlurTrigger doesn't trigger onchange event
+                                editor.getSubNode('INPUT').onBlur(true);
 
-                        if(editor.get(0) && editor.get(0).box){
-                            // for ie's setBlurTrigger doesn't trigger onchange event
-                            editor.getSubNode('INPUT').onBlur(true);
-
-                            if(refocus && xui.str.endWith(editMode,"sharp")){
-                               cell._ignorefocus=1;
-                               profile.boxing().focusCell (profile.$cellInEditor);
-                               xui.asyRun(function(){
-                                    delete cell._ignorefocus;
-                               });
+                                if(refocus && xui.str.endWith(editMode,"sharp")){
+                                   cell._ignorefocus=1;
+                                   profile.boxing().focusCell (profile.$cellInEditor);
+                                   xui.asyRun(function(){
+                                        delete cell._ignorefocus;
+                                   });
+                                }
                             }
                             editor.getRoot().setBlurTrigger(profile.$xid+":editor");
                             if(profile.properties && !profile.properties.directInput){
@@ -6431,8 +6475,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
                             if(editorMask)
                                 if(editor.setMask)editor.setMask('');
-                            if(editorReadonly)
-                                if(editor.setInputReadonly)editor.setInputReadonly(false);
+                            if(editor.setInputReadonly)editor.setInputReadonly(!editorReadonly);
                             if(editorDropListWidth)
                                 if(editor.setDropListWidth)editor.setDropListWidth(0);
                             if(editorDropListHeight)
@@ -6573,32 +6616,36 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             insPopType = noInputType || type=='date' || type=='time' || type=='datetime' || type=='color',
                             inputReadonly = editor.getInputReadonly && editor.getInputReadonly(),
                         issharp = xui.str.endWith(editMode,"sharp")  && (editorAutoPop || inputReadonly || insPopType);
-                        if( xui.isFun(editor.expand) 
-                            && editorAutoPop!==false
-                            && ( issharp || ((xui.str.endWith(editMode,"sharp") || editMode=="focus") &&   (editorAutoPop || noInputType)))
-                         ) {
-                            expand=1;
-                            editor.expand(cellNode);
-                         }
+                        if(!inactive){
+                            if( xui.isFun(editor.expand) 
+                                && editorAutoPop!==false
+                                && ( issharp || ((xui.str.endWith(editMode,"sharp") || editMode=="focus") &&   (editorAutoPop || noInputType)))
+                             ) {
+                                expand=1;
+                                editor.expand(cellNode);
+                             }
+                        }
                         editor.get(0).$editMode=editMode;
 
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");
                        //activate editor
                         if(!xui.str.startWith(editMode,"hover") || !byhover){
-                            xui.asyRun(function(){
-                                // destroyed
-                                if(!profile.box)return;
-                                var target=editor;
-                                if(target.get(0)&&target.get(0).box){
-                                    if(expand && editor.getPopWnd)
-                                        target = editor.getPopWnd();
-                                    if(target){
-                                        xui.tryF(target&&target.activate,[],target);
-                                        target.get(0)._stopmouseupcaret=1;
+                            if(!inactive){
+                                xui.asyRun(function(){
+                                    // destroyed
+                                    if(!profile.box)return;
+                                    var target=editor;
+                                    if(target.get(0)&&target.get(0).box){
+                                        if(expand && editor.getPopWnd)
+                                            target = editor.getPopWnd();
+                                        if(target){
+                                            xui.tryF(target&&target.activate,[],target);
+                                            target.get(0)._stopmouseupcaret=1;
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }else{
                             var bfun=function(){
                                 if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
@@ -6620,7 +6667,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 editor.onBlur(dfun);
                             }).onBlur(dfun);
 
-                            if(!expand)
+                            if(!inactive&& !expand)
                                 xui.tryF(editor&&editor.activate,[],editor);
                         }
                     }

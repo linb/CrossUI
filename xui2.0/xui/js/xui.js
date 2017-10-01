@@ -2011,7 +2011,7 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope, temp, resume){
+        exec:function(conf, args, scope, temp, resumeFun){
            var  t,m,n,p,k,type=conf.type||"other",
                 _ns={
                     temp:temp,
@@ -2073,7 +2073,8 @@ new function(){
                             o=o.replace("[data]","");
                             jsondata=1;
                         }
-                        o=xui.adjustVar(o, _ns)||xui.adjustVar(o);
+                        o=xui.adjustVar(o, _ns);
+                        if(!xui.isDefined(o))o=xui.adjustVar(o);
                         // for file
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
@@ -2092,7 +2093,7 @@ new function(){
                 iparams=xui.clone(conf.args||conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=adjustparam(conf.adjust)||null,
-                iconditions=[],
+                iconditions=[],t1,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
 
             // cover with inline params
@@ -2106,8 +2107,11 @@ new function(){
             // currently, support and only
             // TODO: complex conditions
             for(var i=0,l=conditions.length;i<l;i++){
-                if(!comparevars(xui.adjustVar(conditions[i].left, _ns)||xui.adjustVar(conditions[i].left),xui.adjustVar(conditions[i].right, _ns)||xui.adjustVar(conditions[i].right),conditions[i].symbol)){
-                    if(typeof resume=="function")resume();
+                if(!comparevars(
+                    !xui.isDefined(t1=xui.adjustVar(conditions[i].left, _ns))?xui.adjustVar(conditions[i].left):t1,
+                    !xui.isDefined(t1=xui.adjustVar(conditions[i].right, _ns))?xui.adjustVar(conditions[i].right):t1,
+                    conditions[i].symbol)){
+                    if(typeof resumeFun=="function")resumeFun();
                     return;
                 }
             }
@@ -2295,7 +2299,8 @@ new function(){
                                                     t=["{window"];
                                                 }
                                                 t=t.join(".")+"}";
-                                                t=xui.adjustVar(t, _ns) || xui.adjustVar(t);
+                                                t=xui.adjustVar(t, _ns);
+                                                if(!xui.isDefined(t))t=xui.adjustVar(t);
                                                 if(t && xui.isFun(t[m]))
                                                     xui.$cache.callback[iparams[0]]=[t,m];
                                             }
@@ -2312,7 +2317,8 @@ new function(){
                                                     t=["{window"];
                                                 }
                                                 t=t.join(".")+"}";
-                                                t=xui.adjustVar(t, _ns) || xui.adjustVar(t);
+                                                t=xui.adjustVar(t, _ns);
+                                                if(!xui.isDefined(t))t=xui.adjustVar(t);
                                                 if(t&&t[m]){
                                                     if(xui.isFun(t[m])){
                                                         doit=1;

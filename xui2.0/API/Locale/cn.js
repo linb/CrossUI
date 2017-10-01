@@ -17254,6 +17254,20 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            udpateCellValue:{
+                $desc:"更新单元格",
+                $rtn:"[self]",
+                $paras:[
+                    "cell [必需参数] : Object/String"
+                ]
+            },
+            resetCellValue:{
+                $desc:"重置单元格",
+                $rtn:"[self]",
+                $paras:[
+                    "cell [必需参数] : Object/String"
+                ]
+            },
             getRowbyCell:{
                 $desc:"根据一个单元格得到行对象",
                 $rtn:"Object",
@@ -17325,7 +17339,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "rowId [可选参数] : String, 输入null表示当前选中行",
-                    "hash [必需参数] : Object. 键值对"
+                    "hash [必需参数] : Object. 键值对",
+                    "dirtyMark [可选参数] : Boolean, 是否启用脏标识.默认值是 [true]",
+                    "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]"
                 ]
             },
             getRowNumbered :{
@@ -17480,7 +17496,7 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
-            resetGridValue:{
+            updateGridValue:{
                 $desc:"重新设置所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
                 $snippet:[
@@ -17489,11 +17505,11 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "xui.asyRun(function(){o.resetGridValue();},1000);"+
+                    "xui.asyRun(function(){o.updateGridValue();},1000);"+
                     "}"
                 ]
             },
-            resetColValue:{
+            updateColValue:{
                 $desc:"重新设置某列的所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
                 $paras:[
@@ -17501,7 +17517,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
 
-            resetRowValue:{
+            updateRowValue:{
                 $desc:"重新设置某行的所有单元格的值, 并清除脏标志",
                 $rtn:"[self]",
                 $paras:[
@@ -17513,7 +17529,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.Ajax('App/js/grid.js','',function(s){var hash=s;o.setHeader(hash.header).setRows(hash.rows);},null,null,{asy:false}).start();"+
                     "xui(id).prepend(o);"+
                     "o.updateCellByRowCol('row1','col1',{value:'a'}).updateCellByRowCol('row1','col2',{value:5}).updateCellByRowCol('row2','col2',{value:8});"+
-                    "xui.asyRun(function(){o.resetRowValue('row1')},1000);"+
+                    "xui.asyRun(function(){o.updateRowValue('row1')},1000);"+
                     "}"
                 ]
             },
