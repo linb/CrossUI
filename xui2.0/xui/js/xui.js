@@ -1645,7 +1645,7 @@ xui.merge(xui,{
                      if('!window'===t||'!document'===t)continue;
 
                      //don't trigger any innerHTML or removeChild in __gc()
-                     o.__gc();
+                     o.__gc(true, true);
                      //clear the cache
                      bak[bak.length]=id;
                      //clear the cache shadow
@@ -2012,7 +2012,7 @@ new function(){
 new function(){
     xui.pseudocode={
         exec:function(conf, args, scope, temp, resumeFun){
-           var  t,m,n,p,k,type=conf.type||"other",
+           var  t,tt,m,n,p,k,type=conf.type||"other",
                 _ns={
                     temp:temp,
                     page:scope,
@@ -2068,13 +2068,13 @@ new function(){
                 },
                 adjustparam=function(o){
                     if(typeof(o)=="string"){
-                        var jsondata;
+                        var jsondata,oo;
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
                             jsondata=1;
                         }
-                        o=xui.adjustVar(o, _ns);
-                        if(!xui.isDefined(o))o=xui.adjustVar(o);
+                        o=xui.adjustVar(oo=o, _ns);
+                        if(!xui.isDefined(o))o=xui.adjustVar(oo);
                         // for file
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
@@ -2299,8 +2299,8 @@ new function(){
                                                     t=["{window"];
                                                 }
                                                 t=t.join(".")+"}";
-                                                t=xui.adjustVar(t, _ns);
-                                                if(!xui.isDefined(t))t=xui.adjustVar(t);
+                                                t=xui.adjustVar(tt=t, _ns);
+                                                if(!xui.isDefined(t))t=xui.adjustVar(tt);
                                                 if(t && xui.isFun(t[m]))
                                                     xui.$cache.callback[iparams[0]]=[t,m];
                                             }
@@ -2317,8 +2317,8 @@ new function(){
                                                     t=["{window"];
                                                 }
                                                 t=t.join(".")+"}";
-                                                t=xui.adjustVar(t, _ns);
-                                                if(!xui.isDefined(t))t=xui.adjustVar(t);
+                                                t=xui.adjustVar(tt=t, _ns);
+                                                if(!xui.isDefined(t))t=xui.adjustVar(tt);
                                                 if(t&&t[m]){
                                                     if(xui.isFun(t[m])){
                                                         doit=1;
@@ -4200,14 +4200,14 @@ xui.Class('xui.Profile','xui.absProfile',{
             return fun.call(this,value, ovalue, force, tag, tag2);
         },
         __gc:function(){
-            var ns=this;
+            var ns=this, args=xui.toArr(arguments);
             if(ns.$beforeDestroy){
                 xui.each(ns.$beforeDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 delete ns.$beforeDestroy;
             }
-            xui.tryF(ns.$ondestory,[],ns);
+            xui.tryF(ns.$ondestory,args,ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
 
@@ -4225,7 +4225,7 @@ xui.Class('xui.Profile','xui.absProfile',{
             //afterDestroy
             if(ns.$afterDestroy){
                 xui.each(ns.$afterDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 delete ns.$afterDestroy;
             }

@@ -833,7 +833,7 @@ xui.set(xui.Locale,["cn","app"], {
         },
         preLoadImage:{
             $desc:"预加载图片",
-            $rtn:"Integer",
+            $rtn:"Number",
             $paras:[
                 "src [必需参数]: String, 图片地址，可以是图片地址的Array",
                 "onSuccess [可选参数]: Function, function(img), 图片加载成功时触发的回调函数",
@@ -1293,7 +1293,7 @@ xui.set(xui.Locale,["cn","app"], {
         },
         subscribe:{
             $desc:"订阅系统消息",
-            $rtn:"Integer",
+            $rtn:"Number",
             $paras:[
                 "topic [必需参数]: String, 订阅的主题",
                 "subscriber [必需参数]: String, 订阅者的唯一标识id",
@@ -1738,7 +1738,7 @@ xui.set(xui.Locale,["cn","app"], {
         prototype:{
             subscribe:{
                 $desc:"订阅消息",
-                $rtn:"Integer",
+                $rtn:"Number",
                 $paras:[
                     "topic [必需参数]: String, 订阅的主题",
                     "subscriber [必需参数]: String, 订阅者的唯一标识id",
@@ -2276,7 +2276,7 @@ xui.set(xui.Locale,["cn","app"], {
         },
         getWheelDelta:{
             $desc:"获取鼠标滚轮的移动值",
-            $rtn:"Integer",
+            $rtn:"Number",
             $paras:[
                 "event [必需参数] : DOM事件对象"
             ]
@@ -13579,13 +13579,57 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置目前页",
                 $rtn:"[self]",
                 $paras:[
-                    "value: Number. 页代码"
+                    "value [必需参数]: Number. 页代码",
+                    "force [可选参数]: Boolean. 是否强制设置,默认为false", 
+                    "type [可选参数]: String. 类型"
                 ],
                 $snippet:[
                     "var id='xui.temp.pb0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})));"+
                     "xui.asyRun(function(){o.setPage(100);},1000);"+
                     "}"
+                ]
+            },
+            getPage:{
+                $desc:"得到当前页码，或总页码",
+                $rtn:"String",
+                $paras:[
+                    "total [可选参数]: Boolean. true 表示要得到最大页"
+                ]
+            },
+            getTotalPages:{
+                $desc:"得到总页码",
+                $rtn:"Number"
+            },
+            setTotalCount:{
+                $desc:"设置总记录数目",
+                $rtn:"[self]",
+                $paras:[
+                    "count [必需参数]: Number. 总记录数目"
+                ]
+            },
+            getPageCount:{
+                $desc:"得到每页记录数",
+                $rtn:"Number"
+            },
+            setPageCount:{
+                $desc:"设置每页记录数",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number, 每页记录数",
+                    $force
+                ]
+            },
+            getShowMoreBtns:{
+                $desc:"得到是否显示更多的页数按妞",
+                $rtn:"Boolean"
+            },
+            setShowMoreBtns:{
+                $desc:"设置是否显示更多的页数按妞",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean, 是否显示更多的页数按妞",
+                    $force
                 ]
             },
             getCaption:{
@@ -13727,7 +13771,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     $profile,
                     "page : Number, 新页码",
-                   "opage : Number, 旧页码"
+                    "start: Number, 记录开始",
+                    "count: Number, 记录个数",
+                    "eventType: String, 页码改变的事件类型. inited/input/click",
+                   "opage : Number, 旧页码",
+                    "ostart: Number, 旧记录开始"
                 ]
             }
         }
@@ -19312,7 +19360,9 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'uriTpl':'链接模板',
             'textTpl':'标签模板',
             'prevMark':'前一页标识',
-            'nextMark':'后一页标识'
+            'nextMark':'后一页标识',
+            'showMoreBtns':'是否显示更多',
+            'pageCount':'页面记录数'
         },
         'xui_UI_Tabs' : {
             'lazyAppend':'延迟加载',

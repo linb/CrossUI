@@ -314,8 +314,8 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 }
 
-                if(self._innerModulesCreated && ('__inner_coms_prop__' in self.properties))
-                    self.setProfile(self.properties.__inner_coms_prop__);
+                if(self._innerModulesCreated && ('__inner_coms_prf__' in self.properties))
+                    self.setProfile(self.properties.__inner_coms_prf__);
             
                 // the last one
                 if(!innerDataOnly){
@@ -400,9 +400,10 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var r,
-                self = this,
-                tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
+            var self = this;
+            if(self.$inDesign)return;
+
+            var r, tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
                 tt = self.events && self.events[name],
                 applyEvents=function(prf, events, host, args){
@@ -413,7 +414,6 @@ xui.Class('xui.Module','xui.absProfile',{
 
                     return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder);
                 };
-            if(self.$inDesign)return;
             self.$lastEvent=name;
             if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
             if(ti && (!xui.isArr(ti) || ti.length))r = applyEvents(self, ti, self, args);
@@ -704,9 +704,9 @@ xui.Class('xui.Module','xui.absProfile',{
             if(autoDestroy)
                 xui.arr.each(self._nodes,function(o){
                     if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudluePlaceHolder"] && !o.box.$initRootHidden){
-                        (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(){
+                        (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(ignoreEffects, purgeNow){
                             if(autoDestroy && !self.destroyed && !self.$ignoreAutoDestroy)
-                                self.destroy();
+                                self.destroy(ignoreEffects, purgeNow);
                             self=null;
                         };
                         return false;
@@ -1085,7 +1085,7 @@ xui.Class('xui.Module','xui.absProfile',{
             //afterDestroy
             if(self.$afterDestroy){
                 xui.each(self.$afterDestroy,function(f){
-                    xui.tryF(f,[],self);
+                    xui.tryF(f,[ignoreEffects, purgeNow],self);
                 });
                 xui.breakO(self.$afterDestroy,2);
             }

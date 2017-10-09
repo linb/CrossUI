@@ -294,16 +294,16 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
             ns.renderCompleted=1;
         },
-        __gc:function(){
-            var ns=this, t;
+        __gc:function(ignoreEffects, purgeNow){
+            var ns=this, t, args=xui.toArr(arguments);
             if(ns.destroyed)return;
             if(ns.$beforeDestroy){
                 xui.each(ns.$beforeDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 xui.breakO(ns.$beforeDestroy,2);
             }
-            xui.tryF(ns.$ondestory,[],ns);
+            xui.tryF(ns.$ondestory,args,ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
 
@@ -311,7 +311,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(!ns.serialId)return;
             if(t=ns._$composed)
                 xui.each(t,function(v){
-                    v.__gc();
+                    v.__gc(ignoreEffects, purgeNow);
                 });
 
             //clear cache things
@@ -346,7 +346,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if((t=ns.children).length){
                 t=xui.copy(t);
                 for(var i=0;i<t.length;i++){
-                    t[i][0].__gc();
+                    t[i][0].__gc(ignoreEffects, purgeNow);
                     t[i].length=0;
                 }
                 t.length=0;
@@ -357,7 +357,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             //afterDestroy
             if(ns.$afterDestroy){
                 xui.each(ns.$afterDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 xui.breakO(ns.$afterDestroy,2);
             }
@@ -480,7 +480,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
             t=ns.$_domid;
             for(var i in t){
-                 t[i].__gc();
+                 t[i].__gc(true,true);
                  delete t[i];
             }
             delete ns['*'];
@@ -1060,27 +1060,31 @@ xui.Class("xui.UI",  "xui.absObj", {
             var ns=this;
             this.each(function(o,i){
                 if(o.destroyed)return;
-                if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
-                var p=o.properties,
-                     a=ignoreEffects?null:xui.Dom._getEffects(p.hideEffects,0),
-                 fun=function(){
+                var fun=function(){
+                    if(o.beforeDestroy && false===o.boxing().beforeDestroy(ignoreEffects, purgeNow))return;
+
                     if(o.$beforeDestroy){
                         xui.each(o.$beforeDestroy,function(f){
-                            xui.tryF(f,[],o);
+                            xui.tryF(f,[ignoreEffects, purgeNow],o);
                         });
                         xui.breakO(o.$beforeDestroy,2);
                     }
+
+                    if(o.renderId)o.getRoot().remove(true, purgeNow);
+                    else o.__gc(ignoreEffects, purgeNow);
+                    xui.arr.removeFrom( ns._nodes, i);
+
                     if(o.$afterDestroy){
                         xui.each(o.$afterDestroy,function(f){
-                            xui.tryF(f,[],o);
+                            xui.tryF(f,[ignoreEffects, purgeNow],o);
                         });
                         xui.breakO(o.$afterDestroy,2);
                     }
-                    if(o.renderId)o.getRoot().remove(true, purgeNow);
-                    else o.__gc();
-                    xui.arr.removeFrom( ns._nodes, i);
                 };
-                if(a)xui.Dom._vAnimate(o.getRoot(),false,fun);else fun();
+                var p=o.properties,
+                     a=ignoreEffects?null:xui.Dom._getEffects(p.hideEffects,0);
+                if(a)xui.Dom._vAnimate(o.getRoot(),false,fun);
+                else fun();
             },null,true);
         },
         isDestroyed:function(){
@@ -1178,7 +1182,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             self._nodes.push(profile);
             profile.Instace=self;
             self.n0=profile;
-
+            if(c.$onInited)xui.tryF(c.$onInited,[],profile);
             return self;
         },
         busy:function(coverAll,html,key,subId){
@@ -8608,7 +8612,7 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             if(!o)return;
             (o.$afterDestroy=(o.$afterDestroy||{}))["destroyAttachedModule"]=function(){
                 if(!this._replaced && this._module){
-                    this._module.destroy();
+                    this._module.destroy(ignoreEffects, purgeNow);
                 }
             };
             return arguments.callee.upper.apply(this,[ignoreEffects, purgeNow]);

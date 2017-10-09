@@ -532,6 +532,13 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 $spaceunit:1,
                 ini:'auto'
             },
+            hAlign:{
+                ini:'',
+                listbox:['','left','center','right'],
+                action: function(v){
+                    this.getSubNode("INPUT").css('textAlign',v);
+                }
+            },
             disabled:{
                 ini:false,
                 action: function(v){
@@ -547,13 +554,6 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         // use 'readonly'(not 'disabled') for selection
                         i.attr('readonly',v);
                     }
-                }
-            },
-            hAlign:{
-                ini:'',
-                listbox:['','left','center','right'],
-                action: function(v){
-                    this.getSubNode("INPUT").css('textAlign',v);
                 }
             },
             readonly:{

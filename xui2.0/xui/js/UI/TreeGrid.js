@@ -5472,7 +5472,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 break;
                 case 'checkbox':
-                    cell.value=!!cell.value;
+                    cell.value=cell.value==="0"?false:!!cell.value;
                     caption=unit(cell.value+'',cell);
                     if(node)
                         node.tagClass('-checked', cell.value);

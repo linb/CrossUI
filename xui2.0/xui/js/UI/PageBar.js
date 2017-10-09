@@ -5,6 +5,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 if(!profile.renderId)return;
                 var t,
                     prop = profile.properties,
+                    hidemore = !prop.showMoreBtns,
                     arr = profile.box._v2a(value),
                     min=arr[0],
                     cur=arr[1],
@@ -14,14 +15,19 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
 
                     first = fun(profile, 'FIRST'),
                     prev = fun(profile, 'PREV'),
-                    prehide = fun(profile, 'PREM'),
+                    prem = fun(profile, 'PREM'),
                     current = fun(profile, 'CUR'),
                     next = fun(profile, 'NEXT'),
-                    nexthide = fun(profile, 'NEXTM'),
+                    nextm = fun(profile, 'NEXTM'),
                     last = fun(profile, 'LAST'),
 
-                    change = function(n,i,j,k){
-                        if(i)n.attr('href',prop.uriTpl.replace('*',i));
+                    change = function(n,i,j,k,t){
+                        if(i){
+                            n.attr('href', prop.uriTpl.replace('*',i));
+                            n.attr('title', i);
+                        }else if(t){
+                            n.attr('title', t);                        
+                        }
                         if(xui.isSet(j))
                             n.html(prop.textTpl.replace('*',j),false);
                         
@@ -32,53 +38,87 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     ;
                 //change href and text
                 change(first, min, min);
-                change(prehide, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1);
+                change(prem, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1, (min+1) + "~" + (cur-2));
                 change(prev, cur-1, prop.prevMark||(cur-1));
-                change(current, cur, cur);
+                current.get(0).value = cur+"";
                 change(next, cur+1, prop.nextMark||(cur+1));
-                change(nexthide, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1);
+                change(nextm, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1, (cur+2) + "~" + (max-1));
                 change(last, max, max);
 
                 //show or hide
                 if((t=cur-min)<=0){
-                    display(first,0);display(prehide,0);display(prev,0);
+                    display(first,0);display(prem,0);display(prev,0);
                 }else if(t==1){
-                    display(first,1);display(prehide,0);display(prev,0);
+                    display(first,1);display(prem,0);display(prev,0);
                 }else if(t==2){
-                    display(first,1);display(prehide,0);display(prev,1);
+                    display(first,1);display(prem,0);display(prev,1);
                     change(prev, cur-1, cur-1);
                 }else{
-                    display(first,1);display(prehide,1);display(prev,1);
+                    display(first,1);display(prem,hidemore?0:1);display(prev,1);
                     if(t==3){
                         change(prev, cur-1, cur-1);
-                        change(prehide, cur-2, cur-2, 0);
+                        change(prem, cur-2, cur-2, 0);
                     }
                 }
                 if((t=max-cur)<=0){
-                    display(last,0);display(nexthide,0);display(next,0);
+                    display(last,0);display(nextm,0);display(next,0);
                 }else if(t==1){
-                    display(last,1);display(nexthide,0);display(next,0);
+                    display(last,1);display(nextm,0);display(next,0);
                 }else if(t==2){
-                    display(last,1);display(nexthide,0);display(next,1);
+                    display(last,1);display(nextm,0);display(next,1);
                     change(next, cur+1, cur+1);
                 }else{
-                    display(last,1);display(nexthide,1);display(next,1);
+                    display(last,1);display(nextm,hidemore?0:1);display(next,1);
                     if(t==3){
                         change(next, cur+1, cur+1);
-                        change(nexthide, cur+2, cur+2, 0);
+                        change(nextm, cur+2, cur+2, 0);
                     }
                 }
             });
         },
-        setPage:function(value){
+        setPage:function(value, force, type){
             return this.each(function(o){
-                var v=(o.properties.$UIvalue||""),
-                    a=v.split(':'),
-                    b=a[1]||a[0];
-                a[1]=parseInt(value,10)||b;
-                o.boxing().setUIValue(a.join(':'),false,false,'page');
+                if(!/^[1-9]\d*$/.test(value+""))return;
 
-                if(o.onPageSet)o.boxing().onPageSet(o, a[1], b);
+                var p=o.properties,
+                    pc = p.pageCount, 
+                    v=(p.$UIvalue||p.value||"")+"",
+                    a=v.split(':'),
+                    b=parseInt(a[1],10);
+
+                if(value > parseInt(a[2],10))return;
+                a[1]=parseInt(value,10) || b;
+
+                if(force || a[1]!==b){
+                    o.boxing().setUIValue(a.join(':'),false,false,'page');
+                    if(o.onPageSet)o.boxing().onPageSet(o, a[1], (a[1]-1)*pc, pc, type||"code", b, (b-1)*pc);
+                }
+            });
+        },
+        getPage:function(total){
+            var o=this.get(0),
+                p=o.properties,
+                v=(p.$UIvalue||p.value||"")+"",
+                a=v.split(':');
+            return a[total?2:1];
+        },
+        getTotalPages:function(){
+            return this.getPage(true);
+        },
+        setTotalCount:function(count){
+            if(!/^[1-9]\d*$/.test(count+""))return this;
+            count=parseInt(count,10);
+            return this.each(function(o){
+                var p=o.properties,
+                    pc=parseInt(p.pageCount,10),
+                    max = parseInt((count + pc -1) /pc,10),
+                    v=(p.$UIvalue||p.value||"")+"",
+                    a=v.split(':');
+
+                a[2]=max;
+                if(parseInt(a[1],10)>max)a[1]=1;
+
+                o.boxing().setUIValue(a.join(':'),false,false,'settotal');
             });
         }
     },
@@ -106,6 +146,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             PREM:{
                 $order:2,
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
+                style:'{_css2}',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -120,10 +161,10 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             },
             CUR:{
                 $order:4,
-                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-ui-btn-checked xui-ui-btn xui-uibar xui-uigradient-checked',
-                tagName:'a',
-                href:'#',
-                tabindex: '{tabindex}'
+                className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uiborder-radius xui-uibase',
+                tagName : 'input',
+                tabindex:'{tabindex}',
+                style:'{_css}'
             },
             NEXT:{
                 $order:5,
@@ -136,6 +177,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             NEXTM:{
                 $order:6,
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
+                style:'{_css2}',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -162,14 +204,15 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 'outline-offset':'',
                 '-moz-outline-offset': (xui.browser.gek && xui.browser.ver<3)?'':null
             },
-            'KEY .xui-ui-btn, POP .xui-ui-btn':{
+            'KEY .xui-ui-btn, KEY .xui-ui-input, POP .xui-ui-btn':{
                 'margin-right':'.25em'
             },
-            'KEY .xui-ui-btn a, POP .xui-ui-btn a':{
-                padding:'0 .25em 0 .25em'
-            },
-            'PREV,CUR,NEXT':{
-                'font-weight' : 'bold'
+            CUR:{
+                'font-weight' : 'bold',
+                'text-align':'center',
+                padding:'.25em',
+                'width':'2em',
+                'margin-top':'-1px'
             },
             POP:{
                 border:'dotted 1px gray',
@@ -180,7 +223,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         },
         Behaviors:{
             HoverEffected:{FIRST:'FIRST',PREM:'PREM',PREV:'PREV',NEXT:'NEXT',NEXTM:'NEXTM',LAST:'LAST',POPI:'POPI',CUR:'CUR'},
-            ClickEffected:{FIRST:'FIRST',PREM:'PREM',PREV:'PREV',NEXT:'NEXT',NEXTM:'NEXTM',LAST:'LAST',POPI:'POPI',CUR:'CUR'},
+            ClickEffected:{FIRST:'FIRST',PREM:'PREM',PREV:'PREV',NEXT:'NEXT',NEXTM:'NEXTM',LAST:'LAST',POPI:'POPI'},
             POP:{
                 onClick:function(profile, e, src){
                     var o=xui(src),
@@ -213,8 +256,49 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 }
             },
             CUR:{
-                onClick:function(profile, e, src){
-                    return profile.box._click(profile,src);
+                onKeypress:function(profile, e, src){
+                    var k=xui.Event.getKey(e),
+                        caret=xui.use(src).caret();
+                    // if not positive integer, set back
+                    if(!/^\d$/.test(k.key)){
+                        return false;
+                    }
+                    if(k.key==='0' && caret[0]===0){
+                        return false;
+                    }
+                },
+                onChange:function(profile, e, src){
+                    var p = profile.properties;
+                    if(p.disabled || p.readonly)return;
+
+                    var v=(p.$UIvalue||p.value||"")+"",
+                        a=v.split(':'),
+                        cur=parseInt(a[1]||"",10),
+                        max=parseInt(a[2]||"",10),
+                        value=xui.use(src).get(0).value||"";
+
+                    // if not positive integer, set back
+                    if(!/^[1-9]\d*$/.test(value)){
+                        xui(src).attr('value',cur+"");
+                        return;
+                    }
+
+                    value = parseInt(value,10);
+                    if(cur!==value){
+                        value =value > max ? max : value;
+                        xui(src).attr('value', value+"");
+                        profile.boxing().setPage(value,false,'input');
+                    }
+                },
+                onKeydown:function(profile, e, src){
+                   var p=profile.properties,b=profile.box,
+                        evt=xui.Event,
+                        k=evt.getKey(e);
+                    if(p.disabled || p.readonly)return;
+
+                    //fire onchange
+                    if(k.key=='enter')
+                        xui.use(src).onChange();
                 }
             },
             NEXT:{
@@ -241,7 +325,6 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         DataModel:{
             dataField:null,
             dataBinder:null,
-            readonly:null,
             autoTips:false,
             dirtyMark:false,
             showDirtyMark:false,
@@ -253,24 +336,69 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },
+            showMoreBtns:{
+                ini:true,
+                action:function(v){
+                    this.getSubNodes(['PREM','NEXTM']).css('display', v?'':'none');
+                }
+            },
+            pageCount:20,
+            disabled:{
+                ini:false,
+                action: function(v){
+                    var i=this.getSubNode('CUR'),
+                        cls="xui-ui-disabled";
+                    
+                    if(v)this.getRoot().addClass(cls);
+                    else this.getRoot().removeClass(cls);
+                        
+                    if(!v && this.properties.readonly)
+                        v=true;
+                    // use 'readonly'(not 'disabled') for selection
+                    i.attr('readonly',v);
+                }
+            },
+            readonly:{
+                ini:false,
+                action: function(v){
+                    var i=this.getSubNode('CUR'),
+                        cls="xui-ui-readonly";
+                    
+                    if(v)this.getRoot().addClass(cls);
+                    else this.getRoot().removeClass(cls);
+
+                    if(!v && this.properties.disabled)
+                        v=true;
+                    // use 'readonly'(not 'disabled') for selection
+                    i.attr('readonly',v);
+                }
+            },
             value:"1:1:1",
             uriTpl:"#*",
             textTpl:"*",
-            prevMark:'&lt;',
-            nextMark:'&gt;',
+            prevMark:'',
+            nextMark:'',
             _moreStep:30
         },
         EventHandlers:{
             onClick:function(profile, page){},
-            onPageSet:function(profile, page, opage){}
+            onPageSet:function(profile, page, start, count, eventType, opage, ostart){}
+        },
+        RenderTrigger:function(){
+            var ns=this,p=ns.properties,a=((p.value||"")+"").split(':');
+            if(p.readonly)
+                ns.boxing().setReadonly(true,true);
+            if(!ns.$inDesign)
+                ns.boxing().setPage(a[1]||a[0],true,'inited');
         },
         _ensureValue:function(profile,value){
             value=value+'';
             var a = value.split(':'),
+                p=profile.properties,
                 b=[],
                 fun=function(a){return parseInt(a,10)||1};
             if(a.length<3){
-                b=profile.properties.$UIvalue.split(':');
+                b=((p.$UIvalue||p.value||'')+'').split(':');
                 a[1]=a[0];
                 a[0]=b[0];
                 a[2]=b[2];
@@ -291,23 +419,25 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             return v;
         },
         _click:function(profile, src){
-            if(profile.properties.disabled)return false;
+            var p=profile.properties;
+            if(p.disabled||p.readonly)return false;
             var b=profile.boxing(),
-                a=(profile.properties.$UIvalue||"").split(':'),
+                a=(p.$UIvalue||p.value||"").split(':'),
                 nv=parseInt(xui(src).attr('href').split('#')[1],10)||a[1]||a[0];
 
             var r = b.onClick(nv);
 
             // if didn't call setPage  in onclick event, setPage here
-            a=(profile.$UIvalue||"").split(':');
             if(!a.length || (nv+"")!==(a[1]+"")){
-                b.setPage(nv);
+                b.setPage(nv,false,'click');
             }
 
             return typeof r=="boolean"?r:false;
         },
         _show:function(profile, e, src, flag){
-            if(profile.properties.disabled)return false;
+            var prop=profile.properties;
+            if(prop.disabled||prop.readonly)return false;
+
             var prop = profile.properties,
                 arr = profile.box._v2a(prop.value),
                 min=arr[0],
@@ -354,7 +484,13 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             pop.setBlurTrigger(profile.key+":"+profile.$xid, function(){
                 pool.append(pop);
             });
-        }
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            data._css=xui.browser.kde?'resize:none;':'';
+            data._css2 = data.showMoreBtns?'':'display:none;';
+            return data;
+        }   
     },
     Initialize:function(){
         this.addTemplateKeys(['POPI']);

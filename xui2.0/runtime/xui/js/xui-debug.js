@@ -1646,7 +1646,7 @@ xui.merge(xui,{
                      if('!window'===t||'!document'===t)continue;
 
                      //don't trigger any innerHTML or removeChild in __gc()
-                     o.__gc();
+                     o.__gc(true, true);
                      //clear the cache
                      bak[bak.length]=id;
                      //clear the cache shadow
@@ -2013,7 +2013,7 @@ new function(){
 new function(){
     xui.pseudocode={
         exec:function(conf, args, scope, temp, resumeFun){
-           var  t,m,n,p,k,type=conf.type||"other",
+           var  t,tt,m,n,p,k,type=conf.type||"other",
                 _ns={
                     temp:temp,
                     page:scope,
@@ -2069,13 +2069,13 @@ new function(){
                 },
                 adjustparam=function(o){
                     if(typeof(o)=="string"){
-                        var jsondata;
+                        var jsondata,oo;
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
                             jsondata=1;
                         }
-                        o=xui.adjustVar(o, _ns);
-                        if(!xui.isDefined(o))o=xui.adjustVar(o);
+                        o=xui.adjustVar(oo=o, _ns);
+                        if(!xui.isDefined(o))o=xui.adjustVar(oo);
                         // for file
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
@@ -2300,8 +2300,8 @@ new function(){
                                                     t=["{window"];
                                                 }
                                                 t=t.join(".")+"}";
-                                                t=xui.adjustVar(t, _ns);
-                                                if(!xui.isDefined(t))t=xui.adjustVar(t);
+                                                t=xui.adjustVar(tt=t, _ns);
+                                                if(!xui.isDefined(t))t=xui.adjustVar(tt);
                                                 if(t && xui.isFun(t[m]))
                                                     xui.$cache.callback[iparams[0]]=[t,m];
                                             }
@@ -2318,8 +2318,8 @@ new function(){
                                                     t=["{window"];
                                                 }
                                                 t=t.join(".")+"}";
-                                                t=xui.adjustVar(t, _ns);
-                                                if(!xui.isDefined(t))t=xui.adjustVar(t);
+                                                t=xui.adjustVar(tt=t, _ns);
+                                                if(!xui.isDefined(t))t=xui.adjustVar(tt);
                                                 if(t&&t[m]){
                                                     if(xui.isFun(t[m])){
                                                         doit=1;
@@ -4201,14 +4201,14 @@ xui.Class('xui.Profile','xui.absProfile',{
             return fun.call(this,value, ovalue, force, tag, tag2);
         },
         __gc:function(){
-            var ns=this;
+            var ns=this, args=xui.toArr(arguments);
             if(ns.$beforeDestroy){
                 xui.each(ns.$beforeDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 delete ns.$beforeDestroy;
             }
-            xui.tryF(ns.$ondestory,[],ns);
+            xui.tryF(ns.$ondestory,args,ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
 
@@ -4226,7 +4226,7 @@ xui.Class('xui.Profile','xui.absProfile',{
             //afterDestroy
             if(ns.$afterDestroy){
                 xui.each(ns.$afterDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 delete ns.$afterDestroy;
             }
@@ -13811,8 +13811,8 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 }
 
-                if(self._innerModulesCreated && ('__inner_coms_prop__' in self.properties))
-                    self.setProfile(self.properties.__inner_coms_prop__);
+                if(self._innerModulesCreated && ('__inner_coms_prf__' in self.properties))
+                    self.setProfile(self.properties.__inner_coms_prf__);
             
                 // the last one
                 if(!innerDataOnly){
@@ -13897,9 +13897,10 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         // for outter events
         fireEvent:function(name, args, host){
-            var r,
-                self = this,
-                tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
+            var self = this;
+            if(self.$inDesign)return;
+
+            var r, tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
                 tt = self.events && self.events[name],
                 applyEvents=function(prf, events, host, args){
@@ -13910,7 +13911,6 @@ xui.Class('xui.Module','xui.absProfile',{
 
                     return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder);
                 };
-            if(self.$inDesign)return;
             self.$lastEvent=name;
             if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
             if(ti && (!xui.isArr(ti) || ti.length))r = applyEvents(self, ti, self, args);
@@ -14201,9 +14201,9 @@ xui.Class('xui.Module','xui.absProfile',{
             if(autoDestroy)
                 xui.arr.each(self._nodes,function(o){
                     if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudluePlaceHolder"] && !o.box.$initRootHidden){
-                        (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(){
+                        (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(ignoreEffects, purgeNow){
                             if(autoDestroy && !self.destroyed && !self.$ignoreAutoDestroy)
-                                self.destroy();
+                                self.destroy(ignoreEffects, purgeNow);
                             self=null;
                         };
                         return false;
@@ -14582,7 +14582,7 @@ xui.Class('xui.Module','xui.absProfile',{
             //afterDestroy
             if(self.$afterDestroy){
                 xui.each(self.$afterDestroy,function(f){
-                    xui.tryF(f,[],self);
+                    xui.tryF(f,[ignoreEffects, purgeNow],self);
                 });
                 xui.breakO(self.$afterDestroy,2);
             }
@@ -17698,16 +17698,16 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
             ns.renderCompleted=1;
         },
-        __gc:function(){
-            var ns=this, t;
+        __gc:function(ignoreEffects, purgeNow){
+            var ns=this, t, args=xui.toArr(arguments);
             if(ns.destroyed)return;
             if(ns.$beforeDestroy){
                 xui.each(ns.$beforeDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 xui.breakO(ns.$beforeDestroy,2);
             }
-            xui.tryF(ns.$ondestory,[],ns);
+            xui.tryF(ns.$ondestory,args,ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
 
@@ -17715,7 +17715,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(!ns.serialId)return;
             if(t=ns._$composed)
                 xui.each(t,function(v){
-                    v.__gc();
+                    v.__gc(ignoreEffects, purgeNow);
                 });
 
             //clear cache things
@@ -17750,7 +17750,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if((t=ns.children).length){
                 t=xui.copy(t);
                 for(var i=0;i<t.length;i++){
-                    t[i][0].__gc();
+                    t[i][0].__gc(ignoreEffects, purgeNow);
                     t[i].length=0;
                 }
                 t.length=0;
@@ -17761,7 +17761,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             //afterDestroy
             if(ns.$afterDestroy){
                 xui.each(ns.$afterDestroy,function(f){
-                    xui.tryF(f,[],ns);
+                    xui.tryF(f,args,ns);
                 });
                 xui.breakO(ns.$afterDestroy,2);
             }
@@ -17884,7 +17884,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
             t=ns.$_domid;
             for(var i in t){
-                 t[i].__gc();
+                 t[i].__gc(true,true);
                  delete t[i];
             }
             delete ns['*'];
@@ -18464,27 +18464,31 @@ xui.Class("xui.UI",  "xui.absObj", {
             var ns=this;
             this.each(function(o,i){
                 if(o.destroyed)return;
-                if(o.beforeDestroy && false===o.boxing().beforeDestroy())return;
-                var p=o.properties,
-                     a=ignoreEffects?null:xui.Dom._getEffects(p.hideEffects,0),
-                 fun=function(){
+                var fun=function(){
+                    if(o.beforeDestroy && false===o.boxing().beforeDestroy(ignoreEffects, purgeNow))return;
+
                     if(o.$beforeDestroy){
                         xui.each(o.$beforeDestroy,function(f){
-                            xui.tryF(f,[],o);
+                            xui.tryF(f,[ignoreEffects, purgeNow],o);
                         });
                         xui.breakO(o.$beforeDestroy,2);
                     }
+
+                    if(o.renderId)o.getRoot().remove(true, purgeNow);
+                    else o.__gc(ignoreEffects, purgeNow);
+                    xui.arr.removeFrom( ns._nodes, i);
+
                     if(o.$afterDestroy){
                         xui.each(o.$afterDestroy,function(f){
-                            xui.tryF(f,[],o);
+                            xui.tryF(f,[ignoreEffects, purgeNow],o);
                         });
                         xui.breakO(o.$afterDestroy,2);
                     }
-                    if(o.renderId)o.getRoot().remove(true, purgeNow);
-                    else o.__gc();
-                    xui.arr.removeFrom( ns._nodes, i);
                 };
-                if(a)xui.Dom._vAnimate(o.getRoot(),false,fun);else fun();
+                var p=o.properties,
+                     a=ignoreEffects?null:xui.Dom._getEffects(p.hideEffects,0);
+                if(a)xui.Dom._vAnimate(o.getRoot(),false,fun);
+                else fun();
             },null,true);
         },
         isDestroyed:function(){
@@ -18582,7 +18586,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             self._nodes.push(profile);
             profile.Instace=self;
             self.n0=profile;
-
+            if(c.$onInited)xui.tryF(c.$onInited,[],profile);
             return self;
         },
         busy:function(coverAll,html,key,subId){
@@ -26012,7 +26016,7 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             if(!o)return;
             (o.$afterDestroy=(o.$afterDestroy||{}))["destroyAttachedModule"]=function(){
                 if(!this._replaced && this._module){
-                    this._module.destroy();
+                    this._module.destroy(ignoreEffects, purgeNow);
                 }
             };
             return arguments.callee.upper.apply(this,[ignoreEffects, purgeNow]);
@@ -28668,7 +28672,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             return data;
         },
         _ensureValue:function(profile, value){
-            return !!value;
+            return value==="0"?false:!!value;
         }
     }
 });
@@ -29854,6 +29858,13 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $spaceunit:1,
                 ini:'auto'
             },
+            hAlign:{
+                ini:'',
+                listbox:['','left','center','right'],
+                action: function(v){
+                    this.getSubNode("INPUT").css('textAlign',v);
+                }
+            },
             disabled:{
                 ini:false,
                 action: function(v){
@@ -29869,13 +29880,6 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         // use 'readonly'(not 'disabled') for selection
                         i.attr('readonly',v);
                     }
-                }
-            },
-            hAlign:{
-                ini:'',
-                listbox:['','left','center','right'],
-                action: function(v){
-                    this.getSubNode("INPUT").css('textAlign',v);
                 }
             },
             readonly:{
@@ -37541,6 +37545,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 if(!profile.renderId)return;
                 var t,
                     prop = profile.properties,
+                    hidemore = !prop.showMoreBtns,
                     arr = profile.box._v2a(value),
                     min=arr[0],
                     cur=arr[1],
@@ -37550,14 +37555,19 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
 
                     first = fun(profile, 'FIRST'),
                     prev = fun(profile, 'PREV'),
-                    prehide = fun(profile, 'PREM'),
+                    prem = fun(profile, 'PREM'),
                     current = fun(profile, 'CUR'),
                     next = fun(profile, 'NEXT'),
-                    nexthide = fun(profile, 'NEXTM'),
+                    nextm = fun(profile, 'NEXTM'),
                     last = fun(profile, 'LAST'),
 
-                    change = function(n,i,j,k){
-                        if(i)n.attr('href',prop.uriTpl.replace('*',i));
+                    change = function(n,i,j,k,t){
+                        if(i){
+                            n.attr('href', prop.uriTpl.replace('*',i));
+                            n.attr('title', i);
+                        }else if(t){
+                            n.attr('title', t);                        
+                        }
                         if(xui.isSet(j))
                             n.html(prop.textTpl.replace('*',j),false);
                         
@@ -37568,53 +37578,87 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                     ;
                 //change href and text
                 change(first, min, min);
-                change(prehide, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1);
+                change(prem, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1, (min+1) + "~" + (cur-2));
                 change(prev, cur-1, prop.prevMark||(cur-1));
-                change(current, cur, cur);
+                current.get(0).value = cur+"";
                 change(next, cur+1, prop.nextMark||(cur+1));
-                change(nexthide, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1);
+                change(nextm, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1, (cur+2) + "~" + (max-1));
                 change(last, max, max);
 
                 //show or hide
                 if((t=cur-min)<=0){
-                    display(first,0);display(prehide,0);display(prev,0);
+                    display(first,0);display(prem,0);display(prev,0);
                 }else if(t==1){
-                    display(first,1);display(prehide,0);display(prev,0);
+                    display(first,1);display(prem,0);display(prev,0);
                 }else if(t==2){
-                    display(first,1);display(prehide,0);display(prev,1);
+                    display(first,1);display(prem,0);display(prev,1);
                     change(prev, cur-1, cur-1);
                 }else{
-                    display(first,1);display(prehide,1);display(prev,1);
+                    display(first,1);display(prem,hidemore?0:1);display(prev,1);
                     if(t==3){
                         change(prev, cur-1, cur-1);
-                        change(prehide, cur-2, cur-2, 0);
+                        change(prem, cur-2, cur-2, 0);
                     }
                 }
                 if((t=max-cur)<=0){
-                    display(last,0);display(nexthide,0);display(next,0);
+                    display(last,0);display(nextm,0);display(next,0);
                 }else if(t==1){
-                    display(last,1);display(nexthide,0);display(next,0);
+                    display(last,1);display(nextm,0);display(next,0);
                 }else if(t==2){
-                    display(last,1);display(nexthide,0);display(next,1);
+                    display(last,1);display(nextm,0);display(next,1);
                     change(next, cur+1, cur+1);
                 }else{
-                    display(last,1);display(nexthide,1);display(next,1);
+                    display(last,1);display(nextm,hidemore?0:1);display(next,1);
                     if(t==3){
                         change(next, cur+1, cur+1);
-                        change(nexthide, cur+2, cur+2, 0);
+                        change(nextm, cur+2, cur+2, 0);
                     }
                 }
             });
         },
-        setPage:function(value){
+        setPage:function(value, force, type){
             return this.each(function(o){
-                var v=(o.properties.$UIvalue||""),
-                    a=v.split(':'),
-                    b=a[1]||a[0];
-                a[1]=parseInt(value,10)||b;
-                o.boxing().setUIValue(a.join(':'),false,false,'page');
+                if(!/^[1-9]\d*$/.test(value+""))return;
 
-                if(o.onPageSet)o.boxing().onPageSet(o, a[1], b);
+                var p=o.properties,
+                    pc = p.pageCount, 
+                    v=(p.$UIvalue||p.value||"")+"",
+                    a=v.split(':'),
+                    b=parseInt(a[1],10);
+
+                if(value > parseInt(a[2],10))return;
+                a[1]=parseInt(value,10) || b;
+
+                if(force || a[1]!==b){
+                    o.boxing().setUIValue(a.join(':'),false,false,'page');
+                    if(o.onPageSet)o.boxing().onPageSet(o, a[1], (a[1]-1)*pc, pc, type||"code", b, (b-1)*pc);
+                }
+            });
+        },
+        getPage:function(total){
+            var o=this.get(0),
+                p=o.properties,
+                v=(p.$UIvalue||p.value||"")+"",
+                a=v.split(':');
+            return a[total?2:1];
+        },
+        getTotalPages:function(){
+            return this.getPage(true);
+        },
+        setTotalCount:function(count){
+            if(!/^[1-9]\d*$/.test(count+""))return this;
+            count=parseInt(count,10);
+            return this.each(function(o){
+                var p=o.properties,
+                    pc=parseInt(p.pageCount,10),
+                    max = parseInt((count + pc -1) /pc,10),
+                    v=(p.$UIvalue||p.value||"")+"",
+                    a=v.split(':');
+
+                a[2]=max;
+                if(parseInt(a[1],10)>max)a[1]=1;
+
+                o.boxing().setUIValue(a.join(':'),false,false,'settotal');
             });
         }
     },
@@ -37642,6 +37686,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             PREM:{
                 $order:2,
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
+                style:'{_css2}',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -37656,10 +37701,10 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             CUR:{
                 $order:4,
-                className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-ui-btn-checked xui-ui-btn xui-uibar xui-uigradient-checked',
-                tagName:'a',
-                href:'#',
-                tabindex: '{tabindex}'
+                className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uiborder-radius xui-uibase',
+                tagName : 'input',
+                tabindex:'{tabindex}',
+                style:'{_css}'
             },
             NEXT:{
                 $order:5,
@@ -37672,6 +37717,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             NEXTM:{
                 $order:6,
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
+                style:'{_css2}',
                 tagName:'a',
                 href:'#',
                 tabindex: '{tabindex}'
@@ -37698,14 +37744,15 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 'outline-offset':'',
                 '-moz-outline-offset': (xui.browser.gek && xui.browser.ver<3)?'':null
             },
-            'KEY .xui-ui-btn, POP .xui-ui-btn':{
+            'KEY .xui-ui-btn, KEY .xui-ui-input, POP .xui-ui-btn':{
                 'margin-right':'.25em'
             },
-            'KEY .xui-ui-btn a, POP .xui-ui-btn a':{
-                padding:'0 .25em 0 .25em'
-            },
-            'PREV,CUR,NEXT':{
-                'font-weight' : 'bold'
+            CUR:{
+                'font-weight' : 'bold',
+                'text-align':'center',
+                padding:'.25em',
+                'width':'2em',
+                'margin-top':'-1px'
             },
             POP:{
                 border:'dotted 1px gray',
@@ -37716,7 +37763,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         },
         Behaviors:{
             HoverEffected:{FIRST:'FIRST',PREM:'PREM',PREV:'PREV',NEXT:'NEXT',NEXTM:'NEXTM',LAST:'LAST',POPI:'POPI',CUR:'CUR'},
-            ClickEffected:{FIRST:'FIRST',PREM:'PREM',PREV:'PREV',NEXT:'NEXT',NEXTM:'NEXTM',LAST:'LAST',POPI:'POPI',CUR:'CUR'},
+            ClickEffected:{FIRST:'FIRST',PREM:'PREM',PREV:'PREV',NEXT:'NEXT',NEXTM:'NEXTM',LAST:'LAST',POPI:'POPI'},
             POP:{
                 onClick:function(profile, e, src){
                     var o=xui(src),
@@ -37749,8 +37796,49 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 }
             },
             CUR:{
-                onClick:function(profile, e, src){
-                    return profile.box._click(profile,src);
+                onKeypress:function(profile, e, src){
+                    var k=xui.Event.getKey(e),
+                        caret=xui.use(src).caret();
+                    // if not positive integer, set back
+                    if(!/^\d$/.test(k.key)){
+                        return false;
+                    }
+                    if(k.key==='0' && caret[0]===0){
+                        return false;
+                    }
+                },
+                onChange:function(profile, e, src){
+                    var p = profile.properties;
+                    if(p.disabled || p.readonly)return;
+
+                    var v=(p.$UIvalue||p.value||"")+"",
+                        a=v.split(':'),
+                        cur=parseInt(a[1]||"",10),
+                        max=parseInt(a[2]||"",10),
+                        value=xui.use(src).get(0).value||"";
+
+                    // if not positive integer, set back
+                    if(!/^[1-9]\d*$/.test(value)){
+                        xui(src).attr('value',cur+"");
+                        return;
+                    }
+
+                    value = parseInt(value,10);
+                    if(cur!==value){
+                        value =value > max ? max : value;
+                        xui(src).attr('value', value+"");
+                        profile.boxing().setPage(value,false,'input');
+                    }
+                },
+                onKeydown:function(profile, e, src){
+                   var p=profile.properties,b=profile.box,
+                        evt=xui.Event,
+                        k=evt.getKey(e);
+                    if(p.disabled || p.readonly)return;
+
+                    //fire onchange
+                    if(k.key=='enter')
+                        xui.use(src).onChange();
                 }
             },
             NEXT:{
@@ -37777,7 +37865,6 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         DataModel:{
             dataField:null,
             dataBinder:null,
-            readonly:null,
             autoTips:false,
             dirtyMark:false,
             showDirtyMark:false,
@@ -37789,24 +37876,69 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                     this.getSubNode('LABEL').html(xui.adjustRes(v,true));
                 }
             },
+            showMoreBtns:{
+                ini:true,
+                action:function(v){
+                    this.getSubNodes(['PREM','NEXTM']).css('display', v?'':'none');
+                }
+            },
+            pageCount:20,
+            disabled:{
+                ini:false,
+                action: function(v){
+                    var i=this.getSubNode('CUR'),
+                        cls="xui-ui-disabled";
+                    
+                    if(v)this.getRoot().addClass(cls);
+                    else this.getRoot().removeClass(cls);
+                        
+                    if(!v && this.properties.readonly)
+                        v=true;
+                    // use 'readonly'(not 'disabled') for selection
+                    i.attr('readonly',v);
+                }
+            },
+            readonly:{
+                ini:false,
+                action: function(v){
+                    var i=this.getSubNode('CUR'),
+                        cls="xui-ui-readonly";
+                    
+                    if(v)this.getRoot().addClass(cls);
+                    else this.getRoot().removeClass(cls);
+
+                    if(!v && this.properties.disabled)
+                        v=true;
+                    // use 'readonly'(not 'disabled') for selection
+                    i.attr('readonly',v);
+                }
+            },
             value:"1:1:1",
             uriTpl:"#*",
             textTpl:"*",
-            prevMark:'&lt;',
-            nextMark:'&gt;',
+            prevMark:'',
+            nextMark:'',
             _moreStep:30
         },
         EventHandlers:{
             onClick:function(profile, page){},
-            onPageSet:function(profile, page, opage){}
+            onPageSet:function(profile, page, start, count, eventType, opage, ostart){}
+        },
+        RenderTrigger:function(){
+            var ns=this,p=ns.properties,a=((p.value||"")+"").split(':');
+            if(p.readonly)
+                ns.boxing().setReadonly(true,true);
+            if(!ns.$inDesign)
+                ns.boxing().setPage(a[1]||a[0],true,'inited');
         },
         _ensureValue:function(profile,value){
             value=value+'';
             var a = value.split(':'),
+                p=profile.properties,
                 b=[],
                 fun=function(a){return parseInt(a,10)||1};
             if(a.length<3){
-                b=profile.properties.$UIvalue.split(':');
+                b=((p.$UIvalue||p.value||'')+'').split(':');
                 a[1]=a[0];
                 a[0]=b[0];
                 a[2]=b[2];
@@ -37827,23 +37959,25 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             return v;
         },
         _click:function(profile, src){
-            if(profile.properties.disabled)return false;
+            var p=profile.properties;
+            if(p.disabled||p.readonly)return false;
             var b=profile.boxing(),
-                a=(profile.properties.$UIvalue||"").split(':'),
+                a=(p.$UIvalue||p.value||"").split(':'),
                 nv=parseInt(xui(src).attr('href').split('#')[1],10)||a[1]||a[0];
 
             var r = b.onClick(nv);
 
             // if didn't call setPage  in onclick event, setPage here
-            a=(profile.$UIvalue||"").split(':');
             if(!a.length || (nv+"")!==(a[1]+"")){
-                b.setPage(nv);
+                b.setPage(nv,false,'click');
             }
 
             return typeof r=="boolean"?r:false;
         },
         _show:function(profile, e, src, flag){
-            if(profile.properties.disabled)return false;
+            var prop=profile.properties;
+            if(prop.disabled||prop.readonly)return false;
+
             var prop = profile.properties,
                 arr = profile.box._v2a(prop.value),
                 min=arr[0],
@@ -37890,7 +38024,13 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             pop.setBlurTrigger(profile.key+":"+profile.$xid, function(){
                 pool.append(pop);
             });
-        }
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            data._css=xui.browser.kde?'resize:none;':'';
+            data._css2 = data.showMoreBtns?'':'display:none;';
+            return data;
+        }   
     },
     Initialize:function(){
         this.addTemplateKeys(['POPI']);
@@ -49328,7 +49468,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 break;
                 case 'checkbox':
-                    cell.value=!!cell.value;
+                    cell.value=cell.value==="0"?false:!!cell.value;
                     caption=unit(cell.value+'',cell);
                     if(node)
                         node.tagClass('-checked', cell.value);

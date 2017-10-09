@@ -145,7 +145,7 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             return data;
         },
         _ensureValue:function(profile, value){
-            return !!value;
+            return value==="0"?false:!!value;
         }
     }
 });

@@ -836,7 +836,7 @@ xui.set(xui.Locale,["en","app"], {
         },
         preLoadImage:{
             $desc:"preLoad Image(s)",
-            $rtn:"Integer",
+            $rtn:"Number",
             $paras:[
                 "src [Required]: String, image's url address, or an Array of url address",
                 "onSuccess [Optional]: Function, function(img), callback function for image loaded successfully",
@@ -1297,7 +1297,7 @@ xui.set(xui.Locale,["en","app"], {
         },
         subscribe:{
             $desc:"Subscribes system message",
-            $rtn:"Integer",
+            $rtn:"Number",
             $paras:[
                 "topic [Required]: String, the topic",
                 "subscriber [Required]: String, the unique id for subscriber",
@@ -1726,7 +1726,7 @@ xui.set(xui.Locale,["en","app"], {
         prototype:{
             subscribe:{
                 $desc:"Subscribes message",
-                $rtn:"Integer",
+                $rtn:"Number",
                 $paras:[
                     "topic [Required]: String, the topic",
                     "subscriber [Required]: String, the unique id for subscriber",
@@ -2267,7 +2267,7 @@ xui.set(xui.Locale,["en","app"], {
         },
         getWheelDelta:{
             $desc:"Gets mouse's wheel delta value",
-            $rtn:"Integer",
+            $rtn:"Number",
             $paras:[
                 "event [Required] : DOM event Object"
             ]
@@ -13668,13 +13668,57 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the current PageBar to the specified page",
                 $rtn:"[self]",
                 $paras:[
-                    "value: Number. page number"
+                    "value [Required]: Number. page number",
+                    "force [Optional]: Boolean. force to set it. Default is false",
+                    "type [Optional]: String. setting type"
                 ],
                 $snippet:[
                     "var id='xui.temp.pb0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "var o;xui(id).prepend(o=(new xui.UI.PageBar({value:'1:3:300'})));"+
                     "xui.asyRun(function(){o.setPage(100);},1000);"+
                     "}"
+                ]
+            },
+            getPage:{
+                $desc:"Gets the current page number, or total page number",
+                $rtn:"Number",
+                $paras:[
+                    "total [Optional]: Boolean. To determine whether returns current page number, or total page number."
+                ]
+            },
+            getTotalPages:{
+                $desc:"Gets the total page number",
+                $rtn:"Number"
+            },
+            setTotalCount:{
+                $desc:"Sets the total record count",
+                $rtn:"[self]",
+                $paras:[
+                    "count [Required]: Number. total count number"
+                ]
+            },
+            getPageCount:{
+                $desc:"Gets the record count for one page",
+                $rtn:"Number"
+            },
+            setPageCount:{
+                $desc:"Sets the record count for one page",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number, the record count for one page",
+                    $force
+                ]
+            },
+            getShowMoreBtns:{
+                $desc:"To determine whether shows more buttons or doesn't",
+                $rtn:"Boolean"
+            },
+            setShowMoreBtns:{
+                $desc:"To specify whether shows more buttons or doesn't",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean",
+                    $force
                 ]
             },
             getCaption:{
@@ -13815,8 +13859,12 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"onPage changed event handler",
                 $paras:[
                     $profile,
-                    "page : Numer, the new page number",
-                    "opage : Numer, the old page number"
+                    "page : Number, the new page number",
+                    "start: Number,  the new page record start number",
+                    "count: Number, the record count for one page",
+                    "eventType: String, the event type. inited/input/click",
+                    "opage : Number, the old page number",
+                    "ostart: Number, the old page record start number"
                 ]
             }
         }
