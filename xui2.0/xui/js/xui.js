@@ -541,10 +541,11 @@ new function(){
             return str.replace(/\\u([0-9a-f]{3})([0-9a-f])/g,function(a,b,c){return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
         },
         urlEncode:function(hash){
-            var a=[],b=[],i,o;
-            for(i in hash)
-                if(xui.isDefined(o=hash[i]))
-                    a.push((b[b.length]=encodeURIComponent(i)) +'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+            var a=[],b=[],i,c,o;
+            for(i in hash){
+                a[c=a.length]=b[b.length]=encodeURIComponent(i);
+                if((o=hash[i]) || o===0) a[c] += '='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o));
+            }
             a=xui.arr.stableSort(a,function(x,y,i,j){return b[i]>b[j]?1:b[i]==b[j]?0:-1});
             return a.join('&');
         },
@@ -929,8 +930,10 @@ xui.merge(xui,{
     $localeKey:'en',
     $localeDomId:'xlid',
     $dateFormat:'',
-    $rand:"_r_",
-
+    $rand:"_rnd_",
+    _rnd:function(){
+        return xui.debugMode?xui.$rand+"="+xui.rand():null;
+    },
     SpaceUnit:'em',
     $us:function(p){
         // ie67 always px
@@ -1282,10 +1285,10 @@ xui.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, xui._rnd(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,xui._rnd(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1295,10 +1298,10 @@ xui.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.JSONP(path,xui.$rand+"="+xui.rand(),onSuccess,onFail,0,options).start()
+                xui.JSONP(path,xui._rnd(),onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui.$rand+"="+xui.rand(),function(rsp){
+                xui.Ajax(path,xui._rnd(),function(rsp){
                     try{xui.exec(rsp,id)}
                     catch(e){xui.tryF(onFail,[e.name + ": " + e.message])}
                     xui.tryF(onSuccess);
@@ -1342,7 +1345,7 @@ xui.merge(xui,{
                 f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
                 if((options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
-                    xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
+                    xui.JSONP(uri,xui._rnd(),function(){
                         if(xui.Class._last)t=c[uri]=xui.Class._last;
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
@@ -1366,7 +1369,7 @@ xui.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'script'}).start();
                 }else{
-                    xui.Ajax(uri,xui.$rand+"="+xui.rand(),function(rsp){
+                    xui.Ajax(uri,xui._rnd(),function(rsp){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         var scriptnode;
                         var s=xui.getClassName(uri);
@@ -2111,19 +2114,23 @@ new function(){
                     !xui.isDefined(t1=xui.adjustVar(conditions[i].left, _ns))?xui.adjustVar(conditions[i].left):t1,
                     !xui.isDefined(t1=xui.adjustVar(conditions[i].right, _ns))?xui.adjustVar(conditions[i].right):t1,
                     conditions[i].symbol)){
-                    if(typeof resumeFun=="function")resumeFun();
+                    if(typeof resumeFun=="function")return resumeFun();
                     return;
                 }
             }
-            if(redirection && (arr = redirection.split(":")) && xui.isArr(arr) && arr.length == 3 ){
-                type = arr[0]||"";
-                target = arr[1]||"";
-                method = arr[2]||"";
+            if(redirection && (arr = redirection.split(":")) && xui.isArr(arr)){
+                if(arr[0])type = arr[0];
+                if(arr[1])target = arr[1];
+                if(arr[2])method = arr[2];
             }
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
-                for(var i=(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
+                for(var i=redirection?3:(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
                     iparams[i]=adjustparam(iparams[i]);
+
+                if(redirection && !(type=="other" && target=="callback"&& method=="call")){
+                    iparams=iparams.slice(3);
+                }
                 var fun=function(arr){
                     switch(type){
                         case 'page':
@@ -2168,8 +2175,8 @@ new function(){
                                 return;
                             }
                             // try to get module
-                            var cls=xui.get(window,target.split(".")),ins;
-                            // get first one
+                           var cls=xui.get(window,target.split(".")),ins;
+                            // TODO: now, only valid for the first one
                             if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
 
                             // handle hide / destroy
@@ -2177,20 +2184,36 @@ new function(){
                                 // special for xui.Module.show
                                 iparams.unshift(function(err,module){
                                     if(method=="popUp" && !err){
-                                        t=module.getUIComponents(true);
+                                        var t=module.getUIComponents(true);
                                         if((t=t.getRoot())&&(t=t.get(0)))
                                             xui(t).pop(iparams[1]||_ns.args[0]);
                                     }
                                 });
-                                // handle other methods
-                                var ff=function(err,ins){
-                                    if(err)return;
-                                    if(xui.isFun(t=ins.show))t.apply(ins, iparams);
-                                };
-                                if(!ins)xui.getModule(target,ff);  else ff(null, ins);
-                            }else{
-                                if(ins && xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams)
-                                return;
+                                method="show";
+                            }
+                            if(ins){
+                                if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
+                            }
+                            // make sure call getModule once
+                            else {
+                                var t1 = temp._module_funs_ = temp._module_funs_|| {},
+                                    t2 = t1[target] = t1[target] || [];
+                                // collect funs
+                                t2.push(function(ins,t){
+                                    if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
+                                });
+                                // Calling asyn call, but only for the first time
+                                if(t2.length===1){
+                                    xui.getModule(target,function(err,ins){
+                                        if(err)return;
+                                        if(ins)
+                                            for(var i=0,l=t2.length;i<l;i++)
+                                                t2[i].call(null, ins);
+                                        t2.length=0;
+                                        t1=t2=null;
+                                        delete temp._module_funs_[target];
+                                    });
+                                }
                             }
                             break;
                         case 'control':
@@ -2291,6 +2314,8 @@ new function(){
                                         case "set":
                                             t=iparams[1];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
+                                                // args[0] => args.0
+                                                t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
                                                 if(t.length>1){
                                                     m=t.pop().replace(/[()}\s]/g,'');
@@ -2309,6 +2334,8 @@ new function(){
                                             var args=iparams.slice(3), doit,doit2;
                                             t=iparams[0];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
+                                                // args[0] => args.0
+                                                t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
                                                 if(t.length>1){
                                                     m=t.pop().replace(/[()}\s]/g,'');
@@ -2370,18 +2397,16 @@ new function(){
                     else if(xui.isHash(fun)){
                         if('onOK' in fun ||'onKO' in fun){
                             var resumeFun=function(key,args){
-                                if(recursive)recursive.apply(key,args);
+                                if(recursive)return recursive.apply(key,args);
                             };
                             // onOK
-                            if('onOK' in fun)onOK=(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
+                            if('onOK' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
                                if(resumeFun)resumeFun("okData",arguments);
                             };
                             if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                 if(resumeFun)resumeFun("koData",arguments);
                             };
-                            if(false===(rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun))){
-                                resumeFun=resume=temp=recursive=null;
-                            }
+                            rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun);
                             break;
                         }else
                             if(false===(rtn=xui.pseudocode.exec(fun,args,scope,temp))){
@@ -3132,9 +3157,7 @@ xui.Class('xui.absIO',null,{
                 }else{
                     xui.merge(obj,ex,'all');
                 }
-                return obj;
             }
-
             return obj;
         },
         _if:function(doc,id,onLoad){
@@ -3480,8 +3503,8 @@ xui.Class('xui.JSONP','xui.absIO',{
                     obj[b]="xui.JSONP.No._"+this.id;
                     if(ex)xui.merge(obj,ex,'all');
                 }
-                return obj;
             }
+            return obj;
         }
     }
 });
@@ -3837,7 +3860,7 @@ xui.Class('xui.SC',null,{
                         ajax=xui.Ajax;
                     }
                     //get text from sy ajax
-                    ajax(o, xui.$rand+"="+xui.rand(), f, fe, null, options).start();
+                    ajax(o, xui._rnd(), f, fe, null, options).start();
                     //for asy once only
                     if(!isAsy)
                         r=ep(s);
@@ -4751,11 +4774,15 @@ xui.Class("xui.Timer","xui.absObj",{
             self._nodes.push(profile);
             profile.Instace=self;
             self.n0=profile;
-
+            
+            if(self._after_ini)self._after_ini(profile);
+            return self;
+        },
+        _after_ini:function(profile){
+            if(profile.$inDesign)return;
             xui.asyRun(function(){
                 if(profile&&profile.box)profile.boxing().start();
             });
-            return self;
         },
         destroy:function(){
             this.each(function(profile){
@@ -4813,6 +4840,54 @@ xui.Class("xui.Timer","xui.absObj",{
             onStart:function(profile, threadId){},
             onSuspend:function(profile, threadId){},
             onEnd:function(profile, threadId){}
+        }
+    }
+});
+xui.Class("xui.MessageService","xui.absObj",{
+    Instance:{
+        _ini:xui.Timer.prototype._ini,
+        _after_ini:function(profile){
+            if(profile.$inDesign)return;
+            var t, p=profile.properties;
+            if(t = p.msgType)profile.boxing().setMsgType(t, true);
+        },
+        destroy:function(){
+            this.each(function(profile){
+                if(profile.$inDesign)return;
+                //** unsubscribe
+                var t;
+                if(t=profile.properties.msgType)xui.unsubscribe(t,profile.$xid);
+                //free profile
+                profile.__gc();
+            });
+        },
+        postMessage:function(type, message1, message2, message3){
+            xui.publish(type, [message1,message2,message3], null, this);
+        },
+        getParent:xui.Timer.prototype.getParent,
+        getChildrenId:xui.Timer.prototype.getChildrenId
+    },
+    Static:{
+        _objectProp:xui.Timer._objectProp,
+        _beforeSerialized:xui.Timer._beforeSerialized,
+        DataModel:{
+            msgType:{
+                ini:"",
+                set:function(value){
+                        var profile=this, t, p=profile.properties;
+                        if(t = p.msgType) xui.unsubscribe(t, profile.$xid);
+                        if(t = p.msgType = value||""){
+                            xui.subscribe(t, profile.$xid, function(){
+                                var a=arguments;
+                                if(profile.onMessageReceived) profile.boxing().onMessageReceived(profile, a[0], a[1], a[2]);
+                            },p.asynReceive);
+                        }
+                }
+            },
+            asynReceive:false
+        },
+        EventHandlers:{
+            onMessageReceived:function(profile, message1, message2, message3 ){}
         }
     }
 });

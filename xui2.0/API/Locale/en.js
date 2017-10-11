@@ -1723,52 +1723,58 @@ xui.set(xui.Locale,["en","app"], {
     xui.set(xui.Locale,["en","doc","xui","MessageService"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.MessageService Class",
+        constructor:{
+            $desc:"Creates a timer Object"
+        },
         prototype:{
-            subscribe:{
-                $desc:"Subscribes message",
-                $rtn:"Number",
-                $paras:[
-                    "topic [Required]: String, the topic",
-                    "subscriber [Required]: String, the unique id for subscriber",
-                    "receiver [Required]: Function, The subscriber's message receiver(callback function). If it returns [false], all the later subscribers will be ignored",
-                    "asy [Optional]: Boolean, asynchronous or not, the default value is [false]"
-                ],
-                $snippet:[
-                    "var jsm=new xui.MessageService();"+
-                    "jsm.subscribe('topic1','id1', function(msg){alert('subscriber 1th got a message: '+msg)},true);"+
-                    "jsm.subscribe('topic1','id2', function(msg){alert('subscriber 2th got a message: '+msg);return false});"+
-                    "jsm.subscribe('topic1','id3', function(msg){alert('subscriber 3th got a message: '+msg)});"+
-                    "jsm.publish('topic1',['The topic1 was published!']);"+
-                    "jsm.unsubscribe('topic1');"+
-                    "jsm.publish('topic1');"+
-                    "jsm.unsubscribe();"
-                ]
-            },
-            unsubscribe:{
-                $desc:"Unsubscribes message",
+            KEY:{$desc:"Class Name"},
+            postMessage:{
+                $desc:"Publishes message to specific type MessageService",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [Optional]: String, the topic. If it was not specified, all subscribers will be unsubscribed",
-                    "subscriber [Optional]: String, the unique id for subscriber. If it was not specified, all subscribers in the topic will be unsubscribed"
+                    "type [Required]: String, If it was not specified, the message will be published to all MessageServices",
+                    "message1 [Required]: Object, message 1",
+                    "message2 [Optional]: Object, message 2",
+                    "message3 [Optional]: Object, message 3"
                 ]
             },
-            publish:{
-                $desc:"Publishes message to subscribers",
-                $rtn:"undefined",
+            destroy:{
+                $desc:"To destroy the current Object",
+                $memo:"Usually, we do not need to call this function manually"
+            },
+            getMsgType:{
+                $desc:"Gets the acceptable message type",
+                $rtn:"String"
+            },
+            setMsgType:{
+                $desc:"Sets the acceptable message type",
+                $rtn:"[self]",
                 $paras:[
-                    "topic [Optional]: String, the topic. If it was not specified, the message will be published to all subscribers",
-                    "args [Optional]: Array, arguments for the callback function",
-                    "scope [Optional]: Object, the callback function's scope"
+                    "value [Required] : String",
+                    $force
                 ]
             },
-            getSubscribers:{
-                $desc:"Gets subscribers info",
-                $rtn:"Object",
+            getAsynReceive:{
+                $desc:"To determine whether it receive message asynchronously",
+                $rtn:"Boolean"
+            },
+            setAsynReceive:{
+                $desc:"To specify whether it receive message asynchronously",
+                $rtn:"[self]",
                 $paras:[
-                    "topic [Optional]: String, the topic. If it was not specified, all subscribers will be returned",
-                    "subscriber [Optional]: String, the unique id for subscriber.If it was not specified, all subscribers in the topic will be returned"
+                    "value [Required] : Boolean",
+                    $force
                 ]
-            }
+            },
+            onMessageReceived:{
+                $desc:"When it received the message",
+                $paras:[
+                    "profile : xui.Profile",
+                    "message1 : Object, message 1",
+                    "message2 : Object, message 2",
+                    "message3 : Object, message 3"
+                ]
+            },
         }
     });
 
@@ -5503,6 +5509,29 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setEvents('onA',function(){}); alert(module.getEvents('onA'))});},false);"
+                ]
+            },
+           getHooks:{
+                $desc:"Gets hooks",
+                $rtn:"Object, Hash or Function",
+                $paras:[
+                    "key [Optional] : String"
+                ]
+            },
+            setHooks:{
+                $desc:"Sets hooks",
+                $rtn:"[self]",
+                $paras:[
+                    "key [Required] : String/Object",
+                    "value [Optional] : Function, event function"
+                ]
+            },
+            notifyHooks : {
+                $desc:"To notify the hooks (trigger the hook callback function)",
+                $rtn:"Object",
+                $paras:[
+                    "key [Required] : String",
+                    "args [Optional]: Array,  arguments for callback function"
                 ]
             },
             create:{
@@ -16511,6 +16540,18 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String. Must be a string with a '*' and be not in [^1-9.,-]",
+                    $force
+                ]
+            },
+            getUidColumn:{
+                $desc:"Gets the uid column id",
+                $rtn:"String"
+            },
+            setUidColumn:{
+                $desc:"Sets the uid column id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String. Must be a column id",
                     $force
                 ]
             },

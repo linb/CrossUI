@@ -158,7 +158,7 @@ xui.Class('App', 'xui.Module',{
                 if(id1){
                     if(SPA._curId!=id1){
                         SPA._curId=id1;
-                        SPA.objTree.openToNode(id1).setValue(id1);
+                        SPA.objTree.openToNode(id1, false).setValue(id1);
                         var node=SPA.divHead.getRoot(),
                             ics=SPA._iconPosMap,
                             f=SPA._clickForToggle,
@@ -905,7 +905,7 @@ xui.Class('App', 'xui.Module',{
             }
             return [o.$desc, arr.join('')];
         }, 
-        __itemsel:function(profile, item, src){
+        __itemsel:function(profile, item, e, src, type){
             xui.History.setFI(item.href);
         },
         _listq_onitemselected:function (profile, item) {

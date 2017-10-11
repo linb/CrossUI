@@ -376,7 +376,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             notree:false
         },
         $EventHandlers:{
-            onchange:function(module){}
+            onchange:function(module/*xui.Module, the current module*/){}
         }
     }
 });

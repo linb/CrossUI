@@ -111,7 +111,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
             else
                 xui.arr.each(this.constructor._getBoundElems(this.get(0)),function(profile){
                     var p=profile.properties;
-                    if((p.dataField||p.name||profile.alias)==key){
+                    if((p.dataField || p.name || profile.alias)==key){
                         r=profile.boxing();
                         return false;
                     }
@@ -125,15 +125,29 @@ xui.Class("xui.DataBinder","xui.absObj",{
             xui.arr.each(this.constructor._getBoundElems(prf),function(profile){
                 if(!profile.box["xui.absValue"])return;
                 var p=profile.properties,
-                    b = profile.boxing(),
+                    ins = profile.boxing(),
                     // maybe return array
-                    uv = b.getUIValue();
+                    uv = ins.getUIValue(),
+                    key = p.dataField || p.name || profile.alias, keys;
                 // v and uv can be object(Date,Number)
-                if(!dirtied || (uv+" ")!==(b.getValue()+" ")){
-                    if(withCaption && b.getCaption){
-                        hash[p.dataField || p.name || profile.alias]={value:uv,caption:b.getCaption()};
+                if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
+                    if(ins.getCaption){
+                        if(key.indexOf(":")!=-1){
+                            keys=key.split(':');
+                        }
+                        if(keys[1] && keys[2]){
+                            hash[keys[1]]=uv;
+                            hash[keys[2]]=ins.getCaption();
+                        }else if(withCaption){
+                            hash[key]={
+                                value : uv,
+                                caption : ins.getCaption()
+                            };
+                        }else{
+                            hash[key]=uv;
+                        }
                     }else{
-                        hash[p.dataField || p.name || profile.alias]=uv;
+                        hash[key]=uv;
                     }
                 }
             });
@@ -204,62 +218,81 @@ xui.Class("xui.DataBinder","xui.absObj",{
             xui.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 var p=profile.properties,
                       eh=profile.box.$EventHandlers,
-                      t=p.dataField || p.name || profile.alias;
-                if(!dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false)){
-                    var b = profile.boxing(),cap,
+                      ins=profile.boxing(),
+                      key=p.dataField || p.name || profile.alias, keys, cap;
+                if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
+                    keys=key.split(":");
+                    if(keys[1] && keys[2]){
+                        key=keys[0];
+                        cap=keys[1];
+                    }
+                }
+                if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
+                    var b = profile.boxing(),capv,
                         // for absValue, maybe return array
                         uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null;
                     // v and uv can be object(Date,Number)
-                    if(xui.isHash(map[t])){
-                        var pp=map[t].properties,theme=map[t].theme,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS;
+                    if(xui.isHash(map[key])){
+                        var pp=map[key].properties,theme=map[key].theme,cc=map[key].CC,ca=map[key].CA,cs=map[key].CS;
 
-                        if(pp)delete map[t].properties;
-                        if(theme)delete map[t].theme;
-                        if(ca)delete map[t].CA;
-                        if(cc)delete map[t].CC;
-                        if(cs)delete map[t].CS;
+                        if(pp)delete map[key].properties;
+                        if(theme)delete map[key].theme;
+                        if(ca)delete map[key].CA;
+                        if(cc)delete map[key].CC;
+                        if(cs)delete map[key].CS;
                         // remove non-properties
-                        xui.filter(map[t],function(o,i){
+                        xui.filter(map[key],function(o,i){
                             return !!(i in p);
                         });
                         // reset
-                        if(!xui.isEmpty(map[t])){
-                            xui.each(map[t],function(o,i){
-                                if(i in p)map[t][i]=p[i];
+                        if(!xui.isEmpty(map[key])){
+                            xui.each(map[key],function(o,i){
+                                if(i in p)map[key][i]=p[i];
                             });
                         }
                         // reset pp
                         if(xui.isHash(pp)){
                             xui.filter(pp,function(o,i){
-                                return i in p && !(i in map[t]);
+                                return i in p && !(i in map[key]);
                             });
                             if(!xui.isEmpty(pp)){
                                 xui.each(pp,function(o,i){
                                     if(i in p)pp[i]=p[i];
                                 });                         
-                                map[t].properties=pp
+                                map[key].properties=pp
                             }
                         }
-                         if(theme)map[t].theme=profile.theme;
-                        if(ca)map[t].CA=xui.clone(profile.CA,true);
-                        if(cc)map[t].CC=xui.clone(profile.CC,true);
-                        if(cs)map[t].CS=xui.clone(profile.CS,true);
-                        if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
-                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
+                         if(theme)map[key].theme=profile.theme;
+                        if(ca)map[key].CA=xui.clone(profile.CA,true);
+                        if(cc)map[key].CC=xui.clone(profile.CC,true);
+                        if(cs)map[key].CS=xui.clone(profile.CS,true);
+
+                        if('caption' in p && b.getCaption)
+                        if(cap){
+                            map[cap]=b.getCaption();
+                        }else if('caption' in map[key] || withCaption)
+                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[key].caption=b.getCaption();
                         if(xui.isDefined(uv) && 'value' in p)
-                            if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
+                            if(pp&&'value' in pp)pp.value=uv;else map[key].value=uv;
                     }else{
                         if(profile.box['xui.UI.ComboInput'] && (p.type=='file')){
-                            map[t]=profile;
-                        }else if(withCaption && 'caption' in p){
-                            cap=typeof(b.getCaption)=="function"?b.getCaption():p.caption;
-                            // igore unnecessary caption
-                            if((!cap && !uv) || cap==uv)
-                                map[t]=uv;
-                            else
-                                map[t]={value:uv, caption:cap};
+                            map[key]=profile;
+                        }else if('caption' in p){
+                            capv=typeof(b.getCaption)=="function"?b.getCaption():p.caption;
+                            if(cap){
+                                map[key]=uv;
+                                map[cap]=capv;
+                            }else if(withCaption){
+                                // igore unnecessary caption
+                                if((!capv && !uv) || capv==uv)
+                                    map[key]=uv;
+                                else
+                                    map[key]={value:uv, caption:capv};
+                            }else{
+                                map[key]=uv;
+                            }
                         }else{
-                            map[t]=uv;
+                            map[key]=uv;
                         }
                     }
                     // for absValue
@@ -283,7 +316,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
             return true;
         },
         updateDataToUI:function(adjustData, dataKeys, ignoreEvent){
-            var t,p,v,c,b,pp,uv,eh,
+            var key,keys,cap,ins,p,v,c,b,pp,uv,eh,
                 ns=this,
                 prf=ns.get(0),
                 prop=prf.properties,
@@ -305,12 +338,21 @@ xui.Class("xui.DataBinder","xui.absObj",{
             xui.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 p=profile.properties;
                 eh=profile.box.$EventHandlers;
-                t=p.dataField || p.name || profile.alias;
-                if(!dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false)){
+                key=p.dataField || p.name || profile.alias;
+                ins=profile.boxing();
+                if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
+                    keys=key.split(":");
+                    if(keys[1] && keys[2]){
+                        key=keys[0];
+                        cap=keys[1];
+                    }
+                }
+
+                if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
                     // need reset?
-                    if(map && t in map){
-                        v=xui.clone(map[t],null,2);
-                        uv=c=null;
+                    if(map && key in map){
+                        v=xui.clone(map[key],null,2);
+                        uv=c=undefined;
                         b=profile.boxing();
                         if(xui.isHash(v)){
                             if(pp=v.properties){
@@ -318,7 +360,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                                     return i in p;
                                 });
                                 // keep value and caption at first
-                                c=xui.isSet(pp.caption)?pp.caption:null;
+                                c= (cap&&pp[cap]) || (xui.isSet(pp.caption)?pp.caption:null);
                                 uv=xui.isSet(pp.value)?pp.value:null;
                                 delete pp.caption;delete pp.value;
                                 if(!xui.isEmpty(pp))
@@ -337,7 +379,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                                 if(!xui.isEmpty(v)){
                                     // keep value and caption at first
                                     // value and caption in properties have high priority
-                                    c=xui.isSet(c)?c:xui.isSet(v.caption)?v.caption:null;
+                                    c=xui.isSet(c)?c:((cap&&pp[cap]) || xui.isSet(v.caption)?v.caption:null);
                                     uv=xui.isSet(uv)?uv:xui.isSet(v.value)?v.value:null;
                                     delete v.caption;delete v.value;
                                     
@@ -345,7 +387,10 @@ xui.Class("xui.DataBinder","xui.absObj",{
                                         b.setProperties(v);
                                 }
                             }
-                        }else uv=v;
+                        }else{
+                            uv=v;
+                            c= (cap&&pp[cap]) || undefined;
+                        }
                         // set value and caption at last
                         if(xui.isDefined(uv) && xui.isFun(b.resetValue)){
                             b.resetValue(uv);

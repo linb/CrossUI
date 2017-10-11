@@ -542,10 +542,11 @@ new function(){
             return str.replace(/\\u([0-9a-f]{3})([0-9a-f])/g,function(a,b,c){return String.fromCharCode((parseInt(b,16)*16+parseInt(c,16)))})
         },
         urlEncode:function(hash){
-            var a=[],b=[],i,o;
-            for(i in hash)
-                if(xui.isDefined(o=hash[i]))
-                    a.push((b[b.length]=encodeURIComponent(i)) +'='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o)));
+            var a=[],b=[],i,c,o;
+            for(i in hash){
+                a[c=a.length]=b[b.length]=encodeURIComponent(i);
+                if((o=hash[i]) || o===0) a[c] += '='+encodeURIComponent(typeof o=='string'?o:xui.serialize(o));
+            }
             a=xui.arr.stableSort(a,function(x,y,i,j){return b[i]>b[j]?1:b[i]==b[j]?0:-1});
             return a.join('&');
         },
@@ -930,8 +931,10 @@ xui.merge(xui,{
     $localeKey:'en',
     $localeDomId:'xlid',
     $dateFormat:'',
-    $rand:"_r_",
-
+    $rand:"_rnd_",
+    _rnd:function(){
+        return xui.debugMode?xui.$rand+"="+xui.rand():null;
+    },
     SpaceUnit:'em',
     $us:function(p){
         // ie67 always px
@@ -1283,10 +1286,10 @@ xui.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui.$rand+"="+xui.rand(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, xui._rnd(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui.$rand+"="+xui.rand(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,xui._rnd(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
@@ -1296,10 +1299,10 @@ xui.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.JSONP(path,xui.$rand+"="+xui.rand(),onSuccess,onFail,0,options).start()
+                xui.JSONP(path,xui._rnd(),onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui.$rand+"="+xui.rand(),function(rsp){
+                xui.Ajax(path,xui._rnd(),function(rsp){
                     try{xui.exec(rsp,id)}
                     catch(e){xui.tryF(onFail,[e.name + ": " + e.message])}
                     xui.tryF(onSuccess);
@@ -1343,7 +1346,7 @@ xui.merge(xui,{
                 f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
                 if((options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
-                    xui.JSONP(uri,xui.$rand+"="+xui.rand(),function(){
+                    xui.JSONP(uri,xui._rnd(),function(){
                         if(xui.Class._last)t=c[uri]=xui.Class._last;
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
@@ -1367,7 +1370,7 @@ xui.merge(xui,{
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'script'}).start();
                 }else{
-                    xui.Ajax(uri,xui.$rand+"="+xui.rand(),function(rsp){
+                    xui.Ajax(uri,xui._rnd(),function(rsp){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         var scriptnode;
                         var s=xui.getClassName(uri);
@@ -2112,19 +2115,23 @@ new function(){
                     !xui.isDefined(t1=xui.adjustVar(conditions[i].left, _ns))?xui.adjustVar(conditions[i].left):t1,
                     !xui.isDefined(t1=xui.adjustVar(conditions[i].right, _ns))?xui.adjustVar(conditions[i].right):t1,
                     conditions[i].symbol)){
-                    if(typeof resumeFun=="function")resumeFun();
+                    if(typeof resumeFun=="function")return resumeFun();
                     return;
                 }
             }
-            if(redirection && (arr = redirection.split(":")) && xui.isArr(arr) && arr.length == 3 ){
-                type = arr[0]||"";
-                target = arr[1]||"";
-                method = arr[2]||"";
+            if(redirection && (arr = redirection.split(":")) && xui.isArr(arr)){
+                if(arr[0])type = arr[0];
+                if(arr[1])target = arr[1];
+                if(arr[2])method = arr[2];
             }
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
-                for(var i=(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
+                for(var i=redirection?3:(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
                     iparams[i]=adjustparam(iparams[i]);
+
+                if(redirection && !(type=="other" && target=="callback"&& method=="call")){
+                    iparams=iparams.slice(3);
+                }
                 var fun=function(arr){
                     switch(type){
                         case 'page':
@@ -2169,8 +2176,8 @@ new function(){
                                 return;
                             }
                             // try to get module
-                            var cls=xui.get(window,target.split(".")),ins;
-                            // get first one
+                           var cls=xui.get(window,target.split(".")),ins;
+                            // TODO: now, only valid for the first one
                             if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
 
                             // handle hide / destroy
@@ -2178,20 +2185,36 @@ new function(){
                                 // special for xui.Module.show
                                 iparams.unshift(function(err,module){
                                     if(method=="popUp" && !err){
-                                        t=module.getUIComponents(true);
+                                        var t=module.getUIComponents(true);
                                         if((t=t.getRoot())&&(t=t.get(0)))
                                             xui(t).pop(iparams[1]||_ns.args[0]);
                                     }
                                 });
-                                // handle other methods
-                                var ff=function(err,ins){
-                                    if(err)return;
-                                    if(xui.isFun(t=ins.show))t.apply(ins, iparams);
-                                };
-                                if(!ins)xui.getModule(target,ff);  else ff(null, ins);
-                            }else{
-                                if(ins && xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams)
-                                return;
+                                method="show";
+                            }
+                            if(ins){
+                                if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
+                            }
+                            // make sure call getModule once
+                            else {
+                                var t1 = temp._module_funs_ = temp._module_funs_|| {},
+                                    t2 = t1[target] = t1[target] || [];
+                                // collect funs
+                                t2.push(function(ins,t){
+                                    if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
+                                });
+                                // Calling asyn call, but only for the first time
+                                if(t2.length===1){
+                                    xui.getModule(target,function(err,ins){
+                                        if(err)return;
+                                        if(ins)
+                                            for(var i=0,l=t2.length;i<l;i++)
+                                                t2[i].call(null, ins);
+                                        t2.length=0;
+                                        t1=t2=null;
+                                        delete temp._module_funs_[target];
+                                    });
+                                }
                             }
                             break;
                         case 'control':
@@ -2292,6 +2315,8 @@ new function(){
                                         case "set":
                                             t=iparams[1];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
+                                                // args[0] => args.0
+                                                t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
                                                 if(t.length>1){
                                                     m=t.pop().replace(/[()}\s]/g,'');
@@ -2310,6 +2335,8 @@ new function(){
                                             var args=iparams.slice(3), doit,doit2;
                                             t=iparams[0];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
+                                                // args[0] => args.0
+                                                t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
                                                 if(t.length>1){
                                                     m=t.pop().replace(/[()}\s]/g,'');
@@ -2371,18 +2398,18 @@ new function(){
                     else if(xui.isHash(fun)){
                         if('onOK' in fun ||'onKO' in fun){
                             var resumeFun=function(key,args){
-                                if(recursive)recursive.apply(key,args);
+                                if(recursive)return recursive.apply(key,args);
                             };
                             // onOK
-                            if('onOK' in fun)onOK=(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
+                            if('onOK' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
                                if(resumeFun)resumeFun("okData",arguments);
                             };
                             if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                 if(resumeFun)resumeFun("koData",arguments);
                             };
-                            if(false===(rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun))){
-                                resumeFun=resume=temp=recursive=null;
-                            }
+                            // if conditions didn't match, call and return resumeFun
+                            // id condistions matches, return current fun
+                            rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun);
                             break;
                         }else
                             if(false===(rtn=xui.pseudocode.exec(fun,args,scope,temp))){
@@ -3133,9 +3160,7 @@ xui.Class('xui.absIO',null,{
                 }else{
                     xui.merge(obj,ex,'all');
                 }
-                return obj;
             }
-
             return obj;
         },
         _if:function(doc,id,onLoad){
@@ -3481,8 +3506,8 @@ xui.Class('xui.JSONP','xui.absIO',{
                     obj[b]="xui.JSONP.No._"+this.id;
                     if(ex)xui.merge(obj,ex,'all');
                 }
-                return obj;
             }
+            return obj;
         }
     }
 });
@@ -3838,7 +3863,7 @@ xui.Class('xui.SC',null,{
                         ajax=xui.Ajax;
                     }
                     //get text from sy ajax
-                    ajax(o, xui.$rand+"="+xui.rand(), f, fe, null, options).start();
+                    ajax(o, xui._rnd(), f, fe, null, options).start();
                     //for asy once only
                     if(!isAsy)
                         r=ep(s);
@@ -4752,11 +4777,15 @@ xui.Class("xui.Timer","xui.absObj",{
             self._nodes.push(profile);
             profile.Instace=self;
             self.n0=profile;
-
+            
+            if(self._after_ini)self._after_ini(profile);
+            return self;
+        },
+        _after_ini:function(profile){
+            if(profile.$inDesign)return;
             xui.asyRun(function(){
                 if(profile&&profile.box)profile.boxing().start();
             });
-            return self;
         },
         destroy:function(){
             this.each(function(profile){
@@ -4817,7 +4846,54 @@ xui.Class("xui.Timer","xui.absObj",{
         }
     }
 });
-xui.Class("xui.APICaller","xui.absObj",{
+xui.Class("xui.MessageService","xui.absObj",{
+    Instance:{
+        _ini:xui.Timer.prototype._ini,
+        _after_ini:function(profile){
+            if(profile.$inDesign)return;
+            var t, p=profile.properties;
+            if(t = p.msgType)profile.boxing().setMsgType(t, true);
+        },
+        destroy:function(){
+            this.each(function(profile){
+                if(profile.$inDesign)return;
+                //** unsubscribe
+                var t;
+                if(t=profile.properties.msgType)xui.unsubscribe(t,profile.$xid);
+                //free profile
+                profile.__gc();
+            });
+        },
+        postMessage:function(type, message1, message2, message3){
+            xui.publish(type, [message1,message2,message3], null, this);
+        },
+        getParent:xui.Timer.prototype.getParent,
+        getChildrenId:xui.Timer.prototype.getChildrenId
+    },
+    Static:{
+        _objectProp:xui.Timer._objectProp,
+        _beforeSerialized:xui.Timer._beforeSerialized,
+        DataModel:{
+            msgType:{
+                ini:"",
+                set:function(value){
+                        var profile=this, t, p=profile.properties;
+                        if(t = p.msgType) xui.unsubscribe(t, profile.$xid);
+                        if(t = p.msgType = value||""){
+                            xui.subscribe(t, profile.$xid, function(){
+                                var a=arguments;
+                                if(profile.onMessageReceived) profile.boxing().onMessageReceived(profile, a[0], a[1], a[2]);
+                            },p.asynReceive);
+                        }
+                }
+            },
+            asynReceive:false
+        },
+        EventHandlers:{
+            onMessageReceived:function(profile, message1, message2, message3 ){}
+        }
+    }
+});xui.Class("xui.APICaller","xui.absObj",{
     Instance:{
         _ini:function(properties, events, host){
             var self=this,
@@ -5482,7 +5558,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             else
                 xui.arr.each(this.constructor._getBoundElems(this.get(0)),function(profile){
                     var p=profile.properties;
-                    if((p.dataField||p.name||profile.alias)==key){
+                    if((p.dataField || p.name || profile.alias)==key){
                         r=profile.boxing();
                         return false;
                     }
@@ -5496,15 +5572,29 @@ xui.Class("xui.APICaller","xui.absObj",{
             xui.arr.each(this.constructor._getBoundElems(prf),function(profile){
                 if(!profile.box["xui.absValue"])return;
                 var p=profile.properties,
-                    b = profile.boxing(),
+                    ins = profile.boxing(),
                     // maybe return array
-                    uv = b.getUIValue();
+                    uv = ins.getUIValue(),
+                    key = p.dataField || p.name || profile.alias, keys;
                 // v and uv can be object(Date,Number)
-                if(!dirtied || (uv+" ")!==(b.getValue()+" ")){
-                    if(withCaption && b.getCaption){
-                        hash[p.dataField || p.name || profile.alias]={value:uv,caption:b.getCaption()};
+                if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
+                    if(ins.getCaption){
+                        if(key.indexOf(":")!=-1){
+                            keys=key.split(':');
+                        }
+                        if(keys[1] && keys[2]){
+                            hash[keys[1]]=uv;
+                            hash[keys[2]]=ins.getCaption();
+                        }else if(withCaption){
+                            hash[key]={
+                                value : uv,
+                                caption : ins.getCaption()
+                            };
+                        }else{
+                            hash[key]=uv;
+                        }
                     }else{
-                        hash[p.dataField || p.name || profile.alias]=uv;
+                        hash[key]=uv;
                     }
                 }
             });
@@ -5575,62 +5665,81 @@ xui.Class("xui.APICaller","xui.absObj",{
             xui.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 var p=profile.properties,
                       eh=profile.box.$EventHandlers,
-                      t=p.dataField || p.name || profile.alias;
-                if(!dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false)){
-                    var b = profile.boxing(),cap,
+                      ins=profile.boxing(),
+                      key=p.dataField || p.name || profile.alias, keys, cap;
+                if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
+                    keys=key.split(":");
+                    if(keys[1] && keys[2]){
+                        key=keys[0];
+                        cap=keys[1];
+                    }
+                }
+                if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
+                    var b = profile.boxing(),capv,
                         // for absValue, maybe return array
                         uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null;
                     // v and uv can be object(Date,Number)
-                    if(xui.isHash(map[t])){
-                        var pp=map[t].properties,theme=map[t].theme,cc=map[t].CC,ca=map[t].CA,cs=map[t].CS;
+                    if(xui.isHash(map[key])){
+                        var pp=map[key].properties,theme=map[key].theme,cc=map[key].CC,ca=map[key].CA,cs=map[key].CS;
 
-                        if(pp)delete map[t].properties;
-                        if(theme)delete map[t].theme;
-                        if(ca)delete map[t].CA;
-                        if(cc)delete map[t].CC;
-                        if(cs)delete map[t].CS;
+                        if(pp)delete map[key].properties;
+                        if(theme)delete map[key].theme;
+                        if(ca)delete map[key].CA;
+                        if(cc)delete map[key].CC;
+                        if(cs)delete map[key].CS;
                         // remove non-properties
-                        xui.filter(map[t],function(o,i){
+                        xui.filter(map[key],function(o,i){
                             return !!(i in p);
                         });
                         // reset
-                        if(!xui.isEmpty(map[t])){
-                            xui.each(map[t],function(o,i){
-                                if(i in p)map[t][i]=p[i];
+                        if(!xui.isEmpty(map[key])){
+                            xui.each(map[key],function(o,i){
+                                if(i in p)map[key][i]=p[i];
                             });
                         }
                         // reset pp
                         if(xui.isHash(pp)){
                             xui.filter(pp,function(o,i){
-                                return i in p && !(i in map[t]);
+                                return i in p && !(i in map[key]);
                             });
                             if(!xui.isEmpty(pp)){
                                 xui.each(pp,function(o,i){
                                     if(i in p)pp[i]=p[i];
                                 });                         
-                                map[t].properties=pp
+                                map[key].properties=pp
                             }
                         }
-                         if(theme)map[t].theme=profile.theme;
-                        if(ca)map[t].CA=xui.clone(profile.CA,true);
-                        if(cc)map[t].CC=xui.clone(profile.CC,true);
-                        if(cs)map[t].CS=xui.clone(profile.CS,true);
-                        if('caption' in p &&('caption' in map[t] || withCaption)&& b.getCaption)
-                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[t].caption=b.getCaption();
+                         if(theme)map[key].theme=profile.theme;
+                        if(ca)map[key].CA=xui.clone(profile.CA,true);
+                        if(cc)map[key].CC=xui.clone(profile.CC,true);
+                        if(cs)map[key].CS=xui.clone(profile.CS,true);
+
+                        if('caption' in p && b.getCaption)
+                        if(cap){
+                            map[cap]=b.getCaption();
+                        }else if('caption' in map[key] || withCaption)
+                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[key].caption=b.getCaption();
                         if(xui.isDefined(uv) && 'value' in p)
-                            if(pp&&'value' in pp)pp.value=uv;else map[t].value=uv;
+                            if(pp&&'value' in pp)pp.value=uv;else map[key].value=uv;
                     }else{
                         if(profile.box['xui.UI.ComboInput'] && (p.type=='file')){
-                            map[t]=profile;
-                        }else if(withCaption && 'caption' in p){
-                            cap=typeof(b.getCaption)=="function"?b.getCaption():p.caption;
-                            // igore unnecessary caption
-                            if((!cap && !uv) || cap==uv)
-                                map[t]=uv;
-                            else
-                                map[t]={value:uv, caption:cap};
+                            map[key]=profile;
+                        }else if('caption' in p){
+                            capv=typeof(b.getCaption)=="function"?b.getCaption():p.caption;
+                            if(cap){
+                                map[key]=uv;
+                                map[cap]=capv;
+                            }else if(withCaption){
+                                // igore unnecessary caption
+                                if((!capv && !uv) || capv==uv)
+                                    map[key]=uv;
+                                else
+                                    map[key]={value:uv, caption:capv};
+                            }else{
+                                map[key]=uv;
+                            }
                         }else{
-                            map[t]=uv;
+                            map[key]=uv;
                         }
                     }
                     // for absValue
@@ -5654,7 +5763,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             return true;
         },
         updateDataToUI:function(adjustData, dataKeys, ignoreEvent){
-            var t,p,v,c,b,pp,uv,eh,
+            var key,keys,cap,ins,p,v,c,b,pp,uv,eh,
                 ns=this,
                 prf=ns.get(0),
                 prop=prf.properties,
@@ -5676,12 +5785,21 @@ xui.Class("xui.APICaller","xui.absObj",{
             xui.arr.each(ns.constructor._getBoundElems(prf),function(profile){
                 p=profile.properties;
                 eh=profile.box.$EventHandlers;
-                t=p.dataField || p.name || profile.alias;
-                if(!dataKeys || dataKeys===t || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,t)!=-1:false)){
+                key=p.dataField || p.name || profile.alias;
+                ins=profile.boxing();
+                if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
+                    keys=key.split(":");
+                    if(keys[1] && keys[2]){
+                        key=keys[0];
+                        cap=keys[1];
+                    }
+                }
+
+                if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
                     // need reset?
-                    if(map && t in map){
-                        v=xui.clone(map[t],null,2);
-                        uv=c=null;
+                    if(map && key in map){
+                        v=xui.clone(map[key],null,2);
+                        uv=c=undefined;
                         b=profile.boxing();
                         if(xui.isHash(v)){
                             if(pp=v.properties){
@@ -5689,7 +5807,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                                     return i in p;
                                 });
                                 // keep value and caption at first
-                                c=xui.isSet(pp.caption)?pp.caption:null;
+                                c= (cap&&pp[cap]) || (xui.isSet(pp.caption)?pp.caption:null);
                                 uv=xui.isSet(pp.value)?pp.value:null;
                                 delete pp.caption;delete pp.value;
                                 if(!xui.isEmpty(pp))
@@ -5708,7 +5826,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                                 if(!xui.isEmpty(v)){
                                     // keep value and caption at first
                                     // value and caption in properties have high priority
-                                    c=xui.isSet(c)?c:xui.isSet(v.caption)?v.caption:null;
+                                    c=xui.isSet(c)?c:((cap&&pp[cap]) || xui.isSet(v.caption)?v.caption:null);
                                     uv=xui.isSet(uv)?uv:xui.isSet(v.value)?v.value:null;
                                     delete v.caption;delete v.value;
                                     
@@ -5716,7 +5834,10 @@ xui.Class("xui.APICaller","xui.absObj",{
                                         b.setProperties(v);
                                 }
                             }
-                        }else uv=v;
+                        }else{
+                            uv=v;
+                            c= (cap&&pp[cap]) || undefined;
+                        }
                         // set value and caption at last
                         if(xui.isDefined(uv) && xui.isFun(b.resetValue)){
                             b.resetValue(uv);
@@ -13634,6 +13755,7 @@ xui.Class('xui.Module','xui.absProfile',{
         self._ctrlpool={};
         self.events=events;
         self.properties={};
+        self.hooks={};
         if(self._evsClsBuildIn) self._evsClsBuildIn = xui.clone(self._evsClsBuildIn);
         if(self._evsPClsBuildIn) self._evsPClsBuildIn = xui.clone(self._evsPClsBuildIn);
 
@@ -13845,6 +13967,32 @@ xui.Class('xui.Module','xui.absProfile',{
         getEvents:function(key){
             return key?this.events[key]:this.events;
         },
+        setHooks:function(key,value){
+            var self=this;
+            if(!key)
+                self.hooks={};
+            else if(typeof key=='string')
+                self.hooks[key]=value;
+            else if(xui.isHash(key)){
+                if(value/*force*/){
+                    self.hooks = xui.clone(key);            
+                }else{
+                    xui.merge(self.hooks, key, 'all');
+                }
+            }
+            return self;
+        },
+        getHooks:function(key){
+            return key?this.hooks[key]:this.hooks;
+        },
+        notifyHooks:function(key, args,scope){
+            var ns=this, hook, hooks=ns.hooks;
+            if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
+                if(!xui.isArr(args))args=[args];
+                xui.tryF(hook, args, scope||ns);
+            }
+            return ns;
+        },
         postMessage:function(message, sender){
            this.fireEvent('onMessage',  [this, message, sender]);
         },
@@ -14018,7 +14166,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 p=firstUI.parent.boxing();
                 childId=firstUI.childrenId;
             }else{
-                p=firstUI.parent();
+                p=firstUI.getParent();
             }
 
             //unserialize
@@ -14039,10 +14187,10 @@ xui.Class('xui.Module','xui.absProfile',{
 
             o.create(function(){
             	var f=function(t,m){
-	                //for functions like: UI refresh itself
-	                if(rt)rt.call(rt.target, o);
                     if(callback)xui.tryF(callback);
             	};
+                //for functions like: UI refresh itself
+                if(rt)rt.call(rt.target, o);
                 //add to parent, and trigger RenderTrigger
                 if(b)o.show(f,p,childId);
                 else if(!p.isEmpty())o.show(f,p);
@@ -14595,13 +14743,13 @@ xui.Class('xui.Module','xui.absProfile',{
         "xui.absValue":true,
         refresh:function(code){
             var m=this,keep={
-                '$children':m.$children,
-                _cache:m._cache,
-                _nameId:m._nameId
-            },
-            key=m.KEY,
-            path=key.split("."),
-            n;
+                    '$children':m.$children,
+                    _cache:m._cache,
+                    _nameId:m._nameId
+                },
+                key=m.KEY,
+                path=key.split("."),
+                n;
             // clear cache
             if(s=xui.get(window,['xui','$cache','SC']))delete s[key];
             xui.set(window, path);
@@ -14864,55 +15012,6 @@ xui.Class('xui.Module','xui.absProfile',{
             xui.arr.each(document.cookie.split(";"),function(o){
                 xui.Cookies.remove(xui.str.trim(o.split("=")[0]));
             });
-        }
-    }
-});xui.Class("xui.MessageService",null,{
-    Instance:{
-        initialize:function(){
-            this.$subscribers={};
-        },
-        subscribe:function(topic, subscriber, receiver, asy){
-            if(topic===null||topic===undefined||subscriber===null||subscriber===undefined||typeof receiver!='function')return;
-            var c=this.$subscribers,i;
-            c[topic]=c[topic]||[];
-            i=xui.arr.subIndexOf(c[topic],"id",subscriber);
-            if(i!=-1)xui.arr.removeFrom(c[topic],i);
-            return c[topic].push({id:subscriber,receiver:receiver,asy:!!asy});
-        },
-        unsubscribe:function(topic, subscriber){
-            var c=this.$subscribers,i;
-            if(!subscriber){
-                if(topic===null||topic===undefined)
-                    c={};
-                else
-                    delete c[topic];
-            }else if(c[topic]){
-                i=xui.arr.subIndexOf(c[topic],"id",subscriber);
-                if(i!=-1)xui.arr.removeFrom(c[topic],i);
-            }
-        },
-        publish:function(topic, args, scope){
-            var c=this.$subscribers;
-            if(topic===null||topic===undefined){
-                for(var topic in c){
-                    xui.arr.each(c[topic],function(o){
-                        if(o.asy)
-                            xui.asyRun(o.receiver, 0, args, scope);
-                        else
-                            return xui.tryF(o.receiver, args, scope, true);
-                    });
-                }
-            }else if(c[topic]){
-                xui.arr.each(c[topic],function(o){
-                    if(o.asy)
-                        xui.asyRun(o.receiver, 0, args, scope);
-                    else
-                        return xui.tryF(o.receiver, args, scope, true);
-                });
-            }
-        },
-        getSubscribers:function(topic){
-            return (topic===null||topic===undefined)?this.$subscribers:this.$subscribers[topic];
         }
     }
 });xui.Class('xui.XML',null,{
@@ -21058,16 +21157,29 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getFormValues:function(dirtied, subId, withCaption){
                             var hash={};
                             this.getFormElements(subId).each(function(prf){
-                                var p=prf.properties,
+                                var p=prf.properties, key = p.name || prf.alias, keys,
                                     ins = prf.boxing(),
                                     // maybe return array
                                     uv = ins.getUIValue();
                                 // v and uv can be object(Date,Number)
                                 if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
-                                    if(withCaption && ins.getCaption){
-                                        hash[p.name||prf.alias]={value:uv,caption:ins.getCaption()};
+                                    if(ins.getCaption){
+                                        if(key.indexOf(":")!=-1){
+                                            keys=key.split(':');
+                                        }
+                                        if(keys[1] && keys[2]){
+                                            hash[keys[1]]=uv;
+                                            hash[keys[2]]=ins.getCaption();
+                                        }else if(withCaption){
+                                            hash[key]={
+                                                value : uv,
+                                                caption : ins.getCaption()
+                                            };
+                                        }else{
+                                            hash[key]=uv;
+                                        }
                                     }else{
-                                        hash[p.name||prf.alias]=uv;
+                                        hash[key]=uv;
                                     }
                                 }
                             });
@@ -21076,12 +21188,23 @@ xui.Class("xui.UI",  "xui.absObj", {
                         setFormValues:function(values, subId){
                             if(!xui.isEmpty(values)){
                                 this.getFormElements(subId).each(function(prf){
-                                    var prop=prf.properties, ins=prf.boxing();
-                                    if('value' in prop && (prop.name||prf.alias) in values){
-                                        var v=values[prop.name||prf.alias],b=xui.isHash(v) ;
-                                        ins.setValue((b && ('value' in v)) ? v.value : v, true,'module');
-                                        if(typeof(ins.setCaption)=="function" &&  b  && 'caption' in v)
-                                            ins.setCaption(v.caption, null, true,'module');
+                                    var prop=prf.properties, ins=prf.boxing(),key=prop.name || prf.alias,keys,cap;
+                                    if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
+                                        keys=key.split(":");
+                                        if(keys[1] && keys[2]){
+                                            key=keys[0];
+                                            cap=keys[1];
+                                        }
+                                    }
+                                    var v=values[key],b=xui.isHash(v) ;
+                                    if('value' in prop && key in values){
+                                        ins.setValue((b && ('value' in v)) ? v.value : v, true,'form');
+                                    }
+                                    if(typeof(ins.setCaption)=="function"){
+                                        if(cap in values)
+                                            ins.setCaption(values[cap], null, true,'form');
+                                        else if(b && ('caption' in v))
+                                            ins.setCaption(v.caption, null, true,'form');
                                     }
                                 });
                             }
@@ -44380,6 +44503,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             });
                         }
                     });
+                }else if(type=='map'){
+                    xui.arr.each(a,function(o,i){
+                        if(a[i].cells){
+                            xui.each(b=a[i]=(a[i]||{}),function(v,j){
+                                b[v._col.id]=v.value;
+                            });
+                        }
+                    });
                 }
                 return a;
             }else
@@ -45267,7 +45398,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(xui.isHash(rowId))rowId=rowId.id;
             return this.each(function(prf){
                 var ins=prf.boxing(),p=prf.properties,t;
-                if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                if(!rowId&&prf.renderId&&!prf.destroyed){
                     if(p.activeMode="row"){
                         if(t=ins.getActiveRow())rowId=t.id;
                     }else if(p.activeMode="cell"){
@@ -45798,6 +45929,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 tagName:'td',
                                 HEADER1:{
                                     tagName:'div',
+                                    //className:'{_columnfreezed}',
                                     style:"{showHeader}",
                                     HI1:{
                                         tagName:'div',
@@ -48378,6 +48510,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o.properties.header = xui.copy(value);
                 }
             },
+            uidColumn:'',
             grpCols:{
                 //for default merge
                 ini:{},
@@ -49051,9 +49184,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             op.rows = xui.clone(pp.rows, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && ((i=="id"&&typeof(o)=="string")?o.charAt(0)!="-":true);
             });
-            if(op.header.length===0)delete op.header;
-            if(op.grpCols.length===0)delete op.grpCols;
-            if(op.rows.length===0)delete op.rows;
+            if(xui.isEmpty(op.header))delete op.header;
+            if(xui.isEmpty(op.grpCols))delete op.grpCols;
+            if(xui.isEmpty(op.rows))delete op.rows;
 
             delete op.activeRow;
             delete op.activeCell;
@@ -49391,6 +49524,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         for(var i=0,l=t.length;i<l;i++)
                             if(t[i].id===v)
                                 return t[i].caption||v;
+                    return f7(v,profile,cell);
+               }),
+               f7=me._f7=(me._f7=function(v,profile,cell){
+                   if(v){
+                       v=v+"";
+                        var t=v.indexOf('=');
+                        if(t!=-1){
+                            cell.value = v.substr(0,t);
+                            return v.substr(t+1);
+                        }
+                   }
                     return v;
                }),
                unit=function(caption, cell){return caption + (cell.unit?" "+cell.unit:"")};
@@ -49489,6 +49633,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
                     caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell,f6),cell));
+                    if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
+                break;
+                case 'dropbox':
+                case 'cmdbox':
+                    cell.value=cell.hasOwnProperty("value")?cell.value:"";
+                    caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell,f7),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 default:
@@ -50907,8 +51057,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return a;
         },
         _adjustRows:function(profile, arr){
-            var a,m,h={};
-            xui.arr.each(profile.properties.header,function(c,i){
+            var a,m,h={},p=profile.properties,uid=p.uidColumn;
+            if(uid)uid=xui.arr.subIndexOf(p.header,'id',uid);
+            else uid=-1;
+
+            xui.arr.each(p.header,function(c,i){
                 h[c.id||c]=i;
             });
 
@@ -50937,7 +51090,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     // not a hash
                     else
                         m[i]={value:o};
-                })
+                });
+                // set uidColumn cell's value to row id 
+                if(!('id' in a[i]) && uid!=-1 && m[uid]&& m[uid].value){
+                    a[i].id=m[uid].value;
+                }
             });
             return a;
         },

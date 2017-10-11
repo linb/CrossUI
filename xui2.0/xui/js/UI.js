@@ -3654,16 +3654,29 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getFormValues:function(dirtied, subId, withCaption){
                             var hash={};
                             this.getFormElements(subId).each(function(prf){
-                                var p=prf.properties,
+                                var p=prf.properties, key = p.name || prf.alias, keys,
                                     ins = prf.boxing(),
                                     // maybe return array
                                     uv = ins.getUIValue();
                                 // v and uv can be object(Date,Number)
                                 if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
-                                    if(withCaption && ins.getCaption){
-                                        hash[p.name||prf.alias]={value:uv,caption:ins.getCaption()};
+                                    if(ins.getCaption){
+                                        if(key.indexOf(":")!=-1){
+                                            keys=key.split(':');
+                                        }
+                                        if(keys[1] && keys[2]){
+                                            hash[keys[1]]=uv;
+                                            hash[keys[2]]=ins.getCaption();
+                                        }else if(withCaption){
+                                            hash[key]={
+                                                value : uv,
+                                                caption : ins.getCaption()
+                                            };
+                                        }else{
+                                            hash[key]=uv;
+                                        }
                                     }else{
-                                        hash[p.name||prf.alias]=uv;
+                                        hash[key]=uv;
                                     }
                                 }
                             });
@@ -3672,12 +3685,23 @@ xui.Class("xui.UI",  "xui.absObj", {
                         setFormValues:function(values, subId){
                             if(!xui.isEmpty(values)){
                                 this.getFormElements(subId).each(function(prf){
-                                    var prop=prf.properties, ins=prf.boxing();
-                                    if('value' in prop && (prop.name||prf.alias) in values){
-                                        var v=values[prop.name||prf.alias],b=xui.isHash(v) ;
-                                        ins.setValue((b && ('value' in v)) ? v.value : v, true,'module');
-                                        if(typeof(ins.setCaption)=="function" &&  b  && 'caption' in v)
-                                            ins.setCaption(v.caption, null, true,'module');
+                                    var prop=prf.properties, ins=prf.boxing(),key=prop.name || prf.alias,keys,cap;
+                                    if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
+                                        keys=key.split(":");
+                                        if(keys[1] && keys[2]){
+                                            key=keys[0];
+                                            cap=keys[1];
+                                        }
+                                    }
+                                    var v=values[key],b=xui.isHash(v) ;
+                                    if('value' in prop && key in values){
+                                        ins.setValue((b && ('value' in v)) ? v.value : v, true,'form');
+                                    }
+                                    if(typeof(ins.setCaption)=="function"){
+                                        if(cap in values)
+                                            ins.setCaption(values[cap], null, true,'form');
+                                        else if(b && ('caption' in v))
+                                            ins.setCaption(v.caption, null, true,'form');
                                     }
                                 });
                             }

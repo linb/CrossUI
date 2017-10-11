@@ -137,6 +137,7 @@ xui.Class('xui.Module','xui.absProfile',{
         self._ctrlpool={};
         self.events=events;
         self.properties={};
+        self.hooks={};
         if(self._evsClsBuildIn) self._evsClsBuildIn = xui.clone(self._evsClsBuildIn);
         if(self._evsPClsBuildIn) self._evsPClsBuildIn = xui.clone(self._evsPClsBuildIn);
 
@@ -348,6 +349,32 @@ xui.Class('xui.Module','xui.absProfile',{
         getEvents:function(key){
             return key?this.events[key]:this.events;
         },
+        setHooks:function(key,value){
+            var self=this;
+            if(!key)
+                self.hooks={};
+            else if(typeof key=='string')
+                self.hooks[key]=value;
+            else if(xui.isHash(key)){
+                if(value/*force*/){
+                    self.hooks = xui.clone(key);            
+                }else{
+                    xui.merge(self.hooks, key, 'all');
+                }
+            }
+            return self;
+        },
+        getHooks:function(key){
+            return key?this.hooks[key]:this.hooks;
+        },
+        notifyHooks:function(key, args,scope){
+            var ns=this, hook, hooks=ns.hooks;
+            if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
+                if(!xui.isArr(args))args=[args];
+                xui.tryF(hook, args, scope||ns);
+            }
+            return ns;
+        },
         postMessage:function(message, sender){
            this.fireEvent('onMessage',  [this, message, sender]);
         },
@@ -521,7 +548,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 p=firstUI.parent.boxing();
                 childId=firstUI.childrenId;
             }else{
-                p=firstUI.parent();
+                p=firstUI.getParent();
             }
 
             //unserialize
@@ -542,10 +569,10 @@ xui.Class('xui.Module','xui.absProfile',{
 
             o.create(function(){
             	var f=function(t,m){
-	                //for functions like: UI refresh itself
-	                if(rt)rt.call(rt.target, o);
                     if(callback)xui.tryF(callback);
             	};
+                //for functions like: UI refresh itself
+                if(rt)rt.call(rt.target, o);
                 //add to parent, and trigger RenderTrigger
                 if(b)o.show(f,p,childId);
                 else if(!p.isEmpty())o.show(f,p);
@@ -1098,13 +1125,13 @@ xui.Class('xui.Module','xui.absProfile',{
         "xui.absValue":true,
         refresh:function(code){
             var m=this,keep={
-                '$children':m.$children,
-                _cache:m._cache,
-                _nameId:m._nameId
-            },
-            key=m.KEY,
-            path=key.split("."),
-            n;
+                    '$children':m.$children,
+                    _cache:m._cache,
+                    _nameId:m._nameId
+                },
+                key=m.KEY,
+                path=key.split("."),
+                n;
             // clear cache
             if(s=xui.get(window,['xui','$cache','SC']))delete s[key];
             xui.set(window, path);

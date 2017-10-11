@@ -1732,55 +1732,61 @@ xui.set(xui.Locale,["cn","app"], {
         }
     });
 
-    xui.set(xui.Locale,["cn","doc","xui","MessageService"], {
+    xui.set(xui.Locale,["en","doc","xui","MessageService"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.MessageService 类",
+        constructor:{
+            $desc:"生成一个xui.MessageService对象"
+        },
         prototype:{
-            subscribe:{
-                $desc:"订阅消息",
-                $rtn:"Number",
-                $paras:[
-                    "topic [必需参数]: String, 订阅的主题",
-                    "subscriber [必需参数]: String, 订阅者的唯一标识id",
-                    "receiver [必需参数]: Function, 订阅者的消息接收器. 同步的回调函数如返回false，会阻止消息发布到以后订阅者",
-                    "asy [可选参数]: Boolean, 是否异步订阅, 默认为[false]"
-                ],
-                $snippet:[
-                    "var jsm=new xui.MessageService();"+
-                    "jsm.subscribe('topic1','id1', function(msg){alert('subscriber 1th got a message: '+msg)},true);"+
-                    "jsm.subscribe('topic1','id2', function(msg){alert('subscriber 2th got a message: '+msg);return false});"+
-                    "jsm.subscribe('topic1','id3', function(msg){alert('subscriber 3th got a message: '+msg)});"+
-                    "jsm.publish('topic1',['The topic1 was published!']);"+
-                    "jsm.unsubscribe('topic1');"+
-                    "jsm.publish('topic1');"+
-                    "jsm.unsubscribe();"
-                ]
-            },
-            unsubscribe:{
-                $desc:"退订消息",
+            KEY:{$desc:"本类名"},
+            postMessage:{
+                $desc:"发布消息到指定接收类型的消息服务",
                 $rtn:"undefined",
                 $paras:[
-                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会退订所有的订阅",
-                    "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会退订所有topic下的订阅"
+                    "type [必需参数]: String, 指定接收类型，如果空表示发送到所有接收类型",
+                    "message1 [必需参数]: Object, 消息 1",
+                    "message2 [可选参数]: Object, 消息 2",
+                    "message3 [可选参数]: Object, 消息 3"
                 ]
             },
-            publish:{
-                $desc:"发布消息",
-                $rtn:"undefined",
+            destroy:{
+                $desc:"销毁类",
+                $memo:"通常不用手工调用"
+            },
+            getMsgType:{
+                $desc:"得到可接收的消息类型",
+                $rtn:"String"
+            },
+            setMsgType:{
+                $desc:"设置可接收的消息类型",
+                $rtn:"[self]",
                 $paras:[
-                    "topic [可选参数]: String, 发布消息的主题. 如不指定该参数会对所有发布消息",
-                    "args [可选参数]: Array, 发布消息的参数",
-                    "scope [可选参数]: Object, 发布消息所调用函数的scope"
+                    "value [必需参数] : String",
+                    $force
                 ]
             },
-            getSubscribers:{
-                $desc:"得到消息订阅情况",
-                $rtn:"Object",
+            getAsynReceive:{
+                $desc:"判定是否是异步接收消息",
+                $rtn:"Boolean"
+            },
+            setAsynReceive:{
+                $desc:"设置是否是异步接收消息",
+                $rtn:"[self]",
                 $paras:[
-                    "topic [可选参数]: String, 订阅的主题. 如不指定该参数会返回所有的订阅",
-                    "subscriber [可选参数]: String, 订阅者的唯一标识id. 如不指定该参数会返回所有topic下的订阅"
+                    "value [必需参数] : Boolean",
+                    $force
                 ]
-            }
+            },
+            onMessageReceived:{
+                $desc:"当接收到消息的时候调用",
+                $paras:[
+                    "profile : xui.Profile",
+                    "message1 : Object, 消息 1",
+                    "message2 : Object, 消息 2",
+                    "message3 : Object, 消息 3"
+                ]
+            },
         }
     });
 
@@ -5563,6 +5569,29 @@ xui.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){module.setEvents('onA',function(){}); alert(module.getEvents('onA'))});},false);"
+                ]
+            },
+            getHooks:{
+                $desc:"获取Module对象上的回调钩子函数",
+                $rtn:"Object, Hash or Function",
+                $paras:[
+                    "key [可选参数] : String"
+                ]
+            },
+            setHooks:{
+                $desc:"设置回调钩子函数",
+                $rtn:"[self]",
+                $paras:[
+                    "key [必需参数] : String/Objecyt, 钩子key值,或多个钩子的hash对象",
+                    "value [可选参数] : Function, event function"
+                ]
+            },
+            notifyHooks : {
+                $desc:"通知回调钩子",
+                $rtn:"Object",
+                $paras:[
+                    "key [必需参数] : String, 钩子key值",
+                    "args [可选参数]: Array, 钩子函数的回调参数"
                 ]
             },
             create:{
@@ -16432,6 +16461,18 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getUidColumn:{
+                $desc:"得到UID列",
+                $rtn:"String"
+            },
+            setUidColumn:{
+                $desc:"设置UID列",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String. 一定是一个全局唯一列的id",
+                    $force
+                ]
+            },
             getAltRowsBg :{
                 $desc:"判断是否使用不同的背景色区分相邻的两行",
                 $rtn:"Boolean",
@@ -18968,6 +19009,10 @@ xui.set(xui.Locale,["cn","doc","propname"], {
         xui_Timer:{
             interval:"定时间隔(ms)"
         },
+        xui_MessageService:{
+            msgType:"可接收消息类型",
+            asynReceive:"异步接收消息"
+        },
         'xui_DataBinder' : {
             'name':'绑定器唯一名',
             'data':'绑定的数据'
@@ -19432,6 +19477,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'valueSeparator':'值分隔符',
             'selMode':'表格点选模式',
             'altRowsBg':'背景色区分行',
+            'uidColumn':'UID列',
             'rowNumbered':'显示行号',
             "editMode":"编辑模式",
             'editable':'可编辑',
@@ -19606,6 +19652,9 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             onStart:"当定时开始",
             onSuspend:"当定时挂起",
             onEnd:"当定时结束"
+        },
+        xui_MessageService:{
+            onMessageReceived:"当收到消息"
         },
         'xui_DataBinder' : {
             beforeUpdateDataToUI:"将数据更新到绑定控件",

@@ -384,6 +384,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             });
                         }
                     });
+                }else if(type=='map'){
+                    xui.arr.each(a,function(o,i){
+                        if(a[i].cells){
+                            xui.each(b=a[i]=(a[i]||{}),function(v,j){
+                                b[v._col.id]=v.value;
+                            });
+                        }
+                    });
                 }
                 return a;
             }else
@@ -1271,7 +1279,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(xui.isHash(rowId))rowId=rowId.id;
             return this.each(function(prf){
                 var ins=prf.boxing(),p=prf.properties,t;
-                if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
+                if(!rowId&&prf.renderId&&!prf.destroyed){
                     if(p.activeMode="row"){
                         if(t=ins.getActiveRow())rowId=t.id;
                     }else if(p.activeMode="cell"){
@@ -1802,6 +1810,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 tagName:'td',
                                 HEADER1:{
                                     tagName:'div',
+                                    //className:'{_columnfreezed}',
                                     style:"{showHeader}",
                                     HI1:{
                                         tagName:'div',
@@ -4382,6 +4391,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         o.properties.header = xui.copy(value);
                 }
             },
+            uidColumn:'',
             grpCols:{
                 //for default merge
                 ini:{},
@@ -5055,9 +5065,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             op.rows = xui.clone(pp.rows, function(o,i,d){
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && ((i=="id"&&typeof(o)=="string")?o.charAt(0)!="-":true);
             });
-            if(op.header.length===0)delete op.header;
-            if(op.grpCols.length===0)delete op.grpCols;
-            if(op.rows.length===0)delete op.rows;
+            if(xui.isEmpty(op.header))delete op.header;
+            if(xui.isEmpty(op.grpCols))delete op.grpCols;
+            if(xui.isEmpty(op.rows))delete op.rows;
 
             delete op.activeRow;
             delete op.activeCell;
@@ -5395,6 +5405,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         for(var i=0,l=t.length;i<l;i++)
                             if(t[i].id===v)
                                 return t[i].caption||v;
+                    return f7(v,profile,cell);
+               }),
+               f7=me._f7=(me._f7=function(v,profile,cell){
+                   if(v){
+                       v=v+"";
+                        var t=v.indexOf('=');
+                        if(t!=-1){
+                            cell.value = v.substr(0,t);
+                            return v.substr(t+1);
+                        }
+                   }
                     return v;
                }),
                unit=function(caption, cell){return caption + (cell.unit?" "+cell.unit:"")};
@@ -5493,6 +5514,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
                     caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell,f6),cell));
+                    if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
+                break;
+                case 'dropbox':
+                case 'cmdbox':
+                    cell.value=cell.hasOwnProperty("value")?cell.value:"";
+                    caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell,f7),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 default:
@@ -6911,8 +6938,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return a;
         },
         _adjustRows:function(profile, arr){
-            var a,m,h={};
-            xui.arr.each(profile.properties.header,function(c,i){
+            var a,m,h={},p=profile.properties,uid=p.uidColumn;
+            if(uid)uid=xui.arr.subIndexOf(p.header,'id',uid);
+            else uid=-1;
+
+            xui.arr.each(p.header,function(c,i){
                 h[c.id||c]=i;
             });
 
@@ -6941,7 +6971,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     // not a hash
                     else
                         m[i]={value:o};
-                })
+                });
+                // set uidColumn cell's value to row id 
+                if(!('id' in a[i]) && uid!=-1 && m[uid]&& m[uid].value){
+                    a[i].id=m[uid].value;
+                }
             });
             return a;
         },

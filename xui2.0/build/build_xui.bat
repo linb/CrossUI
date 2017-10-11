@@ -66,7 +66,6 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\Template.js /b  ^
 + %relPath%xui\js\Module.js /b ^
 + %relPath%xui\js\Cookies.js /b ^
-+ %relPath%xui\js\MessageService.js /b ^
 + %relPath%xui\js\XML.js /b ^
 + %relPath%xui\js\XMLRPC.js /b ^
 + %relPath%xui\js\SOAP.js /b ^
