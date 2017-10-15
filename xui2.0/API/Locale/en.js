@@ -97,6 +97,27 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"To create a random string",
             $rtn:"String"
         },
+        replace:{
+            $desc:"An wrapper for advance string replace",
+            $rtn:"String",
+            $paras:[
+                "str [Required] : string, the target string",
+                "reg [Required] : Array: [string, string] or [RegExp, string]",
+                "replace [Optional] : String, the replace",
+                "ignore_case [Optional] : Boolean, for RegExp symbol 'i'"
+            ],
+            $snippet:[
+                'alert(xui.replace("aAa","a","*",true));'+
+                'alert(xui.replace("aAa","a","*",false));'+
+                'alert(xui.replace("aAa","a","*"));'+
+                'alert(xui.replace("aAa",/a/,"*"));'+
+                'alert(xui.replace("aAa",["a","*"]));'+
+                'alert(xui.replace("aAa",[["a","*"]]));',
+                'alert(xui.replace("aAa",[["a","*"],[/A/,"-"]]))',
+                '//Use "$0" to protect "ab" in the string: \n alert(xui.replace("aba",[["ab","$0"],["a","*"]]))',
+                'alert(xui.replace("aba ab a",[["ab","$0"],["a",function(s,i){return s[i].toUpperCase();}]]))'
+            ]
+        },
         arr:{
             $desc:"A functions collection for Array",
             fastSortObject:{
@@ -1728,14 +1749,13 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
-            postMessage:{
-                $desc:"Publishes message to specific type MessageService",
+            broadcast:{
+                $desc:"Broadcast message to specific type MessageService",
                 $rtn:"undefined",
                 $paras:[
                     "type [Required]: String, If it was not specified, the message will be published to all MessageServices",
-                    "message1 [Required]: Object, message 1",
-                    "message2 [Optional]: Object, message 2",
-                    "message3 [Optional]: Object, message 3"
+                    "message [Required]: Object, message ",
+                    "callback [Optional]: Functin, callback"
                 ]
             },
             destroy:{
@@ -1770,9 +1790,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"When it received the message",
                 $paras:[
                     "profile : xui.Profile",
-                    "message1 : Object, message 1",
-                    "message2 : Object, message 2",
-                    "message3 : Object, message 3"
+                    "message [Required]: Object, message ",
+                    "callback [Optional]: Functin, callback"
                 ]
             },
         }
@@ -5534,6 +5553,20 @@ xui.set(xui.Locale,["en","app"], {
                     "args [Optional]: Array,  arguments for callback function"
                 ]
             },
+            applyExcelFormula:{
+                $desc:"To apply formula to a specific simulated Excel cell",
+                $rtn:"[self]",
+                $paras:[
+                    "profileTo [Optional] : xui.UIProfile. The specific simulated Excel cell's profile"
+                ]
+            },
+            triggerExcelFormulas:{
+                $desc:"To trigger simulated Excel cells' formula",
+                $rtn:"[self]",
+                $paras:[
+                    "profileFrom [Optional] : xui.UIProfile. Only trigger those cells that can be affected by the specific cell"
+                ]
+            },
             create:{
                 $desc:"Creates the Module Object in async mode",
                 $paras:[
@@ -6566,27 +6599,6 @@ xui.set(xui.Locale,["en","app"], {
                 "var str=xui.Coder.formatAll('.cls{left:0;top:0}','css'); xui.UI.Dialog.alert('xui.Coder', str)",
                 "var str=xui.Coder.formatAll('<div><p>1</p><p>2</p><p><span>3</span>4</p></div>','html'); xui.UI.Dialog.alert('xui.Coder', str)",
                 "var str=xui.Coder.formatAll(' foreach ($d as $k => $v){print $k.$v;}','php',['plain']); xui.UI.Dialog.alert('xui.Coder', str)"
-            ]
-        },
-        replace:{
-            $desc:"An wrapper for advance string replace",
-            $rtn:"String",
-            $paras:[
-                "str [Required] : string, the target string",
-                "reg [Required] : Array: [string, string] or [RegExp, string]",
-                "replace [Optional] : String, the replace",
-                "ignore_case [Optional] : Boolean, for RegExp symbol 'i'"
-            ],
-            $snippet:[
-                'alert(xui.Coder.replace("aAa","a","*",true));'+
-                'alert(xui.Coder.replace("aAa","a","*",false));'+
-                'alert(xui.Coder.replace("aAa","a","*"));'+
-                'alert(xui.Coder.replace("aAa",/a/,"*"));'+
-                'alert(xui.Coder.replace("aAa",["a","*"]));'+
-                'alert(xui.Coder.replace("aAa",[["a","*"]]));',
-                'alert(xui.Coder.replace("aAa",[["a","*"],[/A/,"-"]]))',
-                '//Use "$0" to protect "ab" in the string: \n alert(xui.Coder.replace("aba",[["ab","$0"],["a","*"]]))',
-                'alert(xui.Coder.replace("aba ab a",[["ab","$0"],["a",function(s,i){return s[i].toUpperCase();}]]))'
             ]
         },
         applyById:{
@@ -9468,6 +9480,10 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
             getIframeAutoLoad:{
                 $desc:"Gets auto load(with iframe) iframe src property",
                 $rtn:"String"
@@ -9555,6 +9571,10 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
             getCaption:{
                 $desc:"Gets the caption string from the current UI Object",
                 $rtn:"String",
@@ -9978,6 +9998,21 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
+            getExcelCellFormula:{
+                $desc:"Gets the simulated Excel cell's formula",
+                $rtn:"String"
+            },
+            setExcelCellFormula:{
+                $desc:"Sets the simulated Excel cell's formula",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force                ]
+            },
             getCaption :{
                 $desc:"Gets this button caption text",
                 $rtn:"String",
@@ -10343,6 +10378,10 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
             activate:{
                 $desc:"Activates it(set focus)",
                 $rtn:"[self]",
@@ -10352,6 +10391,17 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
+            },
+            getExcelCellId:{
+                $desc:"Gets the simulated Excel cell's id",
+                $rtn:"String"
+            },
+            setExcelCellId:{
+                $desc:"Sets the simulated Excel cell's id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force                ]
             },
             getCaption :{
                 $desc:"Gets this checkbox caption text",
@@ -10715,6 +10765,28 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String",
                     $force
                 ]
+            },
+            getExcelCellId:{
+                $desc:"Gets the simulated Excel cell's id",
+                $rtn:"String"
+            },
+            setExcelCellId:{
+                $desc:"Sets the simulated Excel cell's id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force                ]
+            },
+            getExcelCellFormula:{
+                $desc:"Gets the simulated Excel cell's formula",
+                $rtn:"String"
+            },
+            setExcelCellFormula:{
+                $desc:"Sets the simulated Excel cell's formula",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force                ]
             },
             getHAlign :{
                 $desc:"Gets horizontal alignment(text-align)",
@@ -15560,6 +15632,10 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
             getHtml:{
                 $desc:"Gets the html string from the first UI Object",
                 $rtn:"String"
@@ -15626,6 +15702,10 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
             getHtml:{
                 $desc:"Gets the html string from the first UI Object",
                 $rtn:"String"
@@ -15669,6 +15749,10 @@ xui.set(xui.Locale,["en","app"], {
         },
         prototype:{
             KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
             getMaxHeight:{
                 $desc:"Gets image max height",
                 $rtn:"Number",
@@ -16510,6 +16594,17 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.asyRun(function(){o.editCellbyRowCol('row2','col2')},1000);"+
                     "}"
                 ]
+            },
+            getExcelCellId:{
+                $desc:"Gets the simulated Excel cell's id",
+                $rtn:"String"
+            },
+            setExcelCellId:{
+                $desc:"Sets the simulated Excel cell's id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force                ]
             },
             getValueSeparator:{
                 $desc:"Gets the separator for string value(only for selMode is 'multi' or 'multibycheckbox'); Default is ';'",

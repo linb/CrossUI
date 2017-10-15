@@ -81,6 +81,170 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
         },
+        // notify the grid's modification to fake excel ( in module )
+        notifyExcel:xui.UI.Input.prototype.notifyExcel,
+        // get grid's fake cexcel cell value
+        getExcelCellValue:function(){
+            var profile=this.get(0), prop=profile.properties,f,refs,coo,value,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
+            if(prop.excelCellId && (f = prop.excelCellValueFormula)){
+                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
+                colMax = prop.header.length;
+                // only for first level
+                rowMax = prop.rows.length;
+
+                if(!xui.isSet(value)){
+                    if(xformula.validate(f) && (refs  = xformula.getRefCells(f, colMax, rowMax))){
+                        cellsMap={};
+                        xui.each(refs,function(v,i){
+                                coo = xformula.toCoordinate(i);
+                                tcell=prop.rows[coo.row].cells[coo.col];
+                                // onGetExcelCellValue    
+                                cellsMap[i] = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, tcell, i)) 
+                                    || tcell.value;
+                        });
+                        value = xformula.calculate(f, cellsMap,colMax,rowMax);
+                    }
+                }
+                return value;
+            }
+            return null;
+        },
+        // calculate the cellTo's formula, and apply to the cell
+        // only for first level
+        applyCellFormula:function(cellTo, dirtyMark, triggerEvent){
+            return this.each(function(prf){
+                var tg=prf.box,  formula, j ,i, needUpdate,t2,cellsMap={},coo,
+                    prop = prf.properties,
+                    rows=prop.rows,
+                    // only for first level
+                    colMax = xui.arr.indexOf(prop.header, cellTo._col),
+                    rowMax = xui.arr.indexOf(rows, cellTo._row),
+                    xformula = xui.ExcelFormula;
+                if(formula = tg._getCellFormula(prf, cellTo, colMax+1,rowMax+1)){
+                    var refs = xformula.getRefCells(formula,colMax,rowMax)
+                    if(!refs)return ;
+                    xui.each(refs,function(v,i){
+                        coo = xformula.toCoordinate(i);
+                        tcell = rows[coo.row].cells[coo.col];
+                        // onGetFormulaValue    
+                        cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
+                            || tcell.value;
+                    });
+                     t2=xformula.calculate(formula, cellsMap,colMax,rowMax);
+                     if(t2!==cellTo.value){
+                        needUpdate = [cellTo._serialId,t2,cellTo, formula];
+                        if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate)){}else{
+                            tg._updCell(prf, needUpdate[0], {value:needUpdate[1]}, dirtyMark, triggerEvent, true);
+                        }
+                        if(prf.afterApplyFormulas)
+                            prf.afterApplyFormulas(prf, [needUpdate]);
+                     }
+                }
+            });
+        },
+        // calculate all cells' (or cellFrom's)  formula, and apply to them(it)
+        // only for first level
+        triggerFormulas:function(cellFrom, dirtyMark, triggerEvent){
+            return this.each(function(prf){
+                var tg=prf.box,  cellId, 
+                    prop=prf.properties, 
+                    rows=prop.rows,
+                    // only for first level
+                    rowMax =rows.length,
+                    colMax = prop.header.length,
+                    xformula=xui.ExcelFormula,
+                    formulaCells={}, formula, tcell;
+                //1. collection all formula cells
+                xui.arr.each(prop.rows, function(row,i){
+                    xui.arr.each(row.cells,function(c,j){
+                        if(c===cellFrom)cellId=xformula.toCellId(j,i);
+                        if(formula = tg._getCellFormula(prf, c, j+1, i+1)){
+                            formulaCells[xformula.toCellId(j,i)]=[c,formula];
+                        }
+                    });
+                });
+                // if input cell, must remove itself;
+                if(cellId)delete formulaCells[cellId];
+                if(xui.isEmpty(formulaCells))return;
+
+                //2. collect refs for formulaCells
+                var refs={};
+                xui.each(formulaCells,function(a, id){
+                     if(a = xformula.getRefCells(a[1],colMax,rowMax))
+                         refs[id]=a;
+                });
+
+                //3. loop to calculate non-ref cells
+                var count, noFormulaRef, cellsMap={}, coo, needUpdate=[], t1,t2,
+                    changed={}, needRec;
+                if(cellId){
+                    changed[cellId]=1;
+                }
+                do{
+                    count=0;
+                    xui.filter(refs,function(v,k){
+                        needRec=0;
+                        if(!cellId)needRec=1;
+                        else{
+                            for(var i in v){
+                                if(i in changed){
+                                    needRec=1;
+                                    break;
+                                }
+                            }
+                        }
+                        // no need to re-calculate
+                        if(!needRec){
+                            return false;
+                        }
+
+                        noFormulaRef=true;
+                         for(var i in v){
+                            if(!cellId && (i in formulaCells)){
+                                noFormulaRef=false;
+                            }else{
+                                if(!(i in cellsMap)){
+                                    coo = xformula.toCoordinate(i);
+                                    tcell = rows[coo.row].cells[coo.col];
+                                    // onGetFormulaValue    
+                                    cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
+                                        || tcell.value;
+                                }
+                            }
+                         }
+                         if(noFormulaRef){
+                             t1=formulaCells[k];
+                             t2=xformula.calculate(t1[1], cellsMap,colMax,rowMax);
+                             if(t2!==t1[0].value){
+                                 // keep update value
+                                needUpdate.push([t1[0]._serialId, t2, t1[0], t1[1]]);
+                                if(cellId)changed[k]=1;
+                             }
+                            // remove from formulaCells
+                            delete formulaCells[k];
+                            count++;
+                            return false;
+                         }
+                    });
+                }
+                // Avoid circular references
+                while(!xui.isEmpty(formulaCells) && count>0);
+                
+                // update cell by order
+                for(var i=0,l=needUpdate.length;i<l;i++){
+                    if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate[i])){}else{
+                        tg._updCell(prf, needUpdate[i][0], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
+                    }
+                }
+                // [[cell servialid, cell value, cell, fomula]]
+                if(prf.afterApplyFormulas)
+                    prf.afterApplyFormulas(prf, needUpdate);
+
+                if(prop.excelCellId && prop.excelCellValueFormula){
+                    prf.boxing().notifyExcel(false) ;
+                }
+            });
+        },
         /*insert rows to dom
         arr is formatted properties
         pid,base are item id
@@ -1494,10 +1658,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return map;
         },
 
-        updateCellByRowCol:function(rowId, colId, options, dirtyMark, triggerEvent){
+        updateCellByRowCol:function(rowId, colId, options, dirtyMark, triggerEvent, triggerFormula){
             var t,self=this,con=self.constructor;
             if(t=con._getCellId(self.get(0), rowId, colId))
-                con._updCell(self.get(0), t, options, dirtyMark, triggerEvent);
+                con._updCell(self.get(0), t, options, dirtyMark, triggerEvent, triggerFormula);
             else{
                 var row=self.getRowbyRowId(rowId),header=self.getHeader('min'),col;
                 if(row&&row.cells){
@@ -1516,7 +1680,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 col=parseInt(arr[1],10);
             return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
         },
-        updateCell:function(cellId, options, dirtyMark, triggerEvent){
+        updateCell:function(cellId, options, dirtyMark, triggerEvent, triggerFormula){
             var self=this,profile=this.get(0);
             xui.each(profile.cellMap,function(o){
                 if(o.id && o.id===cellId){
@@ -1524,7 +1688,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return false;
                 }
             });
-            self.constructor._updCell(profile,cellId,options, dirtyMark, triggerEvent);
+            self.constructor._updCell(profile,cellId,options, dirtyMark, triggerEvent, triggerFormula);
             return self;
         },
         editCellbyRowCol:function(rowId, colId){
@@ -3806,7 +3970,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // checkbox is special for editor
                         if(!disabled && !readonly && type=='checkbox')
                             if(editable){
-                                box._updCell(profile, cell, !cell.value, p.dirtyMark, true);
+                                box._updCell(profile, cell, !cell.value, p.dirtyMark, true, true);
 
                                 profile.box._trycheckrowdirty(profile,cell);
 
@@ -4548,6 +4712,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 }
             },
+            excelCellId:{
+                ini:"",
+                action:function(){
+                    this.boxing().notifyExcel(false);
+                }
+            },
+            excelCellValueFormula:"",
             hotRowNumber:'[*]',
             hotRowCellCap:'(*)',
             hotRowRequired:'',
@@ -4623,7 +4794,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src, type){},
             onEditorClick:function(profile, cell, proEditor, type, src){},
-            beforeUnitUpdated:function(profile, cell, proEditor, type){}
+            beforeUnitUpdated:function(profile, cell, proEditor, type){},
+
+            // onGetGridExcelFormulaValue
+            onGetFormulaValue:function(profile, cell, cellId){},
+            // beforeApplyGridExcelFormula
+            beforeApplyFormula:function(profile, dataArr){},
+            // afterApplyGridExcelFormula
+            afterApplyFormulas:function(profile, dataArrs){},
+
+            onGetExcelCellValue:function(profile, excelCellId){}
         },
         RenderTrigger:function(){
             var ns=this, 
@@ -4672,6 +4852,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                        (getPro(ns, o, "editMode")=="inline" || getPro(ns, o, "type")=='dropbutton' ))
                         box._editCell(ns,o);
             });
+
+            if(prop.excelCellId)
+                ns.boxing().notifyExcel();
         },
         LayoutTrigger:function(){
             var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
@@ -5936,7 +6119,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(xui.isNumb(colId))colId=xui.get(profile.properties.header,[colId,"id"]);
             return xui.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
         },
-        _updCell:function(profile, cellId, options, dirtyMark, triggerEvent){
+        _updCell:function(profile, cellId, options, dirtyMark, triggerEvent, triggerFormula){
             var box=profile.box,
                 prop=profile.properties,
                 pdm=prop.dirtyMark,
@@ -5999,6 +6182,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                     if(editor)editor.setValue(cell.value,true,'editorini');
+                    // formula
+                    if(triggerFormula!==false)
+                        xui.resetRun(profile.key+":"+profile.$xid,function(){
+                            if(profile&&profile.box)profile.boxing().triggerFormulas(cell, 'updatecell');
+                        });
                 }
                 if(('caption' in options) && editor && editor.setCaption){
                     editor.setCaption(options.caption||null,true);
@@ -6010,7 +6198,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.afterCellUpdated)
                     profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext);
             }
-            
         },
         _ensureValue:function(profile,value){
             if(profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox'){
@@ -6133,6 +6320,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             //after event
             if(profile.afterRowActive)profile.boxing().afterRowActive(profile, targetRow);
+        },
+        _getCellFormula:function(profile, cell, col, row){
+            var t, p=profile.properties;
+            return (cell&&(t=cell.formula))? t
+                    : (cell&&(t=cell._row)&&(t=t.formula)) ? t.replace(/\?/g, col)
+                    : ((t=p.rowOptions)&&(t=t.formula)) ? t.replace(/\?/g, col)
+                    : (cell&&(t=cell._col)&&(t=t.formula)) ? t.replace(/\?/g, row)
+                    : ((t=p.colOptions)&&(t=t.formula)) ? t.replace(/\?/g, row)
+                    :  null ;
         },
         getCellOption:function(profile, cell, key){
             var t=cell,p=profile.properties;
@@ -6542,7 +6738,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     .beforeUnitUpdated(function(editorPrf,v){
                         if(profile.beforeUnitUpdated&&false===profile.boxing().beforeUnitUpdated(profile, cell, editorPrf, v))
                             return false;
-                        profile.box._updCell(profile, cell, {value:cell.value, unit: v},profile.properties.dirtyMark,true);
+                        profile.box._updCell(profile, cell, {value:cell.value, unit: v},profile.properties.dirtyMark,true,true);
                     })
                     .afterUIValueSet(function(editorPrf,oV,nV,force,tag){
                         var type=getPro('type'),_$caption;
@@ -6582,7 +6778,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor, tag, 'cell'))){
 
-                            grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
+                            grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true, true);
     
                             if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter')
                                 xui.tryF(editor.undo,[true],editor);
@@ -6865,6 +7061,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 if(callback)callback();
             });
+            // formula
+            if(trigger!='render' && trigger!='rowhandler' && trigger!='foldrow' && trigger!='expandrow' && trigger!='setcol' && trigger!='resize')
+                xui.resetRun(profile.key+":"+profile.$xid,function(){
+                    if(profile&&profile.box)profile.boxing().triggerFormulas(null, trigger);
+                });
         },
         _adjustHeader:function(arr){
             var a=xui.copy(arr),m;
@@ -6922,7 +7123,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
 
             var layer=0;
-            // caculate layers
+            // calculate layers
             for(var j=0,m=a.length,grp,o;j<m;j++){
                 grp=a[j];
                 for(var i=grp.from;i<=grp['to'];i++){
@@ -7352,7 +7553,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rh = h2.height(),
                 rr = b12.height();
 
-             // caculate by px
+             // calculate by px
             width=width?profile.$px(width,null, true):width;
             height=height?profile.$px(height, null, true):height;
 

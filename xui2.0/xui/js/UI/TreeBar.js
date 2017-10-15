@@ -262,10 +262,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             $order:0,
                             tabindex: '{_tabindex}',
                             className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {_split} {disabled} {readonly}',
-                            style:'{itemStyle}',
+                            style:'{itemStyle};{_splitstyle}',
                             RULER:{
                                 $order:2,
-                                style:'{_ruleDisplay}{rulerStyle}',
+                                style:'{_ruleDisplay};{rulerStyle}',
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{

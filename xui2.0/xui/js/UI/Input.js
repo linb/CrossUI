@@ -101,6 +101,47 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
                 box._setTB(profile._inValid);
             });
+        },
+        // notify the modification to fake excel ( in module )
+        notifyExcel:function(refreshAll){
+            return this.each(function(prf){
+                var prop=prf.properties, ID='triggerExcelFormulas:';
+                if(prop.excelCellId){
+                    if(prf.host && prf.host['xui.Module']){
+                        ID=ID+prf.host.xid;
+                        if(refreshAll===false){
+                            if(!xui.resetRun.exists(ID))
+                                 if(prf && prf.host)prf.host.triggerExcelFormulas(prf);
+                        }else
+                            xui.resetRun(ID,function(){
+                                if(prf && prf.host)prf.host.triggerExcelFormulas(null);
+                            });
+                    }
+               }
+            });
+        },
+        // get control's fake cexcel cell value
+        getExcelCellValue:function(){
+            var profile=this.get(0), prop=profile.properties,value;
+            if(prop.excelCellId){
+                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
+                if(!xui.isSet(value)){
+                    value = this.getUIValue();
+                }
+           }
+            return value;
+        },
+        // calculate the formula, and apply to the control
+        _applyExcelFormula:function(cellsMap){
+            var profile=this.get(0), prop=profile.properties,f,value;
+            if(f = prop.excelCellFormula){
+                value = xui.ExcelFormula.calculate(f, cellsMap);
+                if(xui.isSet(value)){
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                        this.setUIValue(value, true);
+                    }
+                }
+           }
         }
     },
     Initialize:function(){
@@ -604,6 +645,24 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         value=value.$xid;
                     this.properties.tipsBinder = value +'';
                 }
+            },
+            excelCellId:{
+                ini:"",
+                action:function(){
+                    this.boxing().notifyExcel(false);
+                }
+            },
+            excelCellFormula:{
+                ini:"",
+                action:function(v){
+                    var prf=this,m,
+                        prop=prf.properties;
+                    if(v && xui.ExcelFormula.validate(v)){
+                        if(prf.host && (m=prf.host['xui.Module'])){
+                            m.applyExcelFormula(prf);
+                        }
+                   }
+                }
             }
         },
         EventHandlers:{
@@ -617,7 +676,10 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             
             onLabelClick:function(profile, e, src){},
             onLabelDblClick:function(profile, e, src){},
-            onLabelActive:function(profile, e, src){}
+            onLabelActive:function(profile, e, src){},
+
+            onGetExcelCellValue:function(profile, excelCellId){},
+            beforeApplyExcelFormula:function(profile, excelCellFormula){}
         },
         _prepareData:function(profile){
             var data={},prop=profile.properties,t
@@ -680,6 +742,8 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 ns.boxing().setReadonly(true,true);
             if(p.tipsBinder)
                 ns.boxing().setTipsBinder(p.tipsBinder,true);
+            if(p.excelCellId)
+                ns.boxing().notifyExcel();
             //add event for cut/paste text
             var ie=xui.browser.ie,
                 src=ns.getSubNode('INPUT').get(0),
@@ -907,7 +971,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             
             $hborder=$vborder=box._borderW() / 2;
             
-            // caculate by px
+            // calculate by px
             if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 

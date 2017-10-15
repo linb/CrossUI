@@ -2620,7 +2620,7 @@ xui.Class('App', 'xui.Module',{
                 });
 
                 // [[ get non-standard css
-                rsp = xui.Coder.replace(rsp, [[/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,''],
+                rsp = xui.replace(rsp, [[/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,''],
                                               [/\{[^}]*\}/,'$0'],
                                               [/\s+/," "],
                                               [/\,([^\s])/,", $1"]

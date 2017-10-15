@@ -439,6 +439,97 @@ new function(){
             }
             return trimTailZero && value.indexOf(decimalSeparator)!=-1 ? value.replace(new RegExp('['+decimalSeparator+']?0+$'),'') : value;
         },
+        /***
+            A wrapper for lots regExp string.replace to only once iterator replace
+            You can use it, when
+            1.replace >10
+            2.need protect some regexp
+            3.every long string to replac
+
+            str: will be replace
+            reg, array: [string, string] or [regex, string] or [[],[]]
+            replace: to replace
+            ignore_case: bool, for regexp symble 'i'
+            return : replaced string
+
+            For example:
+                xui.replace("aAa","a","*",true)
+                        will return "*A*"
+                xui.replace("aAa","a","*",false)
+                        will return "***"
+                xui.replace("aAa","a","*")
+                xui.replace("aAa",/a/,"*")         : "/a/" is OK, but not "/a/g"
+                xui.replace("aAa",["a","*"])
+                xui.replace("aAa",[["a","*"]])
+                        will return "***"
+                xui.replace("aAa",[["a","*"],[/A/,"-"]])
+                        will return "*-*"
+            Notice: there is a '$0' symbol here, for protect
+                xui.replace("aba",[["ab","$0"],["a","*"]])
+                        will return "ab*"
+                here, "ab" will be first matched and be protected to replace by express "a"
+        ***/
+        replace:function(str, reg, replace, ignore_case){
+            if(!str)return "";
+            var i, len,_t, m,n, flag, a1 = [], a2 = [],
+                me=arguments.callee,
+                reg1=me.reg1 || (me.reg1=/\\./g),
+                reg2=me.reg2 || (me.reg2=/\(/g),
+                reg3=me.reg3 || (me.reg3=/\$\d/),
+                reg4=me.reg4 || (me.reg4=/^\$\d+$/),
+                reg5=me.reg5 || (me.reg5=/'/),
+                reg6=me.reg6 || (me.reg6=/\\./g),
+                reg11=me.reg11 || (me.reg11=/(['"])\1\+(.*)\+\1\1$/)
+            ;
+
+            if(!xui.isArr(reg)){reg=[reg,replace]}else{ignore_case=replace}
+            if(!xui.isArr(reg[0])){reg=[reg]};
+            xui.arr.each(reg,function(o){
+                m= typeof o[0]=='string'?o[0]:o[0].source;
+                n= o[1]||"";
+                len = ((m).replace(reg1, "").match(reg2) || "").length;
+                if(typeof n !='function'){
+                    if (reg3.test(n)) {
+                        //if only one paras and valid
+                        if (reg4.test(n)) {
+                            _t = parseInt(n.slice(1),10);
+                            if(_t<=len)n=_t;
+                        }else{
+                            flag = reg5.test(n.replace(reg6, "")) ? '"' : "'";
+                            i = len;
+                            while(i + 1)
+                                n = n.split("$" + i).join(flag + "+a[o+"+ i-- +"]+" + flag);
+
+                            n = new Function("a,o", "return" + flag + n.replace(reg11, "$1") + flag);
+                        }
+                    }
+                }
+                a1.push(m || "^$");
+                a2.push([n, len, typeof n]);
+            });
+
+
+            return str.replace(new RegExp("("+a1.join(")|(")+")", ignore_case ? "gim" : "gm"), function(){
+                var i=1,j=0,args=arguments,p,t;
+                if (!args[0]) return "";
+                while (p = a2[j++]) {
+                    if (t = args[i]) {
+                        switch(p[2]) {
+                            case 'function':
+                                //arguments:
+                                //1: array, all arguments; 
+                                //2: the data position index,  args[i] is $0;
+                                //3: the regexp index
+                                return p[0](args, i, j-1);
+                            case 'number':
+                                return args[p[0] + i];
+                            default:
+                                return p[0];
+                        }
+                    }else{i += p[1]+1;}
+                }
+            });
+        },
         /*shadow copy for hash/array
         * var a=[]; a.b='b'; a.b will not be copied
         */
@@ -1096,7 +1187,7 @@ xui.merge(xui,{
                             path=xui.getPath('xui.appearance.' +key,'');
                         if(tag){
                             xui.getFileAsync(path+'theme.css', function(rsp){
-                                rsp = xui.Coder.replace(rsp, [
+                                rsp = xui.replace(rsp, [
                                     [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
                                     [/\{[^}]*\}/,'$0'],
                                     [/([^\/{},]+)/, function(a){
@@ -2029,10 +2120,14 @@ new function(){
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
                         case '=':
+                        case 'is':
                             return x===y;
                         case '<>':
+                        case 'is-not':
                         case '!=':
                             return x!==y;
+                        case 'exists':
+                            return xui.isDefined(x);
                         case 'empty':
                             return xui.isEmpty(x);
                         case 'non-empty':
@@ -2396,15 +2491,18 @@ new function(){
                     if(typeof fun=='function')rtn=xui.tryF(fun, args, scope);
                     else if(xui.isHash(fun)){
                         if('onOK' in fun ||'onKO' in fun){
-                            var resumeFun=function(key,args){
-                                if(recursive)return recursive.apply(key,args);
+                            var resumeFun=function(key,args,flag){
+                                if(recursive){
+                                    if(xui.isStr(flag))temp[flag]=true;
+                                    return recursive.apply(key,args);
+                                }
                             };
                             // onOK
                             if('onOK' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
-                               if(resumeFun)resumeFun("okData",arguments);
+                               if(resumeFun)resumeFun("okData",arguments, fun.okFlag);
                             };
                             if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
-                                if(resumeFun)resumeFun("koData",arguments);
+                                if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                             };
                             rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun);
                             break;
@@ -4861,8 +4959,8 @@ xui.Class("xui.MessageService","xui.absObj",{
                 profile.__gc();
             });
         },
-        postMessage:function(type, message1, message2, message3){
-            xui.publish(type, [message1,message2,message3], null, this);
+        broadcast:function(type, message, callback){
+            xui.publish(type, [message,callback], null, this);
         },
         getParent:xui.Timer.prototype.getParent,
         getChildrenId:xui.Timer.prototype.getChildrenId
@@ -4887,7 +4985,232 @@ xui.Class("xui.MessageService","xui.absObj",{
             asynReceive:false
         },
         EventHandlers:{
-            onMessageReceived:function(profile, message1, message2, message3 ){}
+            onMessageReceived:function(profile, message, callback){}
+        }
+    }
+});
+
+/*** xui.ExcelFormula.calculate
+    * formula :
+    *      "FIXED(SUM(1:1, AVERAGE(A:A, B3)) + ROUND(B5)*C6 + MAX(A1:B2, B3) + MIN(10, B3)/ 1000, 2)"
+    *      "FIXED(SUM(1, AVERAGE(1, 3)) + ROUND(3.3)*1 + MAX(4, 2) + MIN(10, 5)/ 3, 2)" => 11.67
+    *      "CHOOSE(2,'a','b','c')" => 'b'
+    * cellsMap :
+    *      true: force to return something without cell value maps
+    *      {}: returns the result of the formula with cell value maps
+***/
+xui.Class("xui.ExcelFormula",null,{
+    Static:{
+        MAXCOUNT:256,
+        // support functions: +,-,*,/,%,SUM, AVERAGE, MIN, MAX, ROUND, FIXED, CHOOSE 
+        Supported : (function(){
+                var flatten = function(args){
+                    var arr=[], t, args = xui.toArr(args), i=0,l=args.length;
+                    for(;i<l;i++){
+                        if(xui.isArr(t=args[i])) arr=arr.concat(t);
+                        else arr.push(t);
+                    }
+                    return arr;
+                };
+                return {
+                    SUM:function(){ 
+                        var result = 0, arr = flatten(arguments), i = 0, l=arr.length, v, parsed;
+                        for (; i < l; ++i) {
+                            v = arr[i];
+                            if (typeof v === 'number') {
+                                result += v;
+                            } else if (typeof v === 'string') {
+                                parsed = parseFloat(v);
+                                if(!xui.isNaN(parsed))
+                                    result += parsed;
+                            }
+                        }
+                        return result;
+                    },
+                    AVERAGE:function(){
+                        var result = 0, arr = flatten(arguments), i=0, l=arr.length, v, parsed;
+                        for (; i < l; ++i) {
+                            v = arr[i];
+                            if (typeof v === 'number') {
+                                result += v;
+                            } else if (typeof v === 'string') {
+                                parsed = parseFloat(v);
+                                if(!xui.isNaN(parsed))
+                                    result += parsed;
+                            }
+                        }
+                        return result/l;
+                    },
+                    MIN:function(){return Math.min.apply(Math,flatten(arguments));},
+                    MAX:function(){return Math.max.apply(Math,flatten(arguments));},
+                    ROUND:function(){return Math.round.apply(Math, arguments);},
+                    FIXED:function(){return xui.toFixedNumber.apply(xui, arguments);},
+                    CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; }
+                };
+        })(),
+        toColumnChr : function(num) {
+            var s = "";
+            num = num - 1;
+            while (num >= 0) {
+                s = String.fromCharCode(num % 26 + 97) + s;
+                num = Math.floor(num / 26) - 1;
+            }
+            return s.toUpperCase();
+        },
+        toColumnNum : function(chr) {
+            chr = chr.split('');
+            var base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(''),
+                i=0, j=chr.length - 1, result = 0;
+
+            for (; i < chr.length; i += 1, j -= 1) {
+                result += Math.pow(base.length, j) * (base.indexOf(chr[i]) + 1);
+            }
+            return result;
+        },
+        toCoordinate : function(cell, offset){
+            var alpha = /[A-Z]+/,
+                num = /[0-9]+/,
+                cellU = cell.toUpperCase();
+            if(!offset&&offset!==0)offset=-1;
+            return {
+                col:this.toColumnNum(cellU.match(alpha)[0]) + offset, 
+                row:parseInt(cellU.match(num)[0], 10) + offset
+            };
+        },
+        toCellId : function(col, row, offset){
+            return this.toColumnChr(col+(offset||1)) + (row+(offset||1));
+        },
+        getCellRanges : function(cellFrom, cellEnd, colLimited, rowLimited){
+            var ns=this,
+                alpha = /[A-Z]+/,
+                num = /[0-9]+/;
+
+            if(!alpha.test(cellFrom))cellFrom = "A" + cellFrom;
+            if(!num.test(cellFrom))cellFrom = cellFrom + "1";
+            if(!alpha.test(cellEnd))cellEnd = ns.toColumnChr(colLimited||ns.MAXCOUNT) + cellEnd;
+            if(!num.test(cellEnd))cellEnd = cellEnd + (rowLimited||ns.MAXCOUNT);
+
+            var cellStart = ns.toCoordinate(cellFrom,0),
+                cellStop = ns.toCoordinate(cellEnd,0),
+                colStart = cellStart.col,
+                colStop = cellStop.col,
+                rowStart = cellStart.row,
+                rowStop = cellStop.row,
+                cellRange = [],
+                row,
+                col;
+
+            if(colStart < colStop){
+                for (col = colStart; col <= colStop; col++) {
+                    if(rowStart < rowStop){
+                        for (row = rowStart; row <= rowStop; row++) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }else{
+                        for (row = rowStart; row >= rowStop; row--) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }
+                }
+            }else{
+                for (col = colStart; col >= colStop; col--) {
+                    if(rowStart < rowStop){
+                        for (row = rowStart; row <= rowStop; row++) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }else{
+                        for (row = rowStart; row >= rowStop; row--) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }
+                }
+            }
+            return cellRange;
+        },
+        validate : function(formula){
+            var fake = function(){return 1;},
+                str=formula.replace(/\?/g,'1'),
+                reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
+            str = xui.replace(str, [
+                [/"(\\.|[^"\\])*"/,'1'],
+                [/'(\\.|[^'\\])*'/,'1'],
+                [/([a-zA-Z\d]+\s*\:\s*[a-zA-Z\d]+)/g,'1'],
+                [/([a-zA-Z]+[\d]+)/g,'1']
+            ]);
+            if(/[a-zA-Z_$]/.test(str.replace(reg,'')))
+                return false;
+            str = str.replace(reg,'fake');
+
+            try{
+                eval(str);
+            }catch(e){
+                if(xui.isDefined(window.console) && typeof(console.log)=='function')
+                    console.log("#VALUE! ",  formula, str , e);
+                return false;
+            }
+            return true;
+        },
+        getRefCells : function(formula, colLimited, rowLimited){
+            return this._parse (formula, false, colLimited, rowLimited);
+        },
+        parse : function(formula){
+            return this._parse (formula, null);
+        },        
+        calculate : function(formula, cellsMap, colLimited, rowLimited){
+            return this._parse (formula, cellsMap||true, colLimited, rowLimited);
+        },
+        _parse : function(formula, cellsMap, colLimited, rowLimited){
+            var ret, ns=this,
+                Supported = ns.Supported,
+                RANGE = function(cellsMap, cellStart, cellStop){
+                    var arr = ns.getCellRanges(cellStart, cellStop, colLimited, rowLimited),i=0,l=arr.length;
+                    for(;i<l;i++)
+                        arr[i] = cellsMap[arr[i]];
+                    return arr;
+                },
+                doParse = function(formula, CELLS){
+                    var cellHash,rtn,str=formula,
+                    f=function(a){
+                        if(a[8]){
+                            if(cellHash){
+                                if(!(a[8] in cellHash))cellHash[a[8]]=1;//ns.toCoordinate(a[8],-1);
+                            }
+                            return 'CELLS["' + a[8] + '"]';
+                        }else if(a[6] && a[7]){
+                            if(cellHash){
+                                var arr = ns.getCellRanges(a[6], a[7], colLimited, rowLimited);
+                                for(var i=0,l=arr.length;i<l;i++)
+                                    if(!(arr[i] in cellHash))cellHash[arr[i]]=1;//ns.toCoordinate(arr[i],-1);
+                            }
+                            return 'RANGE(CELLS, "' + a[6] + '","' + a[7]+'")';
+                        }else if(a[10] && a[11]){
+                            return 'Supported["'+a[10] +'"]'+a[11];
+                        }
+                    };
+                    if(cellsMap===false)cellHash={};
+                    if(!ns.validate(str))
+                        return false;
+
+                    str = xui.replace(str, [
+                        [/"(\\.|[^"\\])*"/,'$0'],
+                        [/'(\\.|[^'\\])*'/,'$0'],
+                        [/([a-zA-Z\d]+)\s*\:\s*([a-zA-Z\d]+)/, f],
+                        [/[a-zA-Z]+[\d]+/g,f],
+                        [/([A-Z]+)(\s*\()/,f]
+                    ]);
+                    try{
+                        rtn = (cellsMap===true && (cellsMap={})) || xui.isHash(cellsMap) ? eval(str) : cellsMap===false ? cellHash : str;
+                    }catch(e){
+                        if(xui.isDefined(window.console) && typeof(console.log)=='function')
+                            console.log("#VALUE! ",  formula, str , e);
+                    }finally{
+                        return rtn;
+                    }
+                };
+
+            ret = doParse(formula, cellsMap);
+
+            return xui.isNaN(ret)?false:ret;
         }
     }
 });

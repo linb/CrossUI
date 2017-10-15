@@ -6,6 +6,10 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
         activate:function(){
             this.getSubNode('FOCUS').focus();
             return this;
@@ -18,7 +22,10 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         //update UI face
         _setDirtyMark:function(){
             return arguments.callee.upper.apply(this,['CAPTION']);
-        }
+        },
+        notifyExcel:xui.UI.Input.prototype.notifyExcel,
+        // get control's fake cexcel cell value
+        getExcelCellValue:xui.UI.Input.prototype.getExcelCellValue
     },
     Static:{
         Templates:{
@@ -133,10 +140,22 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                     v=(xui.isSet(v)?v:"")+"";
                     this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
                 }
+            },
+            excelCellId:{
+                ini:"",
+                action:function(){
+                    this.boxing().notifyExcel(false);
+                }
             }
         },
         EventHandlers:{
-            onChecked:function(profile, e, value){}
+            onChecked:function(profile, e, value){},
+            onGetExcelCellValue:function(profile, excelCellId){}
+        },
+        RenderTrigger:function(){
+            var ns=this,p=ns.properties;
+            if(p.excelCellId)
+                ns.boxing().notifyExcel();
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);

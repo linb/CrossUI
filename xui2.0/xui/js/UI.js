@@ -4207,7 +4207,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         _adjustCSS:function(css, prevId, tag){
             prevId=prevId||"";
             if(tag){
-                css = xui.Coder.replace(css, [
+                css = xui.replace(css, [
                     [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
                     [/\{[^}]*\}/,'$0'],
                     [/([^\/{},]+)/, function(a){
@@ -7434,6 +7434,10 @@ xui.Class("xui.absValue", "xui.absObj",{
 
                     if(!prop.dirtyMark)
                         box.setValue(value,false,'uiv',cv || triggerEventOnly);
+
+                    if(prop.excelCellId && box.notifyExcel){
+                        box.notifyExcel(false);
+                    }
                 }
             });
             return this;
@@ -7716,6 +7720,12 @@ xui.Class("xui.UI.Widget", "xui.UI",{
 });
 
 xui.Class("xui.UI.Link", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         Appearances:{
             KEY:{
@@ -7771,6 +7781,12 @@ xui.Class("xui.UI.Link", "xui.UI",{
 });
 
 xui.Class("xui.UI.Element", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         _objectProp:{attributes:1},
         Templates:{
@@ -7852,6 +7868,12 @@ xui.Class("xui.UI.Element", "xui.UI",{
     }
 });
 xui.Class("xui.UI.Icon", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         Templates:{
             className:'xui-node xui-wrapper {_className}  {picClass}',
@@ -8214,6 +8236,12 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
 });
 
 xui.Class("xui.UI.Span", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         Templates:{
             className:'{_className}',
@@ -8283,8 +8311,169 @@ xui.Class("xui.UI.Span", "xui.UI",{
     }
 });
 
+xui.Class("xui.UI.Div", "xui.UI",{
+    Initialize:function(){
+        // compitable
+        xui.UI.Pane = xui.UI.Div;
+        var key="xui.UI.Pane";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+        this.$activeClass$='xui.UI.Div';
+    },
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
+    Static:{
+        Appearances:{
+            KEY:{
+               // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
+                outline:xui.browser.gek?'none':null, 
+                zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
+                background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
+                'line-height':'auto'
+            }
+        },
+        Templates:{
+            tagName:'div',
+            className:'xui-uicontainer {_className}',
+            style:'{_style};{_panelstyle};{_overflow};',
+            //for firefox div focus bug: outline:none; tabindex:'-1'
+            tabindex: '{tabindex}',
+            text:'{html}'+xui.UI.$childTag
+        },
+        DataModel:{
+            iframeAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.box._applyAutoLoad(this);
+                }
+            },
+            ajaxAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.box._applyAutoLoad(this);
+                }
+            },
+            width:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            selectable:true,
+            html:{
+                html:1,
+                action:function(v,ov,force){
+                    this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
+                }
+            },
+            overflow:{
+                ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
+                combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
+                action:function(v){
+                    var node=this.getContainer();
+                    if(v){
+                        if(v.indexOf(':')!=-1){
+                            xui.arr.each(v.split(/\s*;\s*/g),function(s){
+                                var a=s.split(/\s*:\s*/g);
+                            if(a.length>1)node.css(xui.str.trim(a[0]),xui.str.trim(a[1]||''));
+                            });
+                            return;
+                        }
+                    }
+                    node.css('overflow',v||'');
+                }
+            },
+            tabindex:-1
+        },
+        RenderTrigger:function(){
+            // only div
+            var ns=this;
+            if(ns.box.KEY=="xui.UI.Div")
+                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
+                    ns.box._applyAutoLoad(this);
+        },
+        Behaviors:{
+            DroppableKeys:['KEY'],
+            PanelKeys:['KEY'],
+            onClick:function(profile, e, src){
+                var p=profile.properties;
+                if(p.disabled)return false;
+                if(profile.onClick)
+                    return profile.boxing().onClick(profile, e, src);
+            }
+        },
+        EventHandlers:{
+            onClick:function(profile, e, value){}
+        },
+        _prepareData:function(profile,data){
+            data=arguments.callee.upper.call(this, profile,data);
+            if(xui.isStr(data.overflow))
+                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
+            return data;
+        },
+        _applyAutoLoad:function(prf){
+            var prop=prf.properties, ins=prf.boxing();
+            if(prop.iframeAutoLoad){
+                ins.getContainer().css('overflow','hidden');
+                var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
+                    id="biframe_"+xui.stamp(),
+                    e=xui.browser.ie && xui.browser.ver<9,
+                    ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
+
+                _if.url=xui.adjustRes(_if.url,false,true);
+
+                ifr.id=ifr.name=id;
+                if(xui.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
+                prop._frameName=id;
+
+                if(!_if.query)_if.query={};
+                _if.query._rand=xui.rand();
+                ifr.frameBorder='0';
+                ifr.marginWidth='0';
+                ifr.marginHeight='0';
+                ifr.vspace='0';
+                ifr.hspace='0';
+                ifr.allowTransparency='true';
+                ifr.width='100%';
+                ifr.height='100%';
+                ins.getContainer().html("",false);
+                ins.append(ifr);
+
+                if((_if.method||"").toLowerCase()=="post")
+                    xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
+                else
+                    ifr.src=_if.url;
+            }else if(prop.ajaxAutoLoad){
+                var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
+                    options={rspType:"text"};
+                if(!_ajax.query)_ajax.query={};
+                _ajax.query._rand=xui.rand();
+                xui.merge(options, _ajax.options);
+                ins.busy();
+                var node=ins.getContainer();
+                xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
+                    node.html(rsp,true,true);
+                    ins.free();
+                }, function(err){
+                    node.html("<div>"+err+"</div>",true,false);
+                    ins.free();
+                }, null, options).start();
+            }
+        },
+        _onresize:function(profile,width){
+            if(width)xui.UI._adjustConW(profile, profile.getRoot(), width);
+        }
+    }
+});
+
 xui.Class("xui.UI.CSSBox","xui.UI.Span",{
     Instance:{
+        fireClickEvent:null,        
         adjustDock:null,
         draggable:null,
         busy:null,
@@ -8471,160 +8660,6 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             onHotKeydown:null,
             onHotKeypress:null,
             onHotKeyup:null
-        }
-    }
-});
-
-xui.Class("xui.UI.Div", "xui.UI",{
-    Initialize:function(){
-        // compitable
-        xui.UI.Pane = xui.UI.Div;
-        var key="xui.UI.Pane";
-        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
-        this.$activeClass$='xui.UI.Div';
-    },
-    Static:{
-        Appearances:{
-            KEY:{
-               // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
-                outline:xui.browser.gek?'none':null, 
-                zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
-                'line-height':'auto'
-            }
-        },
-        Templates:{
-            tagName:'div',
-            className:'xui-uicontainer {_className}',
-            style:'{_style};{_panelstyle};{_overflow};',
-            //for firefox div focus bug: outline:none; tabindex:'-1'
-            tabindex: '{tabindex}',
-            text:'{html}'+xui.UI.$childTag
-        },
-        DataModel:{
-            iframeAutoLoad:{
-                ini:"",
-                action:function(){
-                    this.box._applyAutoLoad(this);
-                }
-            },
-            ajaxAutoLoad:{
-                ini:"",
-                action:function(){
-                    this.box._applyAutoLoad(this);
-                }
-            },
-            width:{
-                $spaceunit:1,
-                ini:'10em'
-            },
-            height:{
-                $spaceunit:1,
-                ini:'10em'
-            },
-            selectable:true,
-            html:{
-                html:1,
-                action:function(v,ov,force){
-                    this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
-                }
-            },
-            overflow:{
-                ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
-                action:function(v){
-                    var node=this.getContainer();
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            xui.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                            if(a.length>1)node.css(xui.str.trim(a[0]),xui.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-                }
-            },
-            tabindex:-1
-        },
-        RenderTrigger:function(){
-            // only div
-            var ns=this;
-            if(ns.box.KEY=="xui.UI.Div")
-                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                    ns.box._applyAutoLoad(this);
-        },
-        Behaviors:{
-            DroppableKeys:['KEY'],
-            PanelKeys:['KEY'],
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
-        },
-        EventHandlers:{
-            onClick:function(profile, e, value){}
-        },
-        _prepareData:function(profile,data){
-            data=arguments.callee.upper.call(this, profile,data);
-            if(xui.isStr(data.overflow))
-                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
-            return data;
-        },
-        _applyAutoLoad:function(prf){
-            var prop=prf.properties, ins=prf.boxing();
-            if(prop.iframeAutoLoad){
-                ins.getContainer().css('overflow','hidden');
-                var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
-                    id="biframe_"+xui.stamp(),
-                    e=xui.browser.ie && xui.browser.ver<9,
-                    ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-
-                _if.url=xui.adjustRes(_if.url,false,true);
-
-                ifr.id=ifr.name=id;
-                if(xui.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
-                prop._frameName=id;
-
-                if(!_if.query)_if.query={};
-                _if.query._rand=xui.rand();
-                ifr.frameBorder='0';
-                ifr.marginWidth='0';
-                ifr.marginHeight='0';
-                ifr.vspace='0';
-                ifr.hspace='0';
-                ifr.allowTransparency='true';
-                ifr.width='100%';
-                ifr.height='100%';
-                ins.getContainer().html("",false);
-                ins.append(ifr);
-
-                if((_if.method||"").toLowerCase()=="post")
-                    xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
-                else
-                    ifr.src=_if.url;
-            }else if(prop.ajaxAutoLoad){
-                var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
-                    options={rspType:"text"};
-                if(!_ajax.query)_ajax.query={};
-                _ajax.query._rand=xui.rand();
-                xui.merge(options, _ajax.options);
-                ins.busy();
-                var node=ins.getContainer();
-                xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                    node.html(rsp,true,true);
-                    ins.free();
-                }, function(err){
-                    node.html("<div>"+err+"</div>",true,false);
-                    ins.free();
-                }, null, options).start();
-            }
-        },
-        _onresize:function(profile,width){
-            if(width)xui.UI._adjustConW(profile, profile.getRoot(), width);
         }
     }
 });

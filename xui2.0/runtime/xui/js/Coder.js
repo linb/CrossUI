@@ -133,7 +133,7 @@ xui.Class("xui.Coder", null,{
             NUMBER : /-?(\d*\.?\d+|\d+\.?\d*)([eE][+-]?\d+|%)?\b/
         },
         isSafeJSON:function(s){
-            return ""===this.replace(s, [
+            return ""===xui.replace(s, [
                 [this.$COM_REG.BLOCK_COMMENT,''],
                 [/\\["\\\/bfnrtu]/,''],
                 [this.$COM_REG.LINE_COMMENT,''],
@@ -146,98 +146,6 @@ xui.Class("xui.Coder", null,{
                 [/[^{,]+:/,''],
                 [/[\[\]\{\}\,]/,'']
             ]);
-        },
-      /*
-       A wrapper for lots regExp string.replace to only once iterator replace
-       You can use it, when
-       1.replace >10
-       2.need protect some regexp
-       3.every long string to replac
-
-       str: will be replace
-       reg, array: [string, string] or [regex, string] or [[],[]]
-       replace: to replace
-       ignore_case: bool, for regexp symble 'i'
-       return : replaced string
-
-       For example:
-       xui.replace("aAa","a","*",true)
-                will return "*A*"
-       xui.replace("aAa","a","*",false)
-                will return "***"
-       xui.replace("aAa","a","*")
-       xui.replace("aAa",/a/,"*")         : "/a/" is OK, but not "/a/g"
-       xui.replace("aAa",["a","*"])
-       xui.replace("aAa",[["a","*"]])
-                will return "***"
-       xui.replace("aAa",[["a","*"],[/A/,"-"]])
-                will return "*-*"
-      Notice: there is a '$0' symbol here, for protect
-        xui.replace("aba",[["ab","$0"],["a","*"]])
-                will return "ab*"
-      here, "ab" will be first matched and be protected to replace by express "a"
-      */
-        replace:function(str, reg, replace, ignore_case){
-            if(!str)return "";
-
-            var i, len,_t, m,n, flag, a1 = [], a2 = [],
-                me=arguments.callee,
-                reg1=me.reg1 || (me.reg1=/\\./g),
-                reg2=me.reg2 || (me.reg2=/\(/g),
-                reg3=me.reg3 || (me.reg3=/\$\d/),
-                reg4=me.reg4 || (me.reg4=/^\$\d+$/),
-                reg5=me.reg5 || (me.reg5=/'/),
-                reg6=me.reg6 || (me.reg6=/\\./g),
-                reg11=me.reg11 || (me.reg11=/(['"])\1\+(.*)\+\1\1$/)
-            ;
-
-            if(!xui.isArr(reg)){reg=[reg,replace]}else{ignore_case=replace}
-            if(!xui.isArr(reg[0])){reg=[reg]};
-            xui.arr.each(reg,function(o){
-                m= typeof o[0]=='string'?o[0]:o[0].source;
-                n= o[1]||"";
-                len = ((m).replace(reg1, "").match(reg2) || "").length;
-                if(typeof n !='function'){
-                    if (reg3.test(n)) {
-                        //if only one paras and valid
-                        if (reg4.test(n)) {
-                            _t = parseInt(n.slice(1),10);
-                            if(_t<=len)n=_t;
-                        }else{
-                            flag = reg5.test(n.replace(reg6, "")) ? '"' : "'";
-                            i = len;
-                            while(i + 1)
-                                n = n.split("$" + i).join(flag + "+a[o+"+ i-- +"]+" + flag);
-
-                            n = new Function("a,o", "return" + flag + n.replace(reg11, "$1") + flag);
-                        }
-                    }
-                }
-                a1.push(m || "^$");
-                a2.push([n, len, typeof n]);
-            });
-
-
-            return str.replace(new RegExp("("+a1.join(")|(")+")", ignore_case ? "gim" : "gm"), function(){
-                var i=1,j=0,args=arguments,p,t;
-                if (!args[0]) return "";
-                while (p = a2[j++]) {
-                    if (t = args[i]) {
-                        switch(p[2]) {
-                            case 'function':
-                                //arguments:
-                                //1: array, all arguments; 
-                                //2: the data position index,  args[i] is $0;
-                                //3: the regexp index
-                                return p[0](args, i, j-1);
-                            case 'number':
-                                return args[p[0] + i];
-                            default:
-                                return p[0];
-                        }
-                    }else{i += p[1]+1;}
-                }
-            });
         },
         /*decode code
         str: source code
@@ -256,7 +164,7 @@ xui.Class("xui.Coder", null,{
                 //for clear space before/after tag
                 arr.push([/[\s]*(<[\w]+[^>]+>)[\s]*/, '$1']);
                 arr.push([/[\s]*(<\/[\w]+>)[\s]*/, '$1']);
-                code = this.replace(code, arr);
+                code = xui.replace(code, arr);
 
                 arr.length=0;
 
@@ -277,7 +185,7 @@ xui.Class("xui.Coder", null,{
                 //for </a>
                 arr.push([/<\/[\w]+>/, function(a,i){return space[--deep] + a[i] + '\n'}]);
 
-                code = this.replace(code, arr, true);
+                code = xui.replace(code, arr, true);
             }else{
                 var arr=[],
                     index1=1,index2=1,index3=1,index4=1,index5=1,index6=1,index7=1,
@@ -288,7 +196,7 @@ xui.Class("xui.Coder", null,{
                 //special chars
                 code=code.replace(/([\x01\x02\x03\x04])/g,"$1-");
                 //1.protect those
-                code=xui.Coder.replace(code,[
+                code=xui.replace(code,[
                     // /**/
                     [reg.BLOCK_COMMENT.source,reverse?'':function(s,i){var ret="\x01d" + index4++ +"\x02"; cache.d[ret]=s[i]; return ret;}],
                     // //
@@ -317,7 +225,7 @@ xui.Class("xui.Coder", null,{
                     xui.arr.insertAny(arr,[/(\d*\.?\d+|\d+\.?\d*)(cm|em|ex|pt|px|%|\:)?/, " $0 "],-1,true);
                 }
                 // prepare space
-                code=xui.Coder.replace(code,arr);
+                code=xui.replace(code,arr);
                 var Brackets={};
                 if(!reverse){
                     arr=[
@@ -341,10 +249,10 @@ xui.Class("xui.Coder", null,{
                         );
                     }
                     // add \n
-                    code=xui.Coder.replace(code,arr);
+                    code=xui.replace(code,arr);
 
                     // add detail
-                    code=xui.Coder.replace(code,[
+                    code=xui.replace(code,[
                         [/ *[\n\r]/.source,'\n'],
                         [/\{\s+\}/.source,'{ }'],
                         [/\[\s+\]/.source,'[ ]'],
@@ -362,7 +270,7 @@ xui.Class("xui.Coder", null,{
                 }
 
                 //restore those protection
-                code=xui.Coder.replace(code,[
+                code=xui.replace(code,[
                     [/[\n\r]+/.source,'\n'],
                     [/( *)(\x01[d]\d+\x02)/.source, function(s,i){s[i+1]=s[i+1]||'';return s[i+1] + cache.d[s[i+2]].replace(/(\n)(\s*)/g,'$1'+s[i+1])}],
                     [/\x03[g]\d+\x04/.source, function(s,i){return cache.g[s[i]].replace(/\s*,\s*/g,','+(reverse?'':' '))}],
@@ -405,7 +313,7 @@ xui.Class("xui.Coder", null,{
 
             a=xui.copy(this._profiles[type]);
             //for clear begin/end, for platform
-            code = this.replace(code, [[/(\r\n|\r)/g, "\n"],[/( +)(\n)/g, "$2"],[/\t/g, "\x04\x04\x04\x04"],[/ /g,'\x04']]);
+            code = xui.replace(code, [[/(\r\n|\r)/g, "\n"],[/( +)(\n)/g, "$2"],[/\t/g, "\x04\x04\x04\x04"],[/ /g,'\x04']]);
 
             var arr=[]; //[[/<[^>]+>[^<]*<\/[^>]+>/,'$0']];
             var f = function(o,s,r){
@@ -462,7 +370,7 @@ xui.Class("xui.Coder", null,{
                 f(o,i);
             });
 
-            code = this.replace(code,arr);
+            code = xui.replace(code,arr);
             code = code.replace(/\x04/g,'&nbsp;');
             code = _encode(code);
             var strR='';

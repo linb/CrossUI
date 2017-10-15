@@ -5,6 +5,24 @@ xui.Class("xui.UI.Label", "xui.UI",{
         var key="xui.UI.SLabel";
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },    
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
+        // calculate the formula, and apply to the control
+        _applyExcelFormula:function(cellsMap){
+            var profile=this.get(0), prop=profile.properties,f,value;
+            if(f = prop.excelCellFormula){
+                value = xui.ExcelFormula.calculate(f, cellsMap);
+                if(xui.isSet(value)){
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                        this.setCaption(value, true);
+                    }
+                }
+           }
+        }
+    },
     Static:{
         Templates:{
             tagName:"label",
@@ -86,7 +104,19 @@ xui.Class("xui.UI.Label", "xui.UI",{
                 action: function(value){
                     this.getSubNode("CAPTION").css('fontWeight', value);
                 }
-            }            
+            },
+            excelCellFormula:{
+                ini:"",
+                action:function(v){
+                    var prf=this,m,
+                        prop=prf.properties;
+                    if(v && xui.ExcelFormula.validate(v)){
+                        if(prf.host && (m=prf.host['xui.Module'])){
+                            m.applyExcelFormula(prf);
+                        }
+                   }
+                }
+            }
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY',ICON:'ICON'},
@@ -98,7 +128,8 @@ xui.Class("xui.UI.Label", "xui.UI",{
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, src){}
+            onClick:function(profile, e, src){},
+            beforeApplyExcelFormula:function(profile, excelCellFormula){}
         },
         _prepareData:function(profile, data){
             data=arguments.callee.upper.call(this, profile,data);

@@ -83,9 +83,9 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\UI\Block.js /b ^
 + %relPath%xui\js\UI\Label.js /b ^
 + %relPath%xui\js\UI\ProgressBar.js /b ^
-+ %relPath%xui\js\UI\CheckBox.js /b ^
 + %relPath%xui\js\UI\Slider.js /b ^
 + %relPath%xui\js\UI\Input.js /b ^
++ %relPath%xui\js\UI\CheckBox.js /b ^
 + %relPath%xui\js\UI\HiddenInput.js /b ^
 + %relPath%xui\js\UI\RichEditor.js /b ^
 + %relPath%xui\js\UI\ComboInput.js /b ^

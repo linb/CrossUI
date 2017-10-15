@@ -746,7 +746,126 @@ xui.Class('xui.Module','xui.absProfile',{
             self.setProperties({});
         },
         iniComponents:function(){},
-        
+
+        // calculate the profileTo's formula, and apply to it
+        applyExcelFormula:function(profileTo){
+            var ns=this,
+                xformula = xui.ExcelFormula,
+                formula = profileTo && profileTo.properties.excelCellFormula,
+                colMax,rowMax,
+                cellsMap={},
+                cell2alias = {}, alias2cell={};
+            if(formula){
+                xui.each(this._ctrlpool, function(prf){
+                    var p = prf.properties,t;
+                    if((t=p.excelCellId) && /^\s*[a-zA-Z]+[\d]+\s*$/.test(t)){
+                        cell2alias[t]=prf.alias;
+                        alias2cell[prf.alias]=t;
+                        t = xformula.toCoordinate(t,0);
+                        colMax=Math.max(colMax, t[0]);
+                        rowMax=Math.max(rowMax, t[1]);
+                    }
+                });
+                var refs = xformula.getRefCells(formula,colMax,rowMax)
+                if(!refs)return ;
+                xui.each(cell2alias,function(o, i){
+                    if( i in refs){
+                        if(!(i in cellsMap)){
+                            cellsMap[i] = ns[o].getExcelCellValue();
+                        }
+                    }
+                });
+                profileTo.boxing()._applyExcelFormula(cellsMap);
+            }
+            return ns;
+        },
+        // calculate all profiles' (or profileFrom's)  formula, and apply to them(it)
+        triggerExcelFormulas:function(profileFrom){
+            var ns=this,
+                formulaCells = {}, cell2alias = {}, alias2cell={},
+                xformula = xui.ExcelFormula,
+                rowMax = 0, colMax = 0,
+                cellId = profileFrom && profileFrom.alias;
+            //1. collection all formula cells
+            xui.each(this._ctrlpool, function(prf){
+                var p = prf.properties,t;
+                if(t=p.excelCellFormula){
+                    formulaCells[prf.alias]=[prf,t];
+                }
+                if((t=p.excelCellId) && /^\s*[a-zA-Z]+[\d]+\s*$/.test(t)){
+                    t.replace(/\s/g,'');
+                    cell2alias[t]=prf.alias;
+                    alias2cell[prf.alias]=t;
+                    t = xformula.toCoordinate(t,0);
+                    colMax=Math.max(colMax, t.col);
+                    rowMax=Math.max(rowMax, t.row);
+                }
+            });
+            // if input cell, must remove itself;
+            if(cellId)delete formulaCells[cellId];
+            if(xui.isEmpty(formulaCells))return;
+
+            //2. collect refs for formulaCells
+            var refs={};
+            xui.each(formulaCells,function(a, alias,hash,hash1){
+                 if(hash = xformula.getRefCells(a[1],colMax,rowMax)){
+                     hash1={};
+                     xui.each(hash,function(o,i){
+                         hash1[cell2alias[i]] = o;
+                     });
+                     refs[alias]=hash1;
+                 }
+            });
+            //3. loop to calculate non-ref cells
+            var count, noFormulaRef, cellsMap={}, coo,
+                changed={}, needRec;
+            if(cellId){
+                changed[cellId]=1;
+            }
+            do{
+                count=0;
+                xui.filter(refs,function(v,alias){
+                    needRec=0;
+                    if(!cellId)needRec=1;
+                    else{
+                        for(var i in v){
+                            if(i in changed){
+                                needRec=1;
+                                break;
+                            }
+                        }
+                    }
+                    // no need to re-calculate
+                    if(!needRec){
+                        return false;
+                    }
+
+                    noFormulaRef=true;
+                     for(var i in v){
+                        if(!cellId && (i in formulaCells)){
+                            noFormulaRef=false;
+                        }else{
+                            if(!(alias2cell[i] in cellsMap)){
+                                cellsMap[alias2cell[i]] = ns[i].getExcelCellValue();
+                            }
+                        }
+                     }
+                     if(noFormulaRef){
+                        // update value
+                        ns[alias]._applyExcelFormula(cellsMap);
+                        if(cellId)changed[alias]=1;
+                        // remove from formulaCells
+                        delete formulaCells[alias];
+                        count++;
+                        return false;
+                     }
+                });
+            }
+            // Avoid circular references
+            while(!xui.isEmpty(formulaCells) && count>0);
+            return ns;
+        },
+
         getProfile:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 

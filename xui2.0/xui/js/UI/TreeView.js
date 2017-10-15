@@ -102,6 +102,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
             
             if(item.type=='split'){
                 item._split='xui-uitem-split';
+                item._splitstyle='margin-left:'+(oitem._deep*p.$subMargin)+'em;';
                 item._ruleDisplay=item._ltagDisplay=item._tglDisplay=item._rtagDisplay=item.imageDisplay=item.mark2Display=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
             }
         },

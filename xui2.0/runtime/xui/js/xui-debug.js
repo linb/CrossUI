@@ -440,6 +440,97 @@ new function(){
             }
             return trimTailZero && value.indexOf(decimalSeparator)!=-1 ? value.replace(new RegExp('['+decimalSeparator+']?0+$'),'') : value;
         },
+        /***
+            A wrapper for lots regExp string.replace to only once iterator replace
+            You can use it, when
+            1.replace >10
+            2.need protect some regexp
+            3.every long string to replac
+
+            str: will be replace
+            reg, array: [string, string] or [regex, string] or [[],[]]
+            replace: to replace
+            ignore_case: bool, for regexp symble 'i'
+            return : replaced string
+
+            For example:
+                xui.replace("aAa","a","*",true)
+                        will return "*A*"
+                xui.replace("aAa","a","*",false)
+                        will return "***"
+                xui.replace("aAa","a","*")
+                xui.replace("aAa",/a/,"*")         : "/a/" is OK, but not "/a/g"
+                xui.replace("aAa",["a","*"])
+                xui.replace("aAa",[["a","*"]])
+                        will return "***"
+                xui.replace("aAa",[["a","*"],[/A/,"-"]])
+                        will return "*-*"
+            Notice: there is a '$0' symbol here, for protect
+                xui.replace("aba",[["ab","$0"],["a","*"]])
+                        will return "ab*"
+                here, "ab" will be first matched and be protected to replace by express "a"
+        ***/
+        replace:function(str, reg, replace, ignore_case){
+            if(!str)return "";
+            var i, len,_t, m,n, flag, a1 = [], a2 = [],
+                me=arguments.callee,
+                reg1=me.reg1 || (me.reg1=/\\./g),
+                reg2=me.reg2 || (me.reg2=/\(/g),
+                reg3=me.reg3 || (me.reg3=/\$\d/),
+                reg4=me.reg4 || (me.reg4=/^\$\d+$/),
+                reg5=me.reg5 || (me.reg5=/'/),
+                reg6=me.reg6 || (me.reg6=/\\./g),
+                reg11=me.reg11 || (me.reg11=/(['"])\1\+(.*)\+\1\1$/)
+            ;
+
+            if(!xui.isArr(reg)){reg=[reg,replace]}else{ignore_case=replace}
+            if(!xui.isArr(reg[0])){reg=[reg]};
+            xui.arr.each(reg,function(o){
+                m= typeof o[0]=='string'?o[0]:o[0].source;
+                n= o[1]||"";
+                len = ((m).replace(reg1, "").match(reg2) || "").length;
+                if(typeof n !='function'){
+                    if (reg3.test(n)) {
+                        //if only one paras and valid
+                        if (reg4.test(n)) {
+                            _t = parseInt(n.slice(1),10);
+                            if(_t<=len)n=_t;
+                        }else{
+                            flag = reg5.test(n.replace(reg6, "")) ? '"' : "'";
+                            i = len;
+                            while(i + 1)
+                                n = n.split("$" + i).join(flag + "+a[o+"+ i-- +"]+" + flag);
+
+                            n = new Function("a,o", "return" + flag + n.replace(reg11, "$1") + flag);
+                        }
+                    }
+                }
+                a1.push(m || "^$");
+                a2.push([n, len, typeof n]);
+            });
+
+
+            return str.replace(new RegExp("("+a1.join(")|(")+")", ignore_case ? "gim" : "gm"), function(){
+                var i=1,j=0,args=arguments,p,t;
+                if (!args[0]) return "";
+                while (p = a2[j++]) {
+                    if (t = args[i]) {
+                        switch(p[2]) {
+                            case 'function':
+                                //arguments:
+                                //1: array, all arguments; 
+                                //2: the data position index,  args[i] is $0;
+                                //3: the regexp index
+                                return p[0](args, i, j-1);
+                            case 'number':
+                                return args[p[0] + i];
+                            default:
+                                return p[0];
+                        }
+                    }else{i += p[1]+1;}
+                }
+            });
+        },
         /*shadow copy for hash/array
         * var a=[]; a.b='b'; a.b will not be copied
         */
@@ -1097,7 +1188,7 @@ xui.merge(xui,{
                             path=xui.getPath('xui.appearance.' +key,'');
                         if(tag){
                             xui.getFileAsync(path+'theme.css', function(rsp){
-                                rsp = xui.Coder.replace(rsp, [
+                                rsp = xui.replace(rsp, [
                                     [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
                                     [/\{[^}]*\}/,'$0'],
                                     [/([^\/{},]+)/, function(a){
@@ -2030,10 +2121,14 @@ new function(){
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
                         case '=':
+                        case 'is':
                             return x===y;
                         case '<>':
+                        case 'is-not':
                         case '!=':
                             return x!==y;
+                        case 'exists':
+                            return xui.isDefined(x);
                         case 'empty':
                             return xui.isEmpty(x);
                         case 'non-empty':
@@ -2397,18 +2492,19 @@ new function(){
                     if(typeof fun=='function')rtn=xui.tryF(fun, args, scope);
                     else if(xui.isHash(fun)){
                         if('onOK' in fun ||'onKO' in fun){
-                            var resumeFun=function(key,args){
-                                if(recursive)return recursive.apply(key,args);
+                            var resumeFun=function(key,args,flag){
+                                if(recursive){
+                                    if(xui.isStr(flag))temp[flag]=true;
+                                    return recursive.apply(key,args);
+                                }
                             };
                             // onOK
                             if('onOK' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
-                               if(resumeFun)resumeFun("okData",arguments);
+                               if(resumeFun)resumeFun("okData",arguments, fun.okFlag);
                             };
                             if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
-                                if(resumeFun)resumeFun("koData",arguments);
+                                if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                             };
-                            // if conditions didn't match, call and return resumeFun
-                            // id condistions matches, return current fun
                             rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun);
                             break;
                         }else
@@ -4864,8 +4960,8 @@ xui.Class("xui.MessageService","xui.absObj",{
                 profile.__gc();
             });
         },
-        postMessage:function(type, message1, message2, message3){
-            xui.publish(type, [message1,message2,message3], null, this);
+        broadcast:function(type, message, callback){
+            xui.publish(type, [message,callback], null, this);
         },
         getParent:xui.Timer.prototype.getParent,
         getChildrenId:xui.Timer.prototype.getChildrenId
@@ -4890,7 +4986,232 @@ xui.Class("xui.MessageService","xui.absObj",{
             asynReceive:false
         },
         EventHandlers:{
-            onMessageReceived:function(profile, message1, message2, message3 ){}
+            onMessageReceived:function(profile, message, callback){}
+        }
+    }
+});
+
+/*** xui.ExcelFormula.calculate
+    * formula :
+    *      "FIXED(SUM(1:1, AVERAGE(A:A, B3)) + ROUND(B5)*C6 + MAX(A1:B2, B3) + MIN(10, B3)/ 1000, 2)"
+    *      "FIXED(SUM(1, AVERAGE(1, 3)) + ROUND(3.3)*1 + MAX(4, 2) + MIN(10, 5)/ 3, 2)" => 11.67
+    *      "CHOOSE(2,'a','b','c')" => 'b'
+    * cellsMap :
+    *      true: force to return something without cell value maps
+    *      {}: returns the result of the formula with cell value maps
+***/
+xui.Class("xui.ExcelFormula",null,{
+    Static:{
+        MAXCOUNT:256,
+        // support functions: +,-,*,/,%,SUM, AVERAGE, MIN, MAX, ROUND, FIXED, CHOOSE 
+        Supported : (function(){
+                var flatten = function(args){
+                    var arr=[], t, args = xui.toArr(args), i=0,l=args.length;
+                    for(;i<l;i++){
+                        if(xui.isArr(t=args[i])) arr=arr.concat(t);
+                        else arr.push(t);
+                    }
+                    return arr;
+                };
+                return {
+                    SUM:function(){ 
+                        var result = 0, arr = flatten(arguments), i = 0, l=arr.length, v, parsed;
+                        for (; i < l; ++i) {
+                            v = arr[i];
+                            if (typeof v === 'number') {
+                                result += v;
+                            } else if (typeof v === 'string') {
+                                parsed = parseFloat(v);
+                                if(!xui.isNaN(parsed))
+                                    result += parsed;
+                            }
+                        }
+                        return result;
+                    },
+                    AVERAGE:function(){
+                        var result = 0, arr = flatten(arguments), i=0, l=arr.length, v, parsed;
+                        for (; i < l; ++i) {
+                            v = arr[i];
+                            if (typeof v === 'number') {
+                                result += v;
+                            } else if (typeof v === 'string') {
+                                parsed = parseFloat(v);
+                                if(!xui.isNaN(parsed))
+                                    result += parsed;
+                            }
+                        }
+                        return result/l;
+                    },
+                    MIN:function(){return Math.min.apply(Math,flatten(arguments));},
+                    MAX:function(){return Math.max.apply(Math,flatten(arguments));},
+                    ROUND:function(){return Math.round.apply(Math, arguments);},
+                    FIXED:function(){return xui.toFixedNumber.apply(xui, arguments);},
+                    CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; }
+                };
+        })(),
+        toColumnChr : function(num) {
+            var s = "";
+            num = num - 1;
+            while (num >= 0) {
+                s = String.fromCharCode(num % 26 + 97) + s;
+                num = Math.floor(num / 26) - 1;
+            }
+            return s.toUpperCase();
+        },
+        toColumnNum : function(chr) {
+            chr = chr.split('');
+            var base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(''),
+                i=0, j=chr.length - 1, result = 0;
+
+            for (; i < chr.length; i += 1, j -= 1) {
+                result += Math.pow(base.length, j) * (base.indexOf(chr[i]) + 1);
+            }
+            return result;
+        },
+        toCoordinate : function(cell, offset){
+            var alpha = /[A-Z]+/,
+                num = /[0-9]+/,
+                cellU = cell.toUpperCase();
+            if(!offset&&offset!==0)offset=-1;
+            return {
+                col:this.toColumnNum(cellU.match(alpha)[0]) + offset, 
+                row:parseInt(cellU.match(num)[0], 10) + offset
+            };
+        },
+        toCellId : function(col, row, offset){
+            return this.toColumnChr(col+(offset||1)) + (row+(offset||1));
+        },
+        getCellRanges : function(cellFrom, cellEnd, colLimited, rowLimited){
+            var ns=this,
+                alpha = /[A-Z]+/,
+                num = /[0-9]+/;
+
+            if(!alpha.test(cellFrom))cellFrom = "A" + cellFrom;
+            if(!num.test(cellFrom))cellFrom = cellFrom + "1";
+            if(!alpha.test(cellEnd))cellEnd = ns.toColumnChr(colLimited||ns.MAXCOUNT) + cellEnd;
+            if(!num.test(cellEnd))cellEnd = cellEnd + (rowLimited||ns.MAXCOUNT);
+
+            var cellStart = ns.toCoordinate(cellFrom,0),
+                cellStop = ns.toCoordinate(cellEnd,0),
+                colStart = cellStart.col,
+                colStop = cellStop.col,
+                rowStart = cellStart.row,
+                rowStop = cellStop.row,
+                cellRange = [],
+                row,
+                col;
+
+            if(colStart < colStop){
+                for (col = colStart; col <= colStop; col++) {
+                    if(rowStart < rowStop){
+                        for (row = rowStart; row <= rowStop; row++) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }else{
+                        for (row = rowStart; row >= rowStop; row--) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }
+                }
+            }else{
+                for (col = colStart; col >= colStop; col--) {
+                    if(rowStart < rowStop){
+                        for (row = rowStart; row <= rowStop; row++) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }else{
+                        for (row = rowStart; row >= rowStop; row--) {
+                            cellRange.push(ns.toColumnChr(col) + row);
+                        }
+                    }
+                }
+            }
+            return cellRange;
+        },
+        validate : function(formula){
+            var fake = function(){return 1;},
+                str=formula.replace(/\?/g,'1'),
+                reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
+            str = xui.replace(str, [
+                [/"(\\.|[^"\\])*"/,'1'],
+                [/'(\\.|[^'\\])*'/,'1'],
+                [/([a-zA-Z\d]+\s*\:\s*[a-zA-Z\d]+)/g,'1'],
+                [/([a-zA-Z]+[\d]+)/g,'1']
+            ]);
+            if(/[a-zA-Z_$]/.test(str.replace(reg,'')))
+                return false;
+            str = str.replace(reg,'fake');
+
+            try{
+                eval(str);
+            }catch(e){
+                if(xui.isDefined(window.console) && typeof(console.log)=='function')
+                    console.log("#VALUE! ",  formula, str , e);
+                return false;
+            }
+            return true;
+        },
+        getRefCells : function(formula, colLimited, rowLimited){
+            return this._parse (formula, false, colLimited, rowLimited);
+        },
+        parse : function(formula){
+            return this._parse (formula, null);
+        },        
+        calculate : function(formula, cellsMap, colLimited, rowLimited){
+            return this._parse (formula, cellsMap||true, colLimited, rowLimited);
+        },
+        _parse : function(formula, cellsMap, colLimited, rowLimited){
+            var ret, ns=this,
+                Supported = ns.Supported,
+                RANGE = function(cellsMap, cellStart, cellStop){
+                    var arr = ns.getCellRanges(cellStart, cellStop, colLimited, rowLimited),i=0,l=arr.length;
+                    for(;i<l;i++)
+                        arr[i] = cellsMap[arr[i]];
+                    return arr;
+                },
+                doParse = function(formula, CELLS){
+                    var cellHash,rtn,str=formula,
+                    f=function(a){
+                        if(a[8]){
+                            if(cellHash){
+                                if(!(a[8] in cellHash))cellHash[a[8]]=1;//ns.toCoordinate(a[8],-1);
+                            }
+                            return 'CELLS["' + a[8] + '"]';
+                        }else if(a[6] && a[7]){
+                            if(cellHash){
+                                var arr = ns.getCellRanges(a[6], a[7], colLimited, rowLimited);
+                                for(var i=0,l=arr.length;i<l;i++)
+                                    if(!(arr[i] in cellHash))cellHash[arr[i]]=1;//ns.toCoordinate(arr[i],-1);
+                            }
+                            return 'RANGE(CELLS, "' + a[6] + '","' + a[7]+'")';
+                        }else if(a[10] && a[11]){
+                            return 'Supported["'+a[10] +'"]'+a[11];
+                        }
+                    };
+                    if(cellsMap===false)cellHash={};
+                    if(!ns.validate(str))
+                        return false;
+
+                    str = xui.replace(str, [
+                        [/"(\\.|[^"\\])*"/,'$0'],
+                        [/'(\\.|[^'\\])*'/,'$0'],
+                        [/([a-zA-Z\d]+)\s*\:\s*([a-zA-Z\d]+)/, f],
+                        [/[a-zA-Z]+[\d]+/g,f],
+                        [/([A-Z]+)(\s*\()/,f]
+                    ]);
+                    try{
+                        rtn = (cellsMap===true && (cellsMap={})) || xui.isHash(cellsMap) ? eval(str) : cellsMap===false ? cellHash : str;
+                    }catch(e){
+                        if(xui.isDefined(window.console) && typeof(console.log)=='function')
+                            console.log("#VALUE! ",  formula, str , e);
+                    }finally{
+                        return rtn;
+                    }
+                };
+
+            ret = doParse(formula, cellsMap);
+
+            return xui.isNaN(ret)?false:ret;
         }
     }
 });xui.Class("xui.APICaller","xui.absObj",{
@@ -14364,7 +14685,126 @@ xui.Class('xui.Module','xui.absProfile',{
             self.setProperties({});
         },
         iniComponents:function(){},
-        
+
+        // calculate the profileTo's formula, and apply to it
+        applyExcelFormula:function(profileTo){
+            var ns=this,
+                xformula = xui.ExcelFormula,
+                formula = profileTo && profileTo.properties.excelCellFormula,
+                colMax,rowMax,
+                cellsMap={},
+                cell2alias = {}, alias2cell={};
+            if(formula){
+                xui.each(this._ctrlpool, function(prf){
+                    var p = prf.properties,t;
+                    if((t=p.excelCellId) && /^\s*[a-zA-Z]+[\d]+\s*$/.test(t)){
+                        cell2alias[t]=prf.alias;
+                        alias2cell[prf.alias]=t;
+                        t = xformula.toCoordinate(t,0);
+                        colMax=Math.max(colMax, t[0]);
+                        rowMax=Math.max(rowMax, t[1]);
+                    }
+                });
+                var refs = xformula.getRefCells(formula,colMax,rowMax)
+                if(!refs)return ;
+                xui.each(cell2alias,function(o, i){
+                    if( i in refs){
+                        if(!(i in cellsMap)){
+                            cellsMap[i] = ns[o].getExcelCellValue();
+                        }
+                    }
+                });
+                profileTo.boxing()._applyExcelFormula(cellsMap);
+            }
+            return ns;
+        },
+        // calculate all profiles' (or profileFrom's)  formula, and apply to them(it)
+        triggerExcelFormulas:function(profileFrom){
+            var ns=this,
+                formulaCells = {}, cell2alias = {}, alias2cell={},
+                xformula = xui.ExcelFormula,
+                rowMax = 0, colMax = 0,
+                cellId = profileFrom && profileFrom.alias;
+            //1. collection all formula cells
+            xui.each(this._ctrlpool, function(prf){
+                var p = prf.properties,t;
+                if(t=p.excelCellFormula){
+                    formulaCells[prf.alias]=[prf,t];
+                }
+                if((t=p.excelCellId) && /^\s*[a-zA-Z]+[\d]+\s*$/.test(t)){
+                    t.replace(/\s/g,'');
+                    cell2alias[t]=prf.alias;
+                    alias2cell[prf.alias]=t;
+                    t = xformula.toCoordinate(t,0);
+                    colMax=Math.max(colMax, t.col);
+                    rowMax=Math.max(rowMax, t.row);
+                }
+            });
+            // if input cell, must remove itself;
+            if(cellId)delete formulaCells[cellId];
+            if(xui.isEmpty(formulaCells))return;
+
+            //2. collect refs for formulaCells
+            var refs={};
+            xui.each(formulaCells,function(a, alias,hash,hash1){
+                 if(hash = xformula.getRefCells(a[1],colMax,rowMax)){
+                     hash1={};
+                     xui.each(hash,function(o,i){
+                         hash1[cell2alias[i]] = o;
+                     });
+                     refs[alias]=hash1;
+                 }
+            });
+            //3. loop to calculate non-ref cells
+            var count, noFormulaRef, cellsMap={}, coo,
+                changed={}, needRec;
+            if(cellId){
+                changed[cellId]=1;
+            }
+            do{
+                count=0;
+                xui.filter(refs,function(v,alias){
+                    needRec=0;
+                    if(!cellId)needRec=1;
+                    else{
+                        for(var i in v){
+                            if(i in changed){
+                                needRec=1;
+                                break;
+                            }
+                        }
+                    }
+                    // no need to re-calculate
+                    if(!needRec){
+                        return false;
+                    }
+
+                    noFormulaRef=true;
+                     for(var i in v){
+                        if(!cellId && (i in formulaCells)){
+                            noFormulaRef=false;
+                        }else{
+                            if(!(alias2cell[i] in cellsMap)){
+                                cellsMap[alias2cell[i]] = ns[i].getExcelCellValue();
+                            }
+                        }
+                     }
+                     if(noFormulaRef){
+                        // update value
+                        ns[alias]._applyExcelFormula(cellsMap);
+                        if(cellId)changed[alias]=1;
+                        // remove from formulaCells
+                        delete formulaCells[alias];
+                        count++;
+                        return false;
+                     }
+                });
+            }
+            // Avoid circular references
+            while(!xui.isEmpty(formulaCells) && count>0);
+            return ns;
+        },
+
         getProfile:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
@@ -21710,7 +22150,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         _adjustCSS:function(css, prevId, tag){
             prevId=prevId||"";
             if(tag){
-                css = xui.Coder.replace(css, [
+                css = xui.replace(css, [
                     [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
                     [/\{[^}]*\}/,'$0'],
                     [/([^\/{},]+)/, function(a){
@@ -24937,6 +25377,10 @@ xui.Class("xui.absValue", "xui.absObj",{
 
                     if(!prop.dirtyMark)
                         box.setValue(value,false,'uiv',cv || triggerEventOnly);
+
+                    if(prop.excelCellId && box.notifyExcel){
+                        box.notifyExcel(false);
+                    }
                 }
             });
             return this;
@@ -25219,6 +25663,12 @@ xui.Class("xui.UI.Widget", "xui.UI",{
 });
 
 xui.Class("xui.UI.Link", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         Appearances:{
             KEY:{
@@ -25274,6 +25724,12 @@ xui.Class("xui.UI.Link", "xui.UI",{
 });
 
 xui.Class("xui.UI.Element", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         _objectProp:{attributes:1},
         Templates:{
@@ -25355,6 +25811,12 @@ xui.Class("xui.UI.Element", "xui.UI",{
     }
 });
 xui.Class("xui.UI.Icon", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         Templates:{
             className:'xui-node xui-wrapper {_className}  {picClass}',
@@ -25717,6 +26179,12 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
 });
 
 xui.Class("xui.UI.Span", "xui.UI",{
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
     Static:{
         Templates:{
             className:'{_className}',
@@ -25786,8 +26254,169 @@ xui.Class("xui.UI.Span", "xui.UI",{
     }
 });
 
+xui.Class("xui.UI.Div", "xui.UI",{
+    Initialize:function(){
+        // compitable
+        xui.UI.Pane = xui.UI.Div;
+        var key="xui.UI.Pane";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+        this.$activeClass$='xui.UI.Div';
+    },
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        }
+    },
+    Static:{
+        Appearances:{
+            KEY:{
+               // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
+                outline:xui.browser.gek?'none':null, 
+                zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
+                background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
+                'line-height':'auto'
+            }
+        },
+        Templates:{
+            tagName:'div',
+            className:'xui-uicontainer {_className}',
+            style:'{_style};{_panelstyle};{_overflow};',
+            //for firefox div focus bug: outline:none; tabindex:'-1'
+            tabindex: '{tabindex}',
+            text:'{html}'+xui.UI.$childTag
+        },
+        DataModel:{
+            iframeAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.box._applyAutoLoad(this);
+                }
+            },
+            ajaxAutoLoad:{
+                ini:"",
+                action:function(){
+                    this.box._applyAutoLoad(this);
+                }
+            },
+            width:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            height:{
+                $spaceunit:1,
+                ini:'10em'
+            },
+            selectable:true,
+            html:{
+                html:1,
+                action:function(v,ov,force){
+                    this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
+                }
+            },
+            overflow:{
+                ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
+                combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
+                action:function(v){
+                    var node=this.getContainer();
+                    if(v){
+                        if(v.indexOf(':')!=-1){
+                            xui.arr.each(v.split(/\s*;\s*/g),function(s){
+                                var a=s.split(/\s*:\s*/g);
+                            if(a.length>1)node.css(xui.str.trim(a[0]),xui.str.trim(a[1]||''));
+                            });
+                            return;
+                        }
+                    }
+                    node.css('overflow',v||'');
+                }
+            },
+            tabindex:-1
+        },
+        RenderTrigger:function(){
+            // only div
+            var ns=this;
+            if(ns.box.KEY=="xui.UI.Div")
+                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
+                    ns.box._applyAutoLoad(this);
+        },
+        Behaviors:{
+            DroppableKeys:['KEY'],
+            PanelKeys:['KEY'],
+            onClick:function(profile, e, src){
+                var p=profile.properties;
+                if(p.disabled)return false;
+                if(profile.onClick)
+                    return profile.boxing().onClick(profile, e, src);
+            }
+        },
+        EventHandlers:{
+            onClick:function(profile, e, value){}
+        },
+        _prepareData:function(profile,data){
+            data=arguments.callee.upper.call(this, profile,data);
+            if(xui.isStr(data.overflow))
+                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
+            return data;
+        },
+        _applyAutoLoad:function(prf){
+            var prop=prf.properties, ins=prf.boxing();
+            if(prop.iframeAutoLoad){
+                ins.getContainer().css('overflow','hidden');
+                var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
+                    id="biframe_"+xui.stamp(),
+                    e=xui.browser.ie && xui.browser.ver<9,
+                    ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
+
+                _if.url=xui.adjustRes(_if.url,false,true);
+
+                ifr.id=ifr.name=id;
+                if(xui.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
+                prop._frameName=id;
+
+                if(!_if.query)_if.query={};
+                _if.query._rand=xui.rand();
+                ifr.frameBorder='0';
+                ifr.marginWidth='0';
+                ifr.marginHeight='0';
+                ifr.vspace='0';
+                ifr.hspace='0';
+                ifr.allowTransparency='true';
+                ifr.width='100%';
+                ifr.height='100%';
+                ins.getContainer().html("",false);
+                ins.append(ifr);
+
+                if((_if.method||"").toLowerCase()=="post")
+                    xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
+                else
+                    ifr.src=_if.url;
+            }else if(prop.ajaxAutoLoad){
+                var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
+                    options={rspType:"text"};
+                if(!_ajax.query)_ajax.query={};
+                _ajax.query._rand=xui.rand();
+                xui.merge(options, _ajax.options);
+                ins.busy();
+                var node=ins.getContainer();
+                xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
+                    node.html(rsp,true,true);
+                    ins.free();
+                }, function(err){
+                    node.html("<div>"+err+"</div>",true,false);
+                    ins.free();
+                }, null, options).start();
+            }
+        },
+        _onresize:function(profile,width){
+            if(width)xui.UI._adjustConW(profile, profile.getRoot(), width);
+        }
+    }
+});
+
 xui.Class("xui.UI.CSSBox","xui.UI.Span",{
     Instance:{
+        fireClickEvent:null,        
         adjustDock:null,
         draggable:null,
         busy:null,
@@ -25978,160 +26607,6 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
     }
 });
 
-xui.Class("xui.UI.Div", "xui.UI",{
-    Initialize:function(){
-        // compitable
-        xui.UI.Pane = xui.UI.Div;
-        var key="xui.UI.Pane";
-        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
-        this.$activeClass$='xui.UI.Div';
-    },
-    Static:{
-        Appearances:{
-            KEY:{
-               // overflow:(xui.browser.gek && !xui.browser.gek3)?'auto':null,
-                outline:xui.browser.gek?'none':null, 
-                zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
-                background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
-                'line-height':'auto'
-            }
-        },
-        Templates:{
-            tagName:'div',
-            className:'xui-uicontainer {_className}',
-            style:'{_style};{_panelstyle};{_overflow};',
-            //for firefox div focus bug: outline:none; tabindex:'-1'
-            tabindex: '{tabindex}',
-            text:'{html}'+xui.UI.$childTag
-        },
-        DataModel:{
-            iframeAutoLoad:{
-                ini:"",
-                action:function(){
-                    this.box._applyAutoLoad(this);
-                }
-            },
-            ajaxAutoLoad:{
-                ini:"",
-                action:function(){
-                    this.box._applyAutoLoad(this);
-                }
-            },
-            width:{
-                $spaceunit:1,
-                ini:'10em'
-            },
-            height:{
-                $spaceunit:1,
-                ini:'10em'
-            },
-            selectable:true,
-            html:{
-                html:1,
-                action:function(v,ov,force){
-                    this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
-                }
-            },
-            overflow:{
-                ini:xui.browser.deviceType=="touchOnly"?'auto':undefined,
-                combobox:['','visible','hidden','scroll','auto','overflow-x:hidden;overflow-y:auto','overflow-x:auto;overflow-y:hidden'],
-                action:function(v){
-                    var node=this.getContainer();
-                    if(v){
-                        if(v.indexOf(':')!=-1){
-                            xui.arr.each(v.split(/\s*;\s*/g),function(s){
-                                var a=s.split(/\s*:\s*/g);
-                            if(a.length>1)node.css(xui.str.trim(a[0]),xui.str.trim(a[1]||''));
-                            });
-                            return;
-                        }
-                    }
-                    node.css('overflow',v||'');
-                }
-            },
-            tabindex:-1
-        },
-        RenderTrigger:function(){
-            // only div
-            var ns=this;
-            if(ns.box.KEY=="xui.UI.Div")
-                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                    ns.box._applyAutoLoad(this);
-        },
-        Behaviors:{
-            DroppableKeys:['KEY'],
-            PanelKeys:['KEY'],
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
-        },
-        EventHandlers:{
-            onClick:function(profile, e, value){}
-        },
-        _prepareData:function(profile,data){
-            data=arguments.callee.upper.call(this, profile,data);
-            if(xui.isStr(data.overflow))
-                data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
-            return data;
-        },
-        _applyAutoLoad:function(prf){
-            var prop=prf.properties, ins=prf.boxing();
-            if(prop.iframeAutoLoad){
-                ins.getContainer().css('overflow','hidden');
-                var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
-                    id="biframe_"+xui.stamp(),
-                    e=xui.browser.ie && xui.browser.ver<9,
-                    ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-
-                _if.url=xui.adjustRes(_if.url,false,true);
-
-                ifr.id=ifr.name=id;
-                if(xui.isHash(prop.iframeAutoLoad))prop.iframeAutoLoad.frameName=id;
-                prop._frameName=id;
-
-                if(!_if.query)_if.query={};
-                _if.query._rand=xui.rand();
-                ifr.frameBorder='0';
-                ifr.marginWidth='0';
-                ifr.marginHeight='0';
-                ifr.vspace='0';
-                ifr.hspace='0';
-                ifr.allowTransparency='true';
-                ifr.width='100%';
-                ifr.height='100%';
-                ins.getContainer().html("",false);
-                ins.append(ifr);
-
-                if((_if.method||"").toLowerCase()=="post")
-                    xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
-                else
-                    ifr.src=_if.url;
-            }else if(prop.ajaxAutoLoad){
-                var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
-                    options={rspType:"text"};
-                if(!_ajax.query)_ajax.query={};
-                _ajax.query._rand=xui.rand();
-                xui.merge(options, _ajax.options);
-                ins.busy();
-                var node=ins.getContainer();
-                xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                    node.html(rsp,true,true);
-                    ins.free();
-                }, function(err){
-                    node.html("<div>"+err+"</div>",true,false);
-                    ins.free();
-                }, null, options).start();
-            }
-        },
-        _onresize:function(profile,width){
-            if(width)xui.UI._adjustConW(profile, profile.getRoot(), width);
-        }
-    }
-});
-
 xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
     Instance:{
         destroy:function(ignoreEffects, purgeNow){
@@ -26302,6 +26777,10 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
         ns.prototype._prepareItems  = function(a){return a;};
     },
     Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
         }
@@ -28384,6 +28863,24 @@ xui.Class("xui.UI.Label", "xui.UI",{
         var key="xui.UI.SLabel";
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },    
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
+        // calculate the formula, and apply to the control
+        _applyExcelFormula:function(cellsMap){
+            var profile=this.get(0), prop=profile.properties,f,value;
+            if(f = prop.excelCellFormula){
+                value = xui.ExcelFormula.calculate(f, cellsMap);
+                if(xui.isSet(value)){
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                        this.setCaption(value, true);
+                    }
+                }
+           }
+        }
+    },
     Static:{
         Templates:{
             tagName:"label",
@@ -28465,7 +28962,19 @@ xui.Class("xui.UI.Label", "xui.UI",{
                 action: function(value){
                     this.getSubNode("CAPTION").css('fontWeight', value);
                 }
-            }            
+            },
+            excelCellFormula:{
+                ini:"",
+                action:function(v){
+                    var prf=this,m,
+                        prop=prf.properties;
+                    if(v && xui.ExcelFormula.validate(v)){
+                        if(prf.host && (m=prf.host['xui.Module'])){
+                            m.applyExcelFormula(prf);
+                        }
+                   }
+                }
+            }
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY',ICON:'ICON'},
@@ -28477,7 +28986,8 @@ xui.Class("xui.UI.Label", "xui.UI",{
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, src){}
+            onClick:function(profile, e, src){},
+            beforeApplyExcelFormula:function(profile, excelCellFormula){}
         },
         _prepareData:function(profile, data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -28648,158 +29158,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             }
         }
     }
-});xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
-    Initialize:function(){
-        // compitable
-        xui.UI.SCheckBox = xui.UI.CheckBox;
-        var key="xui.UI.SCheckBox";
-        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
-    },
-    Instance:{
-        activate:function(){
-            this.getSubNode('FOCUS').focus();
-            return this;
-        },
-        _setCtrlValue:function(value){
-            return this.each(function(profile){
-               profile.getSubNode('MARK').tagClass('-checked', !!value);
-            });
-        },
-        //update UI face
-        _setDirtyMark:function(){
-            return arguments.callee.upper.apply(this,['CAPTION']);
-        }
-    },
-    Static:{
-        Templates:{
-            className:'{_className} ',
-            style:'{_style} {_align}',
-            FOCUS:{
-                tabindex: '{tabindex}',
-                MARK:{
-                    $order:0,
-                    className:'{_iconPosCls} xuifont',
-                    $fonticon:'xui-uicmd-check'
-                },
-                ICON:{
-                    $order:1,
-                    className:'xuicon {imageClass}  {picClass}',
-                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
-                    text:'{iconFontCode}' 
-                },
-                CAPTION:{
-                    $order:2,
-                    text:'{caption}'
-                }
-            }
-        },
-        Appearances:{
-            KEY:{
-                overflow:'visible'
-            },
-            MARK:{
-               cursor:'pointer',
-               margin: '0 .334em 0 .1667em',
-               'vertical-align':'middle'
-            },
-            FOCUS:{
-                cursor:'default',
-                'vertical-align':'middle',
-                padding:'.1667em 0'
-            },
-            CAPTION:{
-                'vertical-align':xui.browser.ie6?'baseline':'middle',
-                'font-size':'1em'
-            }
-        },
-        Behaviors:{
-            HoverEffected:{KEY:'MARK',ICON:'ICON'},
-            ClickEffected:{KEY:'MARK'},
-            NavKeys:{FOCUS:1},
-            onClick:function(profile, e, src){
-                var p=profile.properties,b=profile.boxing();
-                if(p.disabled)return false;
-                if(p.readonly)return false;
-                b.setUIValue(!p.$UIvalue,null,null,'click');
-                if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
-                profile.getSubNode('FOCUS').focus();
-            },
-            FOCUS:{
-                onKeydown:function(profile, e, src){
-                    var key = xui.Event.getKey(e).key;
-                    if(key ==' ' || key=='enter'){
-                        profile.getRoot().onClick(true);
-                        return false;
-                    }
-                }
-            }
-        },
-        DataModel:{
-            value:false,
-            hAlign:{
-                ini:'left',
-                listbox:['left','center','right'],
-                action: function(v){
-                    this.getRoot().css('textAlign',v);
-                }
-            },
-            iconPos:{
-                ini:'left',
-                listbox:['left','right'],
-                action:function(v){
-                    this.getSubNode("MARK").removeClass('xui-float-left xui-float-right').addClass('xui-float-'+v);
-                }
-            },
-            image:{
-                format:'image',
-                action: function(v){
-                    xui.UI.$iconAction(this);
-                }
-            },
-            imagePos:{
-                action: function(value){
-                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
-                }
-            },
-            imageBgSize:{
-                action: function(value){
-                    this.getSubNode('ICON').css('backgroundSize', value||'');
-                }
-            },
-            imageClass: {
-                ini:'',
-                action:function(v,ov){
-                    xui.UI.$iconAction(this, 'ICON', ov);
-                }
-            },
-            iconFontCode:{
-                action:function(v){
-                    xui.UI.$iconAction(this);
-                }
-            },
-            caption:{
-                ini:undefined,
-                action: function(v){
-                    v=(xui.isSet(v)?v:"")+"";
-                    this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
-                }
-            }
-        },
-        EventHandlers:{
-            onChecked:function(profile, e, value){}
-        },
-        _prepareData:function(profile){
-            var data=arguments.callee.upper.call(this, profile);
-            data._align = 'text-align:'+data.hAlign+';';
-            data._iconPosCls = 'xui-float-'+data.iconPos;
-            return data;
-        },
-        _ensureValue:function(profile, value){
-            return value==="0"?false:!!value;
-        }
-    }
-});
-xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
+});xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
     Instance:{
         _setCtrlValue:function(value){
             return this.each(function(profile){
@@ -29550,6 +29909,47 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 }
                 box._setTB(profile._inValid);
             });
+        },
+        // notify the modification to fake excel ( in module )
+        notifyExcel:function(refreshAll){
+            return this.each(function(prf){
+                var prop=prf.properties, ID='triggerExcelFormulas:';
+                if(prop.excelCellId){
+                    if(prf.host && prf.host['xui.Module']){
+                        ID=ID+prf.host.xid;
+                        if(refreshAll===false){
+                            if(!xui.resetRun.exists(ID))
+                                 if(prf && prf.host)prf.host.triggerExcelFormulas(prf);
+                        }else
+                            xui.resetRun(ID,function(){
+                                if(prf && prf.host)prf.host.triggerExcelFormulas(null);
+                            });
+                    }
+               }
+            });
+        },
+        // get control's fake cexcel cell value
+        getExcelCellValue:function(){
+            var profile=this.get(0), prop=profile.properties,value;
+            if(prop.excelCellId){
+                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
+                if(!xui.isSet(value)){
+                    value = this.getUIValue();
+                }
+           }
+            return value;
+        },
+        // calculate the formula, and apply to the control
+        _applyExcelFormula:function(cellsMap){
+            var profile=this.get(0), prop=profile.properties,f,value;
+            if(f = prop.excelCellFormula){
+                value = xui.ExcelFormula.calculate(f, cellsMap);
+                if(xui.isSet(value)){
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                        this.setUIValue(value, true);
+                    }
+                }
+           }
         }
     },
     Initialize:function(){
@@ -30053,6 +30453,24 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         value=value.$xid;
                     this.properties.tipsBinder = value +'';
                 }
+            },
+            excelCellId:{
+                ini:"",
+                action:function(){
+                    this.boxing().notifyExcel(false);
+                }
+            },
+            excelCellFormula:{
+                ini:"",
+                action:function(v){
+                    var prf=this,m,
+                        prop=prf.properties;
+                    if(v && xui.ExcelFormula.validate(v)){
+                        if(prf.host && (m=prf.host['xui.Module'])){
+                            m.applyExcelFormula(prf);
+                        }
+                   }
+                }
             }
         },
         EventHandlers:{
@@ -30066,7 +30484,10 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             
             onLabelClick:function(profile, e, src){},
             onLabelDblClick:function(profile, e, src){},
-            onLabelActive:function(profile, e, src){}
+            onLabelActive:function(profile, e, src){},
+
+            onGetExcelCellValue:function(profile, excelCellId){},
+            beforeApplyExcelFormula:function(profile, excelCellFormula){}
         },
         _prepareData:function(profile){
             var data={},prop=profile.properties,t
@@ -30129,6 +30550,8 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 ns.boxing().setReadonly(true,true);
             if(p.tipsBinder)
                 ns.boxing().setTipsBinder(p.tipsBinder,true);
+            if(p.excelCellId)
+                ns.boxing().notifyExcel();
             //add event for cut/paste text
             var ie=xui.browser.ie,
                 src=ns.getSubNode('INPUT').get(0),
@@ -30356,7 +30779,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             
             $hborder=$vborder=box._borderW() / 2;
             
-            // caculate by px
+            // calculate by px
             if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
@@ -30419,7 +30842,177 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             }
         }
     }
-});xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
+});xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
+    Initialize:function(){
+        // compitable
+        xui.UI.SCheckBox = xui.UI.CheckBox;
+        var key="xui.UI.SCheckBox";
+        xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
+    },
+    Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
+        activate:function(){
+            this.getSubNode('FOCUS').focus();
+            return this;
+        },
+        _setCtrlValue:function(value){
+            return this.each(function(profile){
+               profile.getSubNode('MARK').tagClass('-checked', !!value);
+            });
+        },
+        //update UI face
+        _setDirtyMark:function(){
+            return arguments.callee.upper.apply(this,['CAPTION']);
+        },
+        notifyExcel:xui.UI.Input.prototype.notifyExcel,
+        // get control's fake cexcel cell value
+        getExcelCellValue:xui.UI.Input.prototype.getExcelCellValue
+    },
+    Static:{
+        Templates:{
+            className:'{_className} ',
+            style:'{_style} {_align}',
+            FOCUS:{
+                tabindex: '{tabindex}',
+                MARK:{
+                    $order:0,
+                    className:'{_iconPosCls} xuifont',
+                    $fonticon:'xui-uicmd-check'
+                },
+                ICON:{
+                    $order:1,
+                    className:'xuicon {imageClass}  {picClass}',
+                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                    text:'{iconFontCode}' 
+                },
+                CAPTION:{
+                    $order:2,
+                    text:'{caption}'
+                }
+            }
+        },
+        Appearances:{
+            KEY:{
+                overflow:'visible'
+            },
+            MARK:{
+               cursor:'pointer',
+               margin: '0 .334em 0 .1667em',
+               'vertical-align':'middle'
+            },
+            FOCUS:{
+                cursor:'default',
+                'vertical-align':'middle',
+                padding:'.1667em 0'
+            },
+            CAPTION:{
+                'vertical-align':xui.browser.ie6?'baseline':'middle',
+                'font-size':'1em'
+            }
+        },
+        Behaviors:{
+            HoverEffected:{KEY:'MARK',ICON:'ICON'},
+            ClickEffected:{KEY:'MARK'},
+            NavKeys:{FOCUS:1},
+            onClick:function(profile, e, src){
+                var p=profile.properties,b=profile.boxing();
+                if(p.disabled)return false;
+                if(p.readonly)return false;
+                b.setUIValue(!p.$UIvalue,null,null,'click');
+                if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
+                profile.getSubNode('FOCUS').focus();
+            },
+            FOCUS:{
+                onKeydown:function(profile, e, src){
+                    var key = xui.Event.getKey(e).key;
+                    if(key ==' ' || key=='enter'){
+                        profile.getRoot().onClick(true);
+                        return false;
+                    }
+                }
+            }
+        },
+        DataModel:{
+            value:false,
+            hAlign:{
+                ini:'left',
+                listbox:['left','center','right'],
+                action: function(v){
+                    this.getRoot().css('textAlign',v);
+                }
+            },
+            iconPos:{
+                ini:'left',
+                listbox:['left','right'],
+                action:function(v){
+                    this.getSubNode("MARK").removeClass('xui-float-left xui-float-right').addClass('xui-float-'+v);
+                }
+            },
+            image:{
+                format:'image',
+                action: function(v){
+                    xui.UI.$iconAction(this);
+                }
+            },
+            imagePos:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundPosition', value||'center');
+                }
+            },
+            imageBgSize:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundSize', value||'');
+                }
+            },
+            imageClass: {
+                ini:'',
+                action:function(v,ov){
+                    xui.UI.$iconAction(this, 'ICON', ov);
+                }
+            },
+            iconFontCode:{
+                action:function(v){
+                    xui.UI.$iconAction(this);
+                }
+            },
+            caption:{
+                ini:undefined,
+                action: function(v){
+                    v=(xui.isSet(v)?v:"")+"";
+                    this.getSubNode('CAPTION').html(xui.adjustRes(v,true));
+                }
+            },
+            excelCellId:{
+                ini:"",
+                action:function(){
+                    this.boxing().notifyExcel(false);
+                }
+            }
+        },
+        EventHandlers:{
+            onChecked:function(profile, e, value){},
+            onGetExcelCellValue:function(profile, excelCellId){}
+        },
+        RenderTrigger:function(){
+            var ns=this,p=ns.properties;
+            if(p.excelCellId)
+                ns.boxing().notifyExcel();
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            data._align = 'text-align:'+data.hAlign+';';
+            data._iconPosCls = 'xui-float-'+data.iconPos;
+            return data;
+        },
+        _ensureValue:function(profile, value){
+            return value==="0"?false:!!value;
+        }
+    }
+});
+xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
     Instance:{
         activate:function(){
             return this;
@@ -40574,10 +41167,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             $order:0,
                             tabindex: '{_tabindex}',
                             className:'xui-uitembg  xui-showfocus  {itemClass} {cls_group} {cls_fold} {_split} {disabled} {readonly}',
-                            style:'{itemStyle}',
+                            style:'{itemStyle};{_splitstyle}',
                             RULER:{
                                 $order:2,
-                                style:'{_ruleDisplay}{rulerStyle}',
+                                style:'{_ruleDisplay};{rulerStyle}',
                                 text:'{innerIcons}'
                             },
                             TOGGLE:{
@@ -41450,6 +42043,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
             
             if(item.type=='split'){
                 item._split='xui-uitem-split';
+                item._splitstyle='margin-left:'+(oitem._deep*p.$subMargin)+'em;';
                 item._ruleDisplay=item._ltagDisplay=item._tglDisplay=item._rtagDisplay=item.imageDisplay=item.mark2Display=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
             }
         },
@@ -44200,6 +44794,170 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
         },
+        // notify the grid's modification to fake excel ( in module )
+        notifyExcel:xui.UI.Input.prototype.notifyExcel,
+        // get grid's fake cexcel cell value
+        getExcelCellValue:function(){
+            var profile=this.get(0), prop=profile.properties,f,refs,coo,value,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
+            if(prop.excelCellId && (f = prop.excelCellValueFormula)){
+                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
+                colMax = prop.header.length;
+                // only for first level
+                rowMax = prop.rows.length;
+
+                if(!xui.isSet(value)){
+                    if(xformula.validate(f) && (refs  = xformula.getRefCells(f, colMax, rowMax))){
+                        cellsMap={};
+                        xui.each(refs,function(v,i){
+                                coo = xformula.toCoordinate(i);
+                                tcell=prop.rows[coo.row].cells[coo.col];
+                                // onGetExcelCellValue    
+                                cellsMap[i] = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, tcell, i)) 
+                                    || tcell.value;
+                        });
+                        value = xformula.calculate(f, cellsMap,colMax,rowMax);
+                    }
+                }
+                return value;
+            }
+            return null;
+        },
+        // calculate the cellTo's formula, and apply to the cell
+        // only for first level
+        applyCellFormula:function(cellTo, dirtyMark, triggerEvent){
+            return this.each(function(prf){
+                var tg=prf.box,  formula, j ,i, needUpdate,t2,cellsMap={},coo,
+                    prop = prf.properties,
+                    rows=prop.rows,
+                    // only for first level
+                    colMax = xui.arr.indexOf(prop.header, cellTo._col),
+                    rowMax = xui.arr.indexOf(rows, cellTo._row),
+                    xformula = xui.ExcelFormula;
+                if(formula = tg._getCellFormula(prf, cellTo, colMax+1,rowMax+1)){
+                    var refs = xformula.getRefCells(formula,colMax,rowMax)
+                    if(!refs)return ;
+                    xui.each(refs,function(v,i){
+                        coo = xformula.toCoordinate(i);
+                        tcell = rows[coo.row].cells[coo.col];
+                        // onGetFormulaValue    
+                        cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
+                            || tcell.value;
+                    });
+                     t2=xformula.calculate(formula, cellsMap,colMax,rowMax);
+                     if(t2!==cellTo.value){
+                        needUpdate = [cellTo._serialId,t2,cellTo, formula];
+                        if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate)){}else{
+                            tg._updCell(prf, needUpdate[0], {value:needUpdate[1]}, dirtyMark, triggerEvent, true);
+                        }
+                        if(prf.afterApplyFormulas)
+                            prf.afterApplyFormulas(prf, [needUpdate]);
+                     }
+                }
+            });
+        },
+        // calculate all cells' (or cellFrom's)  formula, and apply to them(it)
+        // only for first level
+        triggerFormulas:function(cellFrom, dirtyMark, triggerEvent){
+            return this.each(function(prf){
+                var tg=prf.box,  cellId, 
+                    prop=prf.properties, 
+                    rows=prop.rows,
+                    // only for first level
+                    rowMax =rows.length,
+                    colMax = prop.header.length,
+                    xformula=xui.ExcelFormula,
+                    formulaCells={}, formula, tcell;
+                //1. collection all formula cells
+                xui.arr.each(prop.rows, function(row,i){
+                    xui.arr.each(row.cells,function(c,j){
+                        if(c===cellFrom)cellId=xformula.toCellId(j,i);
+                        if(formula = tg._getCellFormula(prf, c, j+1, i+1)){
+                            formulaCells[xformula.toCellId(j,i)]=[c,formula];
+                        }
+                    });
+                });
+                // if input cell, must remove itself;
+                if(cellId)delete formulaCells[cellId];
+                if(xui.isEmpty(formulaCells))return;
+
+                //2. collect refs for formulaCells
+                var refs={};
+                xui.each(formulaCells,function(a, id){
+                     if(a = xformula.getRefCells(a[1],colMax,rowMax))
+                         refs[id]=a;
+                });
+
+                //3. loop to calculate non-ref cells
+                var count, noFormulaRef, cellsMap={}, coo, needUpdate=[], t1,t2,
+                    changed={}, needRec;
+                if(cellId){
+                    changed[cellId]=1;
+                }
+                do{
+                    count=0;
+                    xui.filter(refs,function(v,k){
+                        needRec=0;
+                        if(!cellId)needRec=1;
+                        else{
+                            for(var i in v){
+                                if(i in changed){
+                                    needRec=1;
+                                    break;
+                                }
+                            }
+                        }
+                        // no need to re-calculate
+                        if(!needRec){
+                            return false;
+                        }
+
+                        noFormulaRef=true;
+                         for(var i in v){
+                            if(!cellId && (i in formulaCells)){
+                                noFormulaRef=false;
+                            }else{
+                                if(!(i in cellsMap)){
+                                    coo = xformula.toCoordinate(i);
+                                    tcell = rows[coo.row].cells[coo.col];
+                                    // onGetFormulaValue    
+                                    cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
+                                        || tcell.value;
+                                }
+                            }
+                         }
+                         if(noFormulaRef){
+                             t1=formulaCells[k];
+                             t2=xformula.calculate(t1[1], cellsMap,colMax,rowMax);
+                             if(t2!==t1[0].value){
+                                 // keep update value
+                                needUpdate.push([t1[0]._serialId, t2, t1[0], t1[1]]);
+                                if(cellId)changed[k]=1;
+                             }
+                            // remove from formulaCells
+                            delete formulaCells[k];
+                            count++;
+                            return false;
+                         }
+                    });
+                }
+                // Avoid circular references
+                while(!xui.isEmpty(formulaCells) && count>0);
+                
+                // update cell by order
+                for(var i=0,l=needUpdate.length;i<l;i++){
+                    if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate[i])){}else{
+                        tg._updCell(prf, needUpdate[i][0], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
+                    }
+                }
+                // [[cell servialid, cell value, cell, fomula]]
+                if(prf.afterApplyFormulas)
+                    prf.afterApplyFormulas(prf, needUpdate);
+
+                if(prop.excelCellId && prop.excelCellValueFormula){
+                    prf.boxing().notifyExcel(false) ;
+                }
+            });
+        },
         /*insert rows to dom
         arr is formatted properties
         pid,base are item id
@@ -45613,10 +46371,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return map;
         },
 
-        updateCellByRowCol:function(rowId, colId, options, dirtyMark, triggerEvent){
+        updateCellByRowCol:function(rowId, colId, options, dirtyMark, triggerEvent, triggerFormula){
             var t,self=this,con=self.constructor;
             if(t=con._getCellId(self.get(0), rowId, colId))
-                con._updCell(self.get(0), t, options, dirtyMark, triggerEvent);
+                con._updCell(self.get(0), t, options, dirtyMark, triggerEvent, triggerFormula);
             else{
                 var row=self.getRowbyRowId(rowId),header=self.getHeader('min'),col;
                 if(row&&row.cells){
@@ -45635,7 +46393,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 col=parseInt(arr[1],10);
             return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
         },
-        updateCell:function(cellId, options, dirtyMark, triggerEvent){
+        updateCell:function(cellId, options, dirtyMark, triggerEvent, triggerFormula){
             var self=this,profile=this.get(0);
             xui.each(profile.cellMap,function(o){
                 if(o.id && o.id===cellId){
@@ -45643,7 +46401,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return false;
                 }
             });
-            self.constructor._updCell(profile,cellId,options, dirtyMark, triggerEvent);
+            self.constructor._updCell(profile,cellId,options, dirtyMark, triggerEvent, triggerFormula);
             return self;
         },
         editCellbyRowCol:function(rowId, colId){
@@ -47925,7 +48683,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // checkbox is special for editor
                         if(!disabled && !readonly && type=='checkbox')
                             if(editable){
-                                box._updCell(profile, cell, !cell.value, p.dirtyMark, true);
+                                box._updCell(profile, cell, !cell.value, p.dirtyMark, true, true);
 
                                 profile.box._trycheckrowdirty(profile,cell);
 
@@ -48667,6 +49425,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 }
             },
+            excelCellId:{
+                ini:"",
+                action:function(){
+                    this.boxing().notifyExcel(false);
+                }
+            },
+            excelCellValueFormula:"",
             hotRowNumber:'[*]',
             hotRowCellCap:'(*)',
             hotRowRequired:'',
@@ -48742,7 +49507,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src, type){},
             onEditorClick:function(profile, cell, proEditor, type, src){},
-            beforeUnitUpdated:function(profile, cell, proEditor, type){}
+            beforeUnitUpdated:function(profile, cell, proEditor, type){},
+
+            // onGetGridExcelFormulaValue
+            onGetFormulaValue:function(profile, cell, cellId){},
+            // beforeApplyGridExcelFormula
+            beforeApplyFormula:function(profile, dataArr){},
+            // afterApplyGridExcelFormula
+            afterApplyFormulas:function(profile, dataArrs){},
+
+            onGetExcelCellValue:function(profile, excelCellId){}
         },
         RenderTrigger:function(){
             var ns=this, 
@@ -48791,6 +49565,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                        (getPro(ns, o, "editMode")=="inline" || getPro(ns, o, "type")=='dropbutton' ))
                         box._editCell(ns,o);
             });
+
+            if(prop.excelCellId)
+                ns.boxing().notifyExcel();
         },
         LayoutTrigger:function(){
             var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
@@ -50055,7 +50832,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(xui.isNumb(colId))colId=xui.get(profile.properties.header,[colId,"id"]);
             return xui.get(profile.rowMap,[profile.rowMap2[rowId], '_cells',colId]);
         },
-        _updCell:function(profile, cellId, options, dirtyMark, triggerEvent){
+        _updCell:function(profile, cellId, options, dirtyMark, triggerEvent, triggerFormula){
             var box=profile.box,
                 prop=profile.properties,
                 pdm=prop.dirtyMark,
@@ -50118,6 +50895,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                     if(editor)editor.setValue(cell.value,true,'editorini');
+                    // formula
+                    if(triggerFormula!==false)
+                        xui.resetRun(profile.key+":"+profile.$xid,function(){
+                            if(profile&&profile.box)profile.boxing().triggerFormulas(cell, 'updatecell');
+                        });
                 }
                 if(('caption' in options) && editor && editor.setCaption){
                     editor.setCaption(options.caption||null,true);
@@ -50129,7 +50911,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.afterCellUpdated)
                     profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext);
             }
-            
         },
         _ensureValue:function(profile,value){
             if(profile.properties.selMode=='multi'||profile.properties.selMode=='multibycheckbox'){
@@ -50252,6 +51033,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             //after event
             if(profile.afterRowActive)profile.boxing().afterRowActive(profile, targetRow);
+        },
+        _getCellFormula:function(profile, cell, col, row){
+            var t, p=profile.properties;
+            return (cell&&(t=cell.formula))? t
+                    : (cell&&(t=cell._row)&&(t=t.formula)) ? t.replace(/\?/g, col)
+                    : ((t=p.rowOptions)&&(t=t.formula)) ? t.replace(/\?/g, col)
+                    : (cell&&(t=cell._col)&&(t=t.formula)) ? t.replace(/\?/g, row)
+                    : ((t=p.colOptions)&&(t=t.formula)) ? t.replace(/\?/g, row)
+                    :  null ;
         },
         getCellOption:function(profile, cell, key){
             var t=cell,p=profile.properties;
@@ -50661,7 +51451,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     .beforeUnitUpdated(function(editorPrf,v){
                         if(profile.beforeUnitUpdated&&false===profile.boxing().beforeUnitUpdated(profile, cell, editorPrf, v))
                             return false;
-                        profile.box._updCell(profile, cell, {value:cell.value, unit: v},profile.properties.dirtyMark,true);
+                        profile.box._updCell(profile, cell, {value:cell.value, unit: v},profile.properties.dirtyMark,true,true);
                     })
                     .afterUIValueSet(function(editorPrf,oV,nV,force,tag){
                         var type=getPro('type'),_$caption;
@@ -50701,7 +51491,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cell, options, editor, tag, 'cell'))){
 
-                            grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true);
+                            grid._updCell(profile, cellId, options, profile.properties.dirtyMark, true, true);
     
                             if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter')
                                 xui.tryF(editor.undo,[true],editor);
@@ -50984,6 +51774,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 if(callback)callback();
             });
+            // formula
+            if(trigger!='render' && trigger!='rowhandler' && trigger!='foldrow' && trigger!='expandrow' && trigger!='setcol' && trigger!='resize')
+                xui.resetRun(profile.key+":"+profile.$xid,function(){
+                    if(profile&&profile.box)profile.boxing().triggerFormulas(null, trigger);
+                });
         },
         _adjustHeader:function(arr){
             var a=xui.copy(arr),m;
@@ -51041,7 +51836,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
 
             var layer=0;
-            // caculate layers
+            // calculate layers
             for(var j=0,m=a.length,grp,o;j<m;j++){
                 grp=a[j];
                 for(var i=grp.from;i<=grp['to'];i++){
@@ -51471,7 +52266,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rh = h2.height(),
                 rr = b12.height();
 
-             // caculate by px
+             // calculate by px
             width=width?profile.$px(width,null, true):width;
             height=height?profile.$px(height, null, true):height;
 

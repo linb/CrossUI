@@ -98,6 +98,27 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"得到随机字符串",
             $rtn:"String"
         },
+        replace:{
+            $desc:"高级字符串替换",
+            $rtn:"String",
+            $paras:[
+                "str [必需参数] : string, 目标串",
+                "reg [必需参数] : Array: [string, string] 或 [RegExp, string]",
+                "replace [可选参数] : String, 替换串",
+                "ignore_case [可选参数] : Boolean, 指示是否忽略大小写."
+            ],
+            $snippet:[
+                'alert(xui.replace("aAa","a","*",true));'+
+                'alert(xui.replace("aAa","a","*",false));'+
+                'alert(xui.replace("aAa","a","*"));'+
+                'alert(xui.replace("aAa",/a/,"*"));'+
+                'alert(xui.replace("aAa",["a","*"]));'+
+                'alert(xui.replace("aAa",[["a","*"]]));',
+                'alert(xui.replace("aAa",[["a","*"],[/A/,"-"]]))',
+                '//Use "$0" to protect "ab" in the string: \n alert(xui.replace("aba",[["ab","$0"],["a","*"]]))',
+                'alert(xui.replace("aba ab a",[["ab","$0"],["a",function(s,i){return s[i].toUpperCase();}]]))'
+            ]
+        },
         arr:{
             $desc:"数组的功能函数集合",
             fastSortObject:{
@@ -1740,14 +1761,13 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
-            postMessage:{
+            broadcast:{
                 $desc:"发布消息到指定接收类型的消息服务",
                 $rtn:"undefined",
                 $paras:[
                     "type [必需参数]: String, 指定接收类型，如果空表示发送到所有接收类型",
-                    "message1 [必需参数]: Object, 消息 1",
-                    "message2 [可选参数]: Object, 消息 2",
-                    "message3 [可选参数]: Object, 消息 3"
+                    "message [必需参数]: Object, 消息",
+                    "callback [可选参数]: Function, 回调"
                 ]
             },
             destroy:{
@@ -1782,9 +1802,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"当接收到消息的时候调用",
                 $paras:[
                     "profile : xui.Profile",
-                    "message1 : Object, 消息 1",
-                    "message2 : Object, 消息 2",
-                    "message3 : Object, 消息 3"
+                    "message : Object, 消息 1",
+                    "callback : Function,  回调"
                 ]
             },
         }
@@ -5594,6 +5613,20 @@ xui.set(xui.Locale,["cn","app"], {
                     "args [可选参数]: Array, 钩子函数的回调参数"
                 ]
             },
+            applyExcelFormula:{
+                $desc:"重算模拟Excel单元格的公式",
+                $rtn:"[self]",
+                $paras:[
+                    "profileTo [可选参数] : xui.UIProfile. 模拟Excel单元格的控件配置对象"
+                ]
+            },
+            triggerExcelFormulas:{
+                $desc:"触发模拟Excel系统的公式",
+                $rtn:"[self]",
+                $paras:[
+                    "profileFrom [可选参数] : xui.UIProfile. 只触发由这个特定控件可能引起重算的公式"
+                ]
+            },
             create:{
                 $desc:"使用异步方式生成Module对象",
                 $paras:[
@@ -6626,27 +6659,6 @@ xui.set(xui.Locale,["cn","app"], {
                 "var str=xui.Coder.formatAll('.cls{left:0;top:0}','css'); xui.UI.Dialog.alert('xui.Coder', str)",
                 "var str=xui.Coder.formatAll('<div><p>1</p><p>2</p><p><span>3</span>4</p></div>','html'); xui.UI.Dialog.alert('xui.Coder', str)",
                 "var str=xui.Coder.formatAll(' foreach ($d as $k => $v){print $k.$v;}','php',['plain']); xui.UIshowMo.alert('xui.Coder', str)"
-            ]
-        },
-        replace:{
-            $desc:"高级字符串替换",
-            $rtn:"String",
-            $paras:[
-                "str [必需参数] : string, 目标串",
-                "reg [必需参数] : Array: [string, string] 或 [RegExp, string]",
-                "replace [可选参数] : String, 替换串",
-                "ignore_case [可选参数] : Boolean, 指示是否忽略大小写."
-            ],
-            $snippet:[
-                'alert(xui.Coder.replace("aAa","a","*",true));'+
-                'alert(xui.Coder.replace("aAa","a","*",false));'+
-                'alert(xui.Coder.replace("aAa","a","*"));'+
-                'alert(xui.Coder.replace("aAa",/a/,"*"));'+
-                'alert(xui.Coder.replace("aAa",["a","*"]));'+
-                'alert(xui.Coder.replace("aAa",[["a","*"]]));',
-                'alert(xui.Coder.replace("aAa",[["a","*"],[/A/,"-"]]))',
-                '//Use "$0" to protect "ab" in the string: \n alert(xui.Coder.replace("aba",[["ab","$0"],["a","*"]]))',
-                'alert(xui.Coder.replace("aba ab a",[["ab","$0"],["a",function(s,i){return s[i].toUpperCase();}]]))'
             ]
         },
         applyById:{
@@ -9493,6 +9505,10 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
             getIframeAutoLoad:{
                 $desc:"获取用iframe自动加载html（可以是异域）的地址属性",
                 $rtn:"String"
@@ -9568,6 +9584,10 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
             getCaption:{
                 $desc:"获取超链接的文本内容",
                 $rtn:"String",
@@ -9908,6 +9928,21 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
+            getExcelCellFormula:{
+                $desc:"获得模拟Excel单元格的公式",
+                $rtn:"String"
+            },
+            setExcelCellFormula:{
+                $desc:"设置模拟Excel单元格的公式",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force                ]
+            },
             getCaption :{
                 $desc:"获取文字",
                 $rtn:"String",
@@ -10274,6 +10309,10 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
             activate:{
                 $desc:"激活控件(获得焦点)",
                 $rtn:"[self]",
@@ -10283,6 +10322,17 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){btn.activate();},1000);"+
                     "}"
                 ]
+            },
+            getExcelCellId:{
+                $desc:"获得模拟Excel单元格的id",
+                $rtn:"String"
+            },
+            setExcelCellId:{
+                $desc:"设置模拟Excel单元格的id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force                ]
             },
             getCaption :{
                 $desc:"获取按题文字",
@@ -10630,6 +10680,28 @@ xui.set(xui.Locale,["cn","app"], {
             },
             setPlaceholder:{
                 $desc:"设置HTML 5  空白提示字符串",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force                ]
+            },
+            getExcelCellId:{
+                $desc:"获得模拟Excel单元格的id",
+                $rtn:"String"
+            },
+            setExcelCellId:{
+                $desc:"设置模拟Excel单元格的id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force                ]
+            },
+            getExcelCellFormula:{
+                $desc:"获得模拟Excel单元格的公式",
+                $rtn:"String"
+            },
+            setExcelCellFormula:{
+                $desc:"设置模拟Excel单元格的公式",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
@@ -15477,6 +15549,10 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
             getHtml:{
                 $desc:"获取对象的内部html代码",
                 $rtn:"String"
@@ -15543,6 +15619,10 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
             getHtml:{
                 $desc:"获取对象的内部html代码",
                 $rtn:"String"
@@ -15586,6 +15666,10 @@ xui.set(xui.Locale,["cn","app"], {
         },
         prototype:{
             KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
             getMaxHeight:{
                 $desc:"获取图片的最大高度",
                 $rtn:"Number",
@@ -16428,6 +16512,17 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){o.editCellbyRowCol('row2','col2')},1000);"+
                     "}"
                 ]
+            },
+            getExcelCellId:{
+                $desc:"获得模拟Excel单元格的id",
+                $rtn:"String"
+            },
+            setExcelCellId:{
+                $desc:"设置模拟Excel单元格的id",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force                ]
             },
             getValueSeparator:{
                 $desc:"获取字符串值的分隔符(只对selMode为multi或multibycheckbox的情况有效).默认为“;”",
@@ -19116,7 +19211,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'hAlign':'水平对齐方式',
             'fontColor':'字体颜色',
             'fontSize':'字体大小',
-            'fontWeight':'字体粗细'
+            'fontWeight':'字体粗细',
+            'excelCellFormula':'模拟Excel公式'
         },
         'xui_UI_ProgressBar' : {
             'captionTpl':'标题模板',
@@ -19150,7 +19246,9 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'type':'组合框类型',
             'maxlength':'最大长度',
             'multiLines':'多行输入',
-            'tipsBinder':'工具提示绑定'
+            'tipsBinder':'工具提示绑定',
+            'excelCellId':'模拟Excel单元格',
+            'excelCellFormula':'模拟Excel公式'
         },
         'xui_UI_ComboInput' : {
             'value':'控件值',
@@ -19228,7 +19326,8 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'imagePos':'图像背景偏移',
             'imageClass':'图像CSS类',
             'iconFontCode':'图像字体码',
-            'caption':'按钮标题文字'
+            'caption':'按钮标题文字',
+            'excelCellId':'模拟Excel单元格'
         },
         'xui_UI_Element' : {
             'nodeName':'元素节点名',
@@ -19507,7 +19606,9 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'treeMode':'树状模式',
             'hotRowMode':'热行模式',
             'hotRowNumber':'热行行号',
-            'noCtrlKey':'无Ctrl辅助多选'
+            'noCtrlKey':'无Ctrl辅助多选',
+            'excelCellId':'模拟Excel单元格',
+            'excelCellValueFormula':'模拟Ecxel值的输出公式'
         },
         'xui_UI_TagEditor' : {
             'borderType':'边框类型',

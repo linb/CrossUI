@@ -5,6 +5,10 @@ xui.Class("xui.UI.Image", "xui.UI",{
         ns.prototype._prepareItems  = function(a){return a;};
     },
     Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
         }
