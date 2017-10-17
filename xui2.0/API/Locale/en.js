@@ -1754,7 +1754,9 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"undefined",
                 $paras:[
                     "type [Required]: String, If it was not specified, the message will be published to all MessageServices",
-                    "message [Required]: Object, message ",
+                    "msg1 [Optional]: Object, message 1",
+                    "msg2 [Optional]: Object, message 2",
+                    "msg3 [Optional]: Object, message 3",
                     "callback [Optional]: Functin, callback"
                 ]
             },
@@ -1790,8 +1792,10 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"When it received the message",
                 $paras:[
                     "profile : xui.Profile",
-                    "message [Required]: Object, message ",
-                    "callback [Optional]: Functin, callback"
+                    "msg1: Object, message object 1",
+                    "msg2: Object, message object 2",
+                    "msg3: Object, message object 3",
+                    "callback: Functin, callback"
                 ]
             },
         }
@@ -5333,7 +5337,9 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"Post message to a Module",
             $paras:[
                 "cls [Required] : String, the Module's class name",
-                "message [Required] : Object, the message",
+                "msg1 [Required]: Object, message 1",
+                "msg2 [Optional]: Object, message 2",
+                "msg3 [Optional]: Object, message 3",
                 "sender [Optional] : Object, the message sender"
             ]
         },
@@ -5342,7 +5348,9 @@ xui.set(xui.Locale,["en","app"], {
             postMessage:{
                 $desc:"Post message to a Module",
                 $paras:[
-                    "message [Required] : Object, the message",
+                    "msg1 [Required]: Object, message 1",
+                    "msg2 [Optional]: Object, message 2",
+                    "msg3 [Optional]: Object, message 3",
                     "sender [Optional] : Object, the message sender"
                 ]
             },
@@ -5550,7 +5558,9 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "key [Required] : String",
-                    "args [Optional]: Array,  arguments for callback function"
+                    "msg1 [Optional]: Object,  argument 1 for callback function",
+                    "msg2 [Optional]: Object,  argument 2 for callback function",
+                    "msg3 [Optional]: Object,  argument 3 for callback function"
                 ]
             },
             applyExcelFormula:{
@@ -5734,7 +5744,9 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:'Fired when receive a message',
                 $paras:[
                     'module : xui.Module',
-                    'message : Object, the message',
+                    "msg1: Object, message object 1",
+                    "msg2: Object, message object 2",
+                    "msg3: Object, message object 3",
                     'source: Object, the message source'
                 ]
             },
@@ -7434,6 +7446,84 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             }, 
+
+            getFormValues:{
+                $desc:"Gets the form field-value map",
+                $rtn:"Hash",
+                $paras:[
+                    "dirtiedOnly [Optional] : Boolean, to determine whether return dirtied controls only",
+                    "subId [Optional]: String, id",
+                    "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]"
+                ]
+            },
+            setFormValues:{
+                $desc:"Sets values to the form fields",
+                $rtn:"Hash",
+                $paras:[
+                    "values [Optional] : Hash, key/value pairs",
+                    "subId [Optional]: String, id"
+                ]
+            },
+            getFormElements:{
+                $desc:"Gets the form fields",
+                $rtn:"xui.absValue",
+                $paras:[
+                    "dirtiedOnly [Optional] : Boolean, to determine whether return dirtied controls only",
+                    "subId [Optional]: String, id"
+                ]
+            },
+            isDirtied:{
+                $desc:"To determine whether the form is dirty or not",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [Optional]: String, id"
+                ]
+            },
+            checkValid:{
+                $desc:"To check if there exists any invalid field",
+                $rtn:"Boollean",
+                $paras:[
+                    "dirtiedOnly [Optional] : Boolean, to determine whether check dirtied controls only",
+                    "subId [Optional]: String, id"
+                ]
+            },
+            checkRequired:{
+                $desc:"To check if there exists any empty required field",
+                $rtn:"Boollean",
+                $paras:[
+                    "dirtiedOnly [Optional] : Boolean, to determine whether check dirtied controls only",
+                    "subId [Optional]: String, id"
+                ]
+            },
+            formClear:{
+                $desc:"Empty all fields value and field controls",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [Optional]: String, id"
+                ]
+            },
+            formReset:{
+                $desc:"Resets all field controls to original values",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [Optional]: String, id"
+                ]
+            },
+            updateFormValues:{
+                $desc:"To update all fields' value according to field controls",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [Optional]: String, id"
+                ]
+            },
+            formSubmit:{
+                $desc:"To submit the form",
+                $rtn:"Boollean",
+                $paras:[
+                    "dirtiedOnly [Optional] : Boolean, to determine whether submit dirtied controls only",
+                    "subId [Optional]: String, id"
+                ]
+            },
 
             onHotKeydown:{
                 $desc:"Fired when keyboard is down",

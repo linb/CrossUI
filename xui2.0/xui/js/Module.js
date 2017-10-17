@@ -367,16 +367,15 @@ xui.Class('xui.Module','xui.absProfile',{
         getHooks:function(key){
             return key?this.hooks[key]:this.hooks;
         },
-        notifyHooks:function(key, args,scope){
+        notifyHooks:function(key, msg1, msg2, msg3){
             var ns=this, hook, hooks=ns.hooks;
             if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
-                if(!xui.isArr(args))args=[args];
-                xui.tryF(hook, args, scope||ns);
+                xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
             }
             return ns;
         },
-        postMessage:function(message, sender){
-           this.fireEvent('onMessage',  [this, message, sender]);
+        postMessage:function(msg1, msg2, msg3, sender){
+           this.fireEvent('onMessage',  [this, msg1, msg2, msg3, sender]);
         },
         serialize:function(rtnString, keepHost, children){
             var t,m,
@@ -1308,11 +1307,11 @@ xui.Class('xui.Module','xui.absProfile',{
             for(var i in c)
                 if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
-        postMessage:function(cls, message, sender){
+        postMessage:function(cls, msg1, msg2, msg3,  sender){
            var m = xui.SC.get(cls),hash;
             if(m && m['xui.Module'])
                 xui.arr.each(m._cache,function(o){
-                     m.fireEvent('onMessage',  [m,message, sender]);
+                     m.fireEvent('onMessage',  [m, msg1, msg2, msg3, sender]);
                 });
         },
         destroyAll:function(ignoreEffects, purgeNow){
@@ -1463,7 +1462,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         $EventHandlers:{
             onFragmentChanged:function(module, fragment, init, newAdd){},
-            onMessage:function(module, message, source){},
+            onMessage:function(module, msg1, msg2, msg3,  source){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},

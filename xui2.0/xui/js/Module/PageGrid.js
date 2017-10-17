@@ -5,22 +5,11 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
- 
+            
             append(
-                xui.create("xui.UI.Icon")
-                .setHost(host,"ctl_sbutton1")
-                .setTips("Refresh")
-                .setTop("0.5833333333333334em")
-                .setWidth("1.6666666666666667em")
-                .setRight("0.8333333333333334em")
-                .setZIndex(1002)
-                .setImageClass("xuicon xui-refresh")
-                .onClick("_ctl_sbutton1_onclick")
-                .setCustomStyle({
-                    "KEY":{
-                        "cursor":"pointer"
-                    }
-                })
+                xui.create("xui.MessageService")
+                .setHost(host,"xui_msgs1")
+                .onMessageReceived("_xui_msgs1_onmessagereceived")
             );
             
             append(
@@ -35,7 +24,8 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
                 .setValue("")
                 .afterUIValueSet("_grid_afteruivalueset")
                 .afterRowActive("_grid_afterrowactive")
-                .onDblclickCell("_grid_ondblclickcell")
+                .onClickRow("_grid_onclickrow")
+                .onDblclickRow("_grid_ondblclickrow")
             );
             
             append(
@@ -81,6 +71,24 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
                 .onPageSet("_pagebar_onpageset")
             );
             
+            
+            append(
+                xui.create("xui.UI.Icon")
+                .setHost(host,"ctl_sbutton1")
+                .setTips("Refresh")
+                .setTop("0.5833333333333334em")
+                .setWidth("1.6666666666666667em")
+                .setRight("0.8333333333333334em")
+                .setZIndex(1002)
+                .setImageClass("xuicon xui-refresh")
+                .onClick("_ctl_sbutton1_onclick")
+                .setCustomStyle({
+                    "KEY":{
+                        "cursor":"pointer"
+                    }
+                })
+            );
+            
             return children;
             // ]]Code created by CrossUI RAD Studio
         },
@@ -114,40 +122,50 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
                 }
             ]);
         },
-        _grid_ondblclickcell:function (profile, cell, e, src){
+        _grid_onclickrowonClickRow:function(profile, row, e, src){
+        },
+        _grid_ondblclickrow:function (profile, row, e, src){
             var ns = this, 
                 grid=profile.boxing(),
-                row=grid.getRowbyCell(cell),
                 rowId=row.id;
 
             ns._openForm(rowId, grid.getRowMap(rowId));
         },
-        _openForm:function(recordId, recordMap){
+        // output
+        addRow:function(recordId, fields){
+            ns=this;
+            //console.log(recordId, fields);
+            ns.grid.insertRows(fields,null,null,true);
+        },
+        updateRow:function(recordId, fields){
+            ns=this;
+            //console.log(recordId, fields);
+            xui.each(fields,function(v, k){
+                ns.grid.updateCellByRowCol(recordId, k, v, false, false);
+            });
+        },
+        deleteRows:function(ids){
+            ns=this;
+            ns.grid.removeRows(ids);
+            ns.toolbar.updateItem("delete",{disabled:true});
+            ns.toolbar.updateItem("open",{disabled:true});
+            xui.message("You deleted "+ids.length+" record(s)!");
+            xui.Dom.free();
+        },
+        _openForm:function(recordId, fields){
             var ns = this;
             var prop={};
             if(xui.isSet(recordId)){
-                ns.fireEvent("onOpenRecord",[recordId,recordMap,function(recordId, data){
-                    //console.log(recordId, data);
-                    xui.each(data,function(v, k){
-                        ns.grid.updateCellByRowCol(recordId, k, v, false, false);
-                    });
-                }]);
+                ns.fireEvent("onOpenRecord",[recordId,fields,ns.updateRow]);
             }else{
-                ns.fireEvent("onCreateRecords",[function(recordId, data){
-                    //console.log(recordId, data);
-                    ns.grid.insertRows(data,null,null,true);
-                }]);
+                ns.fireEvent("onCreateRecords",[ns.addRow, ns.updateRow]);
             }
         },
         _delRecords:function(ids){
             var ns=this, grid=ns.grid;
             xui.Dom.busy("Deleting Data ...");
             ns.fireEvent("onDeleteRecords", [ ids, function(){
-                grid.removeRows(ids);
-                ns.toolbar.updateItem("delete",{disabled:true});
-                ns.toolbar.updateItem("open",{disabled:true});
-                xui.message("You deleted "+ids.length+" record(s)!");
-                xui.Dom.free();
+                ns.deleteRows(ids);
             }]);
         },
         _toolbar_onclick:function (profile, item, group, e, src){
@@ -185,24 +203,50 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
         },
         _pagebar_onpageset:function (profile, page, start, size, eventType, opage, ostart){
             this.loadGridData(page,size); 
+        },
+        _xui_msgs1_onmessagereceived:function (profile, msg1, msg2, msg3){
+            var ns = this, uictrl = profile.boxing();
+            ns.fireEvent("onMessageServiceReceived", [msg1, msg2, msg3]);
         }
     },
     Static:{
+        // export functions
+        $Functions:{
+            addRow:function(recordId/*String, the record id*/, fields/*Hash, record fields map*/){},
+            updateRow:function(recordId/*String, the record id*/, fields/*Hash, record fields map*/){},
+            deleteRows:function(ids/*Array, target record ids*/){}
+        },
+        // export prop
+        $DataModel:{
+            type:"list", // selection
+            inMsgType:"",
+            outMsgType:""
+        },
+        // export events
         $EventHandlers:{
             onListRecords:function(page/*Number, page number*/, 
                                     size/*Number, record number in the page*/, 
                                     callback/*
                                              * Function, 
-                                             * function(data){data={columns:[], rows:[[]],recordMaps:[{}],page, size, total:0}, 
+                                             * function(data){data={columns:[], rows:[[]],fields:[{}],page, size, total:0}, 
                                              * callback to show rows
                                              */
                                    ){},
             onDeleteRecords:function(ids/*Array, target record ids*/, 
-                                      callback/*Function, function(ids){},callback to delete rows*/){},
+                                    deleteCallback/*Function, function(ids){},callback to delete rows*/){},
             onOpenRecord:function(id/*String, the record id*/, 
-                                   recordMap/*Hash, record data*/, 
-                                   callback/*Function, function(id, dataHash){}, callback to update row*/){},
-            onCreateRecords:function(callback/*Function, function(id, dataHash){}, callback to add new row*/){}
+                                   fields/*Hash, record fields*/, 
+                                   updateCallback/*Function, function(id, fields){}, callback to update row*/){},
+            onCreateRecords:function(
+                                   createCallback/*Function, function(id, fields){}, callback to add new row*/,
+                                   updateCallback/*Function, function(id, fields){}, callback to update row*/
+                               ){},
+            onSelectRecord:function(id/*String, target record id*/){},
+            onMessageServiceReceived:function(
+                                   msg1/*String, message 1*/,
+                                   msg2/*String, message 2*/,
+                                   msg3/*String, message 3*/
+                               ){}
         }
     }    
 });

@@ -1766,7 +1766,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"undefined",
                 $paras:[
                     "type [必需参数]: String, 指定接收类型，如果空表示发送到所有接收类型",
-                    "message [必需参数]: Object, 消息",
+                    "msg1 [必需参数]: Object, 消息1",
+                    "msg2 [可选参数]: Object, 消息2",
+                    "msg3 [可选参数]: Object, 消息3",
                     "callback [可选参数]: Function, 回调"
                 ]
             },
@@ -1802,7 +1804,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"当接收到消息的时候调用",
                 $paras:[
                     "profile : xui.Profile",
-                    "message : Object, 消息 1",
+                    "msg1 : Object, 消息 1",
+                    "msg2 : Object, 消息 2",
+                    "msg3 : Object, 消息 3",
                     "callback : Function,  回调"
                 ]
             },
@@ -5394,7 +5398,9 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"向模块发送消息",
             $paras:[
                 "cls [必需参数] : String, 模块的类名",
-                "message [必需参数] : Object, 消息",
+                "msg1 [必需参数]: Object, 消息对象 1",
+                "msg2 [可选参数]: Object, 消息对象 2",
+                "msg3 [可选参数]: Object, 消息对象 3",
                 "sender [可选参数] : Object, 发送消息方"
             ]
         },
@@ -5403,7 +5409,9 @@ xui.set(xui.Locale,["cn","app"], {
             postMessage:{
                 $desc:"向模块发送消息",
                 $paras:[
-                    "message [必需参数] : Object, 消息",
+                    "msg1 [必需参数]: Object, 消息对象 1",
+                    "msg2 [可选参数]: Object, 消息对象 2",
+                    "msg3 [可选参数]: Object, 消息对象 3",
                     "sender [可选参数] : Object, 发送消息方"
                 ]
             },
@@ -5610,7 +5618,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "key [必需参数] : String, 钩子key值",
-                    "args [可选参数]: Array, 钩子函数的回调参数"
+                    "msg1 [可选参数]: Object, 钩子函数的回调参数1",
+                    "msg2 [可选参数]: Object, 钩子函数的回调参数2",
+                    "msg3 [可选参数]: Object, 钩子函数的回调参数3"
                 ]
             },
             applyExcelFormula:{
@@ -5794,7 +5804,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:'当模块收到消息时触发本事件',
                 $paras:[
                     'module : xui.Module 对象',
-                    'message : Object, 消息',
+                    "msg1: Object, 消息对象 1",
+                    "msg2: Object, 消息对象 2",
+                    "msg3: Object, 消息对象 3",
                     'source: Object, 消息源'
                 ]
             },
@@ -7455,6 +7467,85 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             }, 
+
+            getFormValues:{
+                $desc:"得到表单的值",
+                $rtn:"Hash",
+                $paras:[
+                    "dirtiedOnly [可选参数] : Boolean, 是否只获得脏控件的界面值",
+                    "subId [可选参数]: String, 子容器id",
+                    "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false"
+                ]
+            },
+            setFormValues:{
+                $desc:"得到表单的值",
+                $rtn:"Hash",
+                $paras:[
+                    "values [必须参数] : Hash, 表单值键值对",
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            getFormElements:{
+                $desc:"得到表单项",
+                $rtn:"xui.absValue",
+                $paras:[
+                    "dirtiedOnly [可选参数] : Boolean, 是否只获得脏控件的表单项",
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            isDirtied:{
+                $desc:"判断是否有表单项被更改",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            checkValid:{
+                $desc:"检查无效表单项",
+                $rtn:"Boollean",
+                $paras:[
+                    "ignoreAlert [可选参数]: Boolean. 是否忽略表单验证警告",
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            checkRequired:{
+                $desc:"检验是否有必须表单项没有输入",
+                $rtn:"Boollean",
+                $paras:[
+                    "ignoreAlert [可选参数]: Boolean. 是否忽略表单验证警告",
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            formClear:{
+                $desc:"清空表单",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            formReset:{
+                $desc:"重置表单值到原有状态",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            updateFormValues:{
+                $desc:"更新表单值到最新状态",
+                $rtn:"Boollean",
+                $paras:[
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+            formSubmit:{
+                $desc:"提交表单",
+                $rtn:"Boollean",
+                $paras:[
+                    "ignoreAlert: Boolean. 是否忽略表单验证警告",
+                    "subId [可选参数]: String, 子容器id"
+                ]
+            },
+
             onHotKeydown:{
                 $desc:"当热键按下时被调用",
                 $paras:[
@@ -7790,7 +7881,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     $profile,
                     "elems : xui.absValue, 所有输入控件",
-                    "subId: String, 子容器id"
+                    "subId  [可选参数]: String, 子容器id"
                 ]
             },
             afterFormReset:{

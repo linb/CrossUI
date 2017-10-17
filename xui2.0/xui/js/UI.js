@@ -3651,20 +3651,20 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getPanelChildren:function(){
                             return this.get(0).children;
                         },
-                        getFormValues:function(dirtied, subId, withCaption){
+                        getFormValues:function(dirtiedOnly, subId, withCaption){
                             var hash={};
-                            this.getFormElements(subId).each(function(prf){
+                            this.getFormElements(false,subId).each(function(prf){
                                 var p=prf.properties, key = p.name || prf.alias, keys,
                                     ins = prf.boxing(),
                                     // maybe return array
                                     uv = ins.getUIValue();
                                 // v and uv can be object(Date,Number)
-                                if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
+                                if(!dirtiedOnly || (uv+" ")!==(ins.getValue()+" ")){
                                     if(ins.getCaption){
                                         if(key.indexOf(":")!=-1){
                                             keys=key.split(':');
                                         }
-                                        if(keys[1] && keys[2]){
+                                        if(keys && keys[1] && keys[2]){
                                             hash[keys[1]]=uv;
                                             hash[keys[2]]=ins.getCaption();
                                         }else if(withCaption){
@@ -3684,11 +3684,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         setFormValues:function(values, subId){
                             if(!xui.isEmpty(values)){
-                                this.getFormElements(subId).each(function(prf){
+                                this.getFormElements(false,subId).each(function(prf){
                                     var prop=prf.properties, ins=prf.boxing(),key=prop.name || prf.alias,keys,cap;
                                     if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
-                                        keys=key.split(":");
-                                        if(keys[1] && keys[2]){
+                                        if(key.indexOf(":")!=-1){
+                                            keys=key.split(':');
+                                        }
+                                        if(keys && keys[1] && keys[2]){
                                             key=keys[0];
                                             cap=keys[1];
                                         }
@@ -3707,7 +3709,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             return this;
                         },
-                        getFormElements:function(subId, dirtiedOnly){
+                        getFormElements:function(dirtiedOnly, subId){
                             var a=this.getChildren(subId, false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
@@ -3726,7 +3728,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             return elems;
                         },
                         isDirtied:function(subId){
-                           var elems = this.getFormElements(subId).get();
+                           var elems = this.getFormElements(false,subId).get();
                            for(var i=0,l=elems.length;i<l;i++){
                                 var profile=elems[i],ins;
                                 if(profile.box["xui.absValue"]){
@@ -3744,7 +3746,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             if(!ns.checkRequired(ignoreAlert, subId)){
                                 return false;
                             }
-                            ns.getFormElements(subId).each(function(prf){
+                            ns.getFormElements(false,subId).each(function(prf){
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(!ins.checkValid()){
                                     if(!ignoreAlert){
@@ -3763,7 +3765,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         checkRequired:function(ignoreAlert, subId){
                             var profile=this.get(0), result=true;
-                            this.getFormElements(subId).each(function(prf, i){
+                            this.getFormElements(false,subId).each(function(prf, i){
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(prop.required && (!(i=ins.getUIValue())) && i!==0){
                                     if(!ignoreAlert){
@@ -3782,13 +3784,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         formClear:function(subId){
                             return this.each(function(prf){
-                                prf.boxing().getFormElements(subId).resetValue(null);
+                                prf.boxing().getFormElements(false,subId).resetValue(null);
                             });
                         },
                         formReset:function(subId){
                             return this.each(function(prf){
                                 var p = prf.properties,
-                                     elems = prf.boxing().getFormElements(subId);
+                                     elems = prf.boxing().getFormElements(false,subId);
                                 if(prf.beforeFormReset && false===prf.boxing().beforeFormReset(prf, elems, subId)){
                                         return;
                                 }
@@ -3802,7 +3804,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             });
                         },
                         updateFormValues:function(subId){
-                            ns.getFormElements(subId).updateValue();
+                            this.getFormElements(false,subId).updateValue();
                         },
                         formSubmit:function(ignoreAlert, subId){
                             var ns=this;
@@ -3812,7 +3814,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             var prf=ns.get(0),
                               p = prf.properties, f,
-                              data = ns.getFormValues(subId),
+                              data = ns.getFormValues(false, subId),
                               apicaller;
                             // call before event
                             if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId)){
@@ -4116,7 +4118,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     if(!t[o])t[o]=src[o];
                 });
                 if(hash.PanelKeys){
-                    xui.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formClear,formReset,formSubmit'.split(','),function(o){
+                    xui.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formClear,formReset,updateFormValues,formSubmit'.split(','),function(o){
                         if(!t[o])t[o]=src[o];
                     });
                 }
