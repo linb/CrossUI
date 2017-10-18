@@ -434,7 +434,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop))
+                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
                     var node=o.reBoxing();
@@ -1183,7 +1183,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             onFileDlgOpen:function(profile, src){},
             onCommand:function(profile, src, type){},
             beforeComboPop:function(profile, pos, e, src){},
-            beforePopShow:function(profile, popCtl){},
+            beforePopShow:function(profile, popCtl, items){},
             afterPopShow:function(profile, popCtl){},
             afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, btn, value){},

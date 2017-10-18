@@ -367,15 +367,15 @@ xui.Class('xui.Module','xui.absProfile',{
         getHooks:function(key){
             return key?this.hooks[key]:this.hooks;
         },
-        notifyHooks:function(key, msg1, msg2, msg3){
+        notifyHooks:function(key, msg1, msg2, msg3, msg4, msg5){
             var ns=this, hook, hooks=ns.hooks;
             if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
                 xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
             }
             return ns;
         },
-        postMessage:function(msg1, msg2, msg3, sender){
-           this.fireEvent('onMessage',  [this, msg1, msg2, msg3, sender]);
+        postMessage:function(msg1, msg2, msg3, msg4, msg5, sender){
+           this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
         },
         serialize:function(rtnString, keepHost, children){
             var t,m,
@@ -435,10 +435,10 @@ xui.Class('xui.Module','xui.absProfile',{
                 applyEvents=function(prf, events, host, args){
                     var j;
                     args=args||[];
-                    if(!xui.isArr(events))events=[events];
-                    if(xui.isNumb(j=events[0].event) && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
-
-                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder);
+ 
+                    if(xui.isStr(events)||xui.isFun(events))events=[events];
+                    if(xui.isNumb(j=(events.actions||events)[0].event)  && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
+                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder,((host&&host.alias)||(prf.$holder&&prf.$holder.alias)) + "."+ prf.alias + "."+ name);
                 };
             self.$lastEvent=name;
             if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
@@ -1307,11 +1307,11 @@ xui.Class('xui.Module','xui.absProfile',{
             for(var i in c)
                 if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
-        postMessage:function(cls, msg1, msg2, msg3,  sender){
+        postMessage:function(cls, msg1, msg2, msg3, msg4, msg5,  sender){
            var m = xui.SC.get(cls),hash;
             if(m && m['xui.Module'])
                 xui.arr.each(m._cache,function(o){
-                     m.fireEvent('onMessage',  [m, msg1, msg2, msg3, sender]);
+                     m.fireEvent('onMessage',  [m, msg1, msg2, msg3, msg4, msg5, sender]);
                 });
         },
         destroyAll:function(ignoreEffects, purgeNow){
@@ -1462,7 +1462,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         $EventHandlers:{
             onFragmentChanged:function(module, fragment, init, newAdd){},
-            onMessage:function(module, msg1, msg2, msg3,  source){},
+            onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},

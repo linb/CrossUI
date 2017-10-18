@@ -1026,6 +1026,10 @@ xui.merge(xui,{
     _rnd:function(){
         return xui.debugMode?xui.$rand+"="+xui.rand():null;
     },
+    _debugInfo:function(){
+        if(xui.debugMode && xui.isDefined(window.console) && typeof(console.log)=='function')
+            console.log.apply(console, xui.toArr(arguments));
+    },
     SpaceUnit:'em',
     $us:function(p){
         // ie67 always px
@@ -1325,10 +1329,9 @@ xui.merge(xui,{
                     obj=="{undefined}"?undefined:
                     obj=="{now}"?new Date():
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
-                    // {ab(3,"a")} 
-                    // only one level, {a.b(3)} is not allowed
+                    // {a.b(3,"a")} 
                     // scope allows hash only
-                    ((t=/^\s*\{([\w]+\([^)]*\))\s*\}\s*$/.exec(obj)) && xui.isHash(scope)) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope):
+                    ((t=/^\s*\{([\w\.]+\([^)]*\))\s*\}\s*$/.exec(obj)) && xui.isHash(scope)) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope):
                     //{a.b.c} or {prf.boxing().getValue()}
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope)
@@ -2106,18 +2109,20 @@ new function(){
 
 new function(){
     xui.pseudocode={
-        exec:function(conf, args, scope, temp, resumeFun){
-           var  t,tt,m,n,p,k,type=conf.type||"other",
-                _ns={
+        getScope:function(eventArgs, module, temp){
+            return {
                     temp:temp,
-                    page:scope,
-                    args:args,
+                    page:module,
+                    args:eventArgs,
                     functions:xui.$cache.functions,
                     'global':xui.$cache.data,
                     // special functions
                     getCookies:xui.Cookies.get,
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
-                },
+                };
+        },
+        exec:function(_ns, conf, resumeFun){
+           var  t,tt,m,n,p,k,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
                         case '=':
@@ -2128,7 +2133,11 @@ new function(){
                         case '!=':
                             return x!==y;
                         case 'exists':
+                        case 'defined':
                             return xui.isDefined(x);
+                        case 'not-exists':
+                        case 'undefined':
+                            return !xui.isDefined(x);
                         case 'empty':
                             return xui.isEmpty(x);
                         case 'non-empty':
@@ -2189,11 +2198,14 @@ new function(){
                 redirection=conf.redirection,
                 target=conf.target,
                 method=conf.method,
+                // conf.args > conf.params
                 iparams=xui.clone(conf.args||conf.params)||[],
                 conditions=conf.conditions||[],
                 adjust=adjustparam(conf.adjust)||null,
-                iconditions=[],t1,
+                iconditions=[],t1,t2,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+            
+            var _debug = ["["+conf.desc + "] \""+ type +" > " + target +" > " +  method+"\""]; 
 
             // cover with inline params
             if(method.indexOf("-")!=-1){
@@ -2205,12 +2217,17 @@ new function(){
             // handle conditions
             // currently, support and only
             // TODO: complex conditions
-            for(var i=0,l=conditions.length;i<l;i++){
+            for(var i=0,l=conditions.length,con;i<l;i++){
+                con=conditions[i];
                 if(!comparevars(
-                    !xui.isDefined(t1=xui.adjustVar(conditions[i].left, _ns))?xui.adjustVar(conditions[i].left):t1,
-                    !xui.isDefined(t1=xui.adjustVar(conditions[i].right, _ns))?xui.adjustVar(conditions[i].right):t1,
-                    conditions[i].symbol)){
-                    if(typeof resumeFun=="function")return resumeFun();
+                    !xui.isDefined(t1=xui.adjustVar(con.left, _ns))?xui.adjustVar(con.left):t1,
+                    !xui.isDefined(t2=xui.adjustVar(con.right, _ns))?xui.adjustVar(con.right):t2,
+                    con.symbol)){
+                    if(typeof resumeFun=="function"){
+                        xui._debugInfo.apply(xui, ["x "].concat(_debug).concat(conf));
+                        return resumeFun();
+                    }
+                    xui._debugInfo.apply(xui, ["x "].concat(_debug).concat(conf));
                     return;
                 }
             }
@@ -2227,6 +2244,7 @@ new function(){
                 if(redirection && !(type=="other" && target=="callback"&& method=="call")){
                     iparams=iparams.slice(3);
                 }
+
                 var fun=function(arr){
                     switch(type){
                         case 'page':
@@ -2274,12 +2292,18 @@ new function(){
                            var cls=xui.get(window,target.split(".")),ins;
                             // TODO: now, only valid for the first one
                             if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
+                            
+                            if(method=="destroy"){
+                                if(ins)if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
+                                return;
+                            }
 
                             // handle hide / destroy
                             if(method=="show"||method=="popUp"){
                                 // special for xui.Module.show
+                                var omethod=method;
                                 iparams.unshift(function(err,module){
-                                    if(method=="popUp" && !err){
+                                    if(omethod=="popUp" && !err){
                                         var t=module.getUIComponents(true);
                                         if((t=t.getRoot())&&(t=t.get(0)))
                                             xui(t).pop(iparams[1]||_ns.args[0]);
@@ -2292,7 +2316,7 @@ new function(){
                             }
                             // make sure call getModule once
                             else {
-                                var t1 = temp._module_funs_ = temp._module_funs_|| {},
+                                var t1 = _ns.temp._module_funs_ = _ns.temp._module_funs_|| {},
                                     t2 = t1[target] = t1[target] || [];
                                 // collect funs
                                 t2.push(function(ins,t){
@@ -2307,7 +2331,7 @@ new function(){
                                                 t2[i].call(null, ins);
                                         t2.length=0;
                                         t1=t2=null;
-                                        delete temp._module_funs_[target];
+                                        delete _ns.temp._module_funs_[target];
                                     });
                                 }
                             }
@@ -2315,11 +2339,11 @@ new function(){
                         case 'control':
                         case 'module':
                             if(method=="popUp"){
-                                 t=xui.get(scope,[target]);
+                                 t=xui.get(_ns.page,[target]);
                                  if((t=t.getRoot())&&(t=t.get(0)))
                                     xui(t).pop(iparams[1]||_ns.args[0]);
                             }else if(method=="disable"||method=="enable"){
-                                if(xui.isFun(t=xui.get(scope,[target,"setDisabled"])))t.apply(scope[target],[method=="disable",true]);
+                                if(xui.isFun(t=xui.get(_ns.page,[target,"setDisabled"])))t.apply(_ns.page[target],[method=="disable",true]);
                             }else{
                                 if(method=="setProperties"){
                                     // [0] is native var, [1] is expression var
@@ -2327,20 +2351,20 @@ new function(){
                                     iparams[1]=null;
                                     if(m=params){
                                         if(m.CA){
-                                            if(xui.isFun(t=xui.get(scope,[target,"setCustomAttr"])))t.apply(scope[target],[m.CA]);
+                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomAttr"])))t.apply(_ns.page[target],[m.CA]);
                                             delete m.CA;
                                         }
                                         if(m.CC){
-                                            if(xui.isFun(t=xui.get(scope,[target,"setCustomClass"])))t.apply(scope[target],[m.CC]);
+                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomClass"])))t.apply(_ns.page[target],[m.CC]);
                                             delete m.CC;
                                         }
                                         if(m.CS){
-                                            if(xui.isFun(t=xui.get(scope,[target,"setCustomStyle"])))t.apply(scope[target],[m.CS]);
+                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomStyle"])))t.apply(_ns.page[target],[m.CS]);
                                             delete m.CS;
                                         }
                                     }
                                 }
-                                if(xui.isFun(t=xui.get(scope,[target,method])))t.apply(scope[target],iparams);
+                                if(xui.isFun(t=xui.get(_ns.page,[target,method])))t.apply(_ns.page[target],iparams);
                             }
                             break;
                         case 'other':
@@ -2443,10 +2467,13 @@ new function(){
                                                 t=xui.adjustVar(tt=t, _ns);
                                                 if(!xui.isDefined(t))t=xui.adjustVar(tt);
                                                 if(t&&t[m]){
+                                                    // it's function
                                                     if(xui.isFun(t[m])){
                                                         doit=1;
-                                                    }else if(t[m].actions && xui.isArr(t[m].actions) && t[m].actions.length){
-                                                        t=t[m].actions;
+                                                    }
+                                                    // it's pseudo
+                                                    else if( (t[m].actions && xui.isArr(t[m].actions) && t[m].actions.length ) || t[m]['return']){
+                                                        t=t[m];
                                                         doit2=1;
                                                     }
                                                 }
@@ -2457,7 +2484,8 @@ new function(){
                                                 t=t[m].apply(t,args);
                                             }else if(doit2){
                                                 // nested call
-                                                t=xui.pseudocode._callFunctions(t, args, scope, temp);
+                                                // arguemsnt of function/event is modified
+                                                t=xui.pseudocode._callFunctions(t, args, _ns.page, _ns.temp,null, '[nested] '+(t.desc||t.id));
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
@@ -2468,6 +2496,7 @@ new function(){
                             }
                             break;
                     }
+                    xui._debugInfo.apply(xui, ["! "].concat(_debug).concat(["(",iparams,")",conf]));
                 };
                 // asy
                 if(timeout!==null)xui.asyRun(fun,timeout);
@@ -2476,49 +2505,68 @@ new function(){
             return conf["return"];
         },
 
-        _callFunctions:function(funs, args, scope, temp, holder){
+        _callFunctions:function(pseudo, args, module, temp, holder, fromtag){
             temp=temp||{};
-            var fun, resume=0,
-            recursive=function(data){
-                var rtn;
-                // set prompt's global var
-                if(xui.isStr(this))temp[this+""]=data||"";
-                //callback from [resume]
-                for(var j=resume, l=funs.length;j<l;j++){
-                    resume=j+1;
-                    fun=funs[j];
-                    if(scope && typeof fun=='string')fun=scope[fun];
-                    if(holder && typeof fun=='string')fun=holder[fun];
-                    if(typeof fun=='function')rtn=xui.tryF(fun, args, scope);
-                    else if(xui.isHash(fun)){
-                        if('onOK' in fun ||'onKO' in fun){
-                            var resumeFun=function(key,args,flag){
-                                if(recursive){
-                                    if(xui.isStr(flag))temp[flag]=true;
-                                    return recursive.apply(key,args);
-                                }
-                            };
-                            // onOK
-                            if('onOK' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
-                               if(resumeFun)resumeFun("okData",arguments, fun.okFlag);
-                            };
-                            if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
-                                if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
-                            };
-                            rtn=xui.pseudocode.exec(fun,args,scope,temp,resumeFun);
-                            break;
-                        }else
-                            if(false===(rtn=xui.pseudocode.exec(fun,args,scope,temp))){
+            var fun, resume=0, t, rtn,
+                funs = pseudo.actions || pseudo || [],
+                rtn = pseudo['return'], funsrtn,
+                innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
+                _ns=xui.pseudocode.getScope(args, module, temp),
+                recursive=function(data){
+                    var irtn;
+                    // set prompt's global var
+                    if(xui.isStr(this))_ns.temp[this+""]=data||"";
+                    //callback from [resume]
+                    for(var j=resume, l=funs.length;j<l;j++){
+                        resume=j+1;
+                        fun=funs[j];
+                        if(module && typeof fun=='string')fun=module[fun];
+                        if(holder && typeof fun=='string')fun=holder[fun];
+                        if(typeof fun=='function'){
+                            // only function action can affect return 
+                            if(false===(irtn=xui.tryF(fun, _ns.args, _ns.page))){
                                 resume=j;break;
                             }
+                        }else if(xui.isHash(fun)){
+                            if('onOK' in fun ||'onKO' in fun){
+                                var resumeFun=function(key,args,flag){
+                                    if(recursive){
+                                        if(xui.isStr(flag))_ns.temp[flag]=true;
+                                        return recursive.apply(key,args);
+                                    }
+                                };
+                                // onOK
+                                if('onOK' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onOK,10)||0]=function(){
+                                   if(resumeFun)resumeFun("okData",arguments, fun.okFlag);
+                                };
+                                if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
+                                    if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
+                                };
+                                xui.pseudocode.exec(_ns, fun, resumeFun);
+                                break;
+                            }else
+                                if(false===(xui.pseudocode.exec(_ns, fun))){
+                                    resume=j;break;
+                                }
+                        }
                     }
-                }
-                if(resume==j)resume=temp=recursive=null;
-                return rtn;
-            };
-            return recursive();
+                    if(resume==j)resume=recursive=null;
+                    return irtn;
+                };
+            if(!innerE)xui._debugInfo("< #pseudo ", "["+fromtag+"]", pseudo, _ns); 
+            funsrtn = recursive();
+            if(!innerE)xui._debugInfo(">"); 
+
+            if(rtn){
+                rtn=xui.adjustVar(t=rtn, _ns);
+                if(!xui.isDefined(rtn))rtn=xui.adjustVar(t);
+            }else{
+                // for system beforeXXX events
+                rtn=funsrtn;
+            }
+            return rtn;
         }/*,
-        toCode:function(conf, args, scope,temp){
+        toCode:function(conf, args, module,temp){
         }*/
     };
 };
@@ -4648,10 +4696,10 @@ xui.Class('xui.absObj',"xui.absBox",{
                                     prf.$lastEvent=i;
                                     if(arguments[0]!=prf)args[0]=prf;
                                     for(j=0;j<l;j++)args[args.length]=arguments[j];
-                                    if(!xui.isArr(events))events=[events];
-                                    if(xui.isNumb(j=events[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                                    if(xui.isStr(events)||xui.isFun(events))events=[events];
+                                    if(xui.isNumb(j=(events.actions||events)[0].event))args[j]=xui.Event.getEventPara(args[j]);
 
-                                    return xui.pseudocode._callFunctions(events, args, host, null,prf.$holder);
+                                    return xui.pseudocode._callFunctions(events, args, host, null,prf.$holder, ((host&&host.alias)||(prf.$holder&&prf.$holder.alias))+"."+prf.alias+"."+i);
                                 }
                             }
                         }
@@ -4954,14 +5002,20 @@ xui.Class("xui.MessageService","xui.absObj",{
             this.each(function(profile){
                 if(profile.$inDesign)return;
                 //** unsubscribe
-                var t;
-                if(t=profile.properties.msgType)xui.unsubscribe(t,profile.$xid);
+                var t,id=profile.$xid;
+                if(t=profile.properties.msgType){
+                    xui.arr.each(t.split(/[\s,;:]+/),function(t){
+                        xui.unsubscribe(t,id);
+                    });
+                }
                 //free profile
                 profile.__gc();
             });
         },
-        broadcast:function(type, message, callback){
-            xui.publish(type, [message,callback], null, this);
+        broadcast:function(type, msg1, msg2, msg3, msg4, msg5, callback){
+            xui.arr.each(type.split(/[\s,;:]+/),function(t){
+                xui.publish(t, [msg1, msg2, msg3, msg4, msg5, callback], null, this);
+            });
         },
         getParent:xui.Timer.prototype.getParent,
         getChildrenId:xui.Timer.prototype.getChildrenId
@@ -4973,29 +5027,36 @@ xui.Class("xui.MessageService","xui.absObj",{
             msgType:{
                 ini:"",
                 set:function(value){
-                        var profile=this, t, p=profile.properties;
-                        if(t = p.msgType) xui.unsubscribe(t, profile.$xid);
+                        var profile=this, t, p=profile.properties,id=profile.$xid;
+                        if(t = p.msgType){
+                            xui.arr.each(t.split(/[\s,;:]+/),function(t){
+                                xui.unsubscribe(t,id);
+                            });
+                        }
                         if(t = p.msgType = value||""){
-                            xui.subscribe(t, profile.$xid, function(){
-                                var a=arguments;
-                                if(profile.onMessageReceived) profile.boxing().onMessageReceived(profile, a[0], a[1], a[2]);
-                            },p.asynReceive);
+                            xui.arr.each(t.split(/[\s,;:]+/),function(t){
+                                xui.subscribe(t, id, function(){
+                                    var a=xui.toArr(arguments), ins=profile.boxing();
+                                    a.unshift(profile);
+                                    if(profile.onMessageReceived) ins.onMessageReceived.apply(ins,a);
+                                },p.asynReceive);
+                            });
                         }
                 }
             },
             asynReceive:false
         },
         EventHandlers:{
-            onMessageReceived:function(profile, message, callback){}
+            onMessageReceived:function(profile, msg1, msg2, msg3, msg4, msg5, callback){}
         }
     }
 });
 
 /*** xui.ExcelFormula.calculate
     * formula :
-    *      "FIXED(SUM(1:1, AVERAGE(A:A, B3)) + ROUND(B5)*C6 + MAX(A1:B2, B3) + MIN(10, B3)/ 1000, 2)"
-    *      "FIXED(SUM(1, AVERAGE(1, 3)) + ROUND(3.3)*1 + MAX(4, 2) + MIN(10, 5)/ 3, 2)" => 11.67
-    *      "CHOOSE(2,'a','b','c')" => 'b'
+    *      "=FIXED(SUM(1:1, AVERAGE(A:A, B3)) + ROUND(B5)*C6 + MAX(A1:B2, B3) + MIN(10, B3)/ 1000, 2)"
+    *      "=FIXED(SUM(1, AVERAGE(1, 3)) + ROUND(3.3)*1 + MAX(4, 2) + MIN(10, 5)/ 3, 2)" => 11.67
+    *      "=CHOOSE(2,'a','b','c')" => 'b'
     * cellsMap :
     *      true: force to return something without cell value maps
     *      {}: returns the result of the formula with cell value maps
@@ -5132,6 +5193,9 @@ xui.Class("xui.ExcelFormula",null,{
             var fake = function(){return 1;},
                 str=formula.replace(/\?/g,'1'),
                 reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
+            if(!/^\s*\=\s*/.test(str))
+                return false;
+            str = str.replace(/^\s*\=\s*/,'');
             str = xui.replace(str, [
                 [/"(\\.|[^"\\])*"/,'1'],
                 [/'(\\.|[^'\\])*'/,'1'],
@@ -5145,8 +5209,7 @@ xui.Class("xui.ExcelFormula",null,{
             try{
                 eval(str);
             }catch(e){
-                if(xui.isDefined(window.console) && typeof(console.log)=='function')
-                    console.log("#VALUE! ",  formula, str , e);
+                xui._debugInfo("#VALUE! ",  formula, str , e);
                 return false;
             }
             return true;
@@ -5191,7 +5254,7 @@ xui.Class("xui.ExcelFormula",null,{
                     if(cellsMap===false)cellHash={};
                     if(!ns.validate(str))
                         return false;
-
+                    str = str.replace(/^\s*\=\s*/,'');
                     str = xui.replace(str, [
                         [/"(\\.|[^"\\])*"/,'$0'],
                         [/'(\\.|[^'\\])*'/,'$0'],
@@ -5202,8 +5265,7 @@ xui.Class("xui.ExcelFormula",null,{
                     try{
                         rtn = (cellsMap===true && (cellsMap={})) || xui.isHash(cellsMap) ? eval(str) : cellsMap===false ? cellHash : str;
                     }catch(e){
-                        if(xui.isDefined(window.console) && typeof(console.log)=='function')
-                            console.log("#VALUE! ",  formula, str , e);
+                        xui._debugInfo("#VALUE! ",  formula, str , e);
                     }finally{
                         return rtn;
                     }
@@ -5342,7 +5404,7 @@ xui.Class("xui.ExcelFormula",null,{
             if(xui.isFun(t1) && false===t1(requestId, prf))
                 return;
             else if( xui.isHash(t1) && xui.isArr(t1.actions)
-                        && false===xui.pseudocode._callFunctions(t1.actions,  [requestId, prf], ns.getHost())
+                        && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'APICaller_beforeInvoke')
                     )
                     return;
             // Normally, Gives a change to modify "queryArgs" for XML
@@ -5367,7 +5429,7 @@ xui.Class("xui.ExcelFormula",null,{
 
                         // the global handler
                         if(xui.isFun(t3))t3(rspData, requestId, prf);
-                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3.actions,  [rspData, requestId, prf], ns.getHost());
+                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_onError');
 
                         if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                         xui.tryF(onFail,arguments,this);
@@ -5514,7 +5576,7 @@ xui.Class("xui.ExcelFormula",null,{
                 if(xui.isFun(t2) && false===t2(rspData, requestId, prf)){
                     return false;
                 }else if( xui.isHash(t2) && xui.isArr(t2.actions)
-                        && false===xui.pseudocode._callFunctions(t2.actions,  [rspData, requestId, prf], ns.getHost())
+                        && false===xui.pseudocode._callFunctions(t2,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_beforeData')
                     ){
                     return false;
                 }
@@ -5563,7 +5625,7 @@ xui.Class("xui.ExcelFormula",null,{
                                 break;
                         }
                         if(t && t.actions && xui.isArr(t.actions)){
-                            xui.pseudocode._callFunctions(t.actions, [rspData, ns], host);
+                            xui.pseudocode._callFunctions(t, [rspData, ns], host,null,null,(host&&host.alias)+"."+ns.alias + "." + o.name);
                         }
                     });
                 }
@@ -5590,7 +5652,7 @@ xui.Class("xui.ExcelFormula",null,{
                
                 // the global handler
                 if(xui.isFun(t3))t3(rspData, requestId, prf);
-                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3.actions,  [rspData, requestId, prf], ns.getHost());
+                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_onError');
 
                 if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                 xui.tryF(onFail,arguments,this);
@@ -5903,9 +5965,9 @@ xui.Class("xui.ExcelFormula",null,{
                         if(key.indexOf(":")!=-1){
                             keys=key.split(':');
                         }
-                        if(keys[1] && keys[2]){
-                            hash[keys[1]]=uv;
-                            hash[keys[2]]=ins.getCaption();
+                        if(keys[0] && keys[1]){
+                            hash[keys[0]]=uv;
+                            hash[keys[1]]=ins.getCaption();
                         }else if(withCaption){
                             hash[key]={
                                 value : uv,
@@ -14306,16 +14368,15 @@ xui.Class('xui.Module','xui.absProfile',{
         getHooks:function(key){
             return key?this.hooks[key]:this.hooks;
         },
-        notifyHooks:function(key, args,scope){
+        notifyHooks:function(key, msg1, msg2, msg3, msg4, msg5){
             var ns=this, hook, hooks=ns.hooks;
             if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
-                if(!xui.isArr(args))args=[args];
-                xui.tryF(hook, args, scope||ns);
+                xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
             }
             return ns;
         },
-        postMessage:function(message, sender){
-           this.fireEvent('onMessage',  [this, message, sender]);
+        postMessage:function(msg1, msg2, msg3, msg4, msg5, sender){
+           this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
         },
         serialize:function(rtnString, keepHost, children){
             var t,m,
@@ -14375,10 +14436,10 @@ xui.Class('xui.Module','xui.absProfile',{
                 applyEvents=function(prf, events, host, args){
                     var j;
                     args=args||[];
-                    if(!xui.isArr(events))events=[events];
-                    if(xui.isNumb(j=events[0].event) && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
-
-                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder);
+ 
+                    if(xui.isStr(events)||xui.isFun(events))events=[events];
+                    if(xui.isNumb(j=(events.actions||events)[0].event)  && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
+                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder,((host&&host.alias)||(prf.$holder&&prf.$holder.alias)) + "."+ prf.alias + "."+ name);
                 };
             self.$lastEvent=name;
             if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
@@ -15247,11 +15308,11 @@ xui.Class('xui.Module','xui.absProfile',{
             for(var i in c)
                 if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
         },
-        postMessage:function(cls, message, sender){
+        postMessage:function(cls, msg1, msg2, msg3, msg4, msg5,  sender){
            var m = xui.SC.get(cls),hash;
             if(m && m['xui.Module'])
                 xui.arr.each(m._cache,function(o){
-                     m.fireEvent('onMessage',  [m,message, sender]);
+                     m.fireEvent('onMessage',  [m, msg1, msg2, msg3, msg4, msg5, sender]);
                 });
         },
         destroyAll:function(ignoreEffects, purgeNow){
@@ -15402,7 +15463,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         $EventHandlers:{
             onFragmentChanged:function(module, fragment, init, newAdd){},
-            onMessage:function(module, message, source){},
+            onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
@@ -21594,22 +21655,22 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getPanelChildren:function(){
                             return this.get(0).children;
                         },
-                        getFormValues:function(dirtied, subId, withCaption){
+                        getFormValues:function(dirtiedOnly, subId, withCaption){
                             var hash={};
-                            this.getFormElements(subId).each(function(prf){
+                            this.getFormElements(false,subId).each(function(prf){
                                 var p=prf.properties, key = p.name || prf.alias, keys,
                                     ins = prf.boxing(),
                                     // maybe return array
                                     uv = ins.getUIValue();
                                 // v and uv can be object(Date,Number)
-                                if(!dirtied || (uv+" ")!==(ins.getValue()+" ")){
+                                if(!dirtiedOnly || (uv+" ")!==(ins.getValue()+" ")){
                                     if(ins.getCaption){
                                         if(key.indexOf(":")!=-1){
                                             keys=key.split(':');
                                         }
-                                        if(keys[1] && keys[2]){
-                                            hash[keys[1]]=uv;
-                                            hash[keys[2]]=ins.getCaption();
+                                        if(keys && keys[0] && keys[1]){
+                                            hash[keys[0]]=uv;
+                                            hash[keys[1]]=ins.getCaption();
                                         }else if(withCaption){
                                             hash[key]={
                                                 value : uv,
@@ -21627,11 +21688,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         setFormValues:function(values, subId){
                             if(!xui.isEmpty(values)){
-                                this.getFormElements(subId).each(function(prf){
+                                this.getFormElements(false,subId).each(function(prf){
                                     var prop=prf.properties, ins=prf.boxing(),key=prop.name || prf.alias,keys,cap;
                                     if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
-                                        keys=key.split(":");
-                                        if(keys[1] && keys[2]){
+                                        keys=key.split(':');
+                                        if(keys && keys[0] && keys[1]){
                                             key=keys[0];
                                             cap=keys[1];
                                         }
@@ -21650,11 +21711,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             return this;
                         },
-                        getFormElements:function(subId, dirtiedOnly){
+                        getFormElements:function(dirtiedOnly, subId){
                             var a=this.getChildren(subId, false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
-                                return !!xui.get(prf,['properties','formInput']);
+                                return !!xui.get(prf,['properties','isFormField']);
                             });
                             if(dirtiedOnly){
                                 var arr=[],ins,t;
@@ -21669,7 +21730,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             return elems;
                         },
                         isDirtied:function(subId){
-                           var elems = this.getFormElements(subId).get();
+                           var elems = this.getFormElements(false,subId).get();
                            for(var i=0,l=elems.length;i<l;i++){
                                 var profile=elems[i],ins;
                                 if(profile.box["xui.absValue"]){
@@ -21687,7 +21748,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             if(!ns.checkRequired(ignoreAlert, subId)){
                                 return false;
                             }
-                            ns.getFormElements(subId).each(function(prf){
+                            ns.getFormElements(false,subId).each(function(prf){
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(!ins.checkValid()){
                                     if(!ignoreAlert){
@@ -21706,7 +21767,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         checkRequired:function(ignoreAlert, subId){
                             var profile=this.get(0), result=true;
-                            this.getFormElements(subId).each(function(prf, i){
+                            this.getFormElements(false,subId).each(function(prf, i){
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(prop.required && (!(i=ins.getUIValue())) && i!==0){
                                     if(!ignoreAlert){
@@ -21725,13 +21786,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                         },
                         formClear:function(subId){
                             return this.each(function(prf){
-                                prf.boxing().getFormElements(subId).resetValue(null);
+                                prf.boxing().getFormElements(false,subId).resetValue(null);
                             });
                         },
                         formReset:function(subId){
                             return this.each(function(prf){
                                 var p = prf.properties,
-                                     elems = prf.boxing().getFormElements(subId);
+                                     elems = prf.boxing().getFormElements(false,subId);
                                 if(prf.beforeFormReset && false===prf.boxing().beforeFormReset(prf, elems, subId)){
                                         return;
                                 }
@@ -21745,7 +21806,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             });
                         },
                         updateFormValues:function(subId){
-                            ns.getFormElements(subId).updateValue();
+                            this.getFormElements(false,subId).updateValue();
                         },
                         formSubmit:function(ignoreAlert, subId){
                             var ns=this;
@@ -21755,7 +21816,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             var prf=ns.get(0),
                               p = prf.properties, f,
-                              data = ns.getFormValues(subId),
+                              data = ns.getFormValues(false, subId),
                               apicaller;
                             // call before event
                             if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId)){
@@ -22059,7 +22120,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     if(!t[o])t[o]=src[o];
                 });
                 if(hash.PanelKeys){
-                    xui.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formClear,formReset,formSubmit'.split(','),function(o){
+                    xui.arr.each('addPanel,removePanel,dumpContainer,getPanelPara,getPanelChildren,getFormValues,setFormValues,getFormElements,isDirtied,checkValid,checkRequired,formClear,formReset,updateFormValues,formSubmit'.split(','),function(o){
                         if(!t[o])t[o]=src[o];
                     });
                 }
@@ -23648,8 +23709,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         }
                                     }
                                 }
-                                if(pprf._conDockFlexFillW)delete pprf._conDockFlexFillW;
-                                if(pprf._conDockFlexFillH)delete pprf._conDockFlexFillH;
+                                if(pprf&&pprf._conDockFlexFillW)delete pprf._conDockFlexFillW;
+                                if(pprf&&pprf._conDockFlexFillH)delete pprf._conDockFlexFillH;
 
                                 // repos && resize
                                 for(k=0;key=arr[k++];){
@@ -24498,11 +24559,17 @@ xui.Class("xui.UI",  "xui.absObj", {
                 ajd=profile.box.adjustData;
             //set map
             for(var i=0,l=items.length;i<l;i++){
-                if(typeof items[i]!='object')
+                if(xui.isHash(items[i])){}
+                else if(xui.isArr(items[i])){
+                    items[i]={id:items[i][0]};
+                    if(items.length>1)items[i].caption=items[i][1];
+                }else{
                     items[i]={id:items[i]};
-                item=items[i];
-            
+                }
+
                 if(items[i].id==='?')items[i].id = xui.rand();
+                
+                item = items[i];
 
                 if(profile.beforePrepareItem && false===profile.boxing().beforePrepareItem(profile, item, pid, mapCache, serialId)){
                     continue;
@@ -25198,12 +25265,15 @@ xui.Class("xui.absList", "xui.absObj",{
             if(!xui.isArr(arr))arr=[arr];
             var a=xui.copy(arr),m;
             xui.arr.each(a,function(o,i){
-                if(!xui.isHash(o))
-                    a[i]={id:o+''};
-                else{
+                if(xui.isArr(o) && o.length){
+                    a[i]={id:o[0]};
+                    a[i].id=xui.isSet(a[i].id)?(a[i].id+''):xui.id();
+                    if(xui.isSet(o[1]))a[i].caption=o[1]+'';
+                }else if(xui.isHash(o)){
                     a[i]=xui.copy(o);
                     a[i].id=xui.isSet(a[i].id)?(a[i].id+''):xui.id();
-                }
+                }else
+                    a[i]={id:o+''};
             });
             return a;
         },
@@ -25490,7 +25560,7 @@ xui.Class("xui.absValue", "xui.absObj",{
                     if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
-            formInput:true,
+            isFormField:true,
             dirtyMark:true,
             showDirtyMark:true
         },
@@ -32632,7 +32702,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop))
+                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
                     var node=o.reBoxing();
@@ -33381,7 +33451,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             onFileDlgOpen:function(profile, src){},
             onCommand:function(profile, src, type){},
             beforeComboPop:function(profile, pos, e, src){},
-            beforePopShow:function(profile, popCtl){},
+            beforePopShow:function(profile, popCtl, items){},
             afterPopShow:function(profile, popCtl){},
             afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, btn, value){},
@@ -49503,7 +49573,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
            // Editors' default events
             onFileDlgOpen:function(profile, cell, proEditor, src){},
             beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
-            beforePopShow:function(profile, cell, proEditor, popCtl){},
+            beforePopShow:function(profile, cell, proEditor, popCtl, items){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src, type){},
             onEditorClick:function(profile, cell, proEditor, type, src){},
@@ -51271,8 +51341,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                         return profile.boxing().beforeComboPop(profile, cell, editorprf, pos, e, src);
                                 });
                                 if(profile.beforePopShow)
-                                    editor.beforePopShow(function(editorprf, popCtl){
-                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl);
+                                    editor.beforePopShow(function(editorprf, popCtl, items){
+                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items);
                                     });
                                 if(profile.afterPopShow)
                                     editor.afterPopShow(function(editorprf, popCtl){
@@ -51592,12 +51662,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },dfun=function(){
                                // if(editor) xui.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl){
+                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl,items){
                                 bfun();
                                 editor.onBlur(null);
                                 // for compitable
                                 if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl);
+                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items);
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);
@@ -51852,12 +51922,24 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return a;
         },
         _adjustRows:function(profile, arr){
-            var a,m,h={},p=profile.properties,uid=p.uidColumn;
+            var a,m,h={},hvalue={},hcap={},p=profile.properties,uid=p.uidColumn,key,keys, mixcol,rheader=[];
             if(uid)uid=xui.arr.subIndexOf(p.header,'id',uid);
             else uid=-1;
 
             xui.arr.each(p.header,function(c,i){
-                h[c.id||c]=i;
+                key=c.id||c;
+                keys=null;
+                if(key.indexOf(":")!=-1){
+                    keys=key.split(':');
+                }
+                if(keys && keys[0] && keys[1]){
+                    hvalue[keys[0]]=hcap[keys[1]]=i;
+                    rheader.push(keys[0], keys[1]);
+                    mixcol=1;
+                }else{
+                    h[key]=i;
+                    rheader.push(key);
+                }
             });
 
             if(xui.isArr(arr) && arr.length && typeof arr[0] !='object')a=[arr];
@@ -51865,20 +51947,49 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             xui.arr.each(a,function(o,i){
                 //id will be adjusted in _prepareItems
-                if(xui.isArr(o))a[i]={cells:o};
+                if(xui.isArr(o))a[i]={cells:xui.copy(o)};
                 else a[i]=xui.copy(o);
+
+                // there's mix column
+                if(mixcol && xui.isArr(a[i].cells)){
+                    var cells1=a[i].cells,cells2=[],col;
+                    for(var j=0,l=rheader.length;j<l;j++){
+                        col=rheader[j];
+                        if(col in h)cells2.push(cells1[j]);
+                        else{
+                            if(col in hvalue){
+                                cells2.push({
+                                    value:cells1[j],
+                                    caption:cells1[++j]
+                                });
+                            }
+                        }
+                    }
+                    a[i].cells=cells2;
+                }
 
                 // check if it's a map row data
                 if(!o.group && (!a[i].cells || !xui.isArr(a[i].cells))){
-                    var cells=[];
+                    var cells=[],hash;
                     xui.each(a[i],function(v,i){
                         if(i in h)cells[h[i]]=xui.isHash(v)?v:{value:v};
+                        else{
+                            if(i in hvalue){
+                                hash=cells[hvalue[i]]||{};
+                                hash.value=v;
+                                cells[hvalue[i]]=hash;
+                            }
+                            if(i in hcap){
+                                hash=cells[hcap[i]]||{};
+                                hash.caption=v;
+                                cells[hcap[i]]=hash;
+                            }                            
+                        }
                     });
                     a[i]={cells:cells}
                 }
-                m=a[i].cells=xui.copy(a[i].cells);
-
-                xui.arr.each(m,function(o,i){
+ 
+                xui.arr.each(m = a[i].cells, function(o,i){
                     //It's a hash
                     if(!!o && xui.isHash(o))
                         m[i]=xui.copy(o);

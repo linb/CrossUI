@@ -1753,7 +1753,7 @@ xui.set(xui.Locale,["cn","app"], {
         }
     });
 
-    xui.set(xui.Locale,["en","doc","xui","MessageService"], {
+    xui.set(xui.Locale,["cn","doc","xui","MessageService"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.MessageService 类",
         constructor:{
@@ -1769,6 +1769,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg1 [必需参数]: Object, 消息1",
                     "msg2 [可选参数]: Object, 消息2",
                     "msg3 [可选参数]: Object, 消息3",
+                    "msg4 [可选参数]: Object, 消息4",
+                    "msg5 [可选参数]: Object, 消息5",
                     "callback [可选参数]: Function, 回调"
                 ]
             },
@@ -1807,9 +1809,11 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg1 : Object, 消息 1",
                     "msg2 : Object, 消息 2",
                     "msg3 : Object, 消息 3",
+                    "msg4 : Object, 消息 4",
+                    "msg5 : Object, 消息 5",
                     "callback : Function,  回调"
                 ]
-            },
+            }
         }
     });
 
@@ -5401,6 +5405,8 @@ xui.set(xui.Locale,["cn","app"], {
                 "msg1 [必需参数]: Object, 消息对象 1",
                 "msg2 [可选参数]: Object, 消息对象 2",
                 "msg3 [可选参数]: Object, 消息对象 3",
+                "msg4 [可选参数]: Object, 消息对象 4",
+                "msg5 [可选参数]: Object, 消息对象 5",
                 "sender [可选参数] : Object, 发送消息方"
             ]
         },
@@ -5412,6 +5418,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg1 [必需参数]: Object, 消息对象 1",
                     "msg2 [可选参数]: Object, 消息对象 2",
                     "msg3 [可选参数]: Object, 消息对象 3",
+                    "msg4 [可选参数]: Object, 消息对象 4",
+                    "msg5 [可选参数]: Object, 消息对象 5",
                     "sender [可选参数] : Object, 发送消息方"
                 ]
             },
@@ -5620,7 +5628,9 @@ xui.set(xui.Locale,["cn","app"], {
                     "key [必需参数] : String, 钩子key值",
                     "msg1 [可选参数]: Object, 钩子函数的回调参数1",
                     "msg2 [可选参数]: Object, 钩子函数的回调参数2",
-                    "msg3 [可选参数]: Object, 钩子函数的回调参数3"
+                    "msg3 [可选参数]: Object, 钩子函数的回调参数3",
+                    "msg4 [可选参数]: Object, 钩子函数的回调参数4",
+                    "msg5 [可选参数]: Object, 钩子函数的回调参数5"
                 ]
             },
             applyExcelFormula:{
@@ -5807,6 +5817,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg1: Object, 消息对象 1",
                     "msg2: Object, 消息对象 2",
                     "msg3: Object, 消息对象 3",
+                    "msg4: Object, 消息对象 4",
+                    "msg5: Object, 消息对象 5",
                     'source: Object, 消息源'
                 ]
             },
@@ -6963,11 +6975,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $memo:"如果 dirtyMark和showDirtyMark 都为 [true], 控件值改变的时候可能会在界面出现脏标识"
             },
-            getFormInput:{
+            getIsFormField:{
                 $desc:"获取输入性控件是否作为Form的输入",
                 $rtn:"Boolean"
             },
-            setFormInput:{
+            setIsFormField:{
                 $desc:"设置输入性控件是否作为Form的输入",
                 $rtn:"[self]",
                 $paras:[
@@ -11852,7 +11864,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeComboPop:{
-                $desc:"当命令按钮按下时（弹出窗口弹出前）调用.如返false,系统默认的弹出窗口不会出现",
+                $desc:"当弹出窗口构造前调用.如返false,系统默认的弹出窗口不会出现",
                 $paras:[
                     $profile,
                     "pos : Object, 鼠标位置",
@@ -11870,7 +11882,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在弹出窗口显示前调用.如返false,弹出窗口不会显示",
                 $paras:[
                     $profile,
-                    "popCtl : xui.UIProfile, 弹出窗口对象"
+                    "popCtl : xui.UIProfile, 弹出窗口对象",
+                    "items : Array, 弹出列表项目"
                 ]
             },
             afterPopShow:{
@@ -18235,7 +18248,8 @@ xui.set(xui.Locale,["cn","app"], {
                     $profile,
                     "cell: Object, cell 对象",
                     "proEditor: xui.UIProfile, 编辑器的控件概要对象",
-                    "popCtl : xui.UIProfile, 弹出窗口对象"
+                    "popCtl : xui.UIProfile, 弹出窗口对象",
+                    "items : Array, 弹出列表项目"
                 ]
             },
             afterPopShow :{

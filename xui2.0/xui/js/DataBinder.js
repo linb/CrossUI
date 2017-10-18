@@ -135,9 +135,9 @@ xui.Class("xui.DataBinder","xui.absObj",{
                         if(key.indexOf(":")!=-1){
                             keys=key.split(':');
                         }
-                        if(keys[1] && keys[2]){
-                            hash[keys[1]]=uv;
-                            hash[keys[2]]=ins.getCaption();
+                        if(keys[0] && keys[1]){
+                            hash[keys[0]]=uv;
+                            hash[keys[1]]=ins.getCaption();
                         }else if(withCaption){
                             hash[key]={
                                 value : uv,

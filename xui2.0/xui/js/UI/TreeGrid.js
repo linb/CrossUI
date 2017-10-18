@@ -4790,7 +4790,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
            // Editors' default events
             onFileDlgOpen:function(profile, cell, proEditor, src){},
             beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
-            beforePopShow:function(profile, cell, proEditor, popCtl){},
+            beforePopShow:function(profile, cell, proEditor, popCtl, items){},
             afterPopShow:function(profile, cell, proEditor, popCtl){},
             onCommand:function(profile, cell, proEditor, src, type){},
             onEditorClick:function(profile, cell, proEditor, type, src){},
@@ -6558,8 +6558,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                         return profile.boxing().beforeComboPop(profile, cell, editorprf, pos, e, src);
                                 });
                                 if(profile.beforePopShow)
-                                    editor.beforePopShow(function(editorprf, popCtl){
-                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl);
+                                    editor.beforePopShow(function(editorprf, popCtl, items){
+                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items);
                                     });
                                 if(profile.afterPopShow)
                                     editor.afterPopShow(function(editorprf, popCtl){
@@ -6879,12 +6879,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },dfun=function(){
                                // if(editor) xui.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl){
+                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl,items){
                                 bfun();
                                 editor.onBlur(null);
                                 // for compitable
                                 if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl);
+                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items);
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);
@@ -7139,12 +7139,24 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return a;
         },
         _adjustRows:function(profile, arr){
-            var a,m,h={},p=profile.properties,uid=p.uidColumn;
+            var a,m,h={},hvalue={},hcap={},p=profile.properties,uid=p.uidColumn,key,keys, mixcol,rheader=[];
             if(uid)uid=xui.arr.subIndexOf(p.header,'id',uid);
             else uid=-1;
 
             xui.arr.each(p.header,function(c,i){
-                h[c.id||c]=i;
+                key=c.id||c;
+                keys=null;
+                if(key.indexOf(":")!=-1){
+                    keys=key.split(':');
+                }
+                if(keys && keys[0] && keys[1]){
+                    hvalue[keys[0]]=hcap[keys[1]]=i;
+                    rheader.push(keys[0], keys[1]);
+                    mixcol=1;
+                }else{
+                    h[key]=i;
+                    rheader.push(key);
+                }
             });
 
             if(xui.isArr(arr) && arr.length && typeof arr[0] !='object')a=[arr];
@@ -7152,20 +7164,49 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             xui.arr.each(a,function(o,i){
                 //id will be adjusted in _prepareItems
-                if(xui.isArr(o))a[i]={cells:o};
+                if(xui.isArr(o))a[i]={cells:xui.copy(o)};
                 else a[i]=xui.copy(o);
+
+                // there's mix column
+                if(mixcol && xui.isArr(a[i].cells)){
+                    var cells1=a[i].cells,cells2=[],col;
+                    for(var j=0,l=rheader.length;j<l;j++){
+                        col=rheader[j];
+                        if(col in h)cells2.push(cells1[j]);
+                        else{
+                            if(col in hvalue){
+                                cells2.push({
+                                    value:cells1[j],
+                                    caption:cells1[++j]
+                                });
+                            }
+                        }
+                    }
+                    a[i].cells=cells2;
+                }
 
                 // check if it's a map row data
                 if(!o.group && (!a[i].cells || !xui.isArr(a[i].cells))){
-                    var cells=[];
+                    var cells=[],hash;
                     xui.each(a[i],function(v,i){
                         if(i in h)cells[h[i]]=xui.isHash(v)?v:{value:v};
+                        else{
+                            if(i in hvalue){
+                                hash=cells[hvalue[i]]||{};
+                                hash.value=v;
+                                cells[hvalue[i]]=hash;
+                            }
+                            if(i in hcap){
+                                hash=cells[hcap[i]]||{};
+                                hash.caption=v;
+                                cells[hcap[i]]=hash;
+                            }                            
+                        }
                     });
                     a[i]={cells:cells}
                 }
-                m=a[i].cells=xui.copy(a[i].cells);
-
-                xui.arr.each(m,function(o,i){
+ 
+                xui.arr.each(m = a[i].cells, function(o,i){
                     //It's a hash
                     if(!!o && xui.isHash(o))
                         m[i]=xui.copy(o);

@@ -126,7 +126,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             if(xui.isFun(t1) && false===t1(requestId, prf))
                 return;
             else if( xui.isHash(t1) && xui.isArr(t1.actions)
-                        && false===xui.pseudocode._callFunctions(t1.actions,  [requestId, prf], ns.getHost())
+                        && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'APICaller_beforeInvoke')
                     )
                     return;
             // Normally, Gives a change to modify "queryArgs" for XML
@@ -151,7 +151,7 @@ xui.Class("xui.APICaller","xui.absObj",{
 
                         // the global handler
                         if(xui.isFun(t3))t3(rspData, requestId, prf);
-                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3.actions,  [rspData, requestId, prf], ns.getHost());
+                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_onError');
 
                         if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                         xui.tryF(onFail,arguments,this);
@@ -298,7 +298,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 if(xui.isFun(t2) && false===t2(rspData, requestId, prf)){
                     return false;
                 }else if( xui.isHash(t2) && xui.isArr(t2.actions)
-                        && false===xui.pseudocode._callFunctions(t2.actions,  [rspData, requestId, prf], ns.getHost())
+                        && false===xui.pseudocode._callFunctions(t2,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_beforeData')
                     ){
                     return false;
                 }
@@ -347,7 +347,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                                 break;
                         }
                         if(t && t.actions && xui.isArr(t.actions)){
-                            xui.pseudocode._callFunctions(t.actions, [rspData, ns], host);
+                            xui.pseudocode._callFunctions(t, [rspData, ns], host,null,null,(host&&host.alias)+"."+ns.alias + "." + o.name);
                         }
                     });
                 }
@@ -374,7 +374,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                
                 // the global handler
                 if(xui.isFun(t3))t3(rspData, requestId, prf);
-                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3.actions,  [rspData, requestId, prf], ns.getHost());
+                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_onError');
 
                 if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                 xui.tryF(onFail,arguments,this);

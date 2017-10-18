@@ -1757,6 +1757,8 @@ xui.set(xui.Locale,["en","app"], {
                     "msg1 [Optional]: Object, message 1",
                     "msg2 [Optional]: Object, message 2",
                     "msg3 [Optional]: Object, message 3",
+                    "msg4 [Optional]: Object, message 4",
+                    "msg5 [Optional]: Object, message 5",
                     "callback [Optional]: Functin, callback"
                 ]
             },
@@ -1795,6 +1797,8 @@ xui.set(xui.Locale,["en","app"], {
                     "msg1: Object, message object 1",
                     "msg2: Object, message object 2",
                     "msg3: Object, message object 3",
+                    "msg4: Object, message object 4",
+                    "msg5: Object, message object 5",
                     "callback: Functin, callback"
                 ]
             },
@@ -5340,6 +5344,8 @@ xui.set(xui.Locale,["en","app"], {
                 "msg1 [Required]: Object, message 1",
                 "msg2 [Optional]: Object, message 2",
                 "msg3 [Optional]: Object, message 3",
+                "msg4 [Optional]: Object, message object 4",
+                "msg5 [Optional]: Object, message object 5",
                 "sender [Optional] : Object, the message sender"
             ]
         },
@@ -5560,7 +5566,9 @@ xui.set(xui.Locale,["en","app"], {
                     "key [Required] : String",
                     "msg1 [Optional]: Object,  argument 1 for callback function",
                     "msg2 [Optional]: Object,  argument 2 for callback function",
-                    "msg3 [Optional]: Object,  argument 3 for callback function"
+                    "msg3 [Optional]: Object,  argument 3 for callback function",
+                    "msg4 [Optional]: Object,  argument 2 for callback function",
+                    "msg5 [Optional]: Object,  argument 3 for callback function"
                 ]
             },
             applyExcelFormula:{
@@ -5747,6 +5755,8 @@ xui.set(xui.Locale,["en","app"], {
                     "msg1: Object, message object 1",
                     "msg2: Object, message object 2",
                     "msg3: Object, message object 3",
+                    "msg4: Object, message object 4",
+                    "msg5: Object, message object 5",
                     'source: Object, the message source'
                 ]
             },
@@ -6893,11 +6903,11 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $memo:"If dirtyMark and showDirtyMark are [true], the component maybe show the dirty mark in UI when its value was changed"
             },
-            getFormInput:{
+            getIsFormField:{
                 $desc:"To determine whether the valuable control is a form input or not",
                 $rtn:"Boolean"
             },
-            setFormInput:{
+            setIsFormField:{
                 $desc:"To specify whether the valuable control is a form input or not",
                 $rtn:"[self]",
                 $paras:[
@@ -11957,7 +11967,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired before the pop-up window shows. If returns false, the default pop action won't show",
                 $paras:[
                     $profile,
-                    "popCtl : xui.UIProfile, pop-up window UI Control"
+                    "popCtl : xui.UIProfile, pop-up window UI Control",
+                    "items : Array, the list items"
                 ]
             },
             afterPopShow:{
@@ -18316,7 +18327,8 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "cell: Object",
                     "proEditor: xui.UIProfile, the editor profile Object, if the editor exists",
-                    "popCtl : xui.UIProfile, pop-up window UI Control"
+                    "popCtl : xui.UIProfile, pop-up window UI Control",
+                    "items : Array, the list items"
                 ]
             },
             afterPopShow :{

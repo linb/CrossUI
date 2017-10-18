@@ -3664,9 +3664,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         if(key.indexOf(":")!=-1){
                                             keys=key.split(':');
                                         }
-                                        if(keys && keys[1] && keys[2]){
-                                            hash[keys[1]]=uv;
-                                            hash[keys[2]]=ins.getCaption();
+                                        if(keys && keys[0] && keys[1]){
+                                            hash[keys[0]]=uv;
+                                            hash[keys[1]]=ins.getCaption();
                                         }else if(withCaption){
                                             hash[key]={
                                                 value : uv,
@@ -3687,10 +3687,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 this.getFormElements(false,subId).each(function(prf){
                                     var prop=prf.properties, ins=prf.boxing(),key=prop.name || prf.alias,keys,cap;
                                     if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
-                                        if(key.indexOf(":")!=-1){
-                                            keys=key.split(':');
-                                        }
-                                        if(keys && keys[1] && keys[2]){
+                                        keys=key.split(':');
+                                        if(keys && keys[0] && keys[1]){
                                             key=keys[0];
                                             cap=keys[1];
                                         }
@@ -3713,7 +3711,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             var a=this.getChildren(subId, false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
-                                return !!xui.get(prf,['properties','formInput']);
+                                return !!xui.get(prf,['properties','isFormField']);
                             });
                             if(dirtiedOnly){
                                 var arr=[],ins,t;
@@ -5707,8 +5705,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         }
                                     }
                                 }
-                                if(pprf._conDockFlexFillW)delete pprf._conDockFlexFillW;
-                                if(pprf._conDockFlexFillH)delete pprf._conDockFlexFillH;
+                                if(pprf&&pprf._conDockFlexFillW)delete pprf._conDockFlexFillW;
+                                if(pprf&&pprf._conDockFlexFillH)delete pprf._conDockFlexFillH;
 
                                 // repos && resize
                                 for(k=0;key=arr[k++];){
@@ -6557,11 +6555,17 @@ xui.Class("xui.UI",  "xui.absObj", {
                 ajd=profile.box.adjustData;
             //set map
             for(var i=0,l=items.length;i<l;i++){
-                if(typeof items[i]!='object')
+                if(xui.isHash(items[i])){}
+                else if(xui.isArr(items[i])){
+                    items[i]={id:items[i][0]};
+                    if(items.length>1)items[i].caption=items[i][1];
+                }else{
                     items[i]={id:items[i]};
-                item=items[i];
-            
+                }
+
                 if(items[i].id==='?')items[i].id = xui.rand();
+                
+                item = items[i];
 
                 if(profile.beforePrepareItem && false===profile.boxing().beforePrepareItem(profile, item, pid, mapCache, serialId)){
                     continue;
@@ -7257,12 +7261,15 @@ xui.Class("xui.absList", "xui.absObj",{
             if(!xui.isArr(arr))arr=[arr];
             var a=xui.copy(arr),m;
             xui.arr.each(a,function(o,i){
-                if(!xui.isHash(o))
-                    a[i]={id:o+''};
-                else{
+                if(xui.isArr(o) && o.length){
+                    a[i]={id:o[0]};
+                    a[i].id=xui.isSet(a[i].id)?(a[i].id+''):xui.id();
+                    if(xui.isSet(o[1]))a[i].caption=o[1]+'';
+                }else if(xui.isHash(o)){
                     a[i]=xui.copy(o);
                     a[i].id=xui.isSet(a[i].id)?(a[i].id+''):xui.id();
-                }
+                }else
+                    a[i]={id:o+''};
             });
             return a;
         },
@@ -7549,7 +7556,7 @@ xui.Class("xui.absValue", "xui.absObj",{
                     if(profile.onValueChange)box.onValueChange(profile, ovalue, value, force, tag);
                 }
             },
-            formInput:true,
+            isFormField:true,
             dirtyMark:true,
             showDirtyMark:true
         },
