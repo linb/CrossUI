@@ -16752,6 +16752,20 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"判断界面值已经被修改",
                 $rtn:"Boolean"
             },
+            isCellDirtied:{
+                $desc:"判断单元格是否已经被修改",
+                $rtn:"Boolean",
+                $paras:[
+                    "cell [必需参数] : Object, 单元格"
+                ]
+            },
+            isRowDirtied:{
+                $desc:"判断行是否已经被修改",
+                $rtn:"Boolean",
+                $paras:[
+                    "row [必需参数] : Object, 行"
+                ]
+            },
             getCells:{
                 $desc:"返回所有单元格的值",
                 $rtn:"Objcet. {cellId:{rowId:, colId:, value:, oValue:}}",
@@ -17193,7 +17207,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "arr [必需参数] : Array, 行项目数组",
                     "pid [可选参数] : String, 父行id",
                     "base [可选参数] : String, 基准行id",
-                    "before [可选参数] : Boolean, 插入行在基准行之前或之后. 默认为 false;"
+                    "before [可选参数] : Boolean, 插入行在基准行之前或之后. 默认为 false;",
+                    "ignoreMixColumn [可选参数] : Boolean, 忽略混合行影响. 默认为 false;"
                  ],
                 $snippet:[
                     "var id='xui.temp.grid128'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17611,6 +17626,15 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"得到当前的单元格编辑器",
                 $rtn:"Object"
             },
+            updateEditor:{
+                $desc:"更新单元格编辑器",
+                 $rtn:"[self]",
+                $paras:[
+                    "value [可选参数] : Object, 值",
+                    "caption [可选参数] : String, 显示字符",
+                    "prop [可选参数] : Hash, 属性"
+                ]
+            },
             getEditCell:{
                 $desc:"得到当前正在编辑的单元格",
                 $rtn:"Object"
@@ -17892,6 +17916,20 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"去除[热行]",
                 $rtn:"[self]"
             },
+            getHotRow:{
+                $desc:"得到[热行]",
+                $rtn:"Object",
+                $paras:[
+                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                ]
+            },
+            updateHotRow:{
+                $desc:"更新[热行]",
+                $rtn:"[self]",
+                $paras:[
+                    "cells [必需参数] : Hash/Array, [热行]的单元格数据"
+                ]
+            },
             beforeCellActive:{
                 $desc:"在单元格激活前被调用. 返回false将阻止单元格被激活",
                 $paras:[
@@ -18008,14 +18046,15 @@ xui.set(xui.Locale,["cn","app"], {
             onInitHotRow:{
                 $desc:"当[热行]需要数据初始化时调用, 需要返回初始化的行数据",
                 $paras:[
-                    $profile
+                    $profile,
+                    "row : Object, [热行]map对象"
                 ]
             },
             beforeHotRowAdded:{
                 $desc:"在[热行]被加到Grid前调用. 如果返回[true], [热行]被加入; 如果返回[false],[热行]被删除; 如果返回cell，[热行]保留，并且cell获得焦点; 如果返回[null],没有影响",
                 $paras:[
                     $profile,
-                    "row : Object. 行对象",
+                    "row : Object. 行map对象",
                     "leaveGrid : Booean. 是否触发事件的光标在Grid之外"
                 ]
             },

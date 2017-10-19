@@ -4464,7 +4464,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets a set of Properties(or a specified Property with a key) to all inner Profiles",
                 $rtn:"[self]",
                 $paras:[
-                    "key [Required] : Object/String, A set of event or key",
+                    "key [Required] : Object/String, A set of prop or key",
                     "value [Optional] : Object, a property value"
                 ]
             },
@@ -16400,7 +16400,7 @@ xui.set(xui.Locale,["en","app"], {
                     "arr [Required] : Array, A set of Item objects",
                     "pid [Optional] : String, The parent node id",
                     "base [Optional] : String, The base item id string",
-                    "before [Optional] : Boolean, Indicats whether it inserts the target items before the base, or after the base. Default is false;"
+                    "before [Optional] : Boolean, Indicates whether it inserts the target items before the base, or after the base. Default is false;"
                 ],
                 $snippet:[
                     "var id='xui.temp.tb13'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -16840,6 +16840,20 @@ xui.set(xui.Locale,["en","app"], {
                     "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
                 ]
             },
+            isCellDirtied:{
+                $desc:"To check whether or not the cell is modified",
+                $rtn:"Boolean",
+                $paras:[
+                    "cell [Required] : Object, the cell"
+                ]
+            },
+            isRowDirtied:{
+                $desc:"To check whether or not the row is modified",
+                $rtn:"Boolean",
+                $paras:[
+                    "row [Required] : Object, the row"
+                ]
+            },
             getDirtied:{
                 $desc:"Gets all dirtied cells value",
                 $rtn:"Objcet. {cellId:{rowId:, colId:, value:, oValue:}}",
@@ -17272,7 +17286,8 @@ xui.set(xui.Locale,["en","app"], {
                     "arr [Required] : Array, A set of Item objects",
                     "pid [Optional] : String, the parent id",
                     "base [Optional] : String, the base row id string",
-                    "before [Optional] : Boolean, Indicats whether it inserts the target rows before the base, or after the base. Default is false;"
+                    "before [Optional] : Boolean, Indicates whether it inserts the target rows before the base, or after the base. Default is false;",
+                    "ignoreMixColumn [Optional] : Boolean, Indicates whether ignore the mix column effect or not. Default is false;"
                  ],
                 $snippet:[
                     "var id='xui.temp.grid128'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17690,6 +17705,15 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets the cell editor",
                 $rtn:"Object"
             },
+            updateEditor:{
+                $desc:"Sets the cell editor",
+                 $rtn:"[self]",
+                $paras:[
+                    "value [Optional] : Object, the value",
+                    "caption [Optional] : String, the caption string",
+                    "prop [Optional] : Hash, the properties"
+                ]
+            },
             getEditCell:{
                 $desc:"Gets the editing cell object",
                 $rtn:"Object"
@@ -17970,6 +17994,20 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"To remove the hot row",
                 $rtn:"[self]"
             },
+            getHotRow:{
+                $desc:"Gets the hot row",
+                $rtn:"Object",
+                $paras:[
+                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                ]
+            },
+            updateHotRow:{
+                $desc:"To update the hot row",
+                $rtn:"[self]",
+                $paras:[
+                    "cells [Required] : Hash/Array, the row cells map or array"
+                ]
+            },
             beforeCellActive:{
                 $desc:"Fired before the cell is activated. If returns false, the activation will be ignored",
                 $paras:[
@@ -18087,14 +18125,15 @@ xui.set(xui.Locale,["en","app"], {
             onInitHotRow:{
                 $desc:"Fired when the hot row need to be inited. [Needs to return an init row object.]",
                 $paras:[
-                    "profile : xui.UIProfile. The current control's profile object"
+                    "profile : xui.UIProfile. The current control's profile object",
+                    "row : Object, hot row's map object"
                 ]
             },
             beforeHotRowAdded:{
                 $desc:"Fired before the hot row is added. If it returns true, the new row will be added; if it returns false, the hot row will be removed; if it returns cell, the new row will not be added, and the cell in the hot row will be focused; if it returns [null], do nothing",
                 $paras:[
                     $profile,
-                    "row : Object. row object",
+                    "row : Object. row map object",
                     "leaveGrid : Booean. to determine the event cursor leaves grid or not"
                 ]
             },

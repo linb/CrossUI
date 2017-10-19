@@ -2120,7 +2120,7 @@ new function(){
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 };
         },
-        exec:function(_ns, conf, resumeFun){
+        exec:function(_ns, conf, resumeFun, level){
            var  t,tt,m,n,p,k,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2204,7 +2204,7 @@ new function(){
                 iconditions=[],t1,t2,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             
-            var _debug = ["["+conf.desc + "] \""+ type +" > " + target +" > " +  method+"\""]; 
+            var _debug = [conf.desc + " - "+ type +" > " + target +" > " +  method]; 
 
             // cover with inline params
             if(method.indexOf("-")!=-1){
@@ -2223,10 +2223,10 @@ new function(){
                     !xui.isDefined(t2=xui.adjustVar(con.right, _ns))?xui.adjustVar(con.right):t2,
                     con.symbol)){
                     if(typeof resumeFun=="function"){
-                        xui._debugInfo.apply(xui, ["x "].concat(_debug).concat(conf));
+                        xui._debugInfo.apply(xui, [xui.str.repeat('--', level||1) +"x ", _debug, conf]);
                         return resumeFun();
                     }
-                    xui._debugInfo.apply(xui, ["x "].concat(_debug).concat(conf));
+                    xui._debugInfo.apply(xui, [xui.str.repeat('--', level||1) +"x ", _debug, conf]);
                     return;
                 }
             }
@@ -2484,7 +2484,7 @@ new function(){
                                             }else if(doit2){
                                                 // nested call
                                                 // arguemsnt of function/event is modified
-                                                t=xui.pseudocode._callFunctions(t, args, _ns.page, _ns.temp,null, '[nested] '+(t.desc||t.id));
+                                                t=xui.pseudocode._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested '+(t.desc||t.id||""), (level||1)+1);
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
@@ -2495,7 +2495,7 @@ new function(){
                             }
                             break;
                     }
-                    xui._debugInfo.apply(xui, ["! "].concat(_debug).concat(["(",iparams,")",conf]));
+                    xui._debugInfo.apply(xui, [xui.str.repeat('--', level||1) +"v ", _debug, iparams,conf]);
                 };
                 // asy
                 if(timeout!==null)xui.asyRun(fun,timeout);
@@ -2504,7 +2504,7 @@ new function(){
             return conf["return"];
         },
 
-        _callFunctions:function(pseudo, args, module, temp, holder, fromtag){
+        _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
             var fun, resume=0, t, rtn,
                 funs = pseudo.actions || pseudo || [],
@@ -2541,10 +2541,10 @@ new function(){
                                 if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                     if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                                 };
-                                xui.pseudocode.exec(_ns, fun, resumeFun);
+                                xui.pseudocode.exec(_ns, fun, resumeFun, level);
                                 break;
                             }else
-                                if(false===(xui.pseudocode.exec(_ns, fun))){
+                                if(false===(xui.pseudocode.exec(_ns, fun,null, level))){
                                     resume=j;break;
                                 }
                         }
@@ -2552,9 +2552,9 @@ new function(){
                     if(resume==j)resume=recursive=null;
                     return irtn;
                 };
-            if(!innerE)xui._debugInfo("< #pseudo ", "["+fromtag+"]", pseudo, _ns); 
+            if(!innerE)xui._debugInfo(xui.str.repeat('--',(level||1)-1)+ "<<#pseudo ", "["+fromtag+"]", pseudo, _ns); 
             funsrtn = recursive();
-            if(!innerE)xui._debugInfo(">"); 
+            if(!innerE)xui._debugInfo(xui.str.repeat('--',(level||1)-1)+">>"); 
 
             if(rtn){
                 rtn=xui.adjustVar(t=rtn, _ns);
@@ -4696,7 +4696,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                                     if(arguments[0]!=prf)args[0]=prf;
                                     for(j=0;j<l;j++)args[args.length]=arguments[j];
                                     if(xui.isStr(events)||xui.isFun(events))events=[events];
-                                    if(xui.isNumb(j=(events.actions||events)[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                                    if(xui.isArr(events.actions||events) && xui.isNumb(j=(events.actions||events)[0].event))args[j]=xui.Event.getEventPara(args[j]);
 
                                     return xui.pseudocode._callFunctions(events, args, host, null,prf.$holder, ((host&&host.alias)||(prf.$holder&&prf.$holder.alias))+"."+prf.alias+"."+i);
                                 }
@@ -5128,15 +5128,14 @@ xui.Class("xui.ExcelFormula",null,{
             }
             return result;
         },
-        toCoordinate : function(cell, offset){
+        toCoordinate : function(cell, offset, rtnArr){
             var alpha = /[A-Z]+/,
                 num = /[0-9]+/,
-                cellU = cell.toUpperCase();
+                cellU = cell.toUpperCase(),row,col;
             if(!offset&&offset!==0)offset=-1;
-            return {
-                col:this.toColumnNum(cellU.match(alpha)[0]) + offset, 
-                row:parseInt(cellU.match(num)[0], 10) + offset
-            };
+            row = parseInt(cellU.match(num)[0], 10) + offset;
+            col = this.toColumnNum(cellU.match(alpha)[0]) + offset;
+            return rtnArr ? [row, col] : {col:col,row:row};
         },
         toCellId : function(col, row, offset){
             return this.toColumnChr(col+(offset||1)) + (row+(offset||1));

@@ -140,7 +140,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         row.cells=[i,{value:'[...]'},''];
                         me.call(ns, o,true,row.sub);
                     }else{
-                        ns._getType(o);
+                        //ns._getType(o);
                         row.cells=[i,xui.stringify(o),''];
                     }
                     row._type=type;
@@ -181,8 +181,9 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             return array ? '['+a.join(',')+']' : '{'+a.join(',')+'}';
         },
         _tg_onEdit:function(profile, obj, editor, type){
-            if(profile.properties.bigFont)
+            if(profile.properties.multiLineValue)
                 editor.getSubNode("INPUT").scrollTop(0);
+            this.fireEvent("onEdit", [obj._col.id, editor]);
         },
         // for value 
         _tg_beforeIniEditor:function(profile, obj, cellNode, pNode, type){
@@ -347,7 +348,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 var prop=module.properties;
                 module.tg.updateHeader("key", xui.adjustRes(prop.keyCaption)||"key");
                 module.tg.updateHeader("value", xui.adjustRes(prop.valueCaption)||"value");
-                module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
+                module.tg.updateHeader("value", {type:prop.multiLineValue?'textarea':'input'});
 
                 if('value' in prop) module.setValue(prop.value);
                 if(('tg' in module) && ('notree' in prop) && prop.notree){
@@ -362,7 +363,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             if(module._innerModulesCreated && module.tg){
                 if('keyCaption' in prop) module.tg.updateHeader("key", xui.adjustRes(prop.keyCaption)||"");
                 if('valueCaption' in prop) module.tg.updateHeader("value", xui.adjustRes(prop.valueCaption)||"");
-                if('bigFont' in prop) module.tg.updateHeader("value", {type:prop.bigFont?'textarea':'input'});
+                if('multiLineValue' in prop) module.tg.updateHeader("value", {type:prop.multiLineValue?'textarea':'input'});
 
                 if('value' in prop) module.setValue(prop.value);
             }
@@ -372,11 +373,12 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         $DataModel:{
             keyCaption:"key",
             valueCaption:"value",
-            bigFont:true,
+            multiLineValue:true,
             notree:false
         },
         $EventHandlers:{
-            onchange:function(module/*xui.Module, the current module*/){}
+            onchange:function(module/*xui.Module, the current module*/){},
+            onEdit:function(column/*String, the column id*/, editor/*the editor*/){}
         }
     }
 });
