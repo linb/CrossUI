@@ -7463,7 +7463,8 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     "dirtiedOnly [Optional] : Boolean, to determine whether return dirtied controls only",
                     "subId [Optional]: String, id",
-                    "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]"
+                    "withCaption [Optional] : Boolean, to determine whether include caption(returns {fieldname:{value:xxx,caption:xxx}} ), Default is [false]",
+                    "withCaptionField [Optional] : Boolean, to determine whether include caption( returns {valueField:xxx,captionField:xxx}) if the field control name is 'valueField:captionField', Default is [false]"
                 ]
             },
             setFormValues:{
@@ -17500,11 +17501,11 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             getRawData :{
-                $desc:"Gets the grid's raw data",
+                $desc:"Gets the grid's raw mapped data",
                 $rtn:"Array"
             },
             setRawData :{
-                $desc:"Sets the grid's raw data",
+                $desc:"Sets the grid's raw mapped data",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : Array. [{col1:v1,col2:v1}]",

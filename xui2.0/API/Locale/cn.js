@@ -7486,7 +7486,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "dirtiedOnly [可选参数] : Boolean, 是否只获得脏控件的界面值",
                     "subId [可选参数]: String, 子容器id",
-                    "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false"
+                    "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(返回 {fieldname:{value:xxx,caption:xxx}} ),默认为false",
+                    "withCaptionField [可选参数] : Boolean, 如果字段控件有复合绑定(控件名: valueField:captionField)，决定是否连控件的caption 字段一起获取(返回{valueField:xxx,captionField:xxx}), 默认为false"
                 ]
             },
             setFormValues:{

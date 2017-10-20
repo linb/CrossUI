@@ -3651,7 +3651,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getPanelChildren:function(){
                             return this.get(0).children;
                         },
-                        getFormValues:function(dirtiedOnly, subId, withCaption){
+                        getFormValues:function(dirtiedOnly, subId, withCaption, withCaptionField){
                             var hash={};
                             this.getFormElements(false,subId).each(function(prf){
                                 var p=prf.properties, key = p.name || prf.alias, keys,
@@ -3660,8 +3660,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     uv = ins.getUIValue();
                                 // v and uv can be object(Date,Number)
                                 if(!dirtiedOnly || (uv+" ")!==(ins.getValue()+" ")){
-                                    if(ins.getCaption){
-                                        if(key.indexOf(":")!=-1){
+                                    if(ins.getCaption && (withCaption || withCaptionField)){
+                                        if(withCaptionField && key.indexOf(":")!=-1){
                                             keys=key.split(':');
                                         }
                                         if(keys && keys[0] && keys[1]){
@@ -3676,7 +3676,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                             hash[key]=uv;
                                         }
                                     }else{
-                                        hash[key]=uv;
+                                        hash[key.split(':')[0]]=uv;
                                     }
                                 }
                             });
@@ -4093,8 +4093,18 @@ xui.Class("xui.UI",  "xui.absObj", {
                             //hanlder focus
                             if(b){
                                 //export event
-                                if(profile.beforeNextFocus && false === profile.boxing().beforeNextFocus(profile,e,k.shiftKey,src))
+                                if(profile.beforeNextFocus && false === profile.boxing().beforeNextFocus(profile,e,k.shiftKey,src)){
+                                    // fake a tab key, to envoke onHotKeydown/onHotKeyup
+                                    switch(k.key){
+                                        case 'tab':
+                                        case 'enter':
+                                            if(profile.onHotKeydown)profile.boxing().onHotKeydown(profile,xui.Event.getKey(e),e, src);
+                                        case 'esc':
+                                            if(profile.onHotKeyup)profile.boxing().onHotKeyup(profile,xui.Event.getKey(e),e, src);
+                                            break;
+                                    }
                                     return false;
+                                }
 
                                 if(smartnav){
                                     if(key!='tab')

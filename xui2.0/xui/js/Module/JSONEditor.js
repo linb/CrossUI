@@ -241,7 +241,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         ops.sub=this._json2rows(xui.unserialize(va[1]),va[0]=='array');
                         options.caption=va[0]=='hash'?'{...}':'[...]';
                     }else{
-                        ops.sub=null;
+                        if(row.sub)ops.sub=null;
                     }
                     xui.asyRun(function(){
                         if(tg.isDestroyed())return;

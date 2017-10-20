@@ -138,7 +138,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 value = xui.ExcelFormula.calculate(f, cellsMap);
                 if(xui.isSet(value)){
                     if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
-                        this.setUIValue(value, true);
+                        this.setUIValue(value, true,null,'formula');
                     }
                 }
            }
@@ -942,7 +942,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         v="";
                     }
                     // dont trigger _setContrlValue
-                    profile.boxing().setUIValue(v,false,true,null,'asycheck');
+                    profile.boxing().setUIValue(v,false,true,'asycheck');
                 }
             });
         },

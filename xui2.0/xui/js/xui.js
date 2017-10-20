@@ -1118,7 +1118,7 @@ xui.merge(xui,{
     },
 
     setDateFormat:function(format){xui.$dateFormat=format},
-    getDateFormat:function(){return xui.$dateFormat},
+    getDateFormat:function(){return xui.$dateFormat||(xui.ini && xui.ini.dateFormat)},
 
     setAppLangKey:function(key){xui.$appLangKey=key},
     getAppLangKey:function(key){return xui.$appLangKey},
@@ -2223,10 +2223,10 @@ new function(){
                     !xui.isDefined(t2=xui.adjustVar(con.right, _ns))?xui.adjustVar(con.right):t2,
                     con.symbol)){
                     if(typeof resumeFun=="function"){
-                        xui._debugInfo.apply(xui, [xui.str.repeat('--', level||1) +"x ", _debug, conf]);
+                        xui._debugInfo.apply(xui, [xui.str.repeat('|', level||1) +" x ", _debug, conf]);
                         return resumeFun();
                     }
-                    xui._debugInfo.apply(xui, [xui.str.repeat('--', level||1) +"x ", _debug, conf]);
+                    xui._debugInfo.apply(xui, [xui.str.repeat('|', level||1) +" x ", _debug, conf]);
                     return;
                 }
             }
@@ -2495,7 +2495,7 @@ new function(){
                             }
                             break;
                     }
-                    xui._debugInfo.apply(xui, [xui.str.repeat('--', level||1) +"v ", _debug, iparams,conf]);
+                    xui._debugInfo.apply(xui, [xui.str.repeat('|', level||1) +" v ", _debug, iparams,conf]);
                 };
                 // asy
                 if(timeout!==null)xui.asyRun(fun,timeout);
@@ -2552,9 +2552,9 @@ new function(){
                     if(resume==j)resume=recursive=null;
                     return irtn;
                 };
-            if(!innerE)xui._debugInfo(xui.str.repeat('--',(level||1)-1)+ "<<#pseudo ", "["+fromtag+"]", pseudo, _ns); 
+            if(!innerE)xui._debugInfo(xui.str.repeat('|',(level||1)-1)+ "<#pseudo ", "["+fromtag+"]", pseudo, _ns); 
             funsrtn = recursive();
-            if(!innerE)xui._debugInfo(xui.str.repeat('--',(level||1)-1)+">>"); 
+            if(!innerE)xui._debugInfo(xui.str.repeat('|',(level||1)-1)+">"); 
 
             if(rtn){
                 rtn=xui.adjustVar(t=rtn, _ns);
@@ -2721,7 +2721,7 @@ new function(){
         return xui.isNaN(obj) ? "NaN" : 
                     xui.isNull(obj) ? "null" : 
                     !xui.isDefined(obj) ? "undefined" :
-                    T[typeof obj](obj,filter,dateformat||(xui&&xui.$dateFormat),0,0,MAXL,MAXS)||'';
+                    T[typeof obj](obj,filter,dateformat||(xui&&xui.getDateFormat()),0,0,MAXL,MAXS)||'';
     };
     xui.stringify = function(obj,filter,dateformat,MAXL,MAXS){
         return xui.fromUTF8(xui.serialize(obj,filter,dateformat,0,0,MAXL,MAXS));
@@ -2746,7 +2746,7 @@ new function(){
         }catch(e){
             return false;
         }
-        if(dateformat||(xui&&xui.$dateFormat))E(str);
+        if(dateformat||(xui&&xui.getDateFormat()))E(str);
         str=str._;
         return str;
     };

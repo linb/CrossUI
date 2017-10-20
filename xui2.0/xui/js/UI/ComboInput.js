@@ -922,7 +922,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.onCommand && false===profile.boxing().onCommand(profile,src,prop.commandBtn))
                         return;
                     if(prop.commandBtn=='delete'||prop.commandBtn=='remove')
-                        profile.boxing().setUIValue('',true);
+                        profile.boxing().setUIValue('',true,null,'cmd');
                 }
             },
             BOX:{

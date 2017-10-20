@@ -326,6 +326,9 @@ xui.Class('xui.Event',null,{
             . = del (46)
         */
         getKey:function(event){
+            // for the fake one
+            if(event&&event.$xuievent)return event;
+
             event=event||window.event;
             // use keyCode first for newer safari
             var res=[],t, k= event.$key || event.keyCode || event.charCode || 0;

@@ -1629,6 +1629,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         blur:function(){
             var n=this.get(0);
+            if(!n)return;
             n.blur();
             if(document.activeElement===n){
                 xui.asyRun(function(){
