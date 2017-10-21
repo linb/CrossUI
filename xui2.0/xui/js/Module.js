@@ -461,6 +461,12 @@ xui.Class('xui.Module','xui.absProfile',{
         customAppend:function(parent,subId,left,top,threadid){
             return false;
         },
+        popUp:function(pos, type, parent, trigger, group){
+            var module=this,
+                f=function(){module.getUIComponents(true).popUp(pos, type, parent, trigger, group);};
+            if(self.created)f()
+            else this.show(f);
+        },
         show:function(onEnd,parent,subId,threadid,left,top){
             if(false===this._fireEvent('beforeShow'))return false;
             parent=parent||xui('body');

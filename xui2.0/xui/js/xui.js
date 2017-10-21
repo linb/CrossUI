@@ -2299,19 +2299,6 @@ new function(){
                                 return;
                             }
 
-                            // handle hide / destroy
-                            if(method=="show"||method=="popUp"){
-                                // special for xui.Module.show
-                                var omethod=method;
-                                iparams.unshift(function(err,module){
-                                    if(omethod=="popUp" && !err){
-                                        var t=module.getUIComponents(true);
-                                        if((t=t.getRoot())&&(t=t.get(0)))
-                                            xui(t).pop(iparams[1]||_ns.args[0]);
-                                    }
-                                });
-                                method="show";
-                            }
                             if(ins){
                                 if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                             }
@@ -2339,11 +2326,7 @@ new function(){
                             break;
                         case 'control':
                         case 'module':
-                            if(method=="popUp"){
-                                 t=xui.get(_ns.page,[target]);
-                                 if((t=t.getRoot())&&(t=t.get(0)))
-                                    xui(t).pop(iparams[1]||_ns.args[0]);
-                            }else if(method=="disable"||method=="enable"){
+                            if(method=="disable"||method=="enable"){
                                 if(xui.isFun(t=xui.get(_ns.page,[target,"setDisabled"])))t.apply(_ns.page[target],[method=="disable",true]);
                             }else{
                                 if(method=="setProperties"){
@@ -4698,7 +4681,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                                     if(arguments[0]!=prf)args[0]=prf;
                                     for(j=0;j<l;j++)args[args.length]=arguments[j];
                                     if(xui.isStr(events)||xui.isFun(events))events=[events];
-                                    if(xui.isArr(events.actions||events) && xui.isNumb(j=(events.actions||events)[0].event))args[j]=xui.Event.getEventPara(args[j]);
+                                    if(xui.isArr(events.actions||events) && xui.isNumb(j=(events.actions||events)[0].event))args[j]=args[j]?xui.Event.getEventPara(args[j]):{};
 
                                     return xui.pseudocode._callFunctions(events, args, host, null,prf.$holder, ((host&&host.alias)||(prf.$holder&&prf.$holder.alias))+"."+prf.alias+"."+i);
                                 }

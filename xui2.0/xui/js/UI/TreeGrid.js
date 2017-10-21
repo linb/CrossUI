@@ -6908,7 +6908,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 && ( issharp || ((xui.str.endWith(editMode,"sharp") || editMode=="focus") &&   (editorAutoPop || noInputType)))
                              ) {
                                 expand=1;
-                                editor.expand(cellNode);
+                                editor.expand(cellNode,false,null);
                              }
                         }
                         editor.get(0).$editMode=editMode;

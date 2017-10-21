@@ -3444,6 +3444,17 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
+            popUp:{
+                $desc:"显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
+                $rtn:"String, 区域外点击隐藏的唯一标识",
+                $paras:[
+                    "pos [必需参数] : Object/xui.Dom/Element",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
+                    "trigger [必需参数] : Function or [null] :  隐藏触发函数",
+                    "group [可选参数] : xui.Dom, 触发函数的组对象"
+                ]
+            },
             text:{
                 $desc:"获取第一个元素的文本内容,或设置所有元素的文本内容",
                 $rtn:"String/[self]",
@@ -9056,6 +9067,17 @@ xui.set(xui.Locale,["cn","app"], {
                 ],
                 $snippet:[
                     "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
+                ]
+            },
+            popUp:{
+                $desc:"显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
+                $rtn:"String, 区域外点击隐藏的唯一标识",
+                $paras:[
+                    "pos [必需参数] : Object/xui.Dom/Element",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
+                    "trigger [必需参数] : Function or [null] :  隐藏触发函数",
+                    "group [可选参数] : xui.Dom, 触发函数的组对象"
                 ]
             },
             refresh:{

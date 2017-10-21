@@ -1332,6 +1332,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
             });
         },
+        popUp:function(pos, type, parent, trigger, group){
+            var prf=this.get(0), t=prf.getRoot();
+            if(t=t.get(0)){
+                xui(t).pop(pos, type, parent, trigger, group);
+            }
+        },
         show:function(parent,subId,left,top,ignoreEffects){
             return this.each(function(o){
                 var t=o.properties,
