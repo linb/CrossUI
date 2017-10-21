@@ -77,9 +77,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                 responseDataTarget=prop.responseDataTarget,
                 responseCallback=prop.responseCallback,
                 funs=xui.$cache.functions,
-                t1=funs.APICaller_beforeInvoke,
-                t2=funs.APICaller_beforeData,
-                t3=funs.APICaller_onError;
+                t1=funs['$APICaller:beforeInvoke'],
+                t2=funs['$APICaller:beforeData'],
+                t3=funs['$APICaller:onError'];
 
             queryURL = xui.adjustVar(queryURL);
 
@@ -126,7 +126,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             if(xui.isFun(t1) && false===t1(requestId, prf))
                 return;
             else if( xui.isHash(t1) && xui.isArr(t1.actions)
-                        && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'APICaller_beforeInvoke')
+                        && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'$APICaller:beforeInvoke')
                     )
                     return;
             // Normally, Gives a change to modify "queryArgs" for XML
@@ -151,7 +151,7 @@ xui.Class("xui.APICaller","xui.absObj",{
 
                         // the global handler
                         if(xui.isFun(t3))t3(rspData, requestId, prf);
-                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_onError');
+                        else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'$APICaller:onError');
 
                         if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                         xui.tryF(onFail,arguments,this);
@@ -247,15 +247,6 @@ xui.Class("xui.APICaller","xui.absObj",{
             if(xui.isEmpty(options.header)){
                 delete options.header;
             }
-            // If there's mocker, we need try to adjust queryURL and other args
-            var mocker = xui.APICaller.getMocker();
-            if(mocker && mocker.remoteSericeURL){
-                // remove header / and tail /
-                var endPoint = queryURL.replace(mocker.remoteSericeURL, '').replace(/^[/]+/,'').replace(/[/]+$/,'');                
-                if((mocker.blacklist && !mocker.blacklist[endPoint]) || (mocker.whitelist && mocker.whitelist[endPoint])){
-                    queryURL = mocker.mockerURL.replace(/[/]+$/,'') + "/" + endPoint;
-                }
-            }
             var cookies={},t;
             if(!xui.isEmpty(prop.fakeCookies)){
                 options.$onStart = function(){
@@ -298,7 +289,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 if(xui.isFun(t2) && false===t2(rspData, requestId, prf)){
                     return false;
                 }else if( xui.isHash(t2) && xui.isArr(t2.actions)
-                        && false===xui.pseudocode._callFunctions(t2,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_beforeData')
+                        && false===xui.pseudocode._callFunctions(t2,  [rspData, requestId, prf], ns.getHost(),null,null,'$APICaller:beforeData')
                     ){
                     return false;
                 }
@@ -374,7 +365,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                
                 // the global handler
                 if(xui.isFun(t3))t3(rspData, requestId, prf);
-                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'APICaller_onError');
+                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'$APICaller:onError');
 
                 if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
                 xui.tryF(onFail,arguments,this);
@@ -532,22 +523,6 @@ xui.Class("xui.APICaller","xui.absObj",{
             onData:function(profile, rspData, requestId){},
             beforeData:function(profile, rspData, requestId){},
             onError:function(profile, rspData, requestId){}
-        },
-        getMocker:function(){
-            return this._Mocker;
-        },
-        setMocker:function(obj){
-            this._Mocker=obj;
-        }//,
-        //_Mocker:{
-        //    remoteSericeURL:"",
-        //    mockerURL:"",
-        //    blacklist:{
-        //      xxx:1
-        //    },
-        //    whitelist:{
-        //      xxx:1
-        //    }
-        //}
+        }
     }
 });

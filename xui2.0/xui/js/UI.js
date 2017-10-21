@@ -1070,8 +1070,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                         xui.breakO(o.$beforeDestroy,2);
                     }
 
-                    if(o.renderId)o.getRoot().remove(true, purgeNow);
-                    else o.__gc(ignoreEffects, purgeNow);
+                    if(o.renderId){
+                        o.getRoot().remove(true, purgeNow);
+                    }
+                    else{
+                        o.__gc(ignoreEffects, purgeNow);
+                    }
                     xui.arr.removeFrom( ns._nodes, i);
 
                     if(o.$afterDestroy){
@@ -1559,21 +1563,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
                 if(pro.renderId){
                     var oldp;
-                    if(pro.parent && xui.get(pro,["properties","dock"])!='none' && 'absolute'==xui.get(pro,["properties","position"]) && !xui.get(pro,["properties","dockIgnore"]) && !xui.get(pro,["properties","dockFloat"])){
-                        if(target['xui.absBox'])
-                            oldp=target.reBoxing().parent();
-                    }
                     parentNode=inParent?parentNode:pro.getContainer(subId);
                     if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
+                        if(pro.parent && xui.get(pro,["properties","dock"])!='none' && 'absolute'==xui.get(pro,["properties","position"]) && !xui.get(pro,["properties","dockIgnore"]) && !xui.get(pro,["properties","dockFloat"])){
+                            if(target['xui.absBox'])
+                                oldp=target.reBoxing().parent();
+                        }
                         if(!base){
                             parentNode[pre?'prepend':'append'](target);
                         }else if(baseN){
                             baseN[pre?'addPrev':'addNext'](target);
                         }
-                    }
-                    //adjust old parent
-                    if(oldp&&oldp.get(0))
-                        oldp.onSize();
+                        //adjust old parent
+                        if(oldp&&oldp.get(0))
+                            oldp.onSize();
+                        }
                 }else{
                     if(!target['xui.UI']){
                         xui.arr.insertAny(pro.exchildren||(pro.exchildren=[]),[target,subId],index,true);
@@ -6325,7 +6329,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             p.boxing().adjustDock();
                             xui.tryF(p.clearCache,[],p);
                         }
-                        profile=fun=p=null;
+                        profile=p=null;
                     }
                 }else{
                     if(profile.$beforeDestroy)
@@ -7170,8 +7174,8 @@ xui.Class("xui.absList", "xui.absObj",{
                             var i=xui.arr.indexOf(value,bv);
                             if(i===-1)
                                 i=xui.arr.subIndexOf(value,"id",o.properties.value);
-                            if(i===-1)
-                                bv=value?value[0]?value[0].id?value[0].id:value[0]:"":"";
+                        //    if(i===-1)
+                         //       bv=value?value[0]?value[0].id?value[0].id:value[0]:"":"";
                         }
                     }
 

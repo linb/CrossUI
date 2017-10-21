@@ -1060,8 +1060,10 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     cover.css({
                         display:'block',width:Math.max(p.width(),p.scrollWidth())+'px',height:Math.max(p.height(),p.scrollHeight())+'px'
                     })
-                    .onMousedown(function(){return false})
+                    .onMousedown(function(){return profile.$inDesign?null:false})
                     .topZindex(true);
+
+                    if(profile.$inDesign)cover.onClick(function(){s.onClick(true)});
 
                     p.onSize(function(p){
                         p=xui(p);

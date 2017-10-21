@@ -1387,9 +1387,6 @@ xui.Class('xui.Module','xui.absProfile',{
                                     xui.UI.setDftProp(allp);
                                 }
                             }
-                            if((t=xui.ini.$WebAPIMocker) && xui.isHash(t)){
-                                xui.APICaller.setMocker(t);
-                            }
                         }catch(e){}
                         if(theme&&theme!="default"){
                             xui.setTheme(theme,true,function(){

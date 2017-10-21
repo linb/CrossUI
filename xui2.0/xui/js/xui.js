@@ -1040,6 +1040,7 @@ xui.merge(xui,{
     debugMode:true,
 
     Locale:{},
+    constant:{},
     $cache:{
         thread:{},
         SC:{},
@@ -1118,7 +1119,7 @@ xui.merge(xui,{
     },
 
     setDateFormat:function(format){xui.$dateFormat=format},
-    getDateFormat:function(){return xui.$dateFormat||(xui.ini && xui.ini.dateFormat)},
+    getDateFormat:function(format){return format||xui.$dateFormat||xui.$cache.data.$DATE_FORMAT},
 
     setAppLangKey:function(key){xui.$appLangKey=key},
     getAppLangKey:function(key){return xui.$appLangKey},
@@ -2114,6 +2115,7 @@ new function(){
                     page:module,
                     args:eventArgs,
                     functions:xui.$cache.functions,
+                    'constant':xui.constant,
                     'global':xui.$cache.data,
                     // special functions
                     getCookies:xui.Cookies.get,
@@ -2121,7 +2123,7 @@ new function(){
                 };
         },
         exec:function(_ns, conf, resumeFun, level){
-           var  t,tt,m,n,p,k,type=conf.type||"other",
+           var  t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
                         case '=':
@@ -2721,10 +2723,10 @@ new function(){
         return xui.isNaN(obj) ? "NaN" : 
                     xui.isNull(obj) ? "null" : 
                     !xui.isDefined(obj) ? "undefined" :
-                    T[typeof obj](obj,filter,dateformat||(xui&&xui.getDateFormat()),0,0,MAXL,MAXS)||'';
+                    T[typeof obj](obj,filter,xui.getDateFormat(dateformat),0,0,MAXL,MAXS)||'';
     };
     xui.stringify = function(obj,filter,dateformat,MAXL,MAXS){
-        return xui.fromUTF8(xui.serialize(obj,filter,dateformat,0,0,MAXL,MAXS));
+        return xui.fromUTF8(xui.serialize(obj,filter,xui.getDateFormat(dateformat),0,0,MAXL,MAXS));
     };
     // for safe global
     var safeW;
@@ -2746,7 +2748,7 @@ new function(){
         }catch(e){
             return false;
         }
-        if(dateformat||(xui&&xui.getDateFormat()))E(str);
+        if(xui.getDateFormat(dateformat))E(str);
         str=str._;
         return str;
     };

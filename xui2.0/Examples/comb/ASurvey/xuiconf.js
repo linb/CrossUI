@@ -22,20 +22,7 @@ xui.ini.$DefaultProp={
     }
 };
 // ]]Default Prop
-
-// To set Web API mocker
-// [[Web API Mocker
- xui.ini.$WebAPIMocker={
-//    "remoteSericeURL":"",
-//    "mockerURL":"",
-//    "blacklist":{
-//      "xxx":1
-//    },
-//    "whitelist":{
-//      "yyy":1
-//    }
-};
-// ]]Web API Mocker
+ 
 // [[Develop Env Setting
 xui.ini.$DevEnv = {
     "designViewConf":{
