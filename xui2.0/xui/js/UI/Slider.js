@@ -585,7 +585,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 labelGap=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelGap)||0,
                 ll, tt, ww, hh;
 
-            // caculate by px
+            // calculate by px
             if(width && width!='auto')width=profile.$px(width);
             if(height && height!='auto')height=profile.$px(height);
 

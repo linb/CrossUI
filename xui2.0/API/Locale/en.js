@@ -5994,6 +5994,18 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"To destroy the current Object",
                 $memo:"Usually, we do not need to call this function manually"
             },
+            getAutoStart:{
+                $desc:"To determine whether the timer is auto-start or not",
+                $rtn:"Boolean"
+            },
+            setAutoStart:{
+                $desc:"To specify  whether the timer is auto-start or not",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number",
+                    $force
+                ]
+            },
             getInteval:{
                 $desc:"Gets the timer's inteval",
                 $rtn:"Number"
@@ -14808,7 +14820,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "obj [Required] : Object{left:Nubmer,top:Number}/Element",
-                    "type [Optional] : Number(from 1 to 4,Default is 1), pop position type",
+                    "type [Optional] : String. one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'.Default is 'outer'",
                     "parent [Optional} : xui.Dom/Element,The popmenu's parent element"
                 ],
                 $snippet:[

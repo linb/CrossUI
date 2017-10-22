@@ -894,7 +894,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 box._refreshRegion(profile);
 
             // hide those
-            profile.getSubNodes(['PANEL','STATUS']).css('display','none');
+            profile.getSubNodes(['PANEL','BBAR']).css('display','none');
 
             if(t.minBtn){
                 // show restore button
@@ -1007,7 +1007,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         _unMin:function(profile){
             var t=profile.properties,
             ins=profile.boxing();
-            profile.getSubNodes(['PANEL','STATUS']).css('display','block');
+            profile.getSubNodes(['PANEL','BBAR']).css('display','block');
             profile.getSubNode('MIN').setInlineBlock();
 
             if(t.resizer && !t.pinned){

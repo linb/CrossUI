@@ -1626,6 +1626,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         },        
         _number:function(profile, value){
             var prop=profile.properties;
+             if(/^\s*\=/.test(value||"")){
+                 value = xui.ExcelFormula.calculate(value||"") || ""; 
+             }
             value=xui.toNumeric(value, prop.precision, prop.groupingSeparator, prop.decimalSeparator, prop.forceFillZero,prop.trimTailZero);
             if(xui.isSet(prop.max))
                 value=value>prop.max?prop.max:value;
@@ -1669,7 +1672,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             $hborder=$vborder=box._borderW() / 2;
             btnw=profile.getEmSize() * 1.5;
 
-            // caculate by px
+            // calculate by px
             if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + Math.round(v1._paddingH()/2)*2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
@@ -1814,7 +1817,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(pl)v1.css('paddingLeft',adjustunit(pl,icb));
             if(pr)v1.css('paddingRight',adjustunit(pr,ut));
 
-            // must recaculate here
+            // must recalculate here
             paddingW = isB?0:v1._paddingW();
             if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));

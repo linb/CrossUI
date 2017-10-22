@@ -112,7 +112,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             return data;
         },
         _ensureValue:function(profile,value){
-            return parseInt(value,10)||0;
+            return Math.max(0, Math.min(100, ((/^\s*\=/.test(value||"")) ? xui.ExcelFormula.calculate(value||"") : parseInt(value,10)) || 0));
         },
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,

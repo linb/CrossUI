@@ -59,7 +59,10 @@ xui.Class=function(key, pkey, obj){
     /*set constructor first and create _this
     upper is the first parent Class
     */
-    var cf=function(){if(typeof this.initialize=='function')this.initialize()};
+    var cf=function(){
+        if(xui.Class.$instanceCreated)xui.Class.$instanceCreated(this);
+        if(typeof this.initialize=='function')this.initialize()
+    };
     if(typeof obj.Constructor == 'function'){
         _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
         _this.Constructor = _funadj(obj.Constructor);
@@ -2899,7 +2902,7 @@ xui.Class('xui.Thread',null,{
             self.start();
         },
         start:function(time, delaycb){
-            var self=this, p=self.profile, task,delay;
+            var self=this, p=self.profile;
 
             if(p.__delaycb){
                 xui.tryF(p.__delaycb,[p.id],self);
@@ -2924,8 +2927,8 @@ xui.Class('xui.Thread',null,{
                     }
                 }
             }
-            if(p.status!="run")
-                p.status="run";
+           
+            p.status="run";
 
             if(!p.tasks.length)
                 return self.abort('empty');
@@ -2936,9 +2939,9 @@ xui.Class('xui.Thread',null,{
                 else
                     return self.abort('normal');
             }
-            task=p.tasks[p.index];
+            var task=p.tasks[p.index],
+                delay=typeof task=='number' ? task : (task && typeof task.delay=='number') ? task.delay : p.delay;
 
-            delay=typeof task=='number' ? task : (task && typeof task.delay=='number') ? task.delay : p.delay;
             p._left= (time || time===0)?time:delay;
 
             // clear the mistake trigger task
@@ -2953,6 +2956,7 @@ xui.Class('xui.Thread',null,{
             var n,p=this.profile;
             if(p.status=="pause")return;
             p.status="pause";
+
             if(p._asy!==0.1){
                 xui.clearTimeout(p._asy);
                 if(p.index>0)p.index--;
@@ -2973,22 +2977,25 @@ xui.Class('xui.Thread',null,{
         undefined: timetou to left
         */
         resume:function(time, delaycb){
-            var self=this;
-            if(self.profile.status=="run")return;
+            var self=this, p=self.profile;
+            if(p.status=="run")return self;
 
-            time = time===undefined ? self.profile._left :
-                        time===true ? self.profile.delay :
+            time = time===undefined ? p._left :
+                        time===true ? p.delay :
                         time===false ? 0 :
                         (Number(time) || 0);
 
-            self.profile.status="run";
+            p.status="run";
             self.start(time, delaycb);
             return self;
         },
         abort:function(flag){
-            var t=this.profile,onEnd=t.onEnd,id=t.id;
-            t.status="stop";
-            xui.clearTimeout(t._asy);
+            var self=this, p=self.profile;
+            if(p.status=="stop")return;
+            p.status="stop";
+
+            var onEnd=p.onEnd,id=p.id;
+            xui.clearTimeout(p._asy);
             this.__gc();
             // at last
             xui.tryF(onEnd, [id,flag]);
@@ -4912,7 +4919,7 @@ xui.Class("xui.Timer","xui.absObj",{
         _after_ini:function(profile){
             if(profile.$inDesign)return;
             xui.asyRun(function(){
-                if(profile&&profile.box)profile.boxing().start();
+                if(profile&&profile.box&&profile.properties.autoStart)profile.boxing().start();
             });
         },
         destroy:function(){
@@ -4925,16 +4932,19 @@ xui.Class("xui.Timer","xui.absObj",{
         start:function(){
             return this.each(function(profile){
                 if(profile.$inDesign)return;
-
-                var p=profile.properties,box=profile.boxing(),
-                t=xui.Thread.repeat(function(threadId){
-                    if(profile.onTime && false===box.onTime(profile,threadId))return false;
-                }, p.interval, function(threadId){
-                    profile.onStart && box.onStart(profile,threadId);
-                }, function(threadId){
-                    profile.onEnd && box.onEnd(profile,threadId);
-                });
-                profile._threadid = t.id;
+                if(profile._threadid){
+                    xui.Thread(profile._threadid).resume();
+                }else{
+                    var p=profile.properties,box=profile.boxing(),
+                    t=xui.Thread.repeat(function(threadId){
+                        if(profile.onTime && false===box.onTime(profile,threadId))return false;
+                    }, p.interval, function(threadId){
+                        profile.onStart && box.onStart(profile,threadId);
+                    }, function(threadId){
+                        profile.onEnd && box.onEnd(profile,threadId);
+                    });
+                    profile._threadid = t.id;
+                }
             });
         },
         suspend:function(){
@@ -4963,6 +4973,7 @@ xui.Class("xui.Timer","xui.absObj",{
             return o;
         },
         DataModel:{
+            autoStart:true,
             "interval":1000
         },
         EventHandlers:{
@@ -5182,6 +5193,7 @@ xui.Class("xui.ExcelFormula",null,{
             str = xui.replace(str, [
                 [/"(\\.|[^"\\])*"/,'1'],
                 [/'(\\.|[^'\\])*'/,'1'],
+                [/\{[^}]+\}/g,'1'],
                 [/([a-zA-Z\d]+\s*\:\s*[a-zA-Z\d]+)/g,'1'],
                 [/([a-zA-Z]+[\d]+)/g,'1']
             ]);

@@ -6055,6 +6055,18 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"销毁该对象",
                 $memo:"一般情况下,程序员无需直接调用该函数"
             },
+            getAutoStart:{
+                $desc:"是否自动运行",
+                $rtn:"Boolean"
+            },
+            setAutoStart:{
+                $desc:"设置是否自动运行",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean",
+                    $force
+                ]
+            },
             getInteval:{
                 $desc:"获取定时器间隔",
                 $rtn:"Number"
@@ -14723,7 +14735,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "obj [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number}或是DOM元素",
-                    "type [可选参数] : Number, 从1到4, 代表菜单相对弹出点的方位,东北,东南,西北,西南. 默认为1",
+                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象"
                 ],
                 $snippet:[
@@ -19269,6 +19281,7 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             'showDirtyMark':'显示脏标识'
         },
         xui_Timer:{
+            autoStart:"自动运行",
             interval:"定时间隔(ms)"
         },
         xui_MessageService:{
