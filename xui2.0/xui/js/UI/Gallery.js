@@ -208,10 +208,22 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                     node.style.display="none";
                     item._status='error';
                 }
+            },
+            FLAG:{
+                onClick:function(profile, e, src){
+                    var item = profile.getItemByDom(src),
+                        box = profile.boxing();
+
+                    if(profile.onFlagClick){
+                        box.onFlagClick(profile,item,e,src);
+                        return false;
+                    }
+                }
             }
         },
         DataModel:{
             tagCmds:null,
+            tagCmdsAlign:null,
             autoImgSize:{
                 ini:false,
                 action:function(){
@@ -296,7 +308,8 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             }
         },
         EventHandlers:{
-            onCmd:null
+            onCmd:null,
+            onFlagClick:function(profile,item,e,src){}
         },
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile), p=profile.properties;
@@ -319,7 +332,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
             item._tabindex = p.tabindex;
 
-            if(t=item.iconFontSize)item._fontSize=t;
+            if(t=item.iconFontSize)item._fontSize="font-size:"+t;
             item._imageClass='';
             if(!item.iconFontCode && !item.imageClass)item._imageClass += 'xui-icon-loading';
             if(item.imageClass)item._imageClass +=' ' + item.imageClass;

@@ -1429,7 +1429,11 @@ xui.merge(xui,{
             c=xui.$cache.clsByURI,
             f=xui.$cache.fetching,
             cls,t;
-         if(!isPath){
+        if(isPath){
+            cls=xui.getClassName(uri);
+            if(xui.SC.get(cls))
+                isPath=false;
+        }else{
              // special path( dont use any dynamic
              if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
              cls=uri;
@@ -2300,8 +2304,12 @@ new function(){
                             if(method=="destroy"){
                                 if(ins)if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                                 return;
+                            }else if(method=="show"){
+                                // special for xui.Module.show
+                                iparams.unshift(function(err,module){
+                                    if(err){xui.message(err);}
+                                });
                             }
-
                             if(ins){
                                 if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                             }
@@ -4894,8 +4902,7 @@ xui.Class("xui.Timer","xui.absObj",{
                 if(properties && properties.key && xui.absBox.$type[properties.key]){
                     options=properties;
                     properties=null;
-                    alias = options.alias;
-                    alias = c.pickAlias();
+                    alias = options.alias || c.pickAlias();
                 }else
                     alias = c.pickAlias();
                 profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
@@ -4913,7 +4920,7 @@ xui.Class("xui.Timer","xui.absObj",{
             profile.Instace=self;
             self.n0=profile;
             
-            if(self._after_ini)self._after_ini(profile);
+            if(self._after_ini)self._after_ini(profile,alias);
             return self;
         },
         _after_ini:function(profile){
@@ -4985,6 +4992,7 @@ xui.Class("xui.Timer","xui.absObj",{
         }
     }
 });
+
 xui.Class("xui.MessageService","xui.absObj",{
     Instance:{
         _ini:xui.Timer.prototype._ini,

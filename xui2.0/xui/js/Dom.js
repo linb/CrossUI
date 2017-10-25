@@ -756,7 +756,7 @@ xui.Class('xui.Dom','xui.absBox',{
             };
         },
         _getEmSize:function(rate){
-            return this.get(0) ? parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true)) * (rate||1) : null;
+            return this.get(0) ? (parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true))||0) * (rate||1) : null;
         },
         rotate:function(v){
             if(xui.isSet(v)){
@@ -806,8 +806,9 @@ xui.Class('xui.Dom','xui.absBox',{
         scaleX:function(v){
             if(xui.isSet(v)){
                 return this.each(function(o){
+                     v=parseFloat(v);
                      if(o.raphael&&o.id){
-                        v=parseFloat(v);
+                         v=v||0;
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
                             t=xui.clone(Raphael.parseTransformString(o.transform()),true);
@@ -821,6 +822,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             o.transform(t);
                         }
                     }else{
+                        if(xui.isNaN(v))v=1;
                         var transform=o.style.transform||"";
                         if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1'+v+',$3');
                         else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale('+v+',1)');
@@ -852,8 +854,9 @@ xui.Class('xui.Dom','xui.absBox',{
         scaleY:function(v){
             if(xui.isSet(v)){
                 return this.each(function(o){
+                    v=parseFloat(v);
                     if(o.raphael&&o.id){
-                        v=parseFloat(v);
+                        v=v||0;
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
                             t=xui.clone(Raphael.parseTransformString(o.transform()),true);
@@ -867,6 +870,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             o.transform(t);
                         }
                     }else{
+                         if(xui.isNaN(v))v=1;
                         var transform=o.style.transform||"";
                         if(/(scale\()([^,]+),([^)]+)/i.test(transform))transform=transform.replace(/(scale\()([^,]+),([^)]+)/i, '$1$2,'+v);
                         else if(/scale\([-\d.]*\)/i.test(transform))transform=transform.replace(/scale\([-\d.]*\)/i, 'scale(1,'+v+')');
@@ -899,7 +903,7 @@ xui.Class('xui.Dom','xui.absBox',{
             if(xui.isSet(v)){
                 return this.each(function(o){
                      if(o.raphael&&o.id){
-                        v=parseFloat(v);
+                        v=parseFloat(v)||0;
                         var prf=xui.Event._getProfile(o.id),t;
                         // modify the last 't'
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
@@ -941,7 +945,7 @@ xui.Class('xui.Dom','xui.absBox',{
             if(xui.isSet(v)){
                 return this.each(function(o){
                      if(o.raphael&&o.id){
-                        v=parseFloat(v);
+                        v=parseFloat(v)||0;
                         var prf=xui.Event._getProfile(o.id);
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
                             t=xui.clone(Raphael.parseTransformString(o.transform()),true);
@@ -984,7 +988,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(xui.isFinite(v))v+='deg';
                 return this.each(function(o){
                     var transform=o.style.transform||"";
-                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1'+v+',$3');
+                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1'+(v||0)+',$3');
                     else transform+=" skew("+v+",0deg)";
                     xui.Dom.setStyle(o,'transform',transform);
                 });
@@ -998,7 +1002,7 @@ xui.Class('xui.Dom','xui.absBox',{
                  if(xui.isFinite(v))v+='deg';
                 return this.each(function(o){
                     var transform=o.style.transform||"";
-                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1$2,'+v);
+                    if(/skew\([^)]*\)/i.test(transform))transform=transform.replace(/(skew\()([^,]+),([^)]+)/i, '$1$2,'+(v||0));
                     else transform+=" skew(0deg,"+v+")";
                     xui.Dom.setStyle(o,'transform',transform);
                 });
@@ -1713,43 +1717,19 @@ xui.Class('xui.Dom','xui.absBox',{
             fontSize:[12,18]
         }
         */
-        animate: function(params, onStart, onEnd, duration, step, type, threadid, unit, restore, times, _goback){
-            var me=arguments.callee, 
-                css=xui.CSS,
-                tween = xui.Dom.$AnimateEffects || (xui.Dom.$AnimateEffects = {
-                linear:function(s,c) {return (1/s)*c;},
-                sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
-                sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
-                sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
-                quadIn:function(s,c) {return (c/=s)*c;},
-                quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
-                quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
-                cubicIn:function(s,c) {return (c/=s)*c*c;},
-                cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
-                cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
-                quartIn:function(s,c) {return (c/=s)*c*c*c;},
-                quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
-                quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
-                quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
-                quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
-                quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
-                expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
-                expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
-                expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
-                circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
-                circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
-                circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
-                bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
-                bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
-                bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
-                backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
-                backOut:function(s,c) {var k=1.70158;   return ((c=c/s-1)*c*((k+1)*c+k)+1);},
-                backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
-                elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
-                elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
-                elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
-                }),
-                color = me.color || (me.color = function(from,to,curvalue){
+        animate: function(endpoints, onStart, onEnd, duration, step, type, threadid, unit, restore, times, _goback){
+            var self=this,  f, map={left:1,top:1,right:1,bottom:1,width:1,height:1},
+                prf = xui.$cache.profileMap[self.id()],
+                ctrl = prf?prf.boxing():null,
+                css = xui.CSS,
+                tween = xui.Dom.$AnimateEffects,
+                _get = function(node, ctrl, key, t){
+                    return (map[key] && ctrl && xui.isFun(ctrl[t='get'+xui.str.initial(key)])) ? ctrl[t](key) : node[key] ? node[key]() :node.css(key);
+                },
+                _set = function(node, ctrl, key, value, t){
+                    return (map[key] && ctrl && xui.isFun(ctrl[t='set'+xui.str.initial(key)])) ? ctrl[t](value) : node[key] ? node[key](value) :node.css(key, value);
+                },
+                color = function(from,to,curvalue){
                     if(typeof from !='string' || typeof to != 'string')return '#fff';
                     if(curvalue<0)return from;
                     if(curvalue>1) return to;
@@ -1770,18 +1750,24 @@ xui.Class('xui.Dom','xui.absBox',{
                     to = f2(to);
 
                     f3=function(from, to, value,c){
-                        var r= from[c]+Math.round(parseFloat(value*(to[c]-from[c])));
+                        var r= from[c]+Math.round(parseFloat(value*(to[c]-from[c]))||0);
                         return (r < 16 ? '0' : '') + r.toString(16)
                     };
                     return '#' + f3(from,to, curvalue, 'red') + f3(from,to, curvalue, 'green') + f3(from,to, curvalue, 'blue');
-                });
-            if(!params){
+                };
+            if(!endpoints){
                 if(onEnd)xui.tryF(onEnd);
                 return;
+            }else{
+                // adjust endpoints
+                xui.each(endpoints,function(o,i){
+                    if(!xui.isArr(o) || o.length===1) o = [_get(self, ctrl, i), o];
+                    endpoints[i]=o;
+                });
             }
-            var parmsBak=params;
+            var parmsBak=endpoints;
             // clone it now
-            params=xui.clone(params);
+            endpoints=xui.clone(endpoints);
             
             // Estimate duration by steps
             if((step||0)>0)
@@ -1789,12 +1775,13 @@ xui.Class('xui.Dom','xui.absBox',{
             else
                 duration = duration||200;
             times=times||1;
+            if((type||"").indexOf('-')!=-1)type=type.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
             type = (type in tween)?type:'circIn';
 
-            var starttime, node=this.get(0), self=this, fun=function(threadid){
+            var starttime, node=self.get(0), fun=function(threadid){
                 var offtime=xui.stamp() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
-                xui.each(params,function(o,i){
+                xui.each(endpoints,function(o,i){
                     s=o[0];e=o[1];u=o[2];
                     curvalue = tween[type](duration, offtime);
                     if(typeof o == 'function') o.call(self, curvalue);
@@ -1816,26 +1803,26 @@ xui.Class('xui.Dom','xui.absBox',{
                                     }
                                 }
                             }
-                            s=parseFloat(s);
-                            e=parseFloat(e);
+                            s=parseFloat(s)||0;
+                            e=parseFloat(e)||0;
                             curvalue = xui.toFixedNumber(s + (e-s)*curvalue, 6);
                         }
                         curvalue+=u||unit||'';
-                        (self[i]) ? (self[i](curvalue)) :(self.css(i, curvalue));
+                        _set(self, ctrl, i, curvalue)
                     }
                 });
                 if(offtime==duration){
                     if(restore&&!_goback){
                         starttime=xui.stamp();
                         _goback=1;
-                        xui.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                        xui.each(endpoints,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
                     }else{
                         if(times==-1||times>0){
                             starttime=xui.stamp();
                             if(times>0)times-=1;
                             if(_goback){
                                 _goback=0;
-                                xui.each(params,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                                xui.each(endpoints,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
                             }
                         }
                     }
@@ -1861,19 +1848,19 @@ xui.Class('xui.Dom','xui.absBox',{
                 xui.setNodeData(node,'_inthread',tid);
                 starttime=xui.stamp();
                 xui.setNodeData(node,'_animationreset',function(){
-                    xui.merge(params,parmsBak,'all');
+                    xui.merge(endpoints,parmsBak,'all');
                     starttime=xui.stamp();
                     fun();
                 });
                 return xui.tryF(onStart,arguments,this);
             }, function(tid,flag){
-                if('force'!=flag)
-                    xui.tryF(onEnd,arguments,this);
                 //maybe destroyed
                 if(node&&node.$xid){
                     xui.setNodeData(node,'_inthread',null);
                     xui.setNodeData(node,'_animationreset',null);
                 }
+                if('force'!=flag)
+                    xui.tryF(onEnd,arguments,this);
             },true);
         },
         pop : function(pos, type, parent, trigger, group){
@@ -2466,7 +2453,7 @@ type:4
             if(!b && xui.browser.ie678){
                 // INPUT/TEXTREA will always return % for font-size
                 if((name=='fontSize'||name2=='font-size') && /%/.test(value) && node.parentNode){
-                    value=(node.parentNode.currentStyle[name]||node.parentNode.currentStyle[name2]) * parseFloat(value);
+                    value=(node.parentNode.currentStyle[name]||node.parentNode.currentStyle[name2]) * (parseFloat(value)||0);
                 }else if(xui.CSS.$isEm(value)){
                     value=xui.CSS.$px(value, node);;
                 }
@@ -2769,8 +2756,8 @@ type:4
 
                     var l=-aw/2,t=-ah/2,w=aw,h=ah;
                     if(xui.isObj(orient)){
-                        l=orient.left||(Math.round(parseFloat(l))+'px');
-                        t=orient.top||(Math.round(parseFloat(t))+'px');
+                        l=orient.left||(Math.round(parseFloat(l)||0)+'px');
+                        t=orient.top||(Math.round(parseFloat(t)||0)+'px');
                     }else{
                         switch(orient){
                             case 'LT':
@@ -2812,8 +2799,8 @@ type:4
                     s.zIndex = '0';
                     s.top = t;
                     s.left = l;
-                    s.width = Math.round(parseFloat(w))+'px';
-                    s.height = Math.round(parseFloat(h))+'px';
+                    s.width = Math.round(parseFloat(w)||0)+'px';
+                    s.height = Math.round(parseFloat(h)||0)+'px';
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
@@ -3109,7 +3096,7 @@ type:4
                     var clr=o.clr;
                     if(xui.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
-                        clr="rgba("+_to255(clr.substr(0, 2))+","+_to255(clr.substr(2, 2))+","+_to255(clr.substr(4, 2))+","+parseFloat(o.opacity)+")";
+                        clr="rgba("+_to255(clr.substr(0, 2))+","+_to255(clr.substr(2, 2))+","+_to255(clr.substr(4, 2))+","+(parseFloat(o.opacity)||1)+")";
                     }
                     arr1.push(clr + " " + o.pos);
                     if(xb.isWebKit){
@@ -3156,7 +3143,7 @@ type:4
                     var clr=o.clr;
                     if(xui.isSet(o.opacity) && clr.charAt(0)=='#'){
                         clr=clr.slice(1);
-                        clr="rgba("+_to255(clr.substr(0, 2))+","+_to255(clr.substr(2, 2))+","+_to255(clr.substr(4, 2))+","+parseFloat(o.opacity)+")";
+                        clr="rgba("+_to255(clr.substr(0, 2))+","+_to255(clr.substr(2, 2))+","+_to255(clr.substr(4, 2))+","+(parseFloat(o.opacity)||1)+")";
                     }
                     arr1.push(clr + " " + o.pos);
                     if(xb.isWebKit){
@@ -3240,8 +3227,8 @@ type:4
             if(stops){
                 if(stops.length>1){
                     xui.arr.stableSort(stops,function(x,y){
-                        x=parseFloat(x.pos);
-                        y=parseFloat(y.pos);
+                        x=parseFloat(x.pos)||0;
+                        y=parseFloat(y.pos)||0;
                         return x>y?1:x==y?0:-1;
                     });
                 }else{
@@ -3274,16 +3261,16 @@ type:4
             }
         },
         _vAnimate:function(node,setting,callback){
-            if(!setting || !setting.params || xui.isEmpty(setting.params)){
+            if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
                 if(callback)xui.tryF(callback);
                 return;
             }
 
-            var params=setting.params,begin={},end={};
+            var endpoints=setting.endpoints,begin={},end={};
             node=xui(node);
-            xui.each(params,function(o,i){begin[i]=o[0];end[i]=o[1];});
+            xui.each(endpoints,function(o,i){begin[i]=o[0];end[i]=o[1];});
 
-            return node.animate(params, function(threadid){
+            return node.animate(endpoints, function(threadid){
                 node.css(begin);
             },function(threadid){
                 node.css(end);
@@ -3504,47 +3491,80 @@ type:4
             }
             return _c[key]=rt;
         },
+        $AnimateEffects:{
+            linear:function(s,c) {return (1/s)*c;},
+            sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
+            sineOut:function(s,c) {return Math.sin(c/s*(Math.PI/2));},
+            sineInOut:function(s,c) {return -1/2*(Math.cos(Math.PI*c/s)-1);},
+            quadIn:function(s,c) {return (c/=s)*c;},
+            quadOut:function(s,c) {return -1*(c/=s)*(c-2);},
+            quadInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c;} return -1/2*((--c)*(c-2)-1);},
+            cubicIn:function(s,c) {return (c/=s)*c*c;},
+            cubicOut:function(s,c) {return ((c=c/s-1)*c*c+1);},
+            cubicInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c;} return 1/2*((c-=2)*c*c+2);},
+            quartIn:function(s,c) {return (c/=s)*c*c*c;},
+            quartOut:function(s,c) {return -1*((c=c/s-1)*c*c*c-1);},
+            quartInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c;} return -1/2*((c-=2)*c*c*c-2);},
+            quintIn:function(s,c) {return (c/=s)*c*c*c*c;},
+            quintOut:function(s,c) {return ((c=c/s-1)*c*c*c*c+1);},
+            quintInOut:function(s,c) {if((c/=s/2)<1) {return 1/2*c*c*c*c*c;} return 1/2*((c-=2)*c*c*c*c+2);},
+            expoIn:function(s,c) {return (c==0)?0:Math.pow(2,10*(c/s-1));},
+            expoOut:function(s,c) {return (c==s)?1:(-Math.pow(2,-10*c/s)+1);},
+            expoInOut:function(s,c) {if(c==0) {return 0;} if(c==s) {return 1;} if((c/=s/2)<1) {return 1/2*Math.pow(2,10*(c-1));} return 1/2*(-Math.pow(2,-10*--c)+2);},
+            circIn:function(s,c) {return -1*(Math.sqrt(1-(c/=s)*c)-1);},
+            circOut:function(s,c) {return Math.sqrt(1-(c=c/s-1)*c);},
+            circInOut:function(s,c) {if((c/=s/2)<1) {return -1/2*(Math.sqrt(1-c*c)-1);} return 1/2*(Math.sqrt(1-(c-=2)*c)+1);},
+            bounceIn:function(s,c) {return 1-tween.bounceOut(s,s-c);},
+            bounceOut:function(s,c) {var k=7.5625; if((c/=s)<(1/2.75)) {return (k*c*c);}else if(c<(2/2.75)) {return (k*(c-=(1.5/2.75))*c+.75);}else if(c<(2.5/2.75)) {return (k*(c-=(2.25/2.75))*c+.9375);}else {return (k*(c-=(2.625/2.75))*c+.984375);}},
+            bounceInOut:function(s,c) {if(c<s/2) {return tween.bounceIn(s,c*2)*.5;}else {return tween.bounceOut(s,c*2-s)*.5+1*.5;}},
+            backIn:function(s,c) {var k=1.70158; return (c/=s)*c*((k+1)*c-k);},
+            backOut:function(s,c) {var k=1.70158;   return ((c=c/s-1)*c*((k+1)*c+k)+1);},
+            backInOut:function(s,c) {var k=1.70158; if((c/=s/2)<1) {return 1/2*(c*c*(((k*=(1.525))+1)*c-k));} return 1/2*((c-=2)*c*(((k*=(1.525))+1)*c+k)+2);},
+            elasticIn:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return -(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));},
+            elasticOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s)==1) {return 1;} if(!z) {z=s*.3;} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} return (a*Math.pow(2,-10*c)*Math.sin((c*s-k)*(2*Math.PI)/z)+1);},
+            elasticInOut:function(s,c,p,a,z) {if(c==0) {return 0;} if((c/=s/2)==2) {return 1;} if(!z) {z=s*(.3*1.5);} if(!a||a<1) {a=1; var k=z/4;}else {var k=z/(2*Math.PI)*Math.asin(1/a);} if(c<1) {return -.5*(a*Math.pow(2,10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z));} return a*Math.pow(2,-10*(c-=1))*Math.sin((c*s-k)*(2*Math.PI)/z)*.5+1;}
+        },
         $preDefinedAnims:{
             blinkAlert:{
-                params:{opacity:[1,0]}, 
+                endpoints:{opacity:[1,0]}, 
                 duration:200, 
                 restore: true, 
                 times:3
             },
             zoomAlert:{
-                params:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
+                endpoints:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
                 duration:100, 
                 restore: true, 
                 times:3
             },
             translateXAlert:{
-                params:{translateX:[0,5]}, 
+                endpoints:{translateX:[0,5]}, 
                 duration:100, 
                 restore: true, 
                 times:3
             },
             translateYAlert:{
-                params:{translateY:[0,5]}, 
+                endpoints:{translateY:[0,5]}, 
                 duration:100, 
                 restore: true, 
                 times:3
             },
             rotateAlert:{
-                params:{rotate:[0,360]}, 
+                endpoints:{rotate:[0,360]}, 
                 duration:400, 
                 restore: false
             }
         },
         $preDefinedEffects:{
-           "Classic":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
-           "Blur":[{type:"circOut",duration:200,params: {opacity:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0]}}],
-           "Drop":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
-           "From Below":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
-           "From Above":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
-           "Slide In LR":[{type:"circOut",duration:200,params: {opacity:[0,1],translateX:["-150%","0%"]/*,scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
-           "Slide In TB":[{type:"circOut",duration:200,params: {opacity:[0,1],translateY:["-150%","0%"]/*,/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,params: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
-           "Flip V":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleY:[1,0]}}],
-           "Flip H":[{type:"circOut",duration:200,params: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,params: {opacity:[1,0],scaleX:[1,0]}}]
+           "Classic":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],scaleX:[.75,1],scaleY:[.75,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],scaleX:[1,.75],scaleY:[1,.75]}}],
+           "Blur":[{type:"circOut",duration:200,endpoints: {opacity:[0,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0]}}],
+           "Drop":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],translateY:["-25%","0%"],scaleY:[.5,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],translateY:["0%","-25%"],scaleY:[1,.5]}}],
+           "From Below":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],scaleX:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],scaleX:[1,0],scaleY:[1,0]}}],
+           "From Above":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],scaleX:[2,1],scaleY:[2,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],scaleX:[1,2],scaleY:[1,2]}}],
+           "Slide In LR":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],translateX:["-150%","0%"]/*,scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],translateX:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Slide In TB":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],translateY:["-150%","0%"]/*,/*scaleX:[.2,1],scaleY:[.2,1]*/}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],translateY:["0%","150%"]/*,scaleX:[1,.2],scaleY:[1,.2]*/}}],
+           "Flip V":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],scaleY:[0,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],scaleY:[1,0]}}],
+           "Flip H":[{type:"circOut",duration:200,endpoints: {opacity:[0,1],scaleX:[0,1]}}, {type:"circIn",duration:200,endpoints: {opacity:[1,0],scaleX:[1,0]}}]
         },
         _getEffects:function(key,isIn){
                 if(key && typeof(key)=="string"){
@@ -3742,12 +3762,12 @@ type:4
         free:function(id){
            xui.Dom.setCover(false,id);
         },
-        animate:function(css, params, onStart, onEnd, duration, step, type, threadid, unit, restore,times){
+        animate:function(css, endpoints, onStart, onEnd, duration, step, type, threadid, unit, restore,times){
             var node = document.createElement('div');
             xui.merge(css,{position:'absolute', left:this.HIDE_VALUE, zIndex:this.TOP_ZINDEX++});
             xui.Dom.setStyle(node, css);
             document.body.appendChild(node);
-            return xui([node]).animate(params, onStart, function(){
+            return xui([node]).animate(endpoints, onStart, function(){
                 xui.tryF(onEnd);
                 if(node.parentNode)
                     node.parentNode.removeChild(node);
@@ -4085,29 +4105,29 @@ type:4
 
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)
-            xui.doc.onClick(function(p,e,src){
-                var o=xui.Event.getSrc(e),
-                    i=0,b,href;
-                do{
-                    if(o.nodeName == 'A'){
-                        b=true;
-                        break;
-                    }
-                    if(++i>8)break;
-                }while(o=o.parentNode)
-                if(b){
-                    href=xui.str.trim(o.href||"").toLowerCase();
-                    if(xui.History){
-                        var s = location.href.split('#')[0];
-                        if(!xui.Event.getKey(e).shiftKey && xui.Event.getBtn(e)=='left' && (href.indexOf(s+'#')==0||href.indexOf('#')==0)){
-                            xui.History.setFI(o.href.replace(s,''));
-                        }
-                    }
-                    //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading(SAajx)
-                    //**** You have to return false here
-                    if(xui.browser.ie && (href.indexOf('javascript:')==0 || href.indexOf('#')!==-1))return false;
+        xui.doc.onClick(function(p,e,src){
+            var o=xui.Event.getSrc(e),
+                i=0,b,href;
+            do{
+                if(o.nodeName == 'A'){
+                    b=true;
+                    break;
                 }
-            },'hookA',0);
+                if(++i>8)break;
+            }while(o=o.parentNode)
+            if(b){
+                href=xui.str.trim(o.href||"").toLowerCase();
+                if(xui.History){
+                    var s = location.href.split('#')[0];
+                    if(!xui.Event.getKey(e).shiftKey && xui.Event.getBtn(e)=='left' && (href.indexOf(s+'#')==0||href.indexOf('#')==0)){
+                        xui.History.setFI(o.href.replace(s,''));
+                    }
+                }
+                //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading(SAajx)
+                //**** You have to return false here
+                if(xui.browser.ie && (href.indexOf('javascript:')==0 || href.indexOf('#')!==-1))return false;
+            }
+        },'hookA',0);
 
         if(xui.browser.ie && xui.browser.ver<10 && d.body)
             d.body.onselectstart=function(n,v){

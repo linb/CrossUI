@@ -1,40 +1,6 @@
 xui.Class("xui.DataBinder","xui.absObj",{
     Instance:{
-        _ini:function(properties, events, host){
-            var self=this,
-                c=self.constructor,
-                profile,
-                options,
-                alias,temp;
-            if(properties && properties['xui.Profile']){
-                profile=properties;
-                alias = profile.alias || c.pickAlias();
-            }else{
-                if(properties && properties.key && xui.absBox.$type[properties.key]){
-                    options=properties;
-                    properties=null;
-                    alias = options.alias || c.pickAlias();
-                }else
-                    alias = c.pickAlias();
-                profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
-            }
-            profile._n=profile._n||[];
-
-            for(var i in (temp=c.$DataStruct))
-                if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
-
-            //set anti-links
-            profile.link(c._cache,'self').link(xui._pool,'xui');
-
-            self._nodes.push(profile);
-            profile.Instace=self;
-            self.n0=profile;
-
-            if(!profile.name)self.setName(alias);
-
-            return self;
-        },
+        _ini:xui.Timer.prototype._ini,
         destroy:function(){
             this.each(function(profile){
                 var box=profile.box,name=profile.properties.name;
@@ -417,14 +383,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
             var o=this._pool[name];
             return o && o.boxing();
         },
-        _beforeSerialized:function(profile){
-            var o={};
-            xui.merge(o, profile, 'all');
-            var p = o.properties = xui.clone(profile.properties,true);
-            for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
-            return o;
-        },                
+        _beforeSerialized:xui.Timer._beforeSerialized,
         _getBoundElems:function(prf){
             var arr=[];
             xui.arr.each(prf._n,function(profile){

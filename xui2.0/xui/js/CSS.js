@@ -439,11 +439,11 @@ xui.Class("xui.CSS", null,{
         $addpx:function(a,b,node){
             if(a=='auto')return a;
             if(this.$isRem(a)){
-                return this.$px2rem(Math.round(this.$rem2px(a)+parseFloat(b)))+'rem';
+                return this.$px2rem(Math.round(this.$rem2px(a)+(parseFloat(b)||0)))+'rem';
             }else if(this.$isEm(a)){
-                return this.$px2em(Math.round(this.$em2px(a,false,node)+parseFloat(b)))+'em';
+                return this.$px2em(Math.round(this.$em2px(a,false,node)+(parseFloat(b)||0)))+'em';
             }else{
-                return Math.round(parseFloat(a)+parseFloat(b))+'px';
+                return Math.round((parseFloat(a)||0)+(parseFloat(b)||0))+'px';
             }
         },
         $forceu:function(v,u,node,roundPx){
@@ -454,7 +454,7 @@ xui.Class("xui.CSS", null,{
         },
        
         $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.$us()==1?'em':'px')},
-        $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v))+'px':v+''}
+        $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v)||0)+'px':v+''}
     },
     Initialize:function(){
         var b=xui.browser,

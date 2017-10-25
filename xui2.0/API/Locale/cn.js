@@ -6110,6 +6110,83 @@ xui.set(xui.Locale,["cn","app"], {
         }
     });
     
+    xui.set(xui.Locale,["cn","doc","xui","AnimBinder"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.AnimBinder 类",
+        constructor:{
+            $desc:"生成一个AnimBinder对象"
+        },
+        destroyAll:{
+            $desc:"销毁所有xui.AnimBinder"
+        },
+        getFromName:{
+            $desc:"获取名字为指定值的xui.AnimBinder对象",
+            $rtn:'xui.AnimBinder Object',
+            $paras:[
+                "name [必需参数] : String, AnimBinder名字"
+            ]
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            setHost:{
+                $desc:"设置借宿对象和别名",
+                $rtn:'[self]',
+                $paras:[
+                    "host [可选参数 : Object, 宿主",
+                    "alias [可选参数 : String, 别名字符串"
+                ]
+            },
+            destroy:{
+                $desc:"销毁该对象",
+                $memo:"一般情况下,程序员无需直接调用该函数"
+            },
+            getFrames:{
+                $desc:"获取动画的配置",
+                $rtn:"Hash"
+            },
+            setFrames:{
+                $desc:"设置动画的配置",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Hash",
+                    $force
+                ]
+            },
+            setName:{
+                $desc:"设置名称",
+                $rtn:'[self]',
+                $paras:[
+                    "value [必需参数] : String, 名字字符串"
+                ]
+            },
+            getName:{
+                $desc:"返回名字",
+                $rtn:'String'
+            },
+            apply:{
+                $desc:"应用动画到一个DOM对象",
+                $rtn:'[self]',
+                $paras:[
+                    "node [必需参数] : 目标 DOM 元素",
+                    "onEnd [可选参数] : Function, 结束时的回调函数"
+                ]
+            },
+            onEnd:{
+                $desc:"当动画完毕后触发",
+                $paras:[
+                    "profile : xui.Profile"
+                ]
+            },
+            beforeFrame:{
+                $desc:"在动画运行到没帧前触发，如返回 false, 后面的动画将取消",
+                $paras:[
+                    "profile : xui.Profile",
+                    "frame : Object, 当前帧"
+                ]
+            }
+        }
+    });
+    
     xui.set(xui.Locale,["cn","doc","xui","APICaller"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.APICaller 类",
@@ -19284,6 +19361,9 @@ xui.set(xui.Locale,["cn","doc","propname"], {
             autoStart:"自动运行",
             interval:"定时间隔(ms)"
         },
+        xui_AnimBinder:{
+            "frames":"动画配置"
+        },
         xui_MessageService:{
             msgType:"可接收消息类型",
             asynReceive:"异步接收消息"
@@ -19933,6 +20013,10 @@ xui.set(xui.Locale,["cn","doc","eventname"],{
             onStart:"当定时开始",
             onSuspend:"当定时挂起",
             onEnd:"当定时结束"
+        },
+        xui_AnimBinder:{
+            beforeFrame:"在运行到帧之前",
+            onEnd:"当结束"
         },
         xui_MessageService:{
             onMessageReceived:"当收到消息"

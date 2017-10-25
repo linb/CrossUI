@@ -6048,6 +6048,84 @@ xui.set(xui.Locale,["en","app"], {
             }
         }
     });
+
+     xui.set(xui.Locale,["cn","doc","xui","AnimBinder"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.AnimBinder Class",
+        constructor:{
+            $desc:"Creates a AnimBinder Object"
+        },
+        destroyAll:{
+            $desc:"To destroy all xui.AnimBinder objects"
+        },
+        getFromName:{
+            $desc:"To get a xui.AnimBinder Object from it's name",
+            $rtn:'xui.AnimBinder',
+            $paras:[
+                "name [Required] : String, the AnimBinder name"
+            ]
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            setHost:{
+                $desc:"Sets the host Object and alias",
+                $rtn:'[self]',
+                $paras:[
+                    "host [Optional : Object, the host Object",
+                    "alias [Optional : String, the alias value"
+                ]
+            },
+            destroy:{
+                $desc:"To destroy the current Object",
+                $memo:"Usually, we do not need to call this function manually"
+            },
+            getFrames:{
+                $desc:"Gets the animation's setting",
+                $rtn:"Hash"
+            },
+            setFrames:{
+                $desc:"Sets the animation's setting",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Hash",
+                    $force
+                ]
+            },
+            setName:{
+                $desc:"Sets name property",
+                $rtn:'[self]',
+                $paras:[
+                    "value [Required] : String, name string"
+                ]
+            },
+            getName:{
+                $desc:"Returns name property",
+                $rtn:'String'
+            },
+            apply:{
+                $desc:"Apply animation to a Dom element",
+                $rtn:'[self]',
+                $paras:[
+                    "node [Required] : the target DOM element",
+                    "onEnd [Optional]:  Function(threadid:String).  onEnd function"
+                ]
+            },
+            onEnd:{
+                $desc:"Fired when the animation ends",
+                $paras:[
+                    "profile : xui.Profile"
+                ]
+            },
+            beforeFrame:{
+                $desc:"Fired when the animation play on a specific frame. If returns [false],  the animation will stop",
+                $paras:[
+                    "profile : xui.Profile",
+                    "frame : Object, the current  frame"
+                }
+            }
+        }
+    });
+
     xui.set(xui.Locale,["en","doc","xui","APICaller"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.APICaller Class",
@@ -6058,16 +6136,16 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"Creates a APICaller Object"
         },
         destroyAll:{
-            $desc:"To destroy all xui.WDSLCache objects",
+            $desc:"To destroy all xui.AnimBinder objects",
             $snippet:[
-                "//xui.WDSLCache.destroyAll()"
+                "//xui.AnimBinder.destroyAll()"
             ]
         },
         getFromName:{
-            $desc:"To get a xui.WDSLCache Object from it's name",
-            $rtn:'xui.WDSLCache',
+            $desc:"To get a xui.AnimBinder Object from it's name",
+            $rtn:'xui.AnimBinder',
             $paras:[
-                "name [Required] : String, the WDSLCache name"
+                "name [Required] : String, the AnimBinder name"
             ]
         },
         prototype:{

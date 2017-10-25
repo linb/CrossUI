@@ -3043,6 +3043,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 opacity:0.7,
                 '*filter':'alpha(opacity=70)'
             },
+            'PROGRESS CELLCAPTION':{
+                overflow:'visible'
+            },
             'CHECKBOX, MARK':{
                cursor:'pointer',
                'vertical-align':'middle'

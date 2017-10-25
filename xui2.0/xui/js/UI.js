@@ -929,10 +929,10 @@ xui.Class("xui.UI",  "xui.absObj", {
     Instance:{
         animate:function(key, callback){
             // only for the first profile
-            var prf=this.get(0),
+            var prf=this.get(0),t,
                 node=prf.getRootNode(),
                 tid=xui.getNodeData(node,'_inthread'),
-                reset=xui.getNodeData(node,'_animationreset');
+                reset=xui.getNodeData(node,'_animationreset'),t;
             if(tid && xui.Thread.isAlive(tid)){
                 xui.Thread(tid).abort('force');
                 xui.setNodeData(node,'_inthread',null);
@@ -941,24 +941,28 @@ xui.Class("xui.UI",  "xui.absObj", {
                 reset();
                 xui.setNodeData(node,'_animationreset',null);
             }
-            if(!key)key="blinkAlert";
 
-            var item = (xui.isHash(key) && key.params) ? key : xui.Dom.$preDefinedAnims[key];
-            if(item && item.params){
-                var onEnd;
-                if(xui.isFun(callback)){
-                    if(xui.isFun(item.onEnd)){
-                        onEnd=function(){
-                            item.onEnd.apply(this,arguments);
-                            callback.apply(this,arguments);
-                        };
-                    }else{
-                        onEnd=callback;
+            if(key && (t=xui.AnimBinder.getFromName(key))) {
+                t.apply(node, callback);
+            }else{
+                if(!key)key="blinkAlert";
+                var item = (xui.isHash(key) && key.endpoints) ? key : xui.Dom.$preDefinedAnims[key];
+                if(item && item.endpoints){
+                    var onEnd;
+                    if(xui.isFun(callback)){
+                        if(xui.isFun(item.onEnd)){
+                            onEnd=function(){
+                                item.onEnd.apply(this,arguments);
+                                callback.apply(this,arguments);
+                            };
+                        }else{
+                            onEnd=callback;
+                        }
+                    }else if(xui.isFun(item.onEnd)){
+                        onEnd=item.onEnd;
                     }
-                }else if(xui.isFun(item.onEnd)){
-                    onEnd=item.onEnd;;
+                    prf.getRoot().animate(item.endpoints, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
                 }
-                prf.getRoot().animate(item.params, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
             }
         },
         hoverPop : function(node, type, beforePop, beforeHide, parent, groupid){
@@ -7896,6 +7900,7 @@ xui.Class("xui.UI.Element", "xui.UI",{
         }
     }
 });
+
 xui.Class("xui.UI.Icon", "xui.UI",{
     Instance:{
         fireClickEvent:function(){
@@ -8854,6 +8859,106 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             if(prf && !prf._replaced && prf._module){
                 prf.boxing().replaceWithModule(prf._module);
             }
+        }
+    }
+});
+
+xui.Class("xui.AnimBinder","xui.absObj",{
+    Instance:{
+        _ini:xui.Timer.prototype._ini,
+        _after_ini:function(profile,ins,alias){
+             if(!profile.name)profile.Instace.setName(alias);
+        },
+        getParent:xui.Timer.prototype.getParent,
+        getChildrenId:xui.Timer.prototype.getChildrenId,
+        destroy:function(){
+            this.each(function(profile){
+                var box=profile.box,name=profile.properties.name;
+                //delete from pool
+                delete box._pool[name];
+                //free profile
+                profile.__gc();
+            });
+        },
+        setHost:function(value, alias){
+            var self=this;
+            if(value && alias)
+                self.setName(alias);
+            return arguments.callee.upper.apply(self,arguments);
+        },
+        apply:function(node, onEnd){
+            var prf=this.get(0), fs=prf.properties['frames'], arr=[], frame, frame1, frame2, endpoints;
+            for(var i=0,l=fs.length;i<l-1;i++){
+                endpoints={};
+                frame1 = fs[i];
+                frame2 = fs[i+1];
+                frame = xui.copy(frame2);
+                delete frame.status;
+                for(var j in frame2.status)endpoints[j]=frame2.status[j];
+                frame.endpoints=endpoints;
+                frame['start']=frame1;
+                frame['end']=frame2;
+                arr.push(frame);
+            }
+            var fun = function(){
+                if(!arr.length){
+                    if(prf.onEnd)prf.boxing().onEnd(prf);
+                    if(xui.isFun(onEnd))xui.tryF(onEnd);
+                    return ;
+                }
+                var frame = arr.shift();
+                if(prf.beforeFrame&&false===prf.boxing().beforeFrame(prf, frame))return;
+
+                xui(node).animate(frame.endpoints, null, fun, frame.duration, frame.step, frame.type, null, null, frame.restore, frame.times).start();
+            };
+            fun();
+        }
+    },
+    Static:{
+        _objectProp:{tagVar:1,propBinder:1,"frames":1},
+        _beforeSerialized:xui.Timer._beforeSerialized,
+        $nameTag:"ani_",
+        _pool:{},
+        destroyAll:function(){
+            this.pack(xui.toArr(this._pool,false),false).destroy();
+            this._pool={};
+        },
+        getFromName:function(name){
+            var o=this._pool[name];
+            return o && o.boxing();
+        },
+        DataModel:{
+            dataBinder:null,
+            dataField:null,
+            "name":{
+                set:function(value){
+                    var o=this,
+                        ovalue=o.properties.name,
+                        c=o.box,
+                        _p=c._pool,
+                        _old=_p[ovalue],
+                        _new=_p[value],
+                        ui;
+
+                    //if it exists, overwrite it dir
+                    //if(_old && _new)
+                    //    throw value+' exists!';
+
+                    _p[o.properties.name=value]=o;
+
+                    //pointer _old the old one
+                    if(_new && !_old) o._n=_new._n;
+                    //delete the old name from pool
+                    if(_old)delete _p[ovalue];
+                }
+            },
+            "frames":{
+                ini:[]
+            }
+        },
+        EventHandlers:{
+            beforeFrame:function(profile, frame){},
+            onEnd:function(profile){}
         }
     }
 });

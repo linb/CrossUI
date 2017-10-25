@@ -521,10 +521,10 @@ xui.Class("xui.svg", "xui.UI",{
             var prf=this.get(0);
             return prf && prf.parent && prf.parent._paper;
         },
-        animate:function(params, ms, easing, callback){
+        animate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
             if(prf&&prf._elset){
-                prf._elset.animate(params, ms, easing, callback);
+                prf._elset.animate(endpoints, ms, easing, callback);
             }
             return this;
         },

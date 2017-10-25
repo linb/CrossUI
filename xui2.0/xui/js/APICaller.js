@@ -1,39 +1,8 @@
 xui.Class("xui.APICaller","xui.absObj",{
     Instance:{
-        _ini:function(properties, events, host){
-            var self=this,
-                c=self.constructor,
-                profile,
-                options,
-                alias,temp;
-            if(properties && properties['xui.Profile']){
-                profile=properties;
-                alias = profile.alias || c.pickAlias();
-            }else{
-                if(properties && properties.key && xui.absBox.$type[properties.key]){
-                    options=properties;
-                    properties=null;
-                    alias = options.alias || c.pickAlias();
-                }else
-                    alias = c.pickAlias();
-                profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
-            }
-            profile._n=profile._n||[];
-
-            for(var i in (temp=c.$DataStruct))
-                if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
-
-            //set anti-links
-            profile.link(c._cache,'self').link(xui._pool,'xui');
-
-            self._nodes.push(profile);
-            profile.Instace=self;
-            self.n0=profile;
-
-            if(!profile.name)self.setName(alias);
-
-            return self;
+        _ini:xui.Timer.prototype._ini,
+        _after_ini:function(profile,ins,alias){
+             if(!profile.name)profile.Instace.setName(alias);
         },
         destroy:function(){
             this.each(function(profile){
@@ -50,6 +19,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 self.setName(alias);
             return arguments.callee.upper.apply(self,arguments);
         },
+
         setQueryData:function(data, path){
             return this.each(function(prf){
                 if(path)xui.set(prf.properties.queryArgs, (path||"").split("."), data);
@@ -414,14 +384,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             }while(i<str.length);
             return arr.join('');
         },
-        _beforeSerialized:function(profile){
-            var o={};
-            xui.merge(o, profile, 'all');
-            var p = o.properties = xui.clone(profile.properties,true);
-            for(var i in profile.box._objectProp)
-                if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
-            return o;
-        },
+        _beforeSerialized:xui.Timer._beforeSerialized,
         DataModel:{
             dataBinder:null,
             dataField:null,
