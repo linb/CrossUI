@@ -566,10 +566,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             });
                         }
                     });
-                    return a;
                 }else if(type=='map'){
-                    return this.getRawData(null, splitMixColumn);
+                    a = this.getRawData(null, splitMixColumn);
                 }
+                return a;
             }else
                 return v;
         },

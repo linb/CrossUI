@@ -7406,7 +7406,7 @@ xui.Class("xui.absValue", "xui.absObj",{
         resetValue:function(value){
             var self=this;
             self.each(function(profile){
-                var r,pro=profile.properties;
+                var r,pro=profile.properties,ins=profile.boxing();
                 if(typeof (r=profile.box._ensureValue)=='function')
                     value=r.call(profile.box, profile, value);
                 if(pro.value !== value || pro.$UIvalue!==value){
@@ -7422,8 +7422,8 @@ xui.Class("xui.absValue", "xui.absObj",{
                     pro.$UIvalue = value;
                 }
                 profile._inValid=1;
+                ins._setDirtyMark();
             });
-            self._setDirtyMark();
             return self;
         },
         setUIValue:function(value, force, triggerEventOnly, tag){

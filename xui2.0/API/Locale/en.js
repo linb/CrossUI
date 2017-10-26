@@ -6508,8 +6508,16 @@ xui.set(xui.Locale,["en","app"], {
                     "withCaption [Optional] : Boolean, to determine whether include caption(if has this property), Default is [false]"
                 ]
             },
+            resetValue:{
+                $desc:"Resets the  inner UI controls' value to the original ones",
+                $rtn:"[self]"
+            },
+            clearValue:{
+                $desc:"Clears the  inner UI controls' value",
+                $rtn:"[self]"
+            },
             updateValue:{
-                $desc:"Copies the  inner UI controls' 'UI value' to 'value'",
+                $desc:"Copies the  inner UI controls' value",
                 $rtn:"[self]"
             },
             checkValid:{

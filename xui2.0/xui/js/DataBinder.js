@@ -34,6 +34,10 @@ xui.Class("xui.DataBinder","xui.absObj",{
         },
         checkValid:function(ignoreAlert){
             var result=true;
+            // check required first
+            if(!this.checkRequired(ignoreAlert)){
+                return false;
+            }
             xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).each(function(prf){
                 if(!prf.boxing().checkValid()){
                     if(!ignoreAlert){
@@ -156,6 +160,17 @@ xui.Class("xui.DataBinder","xui.absObj",{
             if(prf.$inDesign || force){
                 this.updateDataToUI();
             }
+            return this;
+        },
+        resetValue:function(){
+            xui.arr.each(this.constructor._getBoundElems(this.get(0)), function(p,i){
+                    if((i=p.properties.value) !== p.properties.$UIvalue)
+                        p.boxing().resetValue(i);
+            });
+            return this;
+        },
+        clearValue:function(){
+            xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).resetValue(null);
             return this;
         },
         updateValue:function(){

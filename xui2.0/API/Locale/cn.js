@@ -6570,6 +6570,14 @@ xui.set(xui.Locale,["cn","app"], {
                     "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(如果控件有caption属性的话), 默认为false"
                 ]
             },
+            resetValue:{
+                $desc:"将绑定控件的内部值更新原值",
+                $rtn:"[self]"
+            },
+            clearValue:{
+                $desc:"将绑定控件的内部值清空",
+                $rtn:"[self]"
+            },
             updateValue:{
                 $desc:"将绑定控件的内部值更新为界面值,并去掉脏标识",
                 $rtn:"[self]"
