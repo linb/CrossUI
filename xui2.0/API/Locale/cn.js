@@ -2752,7 +2752,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "properties [可选参数] : 键值对, 边框的属性",
                     "onUpdate [可选参数] : Function, 大小修改后的回调函数",
-                    "onChange [可选参数] : Function, 大小试图改变的回调函数",
+                    "onChange [可选参数] : Function, 大小试图改变的回调函数"
                 ],
                 $snippet:[
                     "//You can resize the following div: \n" +
@@ -6646,7 +6646,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "returnArr [可选参数] : Boolean, 是否得到数组格式(只针对可多选择absList控件), 默认为false",
                     "adjustData [可选参数] : Function, 对从UI获取到的数据做调整的函数(在设置到内部data之前)",
                     "dataKeys [可选参数] : String/Array, 获取的数据项",
-                    "ignoreAlert[可选参数] : Boolean, 不显示警告信息",
+                    "ignoreAlert[可选参数] : Boolean, 不显示警告信息"
                 ]
             },
             beforeUpdateDataToUI:{

@@ -1801,7 +1801,7 @@ xui.set(xui.Locale,["en","app"], {
                     "msg5: Object, message object 5",
                     "callback: Functin, callback"
                 ]
-            },
+            }
         }
     });
 
@@ -6121,7 +6121,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     "profile : xui.Profile",
                     "frame : Object, the current  frame"
-                }
+                ]
             }
         }
     });
@@ -6585,7 +6585,7 @@ xui.set(xui.Locale,["en","app"], {
                     "returnArr [Optional] : Boolean, to determine whether return array object(for those multi selection absList only),Default is [false]",
                     "adjustData [Optional] : Function, the adjust function for data( before data is set to the innder data property)",
                     "dataKeys [Optional] : String/Array, keys will to be get",
-                    "ignoreAlert[Optional] : Boolean, Don't show alert info",
+                    "ignoreAlert[Optional] : Boolean, Don't show alert info"
                 ]
             },
 

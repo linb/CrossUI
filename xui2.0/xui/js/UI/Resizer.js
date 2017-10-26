@@ -191,7 +191,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 'background-size':'100% 100%, auto'
             },
             "KEY.readonly.active, KEY.disabled.active":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#eeeeee' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")",
+                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#eeeeee' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")"
             },
             "KEY.readonly div, KEY.disabled div":{
                 display:'none'

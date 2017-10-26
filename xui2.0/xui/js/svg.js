@@ -2486,7 +2486,7 @@ xui.Class("xui.svg.text", "xui.svg",{
                 set:function(value){
                         this.boxing().setAttr('KEY',{text:value||""},false);
                 }
-            },
+            }
         },
         Templates:{
             tagName:'text'
