@@ -707,7 +707,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 else options={value:options};
             }
 
-            options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)] || i=='_$caption'; if(!r){ext=ext||{}; ext[i]=o} return r;});
+            options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)]; if(!r){ext=ext||{}; ext[i]=o} return r;});
 
             if(triggerEvent){
                 if(profile.beforeRowUpdated && false === profile.boxing().beforeRowUpdated(profile, orow, options, ishotrow, ext))
@@ -1146,7 +1146,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             // this row was rendered
                             base=profile.getSubNode(leftRegion?'CELLS1':'CELLS2',row._serialId).children().get(pos-1/*must be before LCELL*/);
                             if(base){
-                                cellResult = box._parepareCell(profile,cell,row,col,temp);
+                                cellResult = box._prepareCell(profile,cell,row,col,temp);
 
                                 // original cell only
                                 xui.arr.insertAny(row.cells, cellResult[0], pos);
@@ -2571,8 +2571,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(index > profile.properties.freezedColumn)return;
                     tag = 'rows.cells';
 
-                    var me=arguments.callee,map=me._m||(me._m={'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'}),
-                        t = map[v.type] || '.input';
+                    var t = profile.box._tplMap2[v.type] || '.input';
                     if(profile.properties.treeMode=='infirstcell' && index==1 && t=='.input'){
                         t='._first_cell';
                     }
@@ -2584,8 +2583,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(index <= profile.properties.freezedColumn)return;
                     tag = 'rows.cells';
 
-                    var me=arguments.callee,map=me._m||(me._m={'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'}),
-                        t = map[v.type] || '.input';
+                    var t = profile.box._tplMap2[v.type] || '.input';
                     if(profile.properties.treeMode=='infirstcell' && index==1 && t=='.input'){
                         t='._first_cell';
                     }
@@ -2637,7 +2635,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $order:5,
                                 style:'{color}',
                                 className:'xui-v-node xui-treegrid-fcellcaption',
-                                text:"{caption}"
+                                text:"{_caption}"
                             }
                         }
                     }
@@ -2653,7 +2651,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             CELLCAPTION:{
                                 className:'xui-v-node',
                                 style:'{color}',
-                                text:"{caption}"
+                                text:"{_caption}"
                             }
                         }
                     }
@@ -2669,7 +2667,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             CELLCAPTION:{
                                 className:'xui-v-node',
                                 style:'{color}',
-                                text:"{caption}"
+                                text:"{_caption}"
                             }
                         }
                     }
@@ -2685,7 +2683,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tabindex: '{_tabindex}',
                             CELLCAPTION:{
                                 className:'xui-v-node',
-                                text:"{caption}"
+                                text:"{_caption}"
                             }
                         }
                     }
@@ -2720,36 +2718,30 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 style:'width:{progress};',
                                 CELLCAPTION:{
                                     className:'xui-v-node',
-                                    text:"{caption}"
+                                    text:"{_caption}"
                                 }
                             }
                         }
                     }
                 },
                 'rows1._handler_cell1.ltagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
                     if(v.id==profile.box._temprowid)return;
-                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(profile.box._tplMap[v.type]||'.button'),result)
                 },
                 'rows._firstcell_grp.ltagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(profile.box._tplMap[v.type]||'.button'),result)
                 },
                 'rows.cells._first_cell.ltagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(profile.box._tplMap[v.type]||'.button'),result)
                 },
                 'rows2.rtagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,'rows.tagCmds'+(profile.box._tplMap[v.type]||'.button'),result)
                 },
                 'ltagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(profile.box._tplMap[v.type]||'.button'),result)
                 },
                 'rtagCmds':function(profile,template,v,tag,result){
-                    var me=arguments.callee,map=me._m||(me._m={'text':'.text','button':'.button','image':'.image'});
-                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(map[v.type]||'.button'),result)
+                    xui.UI.$doTemplate(profile,template,v,"rows.tagCmds"+(profile.box._tplMap[v.type]||'.button'),result)
                 },
                 'rows.tagCmds.text':xui.UI.$getTagCmdsTpl('text'),
                 'rows.tagCmds.button':xui.UI.$getTagCmdsTpl('button'),
@@ -3093,7 +3085,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return false;
                 }
             },
-
             TRLOCKED1:{
                 onMouseover:function(profile, e, src){
                     profile.box.$cancelHoverEditor(profile);
@@ -4920,6 +4911,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box._asy(ns);
             ns.box._adjustBody(ns,'render');
         },
+        _tplMap:{'text':'.text','button':'.button','image':'.image'},
+        _tplMap2:{'textarea':'.textarea','checkbox':'.checkbox','button':'.button','progress':'.progress'},
         _focusEvent:function(profile, e, src){
             var ins=profile.boxing(),
                 prop=profile.properties,
@@ -4995,7 +4988,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var cells={},
                 row={cells:cells},
                 required=(prop.hotRowRequired||"").split(prop.valueSeparator),
-                newcell={_$caption:prop.hotRowCellCap},
+                newcell={caption:prop.hotRowCellCap},
                 ins=profile.boxing();
             if(required.length){
                 xui.arr.each(prop.header,function(col, i){
@@ -5429,14 +5422,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             if(!col.type)col.type=prop.colOptions.type || 'input';
             if(!(('caption' in col) && xui.isDefined(col.caption)))col.caption = oid;
-            xui.UI.adjustData(profile, col, uicol);
+            xui.UI.adjustData(profile, col, uicol, 'sub');
 
             // id to dom item id
             profile.colMap2[col.id]=col[SubID];
 
             return [col,uicol];
         },
-        _parepareCell:function(profile,cell,row,col,temp,_row,index){
+        _prepareCell:function(profile,cell,row,col,temp,_row,index){
             // build header
             var ns=this,
                 SubID=xui.UI.$tag_subId,
@@ -5497,7 +5490,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _left=0;//prop.rowHandler?(profile.$px(prop.rowHandlerWidth)+2):0;
 
                     grp=arr[j];
-                    xui.UI.adjustData(profile, grp, _grp);
+                    xui.UI.adjustData(profile, grp, _grp, 'sub');
                     for(var k=0,o;k<=grp['to'];k++){
                         o=header[k];p=_header[k];_ww=profile.$px(p._colWidth);
                         if(k===grp.from){
@@ -5557,43 +5550,32 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t2='',
                 caption,
                 cellanode=node,
-                capOut=uicell&&('caption' in uicell)&&xui.isDefined(cell.caption) 
-                    ? uicell.caption 
-                    : (('caption' in cell) && xui.isDefined(cell.caption) && xui.adjustRes(cell.caption)),
+                capOut=uicell&&('caption' in uicell)&&xui.isDefined(cell.caption) ? uicell.caption : xui.isStr(cell.caption) ? cell.caption : null,
                 reg1=/</g,
-                me=arguments.callee,
                 dcls='xui-uicell-disabled',
                 rcls='xui-ui-readonly',
-                //1. _$caption in cell (for special set)
-                //2. caption in uicell(if [uicell] is not [cell], the [caption] maybe is the result of cell.renderer)
-                //3. renderer in cell
-                //4. default caption function
-                //5. value in cell
-                //6. ""
-                ren=me._ren||(me._ren=function(profile,cell,uicell,fun){return (
-                        // priority 1
-                        typeof cell._$caption=='string'? cell._$caption:
-                        // priority 2
-                        (uicell && typeof uicell.caption =='string') ? uicell.caption:
-                        // priority 3
+                ren=function(profile,cell,uicell,fun){return (
+                        // 1 renderer in cell
                         typeof (cell.renderer||cell._renderer)=='function'? (cell.renderer||cell._renderer).call(profile,cell) :
-                        // priority 4
+                        // 2 template in cell
+                        (uicell && typeof uicell.caption =='string') ? uicell.caption:
+                        // 3 default caption function
                         typeof fun=='function'?fun(cell.value, profile, cell):
-                        // priority 5
+                        // 4 value in cell 
                         (xui.isSet(cell.value)?(""+cell.value):
-                        // priority 6
+                        // 5 empty
                         "")
                     // default value
-                    ) || ""}),
-                f0=me._f0=(me._f0=function(v,profile,cell){
+                    ) || ""},
+                f0=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymdhn') : "";
-                }),
-                f1=me._f1=(me._f1=function(v,profile,cell){
+                },
+                f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
-                }),
-                f2=me._f2=(me._f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ')/*.replace(/ /g,' ')*/.replace(/(\r\n|\n|\r)/g,"<br />"):""}),
-                f3=me._f3=(me._f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""}),
-                f4=me._f4=(me._f4=function(v,profile,cell){
+                },
+                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ')/*.replace(/ /g,' ')*/.replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""},
+                f4=function(v,profile,cell){
                     if(v||v===0){
                         return xui.formatNumeric(
                                 parseFloat(v),
@@ -5605,8 +5587,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             );
                     }else
                         return "";
-               }),
-               f5=me._f5=(me._f5=function(v,profile,cell){
+               },
+               f5=function(v,profile,cell){
                     if(v||v===0){
                         var precision=getPro(profile, cell, 'precision');
                         return xui.formatNumeric(
@@ -5620,8 +5602,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             );
                     }else
                         return "";
-               }),
-               f6=me._f6=(me._f6=function(v,profile,cell){
+               },
+               f6=function(v,profile,cell){
                     var t=getPro(profile,cell,'editorListItems');
                     if(!t)
                         if(t=getPro(profile,cell,'editorListKey'))
@@ -5631,8 +5613,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(t[i].id===v)
                                 return t[i].caption||v;
                     return f7(v,profile,cell);
-               }),
-               f7=me._f7=(me._f7=function(v,profile,cell){
+               },
+               f7=function(v,profile,cell){
                    if(v){
                        v=v+"";
                         var t=v.indexOf('=');
@@ -5642,7 +5624,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                    }
                     return v;
-               }),
+               },
                unit=function(caption, cell){return caption + (cell.unit?" "+cell.unit:"")};
             // get caption node
             if(node && node.get(0))node=node.last();
@@ -5753,11 +5735,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
             }
 
-            if('_$caption' in cell){
-                delete cell._$caption;
-                cell.caption = caption;
-            }
-            cell._$tips=cell._$tmpcap=caption;
+            if('_renderer' in cell)delete cell._renderer;
+            cell._caption = cell._$tips = cell._$tmpcap = caption;
+
             var t2=getPro(profile, cell, 'disabled'),
                 t3=getPro(profile, cell, 'readonly');
             if(uicell){
@@ -5801,7 +5781,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 uicell.cellCls=profile.getClass('CELL', '-'+type) + (t2?(' '+dcls):'') + (t3?(' '+rcls):'');
                 uicell.type=type;
                 uicell.value=cell.value;
-                uicell.caption=caption;
+                uicell._caption=caption;
                 uicell.cellStyle=getPro(profile, cell, 'cellStyle');
                 uicell.cellClass=getPro(profile, cell, 'cellClass');
             }else{
@@ -5915,7 +5895,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(row.caption && !row.tips)
                     row._$tips=row.caption;
 
-                xui.UI.adjustData(profile, row, t);
+                xui.UI.adjustData(profile, row, t, 'sub');
 
                 t.tagCmds = xui.clone(t.tagCmds || ro.tagCmds || prop.tagCmds);
                 if(t.tagCmds){
@@ -5929,7 +5909,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     row.cells=null;
                 if((v=row.cells)){
                     xui.arr.each(prop.header,function(col,j){
-                        cellResult = profile.box._parepareCell(profile, v[j], row, col,temparr,t,j);
+                        cellResult = profile.box._prepareCell(profile, v[j], row, col,temparr,t,j);
                         v[j]=cellResult[0];
                         cells.push(cellResult[1]);
                     });
@@ -5958,16 +5938,20 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var self=this,
                 prop=profile.properties,
                 col=cell._col,
+                renderer=self.getCellOption(profile, cell, 'cellRenderer'),
+                cellCapTpl=self.getCellOption(profile, cell, 'cellCapTpl'),
                 renderer;
-            if(renderer=self.getCellOption(profile, cell, 'cellRenderer'))
+
+            // allow to set caption dynamically
+            if(cellCapTpl)
+                cell.caption=cellCapTpl;
+            xui.UI.adjustData(profile, cell, uicell, 'sub');
+
+            if(renderer)
                 cell._renderer=renderer;
-
-            //first
-            xui.UI.adjustData(profile, cell, uicell);
-
-            if(!uicell._cellWidth){
+            if(!uicell._cellWidth)
                 uicell._cellWidth=col._colWidth;
-            }
+
             uicell._tabindex=prop.tabindex;
             uicell.cellDisplay=col.hidden===true?'display:none;':'';
 
@@ -5975,7 +5959,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             //next
             cell._oValue=cell.value;
-            if('unit' in cell)cell._oUnit!=cell.unit;
+            if('unit' in cell)cell._oUnit=cell.unit;
         },
         _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
@@ -6182,7 +6166,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ishotrow=cell._row.id==box._temprowid;
 
             if(!xui.isHash(options))options={value:options};
-            options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)] || i=='_$caption'; if(!r){ext=ext||{}; ext[i]=o} return r;});
+            options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)]; if(!r){ext=ext||{}; ext[i]=o} return r;});
 
             if(triggerEvent){
                 if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow,ext))
@@ -6190,14 +6174,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             if(!xui.isEmpty(options)){
                 // * remove cell's special setting first
-                delete cell._$caption;
                 delete cell._$tips;
                 delete cell._$tmpcap;
-
-                // try to use _$caption first
-                if(('_$caption' in options) && xui.isSet(options._$caption)){
-                    delete cell.caption;
-                }
 
                 xui.merge(cell,options,'all');
 
@@ -6207,8 +6185,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     box._adjustCell(profile, cell, uicell);
                     node.parent().replace(profile._buildItems('rows2.cells', [uicell]));
                     node=profile.getSubNode('CELLA', cellId);
+                }else{
+                    // allow to set caption dynamically
+                    var cellCapTpl=box.getCellOption(profile, cell, 'cellCapTpl');
+                    // * : only for cellCapTpl => caption
+                    if(cellCapTpl)
+                        cell.caption=xui.adjustRes(cellCapTpl,true,false,null,null,cell);
+                    cell = box._renderCell(profile, cell, null, node, options);
                 }
-                cell = box._renderCell(profile, cell, null, node, options);
 
                 var editor=cell._editor;
 
@@ -6696,9 +6680,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(editor.setCaption){
                         if(editorProperties&&('caption' in editorProperties)&& xui.isDefined(editorProperties.caption)){
-                            editor.setCaption(editorProperties.caption,true);
+                            editor.setCaption(editorProperties._caption,true);
                         }else  if(type=="cmdbox"||type=="popbox"||type=="button"||type=="dropbutton"){
-                            editor.setCaption(cell.caption||cell._$tmpcap||"",true);
+                            editor.setCaption(cell._caption||cell._$tmpcap||"",true);
                         }
                     }
                     //$tag for compatible
@@ -6799,7 +6783,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     })
                     .afterUIValueSet(function(editorPrf,oV,nV,force,tag){
-                        var type=getPro('type'),_$caption;
+                        var type=getPro('type'),caption;
                         switch(type){
                             case 'number':
                             case 'spin':
@@ -6819,17 +6803,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             case 'combobox':
                             case 'listbox':
                             case 'helpinput':
-                                _$caption=editorPrf.boxing().getShowValue();
+                                caption=editorPrf.boxing().getShowValue();
                                 break;
                         }
                         var options={
                             value:nV
                         };
-                        // reset caption here
-                        delete cell.caption;
 
-                        if(xui.isDefined(_$caption))
-                            options._$caption=_$caption;
+                        if(xui.isDefined(caption))
+                            options.caption=caption;
 
                         if(editorPrf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(editorPrf.properties.tagVar))
                             options.tagVar=editorPrf.properties.tagVar;

@@ -4783,8 +4783,9 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             for(i in hashIn){
                 if(i.charAt(0)=='$')continue;
-                if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i))
-                    hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1) : xui.adjustRes(o,true) : o;
+                if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i)){
+                    hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1,false,null,null,type=='sub'&&hashIn) : xui.adjustRes(o,true,false,null,null,type=='sub'&&hashIn) : o;
+                }
             }
             if('hidden' in hashIn)
                 hashOut.hidden=hashIn.hidden;
@@ -6612,7 +6613,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     dataItem._tabindex=tabindex;
 
                     //others
-                    ajd(profile, item, dataItem);
+                    ajd(profile, item, dataItem, 'sub');
                     if(ns._prepareItem)
                         ns._prepareItem(profile, dataItem, item, pid, i,l,mapCache, serialId);
                 }

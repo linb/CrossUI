@@ -109,7 +109,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(this.isDestroyed())return ;
             var profile=this.get(0);
             profile.$poplink=drop?drop['xui.Module']?drop.getRoot(true):drop['xui.UI']?drop.get(0):drop:null;
-            
+            (profile.$poplink.$beforeDestroy=(profile.$poplink.$beforeDestroy||{}))["$poplink_to"]=function(){
+                delete profile.$poplink;
+            };
             (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["$poplink"]=function(){
                 if(profile.$poplink){
                     xui.filter(profile.box.$drop,function(o){
@@ -118,7 +120,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.$poplink.boxing().destroy();
                     profile.$poplink=null;
                 }
-            }
+            };
         },
         _cache:function(type, focus){
             if(this.isDestroyed())return ;
@@ -1291,7 +1293,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         o.box._prepareItems(o, value);
 
                         // if popped
-                        if(o.$poplink)
+                        if(o.$poplink&&o.$poplink.box)
                             o.$poplink.boxing().setItems(value);
                         else
                             o.boxing().clearPopCache();

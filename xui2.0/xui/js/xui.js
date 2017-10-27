@@ -1300,7 +1300,7 @@ xui.merge(xui,{
         return '<span id="'+xui.$localeDomId+'" class="'+s.replace(/([\x01\x02\x03\x04])/g,function(a){return '$'+xui._unescapeMap[a];})+'" '+xui.$IEUNSELECTABLE()+'>'+r+'</span>';
     },
     //test1: xui.adjustRes("$(start.a.b.c $0 $1 ($- $. $$$) end-1-2)"); => "c 1 2 (- . $) end"
-    adjustRes:function(str, wrap, onlyBraces, onlyVars, params, scope){
+    adjustRes:function(str, wrap, onlyBraces, onlyVars, params, scope1, scope2){
         if(!xui.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
@@ -1314,12 +1314,12 @@ xui.merge(xui,{
                     // $a
                     l=='$' ? onlyVars?a:wrap(m,params) :
                     // variable: @a@ @a.b.c@ {a.b.c}
-                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x,scope)) || (xui.isSet(z)?z:""))
+                     ((onlyBraces?0:(o=='@'||s=='@'))||w=="{") ? ((z=xui.SC.get(o=="@"?p:s=="@"?t:x, scope1, scope2)) || (xui.isSet(z)?z:""))
                      : a;
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
     },
-    adjustVar:function(obj,scope){
+    adjustVar:function(obj,scope1,scope2){
         var t;
         return typeof(obj)=="string" ?
                     obj=="{[]}"?[]:
@@ -1334,11 +1334,11 @@ xui.merge(xui,{
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
                     // {a.b(3,"a")} 
                     // scope allows hash only
-                    ((t=/^\s*\{([\w\.]+\([^)]*\))\s*\}\s*$/.exec(obj)) && xui.isHash(scope)) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope):
+                    (t=/^\s*\{([\w\.]+\([^)]*\))\s*\}\s*$/.exec(obj)) && (scope1||scope2) && xui.isHash(scope1||scope2) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope1||scope2)  :
                     //{a.b.c} or {prf.boxing().getValue()}
                     (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
-                    xui.SC.get(t[1], scope)
-                   : xui.adjustRes(obj, false, true, true, null, scope)
+                    xui.SC.get(t[1], scope1, scope2)
+                   : xui.adjustRes(obj, false, true, true, null, scope1, scope2)
                    : obj;
     },
     _getrpc:function(uri,query,options){
@@ -3939,9 +3939,11 @@ xui.Class('xui.SC',null,{
         },
 
         //get object from obj string
-        get:function (path, obj){
+        get:function (path, obj1, obj2, v){
             // a[1][2].b[3] => a,1,2,b,3
-            return xui.get(obj||window,(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/));
+            path=(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/);
+            if((v = xui.get(obj1||window,path))===undefined && obj2)v = xui.get(obj2,path);
+            return v;
         },
         /* function for "Straight Call"
         *   asy     loadSnips use
