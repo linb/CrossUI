@@ -124,13 +124,25 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                     }
                 },t;
    
-            "loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" ").forEach(function(event, i){
-                if(H5&&H5.get(0))H5.get(0).addEventListener(event, ef, false);  
+            xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "), function(event, i){
+                if(i = H5&&H5.get(0)){
+                    if(i.addEventListener){
+                        i.addEventListener(event, ef,false);
+                    }else if(i.attachEvent){
+                        i.attachEvent(event, ef);
+                    }                
+                }
             });
             
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["detachEvents"]=function(){
-                "loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" ").forEach(function(event, i){
-                    if(H5&&H5.get(0))H5.get(0).removeEventListener(event, ef, false);  
+                xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "),function(event, i){
+                    if(i=H5&&H5.get(0)){
+                        if(i.removeEventListener){
+                            i.removeEventListener(event, ef, false);  
+                        }else if(i.detachEvent){
+                            i.detachEvent(event, ef);
+                        }
+                    }   
                 });
             };
 

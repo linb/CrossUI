@@ -2527,7 +2527,7 @@ new function(){
                                 var resumeFun=function(key,args,flag){
                                     if(recursive){
                                         if(xui.isStr(flag))_ns.temp[flag]=true;
-                                        return recursive.apply(key,args);
+                                        return recursive.apply(key,args||[]);
                                     }
                                 };
                                 // onOK
