@@ -5550,7 +5550,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t2='',
                 caption,
                 cellanode=node,
-                capOut=uicell&&('caption' in uicell)&&xui.isDefined(cell.caption) ? uicell.caption : xui.isStr(cell.caption) ? cell.caption : null,
+                capOut= uicell && xui.isStr(uicell._caption)?uicell._caption:uicell &&xui.isStr(cell.caption) ? uicell.caption : xui.isStr(cell.caption) ? cell.caption : null,
                 reg1=/</g,
                 dcls='xui-uicell-disabled',
                 rcls='xui-ui-readonly',
@@ -5944,7 +5944,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // allow to set caption dynamically
             if(cellCapTpl)
-                cell.caption=cellCapTpl;
+                cell._caption=cellCapTpl;
             xui.UI.adjustData(profile, cell, uicell, 'sub');
 
             if(renderer)
@@ -6680,9 +6680,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(editor.setCaption){
                         if(editorProperties&&('caption' in editorProperties)&& xui.isDefined(editorProperties.caption)){
-                            editor.setCaption(editorProperties._caption,true);
+                            editor.setCaption(editorProperties.caption,true);
                         }else  if(type=="cmdbox"||type=="popbox"||type=="button"||type=="dropbutton"){
-                            editor.setCaption(cell._caption||cell._$tmpcap||"",true);
+                            editor.setCaption(cell._caption||cell._$tmpcap||cell.caption||"",true);
                         }
                     }
                     //$tag for compatible
@@ -7482,7 +7482,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 item = profile.cellMap[sid];
 
             if(item){
-                xui.Tips.show(pos, ('tips' in item)?item.tips:(item._$tips||item.caption));
+                xui.Tips.show(pos, ('tips' in item)?item.tips:(item._$tips||item._caption||item.caption));
                 return false;
             }else
                 return true;

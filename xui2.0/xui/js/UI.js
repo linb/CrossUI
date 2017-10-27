@@ -7316,7 +7316,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 else xui.Tips.hide();
                 return false;
             }else if(profile.properties.autoTips && item && 'caption' in item){
-                if(item.caption||item.comment)xui.Tips.show(pos, {tips: (item.caption||'') + (item.caption||item.comment?'<br/>':'') + (item.comment||'')});
+                if(item.caption||item.comment)xui.Tips.show(pos, {tips: xui.adjustRes((item.caption||'') + (item.caption||item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item) });
                 else xui.Tips.hide();
                 return false;
             }else

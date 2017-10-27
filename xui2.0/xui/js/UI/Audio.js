@@ -1,13 +1,13 @@
 xui.Class("xui.UI.Audio", "xui.UI",{
     Instance:{
         play:function(){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.play();
+            var v = this.getSubNode("H5"), vn = v.get(0);if(vn&&this.getSrc())vn.play();
         },
         pause:function(){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.pause();
+            var v = this.getSubNode("H5"), vn = v.get(0);if(vn&&this.getSrc())vn.pause();
         },
         load:function(){
-            var v = this.getSubNode("H5"), vn = v.get(0);if(vn)vn.load();
+            var v = this.getSubNode("H5"), vn = v.get(0);if(vn&&this.getSrc())vn.load();
         },
         canPlayType:function(type){
             var v = this.getSubNode("H5"), vn = v.get(0);if(vn) return vn.canPlayType(type);
@@ -23,6 +23,14 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                 left:0,
                 top:0,
                 'z-index':1
+            },
+            COVER:{
+                position:'absolute',
+                left:'-1px',
+                top:'-1px',
+                width:0,
+                height:0,
+                'z-index':4
             }
         },
         Templates:{
@@ -40,6 +48,10 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                 volume:'{volume}',
                 src:'{src}',
                 text:'Your browser does not support the audio element.'
+            },
+            COVER:{
+                tagName:'div',
+                style:"background-image:url("+xui.ini.img_bg+");"
             }
         },
         Behaviors:{
@@ -59,9 +71,10 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             src:{
                 ini:'',
                 action:function(v){
-                    this.getSubNode("H5").attr("src",v||null);
+                    this.getSubNode("H5").attr("src", xui.adjustRes(v));
                 }
             },
+            cover:false,
             controls:{
                 ini: true,
                 action:function(v){
@@ -125,7 +138,10 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             if(!prop.muted)H5.attr("muted",null);
 
             if(!prop.autoplay)H5.attr("autoplay",null);
-            else xui.asyRun(function(t){if(t=H5.get(0))t.play();});
+            else xui.asyRun(function(t){
+                if(prf.$inDesign)return;
+                if(prop.src && xui.isStr(prop.src) && (t=H5.get(0)))t.play();}
+            );
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -133,7 +149,6 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             if(data.controls)data._controls = "controls";
             if(data.loop)data._loop = "loop";
             if(data.muted)data._muted = "muted";
-            if(data.autoplay)data._autoplay = "autoplay";
             return data;
         },
         EventHandlers:{
@@ -145,7 +160,7 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                 prop=profile.properties,
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
-                root = profile.getRoot(),
+
                 // caculate by px
                 ww=width?profile.$px(width):width, 
                 hh=height?profile.$px(height):height;
@@ -153,12 +168,16 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
                 // reset here
                 if(width){
-                    prop.width=adjustunit(ww);
-                    H5.attr("width", ww);
+                    H5.attr("width", ww).width(prop.width=adjustunit(ww));
                 }
                 if(height){
-                    prop.height=adjustunit(hh);
-                    H5.attr("height", hh);
+                    H5.attr("height", hh).height(prop.height=adjustunit(hh));
+                }
+                if(profile.$inDesign || prop.cover){
+                    profile.getSubNode('COVER').cssSize({
+                        width:width?prop.width:null,
+                        height:height?prop.height:null
+                    },true);
                 }
             }
         }

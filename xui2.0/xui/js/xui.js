@@ -3942,7 +3942,9 @@ xui.Class('xui.SC',null,{
         get:function (path, obj1, obj2, v){
             // a[1][2].b[3] => a,1,2,b,3
             path=(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/);
-            if((v = xui.get(obj1||window,path))===undefined && obj2)v = xui.get(obj2,path);
+            if(obj1)v = xui.get(obj1,path);
+            if(obj2 && v===undefined)v = xui.get(obj2,path);
+            if(v===undefined)v = xui.get(window,path);
             return v;
         },
         /* function for "Straight Call"
