@@ -65,7 +65,7 @@ xui.Class("xui.UI.Flash", "xui.UI",{
             },
             cover:false,
             src:{
-                format:'flash',
+                format:'media',
                 ini:'',
                 action:function(v){
                     this.boxing().refreshFlash();

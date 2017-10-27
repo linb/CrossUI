@@ -69,6 +69,7 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                 ini:'5em'
             },
             src:{
+                format:'media',
                 ini:'',
                 action:function(v){
                     this.getSubNode("H5").attr("src", xui.adjustRes(v));

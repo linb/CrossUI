@@ -1,5 +1,5 @@
 /*!
-* CrossUI(xui) JavaScript Library v2.0
+* CrossUI(xui) JavaScript Library v2.1
 * http://crossui.com
 * 
 * Copyright ( 2004 ~ present) CrossUI.com
@@ -1015,7 +1015,7 @@ xui.merge(xui.Class, {
 
 //function Dependencies: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:2.0,
+    version:2.1,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -1336,7 +1336,7 @@ xui.merge(xui,{
                     // scope allows hash only
                     (t=/^\s*\{([\w\.]+\([^)]*\))\s*\}\s*$/.exec(obj)) && (scope1||scope2) && xui.isHash(scope1||scope2) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope1||scope2)  :
                     //{a.b.c} or {prf.boxing().getValue()}
-                    (t=/^\s*\{([\S]+)\}\s*$/.exec(obj))  ?
+                    (t=/^\s*\{([^}]+)\}\s*$/.exec(obj))  ?
                     xui.SC.get(t[1], scope1, scope2)
                    : xui.adjustRes(obj, false, true, true, null, scope1, scope2)
                    : obj;
