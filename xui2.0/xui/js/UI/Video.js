@@ -4,6 +4,7 @@ xui.Class("xui.UI.Video", "xui.UI.Audio",{
     Static:{
         Templates:{
             tagName:'div',
+            crossOrigin:  'anonymous',
             className:'{_className}',
             style:'{_style}',
             H5:{

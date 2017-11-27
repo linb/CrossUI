@@ -39,6 +39,7 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             style:'{_style}',
             H5:{
                 tagName:'audio',
+                crossOrigin:  'anonymous',
                 autoplay:'{_autoplay}',
                 controls:'{_controls}',
                 loop:'{_loop}',

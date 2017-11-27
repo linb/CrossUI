@@ -1335,8 +1335,10 @@ xui.Class('xui.Module','xui.absProfile',{
             if(typeof theme=='function')thowUI=theme;
                 var ifun=function(path){
                     var a=this,
-                        t, bg, 
+                        t, bg, zoom,
                         f=function(i,l,flag){
+                            if(zoom)
+                                xui.Dom.$setZoom(xui('html').get(0), zoom);
                             if(bg && xui.isHash(bg)){
                                 xui.each(bg,function(v,k){
                                     xui('html').css(k, xui.adjustRes(v));
@@ -1375,7 +1377,8 @@ xui.Class('xui.Module','xui.absProfile',{
                             if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
                                 if(t.theme)theme=t.theme;
                                 if(t.lang)lang=t.lang;
-                                bg=t.background;
+                                if('background' in t)bg=t.background;
+                                if('zoom' in t)zoom=t.zoom;
                             }
                             if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
                                 xui.CSS.setStyleRules(".xui-custom",t,true);

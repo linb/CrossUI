@@ -1761,8 +1761,10 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
                 // adjust endpoints
                 xui.each(endpoints,function(o,i){
-                    if(!xui.isArr(o) || o.length===1) o = [_get(self, ctrl, i), o];
-                    endpoints[i]=o;
+                    if(!xui.isFun(o)){
+                        if(!xui.isArr(o) || o.length===1) o = [_get(self, ctrl, i), o];
+                        endpoints[i]=o;
+                    }
                 });
             }
             var parmsBak=endpoints;
@@ -1782,10 +1784,10 @@ xui.Class('xui.Dom','xui.absBox',{
                 var offtime=xui.stamp() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
                 xui.each(endpoints,function(o,i){
-                    s=o[0];e=o[1];u=o[2];
                     curvalue = tween[type](duration, offtime);
                     if(typeof o == 'function') o.call(self, curvalue);
                     else{
+                        s=o[0];e=o[1];u=o[2];
                         if(xui.str.endWith(i.toLowerCase(),'color')){
                             curvalue = color(s, e, curvalue);
                         }else{
@@ -1815,14 +1817,14 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(restore&&!_goback){
                         starttime=xui.stamp();
                         _goback=1;
-                        xui.each(endpoints,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                        xui.each(endpoints,function(v,k){if(!xui.isFun(v)){k=v[0];v[0]=v[1];v[1]=k}});
                     }else{
                         if(times==-1||times>0){
                             starttime=xui.stamp();
                             if(times>0)times-=1;
                             if(_goback){
                                 _goback=0;
-                                xui.each(endpoints,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                                xui.each(endpoints,function(v,k){if(!xui.isFun(v)){k=v[0];v[0]=v[1];v[1]=k}});
                             }
                         }
                     }
@@ -3260,6 +3262,17 @@ type:4
                 }
             }
         },
+        $setZoom:function(node,value){
+            value=parseFloat(value);
+            if(xui.isNaN(value) || value<=0)value='';
+            var b=xui.browser,n=xui(node),h={};
+            if(b.ie678)h.zoom=value;
+            else{
+                h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
+                h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
+            }
+            n.css(h);
+        },
         _vAnimate:function(node,setting,callback){
             if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
                 if(callback)xui.tryF(callback);
@@ -3268,7 +3281,7 @@ type:4
 
             var endpoints=setting.endpoints,begin={},end={};
             node=xui(node);
-            xui.each(endpoints,function(o,i){begin[i]=o[0];end[i]=o[1];});
+            xui.each(endpoints,function(o,i){if(!xui.isFun(o)){begin[i]=o[0];end[i]=o[1]}});
 
             return node.animate(endpoints, function(threadid){
                 node.css(begin);
@@ -3326,6 +3339,8 @@ type:4
 
                     if(name=="$gradient"){
                         return ns.$setGradients(node,value);
+                    }if(name=="$zoom"){
+                        return ns.$setZoom(node,value);
                     }else if(name=='opacity'){
                         value=xui.isFinite(value)?
                                 parseFloat(value)>1?
