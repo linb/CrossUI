@@ -3837,8 +3837,11 @@ type:4
                     if(v===window || v===document){
                         if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
                         if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
+                    }else if(v!==undefined){
+                        return v[o];
+                    }else{
+                        return 0;
                     }
-                    return v[o];
                 }
             })
         });
