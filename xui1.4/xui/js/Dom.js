@@ -3824,7 +3824,7 @@ type:4
         });
         _.arr.each(['scrollLeft','scrollTop'],function(o){
             self.plugIn(o,function(value){
-                var a=document.documentElement,b=document.body;
+                var a=document.documentElement,b=document.body,v;
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){
@@ -3832,17 +3832,10 @@ type:4
                         }else
                             v[o]=value;
                     });
-                else{
-                    var v=this.get(0);
-                    if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
-                        if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
-                    }else if(v!==undefined){
-                        return v[o];
-                    }else{
-                        return 0;
-                    }
-                }
+                else
+                    return (v=this.get(0)) ? (v===window || v===document) ? (window["scrollTop"==o?"pageYOffset":"pageXOffset"] || (a[o]||b[o]||0))
+                                                                                                            : v[o]
+                                                        : 0;
             })
         });
         _.arr.each('width,height,left,top'.split(','),function(o){

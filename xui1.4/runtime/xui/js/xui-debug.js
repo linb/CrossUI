@@ -12298,7 +12298,7 @@ type:4
         });
         _.arr.each(['scrollLeft','scrollTop'],function(o){
             self.plugIn(o,function(value){
-                var a=document.documentElement,b=document.body;
+                var a=document.documentElement,b=document.body,v;
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){
@@ -12306,14 +12306,10 @@ type:4
                         }else
                             v[o]=value;
                     });
-                else{
-                    var v=this.get(0);
-                    if(v===window || v===document){
-                        if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
-                        if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
-                    }
-                    return v[o];
-                }
+                else
+                    return (v=this.get(0)) ? (v===window || v===document) ? (window["scrollTop"==o?"pageYOffset":"pageXOffset"] || (a[o]||b[o]||0))
+                                                                                                            : v[o]
+                                                        : 0;
             })
         });
         _.arr.each('width,height,left,top'.split(','),function(o){
@@ -12517,7 +12513,8 @@ type:4
         },"window",-1);
 
     }
-});Class('xui.Template','xui.absProfile',{
+});
+Class('xui.Template','xui.absProfile',{
     Constructor:function(template,properties,events,domId){
         var upper=arguments.callee.upper, args=_.toArr(arguments);
         upper.apply(this,args);
@@ -13502,8 +13499,7 @@ Class('xui.Module','xui.absProfile',{
                 if(self.background)
                     xui.SC.runInBG(self.background);
                 self._fireEvent('onReady');
-            });
-            funs.push(function(threadid){
+            });            funs.push(function(threadid){
                 self.created=true;
                 _.tryF(onEnd,[null, self, threadid],self.host);
             });
@@ -24284,7 +24280,7 @@ new function(){
                 if(path!=xui.ini.img_bg2){
                     var i=new Image();
                     i.onload=function(){
-                        if(!profile||profile.isDestroyed)return;
+                        if(!profile||profile.destroyed)return;
                         var prop=profile.properties,
                             size=profile.box._adjust(profile, _.isFinite(prop.width)?prop.width:i.width,_.isFinite(prop.height)?prop.height:i.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
@@ -24425,7 +24421,8 @@ new function(){
             }
         }
     }
-});Class("xui.UI.Flash", "xui.UI",{
+});
+Class("xui.UI.Flash", "xui.UI",{
     Instance:{
         refreshFlash:function(){
             var html='', cls=this.constructor;
@@ -28849,7 +28846,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     //get corret string according to maskTxt
                     var a=[];
                     _.arr.each(maskTxt.split(''),function(o,i){
-                        a.push( map[o]?(((new RegExp('^'+map[o]+'$')).test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i)) : maskStr.charAt(i))
+                        a.push( map[o]?(((new RegExp('^'+map[o]+'$')).test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i)) : maskStr.charAt(i));
                     });
     
                     //if input visible char
@@ -28885,7 +28882,7 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                     a=[];
                 //get corret string according to maskTxt
                 _.arr.each(maskTxt.split(''),function(o,i){
-                    a.push( (new RegExp('^'+(map[o]?map[o]:'\\'+o)+'$').test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i))
+                    a.push( map[o]?(((new RegExp('^'+map[o]+'$')).test(t.charAt(i))) ? t.charAt(i) : maskStr.charAt(i)) : maskStr.charAt(i));
                 });
                 value=a.join('');
                 src.value=value;
@@ -29010,7 +29007,8 @@ Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 if((profile.$border||profile.$shadow||profile.$resizer) && xui.browser.ie)o.ieRemedy();
         }
     }
-});Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
+});
+Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
     Instance:{
         activate:function(){
             return this;

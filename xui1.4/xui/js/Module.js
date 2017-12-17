@@ -655,8 +655,7 @@ Class('xui.Module','xui.absProfile',{
                 if(self.background)
                     xui.SC.runInBG(self.background);
                 self._fireEvent('onReady');
-            });
-            funs.push(function(threadid){
+            });            funs.push(function(threadid){
                 self.created=true;
                 _.tryF(onEnd,[null, self, threadid],self.host);
             });
