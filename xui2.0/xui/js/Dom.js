@@ -4007,16 +4007,10 @@ type:4
                         }else
                             v[o]=value;
                     });
-                else{
-                    var v=this.get(0);
-                    if(v){
-                        if(v===window || v===document){
-                            if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
-                            if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
-                        }
-                        return v[o];
-                    }
-                }
+                else
+                    return (v=this.get(0)) ? (v===window || v===document) ? (window["scrollTop"==o?"pageYOffset":"pageXOffset"] || (a[o]||b[o]||0))
+                                                                                                            : v[o]
+                                                        : 0;
             })
         });
         xui.arr.each('width,height,left,top'.split(','),function(o){

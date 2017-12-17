@@ -447,7 +447,7 @@ xui.Class("xui.CSS", null,{
             }
         },
         $forceu:function(v,u,node,roundPx){
-            return (v===''||v=='auto') ? v:
+            return (v===null||v===undefined||v===''||v=='auto') ? v:
                 ( u ? u=='rem' : (xui.$us()===0)) ? this.$rem(v,node,roundPx!==false)+'rem':
                 ( u ? u=='em' : (xui.$us()==1)) ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'

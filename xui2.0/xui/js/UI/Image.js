@@ -39,7 +39,7 @@ xui.Class("xui.UI.Image", "xui.UI",{
                 if(path!=xui.ini.img_bg){
                     var i=new Image();
                     i.onload=function(){
-                        if(!profile||profile.isDestroyed)return;
+                        if(!profile||profile.destroyed)return;
                         var prop=profile.properties,
                             size=profile.box._adjust(profile, (prop.width===""||prop.width=="auto")?i.width:prop.width, (prop.height===""||prop.height=="auto")?i.height:prop.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
