@@ -4105,6 +4105,23 @@ type:4
                         return false;
                     }
                 }
+                if(xui.Module){
+                    xui.arr.each(xui.Module._cache,function(m){
+                       // by created order    
+                       if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
+                           // function or pseudocode
+                           if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type)){
+                               m.fireEvent('onHookKey', [m,ks, xui.$cache.hookKey==cache]);
+                           }
+                       }
+                       else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
+                           // function or pseudocode
+                           if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type)){
+                               m.fireEvent('onHookKey', [m,ks, xui.$cache.hookKey==cache]);
+                           }
+                       }
+                    });
+                }
             }
             return true;
         };

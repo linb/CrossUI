@@ -5812,6 +5812,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ],
                 $memo:'See constructor'
             },
+            onHookKey:{
+                $desc:'热键触发本事件',
+                $paras:[
+                    'module : xui.Module 对象',
+                    'key : Object, 热键对象',
+                    'keyDown: Boolen, 热键按下或抬起'
+                ]
+            },
             onFragmentChanged:{
                 $desc:'当URL变量片段改变的时候触发本事件',
                 $paras:[

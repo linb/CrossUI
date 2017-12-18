@@ -5750,6 +5750,14 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $memo:'See constructor'
             },
+            onHookKey：{
+                $desc:'Fired when the hook key down/up',
+                $paras:[
+                    'module : xui.Module',
+                    'key : Object, key object',
+                    'keyDown: Boolen, down or up'
+                ]
+            },
             onFragmentChanged:{
                 $desc:'Fired when the URL  Fragement Identifier changed',
                 $paras:[
