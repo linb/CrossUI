@@ -5750,12 +5750,13 @@ xui.set(xui.Locale,["en","app"], {
                 ],
                 $memo:'See constructor'
             },
-            onHookKey：{
+            onHookKey:{
                 $desc:'Fired when the hook key down/up',
                 $paras:[
                     'module : xui.Module',
                     'key : Object, key object',
-                    'keyDown: Boolen, down or up'
+                    'keyDown: Boolen, down or up',
+                    "e : Event, event object"
                 ]
             },
             onFragmentChanged:{

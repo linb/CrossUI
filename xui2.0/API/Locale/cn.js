@@ -25,7 +25,7 @@ xui.set(xui.Locale,["cn","app"], {
     memo:'说明',
     seealso:'请参考',
     oCode:'函数源代码',
-    oCodeDesc:'/*\n * 为了帮助您更好地理解这个函数,下面是 CrossUI 的函数源代码：\n*/'
+    oCodeDesc:'/*\n * 为了帮助您更好地理解这个函数,下面是 CrossUI 的函数源代码: \n*/'
 });
 (function(){
     var $eo={
@@ -75,7 +75,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "obj [可选参数]: Object,  类对象. 默认为 {}"
             ],
             $snippet:["// 申明命名空间 'Test.NS' 然后申明一个类 'Test.NS.Cls'; \n  xui.Class('Test.NS.Cls'); xui.Class('Test.NS.Cls.Subcls1', 'Test.NS.Cls', {}); xui.Class('Test.NS.Cls.Subcls2', null, {});  alert(typeof Test.NS); alert(typeof Test.NS.Cls); alert(typeof Test.NS.Cls.Subcls1);alert(typeof Test.NS.Cls.Subcls2);"],
-            $memo:"类的命名规则：[A-Z][0-9a-zA-Z]+",
+            $memo:"类的命名规则: [A-Z][0-9a-zA-Z]+",
             destroy:{
                 $desc:"销毁一个类"
             }
@@ -87,7 +87,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "key [必需参数]: String, 名字空间字符串"
             ],
             $snippet:["xui.Namespace('Test.NS'); alert(typeof Test.NS)"],
-            $memo:"名字空间的命名规则：[A-Z][0-9a-zA-Z]+"
+            $memo:"名字空间的命名规则: [A-Z][0-9a-zA-Z]+"
         },
         //"工具方法的集合",
         stamp:{
@@ -1089,14 +1089,14 @@ xui.set(xui.Locale,["cn","app"], {
             ]
         },
         request:{
-            $desc:"向特定的服务地址发送数据请求. xui.request会按照情况选用xui.Ajax, xui.SAjax 或 xui.IAjax： "+
+            $desc:"向特定的服务地址发送数据请求. xui.request会按照情况选用xui.Ajax, xui.SAjax 或 xui.IAjax:  "+
                   "<br /><b>默认=>xui.Ajax; 目标地址跨域=>xui.SAjax; 如果用'post'方法=>xui.IAjax;</b>",
             $paras:[
                 "uri [必需参数]: String, 目标地址",
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
                 "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
-                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ],
             $memo:"请参考 <a href='#xui.Ajax'>xui.Ajax</a>, <a href='#xui.SAjax'>xui.SAjax</a>, <a href='#xui.IAjax'>xui.IAjax</a>!"
@@ -1108,7 +1108,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
                 "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
-                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
         },
@@ -1119,7 +1119,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
                 "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
-                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
         },
@@ -1130,7 +1130,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
                 "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
-                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
         },
@@ -1141,7 +1141,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
                 "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
-                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
         },
@@ -1919,8 +1919,8 @@ xui.set(xui.Locale,["cn","app"], {
             "query [可选参数]:  Object/String, 要请求的数据",
             "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
             "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
-            "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
-            "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
+            "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序: [挂起这个thread -> 执行request -> 继续这个thread]",
+            "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括: " +
                 "<br>{"+
                 "<br><em>//variables</em>"+
                 "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址"+
@@ -2019,8 +2019,8 @@ xui.set(xui.Locale,["cn","app"], {
             "query [可选参数]:  Object/String, 要请求的数据",
             "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
             "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
-            "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
-            "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
+            "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序: [挂起这个thread -> 执行request -> 继续这个thread]",
+            "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括: " +
                 "<br>{"+
                 "<br><em>//variables</em>"+
                 "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址"+
@@ -2117,8 +2117,8 @@ xui.set(xui.Locale,["cn","app"], {
             "query [可选参数]:  Object/String, 要请求的数据",
             "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
             "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
-            "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序：[挂起这个thread -> 执行request -> 继续这个thread]",
-            "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括：" +
+            "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序: [挂起这个thread -> 执行request -> 继续这个thread]",
+            "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括: " +
                 "<br>{"+
                 "<br><em>//variables</em>"+
                 "<br>&nbsp;&nbsp;uri: String, 请求服务的 URL 地址"+
@@ -2217,10 +2217,10 @@ xui.set(xui.Locale,["cn","app"], {
 
     xui.set(xui.Locale,["cn","doc","xui","SC"], {
         KEY:{$desc:"本类名"},
-        $desc:"xui.SC类（静态类）.<br />以作为函数来进行直接调用：用字符串路径名去直接掉用一个类或对象.如果特定路径名的类或对象存在,直接返回；如果不存在, xui.SC会从内存或远程代码文件中加载这个类或对象",
+        $desc:"xui.SC类（静态类）.<br />以作为函数来进行直接调用: 用字符串路径名去直接掉用一个类或对象.如果特定路径名的类或对象存在,直接返回；如果不存在, xui.SC会从内存或远程代码文件中加载这个类或对象",
         $rtn:"Object/undefined, 类或对象[同步模式下]/ undefined[异步模式下]",
         $paras:[
-            "path [必需参数]: String, 路径名(例如：'xui.UI.Button')",
+            "path [必需参数]: String, 路径名(例如: 'xui.UI.Button')",
             "callback [可选参数]: Function, 函数的参数:[path, code, threadid]. 回调函数,会在直接调用完成后调用.如果直接掉用成功,[path]参数会是代码文件的路径；[this]指针会是返回的类或对象本身.如果直接调用失败,[path]参数为 [null], [this]指针将会是内部的 xui.Ajax/iajax 对象",
             "isAsy [可选参数]: Boolean, 直接调用是否为异步. 如果目标类或对象已经在内存中存在,本参数无效.默认为 [false]",
             "options [可选参数]: Object, 一组键值对,用来配置内部的 xui.Ajax(在异步模式的情况) 或 xui.SAjax(在同步模式的情况)"
@@ -2428,7 +2428,7 @@ xui.set(xui.Locale,["cn","app"], {
             $rtn:'[self]',
             $paras:[
                 "boundary [必需参数] : Element/String, 作为边界的 DOM 元素或xid",
-                "trigger [必需参数] : Function, 函数参数：[边界DOM元素的xid]. 这个 [trigger] 函数会在用户用 TAB 键让鼠标焦点落在指定 DOM 的边界 [boundary] 外时执行"
+                "trigger [必需参数] : Function, 函数参数: [边界DOM元素的xid]. 这个 [trigger] 函数会在用户用 TAB 键让鼠标焦点落在指定 DOM 的边界 [boundary] 外时执行"
             ],
             $snippet:[
                 "if(!xui.Dom.byId('xui.temp.out')){this.prepend(xui.create('<div><div id=\"xui.temp.out\" style=\"border:solid 1px;padding:10px;\">xui.temp.out<input id=\"xui.temp.out.first\"><input /><input /><input /><div id=\"xui.temp.in\"  style=\"border:solid 1px;padding:10px;\">xui.temp.in<input id=\"xui.temp.in.first\" /><input /><input /><input /><input /></div></div><div><button onclick=\"xui.arr.each(xui.Event._tabHookStack,function(o){alert(o[0])})\">Click here to show inner stack content!</button><br /><br /><button onclick=\"xui.Event.popTabOutTrigger();\">popTabOutTrigger</button><br /><br /></div><div><button onclick=\"xui.Event.popTabOutTrigger(1);xui(this).parent(2).remove();\">remove this example</button></div></div>'));\n"+
@@ -2542,7 +2542,7 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"用[xui(nodes, flag)]得到一个新xui.Dom实例对象"
         },
         Events:{
-            $desc:  "<strong>Description</strong>: 添加、删除或者触发特定事件.每个事件可以有三组事件函数：[before开头], [on开头] 和 [after开头].每组是一个函数数组"+
+            $desc:  "<strong>Description</strong>: 添加、删除或者触发特定事件.每个事件可以有三组事件函数: [before开头], [on开头] 和 [after开头].每组是一个函数数组"+
                     "<ul>"+
                         "<li><strong>xui(/**/).onClick([function], 'label')</strong> => 为 [onclick] 事件函数组添加一个标签为'label'的事件函数.</li>"+
                         "<li><strong>xui(/**/).onClick([function]) </strong> => 先清空 [onclick] 事件函数组,再重新加入一个[function]函数.</li>"+
@@ -3449,7 +3449,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String, 区域外点击隐藏的唯一标识",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
                     "trigger [必需参数] : Function or [null] :  隐藏触发函数",
                     "group [可选参数] : xui.Dom, 触发函数的组对象"
@@ -3679,7 +3679,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String, 区域外点击隐藏的唯一标识",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
                     "trigger [必需参数] : Function or [null] :  隐藏触发函数",
                     "group [可选参数] : xui.Dom, 触发函数的组对象"
@@ -3690,7 +3690,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]"
                 ],
                 $snippet:[
@@ -4290,7 +4290,7 @@ xui.set(xui.Locale,["cn","app"], {
             $rtn:"String",
             $paras:[
                 "date [必需参数] : Date Object, 时间戳",
-                "format [必需参数] : String, 时间格式. 可用的时间元素有： (utciso|iso|yyyy|mm|ww|dd|hh|nn|ss|ms|de|c|y|q|m|w|d|h|n|s)",
+                "format [必需参数] : String, 时间格式. 可用的时间元素有:  (utciso|iso|yyyy|mm|ww|dd|hh|nn|ss|ms|de|c|y|q|m|w|d|h|n|s)",
                 "firstDayOfWeek [可选参数] : 每周的第一天的编号. 默认为 0"
             ],
             $snippet:[
@@ -5817,7 +5817,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     'module : xui.Module 对象',
                     'key : Object, 热键对象',
-                    'keyDown: Boolen, 热键按下或抬起'
+                    'keyDown: Boolen, 热键按下或抬起',
+                    "e : Event, 事件对象"
                 ]
             },
             onFragmentChanged:{
@@ -6476,7 +6477,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "onStart [可选参数] : Function, ajax开始时的载的回调函数",
                     "onEnd [可选参数] : Function, ajax结束时的回调函数",
                     "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal",
-                    "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为：[挂起thread -> 执行request -> 继续thread]",
+                    "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                     "options [可选参数]: Object, 一组配置数据"
                 ]
             },
@@ -8828,7 +8829,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置控件的悬停弹出类型",
                 $rtn:"[self]",
                 $paras:[
-                    "value [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "value [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     $force
                 ]
             },
@@ -9179,7 +9180,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"String, 区域外点击隐藏的唯一标识",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
                     "trigger [必需参数] : Function or [null] :  隐藏触发函数",
                     "group [可选参数] : xui.Dom, 触发函数的组对象"
@@ -14828,7 +14829,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "obj [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number}或是DOM元素",
-                    "type [可选参数] : String, 以下之一：'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
+                    "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象"
                 ],
                 $snippet:[
@@ -17402,7 +17403,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"按指定格式的行序号和列序号字符串来更新指定的单元格",
                 $rtn:"[self]",
                 $paras:[
-                    "mixedId [必需参数] : String, 格式：[行序号:列序号]",
+                    "mixedId [必需参数] : String, 格式: [行序号:列序号]",
                     "hash [必需参数] : key/value Object, 需要更新的键值对",
                     "dirtyMark [可选参数] : Boolean, 是否启用脏标识. 默认值是 [true]",
                     "triggerEvent [可选参数] : Boolean, 是否触发事件. 默认值是 [false]"

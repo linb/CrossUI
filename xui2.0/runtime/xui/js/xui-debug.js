@@ -9323,7 +9323,7 @@ xui.Class('xui.Event',null,{
             }
         },
         $forceu:function(v,u,node,roundPx){
-            return (v===''||v=='auto') ? v:
+            return (v===null||v===undefined||v===''||v=='auto') ? v:
                 ( u ? u=='rem' : (xui.$us()===0)) ? this.$rem(v,node,roundPx!==false)+'rem':
                 ( u ? u=='em' : (xui.$us()==1)) ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'
@@ -11186,8 +11186,10 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
                 // adjust endpoints
                 xui.each(endpoints,function(o,i){
-                    if(!xui.isArr(o) || o.length===1) o = [_get(self, ctrl, i), o];
-                    endpoints[i]=o;
+                    if(!xui.isFun(o)){
+                        if(!xui.isArr(o) || o.length===1) o = [_get(self, ctrl, i), o];
+                        endpoints[i]=o;
+                    }
                 });
             }
             var parmsBak=endpoints;
@@ -11207,10 +11209,10 @@ xui.Class('xui.Dom','xui.absBox',{
                 var offtime=xui.stamp() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
                 xui.each(endpoints,function(o,i){
-                    s=o[0];e=o[1];u=o[2];
                     curvalue = tween[type](duration, offtime);
                     if(typeof o == 'function') o.call(self, curvalue);
                     else{
+                        s=o[0];e=o[1];u=o[2];
                         if(xui.str.endWith(i.toLowerCase(),'color')){
                             curvalue = color(s, e, curvalue);
                         }else{
@@ -11240,14 +11242,14 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(restore&&!_goback){
                         starttime=xui.stamp();
                         _goback=1;
-                        xui.each(endpoints,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                        xui.each(endpoints,function(v,k){if(!xui.isFun(v)){k=v[0];v[0]=v[1];v[1]=k}});
                     }else{
                         if(times==-1||times>0){
                             starttime=xui.stamp();
                             if(times>0)times-=1;
                             if(_goback){
                                 _goback=0;
-                                xui.each(endpoints,function(v,k){k=v[0];v[0]=v[1];v[1]=k;});
+                                xui.each(endpoints,function(v,k){if(!xui.isFun(v)){k=v[0];v[0]=v[1];v[1]=k}});
                             }
                         }
                     }
@@ -12685,6 +12687,17 @@ type:4
                 }
             }
         },
+        $setZoom:function(node,value){
+            value=parseFloat(value);
+            if(xui.isNaN(value) || value<=0)value='';
+            var b=xui.browser,n=xui(node),h={};
+            if(b.ie678)h.zoom=value;
+            else{
+                h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
+                h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
+            }
+            n.css(h);
+        },
         _vAnimate:function(node,setting,callback){
             if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
                 if(callback)xui.tryF(callback);
@@ -12693,7 +12706,7 @@ type:4
 
             var endpoints=setting.endpoints,begin={},end={};
             node=xui(node);
-            xui.each(endpoints,function(o,i){begin[i]=o[0];end[i]=o[1];});
+            xui.each(endpoints,function(o,i){if(!xui.isFun(o)){begin[i]=o[0];end[i]=o[1]}});
 
             return node.animate(endpoints, function(threadid){
                 node.css(begin);
@@ -12751,6 +12764,8 @@ type:4
 
                     if(name=="$gradient"){
                         return ns.$setGradients(node,value);
+                    }if(name=="$zoom"){
+                        return ns.$setZoom(node,value);
                     }else if(name=='opacity'){
                         value=xui.isFinite(value)?
                                 parseFloat(value)>1?
@@ -13417,16 +13432,10 @@ type:4
                         }else
                             v[o]=value;
                     });
-                else{
-                    var v=this.get(0);
-                    if(v){
-                        if(v===window || v===document){
-                            if("scrollTop"==o)return window.pageYOffset || (a[o]||b[o]||0);
-                            if("scrollLeft"==o)return window.pageXOffset || (a[o]||b[o]||0);
-                        }
-                        return v[o];
-                    }
-                }
+                else
+                    return (v=this.get(0)) ? (v===window || v===document) ? (window["scrollTop"==o?"pageYOffset":"pageXOffset"] || (a[o]||b[o]||0))
+                                                                                                            : v[o]
+                                                        : 0;
             })
         });
         xui.arr.each('width,height,left,top'.split(','),function(o){
@@ -13490,7 +13499,7 @@ type:4
             : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
                 : ['inline-block'];
-        var fun=function(p,e,cache){
+        var fun=function(p,e,cache,keydown){
              var event=xui.Event,set,hash,rtnf,rst,
                 ks=event.getKey(e);
             if(ks){
@@ -13521,12 +13530,27 @@ type:4
                         return false;
                     }
                 }
+                if(xui.Module){
+                    xui.arr.each(xui.Module._cache,function(m){
+                       // by created order    
+                       if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
+                           // function or pseudocode
+                           if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
+                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
+                       }
+                       else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
+                           // function or pseudocode
+                           if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
+                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
+                       }
+                    });
+                }
             }
             return true;
         };
         //hot keys
-        xui.doc.onKeydown(function(p,e){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,xui.$cache.hookKey)},"document")
-        .onKeyup(function(p,e){delete xui.Event.$keyboard; fun(p,e,xui.$cache.hookKeyUp)},"document");
+        xui.doc.onKeydown(function(p,e){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,xui.$cache.hookKey,true)},"document")
+        .onKeyup(function(p,e){delete xui.Event.$keyboard; fun(p,e,xui.$cache.hookKeyUp,false)},"document");
 
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)
@@ -15280,8 +15304,10 @@ xui.Class('xui.Module','xui.absProfile',{
             if(typeof theme=='function')thowUI=theme;
                 var ifun=function(path){
                     var a=this,
-                        t, bg, 
+                        t, bg, zoom,
                         f=function(i,l,flag){
+                            if(zoom)
+                                xui.Dom.$setZoom(xui('html').get(0), zoom);
                             if(bg && xui.isHash(bg)){
                                 xui.each(bg,function(v,k){
                                     xui('html').css(k, xui.adjustRes(v));
@@ -15320,7 +15346,8 @@ xui.Class('xui.Module','xui.absProfile',{
                             if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
                                 if(t.theme)theme=t.theme;
                                 if(t.lang)lang=t.lang;
-                                bg=t.background;
+                                if('background' in t)bg=t.background;
+                                if('zoom' in t)zoom=t.zoom;
                             }
                             if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
                                 xui.CSS.setStyleRules(".xui-custom",t,true);
@@ -15409,6 +15436,7 @@ xui.Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
+            onHookKey:function(module, key, e, keyDown){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
@@ -19281,7 +19309,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(o.renderId){
                     var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
                     o.getRoot().hide(function(){
-                        t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE));
+                        t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE)||0);
                         t.dockIgnore=true;
                     },a);
                 }
@@ -19518,7 +19546,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     if(target['xui.UI']){
                         var i=index;
                         target.each(function(profile){
-                             profile.linkParent(pro,subId,base?(i++):i);
+                             if(profile.linkParent)profile.linkParent(pro,subId,base?(i++):i);
                         });
                     }
                 }
@@ -19915,7 +19943,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return this.each(function(o){
                 if(!o.renderId)return;
                 var prop=o.properties;
-                if(prop.conDockRelative){
+                if(prop.conDockRelative||prop.conLayoutColumns){
                     o.boxing().adjustSize();
                 } 
                 // adjust self
@@ -19926,8 +19954,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                         if(n && n.clientHeight){
                             if(force){
                                 // ensure force 1
-                                n.style.width = (parseFloat(o.$px(n.style.width))||0+1)+'px';
-                                n.style.height = (parseFloat(o.$px(n.style.height))||0+1)+'px';
+                                n.style.width = ((parseFloat(o.$px(n.style.width))||0)+1)+'px';
+                                n.style.height = ((parseFloat(o.$px(n.style.height))||0)+1)+'px';
                                 // ensure force 
                                 o._resize_h=o._resize_w=-1;
                             }
@@ -19935,7 +19963,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         }
                     }
                 }else{
-                    if(xui.get(o,['parent','properties','conDockRelative'])){
+                    if(xui.get(o,['parent','properties','conDockRelative'])||xui.get(o,['parent','properties','conLayoutColumns'])){
                         var pp=o.parent;
                         xui.UI._adjustConW(pp, pp.getRoot(), o.getRoot().parent().width(), o.getRootNode());
                     }
@@ -21899,10 +21927,20 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     });
                                 }
                             },
-                            conDockRelative:{
-                                ini:false,
+                            conLayoutColumns:{
+                                ini:0,
                                 action:function(){
                                     this.adjustSize();
+                                }
+                            },
+                            conDockRelative:{
+                                hidden:true,
+                                ini:false,
+                                get:function(){
+                                    return this.boxing().getConLayoutColumns();
+                                },
+                                set:function(value){
+                                    return this.boxing().setConLayoutColumns(value?1:0);
                                 }
                             },
                             conDockPadding:{
@@ -22117,7 +22155,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
             if((t=hash.PanelKeys) && t.length){
                 t=self.prototype;
-                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype'.split(','),function(o){
+                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conLayoutColumns,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+xui.str.initial(o);
@@ -22691,33 +22729,48 @@ xui.Class("xui.UI",  "xui.absObj", {
             return self;
         },
         //for relative , static children
-        _adjustConW:function(profile, panel, w, cur){
-            var prop = profile.properties;
-            if(!prop.conDockRelative)return;
+        _adjustConW:function(profile, panel, parentW, cur){
+            var prop = profile.properties,cols;
+            if(!(cols = prop.conLayoutColumns))
+                cols=prop.conDockRelative?1:0;
+            if(!cols)return;
+
             var pad = prop.conDockPadding,
                   spc = prop.conDockSpacing,
-                  conDockStretch = prop.conDockStretch,
                   c = panel.children(),
-                  l = c.size();
+                  l = c.size(),off,pw,w,tw,index=0,ww,rowtotal=0;
             if(!l)return;
+            off = pad.left + pad.right + (cols -1) * spc.width;
+            pw = profile.$px(parentW) - off;
+            // It must be integer
+            w = Math.floor(pw/cols);
 
-            c.each(function(n,i,prf,p,tth){
+            c.each(function(n,i,prf,p){
                 if(cur && n!=cur)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
-                    tth = prf.properties.dockStretch || conDockStretch
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static'){
                         if(prf){
                             xui(n).css({
                                 position:'relative',
-                                left:pad.left+'px',
-                                top:'0',
+                                left:'auto',
+                                top:'auto',
                                 right:'auto',
                                 bottom:'auto',
+                                'margin-left': (i===0 ? pad.left : spc.width)+'px',
                                 'margin-top': (i===0 ? pad.top : spc.height)+'px'
                             });
+                            ww=prf.$forceu( w );
+                            if((index+1)%cols===0){
+                                ww=prf.$forceu( pw -  rowtotal);
+                                rowtotal=0;
+                            }else{
+                                rowtotal += w;
+                                ww=prf.$forceu( w );
+                            }
                             // to trigger onsize
-                            xui(n).width(prf.$forceu( prf.$px(prf.properties.width = w) - pad.left - pad.right));
+                            xui(n).width(prf.properties.width = ww);
+                            index++;
                         }
                     }
                 }
@@ -23161,8 +23214,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(t&&(force||w||h)){
                 //adjust width and height
                 //w=parseFloat(w)||null;
-                w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||profile.$isPx(w))?parseFloat(w):w))||null
-                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||profile.$isPx(h))?parseFloat(h):h))||null;
+                w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||profile.$isPx(w))?(parseFloat(w)||0):w))||null
+                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||profile.$isPx(h))?(parseFloat(h)||0):h))||null;
 
                 //if it it has delay resize, overwrite arguments
                 if('_$visibility' in profile){
@@ -23222,7 +23275,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     xui.UI.$dock(this,false,true);
                 }
             }else{
-                if(xui.get(self,['parent','properties','conDockRelative'])){
+                if(xui.get(self,['parent','properties','conDockRelative'])||xui.get(self,['parent','properties','conLayoutColumns'])){
                     var pp=self.parent;
                     xui.UI._adjustConW(pp, self.getRoot().parent(), self.getRoot().parent().width(), self.getRootNode());
                 }
@@ -23725,8 +23778,8 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                                                 var ow=o.width,
                                                     oh=o.height;
-                                                o.width=(parseFloat(o.width)||0+1)+xui.CSS.$picku(o.width);
-                                                o.height=(parseFloat(o.width)||0+1)+xui.CSS.$picku(o.height);
+                                                o.width=((parseFloat(o.width)||0)+1)+xui.CSS.$picku(o.width);
+                                                o.height=((parseFloat(o.width)||0)+1)+xui.CSS.$picku(o.height);
 
                                                 if(o.isSVG) o.ins._setBBox(o);
                                                 else o.node.cssRegion(o);
@@ -23851,7 +23904,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         break;
                                         default:
                                             noStretch=1;
-                                            pct = Math.min(1, Math.max(0, parseFloat(stretch) ));
+                                            pct = Math.min(1, Math.max(0, parseFloat(stretch)||0 ));
                                     }
                             }
 
@@ -23875,7 +23928,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(!flag){
                                         if(noStretch){
                                             // calculate width
-                                            temp =  pct ? parseFloat(obj.ww*pct)  : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)) + margin.left + margin.right;
+                                            temp =  pct ? (parseFloat(obj.ww*pct)||0)  : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)) + margin.left + margin.right;
                                             if(pct){
                                                 temp -= spaceW;
                                                 tempW = checkLimits(profile, prop, 'W', temp - margin.left - margin.right);
@@ -23944,7 +23997,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(!flag){
                                         if(noStretch){
                                             // calculate width
-                                            temp =  pct ? parseFloat(obj.ww*pct)  : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)) + margin.left + margin.right;
+                                            temp =  pct ? (parseFloat(obj.ww*pct)||0)  : _adjust(isSVG ? bbox.width : css.$px(prop.width,nodefz)) + margin.left + margin.right;
                                             if(pct){
                                                 temp -= spaceW;
                                                 tempW = checkLimits(profile, prop, 'W', temp - margin.left - margin.right);
@@ -24029,7 +24082,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                                         if(noStretch){
                                             // calculate height
-                                            temp =  pct ? parseFloat(obj.hh*pct)  : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)) + margin.top + margin.bottom;
+                                            temp =  pct ? (parseFloat(obj.hh*pct)||0)  : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)) + margin.top + margin.bottom;
                                             if(pct){
                                                 temp -= spaceH;
                                                 tempH = checkLimits(profile, prop, 'H', temp - margin.top - margin.bottom);
@@ -24117,7 +24170,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                                         if(noStretch){
                                             // calculate height
-                                            temp =  pct ? parseFloat(obj.hh*pct)  : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)) + margin.top + margin.bottom;
+                                            temp =  pct ? (parseFloat(obj.hh*pct)||0)  : _adjust(isSVG ? bbox.height : css.$px(prop.height,nodefz)) + margin.top + margin.bottom;
                                             if(pct){
                                                 temp -= spaceH;
                                                 tempH = checkLimits(profile, prop, 'H', temp - margin.top - margin.bottom);
@@ -24445,14 +24498,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(profile.$isEm(prop.width)){
                     data.bWidth = profile.$px2em( profile.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
                 }else{
-                    data.bWidth = parseFloat(prop.width) - prop.$hborder*2;
+                    data.bWidth = (parseFloat(prop.width)||0) - prop.$hborder*2;
                 }
             }
             if('$vborder' in dm && dm.$vborder){
                 if(profile.$isEm(prop.height)){
                     data.bHeight = profile.$px2em( profile.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
                 }else{
-                    data.bHeight = parseFloat(prop.height) - prop.$vborder*2;
+                    data.bHeight = (parseFloat(prop.height)||0) - prop.$vborder*2;
                 }
             }
             //set left,top,bottom,right,width,height
@@ -26954,7 +27007,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 if(path!=xui.ini.img_bg){
                     var i=new Image();
                     i.onload=function(){
-                        if(!profile||profile.isDestroyed)return;
+                        if(!profile||profile.destroyed)return;
                         var prop=profile.properties,
                             size=profile.box._adjust(profile, (prop.width===""||prop.width=="auto")?i.width:prop.width, (prop.height===""||prop.height=="auto")?i.height:prop.height);
                         if(profile.$afterLoad)profile.$afterLoad.apply(profile.host, [profile, path, size[0], size[1]]);
@@ -27337,6 +27390,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
             style:'{_style}',
             H5:{
                 tagName:'audio',
+                crossOrigin:  'anonymous',
                 autoplay:'{_autoplay}',
                 controls:'{_controls}',
                 loop:'{_loop}',
@@ -27499,6 +27553,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
     Static:{
         Templates:{
             tagName:'div',
+            crossOrigin:  'anonymous',
             className:'{_className}',
             style:'{_style}',
             H5:{

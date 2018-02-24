@@ -4074,7 +4074,7 @@ type:4
             : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
                 : ['inline-block'];
-        var fun=function(p,e,cache){
+        var fun=function(p,e,cache,keydown){
              var event=xui.Event,set,hash,rtnf,rst,
                 ks=event.getKey(e);
             if(ks){
@@ -4110,15 +4110,13 @@ type:4
                        // by created order    
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
-                           if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type)){
-                               m.fireEvent('onHookKey', [m,ks, xui.$cache.hookKey==cache]);
-                           }
+                           if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
+                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
                        }
                        else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
                            // function or pseudocode
-                           if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type)){
-                               m.fireEvent('onHookKey', [m,ks, xui.$cache.hookKey==cache]);
-                           }
+                           if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
+                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
                        }
                     });
                 }
@@ -4126,8 +4124,8 @@ type:4
             return true;
         };
         //hot keys
-        xui.doc.onKeydown(function(p,e){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,xui.$cache.hookKey)},"document")
-        .onKeyup(function(p,e){delete xui.Event.$keyboard; fun(p,e,xui.$cache.hookKeyUp)},"document");
+        xui.doc.onKeydown(function(p,e){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,xui.$cache.hookKey,true)},"document")
+        .onKeyup(function(p,e){delete xui.Event.$keyboard; fun(p,e,xui.$cache.hookKeyUp,false)},"document");
 
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)
