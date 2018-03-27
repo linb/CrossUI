@@ -8066,6 +8066,31 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
                     if(v) node.addClass('xui-ui-shadow');
                     else node.removeClass('xui-ui-shadow');
                 }
+            },
+            fontColor:{
+                ini:'',
+                type:"color",
+                action: function(value){
+                    this.getRoot().css('color', value);
+                }
+            },
+            fontSize:{
+                combobox:["","14px","18px","22px","30px"],
+                action: function(value){
+                    this.getRoot().css('fontSize', value);
+                }
+            },
+            fontWeight:{
+                combobox:["","normal","bolder","bold","lighter","100","200","300","400","500","600","700","800","900"],
+                action: function(value){
+                    this.getRoot().css('fontWeight', value);
+                }
+            },
+            fontFamily:{
+                combobox:["","arial","sans-serif","comic","courier new","monospace","serif","times new roman","wingdings"],
+                action: function(value){
+                    this.getRoot().css('fontFamily', value);
+                }
             }
         },
         RenderTrigger:function(){
@@ -8253,6 +8278,27 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             },
             value:{
                 ini:false
+            },
+            fontColor:{
+                action: function(value){
+                    this.getSubNode("CAPTION").css('color', value);
+                }
+            },
+            fontSize:{
+                combobox:["","14px","18px","22px",".75em","1.5em","2em","3em"],
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontSize', value);
+                }
+            },
+            fontWeight:{
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontWeight', value);
+                }
+            },
+            fontFamily:{
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontFamily', value);
+                }
             },
             type:{
                 ini:'normal',

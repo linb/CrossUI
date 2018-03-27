@@ -265,6 +265,7 @@ xui.Class("xui.svg", "xui.UI",{
             "stroke-linejoin":1,
             "stroke-miterlimit":1,
             "stroke-opacity":1,
+            "stroke-dashoffset":1,
             "stroke-width":1
         };
         this.$attr={
@@ -287,6 +288,7 @@ xui.Class("xui.svg", "xui.UI",{
         delete o["stroke-linejoin"];
         delete o["stroke-miterlimit"];
         delete o["stroke-opacity"];
+//        delete o['stroke-dashoffset'];
         delete o["stroke-width"];
         
         delete this.prototype.toHtml;
@@ -521,7 +523,7 @@ xui.Class("xui.svg", "xui.UI",{
             var prf=this.get(0);
             return prf && prf.parent && prf.parent._paper;
         },
-        animate:function(endpoints, ms, easing, callback){
+        elemsAnimate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
             if(prf&&prf._elset){
                 prf._elset.animate(endpoints, ms, easing, callback);
@@ -2479,12 +2481,8 @@ xui.Class("xui.svg.text", "xui.svg",{
             text:{
                 ini:undefined,
                 hidden:true,
-                get:function(){
-                    var att=this.boxing().getAttr('KEY');
-                    return att&&att.text;
-                },
                 set:function(value){
-                        this.boxing().setAttr('KEY',{text:value||""},false);
+                    this.boxing().setAttr('KEY',{text:this.properties.text=value||""},false);
                 }
             }
         },
@@ -2494,6 +2492,7 @@ xui.Class("xui.svg.text", "xui.svg",{
         _draw:function(paper, prf, prop){
             prop=prop.attr;
             var el = paper.text(prop.x,prop.y,prop.text);
+            if(xui.isSet(prop.text))el.attr('text',prop.text);
             el.node.id=prf.box.KEY+":"+prf.serialId+":";
             return paper.set().push(el);
         }

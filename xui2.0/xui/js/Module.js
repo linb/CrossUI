@@ -31,7 +31,7 @@
 xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
-        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId){
+        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
             ns.load.apply(ns, arguments);
         };
         // compitable
@@ -907,34 +907,53 @@ xui.Class('xui.Module','xui.absProfile',{
         _getPropBinderKeys:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-            var bak;
-            if(window.get)bak=get;
             // collect keys
             var hash={};
-            window.get=function(k){
-                if(k){
-                    var arr=k.split(".");
-                    if(arr.length)hash[arr.shift()]=1;
-                }
-            };
             try{
+                var bak;
+                if(window.get)bak=get;
+                window.get=function(k){
+                    if(key){
+                        var arr = ("" +key).split(".");
+                        if(arr.length>=2){
+                            var scope = arr.shift(), name=arr.join(".");
+                            if(!hash[scope])hash[scope]={};
+                            hash[scope][name]=1;
+                        }
+                    }
+                };
                  xui.each(this._ctrlpool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         xui.each(prop.propBinder,function(fun,key){
-                            if((key in prop) && xui.isFun(fun))fun();
+                            if(key in prop){
+                                if(xui.isFun(fun))fun();
+                            }
                         });
                 });
-            }catch(e){}finally{window.get=bak}
-            return xui.toArr(hash,true);
+            }catch(e){}finally{if(bak)window.get=bak;}
+
+            xui.each(hash, function(v,k){
+                hash[k] = xui.toArr(v, true);
+            });
+            return hash;
         },
         reBindProp:function(dataMap){
             if(!this._innerModulesCreated)this._createInnerModules();
-
-            var bak;
-            if(window.get)bak=get;
-            window.get=function(k){return xui.SC.get(k,dataMap)};
             try{
+                var bak;
+                if(window.get)bak=get;
+                window.get=function(key){
+                    if(key){
+                        var arr = ("" +key).split("."),t;
+                        if(arr.length>=2){
+                            var scope = arr.shift(), name=arr.join(".");
+                            if(t = dataMap[scope]){
+                                return t[name];
+                            }
+                        }
+                    }
+                };
                  xui.each(this._ctrlpool, function(prf){
                     prf.boxing().reBindProp(dataMap,true);
                 });
@@ -1325,7 +1344,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
-        load:function(cls, onEnd, lang, theme, showUI, parent, subId){
+        load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
             if(!cls){
                 var e=new Error("No cls");
                 xui.tryF(onEnd,[e,null]);
@@ -1333,106 +1352,115 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             // compitable
             if(typeof theme=='function')thowUI=theme;
-                var ifun=function(path){
-                    var a=this,
-                        t, bg, zoom,
-                        f=function(i,l,flag){
-                            if(zoom)
-                                xui.Dom.$setZoom(xui('html').get(0), zoom);
-                            if(bg && xui.isHash(bg)){
-                                xui.each(bg,function(v,k){
-                                    xui('html').css(k, xui.adjustRes(v));
-                                });
-                            }
-
-                            if(!xui.isFun(a)){
-                                var e=new Error( "'"+cls+"' is not a constructor");
-                                xui.tryF(onEnd,[e,null]);
-                                throw e;
-                            }else{
-                                var o=new a();
-                                // record it
-                                a._callfrom=cls;
-    
-                                xui.set(xui.ModuleFactory,["_cache",cls],o);
-    
-                                if(showUI!==false)o.show(onEnd, parent, subId);
-                                else xui.tryF(onEnd,[null,o],o);
-                            }
-                        };
-                    //if successes
-                    if(path){
-                        try{
-                            // for CDN font icons
-                            if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
-                                xui.each(t,function(o,i){
-                                    if(o.href){
-                                        var attr={crossorigin:'anonymous'};
-                                        xui.merge(attr, o, function(v,j){return j!=='href'});
-                                        xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
-                                    }
-                                });
-                            }
-                            // for theme or background of root
-                            if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
-                                if(t.theme)theme=t.theme;
-                                if(t.lang)lang=t.lang;
-                                if('background' in t)bg=t.background;
-                                if('zoom' in t)zoom=t.zoom;
-                            }
-                            if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
-                                xui.CSS.setStyleRules(".xui-custom",t,true);
-                            }
-                            if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
-                                var allp={}, ctl;
-                                xui.each(t,function(v,k){
-                                    if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
-                                        ctl.setDftProp(v);
-                                    }else{
-                                        allp[k]=v;
-                                    }
-                                });
-                                if(!xui.isEmpty(allp)){
-                                    xui.UI.setDftProp(allp);
-                                }
-                            }
-                        }catch(e){}
-                        if(theme&&theme!="default"){
-                            xui.setTheme(theme,true,function(){
-                                if(lang) xui.setLang(lang, f); else f();
-                            },function(){
-                                xui.alert("Can't load theme - " + theme);
-                                if(lang) xui.setLang(lang, f); else f();
+            var ifun=function(path){
+                var a=this,
+                    t, bg, zoom,
+                    f=function(i,l,flag){
+                        if(zoom)
+                            xui.Dom.$setZoom(xui('html').get(0), zoom);
+                        if(bg && xui.isHash(bg)){
+                            xui.each(bg,function(v,k){
+                                xui('html').css(k, xui.adjustRes(v));
                             });
-                        }else{
-                            //get locale info
-                            if(lang) xui.setLang(lang, f);else f();
                         }
-                    }else{
-                        var e=new Error("No class name");
-                        xui.tryF(onEnd,[e,null]);
-                        throw e;
-                    }
-                },
-                fun=function(){
-                    if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
-                    else cls=cls+"";
-                    if(/\//.test(cls) && !/\.js$/i.test(cls))
-                        cls=cls+".js";
-                    if(/\.js$/i.test(cls)){
-                        xui.fetchClass(cls,ifun,
-                            function(e){
-                                xui.tryF(onEnd,[e,null]);
+
+                        if(!xui.isFun(a)){
+                            var e=new Error( "'"+cls+"' is not a constructor");
+                            xui.tryF(onEnd,[e,null]);
+                            throw e;
+                        }else{
+                            var o=new a();
+                            // record it
+                            a._callfrom=cls;
+
+                            xui.set(xui.ModuleFactory,["_cache",cls],o);
+
+                            if(onCreated)xui.tryF(onCreated, [o]);
+
+                            if(showUI!==false)o.show(onEnd, parent, subId);
+                            else xui.tryF(onEnd,[null,o],o);
+                        }
+                    };
+                //if successes
+                if(path){
+                    try{
+                        // for CDN font icons
+                        if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                            xui.each(t,function(o,i){
+                                if(o.href){
+                                    var attr={crossorigin:'anonymous'};
+                                    xui.merge(attr, o, function(v,j){return j!=='href'});
+                                    xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
+                                }
                             });
-                    }else
-                        //get app class
-                        xui.SC(cls,ifun,true,null,{
-                            retry:0,
-                            onFail:function(e){
-                                xui.tryF(onEnd,[e,null]);
+                        }
+                        // for theme or background of root
+                        if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
+                            if(t.theme)theme=t.theme;
+                            if(t.lang)lang=t.lang;
+                            if('background' in t)bg=t.background;
+                            if('zoom' in t)zoom=t.zoom;
+                        }else if((t=this.viewStyles) && xui.isHash(t)){
+                            if(t.theme)theme=t.theme;
+                            bg={};
+                            xui.each(t,function(o,i){
+                                if(i=='theme')return;
+                                bg[i]=o;
+                            });
+                        }
+                        if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
+                            xui.CSS.setStyleRules(".xui-custom",t,true);
+                        }
+                        if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
+                            var allp={}, ctl;
+                            xui.each(t,function(v,k){
+                                if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
+                                    ctl.setDftProp(v);
+                                }else{
+                                    allp[k]=v;
+                                }
+                            });
+                            if(!xui.isEmpty(allp)){
+                                xui.UI.setDftProp(allp);
                             }
+                        }
+                    }catch(e){}
+                    if(theme&&theme!="default"){
+                        xui.setTheme(theme,true,function(){
+                            if(lang) xui.setLang(lang, f); else f();
+                        },function(){
+                            xui.alert("Can't load theme - " + theme);
+                            if(lang) xui.setLang(lang, f); else f();
                         });
-                };
+                    }else{
+                        //get locale info
+                        if(lang) xui.setLang(lang, f);else f();
+                    }
+                }else{
+                    var e=new Error("No class name");
+                    xui.tryF(onEnd,[e,null]);
+                    throw e;
+                }
+            },
+            fun=function(){
+                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+                else cls=cls+"";
+                if(/\//.test(cls) && !/\.js$/i.test(cls))
+                    cls=cls+".js";
+                if(/\.js$/i.test(cls)){
+                    xui.fetchClass(cls,ifun,
+                        function(e){
+                            xui.tryF(onEnd,[e,null]);
+                        });
+                }else
+                    //get app class
+                    xui.SC(cls,ifun,true,null,{
+                        retry:0,
+                        onFail:function(e){
+                            xui.tryF(onEnd,[e,null]);
+                        }
+                    });
+            };
             if(xui.isDomReady)
                 fun();
             else

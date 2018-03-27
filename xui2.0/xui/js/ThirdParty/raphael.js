@@ -259,6 +259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            src: "",
 	            stroke: "#000",
 	            "stroke-dasharray": "",
+	            "stroke-dashoffset" : 0,
 	            "stroke-linecap": "butt",
 	            "stroke-linejoin": "butt",
 	            "stroke-miterlimit": 0,
@@ -270,7 +271,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            transform: "",
 	            width: 0,
 	            x: 0,
-	            y: 0
+	            y: 0,
+	            "class": ""
 	        },
 	        availableAnimAttrs = R._availableAnimAttrs = {
 	            blur: nu,
@@ -443,7 +445,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    \*/
 	    R.fn = paperproto = Paper.prototype = R.prototype;
 	    R._id = 0;
-	    R._oid = 0;
 	    /*\
 	     * Raphael.is
 	     [ method ]
@@ -6350,6 +6351,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    case "stroke-dasharray":
 	                        addDashes(o, value, params);
 	                        break;
+	                    case "stroke-dashoffset":
+	                        node.setAttribute(att, value);
+	                        break;
 	                    case "fill":
 	                        var isURL = Str(value).match(R._ISURL);
 	                        if (isURL) {
@@ -6522,8 +6526,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Unique id of the element. Especially useful when you want to listen to events of the element,
 	         * because all events are fired in format `<module>.<action>.<id>`. Also useful for @Paper.getById method.
 	        \*/
-	        this.id = R._oid++;
+	        this.id = guid();
 	        node.raphaelid = this.id;
+
+	        /**
+	        * Method that returns a 5 letter/digit id, enough for 36^5 = 60466176 elements
+	        * @returns {string} id
+	        */
+	        function guid() {
+	            return ("0000" + (Math.random()*Math.pow(36,5) << 0).toString(36)).slice(-5);
+	        }
+
 	        this.matrix = R.matrix();
 	        this.realPath = null;
 	        /*\
@@ -6729,9 +6742,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var sw = this.attrs[has]("stroke-width") ? this.attrs["stroke-width"] : 1;
 	            this.attr({"stroke-width": sw});
 	        }
-
-	        //Reduce transform string
-	        _.transform = this.matrix.toTransformString();
 
 	        return this;
 	    };
@@ -7507,7 +7517,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            addArrow(res, params["arrow-end"], 1);
 	        }
 	        if (params.opacity != null ||
-	            params["stroke-width"] != null ||
 	            params.fill != null ||
 	            params.src != null ||
 	            params.stroke != null ||

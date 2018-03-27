@@ -10224,11 +10224,11 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getFontColor :{
-                $desc:"获取标签字体颜色",
+                $desc:"获取按钮字体颜色",
                 $rtn:"String"
             },
             setFontColor :{
-                $desc:"设置标签字体颜色",
+                $desc:"设置按钮字体颜色",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 字体颜色",
@@ -10236,51 +10236,39 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },            
             getFontSize :{
-                $desc:"获取标签字体大小",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.lbl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
-                    "}"
-                ]
+                $desc:"获取按钮字体大小",
+                $rtn:"String"
             },
             setFontSize :{
-                $desc:"设置标签字体大小",
+                $desc:"设置按钮字体大小",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String, 字体大小",
                     $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.lbl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
-                    "}"
                 ]
             },
             getFontWeight :{
-                $desc:"获取标签字体粗细",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.lbl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
-                    "}"
-                ]
+                $desc:"获取按钮字体粗细",
+                $rtn:"String"
             },
             setFontWeight :{
-                $desc:"设置标签字体粗细",
+                $desc:"设置按钮字体粗细",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : String, corresponding CSS value",
+                    "value [必需参数] : String, 字体粗细",
                     $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.lbl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
-                    "}"
+                ]
+            },
+            getFontFamily :{
+                $desc:"获取按钮字体",
+                $rtn:"String"
+            },
+            setFontFamily :{
+                $desc:"设置按钮字体",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体",
+                    $force
                 ]
             },
             getImage :{
@@ -10699,6 +10687,54 @@ xui.set(xui.Locale,["cn","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getFontColor :{
+                $desc:"获取按钮字体颜色",
+                $rtn:"String"
+            },
+            setFontColor :{
+                $desc:"设置按钮字体颜色",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体颜色",
+                    $force
+                ]
+            },            
+            getFontSize :{
+                $desc:"获取按钮字体大小",
+                $rtn:"String"
+            },
+            setFontSize :{
+                $desc:"设置按钮字体大小",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体大小",
+                    $force
+                ]
+            },
+            getFontWeight :{
+                $desc:"获取按钮字体粗细",
+                $rtn:"String"
+            },
+            setFontWeight :{
+                $desc:"设置按钮字体粗细",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体粗细",
+                    $force
+                ]
+            },
+            getFontFamily :{
+                $desc:"获取按钮字体",
+                $rtn:"String"
+            },
+            setFontFamily :{
+                $desc:"设置按钮字体",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体",
+                    $force
                 ]
             },
             getType:{
@@ -15840,7 +15876,55 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"生成一个xui.UI.HTMLButton"
         },
         prototype:{
-            KEY:{$desc:"本类名"}
+            KEY:{$desc:"本类名"},
+            getFontColor :{
+                $desc:"获取标签字体颜色",
+                $rtn:"String"
+            },
+            setFontColor :{
+                $desc:"设置标签字体颜色",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体颜色",
+                    $force
+                ]
+            },            
+            getFontSize :{
+                $desc:"获取标签字体大小",
+                $rtn:"String"
+            },
+            setFontSize :{
+                $desc:"设置标签字体大小",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体大小",
+                    $force
+                ]
+            },
+            getFontWeight :{
+                $desc:"获取标签字体粗细",
+                $rtn:"String"
+            },
+            setFontWeight :{
+                $desc:"设置标签字体粗细",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体粗细",
+                    $force
+                ]
+            },
+            getFontFamily :{
+                $desc:"获取标签字体",
+                $rtn:"String"
+            },
+            setFontFamily :{
+                $desc:"设置标签字体",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 字体",
+                    $force
+                ]
+            }
         }
     });
 
@@ -18981,7 +19065,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"获得控件的容器(Raphael Paper)",
                 $rtn:"xui.Dom"
             },
-            animate:{
+            elemsAnimate:{
                 $desc:"控件所有元素的动画",
                 $rtn:'Object',
                 $paras:[

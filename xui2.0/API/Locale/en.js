@@ -10352,11 +10352,11 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },                          
             getFontColor :{
-                $desc:"Gets the Font Color property value on the first UIProfile",
+                $desc:"Gets the font-color property",
                 $rtn:"String"
             },
             setFontColor :{
-                $desc:"Sets the Font Color property value on the each UIProfile",
+                $desc:"Sets the font-color property ",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : color",
@@ -10364,53 +10364,41 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },                        
             getFontSize :{
-                $desc:"Gets the FontSize property value on the first UIProfile",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.lbl3'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
-                    "}"
-                ]
+                $desc:"Gets the font-size property",
+                $rtn:"String"
             },
             setFontSize :{
-                $desc:"Sets the FontSize property value on the each UIProfile",
+                $desc:"Sets the font-size property",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : corresponding CSS value",
+                    "value [Required] : String",
                     $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.lbl4'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontSize ('14px'); alert(btn.getFontSize ())},1000)"+
-                    "}"
                 ]
             },
             getFontWeight :{
-                $desc:"Gets the FontWeight property value on the first UIProfile",
-                $rtn:"String",
-                $snippet:[
-                    "var id='xui.temp.lbl5'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
-                    "}"
-                ]
+                $desc:"Gets the font-weight property",
+                $rtn:"String"
             },
             setFontWeight :{
-                $desc:"Sets the FontWeight property value on the each UIProfile",
+                $desc:"Sets the font-weight property",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : corresponding CSS value",
+                    "value [Required] : String",
                     $force
-                ],
-                $snippet:[
-                    "var id='xui.temp.lbl6'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
-                    "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
-                    "xui.asyRun(function(){btn.setFontWeight('bold'); alert(btn.getFontWeight())},1000)"+
-                    "}"
                 ]
             },            
+            getFontFamily :{
+                $desc:"Gets the font-family property",
+                $rtn:"String"
+            },
+            setFontFamily :{
+                $desc:"Sets the font-family property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
             onClick:{
                 $desc:"Fired when user click it",
                 $paras:[
@@ -10764,6 +10752,54 @@ xui.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button);"+
                     "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getFontColor :{
+                $desc:"Gets the font-color property",
+                $rtn:"String"
+            },
+            setFontColor :{
+                $desc:"Sets the font-color property ",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : color",
+                    $force
+                ]
+            },                        
+            getFontSize :{
+                $desc:"Gets the font-size property",
+                $rtn:"String"
+            },
+            setFontSize :{
+                $desc:"Sets the font-size property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getFontWeight :{
+                $desc:"Gets the font-weight property",
+                $rtn:"String"
+            },
+            setFontWeight :{
+                $desc:"Sets the font-weight property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },            
+            getFontFamily :{
+                $desc:"Gets the font-family property",
+                $rtn:"String"
+            },
+            setFontFamily :{
+                $desc:"Sets the font-family property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
                 ]
             },
             getType:{
@@ -15921,7 +15957,55 @@ xui.set(xui.Locale,["en","app"], {
             desc:"Creates a xui.UI.HTMLButton Object"
         },
         prototype:{
-            KEY:{$desc:"Class Name"}
+            KEY:{$desc:"Class Name"},
+            getFontColor :{
+                $desc:"Gets the font-color property",
+                $rtn:"String"
+            },
+            setFontColor :{
+                $desc:"Sets the font-color property ",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : color",
+                    $force
+                ]
+            },                        
+            getFontSize :{
+                $desc:"Gets the font-size property",
+                $rtn:"String"
+            },
+            setFontSize :{
+                $desc:"Sets the font-size property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getFontWeight :{
+                $desc:"Gets the font-weight property",
+                $rtn:"String"
+            },
+            setFontWeight :{
+                $desc:"Sets the font-weight property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },            
+            getFontFamily :{
+                $desc:"Gets the font-family property",
+                $rtn:"String"
+            },
+            setFontFamily :{
+                $desc:"Sets the font-family property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            }
         }
     });
 
@@ -19059,7 +19143,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets it's SVG Paper object(Raphael Paper)",
                 $rtn:'Object'
             },
-            animate:{
+            elemsAnimate:{
                 $desc:"Creates and starts animation for all elements",
                 $rtn:'Object',
                 $paras:[

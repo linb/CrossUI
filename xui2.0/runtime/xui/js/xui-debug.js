@@ -2131,7 +2131,7 @@ new function(){
                 };
         },
         exec:function(_ns, conf, resumeFun, level){
-           var  t,tt,m,n,p,k,arr,type=conf.type||"other",
+           var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
                         case '=':
@@ -2254,7 +2254,8 @@ new function(){
                     iparams=iparams.slice(3);
                 }
 
-                var fun=function(arr){
+                var fun=function(){
+                    if(false===xui.tryF(ns._Handlers(type, method, iparams, adjust, target, conf)))return;
                     switch(type){
                         case 'page':
                             // handle switch
@@ -2481,7 +2482,7 @@ new function(){
                                             }else if(doit2){
                                                 // nested call
                                                 // arguemsnt of function/event is modified
-                                                t=xui.pseudocode._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested '+(t.desc||t.id||""), (level||1)+1);
+                                                t=ns._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested '+(t.desc||t.id||""), (level||1)+1);
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
@@ -2503,11 +2504,11 @@ new function(){
 
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
-            var fun, resume=0, t, rtn,
+            var ns=this, fun, resume=0, t, rtn,
                 funs = pseudo.actions || pseudo || [],
                 rtn = pseudo['return'], funsrtn,
                 innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
-                _ns=xui.pseudocode.getScope(args, module, temp),
+                _ns=ns.getScope(args, module, temp),
                 recursive=function(data){
                     var irtn;
                     // set prompt's global var
@@ -2538,10 +2539,10 @@ new function(){
                                 if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                     if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                                 };
-                                xui.pseudocode.exec(_ns, fun, resumeFun, level);
+                                ns.exec(_ns, fun, resumeFun, level);
                                 break;
                             }else
-                                if(false===(xui.pseudocode.exec(_ns, fun,null, level))){
+                                if(false===(ns.exec(_ns, fun,null, level))){
                                     resume=j;break;
                                 }
                         }
@@ -4860,16 +4861,18 @@ xui.Class('xui.absObj',"xui.absBox",{
                         if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
                             ins=prf.boxing();
                             xui.each(prop.propBinder, function(fun,key){
-                                if(xui.isFun(fun)){
-                                    r=fun(prf);
-                                    if(key=="CA")
-                                        ins.setCustomAttr(r);
-                                    else if(key=="CC")
-                                        ins.setCustomClass(r);
-                                    else if(key=="CS")
-                                        ins.setCustomStyle(r);
-                                    else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
-                                        ins[fn](r,true);
+                                if(false!==ins._reBindProp(prf, fun, key, inner)){
+                                    if(xui.isFun(fun)){
+                                        r=fun(prf);
+                                        if(key=="CA")
+                                            ins.setCustomAttr(r);
+                                        else if(key=="CC")
+                                            ins.setCustomClass(r);
+                                        else if(key=="CS")
+                                            ins.setCustomStyle(r);
+                                        else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
+                                            ins[fn](r,true);
+                                    }
                                 }
                             });
                         }
@@ -4879,7 +4882,17 @@ xui.Class('xui.absObj',"xui.absBox",{
             if(!inner){
                 var bak;
                 if(window.get)bak=get;
-                window.get=function(k){return xui.SC.get(k,dataMap)};
+                window.get=function(key){
+                    if(key){
+                        var arr = ("" +key).split("."),t;
+                        if(arr.length>=2){
+                            var scope = arr.shift(), name=arr.join(".");
+                            if(t = dataMap[scope]){
+                                return t[name];
+                            }
+                        }
+                    }
+                };
                 try{fun();}catch(e){}finally{window.get=bak}
             }else fun();
 
@@ -14000,7 +14013,7 @@ type:4
 xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
-        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId){
+        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
             ns.load.apply(ns, arguments);
         };
         // compitable
@@ -14876,34 +14889,53 @@ xui.Class('xui.Module','xui.absProfile',{
         _getPropBinderKeys:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-            var bak;
-            if(window.get)bak=get;
             // collect keys
             var hash={};
-            window.get=function(k){
-                if(k){
-                    var arr=k.split(".");
-                    if(arr.length)hash[arr.shift()]=1;
-                }
-            };
             try{
+                var bak;
+                if(window.get)bak=get;
+                window.get=function(k){
+                    if(key){
+                        var arr = ("" +key).split(".");
+                        if(arr.length>=2){
+                            var scope = arr.shift(), name=arr.join(".");
+                            if(!hash[scope])hash[scope]={};
+                            hash[scope][name]=1;
+                        }
+                    }
+                };
                  xui.each(this._ctrlpool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         xui.each(prop.propBinder,function(fun,key){
-                            if((key in prop) && xui.isFun(fun))fun();
+                            if(key in prop){
+                                if(xui.isFun(fun))fun();
+                            }
                         });
                 });
-            }catch(e){}finally{window.get=bak}
-            return xui.toArr(hash,true);
+            }catch(e){}finally{if(bak)window.get=bak;}
+
+            xui.each(hash, function(v,k){
+                hash[k] = xui.toArr(v, true);
+            });
+            return hash;
         },
         reBindProp:function(dataMap){
             if(!this._innerModulesCreated)this._createInnerModules();
-
-            var bak;
-            if(window.get)bak=get;
-            window.get=function(k){return xui.SC.get(k,dataMap)};
             try{
+                var bak;
+                if(window.get)bak=get;
+                window.get=function(key){
+                    if(key){
+                        var arr = ("" +key).split("."),t;
+                        if(arr.length>=2){
+                            var scope = arr.shift(), name=arr.join(".");
+                            if(t = dataMap[scope]){
+                                return t[name];
+                            }
+                        }
+                    }
+                };
                  xui.each(this._ctrlpool, function(prf){
                     prf.boxing().reBindProp(dataMap,true);
                 });
@@ -15294,7 +15326,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
-        load:function(cls, onEnd, lang, theme, showUI, parent, subId){
+        load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
             if(!cls){
                 var e=new Error("No cls");
                 xui.tryF(onEnd,[e,null]);
@@ -15302,106 +15334,115 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             // compitable
             if(typeof theme=='function')thowUI=theme;
-                var ifun=function(path){
-                    var a=this,
-                        t, bg, zoom,
-                        f=function(i,l,flag){
-                            if(zoom)
-                                xui.Dom.$setZoom(xui('html').get(0), zoom);
-                            if(bg && xui.isHash(bg)){
-                                xui.each(bg,function(v,k){
-                                    xui('html').css(k, xui.adjustRes(v));
-                                });
-                            }
-
-                            if(!xui.isFun(a)){
-                                var e=new Error( "'"+cls+"' is not a constructor");
-                                xui.tryF(onEnd,[e,null]);
-                                throw e;
-                            }else{
-                                var o=new a();
-                                // record it
-                                a._callfrom=cls;
-    
-                                xui.set(xui.ModuleFactory,["_cache",cls],o);
-    
-                                if(showUI!==false)o.show(onEnd, parent, subId);
-                                else xui.tryF(onEnd,[null,o],o);
-                            }
-                        };
-                    //if successes
-                    if(path){
-                        try{
-                            // for CDN font icons
-                            if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
-                                xui.each(t,function(o,i){
-                                    if(o.href){
-                                        var attr={crossorigin:'anonymous'};
-                                        xui.merge(attr, o, function(v,j){return j!=='href'});
-                                        xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
-                                    }
-                                });
-                            }
-                            // for theme or background of root
-                            if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
-                                if(t.theme)theme=t.theme;
-                                if(t.lang)lang=t.lang;
-                                if('background' in t)bg=t.background;
-                                if('zoom' in t)zoom=t.zoom;
-                            }
-                            if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
-                                xui.CSS.setStyleRules(".xui-custom",t,true);
-                            }
-                            if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
-                                var allp={}, ctl;
-                                xui.each(t,function(v,k){
-                                    if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
-                                        ctl.setDftProp(v);
-                                    }else{
-                                        allp[k]=v;
-                                    }
-                                });
-                                if(!xui.isEmpty(allp)){
-                                    xui.UI.setDftProp(allp);
-                                }
-                            }
-                        }catch(e){}
-                        if(theme&&theme!="default"){
-                            xui.setTheme(theme,true,function(){
-                                if(lang) xui.setLang(lang, f); else f();
-                            },function(){
-                                xui.alert("Can't load theme - " + theme);
-                                if(lang) xui.setLang(lang, f); else f();
+            var ifun=function(path){
+                var a=this,
+                    t, bg, zoom,
+                    f=function(i,l,flag){
+                        if(zoom)
+                            xui.Dom.$setZoom(xui('html').get(0), zoom);
+                        if(bg && xui.isHash(bg)){
+                            xui.each(bg,function(v,k){
+                                xui('html').css(k, xui.adjustRes(v));
                             });
-                        }else{
-                            //get locale info
-                            if(lang) xui.setLang(lang, f);else f();
                         }
-                    }else{
-                        var e=new Error("No class name");
-                        xui.tryF(onEnd,[e,null]);
-                        throw e;
-                    }
-                },
-                fun=function(){
-                    if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
-                    else cls=cls+"";
-                    if(/\//.test(cls) && !/\.js$/i.test(cls))
-                        cls=cls+".js";
-                    if(/\.js$/i.test(cls)){
-                        xui.fetchClass(cls,ifun,
-                            function(e){
-                                xui.tryF(onEnd,[e,null]);
+
+                        if(!xui.isFun(a)){
+                            var e=new Error( "'"+cls+"' is not a constructor");
+                            xui.tryF(onEnd,[e,null]);
+                            throw e;
+                        }else{
+                            var o=new a();
+                            // record it
+                            a._callfrom=cls;
+
+                            xui.set(xui.ModuleFactory,["_cache",cls],o);
+
+                            if(onCreated)xui.tryF(onCreated, [o]);
+
+                            if(showUI!==false)o.show(onEnd, parent, subId);
+                            else xui.tryF(onEnd,[null,o],o);
+                        }
+                    };
+                //if successes
+                if(path){
+                    try{
+                        // for CDN font icons
+                        if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                            xui.each(t,function(o,i){
+                                if(o.href){
+                                    var attr={crossorigin:'anonymous'};
+                                    xui.merge(attr, o, function(v,j){return j!=='href'});
+                                    xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
+                                }
                             });
-                    }else
-                        //get app class
-                        xui.SC(cls,ifun,true,null,{
-                            retry:0,
-                            onFail:function(e){
-                                xui.tryF(onEnd,[e,null]);
+                        }
+                        // for theme or background of root
+                        if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
+                            if(t.theme)theme=t.theme;
+                            if(t.lang)lang=t.lang;
+                            if('background' in t)bg=t.background;
+                            if('zoom' in t)zoom=t.zoom;
+                        }else if((t=this.viewStyles) && xui.isHash(t)){
+                            if(t.theme)theme=t.theme;
+                            bg={};
+                            xui.each(t,function(o,i){
+                                if(i=='theme')return;
+                                bg[i]=o;
+                            });
+                        }
+                        if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
+                            xui.CSS.setStyleRules(".xui-custom",t,true);
+                        }
+                        if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
+                            var allp={}, ctl;
+                            xui.each(t,function(v,k){
+                                if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
+                                    ctl.setDftProp(v);
+                                }else{
+                                    allp[k]=v;
+                                }
+                            });
+                            if(!xui.isEmpty(allp)){
+                                xui.UI.setDftProp(allp);
                             }
+                        }
+                    }catch(e){}
+                    if(theme&&theme!="default"){
+                        xui.setTheme(theme,true,function(){
+                            if(lang) xui.setLang(lang, f); else f();
+                        },function(){
+                            xui.alert("Can't load theme - " + theme);
+                            if(lang) xui.setLang(lang, f); else f();
                         });
-                };
+                    }else{
+                        //get locale info
+                        if(lang) xui.setLang(lang, f);else f();
+                    }
+                }else{
+                    var e=new Error("No class name");
+                    xui.tryF(onEnd,[e,null]);
+                    throw e;
+                }
+            },
+            fun=function(){
+                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+                else cls=cls+"";
+                if(/\//.test(cls) && !/\.js$/i.test(cls))
+                    cls=cls+".js";
+                if(/\.js$/i.test(cls)){
+                    xui.fetchClass(cls,ifun,
+                        function(e){
+                            xui.tryF(onEnd,[e,null]);
+                        });
+                }else
+                    //get app class
+                    xui.SC(cls,ifun,true,null,{
+                        retry:0,
+                        onFail:function(e){
+                            xui.tryF(onEnd,[e,null]);
+                        }
+                    });
+            };
             if(xui.isDomReady)
                 fun();
             else
@@ -26045,6 +26086,31 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
                     if(v) node.addClass('xui-ui-shadow');
                     else node.removeClass('xui-ui-shadow');
                 }
+            },
+            fontColor:{
+                ini:'',
+                type:"color",
+                action: function(value){
+                    this.getRoot().css('color', value);
+                }
+            },
+            fontSize:{
+                combobox:["","14px","18px","22px","30px"],
+                action: function(value){
+                    this.getRoot().css('fontSize', value);
+                }
+            },
+            fontWeight:{
+                combobox:["","normal","bolder","bold","lighter","100","200","300","400","500","600","700","800","900"],
+                action: function(value){
+                    this.getRoot().css('fontWeight', value);
+                }
+            },
+            fontFamily:{
+                combobox:["","arial","sans-serif","comic","courier new","monospace","serif","times new roman","wingdings"],
+                action: function(value){
+                    this.getRoot().css('fontFamily', value);
+                }
             }
         },
         RenderTrigger:function(){
@@ -26232,6 +26298,27 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             },
             value:{
                 ini:false
+            },
+            fontColor:{
+                action: function(value){
+                    this.getSubNode("CAPTION").css('color', value);
+                }
+            },
+            fontSize:{
+                combobox:["","14px","18px","22px",".75em","1.5em","2em","3em"],
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontSize', value);
+                }
+            },
+            fontWeight:{
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontWeight', value);
+                }
+            },
+            fontFamily:{
+                action: function(value){
+                    this.getSubNode("CAPTION").css('fontFamily', value);
+                }
             },
             type:{
                 ini:'normal',
@@ -29106,7 +29193,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
             },
             CAPTION:{
                 text : '{caption}',
-                style:'{_fc}{_fw}{_fs}',
+                style:'{_fc}{_fw}{_fs}{_ff}',
                 'font-size':'1em',
                 $order:1
             }
@@ -29156,25 +29243,13 @@ xui.Class("xui.UI.Label", "xui.UI",{
                     this.getRoot().css('textAlign',v);
                 }
             },
-            'fontColor':{
-                ini:'',
-                type:"color",
-                action: function(value){
-                    this.getSubNode("CAPTION").css('color', value);
-                }
+            vAlign:{
+                hidden:true
             },
-            'fontSize':{
-                combobox:["","1.25em","1.5em","2em","3em"],
-                action: function(value){
-                    this.getSubNode("CAPTION").css('fontSize', value);
-                }
-            },
-            'fontWeight':{
-                combobox:["","normal","bolder","bold","lighter","100","200","300","400","500","600","700","800","900"],
-                action: function(value){
-                    this.getSubNode("CAPTION").css('fontWeight', value);
-                }
-            },
+            fontColor:xui.UI.Button.$DataModel.fontColor,
+            fontSize:xui.UI.Button.$DataModel.fontSize,
+            fontWeight:xui.UI.Button.$DataModel.fontWeight,
+            fontFamily:xui.UI.Button.$DataModel.fontFamily,
             excelCellFormula:{
                 ini:"",
                 action:function(v){
@@ -29206,6 +29281,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
             data._fs = 'font-size:' + data.fontSize + ';';
             data._fw = 'font-weight:' + data.fontWeight + ';';
             data._fc = 'color:' + data.fontColor + ';';
+            data._ff = 'font-family:' + data.fontFamily + ';';
             return data;
         }        
     }
@@ -33650,9 +33726,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             dropImageClass:{
-                action:function(v,ov){
-                    if(ov)this.getSubNode('RMID').removeClass(ov);
-                    if(v)this.getSubNode('RMID').addClass(v);
+                action:function(){
+                    this.boxing().refresh();
                 }
             },
             unit:{
@@ -46875,18 +46950,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getEditCell:function(){
             return xui.get(this.get(0),["$cellInEditor"]);
         },
-        offEditor:function(refresh){
+        offEditor:function(refresh, ignoreInline){
             var profile=this.get(0),editor;
             if(!profile)return;
             if(editor = profile.$curEditor){
                 xui.tryF(editor.undo,[],editor);
             }
-            xui.each(profile.cellMap,function(cell){
-                if(editor = cell._editor){
-                    editor.destroy();
-                    delete cell._editor;
-                }
-            });
+            if(!ignoreInline)
+                xui.each(profile.cellMap,function(cell){
+                    if(editor = cell._editor){
+                        editor.destroy();
+                        delete cell._editor;
+                    }
+                });
                 
             if(refresh){
                 var getPro=profile.box.getCellOption;
@@ -46917,8 +46993,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         }
     },
     Before:function(key, parent_key, o){
-        this.Behaviors.CELLS1=this.Behaviors.CELLS2;
-        this.Behaviors.GCELLA=this.Behaviors.CELLA;
+        if(key=='xui.UI.TreeGrid'){
+            this.Behaviors.CELLS1=this.Behaviors.CELLS2;
+            this.Behaviors.GCELLA=this.Behaviors.CELLA;
+        }
         return arguments.callee.upper.apply(this,arguments);
     },
     Initialize:function(){
@@ -48851,8 +48929,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 onDblclick:function(profile, e, src){
                     var p = profile.properties,
-                        row = profile.rowMap[profile.getSubId(src)];
+                        row = profile.rowMap[profile.getSubId(src)],
+                        eid = xui.Event.getSrc(e).id||"",
+                        ck=profile.getKey(eid);
                     if(!row || p.disabled || row.disabled)return false;
+                    if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
+                    if(ck==ks.ROWTOGGLE || ck==ks.MARK) return false;
                     if(profile.onDblclickRow)profile.boxing().onDblclickRow(profile, row, e, src);
                     return false;
                 },
@@ -48861,9 +48943,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         subid = profile.getSubId(src),
                         ks=profile.keys,
                         row = profile.rowMap[subid],
-                        ck=profile.getKey(xui.Event.getSrc(e).id||"");
+                        eid = xui.Event.getSrc(e).id||"";
                     if(p.disabled || row.disabled)return false;
-                    if(ck==ks.ROWTOGGLE || ck==ks.MARK) return false;
+                    if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
                     if(profile.onClickRow)
                         profile.boxing().onClickRow(profile, row, e, src);
                 }
@@ -55306,6 +55388,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            src: "",
 	            stroke: "#000",
 	            "stroke-dasharray": "",
+	            "stroke-dashoffset" : 0,
 	            "stroke-linecap": "butt",
 	            "stroke-linejoin": "butt",
 	            "stroke-miterlimit": 0,
@@ -55317,7 +55400,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            transform: "",
 	            width: 0,
 	            x: 0,
-	            y: 0
+	            y: 0,
+	            "class": ""
 	        },
 	        availableAnimAttrs = R._availableAnimAttrs = {
 	            blur: nu,
@@ -55490,7 +55574,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    \*/
 	    R.fn = paperproto = Paper.prototype = R.prototype;
 	    R._id = 0;
-	    R._oid = 0;
 	    /*\
 	     * Raphael.is
 	     [ method ]
@@ -61397,6 +61480,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    case "stroke-dasharray":
 	                        addDashes(o, value, params);
 	                        break;
+	                    case "stroke-dashoffset":
+	                        node.setAttribute(att, value);
+	                        break;
 	                    case "fill":
 	                        var isURL = Str(value).match(R._ISURL);
 	                        if (isURL) {
@@ -61569,8 +61655,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Unique id of the element. Especially useful when you want to listen to events of the element,
 	         * because all events are fired in format `<module>.<action>.<id>`. Also useful for @Paper.getById method.
 	        \*/
-	        this.id = R._oid++;
+	        this.id = guid();
 	        node.raphaelid = this.id;
+
+	        /**
+	        * Method that returns a 5 letter/digit id, enough for 36^5 = 60466176 elements
+	        * @returns {string} id
+	        */
+	        function guid() {
+	            return ("0000" + (Math.random()*Math.pow(36,5) << 0).toString(36)).slice(-5);
+	        }
+
 	        this.matrix = R.matrix();
 	        this.realPath = null;
 	        /*\
@@ -61776,9 +61871,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var sw = this.attrs[has]("stroke-width") ? this.attrs["stroke-width"] : 1;
 	            this.attr({"stroke-width": sw});
 	        }
-
-	        //Reduce transform string
-	        _.transform = this.matrix.toTransformString();
 
 	        return this;
 	    };
@@ -62554,7 +62646,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            addArrow(res, params["arrow-end"], 1);
 	        }
 	        if (params.opacity != null ||
-	            params["stroke-width"] != null ||
 	            params.fill != null ||
 	            params.src != null ||
 	            params.stroke != null ||
@@ -63605,6 +63696,7 @@ return /******/ (function(modules) { // webpackBootstrap
             "stroke-linejoin":1,
             "stroke-miterlimit":1,
             "stroke-opacity":1,
+            "stroke-dashoffset":1,
             "stroke-width":1
         };
         this.$attr={
@@ -63627,6 +63719,7 @@ return /******/ (function(modules) { // webpackBootstrap
         delete o["stroke-linejoin"];
         delete o["stroke-miterlimit"];
         delete o["stroke-opacity"];
+//        delete o['stroke-dashoffset'];
         delete o["stroke-width"];
         
         delete this.prototype.toHtml;
@@ -63861,7 +63954,7 @@ return /******/ (function(modules) { // webpackBootstrap
             var prf=this.get(0);
             return prf && prf.parent && prf.parent._paper;
         },
-        animate:function(endpoints, ms, easing, callback){
+        elemsAnimate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
             if(prf&&prf._elset){
                 prf._elset.animate(endpoints, ms, easing, callback);
@@ -65819,12 +65912,8 @@ xui.Class("xui.svg.text", "xui.svg",{
             text:{
                 ini:undefined,
                 hidden:true,
-                get:function(){
-                    var att=this.boxing().getAttr('KEY');
-                    return att&&att.text;
-                },
                 set:function(value){
-                        this.boxing().setAttr('KEY',{text:value||""},false);
+                    this.boxing().setAttr('KEY',{text:this.properties.text=value||""},false);
                 }
             }
         },
@@ -65834,6 +65923,7 @@ xui.Class("xui.svg.text", "xui.svg",{
         _draw:function(paper, prf, prop){
             prop=prop.attr;
             var el = paper.text(prop.x,prop.y,prop.text);
+            if(xui.isSet(prop.text))el.attr('text',prop.text);
             el.node.id=prf.box.KEY+":"+prf.serialId+":";
             return paper.set().push(el);
         }

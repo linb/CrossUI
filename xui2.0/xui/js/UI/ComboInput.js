@@ -1240,9 +1240,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             dropImageClass:{
-                action:function(v,ov){
-                    if(ov)this.getSubNode('RMID').removeClass(ov);
-                    if(v)this.getSubNode('RMID').addClass(v);
+                action:function(){
+                    this.boxing().refresh();
                 }
             },
             unit:{

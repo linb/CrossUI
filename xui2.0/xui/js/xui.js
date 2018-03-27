@@ -2130,7 +2130,7 @@ new function(){
                 };
         },
         exec:function(_ns, conf, resumeFun, level){
-           var  t,tt,m,n,p,k,arr,type=conf.type||"other",
+           var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
                         case '=':
@@ -2253,7 +2253,8 @@ new function(){
                     iparams=iparams.slice(3);
                 }
 
-                var fun=function(arr){
+                var fun=function(){
+                    if(false===xui.tryF(ns._Handlers(type, method, iparams, adjust, target, conf)))return;
                     switch(type){
                         case 'page':
                             // handle switch
@@ -2480,7 +2481,7 @@ new function(){
                                             }else if(doit2){
                                                 // nested call
                                                 // arguemsnt of function/event is modified
-                                                t=xui.pseudocode._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested '+(t.desc||t.id||""), (level||1)+1);
+                                                t=ns._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested '+(t.desc||t.id||""), (level||1)+1);
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
@@ -2502,11 +2503,11 @@ new function(){
 
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
-            var fun, resume=0, t, rtn,
+            var ns=this, fun, resume=0, t, rtn,
                 funs = pseudo.actions || pseudo || [],
                 rtn = pseudo['return'], funsrtn,
                 innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
-                _ns=xui.pseudocode.getScope(args, module, temp),
+                _ns=ns.getScope(args, module, temp),
                 recursive=function(data){
                     var irtn;
                     // set prompt's global var
@@ -2537,10 +2538,10 @@ new function(){
                                 if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                     if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                                 };
-                                xui.pseudocode.exec(_ns, fun, resumeFun, level);
+                                ns.exec(_ns, fun, resumeFun, level);
                                 break;
                             }else
-                                if(false===(xui.pseudocode.exec(_ns, fun,null, level))){
+                                if(false===(ns.exec(_ns, fun,null, level))){
                                     resume=j;break;
                                 }
                         }
@@ -4859,16 +4860,18 @@ xui.Class('xui.absObj',"xui.absBox",{
                         if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
                             ins=prf.boxing();
                             xui.each(prop.propBinder, function(fun,key){
-                                if(xui.isFun(fun)){
-                                    r=fun(prf);
-                                    if(key=="CA")
-                                        ins.setCustomAttr(r);
-                                    else if(key=="CC")
-                                        ins.setCustomClass(r);
-                                    else if(key=="CS")
-                                        ins.setCustomStyle(r);
-                                    else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
-                                        ins[fn](r,true);
+                                if(false!==ins._reBindProp(prf, fun, key, inner)){
+                                    if(xui.isFun(fun)){
+                                        r=fun(prf);
+                                        if(key=="CA")
+                                            ins.setCustomAttr(r);
+                                        else if(key=="CC")
+                                            ins.setCustomClass(r);
+                                        else if(key=="CS")
+                                            ins.setCustomStyle(r);
+                                        else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
+                                            ins[fn](r,true);
+                                    }
                                 }
                             });
                         }
@@ -4878,7 +4881,17 @@ xui.Class('xui.absObj',"xui.absBox",{
             if(!inner){
                 var bak;
                 if(window.get)bak=get;
-                window.get=function(k){return xui.SC.get(k,dataMap)};
+                window.get=function(key){
+                    if(key){
+                        var arr = ("" +key).split("."),t;
+                        if(arr.length>=2){
+                            var scope = arr.shift(), name=arr.join(".");
+                            if(t = dataMap[scope]){
+                                return t[name];
+                            }
+                        }
+                    }
+                };
                 try{fun();}catch(e){}finally{window.get=bak}
             }else fun();
 

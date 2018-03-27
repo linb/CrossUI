@@ -36,7 +36,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
             },
             CAPTION:{
                 text : '{caption}',
-                style:'{_fc}{_fw}{_fs}',
+                style:'{_fc}{_fw}{_fs}{_ff}',
                 'font-size':'1em',
                 $order:1
             }
@@ -86,25 +86,13 @@ xui.Class("xui.UI.Label", "xui.UI",{
                     this.getRoot().css('textAlign',v);
                 }
             },
-            'fontColor':{
-                ini:'',
-                type:"color",
-                action: function(value){
-                    this.getSubNode("CAPTION").css('color', value);
-                }
+            vAlign:{
+                hidden:true
             },
-            'fontSize':{
-                combobox:["","1.25em","1.5em","2em","3em"],
-                action: function(value){
-                    this.getSubNode("CAPTION").css('fontSize', value);
-                }
-            },
-            'fontWeight':{
-                combobox:["","normal","bolder","bold","lighter","100","200","300","400","500","600","700","800","900"],
-                action: function(value){
-                    this.getSubNode("CAPTION").css('fontWeight', value);
-                }
-            },
+            fontColor:xui.UI.Button.$DataModel.fontColor,
+            fontSize:xui.UI.Button.$DataModel.fontSize,
+            fontWeight:xui.UI.Button.$DataModel.fontWeight,
+            fontFamily:xui.UI.Button.$DataModel.fontFamily,
             excelCellFormula:{
                 ini:"",
                 action:function(v){
@@ -136,6 +124,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
             data._fs = 'font-size:' + data.fontSize + ';';
             data._fw = 'font-weight:' + data.fontWeight + ';';
             data._fc = 'color:' + data.fontColor + ';';
+            data._ff = 'font-family:' + data.fontFamily + ';';
             return data;
         }        
     }

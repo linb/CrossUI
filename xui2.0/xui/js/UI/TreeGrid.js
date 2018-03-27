@@ -1932,18 +1932,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         getEditCell:function(){
             return xui.get(this.get(0),["$cellInEditor"]);
         },
-        offEditor:function(refresh){
+        offEditor:function(refresh, ignoreInline){
             var profile=this.get(0),editor;
             if(!profile)return;
             if(editor = profile.$curEditor){
                 xui.tryF(editor.undo,[],editor);
             }
-            xui.each(profile.cellMap,function(cell){
-                if(editor = cell._editor){
-                    editor.destroy();
-                    delete cell._editor;
-                }
-            });
+            if(!ignoreInline)
+                xui.each(profile.cellMap,function(cell){
+                    if(editor = cell._editor){
+                        editor.destroy();
+                        delete cell._editor;
+                    }
+                });
                 
             if(refresh){
                 var getPro=profile.box.getCellOption;
@@ -1974,8 +1975,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         }
     },
     Before:function(key, parent_key, o){
-        this.Behaviors.CELLS1=this.Behaviors.CELLS2;
-        this.Behaviors.GCELLA=this.Behaviors.CELLA;
+        if(key=='xui.UI.TreeGrid'){
+            this.Behaviors.CELLS1=this.Behaviors.CELLS2;
+            this.Behaviors.GCELLA=this.Behaviors.CELLA;
+        }
         return arguments.callee.upper.apply(this,arguments);
     },
     Initialize:function(){
@@ -3908,8 +3911,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 onDblclick:function(profile, e, src){
                     var p = profile.properties,
-                        row = profile.rowMap[profile.getSubId(src)];
+                        row = profile.rowMap[profile.getSubId(src)],
+                        eid = xui.Event.getSrc(e).id||"",
+                        ck=profile.getKey(eid);
                     if(!row || p.disabled || row.disabled)return false;
+                    if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
+                    if(ck==ks.ROWTOGGLE || ck==ks.MARK) return false;
                     if(profile.onDblclickRow)profile.boxing().onDblclickRow(profile, row, e, src);
                     return false;
                 },
@@ -3918,9 +3925,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         subid = profile.getSubId(src),
                         ks=profile.keys,
                         row = profile.rowMap[subid],
-                        ck=profile.getKey(xui.Event.getSrc(e).id||"");
+                        eid = xui.Event.getSrc(e).id||"";
                     if(p.disabled || row.disabled)return false;
-                    if(ck==ks.ROWTOGGLE || ck==ks.MARK) return false;
+                    if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
                     if(profile.onClickRow)
                         profile.boxing().onClickRow(profile, row, e, src);
                 }
