@@ -48,8 +48,30 @@ xui.Class("xui.UI.Label", "xui.UI",{
             caption:{
                 ini:undefined,
                 action: function(v){
-                    v=(xui.isSet(v)?v:"")+"";
-                    this.getSubNode("CAPTION").html(xui.adjustRes(v,true));
+                    var prf=this;
+                    if(!prf.properties.clock){
+                        v=(xui.isSet(v)?v:"")+"";
+                        prf.getSubNode("CAPTION").html(xui.adjustRes(v,true));
+                    }
+                }
+            },
+            clock:{
+                ini:'',
+                combobox:['hh : mm : ss','hh - mm : ss'],
+                action:function(v){
+                    var prf=this,timer;
+                    if(v && !prf._timer){
+                        timer = prf._timer=new xui.Timer();
+                        var f = timer.get(0).$onTime=function(){
+                            if(!prf.destroyed)
+                                prf.getSubNode("CAPTION").html(xui.Date.format(new Date,prf.properties.clock));
+                        };
+                        f();
+                    }else if(!v &&prf._timer){
+                        prf._timer.destroy();
+                        prf._timer=null;
+                        prf.boxing().setCaption(prf.properties.caption,true);
+                    }
                 }
             },
             image:{
@@ -119,8 +141,21 @@ xui.Class("xui.UI.Label", "xui.UI",{
             onClick:function(profile, e, src){},
             beforeApplyExcelFormula:function(profile, excelCellFormula){}
         },
+        RenderTrigger:function(){
+            var prf=this,t;
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["timerClear"]=function(){
+                if(prf._timer){
+                    prf._timer.destroy();
+                    delete prf._timer;
+                }
+            };
+            if(t=prf.properties.clock){
+                prf.boxing().setClock(t,true);
+            }
+        },
         _prepareData:function(profile, data){
             data=arguments.callee.upper.call(this, profile,data);
+            if(data.clock)data.caption='';
             data._fs = 'font-size:' + data.fontSize + ';';
             data._fw = 'font-weight:' + data.fontWeight + ';';
             data._fc = 'color:' + data.fontColor + ';';

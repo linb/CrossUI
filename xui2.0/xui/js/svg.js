@@ -288,7 +288,7 @@ xui.Class("xui.svg", "xui.UI",{
         delete o["stroke-linejoin"];
         delete o["stroke-miterlimit"];
         delete o["stroke-opacity"];
-//        delete o['stroke-dashoffset'];
+        delete o['stroke-dashoffset'];
         delete o["stroke-width"];
         
         delete this.prototype.toHtml;
@@ -1805,7 +1805,6 @@ xui.Class("xui.svg", "xui.UI",{
             width:null,
             height:null,
 
-
             svgTag:{
                 ini:""
             },
@@ -1821,6 +1820,72 @@ xui.Class("xui.svg", "xui.UI",{
                         this._shadow.remove();
                         this._shadow.clear();
                         delete this._shadow;
+                    }
+                }
+            },
+            animDraw:{
+                ini:'',
+                combobox:['2s linear','2s ease','2s ease-in','2s ease-out','2s ease-in-out'],
+                action:function(v){
+                    if(!v || !Raphael.svg || this.box.$noShape)return;
+                    var prf=this, e=prf._elset[0],
+                        elm=e&&e.node;
+                    if(!elm)return;
+                    var length = elm.getTotalLength(), 
+                        style=elm.style,
+                        trans=function(v){style.transition = style[xui.browser.cssTag2+'Transition'] =v;},
+                        bak1 = style.strokeDasharray ||'',
+                        bak2 = style.strokeDashoffset||'';
+
+                    trans('none');
+                    style.strokeDasharray = length + ',' + length;
+                    style.strokeDashoffset = length;
+                    
+                    // Trigger layout
+                    elm.getBoundingClientRect();
+                    trans('stroke-dashoffset '+v);
+
+                    // restore
+                    style.strokeDashoffset = 0;
+
+                    if(prf._flowthread)xui.Thread.abort(prf._flowthread);
+                    xui.setTimeout(function(t){
+                        if(!prf.destroyed && e && elm){
+                            trans('none');
+                            style.strokeDasharray=bak1;
+                            style.strokeDashoffset=bak2;
+
+                            if(t=prf.properties.offsetFlow){
+                                prf.boxing().setOffsetFlow(t,true);
+                            }
+                        }
+                    }, parseInt(v,10)*1000);
+                }
+            },
+            offsetFlow:{
+                ini:'',
+                combobox:['none','2x','4x','8x','-2x','-4x','-8x'],
+                action:function(v){
+                    if(!Raphael.svg || this.box.$noShape)return;
+                    var prf=this, elm=prf._elset[0], arr,sum=0;
+                    if(prf._flowthread)xui.Thread.abort(prf._flowthread);
+                    if(v){
+                        // must get the original value
+                        arr=xui(elm.node).attr('stroke-dasharray');
+                        if(!arr)return;
+                        arr=arr.replace(/\s+/,'').split(',');
+                        for(var i=0,l=arr.length;i<l;i++) sum += parseInt(arr[i],10);
+                        
+                        if(sum>0){
+                            sum=sum*2;
+                            var offset=0, speed=parseInt(v, 10);
+                            if(speed){
+                                prf._flowthread=xui.Thread.repeat(function(){
+                                    if(prf.destroyed||!elm||!elm.attr)return false;
+                                    elm.attr('stroke-dashoffset', offset = (offset + speed) % sum );
+                                }, 100).id;
+                            }
+                        }
                     }
                 }
             }
@@ -1869,8 +1934,10 @@ xui.Class("xui.svg", "xui.UI",{
             return o;
         },
         RenderTrigger:function(){
-            var prf=this;
+            var prf=this,t;
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["svgClear"]=function(){
+                if(prf._flowthread)xui.Thread.abort(prf._flowthread);
+
                 if(prf._elset){
                     prf._elset.forEach(function(el){
                         if(el)delete el._rootNode;
@@ -1886,6 +1953,14 @@ xui.Class("xui.svg", "xui.UI",{
                 }
             };
             prf.box._initAttr2UI(prf);
+            xui.setTimeout(function(){
+                if(prf.destroyed)return;
+                if(t=prf.properties.animDraw){
+                    prf.boxing().setAnimDraw(t,true);
+                }else if(t=prf.properties.offsetFlow){
+                    prf.boxing().setOffsetFlow(t,true);
+                }
+            });
         },
         _RenderSVG:function(prf){
             prf._pathCached={};
@@ -2447,6 +2522,7 @@ xui.Class("xui.svg.image", "xui.svg",{
         }
     },
     Static:{
+        $noShape:1,
         IMGNODE:1,
         DataModel:{
             attr:{
@@ -2474,6 +2550,7 @@ xui.Class("xui.svg.text", "xui.svg",{
         }
     },
     Static:{
+        $noShape:1,
         DataModel:{
             attr:{
                 ini:{x:0,y:0,text:"text"}
@@ -2796,6 +2873,7 @@ xui.Class("xui.svg.pathComb", "xui.svg.absComb",{
 xui.Class("xui.svg.imageComb", "xui.svg.absComb",{
     Static:{
         IMGNODE:1,
+        $noShape:1,
         _type:'image',
         Templates:{
             tagName:'image',

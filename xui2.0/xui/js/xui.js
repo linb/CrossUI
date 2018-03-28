@@ -4860,7 +4860,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                         if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
                             ins=prf.boxing();
                             xui.each(prop.propBinder, function(fun,key){
-                                if(false!==ins._reBindProp(prf, fun, key, inner)){
+                                if(false!==xui.tryF(ins._reBindProp, [prf, fun, key, inner], ins)){
                                     if(xui.isFun(fun)){
                                         r=fun(prf);
                                         if(key=="CA")
@@ -4961,6 +4961,7 @@ xui.Class("xui.Timer","xui.absObj",{
                 }else{
                     var p=profile.properties,box=profile.boxing(),
                     t=xui.Thread.repeat(function(threadId){
+                        if(profile.$onTime && false===profile.$onTime(profile,threadId))return false;
                         if(profile.onTime && false===box.onTime(profile,threadId))return false;
                     }, p.interval, function(threadId){
                         profile.onStart && box.onStart(profile,threadId);

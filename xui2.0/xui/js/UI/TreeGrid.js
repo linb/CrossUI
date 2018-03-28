@@ -3913,6 +3913,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var p = profile.properties,
                         row = profile.rowMap[profile.getSubId(src)],
                         eid = xui.Event.getSrc(e).id||"",
+                        ks=profile.keys,
                         ck=profile.getKey(eid);
                     if(!row || p.disabled || row.disabled)return false;
                     if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;

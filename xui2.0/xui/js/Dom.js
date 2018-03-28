@@ -3546,6 +3546,29 @@ type:4
                 restore: true, 
                 times:3
             },
+            blinkAlertLoop:{
+                endpoints:{opacity:[1,0]}, 
+                duration:500, 
+                restore: true, 
+                times:-1
+            },
+            rotateAlert:{
+                endpoints:{rotate:[0,360]}, 
+                duration:400, 
+                restore: false
+            },
+            rotateAlertLoop1:{
+                endpoints:{rotate:[0,360]}, 
+                duration:2000, 
+                restore: false,
+                times:-1
+            },
+            rotateAlertLoop2:{
+                endpoints:{rotate:[0,-360]}, 
+                duration:2000, 
+                returned: false,
+                times:-1
+            },
             zoomAlert:{
                 endpoints:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
                 duration:100, 
@@ -3563,11 +3586,6 @@ type:4
                 duration:100, 
                 restore: true, 
                 times:3
-            },
-            rotateAlert:{
-                endpoints:{rotate:[0,360]}, 
-                duration:400, 
-                restore: false
             }
         },
         $preDefinedEffects:{

@@ -904,7 +904,7 @@ xui.Class('xui.Module','xui.absProfile',{
             });
             return this;
         },
-        _getPropBinderKeys:function(){
+        getPropBinderKeys:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
             // collect keys

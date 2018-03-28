@@ -10198,7 +10198,19 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
-            },            
+            }, 
+            getClock :{
+                $desc:"获取时钟格式",
+                $rtn:"String"
+            },
+            setClock :{
+                $desc:"设置时钟格式",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            }, 
             getHAlign :{
                 $desc:"获取水平对齐方式",
                 $rtn:"String",
@@ -19093,6 +19105,18 @@ xui.set(xui.Locale,["cn","app"], {
             },
             setSvgTag:{
                 $desc:"设置控件的svg tag值",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getOffsetFlow:{
+                $desc:"获取控件的线条流动属性",
+                $rtn:"String"
+            },
+            setOffsetFlow:{
+                $desc:"设置控件的线条流动属性",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",

@@ -10244,7 +10244,7 @@ xui.set(xui.Locale,["en","app"], {
                     $force                ]
             },
             getCaption :{
-                $desc:"Gets this button caption text",
+                $desc:"Gets the caption text",
                 $rtn:"String",
                 $snippet:[
                     "var id='xui.temp.Label1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -10254,7 +10254,7 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             setCaption :{
-                $desc:"Sets caption text to this button",
+                $desc:"Sets caption text to this control",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",
@@ -10265,6 +10265,18 @@ xui.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Label);"+
                     "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
+                ]
+            },
+            getClock:{
+                $desc:"Gets the clock format string",
+                $rtn:"String"
+            },
+            setClock:{
+                $desc:"Sets the clock format string",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
                 ]
             },
             getHAlign :{
@@ -19171,6 +19183,30 @@ xui.set(xui.Locale,["en","app"], {
             },
             setSvgTag:{
                 $desc:"Sets the svg tag value on the each UIProfile",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getAnimDraw:{
+                $desc:"Gets the anim draw property",
+                $rtn:"String"
+            },
+            setAnimDraw:{
+                $desc:"Sets the anim draw property",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getOffsetFlow:{
+                $desc:"Gets the Flow property",
+                $rtn:"String"
+            },
+            setOffsetFlow:{
+                $desc:"Sets the Flow property",
                 $rtn:"[self]",
                 $paras:[
                     "value [Required] : String",

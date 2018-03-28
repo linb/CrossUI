@@ -259,6 +259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            src: "",
 	            stroke: "#000",
 	            "stroke-dasharray": "",
+                //not for vml
 	            "stroke-dashoffset" : 0,
 	            "stroke-linecap": "butt",
 	            "stroke-linejoin": "butt",
@@ -6169,7 +6170,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        "--..": [8, 3, 1, 3, 1, 3]
 	    },
 	    addDashes = function (o, value, params) {
-	        value = dasharray[Str(value).toLowerCase()];
+            value =Str(value).replace(/\s+/,'');
+	        value = dasharray[value] || (Raphael.svg && !/[^\d,]/.test(value) && value.split(/,/) );
 	        if (value) {
 	            var width = o.attrs["stroke-width"] || "1",
 	                butt = {round: width, square: width, butt: 0}[o.attrs["stroke-linecap"] || params["stroke-linecap"]] || 0,
@@ -6351,8 +6353,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    case "stroke-dasharray":
 	                        addDashes(o, value, params);
 	                        break;
+                        // not for vml
 	                    case "stroke-dashoffset":
-	                        node.setAttribute(att, value);
+                            if(Raphael.svg)node.setAttribute(att, value);
 	                        break;
 	                    case "fill":
 	                        var isURL = Str(value).match(R._ISURL);
