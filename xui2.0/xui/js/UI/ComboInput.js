@@ -1190,7 +1190,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, btn, value){},
             onClickIcon:function(profile, src){},
-            beforeUnitUpdated:function(prfole,unit){}
+            beforeUnitUpdated:function(prfole,unit){},
+            afterUnitUpdated:function(prfole,unit){}
         },
         DataModel:{
             cachePopWnd:true,
@@ -1255,6 +1256,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         ns.getSubNode('UNIT').html(v);
                         ns.boxing().reLayout(true);
                     }
+                    if(ns.afterUnitUpdated) ns.boxing().afterUnitUpdated(ns, v);
                 }
             },
             units:'',

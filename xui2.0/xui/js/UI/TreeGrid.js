@@ -3912,9 +3912,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onDblclick:function(profile, e, src){
                     var p = profile.properties,
                         row = profile.rowMap[profile.getSubId(src)],
-                        eid = xui.Event.getSrc(e).id||"",
+                        nn = xui.Event.getSrc(e),
+                        eid = nn&&(nn.id||""),
                         ks=profile.keys,
-                        ck=profile.getKey(eid);
+                        ck=profile.getKey(eid)
+                    while(!ck){
+                        nn=nn.offsetParent;
+                        ck=profile.getKey(eid = nn.id);
+                    }
                     if(!row || p.disabled || row.disabled)return false;
                     if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
                     if(ck==ks.ROWTOGGLE || ck==ks.MARK) return false;
