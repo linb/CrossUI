@@ -943,7 +943,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
 
             if(key && (t=xui.AnimBinder.getFromName(key))) {
-                t.apply(node, callback);
+                return t.apply(node, callback);
             }else{
                 if(!key)key="blinkAlert";
                 var item = (xui.isHash(key) && key.endpoints) ? key : xui.Dom.$preDefinedAnims[key];
@@ -961,7 +961,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }else if(xui.isFun(item.onEnd)){
                         onEnd=item.onEnd;
                     }
-                    prf.getRoot().animate(item.endpoints, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
+                    return prf.getRoot().animate(item.endpoints, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
                 }
             }
         },
@@ -1347,16 +1347,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 var t=o.properties,
                     ins=o.boxing(),
                     b,
-                    root=o.getRoot(),
-                    // attention animation
-                    attention=function(){
-                        if(o && !o.destroyed && t.activeAnim){
-                            xui.asyRun(function(){
-                                if(o && !o.destroyed)
-                                    o.boxing().setActiveAnim(t.activeAnim, true);
-                            });
-                        }
-                    };
+                    root=o.getRoot();
                 left=(left||left===0)?(left||0):null;
                 top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
@@ -1364,7 +1355,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),attention,ignoreEffects);
+                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.position=='absolute' && t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -1382,7 +1373,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), attention);
+                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top));
                     }
                 }
             });
@@ -5146,7 +5137,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             activeAnim:{
                 ini:"",
                 action:function(key){
-                    this.boxing().animate(key);
+                    if(key)this._activeAnim = this.boxing().animate(key).id;
+                    else delete thie._activeAnim;
                 }
             }
         },
@@ -5201,6 +5193,19 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(prf.behavior.PanelKeys){
                 if(t=p.dataBinder)b.setDataBinder(t,true);
             }
+
+            // attention animation
+            if(p.activeAnim){
+                xui.asyRun(function(){
+                    if(prf && !prf.destroyed)
+                        prf.boxing().setActiveAnim(p.activeAnim, true);
+                });
+            }
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["activeAnim"]=function(t){
+                if(t = prf._activeAnim)
+                    xui.Thread(t).abort();
+            }
+
             prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){
@@ -8981,9 +8986,9 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 var frame = arr.shift();
                 if(prf.beforeFrame&&false===prf.boxing().beforeFrame(prf, frame))return;
 
-                xui(node).animate(frame.endpoints, null, fun, frame.duration, frame.step, frame.type, null, null, frame.restore, frame.times).start();
+                return xui(node).animate(frame.endpoints, null, fun, frame.duration, frame.step, frame.type, null, null, frame.restore, frame.times).start();
             };
-            fun();
+            return fun();
         }
     },
     Static:{
