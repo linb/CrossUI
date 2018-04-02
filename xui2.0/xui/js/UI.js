@@ -1193,10 +1193,11 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(c.$onInited)xui.tryF(c.$onInited,[],profile);
             return self;
         },
-        busy:function(coverAll,html,key,subId){
+        busy:function(coverAll,html,key,subId, bgStyle){
             html=typeof html=='string'?html:'Loading...';
             // busy dom too
             if(coverAll===true)xui.Dom.busy();
+
             return this.each(function(profile){
                 xui.resetRun(profile.$xid+':busy',function(profile,key,subId){
                     // destroyed
@@ -1209,21 +1210,42 @@ xui.Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom" style="margin-top:1.2em;"></div></button>');
+                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>');
                     }
                     node=profile.$busy;
 
                     node.first().html(html,false);
 
                     parentNode.append(node);
+
+                    node.removeClass(/^xui-rand-css-/);
+                    node.query('style').remove(false);
+                    if(bgStyle){
+                        var clsName="xui-rand-css-" + xui.rand();
+                        node.addClass(clsName);
+                        xui.CSS._appendSS(node.get(0), "." + clsName + ":before{" + bgStyle + "}", clsName,true);
+                    }
+                    var pn=parentNode.get(0);
+                    node._parentOST = pn.scrollTop||0;
+                    node._parentOSL = pn.scrollLeft||0;
+                    node._parentOverflow = pn.style.overflow||'';
+
+                    pn.scrollTop=pn.scrollLeft=0;
+                    pn.style.overflow='hidden';
+
                 },50,[profile,key,subId]);
             });
         },
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
+                var node,pn=node.parent().get(0);
                 xui.resetRun(profile.$xid+':busy');
-                if(profile.$busy){
+                if(node=profile.$busy){
+                    pn.style.overflow=node._parentOverflow||'';
+                    pn.scrollTop = node._parentOST||0;
+                    pn.scrollLeft = node._parentOSL||0;
+                    
                     profile.$busy.remove();
                     delete profile.$busy;
                 }

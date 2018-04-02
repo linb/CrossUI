@@ -681,7 +681,7 @@ new function(){
             };
             document.body.appendChild(img);
             img.src = src;
-        return 1;
+            return 1;
         },
         // type detection
         isDefined:function(target)  {return target!==undefined},
@@ -891,6 +891,25 @@ new function(){
                         arr.push(a[i]);
                 }
                 return arr.reverse();
+            }
+        },
+        _scope_set: function(){
+            if(window.get)xui._scope_bak=get;
+            window.get=function(k){
+                if(key){
+                    var arr = ("" +key).split(".");
+                    if(arr.length>=2){
+                        var scope = arr.shift(), name=arr.join(".");
+                        if(!hash[scope])hash[scope]={};
+                        hash[scope][name]=1;
+                    }
+                }
+            };
+        },
+        _scope_clear: function(bak){
+            if(bak=xui._scope_bak){
+                window.get=bak;
+                delete xui._scope_bak
             }
         }
     });
@@ -2254,7 +2273,7 @@ new function(){
                 }
 
                 var fun=function(){
-                    if(false===xui.tryF(ns._Handlers(type, method, iparams, adjust, target, conf)))return;
+                    if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
                     switch(type){
                         case 'page':
                             // handle switch
@@ -4852,48 +4871,37 @@ xui.Class('xui.absObj',"xui.absBox",{
         getHost:function(){
             return this.get(0).host;
         },
-        reBindProp:function(dataMap, inner){
-            var ns=this,prop,ins,fn,r,
-                fun=function(){
-                    ns.each(function(prf){
-                        prop=prf.properties;
-                        if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
-                            ins=prf.boxing();
-                            xui.each(prop.propBinder, function(fun,key){
-                                if(false!==xui.tryF(ins._reBindProp, [prf, fun, key, inner], ins)){
-                                    if(xui.isFun(fun)){
-                                        r=fun(prf);
-                                        if(key=="CA")
-                                            ins.setCustomAttr(r);
-                                        else if(key=="CC")
-                                            ins.setCustomClass(r);
-                                        else if(key=="CS")
-                                            ins.setCustomStyle(r);
-                                        else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
-                                            ins[fn](r,true);
-                                    }
-                                }
-                            });
-                        }
-                    });
-            };
+        reBindProp:function(dataMap, scope_set, scope_clear, _scope_handled){
+            if(!_scope_handled){
+                scope_set=scope_set || xui._scope_set;
+                scope_clear=scope_clear || xui._scope_clear; 
+            }
 
-            if(!inner){
-                var bak;
-                if(window.get)bak=get;
-                window.get=function(key){
-                    if(key){
-                        var arr = ("" +key).split("."),t;
-                        if(arr.length>=2){
-                            var scope = arr.shift(), name=arr.join(".");
-                            if(t = dataMap[scope]){
-                                return t[name];
+            var ns=this,prop,ins,fn,r;
+            try{
+                if(!_scope_handled)scope_set.call(this);
+                ns.each(function(prf){
+                    prop=prf.properties;
+                    if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
+                        ins=prf.boxing();
+                        xui.each(prop.propBinder, function(get_prop_value,key){
+                            if(false!==xui.tryF(ins._reBindProp, [prf, get_prop_value, key, inner], ins)){
+                                r= xui.isFun(get_prop_value) ? get_prop_value(prf) : xui.adjustVar(get_prop_value);
+                                switch(key){
+                                    case "CA": ins.setCustomAttr(r); break;
+                                    case "CC": ins.setCustomClass(r); break;
+                                    case "CS": ins.setCustomStyle(r);break;
+                                    default:
+                                        if(xui.isFun(ins[fn='set'+xui.str.initial(key)])) ins[fn](r,true);
+                                }
                             }
-                        }
+                        });
                     }
-                };
-                try{fun();}catch(e){}finally{window.get=bak}
-            }else fun();
+                });
+            }catch(e){
+                if(!_scope_handled)scope_clear.call(this);
+            }
+
 
             return this;
         }

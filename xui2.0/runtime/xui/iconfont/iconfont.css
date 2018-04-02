@@ -80,6 +80,7 @@
     height: 1em;
 }
 .xui-icon-loading:before{
+	margin-top:-1.25em;
   position:absolute;
 	content: "\e68d" !important;
   -webkit-animation: fa-spin 1.5s infinite linear;

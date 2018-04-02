@@ -682,7 +682,7 @@ new function(){
             };
             document.body.appendChild(img);
             img.src = src;
-        return 1;
+            return 1;
         },
         // type detection
         isDefined:function(target)  {return target!==undefined},
@@ -892,6 +892,25 @@ new function(){
                         arr.push(a[i]);
                 }
                 return arr.reverse();
+            }
+        },
+        _scope_set: function(){
+            if(window.get)xui._scope_bak=get;
+            window.get=function(k){
+                if(key){
+                    var arr = ("" +key).split(".");
+                    if(arr.length>=2){
+                        var scope = arr.shift(), name=arr.join(".");
+                        if(!hash[scope])hash[scope]={};
+                        hash[scope][name]=1;
+                    }
+                }
+            };
+        },
+        _scope_clear: function(bak){
+            if(bak=xui._scope_bak){
+                window.get=bak;
+                delete xui._scope_bak
             }
         }
     });
@@ -2255,7 +2274,7 @@ new function(){
                 }
 
                 var fun=function(){
-                    if(false===xui.tryF(ns._Handlers(type, method, iparams, adjust, target, conf)))return;
+                    if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
                     switch(type){
                         case 'page':
                             // handle switch
@@ -4853,48 +4872,37 @@ xui.Class('xui.absObj',"xui.absBox",{
         getHost:function(){
             return this.get(0).host;
         },
-        reBindProp:function(dataMap, inner){
-            var ns=this,prop,ins,fn,r,
-                fun=function(){
-                    ns.each(function(prf){
-                        prop=prf.properties;
-                        if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
-                            ins=prf.boxing();
-                            xui.each(prop.propBinder, function(fun,key){
-                                if(false!==xui.tryF(ins._reBindProp, [prf, fun, key, inner], ins)){
-                                    if(xui.isFun(fun)){
-                                        r=fun(prf);
-                                        if(key=="CA")
-                                            ins.setCustomAttr(r);
-                                        else if(key=="CC")
-                                            ins.setCustomClass(r);
-                                        else if(key=="CS")
-                                            ins.setCustomStyle(r);
-                                        else if(xui.isFun(ins[fn='set'+xui.str.initial(key)]))
-                                            ins[fn](r,true);
-                                    }
-                                }
-                            });
-                        }
-                    });
-            };
+        reBindProp:function(dataMap, scope_set, scope_clear, _scope_handled){
+            if(!_scope_handled){
+                scope_set=scope_set || xui._scope_set;
+                scope_clear=scope_clear || xui._scope_clear; 
+            }
 
-            if(!inner){
-                var bak;
-                if(window.get)bak=get;
-                window.get=function(key){
-                    if(key){
-                        var arr = ("" +key).split("."),t;
-                        if(arr.length>=2){
-                            var scope = arr.shift(), name=arr.join(".");
-                            if(t = dataMap[scope]){
-                                return t[name];
+            var ns=this,prop,ins,fn,r;
+            try{
+                if(!_scope_handled)scope_set.call(this);
+                ns.each(function(prf){
+                    prop=prf.properties;
+                    if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
+                        ins=prf.boxing();
+                        xui.each(prop.propBinder, function(get_prop_value,key){
+                            if(false!==xui.tryF(ins._reBindProp, [prf, get_prop_value, key, inner], ins)){
+                                r= xui.isFun(get_prop_value) ? get_prop_value(prf) : xui.adjustVar(get_prop_value);
+                                switch(key){
+                                    case "CA": ins.setCustomAttr(r); break;
+                                    case "CC": ins.setCustomClass(r); break;
+                                    case "CS": ins.setCustomStyle(r);break;
+                                    default:
+                                        if(xui.isFun(ins[fn='set'+xui.str.initial(key)])) ins[fn](r,true);
+                                }
                             }
-                        }
+                        });
                     }
-                };
-                try{fun();}catch(e){}finally{window.get=bak}
-            }else fun();
+                });
+            }catch(e){
+                if(!_scope_handled)scope_clear.call(this);
+            }
+
 
             return this;
         }
@@ -13104,7 +13112,7 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             body=o=null;
         },
-        setCover:function(visible,label,busyIcon,cursor){
+        setCover:function(visible,label,busyIcon,cursor,opacity,background){
             // get or create first
             var me=arguments.callee,
                 id="xui.temp:cover:",
@@ -13123,20 +13131,21 @@ xui.Class('xui.Dom','xui.absBox',{
 
             //clear the last one
             if(!visible){
-                if(typeof me._label =='string' && me._label!==label)
-                    return;
-                if(me._showed){
-                    if(o2)o2.empty(false);
-                    o1.css({zIndex:0,cursor:'',display:'none',cursor:''});
-                    me._showed=false;
+                if(typeof label !=='string' || (typeof me._label =='string' && me._label==label)){
+                    if(me._showed){
+                        if(o2)o2.empty(false);
+                        o1.css({zIndex:0,cursor:'',display:'none',cursor:'',opacity:1,background:'none'});
+                        me._showed=false;
+                    }
+                    delete me._label;
                 }
-                delete me._label;
             }else{
                 if(typeof label=='string')me._label=label;
                 var t = xui.win;
                 if(!me._showed){
-                    o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:cursor||'progress'});
-                    if(busyIcon)o1.addClass('xuicon xui-icon-loading'); else o1.removeClass('xuicon xui-icon-loading');
+                    o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:cursor||'progress',opacity:xui.isFinite(opacity)?opacity:1,background:background||''});
+                    if(busyIcon)o1.addClass('xuicon xui-icon-loading'); 
+                    else o1.removeClass('xuicon xui-icon-loading');
                     me._showed=true;
                 }
                 //show content
@@ -13148,6 +13157,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                 }
             }
+            return o1;
         },
 
         byId:function(id){
@@ -13238,10 +13248,10 @@ xui.Class('xui.Dom','xui.absBox',{
             fileInput=null;
         },
         busy:function(id,busyMsg,busyIcon,cursor){
-            xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor);
+            return xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor);
         },
         free:function(id){
-           xui.Dom.setCover(false,id);
+           return xui.Dom.setCover(false,id);
         },
         animate:function(css, endpoints, onStart, onEnd, duration, step, type, threadid, unit, restore,times){
             var node = document.createElement('div');
@@ -14914,25 +14924,17 @@ xui.Class('xui.Module','xui.absProfile',{
             });
             return this;
         },
-        getPropBinderKeys:function(){
+        getPropBinderKeys:function(scope_set, scope_clear){
             if(!this._innerModulesCreated)this._createInnerModules();
+
+            scope_set=scope_set || xui._scope_set;
+            scope_clear=scope_clear || xui._scope_clear; 
 
             // collect keys
             var hash={};
             try{
-                var bak;
-                if(window.get)bak=get;
-                window.get=function(k){
-                    if(key){
-                        var arr = ("" +key).split(".");
-                        if(arr.length>=2){
-                            var scope = arr.shift(), name=arr.join(".");
-                            if(!hash[scope])hash[scope]={};
-                            hash[scope][name]=1;
-                        }
-                    }
-                };
-                 xui.each(this._ctrlpool, function(prf){
+                scope_set.call(this);
+                xui.each(this._ctrlpool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         xui.each(prop.propBinder,function(fun,key){
@@ -14941,35 +14943,29 @@ xui.Class('xui.Module','xui.absProfile',{
                             }
                         });
                 });
-            }catch(e){}finally{if(bak)window.get=bak;}
+            }catch(e){}finally{
+                scope_clear.call(this);
+            }
 
             xui.each(hash, function(v,k){
                 hash[k] = xui.toArr(v, true);
             });
             return hash;
         },
-        reBindProp:function(dataMap){
+        reBindProp:function(dataMap, scope_set, scope_clear){
             if(!this._innerModulesCreated)this._createInnerModules();
+            scope_set=scope_set || xui._scope_set;
+            scope_clear=scope_clear || xui._scope_clear; 
+            
             try{
-                var bak;
-                if(window.get)bak=get;
-                window.get=function(key){
-                    if(key){
-                        var arr = ("" +key).split("."),t;
-                        if(arr.length>=2){
-                            var scope = arr.shift(), name=arr.join(".");
-                            if(t = dataMap[scope]){
-                                return t[name];
-                            }
-                        }
-                    }
-                };
+                scope_set.call(this);
                  xui.each(this._ctrlpool, function(prf){
-                    prf.boxing().reBindProp(dataMap,true);
+                    prf.boxing().reBindProp(dataMap,scope_set,scope_clear, true);
                 });
-            }catch(e){window.get=bak}
+            }catch(e){
+                scope_clear.call(this);
+            }
         },
-
         getData:function(withValue){
             if(!this._innerModulesCreated)this._createInnerModules();
 
@@ -18991,7 +18987,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
 
             if(key && (t=xui.AnimBinder.getFromName(key))) {
-                t.apply(node, callback);
+                return t.apply(node, callback);
             }else{
                 if(!key)key="blinkAlert";
                 var item = (xui.isHash(key) && key.endpoints) ? key : xui.Dom.$preDefinedAnims[key];
@@ -19009,7 +19005,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }else if(xui.isFun(item.onEnd)){
                         onEnd=item.onEnd;
                     }
-                    prf.getRoot().animate(item.endpoints, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
+                    return prf.getRoot().animate(item.endpoints, item.onStart, onEnd,item.duration||200, null, item.type||"linear", null, item.unit, item.restore, item.times).start();
                 }
             }
         },
@@ -19395,16 +19391,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 var t=o.properties,
                     ins=o.boxing(),
                     b,
-                    root=o.getRoot(),
-                    // attention animation
-                    attention=function(){
-                        if(o && !o.destroyed && t.activeAnim){
-                            xui.asyRun(function(){
-                                if(o && !o.destroyed)
-                                    o.boxing().setActiveAnim(t.activeAnim, true);
-                            });
-                        }
-                    };
+                    root=o.getRoot();
                 left=(left||left===0)?(left||0):null;
                 top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
@@ -19412,7 +19399,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
                     t.dockIgnore=false;
-                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),attention,ignoreEffects);
+                    root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.position=='absolute' && t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
                 //first call show
@@ -19430,7 +19417,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), attention);
+                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top));
                     }
                 }
             });
@@ -23194,7 +23181,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             activeAnim:{
                 ini:"",
                 action:function(key){
-                    this.boxing().animate(key);
+                    if(key)this._activeAnim = this.boxing().animate(key).id;
+                    else delete thie._activeAnim;
                 }
             }
         },
@@ -23249,6 +23237,19 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(prf.behavior.PanelKeys){
                 if(t=p.dataBinder)b.setDataBinder(t,true);
             }
+
+            // attention animation
+            if(p.activeAnim){
+                xui.asyRun(function(){
+                    if(prf && !prf.destroyed)
+                        prf.boxing().setActiveAnim(p.activeAnim, true);
+                });
+            }
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["activeAnim"]=function(t){
+                if(t = prf._activeAnim)
+                    xui.Thread(t).abort();
+            }
+
             prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){
@@ -27029,9 +27030,9 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 var frame = arr.shift();
                 if(prf.beforeFrame&&false===prf.boxing().beforeFrame(prf, frame))return;
 
-                xui(node).animate(frame.endpoints, null, fun, frame.duration, frame.step, frame.type, null, null, frame.restore, frame.times).start();
+                return xui(node).animate(frame.endpoints, null, fun, frame.duration, frame.step, frame.type, null, null, frame.restore, frame.times).start();
             };
-            fun();
+            return fun();
         }
     },
     Static:{

@@ -3665,7 +3665,7 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             body=o=null;
         },
-        setCover:function(visible,label,busyIcon,cursor){
+        setCover:function(visible,label,busyIcon,cursor,bgStyle){
             // get or create first
             var me=arguments.callee,
                 id="xui.temp:cover:",
@@ -3674,7 +3674,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
-                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
+                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-cover-global xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
@@ -3689,6 +3689,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(me._showed){
                     if(o2)o2.empty(false);
                     o1.css({zIndex:0,cursor:'',display:'none',cursor:''});
+                    o1.query('style').remove(false);
                     me._showed=false;
                 }
                 delete me._label;
@@ -3700,6 +3701,11 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(busyIcon)o1.addClass('xuicon xui-icon-loading'); else o1.removeClass('xuicon xui-icon-loading');
                     me._showed=true;
                 }
+
+                o1.query('style').remove(false);
+                if(bgStyle)
+                    xui.CSS._appendSS(o1.get(0), ".xui-cover-global:before{" + bgStyle + "}", "" ,true);
+
                 //show content
                 if(content){
                     if(typeof(content)=='function'){
@@ -3798,8 +3804,8 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             fileInput=null;
         },
-        busy:function(id,busyMsg,busyIcon,cursor){
-            xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor);
+        busy:function(id,busyMsg,busyIcon,cursor,bgStyle){
+            xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor,bgStyle);
         },
         free:function(id){
            xui.Dom.setCover(false,id);

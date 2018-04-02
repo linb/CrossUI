@@ -904,25 +904,17 @@ xui.Class('xui.Module','xui.absProfile',{
             });
             return this;
         },
-        getPropBinderKeys:function(){
+        getPropBinderKeys:function(scope_set, scope_clear){
             if(!this._innerModulesCreated)this._createInnerModules();
+
+            scope_set=scope_set || xui._scope_set;
+            scope_clear=scope_clear || xui._scope_clear; 
 
             // collect keys
             var hash={};
             try{
-                var bak;
-                if(window.get)bak=get;
-                window.get=function(k){
-                    if(key){
-                        var arr = ("" +key).split(".");
-                        if(arr.length>=2){
-                            var scope = arr.shift(), name=arr.join(".");
-                            if(!hash[scope])hash[scope]={};
-                            hash[scope][name]=1;
-                        }
-                    }
-                };
-                 xui.each(this._ctrlpool, function(prf){
+                scope_set.call(this);
+                xui.each(this._ctrlpool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         xui.each(prop.propBinder,function(fun,key){
@@ -931,35 +923,29 @@ xui.Class('xui.Module','xui.absProfile',{
                             }
                         });
                 });
-            }catch(e){}finally{if(bak)window.get=bak;}
+            }catch(e){}finally{
+                scope_clear.call(this);
+            }
 
             xui.each(hash, function(v,k){
                 hash[k] = xui.toArr(v, true);
             });
             return hash;
         },
-        reBindProp:function(dataMap){
+        reBindProp:function(dataMap, scope_set, scope_clear){
             if(!this._innerModulesCreated)this._createInnerModules();
+            scope_set=scope_set || xui._scope_set;
+            scope_clear=scope_clear || xui._scope_clear; 
+            
             try{
-                var bak;
-                if(window.get)bak=get;
-                window.get=function(key){
-                    if(key){
-                        var arr = ("" +key).split("."),t;
-                        if(arr.length>=2){
-                            var scope = arr.shift(), name=arr.join(".");
-                            if(t = dataMap[scope]){
-                                return t[name];
-                            }
-                        }
-                    }
-                };
+                scope_set.call(this);
                  xui.each(this._ctrlpool, function(prf){
-                    prf.boxing().reBindProp(dataMap,true);
+                    prf.boxing().reBindProp(dataMap,scope_set,scope_clear, true);
                 });
-            }catch(e){window.get=bak}
+            }catch(e){
+                scope_clear.call(this);
+            }
         },
-
         getData:function(withValue){
             if(!this._innerModulesCreated)this._createInnerModules();
 
