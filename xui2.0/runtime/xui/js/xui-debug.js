@@ -13112,7 +13112,7 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             body=o=null;
         },
-        setCover:function(visible,label,busyIcon,cursor,opacity,background){
+        setCover:function(visible,label,busyIcon,cursor,bgStyle){
             // get or create first
             var me=arguments.callee,
                 id="xui.temp:cover:",
@@ -13121,7 +13121,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
-                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
+                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-cover-global xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
@@ -13131,23 +13131,28 @@ xui.Class('xui.Dom','xui.absBox',{
 
             //clear the last one
             if(!visible){
-                if(typeof label !=='string' || (typeof me._label =='string' && me._label==label)){
-                    if(me._showed){
-                        if(o2)o2.empty(false);
-                        o1.css({zIndex:0,cursor:'',display:'none',cursor:'',opacity:1,background:'none'});
-                        me._showed=false;
-                    }
-                    delete me._label;
+                if(typeof me._label =='string' && me._label!==label)
+                    return;
+                if(me._showed){
+                    if(o2)o2.empty(false);
+                    o1.css({zIndex:0,cursor:'',display:'none',cursor:''});
+                    o1.query('style').remove(false);
+                    me._showed=false;
                 }
+                delete me._label;
             }else{
                 if(typeof label=='string')me._label=label;
                 var t = xui.win;
                 if(!me._showed){
-                    o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:cursor||'progress',opacity:xui.isFinite(opacity)?opacity:1,background:background||''});
-                    if(busyIcon)o1.addClass('xuicon xui-icon-loading'); 
-                    else o1.removeClass('xuicon xui-icon-loading');
+                    o1.css({zIndex:xui.Dom.TOP_ZINDEX*10,display:'',width:t.scrollWidth()+'px',height:t.scrollHeight()+'px',cursor:cursor||'progress'});
+                    if(busyIcon)o1.addClass('xuicon xui-icon-loading'); else o1.removeClass('xuicon xui-icon-loading');
                     me._showed=true;
                 }
+
+                o1.query('style').remove(false);
+                if(bgStyle)
+                    xui.CSS._appendSS(o1.get(0), ".xui-cover-global:before{" + bgStyle + "}", "" ,true);
+
                 //show content
                 if(content){
                     if(typeof(content)=='function'){
@@ -13157,7 +13162,6 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                 }
             }
-            return o1;
         },
 
         byId:function(id){
@@ -13247,11 +13251,11 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             fileInput=null;
         },
-        busy:function(id,busyMsg,busyIcon,cursor){
-            return xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor);
+        busy:function(id,busyMsg,busyIcon,cursor,bgStyle){
+            xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor,bgStyle);
         },
         free:function(id){
-           return xui.Dom.setCover(false,id);
+           xui.Dom.setCover(false,id);
         },
         animate:function(css, endpoints, onStart, onEnd, duration, step, type, threadid, unit, restore,times){
             var node = document.createElement('div');
@@ -19237,10 +19241,11 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(c.$onInited)xui.tryF(c.$onInited,[],profile);
             return self;
         },
-        busy:function(coverAll,html,key,subId){
+        busy:function(coverAll,html,key,subId, bgStyle){
             html=typeof html=='string'?html:'Loading...';
             // busy dom too
             if(coverAll===true)xui.Dom.busy();
+
             return this.each(function(profile){
                 xui.resetRun(profile.$xid+':busy',function(profile,key,subId){
                     // destroyed
@@ -19253,21 +19258,42 @@ xui.Class("xui.UI",  "xui.absObj", {
                         return;
 
                     if(!profile.$busy||profile.$busy.isEmpty()){
-                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom" style="margin-top:1.2em;"></div></button>');
+                        node=profile.$busy=xui.create('<button class="xui-node xui-node-div xuicon xui-icon-loading xui-cover xui-custom" style="position:absolute;text-align:center;left:0;top:0;z-index:10;border:0;padding:0;margin:0;width:100%;height:100%;"><div class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>');
                     }
                     node=profile.$busy;
 
                     node.first().html(html,false);
 
                     parentNode.append(node);
+
+                    node.removeClass(/^xui-rand-css-/);
+                    node.query('style').remove(false);
+                    if(bgStyle){
+                        var clsName="xui-rand-css-" + xui.rand();
+                        node.addClass(clsName);
+                        xui.CSS._appendSS(node.get(0), "." + clsName + ":before{" + bgStyle + "}", clsName,true);
+                    }
+                    var pn=parentNode.get(0);
+                    node._parentOST = pn.scrollTop||0;
+                    node._parentOSL = pn.scrollLeft||0;
+                    node._parentOverflow = pn.style.overflow||'';
+
+                    pn.scrollTop=pn.scrollLeft=0;
+                    pn.style.overflow='hidden';
+
                 },50,[profile,key,subId]);
             });
         },
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
+                var node,pn=node.parent().get(0);
                 xui.resetRun(profile.$xid+':busy');
-                if(profile.$busy){
+                if(node=profile.$busy){
+                    pn.style.overflow=node._parentOverflow||'';
+                    pn.scrollTop = node._parentOST||0;
+                    pn.scrollLeft = node._parentOSL||0;
+                    
                     profile.$busy.remove();
                     delete profile.$busy;
                 }

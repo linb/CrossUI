@@ -1239,13 +1239,14 @@ xui.Class("xui.UI",  "xui.absObj", {
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
-                var node,pn=node.parent().get(0);
+                var node,pn=node&&node.parent().get(0);
                 xui.resetRun(profile.$xid+':busy');
                 if(node=profile.$busy){
-                    pn.style.overflow=node._parentOverflow||'';
-                    pn.scrollTop = node._parentOST||0;
-                    pn.scrollLeft = node._parentOSL||0;
-                    
+                    if(pn){
+                        pn.scrollTop = node._parentOST||0;
+                        pn.scrollLeft = node._parentOSL||0;
+                        pn.style.overflow=node._parentOverflow||'';
+                    }
                     profile.$busy.remove();
                     delete profile.$busy;
                 }
