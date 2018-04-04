@@ -4672,6 +4672,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         for(var j=0;j<h;j++){
                             //ignore temp row for all rows
                             if(!one && rows[j].id==tid)continue;
+                            if(rows[j].group || !rows[j].cells)continue;
 
                             var hash={};
                             for(var i=0;i<l;i++){
