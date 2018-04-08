@@ -615,6 +615,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     rowFilter=profile.$rowFilter;
                 }
                 xui.resetRun(profile.$xid+':rowfilter',function(){
+                    rowFilter('before',null,profile)
+
                     var prop=profile.properties,
                         rows=prop.rows,
                         showRows=[],
@@ -645,7 +647,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             return count;
                         };
                     f1(rows, showRows, hideRows);
-                    
+                    rowFilter('after',null,profile)
+
                     // reflect to dom 
                     if(showRows.length)ns.showRows(showRows);
                     if(hideRows.length)ns.showRows(hideRows,false);
@@ -4790,7 +4793,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeInitHotRow:function(profile){},
             onInitHotRow:function(profile,row){},
 
-            beforeHotRowAdded:function(profile, row, leaveGrid){},
+            beforeHotRowAdded:function(profile, cellMap, row, leaveGrid){},
             afterHotRowAdded:function(profile, row){},
 
             onGetContent:function(profile, row, callback){},
@@ -5059,14 +5062,21 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(required && required.length){
                 for(var i=0,j,cell,l=required.length;i<l;i++){
                     j=xui.arr.subIndexOf(prop.header, 'id',required[i]);
-                    if( j!=-1 && !(xui.isHash(cell = cell=tempRow[required[i].split(':')[0]]) ? cell.value : cell) ){
+                    if( j!=-1 && !(xui.isHash(cell=tempRow[required[i].split(':')[0]]) ? cell.value : cell) ){
                         result=null;
                         break;
                     }
                 }
             }
+            var tempRowData=ins.getRowbyRowId(rowId, 'data', true);
+            // clear temp data
+            delete tempRowData.id; delete tempRowData.rowClass; delete tempRowData.rowNumber;
+            xui.arr.each(tempRowData.cells, function(cell){
+                delete cell.id;
+            });
+
             if(profile.beforeHotRowAdded){
-                var result2=ins.beforeHotRowAdded(profile, tempRow, !trigger);
+                var result2=ins.beforeHotRowAdded(profile, tempRow, tempRowData, !trigger);
                 if(xui.isDefined(result2))
                     result=result2===true?result2:result2===false?result2:null;
             }
@@ -5092,8 +5102,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // add a new row
             else if(result===true){
                 delete profile.__hastmpRow;
-                ins.removeRows([rowId],false);
-                ins.insertRows([{cells:tempRow}],null,null,false,false);
+                ins.removeRows([rowId],false);                    
+                ins.insertRows([tempRowData],null,null,false,false);
 
                 tempRow = prop.rows[prop.rows.length-1];
                 tempRow._dirty=1;

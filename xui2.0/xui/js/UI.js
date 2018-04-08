@@ -6999,6 +6999,7 @@ xui.Class("xui.absList", "xui.absObj",{
                     itemFilter=profile.$itemFilter;
                 }
                 var fun=function(){
+                    itemFilter('before', null, profile)
                     var prop=profile.properties,
                         items=prop.items,
                         showItems=[],
@@ -7028,7 +7029,7 @@ xui.Class("xui.absList", "xui.absObj",{
                             });
                             return count;
                         };
-                    fun(items);
+                    itemFilter('after', null, profile)
                     
                     // reflect to dom 
                     if(showItems.length)ns.showItems(showItems);

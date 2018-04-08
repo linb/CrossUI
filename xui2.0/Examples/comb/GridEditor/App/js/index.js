@@ -109,7 +109,7 @@ xui.Class('App', 'xui.Module',{
             return ['label','input',0,0];
         },
         // check new row
-        _beforeHotRowAdded:function(profile, row, leaveGrid){
+        _beforeHotRowAdded:function(profile, cellMap, row, leaveGrid){
             var cells=row.cells;
             if(cells[3].value<=0){
                 xui.message("Cancelled! The last row's 4th cell must be greater than 0");
@@ -121,7 +121,7 @@ xui.Class('App', 'xui.Module',{
             }
             return true;
         },
-        _beforeHotRowAdded2:function(profile, row, leaveGrid){
+        _beforeHotRowAdded2:function(profile, cellMap, row, leaveGrid){
             var cells=row.cells;
             if(cells[3].value<=0){
                 xui.message("Cancelled! The last row's 4th cell must be greater than 0");

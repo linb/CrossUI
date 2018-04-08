@@ -214,11 +214,12 @@ new function(){
             else clearTimeout(Math.abs(id));
         },
         fun:function(){return function(){}},
-        exec:function(script, id){
+        exec:function(script, id, closure){
             var me=this,
                 d=document,
                 h=d.getElementsByTagName("head")[0] || d.documentElement,
                 s=d.createElement("script"),n;
+            if(closure)script="!function(){"+script+"}(window)";
             s.type = "text/javascript";
             if(id){
                 if((n=d.getElementById(id))&&n.parentNode==h){
@@ -17401,6 +17402,8 @@ xui.Class("xui.Tips", null,{
             b=false!==((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
             //2._showTips / onShowTips
             //check if showTips works
+            if(b!==false)b=false!==(_from._showTips && _from._showTips(_from, node, pos));
+            //check if showTips works
             if(b!==false)b=false!==(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
@@ -19287,13 +19290,14 @@ xui.Class("xui.UI",  "xui.absObj", {
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
-                var node,pn=node.parent().get(0);
+                var node,pn=node&&node.parent().get(0);
                 xui.resetRun(profile.$xid+':busy');
                 if(node=profile.$busy){
-                    pn.style.overflow=node._parentOverflow||'';
-                    pn.scrollTop = node._parentOST||0;
-                    pn.scrollLeft = node._parentOSL||0;
-                    
+                    if(pn){
+                        pn.scrollTop = node._parentOST||0;
+                        pn.scrollLeft = node._parentOSL||0;
+                        pn.style.overflow=node._parentOverflow||'';
+                    }
                     profile.$busy.remove();
                     delete profile.$busy;
                 }
@@ -25046,6 +25050,7 @@ xui.Class("xui.absList", "xui.absObj",{
                     itemFilter=profile.$itemFilter;
                 }
                 var fun=function(){
+                    itemFilter('before', null, profile)
                     var prop=profile.properties,
                         items=prop.items,
                         showItems=[],
@@ -25075,7 +25080,7 @@ xui.Class("xui.absList", "xui.absObj",{
                             });
                             return count;
                         };
-                    fun(items);
+                    itemFilter('after', null, profile)
                     
                     // reflect to dom 
                     if(showItems.length)ns.showItems(showItems);
@@ -45725,6 +45730,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     rowFilter=profile.$rowFilter;
                 }
                 xui.resetRun(profile.$xid+':rowfilter',function(){
+                    rowFilter('before',null,profile)
+
                     var prop=profile.properties,
                         rows=prop.rows,
                         showRows=[],
@@ -45755,7 +45762,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             return count;
                         };
                     f1(rows, showRows, hideRows);
-                    
+                    rowFilter('after',null,profile)
+
                     // reflect to dom 
                     if(showRows.length)ns.showRows(showRows);
                     if(hideRows.length)ns.showRows(hideRows,false);
@@ -49782,6 +49790,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         for(var j=0;j<h;j++){
                             //ignore temp row for all rows
                             if(!one && rows[j].id==tid)continue;
+                            if(rows[j].group || !rows[j].cells)continue;
 
                             var hash={};
                             for(var i=0;i<l;i++){
@@ -49899,7 +49908,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeInitHotRow:function(profile){},
             onInitHotRow:function(profile,row){},
 
-            beforeHotRowAdded:function(profile, row, leaveGrid){},
+            beforeHotRowAdded:function(profile, cellMap, row, leaveGrid){},
             afterHotRowAdded:function(profile, row){},
 
             onGetContent:function(profile, row, callback){},
@@ -50168,14 +50177,21 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(required && required.length){
                 for(var i=0,j,cell,l=required.length;i<l;i++){
                     j=xui.arr.subIndexOf(prop.header, 'id',required[i]);
-                    if( j!=-1 && !(xui.isHash(cell = cell=tempRow[required[i].split(':')[0]]) ? cell.value : cell) ){
+                    if( j!=-1 && !(xui.isHash(cell=tempRow[required[i].split(':')[0]]) ? cell.value : cell) ){
                         result=null;
                         break;
                     }
                 }
             }
+            var tempRowData=ins.getRowbyRowId(rowId, 'data', true);
+            // clear temp data
+            delete tempRowData.id; delete tempRowData.rowClass; delete tempRowData.rowNumber;
+            xui.arr.each(tempRowData.cells, function(cell){
+                delete cell.id;
+            });
+
             if(profile.beforeHotRowAdded){
-                var result2=ins.beforeHotRowAdded(profile, tempRow, !trigger);
+                var result2=ins.beforeHotRowAdded(profile, tempRow, tempRowData, !trigger);
                 if(xui.isDefined(result2))
                     result=result2===true?result2:result2===false?result2:null;
             }
@@ -50201,8 +50217,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // add a new row
             else if(result===true){
                 delete profile.__hastmpRow;
-                ins.removeRows([rowId],false);
-                ins.insertRows([{cells:tempRow}],null,null,false,false);
+                ins.removeRows([rowId],false);                    
+                ins.insertRows([tempRowData],null,null,false,false);
 
                 tempRow = prop.rows[prop.rows.length-1];
                 tempRow._dirty=1;

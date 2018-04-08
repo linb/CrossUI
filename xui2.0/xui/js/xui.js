@@ -213,11 +213,12 @@ new function(){
             else clearTimeout(Math.abs(id));
         },
         fun:function(){return function(){}},
-        exec:function(script, id){
+        exec:function(script, id, closure){
             var me=this,
                 d=document,
                 h=d.getElementsByTagName("head")[0] || d.documentElement,
                 s=d.createElement("script"),n;
+            if(closure)script="!function(){"+script+"}(window)";
             s.type = "text/javascript";
             if(id){
                 if((n=d.getElementById(id))&&n.parentNode==h){

@@ -18279,7 +18279,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在[热行]被加到Grid前调用. 如果返回[true], [热行]被加入; 如果返回[false],[热行]被删除; 如果返回cell，[热行]保留，并且cell获得焦点; 如果返回[null],没有影响",
                 $paras:[
                     $profile,
-                    "row : Object. 行map对象",
+                    "cellMap : Object. 行map对象",
+                    "row : Object. 行对象",
                     "leaveGrid : Booean. 是否触发事件的光标在Grid之外"
                 ]
             },

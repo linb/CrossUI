@@ -279,6 +279,8 @@ xui.Class("xui.Tips", null,{
             b=false!==((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
             //2._showTips / onShowTips
             //check if showTips works
+            if(b!==false)b=false!==(_from._showTips && _from._showTips(_from, node, pos));
+            //check if showTips works
             if(b!==false)b=false!==(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)

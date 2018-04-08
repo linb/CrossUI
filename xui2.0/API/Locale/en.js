@@ -18359,7 +18359,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired before the hot row is added. If it returns true, the new row will be added; if it returns false, the hot row will be removed; if it returns cell, the new row will not be added, and the cell in the hot row will be focused; if it returns [null], do nothing",
                 $paras:[
                     $profile,
-                    "row : Object. row map object",
+                    "cellMap : Object. row map object",
+                    "row : Object. row object",
                     "leaveGrid : Booean. to determine the event cursor leaves grid or not"
                 ]
             },
