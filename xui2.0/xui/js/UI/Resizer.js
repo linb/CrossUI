@@ -662,7 +662,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 t._move=false;
 
                 t.position = 'static';
-                t.display = 'inline';
+                if(xui.browser.ie67)t.display = 'inline';
                 t.left = t.top = t.width = t.height = 0;
             }
             if(t.forceVisible){

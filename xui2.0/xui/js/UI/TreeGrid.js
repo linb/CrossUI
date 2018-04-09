@@ -120,8 +120,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     colMax = xui.arr.indexOf(prop.header, cellTo._col),
                     rowMax = xui.arr.indexOf(rows, cellTo._row),
                     xformula = xui.ExcelFormula;
-                if(formula = tg._getCellFormula(prf, cellTo, colMax+1,rowMax+1)){
-                    var refs = xformula.getRefCells(formula,colMax,rowMax)
+                if(formula = tg._getCellFormula(prf, cellTo, xformula.toColumnChr(colMax+1),rowMax+1)){
+                    var refs = xformula.getRefCells(formula, colMax,rowMax)
                     if(!refs)return ;
                     xui.each(refs,function(v,i){
                         coo = xformula.toCoordinate(i);
@@ -158,7 +158,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 xui.arr.each(prop.rows, function(row,i){
                     xui.arr.each(row.cells,function(c,j){
                         if(c===cellFrom)cellId=xformula.toCellId(j,i);
-                        if(formula = tg._getCellFormula(prf, c, j+1, i+1)){
+                        if(formula = tg._getCellFormula(prf, c, xformula.toColumnChr(j+1), i+1)){
                             formulaCells[xformula.toCellId(j,i)]=[c,formula];
                         }
                     });
@@ -6375,12 +6375,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(profile.afterRowActive)profile.boxing().afterRowActive(profile, targetRow);
         },
         _getCellFormula:function(profile, cell, col, row){
-            var t, p=profile.properties;
+            var t, p=profile.properties,f1=function(t,col){
+                t=xui.isStr(t) ? t : ('='+t);
+                return t.replace(/(\B)(\?)([0-9]+\b)/g, '$1'+col+'$3').replace(/(\b)(_)([0-9]+\b)/g, '$1'+col+'$3');
+            },f2=function(t,row){
+                t=xui.isStr(t) ? t : ('='+t);
+                return t.replace(/(\b[A-Z]+)(\?)(\B)/g, '$1'+row+'$3').replace(/(\b[A-Z]+)(_)(\b)/g, '$1'+row+'$3');
+            };
             return (cell&&(t=cell.formula))? t
-                    : (cell&&(t=cell._row)&&(t=t.formula)) ? t.replace(/\?/g, col)
-                    : ((t=p.rowOptions)&&(t=t.formula)) ? t.replace(/\?/g, col)
-                    : (cell&&(t=cell._col)&&(t=t.formula)) ? t.replace(/\?/g, row)
-                    : ((t=p.colOptions)&&(t=t.formula)) ? t.replace(/\?/g, row)
+                    : (cell&&(t=cell._row)&&(t=t.formula)) ?f1(t, col) 
+                    : ((t=p.rowOptions)&&(t=t.formula)) ? f1(t, col) 
+                    : (cell&&(t=cell._col)&&(t=t.formula)) ? f2(t, row) 
+                    : ((t=p.colOptions)&&(t=t.formula)) ?  f2(t, row) 
                     :  null ;
         },
         getCellOption:function(profile, cell, key){

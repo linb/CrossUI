@@ -1352,14 +1352,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ini:false,
                 action: function(v){
                     var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-readonly";
+                         cls="xui-ui-inputreadonly";
                     if(!v && (this.properties.disabled||this.properties.readonly||this.$inputReadonly))
                         v=true;
 
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
-                    i.attr('readonly',v).css('cursor',v?'pointer':'');
+                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');
                 }
             },
             readonly:{
@@ -1370,7 +1370,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
                         v=true;
                     this.getRoot()[v?'addClass':'removeClass'](cls);
-                    i.attr('readonly',v).css('cursor',v?'pointer':'');   
+                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');   
                 }
             },
             // caption is for readonly comboinput(listbox/cmdbox are readonly)

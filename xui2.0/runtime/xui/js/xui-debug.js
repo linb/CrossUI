@@ -5134,11 +5134,25 @@ xui.Class("xui.ExcelFormula",null,{
                         }
                         return result/l;
                     },
+                    COUNT:function(){
+                        var result = 0, arr = flatten(arguments), i = 0, l=arr.length, v;
+                        for (; i < l; ++i) {
+                            v = typeof(arr[i]);
+                            if (v === 'string'||v === 'number')result++;
+                        }
+                        return result;
+                    },
                     MIN:function(){return Math.min.apply(Math,flatten(arguments));},
                     MAX:function(){return Math.max.apply(Math,flatten(arguments));},
                     ROUND:function(){return Math.round.apply(Math, arguments);},
                     FIXED:function(){return xui.toFixedNumber.apply(xui, arguments);},
-                    CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; }
+                    CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; },
+                    ISNUMBER:function(v){return xui.isFinite(v)},
+                    NOW:function(){return new Date},
+                    TODAY:function(){return xui.Date.getTimSpanStart(new Date, 'DAY')},
+                    IF:function(a,b,c){return eval(a)?b:c},
+                    AND:function(){return !!eval(xui.toArr(arguments).join("&&"))},
+                    OR:function(){return !!eval(xui.toArr(arguments).join("||"))}
                 };
         })(),
         toColumnChr : function(num) {
@@ -5220,28 +5234,47 @@ xui.Class("xui.ExcelFormula",null,{
             return cellRange;
         },
         validate : function(formula){
-            var fake = function(){return 1;},
-                str=formula.replace(/\?/g,'1'),
-                reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
-            if(!/^\s*\=\s*/.test(str))
-                return false;
-            str = str.replace(/^\s*\=\s*/,'');
-            str = xui.replace(str, [
-                [/"(\\.|[^"\\])*"/,'1'],
-                [/'(\\.|[^'\\])*'/,'1'],
-                [/\{[^}]+\}/g,'1'],
-                [/([a-zA-Z\d]+\s*\:\s*[a-zA-Z\d]+)/g,'1'],
-                [/([a-zA-Z]+[\d]+)/g,'1']
-            ]);
-            if(/[a-zA-Z_$]/.test(str.replace(reg,'')))
-                return false;
-            str = str.replace(reg,'fake');
+            var str;
+            if(xui.isFun(formula)) str = formula+'';
+            else{
+                if(!/^\s*\=\s*/.test(formula))
+                    return false;
+                str = formula.replace(/^\s*\=\s*/,'');
+            }
+            // for col/row fomula in the grid
+            str = str.replace(/(\b)([\?_])([0-9]+\b)/g, '1').replace(/(\b[A-Z]+)([\?_])(\b)/g, '1');
 
-            try{
-                eval(str);
-            }catch(e){
-                xui._debugInfo("#VALUE! ",  formula, str , e);
-                return false;
+            if(/function\s*\(/.test(str)){
+                try{
+                    str = xui.fun.body(str);
+                    new Function("",str);
+                }catch(e){
+                    xui._debugInfo("#VALUE! ",  formula, str , e);
+                    return false;
+                }
+            }else{
+                var fake = function(){return 1;}, 
+                    reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
+                str = xui.replace(str, [
+                    // protect "" and ''
+                    [/"(\\.|[^"\\])*"/,'1'],
+                    [/'(\\.|[^'\\])*'/,'1'],
+                    // replace cells
+                    [/\{[^}]+\}/,'1'],
+                    [/([A-Z\d]+\s*\:\s*[A-Z\d]+)/,'1'],
+                    [/([A-Z]+[\d]+)/,'1'],
+                    // replace expressions
+                    [/[=<>]+/g,function(a){return a[0]=='='?'==':a[0]=='<>'?'!=':a[0]}]
+                ]);
+                if(/[A-Z_$]/.test(str.replace(reg,'')))
+                    return false;
+                str = str.replace(reg,'fake');                
+                try{
+                    eval(str);
+                }catch(e){
+                    xui._debugInfo("#VALUE! ",  formula, str , e);
+                    return false;
+                }
             }
             return true;
         },
@@ -5282,23 +5315,70 @@ xui.Class("xui.ExcelFormula",null,{
                             return 'Supported["'+a[10] +'"]'+a[11];
                         }
                     };
-                    if(cellsMap===false)cellHash={};
+                    cellHash={};
                     if(!ns.validate(str))
                         return false;
-                    str = str.replace(/^\s*\=\s*/,'');
-                    str = xui.replace(str, [
-                        [/"(\\.|[^"\\])*"/,'$0'],
-                        [/'(\\.|[^'\\])*'/,'$0'],
-                        [/([a-zA-Z\d]+)\s*\:\s*([a-zA-Z\d]+)/, f],
-                        [/[a-zA-Z]+[\d]+/g,f],
-                        [/([A-Z]+)(\s*\()/,f]
-                    ]);
-                    try{
-                        rtn = (cellsMap===true && (cellsMap={})) || xui.isHash(cellsMap) ? eval(str) : cellsMap===false ? cellHash : str;
-                    }catch(e){
-                        xui._debugInfo("#VALUE! ",  formula, str , e);
-                    }finally{
-                        return rtn;
+                    if(xui.isFun(str)) str = str+'';
+                    else str = str.replace(/^\s*\=\s*/,'');
+                    if(/function\s*\(/.test(str)){
+                        str = xui.fun.body(str);
+                        str = xui.replace(str, [
+                            // protect all
+                            [/\/\*[^*]*\*+([^\/][^*]*\*+)*\//,'$0'],
+                            [/\/\/[^\n]*/,'$0'],
+                            [/\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*/,'$0'],
+                            [/"(\\.|[^"\\])*"/,'$0'],
+                            [/'(\\.|[^'\\])*'/,'$0'],
+                            // replace cells
+                            [/\b([A-Z]+[\d]+)\b/,function(a){
+                                cellHash[a[0]]=1;
+                                return a[0];
+                            }]
+                        ]);
+                        try{
+                            if(cellsMap===false){
+                                rtn = cellHash;
+                            }else{
+                                if(cellsMap===true) cellsMap = {};
+
+                                var pre  ="var map=arguments[0]";
+                                xui.each(cellHash, function(o,i){
+                                    pre += ", \n";
+                                    pre += i + " = map['"+i+"']"
+                                });
+                                str = pre + ";\n" +  str;
+
+                                rtn = xui.isHash(cellsMap) ? (new Function("",str)).call(null, CELLS, formula) : str;
+                            }
+                        }catch(e){
+                            xui._debugInfo("#VALUE! ",  formula, str , e);
+                        }finally{
+                            return rtn;
+                        }
+                    }else{
+                        str = xui.replace(str, [
+                            // protect "" and ''
+                            [/"(\\.|[^"\\])*"/,'$0'],
+                            [/'(\\.|[^'\\])*'/,'$0'],
+                            // replace cells
+                            [/([A-Z\d]+)\s*\:\s*([A-Z\d]+)/, f],
+                            [/[A-Z]+[\d]+/,f],
+                            [/([A-Z]+)(\s*\()/,f],
+                            // replace expressions
+                            [/[=<>]+/g,function(a){return a[0]=='='?'==':a[0]=='<>'?'!=':a[0]}]
+                        ]);
+                        try{
+                            if(cellsMap===false){
+                                rtn = cellHash;
+                            }else{
+                                if(cellsMap===true)cellsMap = {};
+                                rtn = xui.isHash(cellsMap) ? eval(str) :str;
+                            }
+                        }catch(e){
+                            xui._debugInfo("#VALUE! ",  formula, str , e);
+                        }finally{
+                            return rtn;
+                        }
                     }
                 };
 
@@ -21044,7 +21124,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
+            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node, xui-ui-inputreadonly input, xui-ui-inputreadonly textarea':{
                 $order:2,
                 color: '#666666 !important'
             },
@@ -25980,7 +26060,7 @@ xui.Class("xui.UI.Element", "xui.UI",{
         },
         Appearances:{
             KEY:{
-                'line-height':'auto'
+                'line-height':'normal'
             }
         },
         Behaviors:{
@@ -26473,7 +26553,7 @@ xui.Class("xui.UI.Span", "xui.UI",{
         },
         Appearances:{
             KEY:{
-                'line-height':'auto'
+                'line-height':'normal'
             }
         },
         Behaviors:{
@@ -26518,7 +26598,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 outline:xui.browser.gek?'none':null, 
                 zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
                 background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
-                'line-height':'auto'
+                'line-height':'normal'
             }
         },
         Templates:{
@@ -28412,7 +28492,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 t._move=false;
 
                 t.position = 'static';
-                t.display = 'inline';
+                if(xui.browser.ie67)t.display = 'inline';
                 t.left = t.top = t.width = t.height = 0;
             }
             if(t.forceVisible){
@@ -33933,14 +34013,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ini:false,
                 action: function(v){
                     var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-readonly";
+                         cls="xui-ui-inputreadonly";
                     if(!v && (this.properties.disabled||this.properties.readonly||this.$inputReadonly))
                         v=true;
 
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
-                    i.attr('readonly',v).css('cursor',v?'pointer':'');
+                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');
                 }
             },
             readonly:{
@@ -33951,7 +34031,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
                         v=true;
                     this.getRoot()[v?'addClass':'removeClass'](cls);
-                    i.attr('readonly',v).css('cursor',v?'pointer':'');   
+                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');   
                 }
             },
             // caption is for readonly comboinput(listbox/cmdbox are readonly)
@@ -45235,8 +45315,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     colMax = xui.arr.indexOf(prop.header, cellTo._col),
                     rowMax = xui.arr.indexOf(rows, cellTo._row),
                     xformula = xui.ExcelFormula;
-                if(formula = tg._getCellFormula(prf, cellTo, colMax+1,rowMax+1)){
-                    var refs = xformula.getRefCells(formula,colMax,rowMax)
+                if(formula = tg._getCellFormula(prf, cellTo, xformula.toColumnChr(colMax+1),rowMax+1)){
+                    var refs = xformula.getRefCells(formula, colMax,rowMax)
                     if(!refs)return ;
                     xui.each(refs,function(v,i){
                         coo = xformula.toCoordinate(i);
@@ -45273,7 +45353,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 xui.arr.each(prop.rows, function(row,i){
                     xui.arr.each(row.cells,function(c,j){
                         if(c===cellFrom)cellId=xformula.toCellId(j,i);
-                        if(formula = tg._getCellFormula(prf, c, j+1, i+1)){
+                        if(formula = tg._getCellFormula(prf, c, xformula.toColumnChr(j+1), i+1)){
                             formulaCells[xformula.toCellId(j,i)]=[c,formula];
                         }
                     });
@@ -51490,12 +51570,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(profile.afterRowActive)profile.boxing().afterRowActive(profile, targetRow);
         },
         _getCellFormula:function(profile, cell, col, row){
-            var t, p=profile.properties;
+            var t, p=profile.properties,f1=function(t,col){
+                t=xui.isStr(t) ? t : ('='+t);
+                return t.replace(/(\B)(\?)([0-9]+\b)/g, '$1'+col+'$3').replace(/(\b)(_)([0-9]+\b)/g, '$1'+col+'$3');
+            },f2=function(t,row){
+                t=xui.isStr(t) ? t : ('='+t);
+                return t.replace(/(\b[A-Z]+)(\?)(\B)/g, '$1'+row+'$3').replace(/(\b[A-Z]+)(_)(\b)/g, '$1'+row+'$3');
+            };
             return (cell&&(t=cell.formula))? t
-                    : (cell&&(t=cell._row)&&(t=t.formula)) ? t.replace(/\?/g, col)
-                    : ((t=p.rowOptions)&&(t=t.formula)) ? t.replace(/\?/g, col)
-                    : (cell&&(t=cell._col)&&(t=t.formula)) ? t.replace(/\?/g, row)
-                    : ((t=p.colOptions)&&(t=t.formula)) ? t.replace(/\?/g, row)
+                    : (cell&&(t=cell._row)&&(t=t.formula)) ?f1(t, col) 
+                    : ((t=p.rowOptions)&&(t=t.formula)) ? f1(t, col) 
+                    : (cell&&(t=cell._col)&&(t=t.formula)) ? f2(t, row) 
+                    : ((t=p.colOptions)&&(t=t.formula)) ?  f2(t, row) 
                     :  null ;
         },
         getCellOption:function(profile, cell, key){

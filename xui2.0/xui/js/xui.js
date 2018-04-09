@@ -5133,11 +5133,25 @@ xui.Class("xui.ExcelFormula",null,{
                         }
                         return result/l;
                     },
+                    COUNT:function(){
+                        var result = 0, arr = flatten(arguments), i = 0, l=arr.length, v;
+                        for (; i < l; ++i) {
+                            v = typeof(arr[i]);
+                            if (v === 'string'||v === 'number')result++;
+                        }
+                        return result;
+                    },
                     MIN:function(){return Math.min.apply(Math,flatten(arguments));},
                     MAX:function(){return Math.max.apply(Math,flatten(arguments));},
                     ROUND:function(){return Math.round.apply(Math, arguments);},
                     FIXED:function(){return xui.toFixedNumber.apply(xui, arguments);},
-                    CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; }
+                    CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; },
+                    ISNUMBER:function(v){return xui.isFinite(v)},
+                    NOW:function(){return new Date},
+                    TODAY:function(){return xui.Date.getTimSpanStart(new Date, 'DAY')},
+                    IF:function(a,b,c){return eval(a)?b:c},
+                    AND:function(){return !!eval(xui.toArr(arguments).join("&&"))},
+                    OR:function(){return !!eval(xui.toArr(arguments).join("||"))}
                 };
         })(),
         toColumnChr : function(num) {
@@ -5219,28 +5233,47 @@ xui.Class("xui.ExcelFormula",null,{
             return cellRange;
         },
         validate : function(formula){
-            var fake = function(){return 1;},
-                str=formula.replace(/\?/g,'1'),
-                reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
-            if(!/^\s*\=\s*/.test(str))
-                return false;
-            str = str.replace(/^\s*\=\s*/,'');
-            str = xui.replace(str, [
-                [/"(\\.|[^"\\])*"/,'1'],
-                [/'(\\.|[^'\\])*'/,'1'],
-                [/\{[^}]+\}/g,'1'],
-                [/([a-zA-Z\d]+\s*\:\s*[a-zA-Z\d]+)/g,'1'],
-                [/([a-zA-Z]+[\d]+)/g,'1']
-            ]);
-            if(/[a-zA-Z_$]/.test(str.replace(reg,'')))
-                return false;
-            str = str.replace(reg,'fake');
+            var str;
+            if(xui.isFun(formula)) str = formula+'';
+            else{
+                if(!/^\s*\=\s*/.test(formula))
+                    return false;
+                str = formula.replace(/^\s*\=\s*/,'');
+            }
+            // for col/row fomula in the grid
+            str = str.replace(/(\b)([\?_])([0-9]+\b)/g, '1').replace(/(\b[A-Z]+)([\?_])(\b)/g, '1');
 
-            try{
-                eval(str);
-            }catch(e){
-                xui._debugInfo("#VALUE! ",  formula, str , e);
-                return false;
+            if(/function\s*\(/.test(str)){
+                try{
+                    str = xui.fun.body(str);
+                    new Function("",str);
+                }catch(e){
+                    xui._debugInfo("#VALUE! ",  formula, str , e);
+                    return false;
+                }
+            }else{
+                var fake = function(){return 1;}, 
+                    reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
+                str = xui.replace(str, [
+                    // protect "" and ''
+                    [/"(\\.|[^"\\])*"/,'1'],
+                    [/'(\\.|[^'\\])*'/,'1'],
+                    // replace cells
+                    [/\{[^}]+\}/,'1'],
+                    [/([A-Z\d]+\s*\:\s*[A-Z\d]+)/,'1'],
+                    [/([A-Z]+[\d]+)/,'1'],
+                    // replace expressions
+                    [/[=<>]+/g,function(a){return a[0]=='='?'==':a[0]=='<>'?'!=':a[0]}]
+                ]);
+                if(/[A-Z_$]/.test(str.replace(reg,'')))
+                    return false;
+                str = str.replace(reg,'fake');                
+                try{
+                    eval(str);
+                }catch(e){
+                    xui._debugInfo("#VALUE! ",  formula, str , e);
+                    return false;
+                }
             }
             return true;
         },
@@ -5281,23 +5314,70 @@ xui.Class("xui.ExcelFormula",null,{
                             return 'Supported["'+a[10] +'"]'+a[11];
                         }
                     };
-                    if(cellsMap===false)cellHash={};
+                    cellHash={};
                     if(!ns.validate(str))
                         return false;
-                    str = str.replace(/^\s*\=\s*/,'');
-                    str = xui.replace(str, [
-                        [/"(\\.|[^"\\])*"/,'$0'],
-                        [/'(\\.|[^'\\])*'/,'$0'],
-                        [/([a-zA-Z\d]+)\s*\:\s*([a-zA-Z\d]+)/, f],
-                        [/[a-zA-Z]+[\d]+/g,f],
-                        [/([A-Z]+)(\s*\()/,f]
-                    ]);
-                    try{
-                        rtn = (cellsMap===true && (cellsMap={})) || xui.isHash(cellsMap) ? eval(str) : cellsMap===false ? cellHash : str;
-                    }catch(e){
-                        xui._debugInfo("#VALUE! ",  formula, str , e);
-                    }finally{
-                        return rtn;
+                    if(xui.isFun(str)) str = str+'';
+                    else str = str.replace(/^\s*\=\s*/,'');
+                    if(/function\s*\(/.test(str)){
+                        str = xui.fun.body(str);
+                        str = xui.replace(str, [
+                            // protect all
+                            [/\/\*[^*]*\*+([^\/][^*]*\*+)*\//,'$0'],
+                            [/\/\/[^\n]*/,'$0'],
+                            [/\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*/,'$0'],
+                            [/"(\\.|[^"\\])*"/,'$0'],
+                            [/'(\\.|[^'\\])*'/,'$0'],
+                            // replace cells
+                            [/\b([A-Z]+[\d]+)\b/,function(a){
+                                cellHash[a[0]]=1;
+                                return a[0];
+                            }]
+                        ]);
+                        try{
+                            if(cellsMap===false){
+                                rtn = cellHash;
+                            }else{
+                                if(cellsMap===true) cellsMap = {};
+
+                                var pre  ="var map=arguments[0]";
+                                xui.each(cellHash, function(o,i){
+                                    pre += ", \n";
+                                    pre += i + " = map['"+i+"']"
+                                });
+                                str = pre + ";\n" +  str;
+
+                                rtn = xui.isHash(cellsMap) ? (new Function("",str)).call(null, CELLS, formula) : str;
+                            }
+                        }catch(e){
+                            xui._debugInfo("#VALUE! ",  formula, str , e);
+                        }finally{
+                            return rtn;
+                        }
+                    }else{
+                        str = xui.replace(str, [
+                            // protect "" and ''
+                            [/"(\\.|[^"\\])*"/,'$0'],
+                            [/'(\\.|[^'\\])*'/,'$0'],
+                            // replace cells
+                            [/([A-Z\d]+)\s*\:\s*([A-Z\d]+)/, f],
+                            [/[A-Z]+[\d]+/,f],
+                            [/([A-Z]+)(\s*\()/,f],
+                            // replace expressions
+                            [/[=<>]+/g,function(a){return a[0]=='='?'==':a[0]=='<>'?'!=':a[0]}]
+                        ]);
+                        try{
+                            if(cellsMap===false){
+                                rtn = cellHash;
+                            }else{
+                                if(cellsMap===true)cellsMap = {};
+                                rtn = xui.isHash(cellsMap) ? eval(str) :str;
+                            }
+                        }catch(e){
+                            xui._debugInfo("#VALUE! ",  formula, str , e);
+                        }finally{
+                            return rtn;
+                        }
                     }
                 };
 

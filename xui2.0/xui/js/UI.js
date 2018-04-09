@@ -2993,7 +2993,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node':{
+            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node, xui-ui-inputreadonly input, xui-ui-inputreadonly textarea':{
                 $order:2,
                 color: '#666666 !important'
             },
@@ -7929,7 +7929,7 @@ xui.Class("xui.UI.Element", "xui.UI",{
         },
         Appearances:{
             KEY:{
-                'line-height':'auto'
+                'line-height':'normal'
             }
         },
         Behaviors:{
@@ -8422,7 +8422,7 @@ xui.Class("xui.UI.Span", "xui.UI",{
         },
         Appearances:{
             KEY:{
-                'line-height':'auto'
+                'line-height':'normal'
             }
         },
         Behaviors:{
@@ -8467,7 +8467,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 outline:xui.browser.gek?'none':null, 
                 zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
                 background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
-                'line-height':'auto'
+                'line-height':'normal'
             }
         },
         Templates:{

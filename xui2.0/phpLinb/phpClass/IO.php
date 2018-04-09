@@ -281,7 +281,7 @@ class IO{
 		for ($j=0,$k=count($i);$j<$k;$j++) {
 			// not dir or file
 			if ($i[$j]["type"]==-1) continue;
-    			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
+    			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/ui", $i[$j]["name"])) continue;
 
 			$sum++;
 			if($sum > $start + $limit) break;
