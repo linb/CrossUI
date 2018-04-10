@@ -234,7 +234,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
         },
         Appearances:{
             KEY:{
-                'line-height':'auto'
+                'line-height':'normal'
             },
             'KEY-fold PANEL':{
                 display:'none'

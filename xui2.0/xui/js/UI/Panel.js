@@ -196,7 +196,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 left:0,
                 top:0,
                 overflow:'auto',
-                'line-height':'auto',
+                'line-height':'normal',
                 zoom:xui.browser.ie6?1:null
             },
             CAPTION:{

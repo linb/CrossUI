@@ -1229,6 +1229,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     node._parentOST = pn.scrollTop||0;
                     node._parentOSL = pn.scrollLeft||0;
                     node._parentOverflow = pn.style.overflow||'';
+                    node._busyP = parentNode.xid();
 
                     pn.scrollTop=pn.scrollLeft=0;
                     pn.style.overflow='hidden';
@@ -1239,15 +1240,16 @@ xui.Class("xui.UI",  "xui.absObj", {
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
-                var node,pn=node&&node.parent().get(0);
                 xui.resetRun(profile.$xid+':busy');
                 if(node=profile.$busy){
+                    var pn=xui(node._busyP).get(0);
                     if(pn){
                         pn.scrollTop = node._parentOST||0;
                         pn.scrollLeft = node._parentOSL||0;
                         pn.style.overflow=node._parentOverflow||'';
                     }
-                    profile.$busy.remove();
+                    node._parentOST=node._parentOSL=node._parentOverflow=node._busyP=null;
+                    node.remove();
                     delete profile.$busy;
                 }
             });
@@ -2804,7 +2806,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-border-bottom-right-radius': '0 !important',
                 '-khtml-border-bottom-right-radius': '0 !important'
             },
-            '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-readonly .xui-ui-shadow-input':{
+            '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-disabled .xui-ui-shadow-input,  .xui-ui-readonly .xui-ui-shadow-input,  .xui-ui-inputreadonly .xui-ui-shadow-input':{
                 $order:15,
                '-moz-box-shadow': 'none !important',
                '-webkit-box-shadow': 'none !important',

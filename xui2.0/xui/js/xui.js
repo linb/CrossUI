@@ -5146,12 +5146,15 @@ xui.Class("xui.ExcelFormula",null,{
                     ROUND:function(){return Math.round.apply(Math, arguments);},
                     FIXED:function(){return xui.toFixedNumber.apply(xui, arguments);},
                     CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; },
+                    CONCATENATE:function(){return flatten(arguments).join('') },
+                    ABS:function(a){return Math.abs(a)},
                     ISNUMBER:function(v){return xui.isFinite(v)},
                     NOW:function(){return new Date},
                     TODAY:function(){return xui.Date.getTimSpanStart(new Date, 'DAY')},
                     IF:function(a,b,c){return eval(a)?b:c},
                     AND:function(){return !!eval(xui.toArr(arguments).join("&&"))},
-                    OR:function(){return !!eval(xui.toArr(arguments).join("||"))}
+                    OR:function(){return !!eval(xui.toArr(arguments).join("||"))},
+                    NOT:function(a){return !a}
                 };
         })(),
         toColumnChr : function(num) {

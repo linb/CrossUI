@@ -1334,43 +1334,19 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             disabled:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-disabled",
-                        type=(""+i.get(0).type);
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
-                    if(type!='button'&&type!='dropbutton'){
-                        if(!v && (this.properties.readonly||this.$inputReadonly))
-                            v=true;
-                        // use 'readonly'(not 'disabled') for selection
-                        i.attr('readonly',v);
-                    }
+                    this.box._handleInput(this,"xui-ui-disabled",v);
                 }
             },
             inputReadonly:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-inputreadonly";
-                    if(!v && (this.properties.disabled||this.properties.readonly||this.$inputReadonly))
-                        v=true;
-
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
-                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');
+                    this.box._handleInput(this,"xui-ui-inputreadonly",v);
                 }
             },
             readonly:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                        cls="xui-ui-readonly";
-                    if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
-                        v=true;
-                    this.getRoot()[v?'addClass':'removeClass'](cls);
-                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');   
+                    this.box._handleInput(this,"xui-ui-readonly",v);
                 }
             },
             // caption is for readonly comboinput(listbox/cmdbox are readonly)
@@ -1556,6 +1532,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 profile.box.setTemplate(template, hash);
             }
             profile.template = template;
+        },
+        _handleInput:function(prf,cls, v){
+            var i=prf.getSubNode('INPUT');                        
+            if((""+i.get(0).type).toLowerCase()!='button'){
+                if(!v && (prf.properties.disabled||prf.properties.readonly||prf.$inputReadonly))
+                    v=true;
+                prf.getRoot()[v?'addClass':'removeClass'](cls);
+                i.attr('readonly',v);
+            }
         },
         _prepareData:function(profile){
             var data={},

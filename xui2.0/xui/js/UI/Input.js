@@ -583,35 +583,13 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             disabled:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                        cls="xui-ui-disabled";
-                    
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-                        
-                    if((""+i.get(0).type).toLowerCase()!='button'){
-                        if(!v && this.properties.readonly)
-                            v=true;
-                        // use 'readonly'(not 'disabled') for selection
-                        i.attr('readonly',v);
-                    }
+                    this.box._handleInput(this, "xui-ui-disabled", v);
                 }
             },
             readonly:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                        cls="xui-ui-readonly";
-                    
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
-                    if((""+i.get(0).type).toLowerCase()!='button'){
-                        if(!v && this.properties.disabled)
-                            v=true;
-                        // use 'readonly'(not 'disabled') for selection
-                        i.attr('readonly',v);
-                    }
+                    this.box._handleInput(this, "xui-ui-readonly", v);
                 }
             },
             type:{
@@ -680,6 +658,15 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
             onGetExcelCellValue:function(profile, excelCellId){},
             beforeApplyExcelFormula:function(profile, excelCellFormula){}
+        },
+        _handleInput:function(prf,cls, v){
+            var i=prf.getSubNode('INPUT');                        
+            if((""+i.get(0).type).toLowerCase()!='button'){
+                if(!v && (prf.properties.disabled||prf.properties.readonly))
+                    v=true;
+                prf.getRoot()[v?'addClass':'removeClass'](cls);
+                i.attr('readonly',v);
+            }
         },
         _prepareData:function(profile){
             var data={},prop=profile.properties,t

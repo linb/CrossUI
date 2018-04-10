@@ -122,7 +122,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
             PANEL:{
                 position:'relative',
                 overflow:'auto',
-                'line-height':'auto',
+                'line-height':'normal',
                  background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
             },
             CAPTION:{

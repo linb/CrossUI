@@ -5147,12 +5147,15 @@ xui.Class("xui.ExcelFormula",null,{
                     ROUND:function(){return Math.round.apply(Math, arguments);},
                     FIXED:function(){return xui.toFixedNumber.apply(xui, arguments);},
                     CHOOSE:function(){var a=arguments; return (xui.isNumb(a[0]) && (a[a[0]])) || ''; },
+                    CONCATENATE:function(){return flatten(arguments).join('') },
+                    ABS:function(a){return Math.abs(a)},
                     ISNUMBER:function(v){return xui.isFinite(v)},
                     NOW:function(){return new Date},
                     TODAY:function(){return xui.Date.getTimSpanStart(new Date, 'DAY')},
                     IF:function(a,b,c){return eval(a)?b:c},
                     AND:function(){return !!eval(xui.toArr(arguments).join("&&"))},
-                    OR:function(){return !!eval(xui.toArr(arguments).join("||"))}
+                    OR:function(){return !!eval(xui.toArr(arguments).join("||"))},
+                    NOT:function(a){return !a}
                 };
         })(),
         toColumnChr : function(num) {
@@ -19360,6 +19363,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     node._parentOST = pn.scrollTop||0;
                     node._parentOSL = pn.scrollLeft||0;
                     node._parentOverflow = pn.style.overflow||'';
+                    node._busyP = parentNode.xid();
 
                     pn.scrollTop=pn.scrollLeft=0;
                     pn.style.overflow='hidden';
@@ -19370,9 +19374,9 @@ xui.Class("xui.UI",  "xui.absObj", {
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
-                var node,pn=node&&node.parent().get(0);
                 xui.resetRun(profile.$xid+':busy');
                 if(node=profile.$busy){
+                    var pn=xui(node._busyP).get(0);
                     if(pn){
                         pn.scrollTop = node._parentOST||0;
                         pn.scrollLeft = node._parentOSL||0;
@@ -20935,7 +20939,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-border-bottom-right-radius': '0 !important',
                 '-khtml-border-bottom-right-radius': '0 !important'
             },
-            '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-readonly .xui-ui-shadow-input':{
+            '.xui-ui-noshadow, .xui-ui-noshadow .xui-ui-shadow-input, .xui-ui-noshadow .xui-ui-shadow, .xui-ui-noshadow .xui-ui-shadow-b, .xui-ui-noshadow .xui-ui-shadow-r,  .xui-ui-disabled .xui-ui-shadow-input,  .xui-ui-readonly .xui-ui-shadow-input,  .xui-ui-inputreadonly .xui-ui-shadow-input':{
                 $order:15,
                '-moz-box-shadow': 'none !important',
                '-webkit-box-shadow': 'none !important',
@@ -29146,7 +29150,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         },
         Appearances:{
             KEY:{
-                'line-height':'auto'
+                'line-height':'normal'
             },
             'KEY-fold PANEL':{
                 display:'none'
@@ -30854,35 +30858,13 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             disabled:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                        cls="xui-ui-disabled";
-                    
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-                        
-                    if((""+i.get(0).type).toLowerCase()!='button'){
-                        if(!v && this.properties.readonly)
-                            v=true;
-                        // use 'readonly'(not 'disabled') for selection
-                        i.attr('readonly',v);
-                    }
+                    this.box._handleInput(this, "xui-ui-disabled", v);
                 }
             },
             readonly:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                        cls="xui-ui-readonly";
-                    
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
-                    if((""+i.get(0).type).toLowerCase()!='button'){
-                        if(!v && this.properties.disabled)
-                            v=true;
-                        // use 'readonly'(not 'disabled') for selection
-                        i.attr('readonly',v);
-                    }
+                    this.box._handleInput(this, "xui-ui-readonly", v);
                 }
             },
             type:{
@@ -30951,6 +30933,15 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
 
             onGetExcelCellValue:function(profile, excelCellId){},
             beforeApplyExcelFormula:function(profile, excelCellFormula){}
+        },
+        _handleInput:function(prf,cls, v){
+            var i=prf.getSubNode('INPUT');                        
+            if((""+i.get(0).type).toLowerCase()!='button'){
+                if(!v && (prf.properties.disabled||prf.properties.readonly))
+                    v=true;
+                prf.getRoot()[v?'addClass':'removeClass'](cls);
+                i.attr('readonly',v);
+            }
         },
         _prepareData:function(profile){
             var data={},prop=profile.properties,t
@@ -33995,43 +33986,19 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             disabled:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-disabled",
-                        type=(""+i.get(0).type);
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
-                    if(type!='button'&&type!='dropbutton'){
-                        if(!v && (this.properties.readonly||this.$inputReadonly))
-                            v=true;
-                        // use 'readonly'(not 'disabled') for selection
-                        i.attr('readonly',v);
-                    }
+                    this.box._handleInput(this,"xui-ui-disabled",v);
                 }
             },
             inputReadonly:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                         cls="xui-ui-inputreadonly";
-                    if(!v && (this.properties.disabled||this.properties.readonly||this.$inputReadonly))
-                        v=true;
-
-                    if(v)this.getRoot().addClass(cls);
-                    else this.getRoot().removeClass(cls);
-
-                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');
+                    this.box._handleInput(this,"xui-ui-inputreadonly",v);
                 }
             },
             readonly:{
                 ini:false,
                 action: function(v){
-                    var i=this.getSubNode('INPUT'),
-                        cls="xui-ui-readonly";
-                    if(!v && (this.properties.disabled||this.properties.inputReadonly||this.$inputReadonly))
-                        v=true;
-                    this.getRoot()[v?'addClass':'removeClass'](cls);
-                    i.attr('readonly',v);//.css('cursor',v?'pointer':'');   
+                    this.box._handleInput(this,"xui-ui-readonly",v);
                 }
             },
             // caption is for readonly comboinput(listbox/cmdbox are readonly)
@@ -34217,6 +34184,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 profile.box.setTemplate(template, hash);
             }
             profile.template = template;
+        },
+        _handleInput:function(prf,cls, v){
+            var i=prf.getSubNode('INPUT');                        
+            if((""+i.get(0).type).toLowerCase()!='button'){
+                if(!v && (prf.properties.disabled||prf.properties.readonly||prf.$inputReadonly))
+                    v=true;
+                prf.getRoot()[v?'addClass':'removeClass'](cls);
+                i.attr('readonly',v);
+            }
         },
         _prepareData:function(profile){
             var data={},
@@ -38080,7 +38056,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 left:0,
                 top:0,
                 overflow:'auto',
-                'line-height':'auto',
+                'line-height':'normal',
                 zoom:xui.browser.ie6?1:null
             },
             CAPTION:{
@@ -38621,7 +38597,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             PANEL:{
                 position:'relative',
                 overflow:'auto',
-                'line-height':'auto',
+                'line-height':'normal',
                  background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null
             },
             CAPTION:{
