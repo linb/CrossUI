@@ -1791,7 +1791,11 @@ xui.merge(xui,{
     //create:function(tag, properties, events, host){
     create:function(tag,bak){
         var arr,o,t,me=xui.create,r1=me.r1||(me.r1=/</);
-        if(typeof tag == 'string'){
+        if(xui.isArr(tag)){
+            arr=[];
+            for(var i=0,l=tag.length;i<l;i++)Array.prototype.push.apply(arr, xui.create(tag[i]).get());
+            return xui(arr);
+        }else if(typeof tag == 'string'){
             //Any class inherited from xui.absBox
             if(t=xui.absBox.$type[tag]){
                 arr=[];
@@ -1836,7 +1840,6 @@ xui.merge(xui,{
                 // use place holder to lazy bind
                 }else{
                     o = new xui.UI.MoudluePlaceHolder();
-                    if(tag.host ||  tag.alias)o.setHost(tag.host, tag.alias);
                     if(t=tag.events)o.setEvents(t);
                     if(t=tag.properties)o.setProperties(t);
 
@@ -1857,6 +1860,9 @@ xui.merge(xui,{
                 o = new (xui.SC(tag.key))(tag);
             }
         }
+        if(o['xui.absObj'])
+            if(o.n0.host ||  o.n0.alias)o.setHost(o.n0.host, o.n0.alias);
+
         return o;
     },
     query:function(){

@@ -5,7 +5,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             return (item && item._status)||'ini';
         },
         _afterInsertItems:function(profile){
-            profile.getSubNodes("IMAGE").each(function(o){
+            profile.getSubNodes("IMAGE",true).each(function(o){
                 if(o.src==xui.ini.img_bg){
                     o.src=o.title;
                     o.title='';

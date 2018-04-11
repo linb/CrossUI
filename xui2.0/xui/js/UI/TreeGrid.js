@@ -282,6 +282,46 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //build dom
             var nodes21 = profile._buildItems('rows21', arr),
                 nodes22 = profile._buildItems('rows22', arr);
+
+            //get base dom
+            if(!base){
+                //no base add to parent
+                if(pid){
+                    obj21 = profile.getSubNode('SUB1', pid);
+                    obj22 = profile.getSubNode('SUB2', pid);
+                }else{
+                    obj21 = profile.getSubNode('ROWS21');
+                    obj22 = profile.getSubNode('ROWS22');
+                }
+                if(before){
+                    obj21.prepend(nodes21);
+                    obj22.prepend(nodes22);
+                }else{
+                    obj21.append(nodes21);
+                    obj22.append(nodes22);
+                }
+            }else{
+                //
+                obj21 = profile.getSubNode('ROW1', base);
+                obj22 = profile.getSubNode('ROW2', base);
+                if(before){
+                    obj21.addPrev(nodes21);
+                    obj22.addPrev(nodes22);
+                }else{
+                    obj21.addNext(nodes21);
+                    obj22.addNext(nodes22);
+                }
+            }
+
+            //add sub
+            xui.arr.each(arr,function(o){
+                if(o.sub){
+                    o.open=false;
+                    if(false===box.getCellOption(profile, o, "iniFold"))
+                        profile.boxing()._toggleRows([o],true,false,true);
+                }
+            });
+
             if(temp&&temp.length){
                 var needshowinput=[],arrt=[];
                 xui.arr.each(temp,function(o){
@@ -316,43 +356,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui.asyRun(fun);
                 }
             }
-            //get base dom
-            if(!base){
-                //no base add to parent
-                if(pid){
-                    obj21 = profile.getSubNode('SUB1', pid);
-                    obj22 = profile.getSubNode('SUB2', pid);
-                }else{
-                    obj21 = profile.getSubNode('ROWS21');
-                    obj22 = profile.getSubNode('ROWS22');
-                }
-                if(before){
-                    obj21.prepend(nodes21);
-                    obj22.prepend(nodes22);
-                }else{
-                    obj21.append(nodes21);
-                    obj22.append(nodes22);
-                }
-            }else{
-                //
-                obj21 = profile.getSubNode('ROW1', base);
-                obj22 = profile.getSubNode('ROW2', base);
-                if(before){
-                    obj21.addPrev(nodes21);
-                    obj22.addPrev(nodes22);
-                }else{
-                    obj21.addNext(nodes21);
-                    obj22.addNext(nodes22);
-                }
-            }
-
-            //add sub
-            xui.arr.each(arr,function(o){
-                o.open=false;
-                if(false===box.getCellOption(profile, o, "iniFold"))
-                    profile.boxing()._toggleRows([o],true);
-            });
-
+            
             //clear rows cache
             delete profile.$allrowscache1;
             delete profile.$allrowscache2;
@@ -601,63 +605,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             return this;
         },
-        // filter: [true] => refilter
-        doFilter:function(rowFilter, value){
-            var ns=this,
-                profile=ns.get(0);
-            if(profile){
-                if(!rowFilter){
-                    delete profile.$rowFilter;
-                    rowFilter=function(){return false};
-                }else if(xui.isFun(rowFilter)){
-                    profile.$rowFilter=rowFilter;
-                }else if(rowFilter===true){
-                    rowFilter=profile.$rowFilter;
-                }
-                xui.resetRun(profile.$xid+':rowfilter',function(){
-                    rowFilter('before',null,profile)
-
-                    var prop=profile.properties,
-                        rows=prop.rows,
-                        showRows=[],
-                        hideRows=[],
-                        f1=function(rows, showRows, hideRows){
-                            var count=0;
-                            xui.arr.each(rows,function(row){
-                                if(row.sub){
-                                    // ensure open all tree nodes
-                                    if(!row._checked)
-                                        ns.toggleRow(row.id, true, true, true);
-                                     // collect
-                                    if(f1(row.sub, showRows, hideRows)){
-                                        count++;
-                                        if(row.hidden)showRows.push(row.id);
-                                    }else{
-                                        if(!row.hidden)hideRows.push(row.id);
-                                    }
-                                }else{
-                                    if(rowFilter(row, value, profile)){
-                                        if(!row.hidden)hideRows.push(row.id);
-                                    }else{
-                                        count++;
-                                        if(row.hidden)showRows.push(row.id);
-                                    }
-                                }
-                            });
-                            return count;
-                        };
-                    f1(rows, showRows, hideRows);
-                    rowFilter('after',null,profile)
-
-                    // reflect to dom 
-                    if(showRows.length)ns.showRows(showRows);
-                    if(hideRows.length)ns.showRows(hideRows,false);
-
-                    ns.reLayout(true);
-                });
-            }
-            return this;
-        },
         showRows:function(rowId,/*default is the current*/ show){
             var ns=this,
                 profile = ns.get(0), 
@@ -876,8 +823,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         //pid,base are id
         insertRows:function(arr, pid/*true: the current item*/, base/*true: the current item*/, before, ignoreMixColumn){
             var affectUI=arguments[4],
-                c=this.constructor,
-                profile=this.get(0);
+                ns=this,
+                c=ns.constructor,
+                profile=ns.get(0);
             if(xui.isHash(arr))arr=[arr];
             if(arr && xui.isArr(arr) && arr.length>0){
                 var prop=profile.properties,
@@ -919,7 +867,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         //prepareData(add links)
                         temp=[];
                         rows = c._prepareItems(profile, arr, pid,temp);
-                        this._insertRowsToDom(profile, rows, pid, base, before,temp);
+                        ns._insertRowsToDom(profile, rows, pid, base, before,temp);
 
                         //render
                         xui.arr.each(arr,function(o){
@@ -955,13 +903,34 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(affectUI!==false && profile.renderId&&profile.__hastmpRow){
                 profile.box.__ensurehotrow(profile,null);
             }
+    
+            // try to hide ui-no-children row
+            // logic must same to doFilter
+            if(profile.$itemFilter){
+                var hideRows=[];
+                xui.arr.each(arr,function(row){
+                    if(row.sub && !row._checked)
+                        ns.toggleRow(row.id, true, false, true);
 
-            if(profile.$rowFilter){
-                this.doFilter(true);
+                   if(row.sub && !row.hidden){
+                       if(true!==profile.$itemFilter(row,null,profile)){
+                            var flag;
+                            for(var i=0,l=row.sub.length;i<l;i++){
+                               if( !row.sub[i].hidden){
+                                   flag=1;break;
+                               }
+                           }
+                           if(!flag)hideRows.push(row.id);
+                       }else{
+                           hideRows.push(row.id);
+                       }
+                   }
+                });
+                if(hideRows.length)ns.showRows(hideRows,false);
             }
-
-            return this;
+            return ns;
         },
+        doFilter:xui.absList.prototype.doFilter,
         //delete row according to id
         //xui.UI.TreeGrid.getAll().removeRows(['2','5'])
         removeRows:function(ids/*default is the current*/){
@@ -5837,8 +5806,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rows=[],
                 temp,cells,t,row,v,cellResult,
                 ro =  prop.rowOptions,
+                itemFilter=profile.$itemFilter,
                 NONE='display:none';
+            
             _treemode= !(!_treemode || _treemode=="none");
+            if(itemFilter)itemFilter('begin','prepare',profile)
             for(var i=0,l=arr.length;i<l;i++){
                 row = arr[i];
                 // give id (avoid conflicts)
@@ -5881,8 +5853,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     t.rowCls += ' ' + profile.getClass('CELLS1','-group') + " xui-uiborder-r xui-uiborder-light";
                 }
                 // filter: hidden                
-                var rowFilter=row.rowFilter||ro.rowFilter||profile.$rowFilter;
-                if(rowFilter)row.hidden = !!rowFilter(row,profile);
+                if(itemFilter)row.hidden = !!itemFilter(row,null,profile);
 
                 if(row.hidden)
                     t.rowDisplay=NONE;
@@ -5956,6 +5927,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
                 rows.push(t);
             }
+            if(itemFilter)itemFilter('end','prepare',profile);
             return rows;
         },
         _adjustCell:function(profile, cell, uicell){

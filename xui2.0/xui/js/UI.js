@@ -742,8 +742,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return r;
         },
         getSubNodes:function(arr,subId,tag){
-            if(!xui.isDefined(subId))subId=true;
-            var ns=this, a=[],s1=typeof arr=='string',s2=typeof subId=='string',a,o,v,push=Array.prototype.push;
+            var ns=this, a=[],s1=!xui.isArr(arr),s2=!xui.isArr(subId),a,o,v,push=Array.prototype.push;
             if(subId===true||xui.isNull(subId)){
                 if(!s1){
                     a=[];
@@ -3244,7 +3243,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
           flag: default flase => no clear not mactched symbols
         */
-        $doTemplate:function(profile, template, properties, tag, result, index, realtag){
+        $doTemplate:function(profile, template, properties, tplTag, result, index, realTag){
             var self=xui.UI.$doTemplate,
                 s,t,n,
                 x01=xui.UI.$x01,
@@ -3252,15 +3251,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                 str='',
                 isA = xui.isArr(properties),
                 // this one maybe a fake tamplate tag, for switch function
-                temp = template[tag||''],
+                temp = template[tplTag||''],
                 r = !result,
                 result= result || [];
             // get the real tag
-            tag = realtag||tag;
+            tplTag = realTag||tplTag;
             if(isA){
                 if(typeof temp != 'function')temp = self;
                 for(var i=0;t=properties[i++];){
-                    if(false===temp(profile, template, t, tag, result, i)){
+                    if(false===temp(profile, template, t, tplTag, result, i)){
                         break;
                     }
                 }
@@ -3270,10 +3269,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     result[result.length]=t.toHtml();
                 }else{
                     if(typeof temp == 'function'){
-                        t=temp(profile, template, properties, tag, result);
-                        if(t)tag=t;
+                        t=temp(profile, template, properties, tplTag, result);
+                        if(t)tplTag=t;
                     }else{
-                        tag = tag?tag+'.':'';
+                        tplTag = tplTag?tplTag+'.':'';
                         var a0=temp[0], a1=temp[1];
                         for(var i=0,l=a0.length;i<l;i++){
                             if(n=a1[i]){
@@ -3289,7 +3288,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         }
                                     }
                                     //if sub template exists
-                                    if(template[s=tag+n] && t)
+                                    if(template[s=tplTag+n] && t)
                                         self(profile, template, t, s, result);
                                     else
                                         result[result.length]= (t===undefined || t===null || t===NaN)?str:typeof t=='string'?t.replace(x01,x01r):t;
@@ -6632,7 +6631,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 item,dataItem,t,
                 SubID=xui.UI.$tag_subId,id ,
                 tabindex = profile.properties.tabindex,
-                ajd=profile.box.adjustData;
+                ajd=profile.box.adjustData,
+                itemFilter=profile.$itemFilter;
+            if(itemFilter)itemFilter('begin','preapre',profile);
+
             //set map
             for(var i=0,l=items.length;i<l;i++){
                 if(xui.isHash(items[i])){}
@@ -6675,6 +6677,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 result.push(dataItem);
             }
 
+            if(itemFilter)itemFilter('end','preapre',profile);
             return result;
         },
         _showTips:function(profile, node, pos){
@@ -6705,7 +6708,8 @@ xui.Class("xui.absList", "xui.absObj",{
             var node,arr2,
                 items, index, r, v, prop,
                 data,box,
-                b=this._afterInsertItems;
+                ns=this,
+                b=ns._afterInsertItems;
             return this.each(function(profile){
                 box=profile.box;
                 arr2=box._adjustItems(arr);
@@ -6762,8 +6766,29 @@ xui.Class("xui.absList", "xui.absObj",{
                 if(b)
                     profile.boxing()._afterInsertItems(profile, data, base, before);
 
+                // try to hide ui-no-children node
+                // logic must same to doFilter
                 if(profile.$itemFilter){
-                    profile.boxing().doFilter(true);
+                    var hideItems=[];
+                    xui.arr.each(arr,function(item){
+                        if(item.sub && !item._checked)
+                            ns.toggleNode(item.id, true, false, true);
+
+                       if(item.sub && !item.hidden){
+                           if(true!==profile.$itemFilter(item,null,profile)){
+                                var flag;
+                                for(var i=0,l=item.sub.length;i<l;i++){
+                                   if( !item.sub[i].hidden){
+                                       flag=1;break;
+                                   }
+                               }
+                               if(!flag)hideItems.push(item.id);
+                           }else{
+                               hideItems.push(item.id);
+                           }
+                       }
+                    });
+                    if(hideItems.length)ns.showItems(hideItems,false);
                 }
             });
         },
@@ -6988,7 +7013,7 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         // filter: [true] => filter out
         // value: the target value
-        doFilter:function(itemFilter, value){
+        doFilter:function(itemFilter, value, reLayout){
             var ns=this,
                 profile=ns.get(0);
             if(profile){
@@ -7000,26 +7025,33 @@ xui.Class("xui.absList", "xui.absObj",{
                 }else if(itemFilter===true){
                     itemFilter=profile.$itemFilter;
                 }
-                var fun=function(){
-                    itemFilter('before', null, profile)
+                xui.resetRun(profile.$xid+':itemFilter',function(){
+                    itemFilter('begin','doFilter',profile)
+
                     var prop=profile.properties,
-                        items=prop.items,
+                        items=prop['rows']||prop['items'],
                         showItems=[],
                         hideItems=[],
-                        fun=function(items){
-                            var count=0;
+                        f1=function(items, showItems, hideItems){
+                            var count=0,rtn;
                             xui.arr.each(items,function(item){
                                 if(item.sub){
-                                    // ensure open all tree nodes
-                                    if(!item._checked)
-                                        ns.toggleNode(item.id, true, true, true);
-                                     // collect
-                                    if(fun(item.sub)){
+                                    // check parent node first
+                                    if(true===itemFilter(item, value, profile)){
                                         count++;
                                         if(item.hidden)showItems.push(item.id);
                                     }else{
-                                        if(!item.hidden)hideItems.push(item.id);
-                                    }
+                                        // ensure open all tree nodes
+                                        if(!item._checked)
+                                            (ns['toggleRow']||ns['toggleNode']).call(ns, item.id, true, false, true);
+                                        // check sub showed count next
+                                        if(f1(item.sub, showItems, hideItems)){
+                                            count++;
+                                            if(item.hidden)showItems.push(item.id);
+                                        }else{
+                                            if(!item.hidden)hideItems.push(item.id);
+                                        }
+                                    }                                       
                                 }else{
                                     if(itemFilter(item, value, profile)){
                                         if(!item.hidden)hideItems.push(item.id);
@@ -7031,16 +7063,14 @@ xui.Class("xui.absList", "xui.absObj",{
                             });
                             return count;
                         };
-                    itemFilter('after', null, profile)
-                    
+                    f1(items, showItems, hideItems);
+                    itemFilter('end','doFilter',profile)
+
                     // reflect to dom 
-                    if(showItems.length)ns.showItems(showItems);
-                    if(hideItems.length)ns.showItems(hideItems,false);
-
-                    ns.reLayout(true);
-                };
-
-                xui.resetRun(profile.$xid+':itemFilter',fun);
+                    if(showItems.length)(ns['showRows']||ns['showItems']).call(ns,showItems);
+                    if(hideItems.length)(ns['showRows']||ns['showItems']).call(ns,hideItems,false);
+                    if(reLayout!==false)ns.reLayout(true);
+                });
             }
             return this;
         },
