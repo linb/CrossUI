@@ -81,30 +81,48 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
         },
+        calculateGridValue:function(){
+            var profile=this.get(0), prop=profile.properties,
+                f = prop.gridValueFormula,value=null,
+                refs,coo,v2,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
+            if(profile.beforeGridValueCalculated && false!==(v2=profile.boxing().beforeGridValueCalculated(profile))){
+                value = v2;
+            }else{
+                if(f){
+                    colMax = prop.header.length;
+                    // only for first level
+                    rowMax = prop.rows.length;
+                    if(xformula.validate(f)){
+                        cellsMap={};
+                        if(refs  = xformula.getRefCells(f, colMax, rowMax)){
+                            xui.each(refs,function(v,i){
+                                    coo = xformula.toCoordinate(i);
+                                    tcell=prop.rows[coo.row].cells[coo.col];
+                                    cellsMap[i] = tcell.value;
+                            });
+                        }
+                        value = xformula.calculate(f, cellsMap,colMax,rowMax);
+                    }
+                }
+            }
+            if(profile.afterGridValueCalculated)
+                profile.boxing().afterGridValueCalculated(profile, value);
+
+            profile._$gridvalue = value;
+            if(prop.excelCellId && profile._$oldgridvalue!==profile._$gridvalue){
+                profile.boxing().notifyExcel(false) ;
+            }
+            return profile._$oldgridvalue = value;
+        },
         // notify the grid's modification to fake excel ( in module )
         notifyExcel:xui.UI.Input.prototype.notifyExcel,
         // get grid's fake cexcel cell value
         getExcelCellValue:function(){
-            var profile=this.get(0), prop=profile.properties,f,refs,coo,value,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
-            if(prop.excelCellId && (f = prop.excelCellValueFormula)){
-                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
-                colMax = prop.header.length;
-                // only for first level
-                rowMax = prop.rows.length;
-
-                if(!xui.isSet(value)){
-                    if(xformula.validate(f) && (refs  = xformula.getRefCells(f, colMax, rowMax))){
-                        cellsMap={};
-                        xui.each(refs,function(v,i){
-                                coo = xformula.toCoordinate(i);
-                                tcell=prop.rows[coo.row].cells[coo.col];
-                                // onGetExcelCellValue    
-                                cellsMap[i] = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, tcell, i)) 
-                                    || tcell.value;
-                        });
-                        value = xformula.calculate(f, cellsMap,colMax,rowMax);
-                    }
-                }
+            var profile=this.get(0), prop=profile.properties,f,refs,coo,value,v2,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
+            if(prop.excelCellId){
+                value = ('_$gridvalue' in profile) ? profile. _$gridvalue : this.caculateGridValue();
+                if(xui.isSet(v2 = (profile.onGetExcelCellValue && profile.boxing().onGetExcelCellValue(profile, prop.excelCellId, value))))
+                    value = v2;
                 return value;
             }
             return null;
@@ -126,18 +144,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui.each(refs,function(v,i){
                         coo = xformula.toCoordinate(i);
                         tcell = rows[coo.row].cells[coo.col];
-                        // onGetFormulaValue    
-                        cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
-                            || tcell.value;
+                        cellsMap[i] = tcell.value;
                     });
                      t2=xformula.calculate(formula, cellsMap,colMax,rowMax);
                      if(t2!==cellTo.value){
                         needUpdate = [cellTo._serialId,t2,cellTo, formula];
-                        if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate)){}else{
+                        if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, cellTo, t2, formula)){}else{
                             tg._updCell(prf, needUpdate[0], {value:needUpdate[1]}, dirtyMark, triggerEvent, true);
                         }
                         if(prf.afterApplyFormulas)
-                            prf.afterApplyFormulas(prf, [needUpdate]);
+                            prf.boxing().afterApplyFormulas(prf, [needUpdate]);
                      }
                 }
             });
@@ -206,9 +222,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 if(!(i in cellsMap)){
                                     coo = xformula.toCoordinate(i);
                                     tcell = rows[coo.row].cells[coo.col];
-                                    // onGetFormulaValue    
-                                    cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
-                                        || tcell.value;
+                                    cellsMap[i] = tcell.value;
                                 }
                             }
                          }
@@ -217,7 +231,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                              t2=xformula.calculate(t1[1], cellsMap,colMax,rowMax);
                              if(t2!==t1[0].value){
                                  // keep update value
-                                needUpdate.push([t1[0]._serialId, t2, t1[0], t1[1]]);
+                                needUpdate.push([t1[0], t2, t1[1], t1[0]._serialId]);
                                 if(cellId)changed[k]=1;
                              }
                             // remove from formulaCells
@@ -232,16 +246,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 
                 // update cell by order
                 for(var i=0,l=needUpdate.length;i<l;i++){
-                    if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate[i])){}else{
-                        tg._updCell(prf, needUpdate[i][0], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
+                    if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, needUpdate[i][0], needUpdate[i][1], needUpdate[i][2])){}else{
+                        tg._updCell(prf, needUpdate[i][3], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
                     }
                 }
                 // [[cell servialid, cell value, cell, fomula]]
                 if(prf.afterApplyFormulas)
-                    prf.afterApplyFormulas(prf, needUpdate);
+                    prf.boxing().afterApplyFormulas(prf, needUpdate);
 
-                if(prop.excelCellId && prop.excelCellValueFormula){
-                    prf.boxing().notifyExcel(false) ;
+                if(prop.gridValueFormula){
+                    prf.boxing().calculateGridValue(false) ;
                 }
             });
         },
@@ -4747,7 +4761,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.boxing().notifyExcel(false);
                 }
             },
-            excelCellValueFormula:"",
+            gridValueFormula:"",
             hotRowNumber:'[*]',
             hotRowCellCap:'(*)',
             hotRowRequired:'',
@@ -4825,14 +4839,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onEditorClick:function(profile, cell, proEditor, type, src){},
             beforeUnitUpdated:function(profile, cell, proEditor, type){},
 
-            // onGetGridExcelFormulaValue
-            onGetFormulaValue:function(profile, cell, cellId){},
             // beforeApplyGridExcelFormula
-            beforeApplyFormula:function(profile, dataArr){},
             // afterApplyGridExcelFormula
+            beforeApplyFormula:function(profile, cell, value, formula){},
             afterApplyFormulas:function(profile, dataArrs){},
+            beforeGridValueCalculated:function(profile){},
+            afterGridValueCalculated:function(profile, value){},
 
-            onGetExcelCellValue:function(profile, excelCellId){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){}
         },
         RenderTrigger:function(){
             var ns=this, 
@@ -4883,7 +4897,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
 
             if(prop.excelCellId)
-                ns.boxing().notifyExcel();
+                ns.boxing().calculateGridValue();
         },
         LayoutTrigger:function(){
             var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
@@ -5041,7 +5055,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // clear temp data
             delete tempRowData.id; delete tempRowData.rowClass; delete tempRowData.rowNumber;
             xui.arr.each(tempRowData.cells, function(cell){
-                delete cell.id;
+                delete cell.id; if(cell.caption===prop.hotRowCellCap)delete cell.caption;
             });
 
             if(profile.beforeHotRowAdded){
@@ -6160,10 +6174,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             if(!cell || !cell._row)return;
             ishotrow=cell._row.id==box._temprowid;
+            if(ishotrow && cell.caption==prop.hotRowCellCap)
+                delete cell.caption;
 
             if(!xui.isHash(options))options={value:options};
             options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)]; if(!r){ext=ext||{}; ext[i]=o} return r;});
-
             if(triggerEvent){
                 if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow,ext))
                     return;

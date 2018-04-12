@@ -150,7 +150,7 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onChecked:function(profile, e, value){},
-            onGetExcelCellValue:function(profile, excelCellId){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){}
         },
         RenderTrigger:function(){
             var ns=this,p=ns.properties;

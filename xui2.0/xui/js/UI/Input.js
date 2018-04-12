@@ -122,12 +122,11 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         // get control's fake cexcel cell value
         getExcelCellValue:function(){
-            var profile=this.get(0), prop=profile.properties,value;
+            var profile=this.get(0), prop=profile.properties,value,v2;
             if(prop.excelCellId){
-                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
-                if(!xui.isSet(value)){
-                    value = this.getUIValue();
-                }
+                value = this.getUIValue();
+                if(xui.isSet( v2 = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId, value))))
+                    value=v2;
            }
             return value;
         },
@@ -137,8 +136,9 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             if(f = prop.excelCellFormula){
                 value = xui.ExcelFormula.calculate(f, cellsMap);
                 if(xui.isSet(value)){
-                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula, value)){}else{
                         this.setUIValue(value, true,null,'formula');
+                        if(profile.afterApplyExcelFormula)profile.afterApplyExcelFormula(profile, prop.excelCellFormula, value);
                     }
                 }
            }
@@ -656,8 +656,9 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onLabelDblClick:function(profile, e, src){},
             onLabelActive:function(profile, e, src){},
 
-            onGetExcelCellValue:function(profile, excelCellId){},
-            beforeApplyExcelFormula:function(profile, excelCellFormula){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){},
+            beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
+            afterApplyExcelFormula:function(profile, excelCellFormula, value){}
         },
         _handleInput:function(prf,cls, v){
             var i=prf.getSubNode('INPUT');                        

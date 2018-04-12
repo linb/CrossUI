@@ -1792,7 +1792,11 @@ xui.merge(xui,{
     //create:function(tag, properties, events, host){
     create:function(tag,bak){
         var arr,o,t,me=xui.create,r1=me.r1||(me.r1=/</);
-        if(typeof tag == 'string'){
+        if(xui.isArr(tag)){
+            arr=[];
+            for(var i=0,l=tag.length;i<l;i++)Array.prototype.push.apply(arr, xui.create(tag[i]).get());
+            return xui(arr);
+        }else if(typeof tag == 'string'){
             //Any class inherited from xui.absBox
             if(t=xui.absBox.$type[tag]){
                 arr=[];
@@ -1837,7 +1841,6 @@ xui.merge(xui,{
                 // use place holder to lazy bind
                 }else{
                     o = new xui.UI.MoudluePlaceHolder();
-                    if(tag.host ||  tag.alias)o.setHost(tag.host, tag.alias);
                     if(t=tag.events)o.setEvents(t);
                     if(t=tag.properties)o.setProperties(t);
 
@@ -1858,6 +1861,7 @@ xui.merge(xui,{
                 o = new (xui.SC(tag.key))(tag);
             }
         }
+        if(o['xui.absObj'] && (t=o.n0) && (t.host&&t.host!=t) &&  t.alias)o.setHost(t.host, t.alias);
         return o;
     },
     query:function(){
@@ -18876,8 +18880,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return r;
         },
         getSubNodes:function(arr,subId,tag){
-            if(!xui.isDefined(subId))subId=true;
-            var ns=this, a=[],s1=typeof arr=='string',s2=typeof subId=='string',a,o,v,push=Array.prototype.push;
+            var ns=this, a=[],s1=!xui.isArr(arr),s2=!xui.isArr(subId),a,o,v,push=Array.prototype.push;
             if(subId===true||xui.isNull(subId)){
                 if(!s1){
                     a=[];
@@ -19382,7 +19385,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                         pn.scrollLeft = node._parentOSL||0;
                         pn.style.overflow=node._parentOverflow||'';
                     }
-                    profile.$busy.remove();
+                    node._parentOST=node._parentOSL=node._parentOverflow=node._busyP=null;
+                    node.remove();
                     delete profile.$busy;
                 }
             });
@@ -21377,7 +21381,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
           flag: default flase => no clear not mactched symbols
         */
-        $doTemplate:function(profile, template, properties, tag, result, index, realtag){
+        $doTemplate:function(profile, template, properties, tplTag, result, index, realTag){
             var self=xui.UI.$doTemplate,
                 s,t,n,
                 x01=xui.UI.$x01,
@@ -21385,15 +21389,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                 str='',
                 isA = xui.isArr(properties),
                 // this one maybe a fake tamplate tag, for switch function
-                temp = template[tag||''],
+                temp = template[tplTag||''],
                 r = !result,
                 result= result || [];
             // get the real tag
-            tag = realtag||tag;
+            tplTag = realTag||tplTag;
             if(isA){
                 if(typeof temp != 'function')temp = self;
                 for(var i=0;t=properties[i++];){
-                    if(false===temp(profile, template, t, tag, result, i)){
+                    if(false===temp(profile, template, t, tplTag, result, i)){
                         break;
                     }
                 }
@@ -21403,10 +21407,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     result[result.length]=t.toHtml();
                 }else{
                     if(typeof temp == 'function'){
-                        t=temp(profile, template, properties, tag, result);
-                        if(t)tag=t;
+                        t=temp(profile, template, properties, tplTag, result);
+                        if(t)tplTag=t;
                     }else{
-                        tag = tag?tag+'.':'';
+                        tplTag = tplTag?tplTag+'.':'';
                         var a0=temp[0], a1=temp[1];
                         for(var i=0,l=a0.length;i<l;i++){
                             if(n=a1[i]){
@@ -21422,7 +21426,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         }
                                     }
                                     //if sub template exists
-                                    if(template[s=tag+n] && t)
+                                    if(template[s=tplTag+n] && t)
                                         self(profile, template, t, s, result);
                                     else
                                         result[result.length]= (t===undefined || t===null || t===NaN)?str:typeof t=='string'?t.replace(x01,x01r):t;
@@ -24765,7 +24769,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 item,dataItem,t,
                 SubID=xui.UI.$tag_subId,id ,
                 tabindex = profile.properties.tabindex,
-                ajd=profile.box.adjustData;
+                ajd=profile.box.adjustData,
+                itemFilter=profile.$itemFilter;
+            if(itemFilter)itemFilter('begin','preapre',profile);
+
             //set map
             for(var i=0,l=items.length;i<l;i++){
                 if(xui.isHash(items[i])){}
@@ -24808,6 +24815,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 result.push(dataItem);
             }
 
+            if(itemFilter)itemFilter('end','preapre',profile);
             return result;
         },
         _showTips:function(profile, node, pos){
@@ -24838,7 +24846,8 @@ xui.Class("xui.absList", "xui.absObj",{
             var node,arr2,
                 items, index, r, v, prop,
                 data,box,
-                b=this._afterInsertItems;
+                ns=this,
+                b=ns._afterInsertItems;
             return this.each(function(profile){
                 box=profile.box;
                 arr2=box._adjustItems(arr);
@@ -24895,8 +24904,29 @@ xui.Class("xui.absList", "xui.absObj",{
                 if(b)
                     profile.boxing()._afterInsertItems(profile, data, base, before);
 
+                // try to hide ui-no-children node
+                // logic must same to doFilter
                 if(profile.$itemFilter){
-                    profile.boxing().doFilter(true);
+                    var hideItems=[];
+                    xui.arr.each(arr,function(item){
+                        if(item.sub && !item._checked)
+                            ns.toggleNode(item.id, true, false, true);
+
+                       if(item.sub && !item.hidden){
+                           if(true!==profile.$itemFilter(item,null,profile)){
+                                var flag;
+                                for(var i=0,l=item.sub.length;i<l;i++){
+                                   if( !item.sub[i].hidden){
+                                       flag=1;break;
+                                   }
+                               }
+                               if(!flag)hideItems.push(item.id);
+                           }else{
+                               hideItems.push(item.id);
+                           }
+                       }
+                    });
+                    if(hideItems.length)ns.showItems(hideItems,false);
                 }
             });
         },
@@ -25121,7 +25151,7 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         // filter: [true] => filter out
         // value: the target value
-        doFilter:function(itemFilter, value){
+        doFilter:function(itemFilter, value, reLayout){
             var ns=this,
                 profile=ns.get(0);
             if(profile){
@@ -25133,26 +25163,33 @@ xui.Class("xui.absList", "xui.absObj",{
                 }else if(itemFilter===true){
                     itemFilter=profile.$itemFilter;
                 }
-                var fun=function(){
-                    itemFilter('before', null, profile)
+                xui.resetRun(profile.$xid+':itemFilter',function(){
+                    itemFilter('begin','doFilter',profile)
+
                     var prop=profile.properties,
-                        items=prop.items,
+                        items=prop['rows']||prop['items'],
                         showItems=[],
                         hideItems=[],
-                        fun=function(items){
-                            var count=0;
+                        f1=function(items, showItems, hideItems){
+                            var count=0,rtn;
                             xui.arr.each(items,function(item){
                                 if(item.sub){
-                                    // ensure open all tree nodes
-                                    if(!item._checked)
-                                        ns.toggleNode(item.id, true, true, true);
-                                     // collect
-                                    if(fun(item.sub)){
+                                    // check parent node first
+                                    if(true===itemFilter(item, value, profile)){
                                         count++;
                                         if(item.hidden)showItems.push(item.id);
                                     }else{
-                                        if(!item.hidden)hideItems.push(item.id);
-                                    }
+                                        // ensure open all tree nodes
+                                        if(!item._checked)
+                                            (ns['toggleRow']||ns['toggleNode']).call(ns, item.id, true, false, true);
+                                        // check sub showed count next
+                                        if(f1(item.sub, showItems, hideItems)){
+                                            count++;
+                                            if(item.hidden)showItems.push(item.id);
+                                        }else{
+                                            if(!item.hidden)hideItems.push(item.id);
+                                        }
+                                    }                                       
                                 }else{
                                     if(itemFilter(item, value, profile)){
                                         if(!item.hidden)hideItems.push(item.id);
@@ -25164,16 +25201,14 @@ xui.Class("xui.absList", "xui.absObj",{
                             });
                             return count;
                         };
-                    itemFilter('after', null, profile)
-                    
+                    f1(items, showItems, hideItems);
+                    itemFilter('end','doFilter',profile)
+
                     // reflect to dom 
-                    if(showItems.length)ns.showItems(showItems);
-                    if(hideItems.length)ns.showItems(hideItems,false);
-
-                    ns.reLayout(true);
-                };
-
-                xui.resetRun(profile.$xid+':itemFilter',fun);
+                    if(showItems.length)(ns['showRows']||ns['showItems']).call(ns,showItems);
+                    if(hideItems.length)(ns['showRows']||ns['showItems']).call(ns,hideItems,false);
+                    if(reLayout!==false)ns.reLayout(true);
+                });
             }
             return this;
         },
@@ -29317,8 +29352,9 @@ xui.Class("xui.UI.Label", "xui.UI",{
             if(f = prop.excelCellFormula){
                 value = xui.ExcelFormula.calculate(f, cellsMap);
                 if(xui.isSet(value)){
-                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula, value)){}else{
                         this.setCaption(value, true);
+                        if(profile.afterApplyExcelFormula)profile.afterApplyExcelFormula(profile, prop.excelCellFormula, value);
                     }
                 }
            }
@@ -29440,7 +29476,8 @@ xui.Class("xui.UI.Label", "xui.UI",{
         },
         EventHandlers:{
             onClick:function(profile, e, src){},
-            beforeApplyExcelFormula:function(profile, excelCellFormula){}
+            beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
+            afterApplyExcelFormula:function(profile, excelCellFormula, value){}
         },
         RenderTrigger:function(){
             var prf=this,t;
@@ -30397,12 +30434,11 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         // get control's fake cexcel cell value
         getExcelCellValue:function(){
-            var profile=this.get(0), prop=profile.properties,value;
+            var profile=this.get(0), prop=profile.properties,value,v2;
             if(prop.excelCellId){
-                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
-                if(!xui.isSet(value)){
-                    value = this.getUIValue();
-                }
+                value = this.getUIValue();
+                if(xui.isSet( v2 = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId, value))))
+                    value=v2;
            }
             return value;
         },
@@ -30412,8 +30448,9 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(f = prop.excelCellFormula){
                 value = xui.ExcelFormula.calculate(f, cellsMap);
                 if(xui.isSet(value)){
-                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula, value)){}else{
                         this.setUIValue(value, true,null,'formula');
+                        if(profile.afterApplyExcelFormula)profile.afterApplyExcelFormula(profile, prop.excelCellFormula, value);
                     }
                 }
            }
@@ -30931,8 +30968,9 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             onLabelDblClick:function(profile, e, src){},
             onLabelActive:function(profile, e, src){},
 
-            onGetExcelCellValue:function(profile, excelCellId){},
-            beforeApplyExcelFormula:function(profile, excelCellFormula){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){},
+            beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
+            afterApplyExcelFormula:function(profile, excelCellFormula, value){}
         },
         _handleInput:function(prf,cls, v){
             var i=prf.getSubNode('INPUT');                        
@@ -31448,7 +31486,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         EventHandlers:{
             onChecked:function(profile, e, value){},
-            onGetExcelCellValue:function(profile, excelCellId){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){}
         },
         RenderTrigger:function(){
             var ns=this,p=ns.properties;
@@ -37500,7 +37538,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             return (item && item._status)||'ini';
         },
         _afterInsertItems:function(profile){
-            profile.getSubNodes("IMAGE").each(function(o){
+            profile.getSubNodes("IMAGE",true).each(function(o){
                 if(o.src==xui.ini.img_bg){
                     o.src=o.title;
                     o.title='';
@@ -45252,30 +45290,48 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             });
         },
+        calculateGridValue:function(){
+            var profile=this.get(0), prop=profile.properties,
+                f = prop.gridValueFormula,value=null,
+                refs,coo,v2,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
+            if(profile.beforeGridValueCalculated && false!==(v2=profile.boxing().beforeGridValueCalculated(profile))){
+                value = v2;
+            }else{
+                if(f){
+                    colMax = prop.header.length;
+                    // only for first level
+                    rowMax = prop.rows.length;
+                    if(xformula.validate(f)){
+                        cellsMap={};
+                        if(refs  = xformula.getRefCells(f, colMax, rowMax)){
+                            xui.each(refs,function(v,i){
+                                    coo = xformula.toCoordinate(i);
+                                    tcell=prop.rows[coo.row].cells[coo.col];
+                                    cellsMap[i] = tcell.value;
+                            });
+                        }
+                        value = xformula.calculate(f, cellsMap,colMax,rowMax);
+                    }
+                }
+            }
+            if(profile.afterGridValueCalculated)
+                profile.boxing().afterGridValueCalculated(profile, value);
+
+            profile._$gridvalue = value;
+            if(prop.excelCellId && profile._$oldgridvalue!==profile._$gridvalue){
+                profile.boxing().notifyExcel(false) ;
+            }
+            return profile._$oldgridvalue = value;
+        },
         // notify the grid's modification to fake excel ( in module )
         notifyExcel:xui.UI.Input.prototype.notifyExcel,
         // get grid's fake cexcel cell value
         getExcelCellValue:function(){
-            var profile=this.get(0), prop=profile.properties,f,refs,coo,value,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
-            if(prop.excelCellId && (f = prop.excelCellValueFormula)){
-                value = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, prop.excelCellId)) ;
-                colMax = prop.header.length;
-                // only for first level
-                rowMax = prop.rows.length;
-
-                if(!xui.isSet(value)){
-                    if(xformula.validate(f) && (refs  = xformula.getRefCells(f, colMax, rowMax))){
-                        cellsMap={};
-                        xui.each(refs,function(v,i){
-                                coo = xformula.toCoordinate(i);
-                                tcell=prop.rows[coo.row].cells[coo.col];
-                                // onGetExcelCellValue    
-                                cellsMap[i] = (profile.onGetExcelCellValue && profile.onGetExcelCellValue(profile, tcell, i)) 
-                                    || tcell.value;
-                        });
-                        value = xformula.calculate(f, cellsMap,colMax,rowMax);
-                    }
-                }
+            var profile=this.get(0), prop=profile.properties,f,refs,coo,value,v2,cellsMap,xformula=xui.ExcelFormula,tcell, colMax, rowMax;
+            if(prop.excelCellId){
+                value = ('_$gridvalue' in profile) ? profile. _$gridvalue : this.caculateGridValue();
+                if(xui.isSet(v2 = (profile.onGetExcelCellValue && profile.boxing().onGetExcelCellValue(profile, prop.excelCellId, value))))
+                    value = v2;
                 return value;
             }
             return null;
@@ -45297,18 +45353,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui.each(refs,function(v,i){
                         coo = xformula.toCoordinate(i);
                         tcell = rows[coo.row].cells[coo.col];
-                        // onGetFormulaValue    
-                        cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
-                            || tcell.value;
+                        cellsMap[i] = tcell.value;
                     });
                      t2=xformula.calculate(formula, cellsMap,colMax,rowMax);
                      if(t2!==cellTo.value){
                         needUpdate = [cellTo._serialId,t2,cellTo, formula];
-                        if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate)){}else{
+                        if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, cellTo, t2, formula)){}else{
                             tg._updCell(prf, needUpdate[0], {value:needUpdate[1]}, dirtyMark, triggerEvent, true);
                         }
                         if(prf.afterApplyFormulas)
-                            prf.afterApplyFormulas(prf, [needUpdate]);
+                            prf.boxing().afterApplyFormulas(prf, [needUpdate]);
                      }
                 }
             });
@@ -45377,9 +45431,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 if(!(i in cellsMap)){
                                     coo = xformula.toCoordinate(i);
                                     tcell = rows[coo.row].cells[coo.col];
-                                    // onGetFormulaValue    
-                                    cellsMap[i] = (prf.onGetFormulaValue && prf.onGetFormulaValue(prf, tcell, i)) 
-                                        || tcell.value;
+                                    cellsMap[i] = tcell.value;
                                 }
                             }
                          }
@@ -45388,7 +45440,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                              t2=xformula.calculate(t1[1], cellsMap,colMax,rowMax);
                              if(t2!==t1[0].value){
                                  // keep update value
-                                needUpdate.push([t1[0]._serialId, t2, t1[0], t1[1]]);
+                                needUpdate.push([t1[0], t2, t1[1], t1[0]._serialId]);
                                 if(cellId)changed[k]=1;
                              }
                             // remove from formulaCells
@@ -45403,16 +45455,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 
                 // update cell by order
                 for(var i=0,l=needUpdate.length;i<l;i++){
-                    if(prf.beforeApplyFormula && false===prf.beforeApplyFormula(prf, needUpdate[i])){}else{
-                        tg._updCell(prf, needUpdate[i][0], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
+                    if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, needUpdate[i][0], needUpdate[i][1], needUpdate[i][2])){}else{
+                        tg._updCell(prf, needUpdate[i][3], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
                     }
                 }
                 // [[cell servialid, cell value, cell, fomula]]
                 if(prf.afterApplyFormulas)
-                    prf.afterApplyFormulas(prf, needUpdate);
+                    prf.boxing().afterApplyFormulas(prf, needUpdate);
 
-                if(prop.excelCellId && prop.excelCellValueFormula){
-                    prf.boxing().notifyExcel(false) ;
+                if(prop.gridValueFormula){
+                    prf.boxing().calculateGridValue(false) ;
                 }
             });
         },
@@ -45453,6 +45505,46 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //build dom
             var nodes21 = profile._buildItems('rows21', arr),
                 nodes22 = profile._buildItems('rows22', arr);
+
+            //get base dom
+            if(!base){
+                //no base add to parent
+                if(pid){
+                    obj21 = profile.getSubNode('SUB1', pid);
+                    obj22 = profile.getSubNode('SUB2', pid);
+                }else{
+                    obj21 = profile.getSubNode('ROWS21');
+                    obj22 = profile.getSubNode('ROWS22');
+                }
+                if(before){
+                    obj21.prepend(nodes21);
+                    obj22.prepend(nodes22);
+                }else{
+                    obj21.append(nodes21);
+                    obj22.append(nodes22);
+                }
+            }else{
+                //
+                obj21 = profile.getSubNode('ROW1', base);
+                obj22 = profile.getSubNode('ROW2', base);
+                if(before){
+                    obj21.addPrev(nodes21);
+                    obj22.addPrev(nodes22);
+                }else{
+                    obj21.addNext(nodes21);
+                    obj22.addNext(nodes22);
+                }
+            }
+
+            //add sub
+            xui.arr.each(arr,function(o){
+                if(o.sub){
+                    o.open=false;
+                    if(false===box.getCellOption(profile, o, "iniFold"))
+                        profile.boxing()._toggleRows([o],true,false,true);
+                }
+            });
+
             if(temp&&temp.length){
                 var needshowinput=[],arrt=[];
                 xui.arr.each(temp,function(o){
@@ -45487,43 +45579,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     xui.asyRun(fun);
                 }
             }
-            //get base dom
-            if(!base){
-                //no base add to parent
-                if(pid){
-                    obj21 = profile.getSubNode('SUB1', pid);
-                    obj22 = profile.getSubNode('SUB2', pid);
-                }else{
-                    obj21 = profile.getSubNode('ROWS21');
-                    obj22 = profile.getSubNode('ROWS22');
-                }
-                if(before){
-                    obj21.prepend(nodes21);
-                    obj22.prepend(nodes22);
-                }else{
-                    obj21.append(nodes21);
-                    obj22.append(nodes22);
-                }
-            }else{
-                //
-                obj21 = profile.getSubNode('ROW1', base);
-                obj22 = profile.getSubNode('ROW2', base);
-                if(before){
-                    obj21.addPrev(nodes21);
-                    obj22.addPrev(nodes22);
-                }else{
-                    obj21.addNext(nodes21);
-                    obj22.addNext(nodes22);
-                }
-            }
-
-            //add sub
-            xui.arr.each(arr,function(o){
-                o.open=false;
-                if(false===box.getCellOption(profile, o, "iniFold"))
-                    profile.boxing()._toggleRows([o],true);
-            });
-
+            
             //clear rows cache
             delete profile.$allrowscache1;
             delete profile.$allrowscache2;
@@ -45772,63 +45828,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             return this;
         },
-        // filter: [true] => refilter
-        doFilter:function(rowFilter, value){
-            var ns=this,
-                profile=ns.get(0);
-            if(profile){
-                if(!rowFilter){
-                    delete profile.$rowFilter;
-                    rowFilter=function(){return false};
-                }else if(xui.isFun(rowFilter)){
-                    profile.$rowFilter=rowFilter;
-                }else if(rowFilter===true){
-                    rowFilter=profile.$rowFilter;
-                }
-                xui.resetRun(profile.$xid+':rowfilter',function(){
-                    rowFilter('before',null,profile)
-
-                    var prop=profile.properties,
-                        rows=prop.rows,
-                        showRows=[],
-                        hideRows=[],
-                        f1=function(rows, showRows, hideRows){
-                            var count=0;
-                            xui.arr.each(rows,function(row){
-                                if(row.sub){
-                                    // ensure open all tree nodes
-                                    if(!row._checked)
-                                        ns.toggleRow(row.id, true, true, true);
-                                     // collect
-                                    if(f1(row.sub, showRows, hideRows)){
-                                        count++;
-                                        if(row.hidden)showRows.push(row.id);
-                                    }else{
-                                        if(!row.hidden)hideRows.push(row.id);
-                                    }
-                                }else{
-                                    if(rowFilter(row, value, profile)){
-                                        if(!row.hidden)hideRows.push(row.id);
-                                    }else{
-                                        count++;
-                                        if(row.hidden)showRows.push(row.id);
-                                    }
-                                }
-                            });
-                            return count;
-                        };
-                    f1(rows, showRows, hideRows);
-                    rowFilter('after',null,profile)
-
-                    // reflect to dom 
-                    if(showRows.length)ns.showRows(showRows);
-                    if(hideRows.length)ns.showRows(hideRows,false);
-
-                    ns.reLayout(true);
-                });
-            }
-            return this;
-        },
         showRows:function(rowId,/*default is the current*/ show){
             var ns=this,
                 profile = ns.get(0), 
@@ -46047,8 +46046,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         //pid,base are id
         insertRows:function(arr, pid/*true: the current item*/, base/*true: the current item*/, before, ignoreMixColumn){
             var affectUI=arguments[4],
-                c=this.constructor,
-                profile=this.get(0);
+                ns=this,
+                c=ns.constructor,
+                profile=ns.get(0);
             if(xui.isHash(arr))arr=[arr];
             if(arr && xui.isArr(arr) && arr.length>0){
                 var prop=profile.properties,
@@ -46090,7 +46090,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         //prepareData(add links)
                         temp=[];
                         rows = c._prepareItems(profile, arr, pid,temp);
-                        this._insertRowsToDom(profile, rows, pid, base, before,temp);
+                        ns._insertRowsToDom(profile, rows, pid, base, before,temp);
 
                         //render
                         xui.arr.each(arr,function(o){
@@ -46126,13 +46126,34 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(affectUI!==false && profile.renderId&&profile.__hastmpRow){
                 profile.box.__ensurehotrow(profile,null);
             }
+    
+            // try to hide ui-no-children row
+            // logic must same to doFilter
+            if(profile.$itemFilter){
+                var hideRows=[];
+                xui.arr.each(arr,function(row){
+                    if(row.sub && !row._checked)
+                        ns.toggleRow(row.id, true, false, true);
 
-            if(profile.$rowFilter){
-                this.doFilter(true);
+                   if(row.sub && !row.hidden){
+                       if(true!==profile.$itemFilter(row,null,profile)){
+                            var flag;
+                            for(var i=0,l=row.sub.length;i<l;i++){
+                               if( !row.sub[i].hidden){
+                                   flag=1;break;
+                               }
+                           }
+                           if(!flag)hideRows.push(row.id);
+                       }else{
+                           hideRows.push(row.id);
+                       }
+                   }
+                });
+                if(hideRows.length)ns.showRows(hideRows,false);
             }
-
-            return this;
+            return ns;
         },
+        doFilter:xui.absList.prototype.doFilter,
         //delete row according to id
         //xui.UI.TreeGrid.getAll().removeRows(['2','5'])
         removeRows:function(ids/*default is the current*/){
@@ -49949,7 +49970,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.boxing().notifyExcel(false);
                 }
             },
-            excelCellValueFormula:"",
+            gridValueFormula:"",
             hotRowNumber:'[*]',
             hotRowCellCap:'(*)',
             hotRowRequired:'',
@@ -50027,14 +50048,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onEditorClick:function(profile, cell, proEditor, type, src){},
             beforeUnitUpdated:function(profile, cell, proEditor, type){},
 
-            // onGetGridExcelFormulaValue
-            onGetFormulaValue:function(profile, cell, cellId){},
             // beforeApplyGridExcelFormula
-            beforeApplyFormula:function(profile, dataArr){},
             // afterApplyGridExcelFormula
+            beforeApplyFormula:function(profile, cell, value, formula){},
             afterApplyFormulas:function(profile, dataArrs){},
+            beforeGridValueCalculated:function(profile){},
+            afterGridValueCalculated:function(profile, value){},
 
-            onGetExcelCellValue:function(profile, excelCellId){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){}
         },
         RenderTrigger:function(){
             var ns=this, 
@@ -50085,7 +50106,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
 
             if(prop.excelCellId)
-                ns.boxing().notifyExcel();
+                ns.boxing().calculateGridValue();
         },
         LayoutTrigger:function(){
             var ns=this, box=ns.box, prop=ns.properties,ins=ns.boxing();
@@ -50243,7 +50264,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // clear temp data
             delete tempRowData.id; delete tempRowData.rowClass; delete tempRowData.rowNumber;
             xui.arr.each(tempRowData.cells, function(cell){
-                delete cell.id;
+                delete cell.id; if(cell.caption===prop.hotRowCellCap)delete cell.caption;
             });
 
             if(profile.beforeHotRowAdded){
@@ -51008,8 +51029,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rows=[],
                 temp,cells,t,row,v,cellResult,
                 ro =  prop.rowOptions,
+                itemFilter=profile.$itemFilter,
                 NONE='display:none';
+            
             _treemode= !(!_treemode || _treemode=="none");
+            if(itemFilter)itemFilter('begin','prepare',profile)
             for(var i=0,l=arr.length;i<l;i++){
                 row = arr[i];
                 // give id (avoid conflicts)
@@ -51052,8 +51076,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     t.rowCls += ' ' + profile.getClass('CELLS1','-group') + " xui-uiborder-r xui-uiborder-light";
                 }
                 // filter: hidden                
-                var rowFilter=row.rowFilter||ro.rowFilter||profile.$rowFilter;
-                if(rowFilter)row.hidden = !!rowFilter(row,profile);
+                if(itemFilter)row.hidden = !!itemFilter(row,null,profile);
 
                 if(row.hidden)
                     t.rowDisplay=NONE;
@@ -51127,6 +51150,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
                 rows.push(t);
             }
+            if(itemFilter)itemFilter('end','prepare',profile);
             return rows;
         },
         _adjustCell:function(profile, cell, uicell){
@@ -51359,10 +51383,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             if(!cell || !cell._row)return;
             ishotrow=cell._row.id==box._temprowid;
+            if(ishotrow && cell.caption==prop.hotRowCellCap)
+                delete cell.caption;
 
             if(!xui.isHash(options))options={value:options};
             options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)]; if(!r){ext=ext||{}; ext[i]=o} return r;});
-
             if(triggerEvent){
                 if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow,ext))
                     return;

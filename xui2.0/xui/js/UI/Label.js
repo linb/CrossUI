@@ -16,8 +16,9 @@ xui.Class("xui.UI.Label", "xui.UI",{
             if(f = prop.excelCellFormula){
                 value = xui.ExcelFormula.calculate(f, cellsMap);
                 if(xui.isSet(value)){
-                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula)){}else{
+                    if(profile.beforeApplyExcelFormula && false===profile.beforeApplyExcelFormula(profile, prop.excelCellFormula, value)){}else{
                         this.setCaption(value, true);
+                        if(profile.afterApplyExcelFormula)profile.afterApplyExcelFormula(profile, prop.excelCellFormula, value);
                     }
                 }
            }
@@ -139,7 +140,8 @@ xui.Class("xui.UI.Label", "xui.UI",{
         },
         EventHandlers:{
             onClick:function(profile, e, src){},
-            beforeApplyExcelFormula:function(profile, excelCellFormula){}
+            beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
+            afterApplyExcelFormula:function(profile, excelCellFormula, value){}
         },
         RenderTrigger:function(){
             var prf=this,t;

@@ -1860,9 +1860,7 @@ xui.merge(xui,{
                 o = new (xui.SC(tag.key))(tag);
             }
         }
-        if(o['xui.absObj'])
-            if(o.n0.host ||  o.n0.alias)o.setHost(o.n0.host, o.n0.alias);
-
+        if(o['xui.absObj'] && (t=o.n0) && (t.host&&t.host!=t) &&  t.alias)o.setHost(t.host, t.alias);
         return o;
     },
     query:function(){
