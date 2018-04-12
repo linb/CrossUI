@@ -50264,7 +50264,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // clear temp data
             delete tempRowData.id; delete tempRowData.rowClass; delete tempRowData.rowNumber;
             xui.arr.each(tempRowData.cells, function(cell){
-                delete cell.id; if(cell.caption===prop.hotRowCellCap)delete cell.caption;
+                if(cell.id.indexOf('-c_')==0)delete cell.id; 
+                if(cell.caption===prop.hotRowCellCap)delete cell.caption;
             });
 
             if(profile.beforeHotRowAdded){
@@ -50295,7 +50296,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             else if(result===true){
                 delete profile.__hastmpRow;
                 ins.removeRows([rowId],false);                    
-                ins.insertRows([tempRowData],null,null,false,false);
+                ins.insertRows(tempRowData,null,null,false,true);
 
                 tempRow = prop.rows[prop.rows.length-1];
                 tempRow._dirty=1;
