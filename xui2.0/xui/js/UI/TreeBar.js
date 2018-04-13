@@ -180,11 +180,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             var profile=this.get(0),ns=this,self=arguments.callee;
             if(id){
                 var o=profile.getItemByItemId(id);
-                if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive, callback);
+                if(o && o.sub && (!xui.isSet(expand) || !!expand !== !!o._checked))
+                    profile.box._setSub(profile, o, xui.isSet(expand) ?!!expand:!o._checked, recursive, stopanim||recursive, callback);
             }else{
                 xui.arr.each(profile.properties.items,function(item){
-                    self.call(ns,item.id,expand,recursive);
+                    if(item.sub)self.call(ns,item.id,expand,recursive);
                 })
             }
             return this;

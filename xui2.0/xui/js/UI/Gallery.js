@@ -7,6 +7,8 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
         _afterInsertItems:function(profile){
             profile.getSubNodes("IMAGE",true).each(function(o){
                 if(o.src==xui.ini.img_bg){
+                    // bug fix for firefox
+                    if(xui.browser.isFF)o.src='';
                     o.src=o.title;
                     o.title='';
                 }
@@ -159,17 +161,6 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                                   item=profile.getItemByDom(src);
                             if(!item)return;
                             var icon=profile.getSubNodeByItemId('ICON',item.id);
-                            
-                            // bug fix
-                             if(node.currentSrc && node.currentSrc!=path && path!=xui.ini.img_blank){
-                                icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
-                                nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                                node.style.visibility="hidden";
-                                node.style.display="none";
-                                item._status='error';
-                                return;
-                             }
-
                             if(item.autoImgSize||p.autoImgSize){
                                 nn.attr('width','');nn.attr('height','');
                             }else{
@@ -202,6 +193,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                           nn=xui.use(src),
                           node=nn.get(0),
                           icon=profile.getSubNodeByItemId('ICON',item.id);
+
                     icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";

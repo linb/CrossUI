@@ -37540,6 +37540,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         _afterInsertItems:function(profile){
             profile.getSubNodes("IMAGE",true).each(function(o){
                 if(o.src==xui.ini.img_bg){
+                    // bug fix for firefox
+                    if(xui.browser.isFF)o.src='';
                     o.src=o.title;
                     o.title='';
                 }
@@ -37692,17 +37694,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                                   item=profile.getItemByDom(src);
                             if(!item)return;
                             var icon=profile.getSubNodeByItemId('ICON',item.id);
-                            
-                            // bug fix
-                             if(node.currentSrc && node.currentSrc!=path && path!=xui.ini.img_blank){
-                                icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
-                                nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                                node.style.visibility="hidden";
-                                node.style.display="none";
-                                item._status='error';
-                                return;
-                             }
-
                             if(item.autoImgSize||p.autoImgSize){
                                 nn.attr('width','');nn.attr('height','');
                             }else{
@@ -37735,6 +37726,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                           nn=xui.use(src),
                           node=nn.get(0),
                           icon=profile.getSubNodeByItemId('ICON',item.id);
+
                     icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
                     node.style.visibility="hidden";
@@ -41581,11 +41573,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             var profile=this.get(0),ns=this,self=arguments.callee;
             if(id){
                 var o=profile.getItemByItemId(id);
-                if(o && o.sub)
-                    profile.box._setSub(profile, o, typeof expand=="boolean"?expand:!o._checked, recursive, stopanim||recursive, callback);
+                if(o && o.sub && (!xui.isSet(expand) || !!expand !== !!o._checked))
+                    profile.box._setSub(profile, o, xui.isSet(expand) ?!!expand:!o._checked, recursive, stopanim||recursive, callback);
             }else{
                 xui.arr.each(profile.properties.items,function(item){
-                    self.call(ns,item.id,expand,recursive);
+                    if(item.sub)self.call(ns,item.id,expand,recursive);
                 })
             }
             return this;
@@ -45661,7 +45653,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var self=this;
             if(rows && rows.length)
                 xui.arr.each(rows,function(o){
-                    self.toggleRow(o.id, expand);
+                    if(o.id)self.toggleRow(o.id, expand);
                 });
         },
         autoRowHeight:function(rowId){
@@ -45819,11 +45811,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(xui.isNumb(rowId))rowId=xui.get(rows,[rowId==-1?(rows.length-1):rowId,"id"]);
             if(v&&v[rowId]){
                 var row = profile.rowMap[v[rowId]];
-                if(row && row.sub)
-                    profile.box._setSub(profile, row, typeof expand=="boolean"?expand:!row._checked, recursive, stopanim||recursive, callback);
+                if(row && row.sub && (!xui.isSet(expand) || !!expand !== !!row._checked)){
+                    profile.box._setSub(profile, row, xui.isSet(expand) ?!!expand:!row._checked, recursive, stopanim||recursive, callback);
+                }
             }else{
                 xui.arr.each(rows,function(row){
-                    self.call(ns,row.id,expand,recursive, true, callback);
+                    if(row.sub)
+                        self.call(ns,row.id,expand,recursive, true, callback);
                 })
             }
             return this;
@@ -46132,8 +46126,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(profile.$itemFilter){
                 var hideRows=[];
                 xui.arr.each(arr,function(row){
-                    if(row.sub && !row._checked)
-                        ns.toggleRow(row.id, true, false, true);
+                    if(row.sub && xui.isArr(row.sub) && !row._checked)
+                        if(row.id)ns.toggleRow(row.id, true, false, true);
 
                    if(row.sub && !row.hidden){
                        if(true!==profile.$itemFilter(row,null,profile)){
@@ -49135,6 +49129,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             CELL:{
                 onMouseover:function(profile, e, src){
+                    if(false == profile.box.$cancelHoverEditor(profile))return;
+
                     var box=profile.box, p=profile.properties, i=xui.use(src).id(),editor;
                     if(p.disableHoverEffect===true)return;
                     if(p.disableHoverEffect && /\bCELL\b/.test(p.disableHoverEffect||""))return;
@@ -49144,24 +49140,27 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!i)return;
 
                     if(box.getCellOption(profile, i, "disabled"))return;
+                    
                     var editMode=box.getCellOption(profile, i, "editMode");
                     if( box.getCellOption(profile, i, "editable") && xui.str.startWith(editMode,"hover")){
                         if(editMode=='hoversharp' && box.getCellOption(profile, i, "type")=='file'){
-                            profile.box.$cancelHoverEditor(profile);
+                        //    profile.box.$cancelHoverEditor(profile);
                         }else{
+                        //    profile.box.$cancelHoverEditor(profile);
                             xui.resetRun(profile.key+":"+profile.$xid+":hovereditor",function(){
                                     if(profile.destroyed)return;
-                                    if(profile&&profile.$curEditor){
-                                        editor=profile.$curEditor;
-                                        xui.tryF(editor.undo,[],editor);
-                                    }
                                     profile.box._editCell(profile, profile.getSubId(src),true);
                             });
                             return false;
                         }
-                    }else{
-                        profile.box.$cancelHoverEditor(profile);
-                    }
+                    }//else{
+                     //   profile.box.$cancelHoverEditor(profile);
+                    //}
+                }
+            },
+            GCELL:{
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
                 }
             },
             CELLA:{
@@ -51838,9 +51837,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             return profile.boxing().onCommand(profile, editorprf.$cell, editorprf, node, type);
                         });
 
-                    if(inline){
+                   cell._editor = editor;
+                   if(inline){
                        cellNode.append(editor);
-                       cell._editor=editor;
                     }else{
                         baseNode.append(editor);
                     }
@@ -51986,7 +51985,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(!editorCacheKey && editor.get(0)){
                             editor.destroy(true);
                         }
-                        editor=null;
+                        cell._editor=editor=null;
                     };
                     var g1=profile.boxing(),pos=g1.getCellPos(cell),cc,nc,
                         _getcell=function(editorPrf){
@@ -52843,8 +52842,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         $cancelHoverEditor:function(profile){
-            if(xui.str.startWith(xui.get(profile,['$curEditor','_nodes',0,'$editMode'])||"",'hover')){
+            if(profile.destroyed)return;
+            var type=xui.get(profile,['$curEditor','_nodes',0,'$editMode'])||"",t;
+            if(xui.str.startWith(type,'hover')){
                 var editor=profile.$curEditor;
+                if(type=="hover" && (t=editor.get(0)) && t.$poplink)return false;
                 xui.tryF(editor.undo,[],editor);
             }
         },
