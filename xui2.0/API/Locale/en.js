@@ -2383,6 +2383,7 @@ xui.set(xui.Locale,["en","app"], {
                 "shift [Optional] : Boolean, To determine whether or not it monitors 'SHIFT' status. Default is [false]",
                 "alt [Optional] : Boolean, To determine whether or not it monitors 'ALT' status. Default is [false]",
                 "fun [Optional] : Function, the hook function that will be executed whenever the pre-defined condition is triggered. If you do not specify this parameter, or enter a non-function variable, system will remove the event hook by the [key](keyboard name)",
+                "id [Optional]: String, unique id for the hook function",
                 "args [Optional]: Array, arguments for fun. Default is []",
                 "scope [Optional]: Object, [this] pointer for [fun]. Default is [window]"
             ],
@@ -2403,6 +2404,7 @@ xui.set(xui.Locale,["en","app"], {
                 "shift [Optional] : Boolean, To determine whether or not it monitors 'SHIFT' status. Default is [false]",
                 "alt [Optional] : Boolean, To determine whether or not it monitors 'ALT' status. Default is [false]",
                 "fun [Optional] : Function, the hook function that will be executed whenever the pre-defined condition is triggered. If you do not specify this parameter, or enter a non-function variable, system will remove the event hook by the [key](keyboard name)",
+                "id [Optional]: String, unique id for the hook function",
                 "args [Optional]: Array, arguments for fun. Default is []",
                 "scope [Optional]: Object, [this] pointer for [fun]. Default is [window]"
             ]

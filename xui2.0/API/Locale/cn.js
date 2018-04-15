@@ -2392,6 +2392,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "shift [可选参数] : Boolean, 指示是否监视'SHIFT'键. 默认为 [false]",
                 "alt [可选参数] : Boolean, 指示是否监视'ALT'键. 默认为 [false]",
                 "fun [可选参数] : Function, 用户按下热键后要执行的函数. 如果不指定该参数, 或传入非function变量, 这个键[key](keyboard name)上的钩子将被移除",
+                "id [可选参数]: String, 本钩子事件唯一键",
                 "args [可选参数]: Array, 函数的参数. 默认为 []",
                 "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数). 默认为 [window]"
             ],
@@ -2412,6 +2413,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "shift [可选参数] : Boolean, 指示是否监视'SHIFT'键. 默认为 [false]",
                 "alt [可选参数] : Boolean, 指示是否监视'ALT'键. 默认为 [false]",
                 "fun [可选参数] : Function, 用户按下热键后要执行的函数. 如果不指定该参数, 或传入非function变量, 这个键[key](keyboard name)上的钩子将被移除",
+                "id [可选参数]: String, 本钩子事件唯一键",
                 "args [可选参数]: Array, 函数的参数. 默认为 []",
                 "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数). 默认为 [window]"
             ]

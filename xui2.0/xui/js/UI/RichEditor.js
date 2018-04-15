@@ -816,11 +816,12 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 }
                 //pop the control and set clear funciton
                 if(o){
+                    var sid=profile.key+":"+editor.$xid;
                     _clear=function(){
                         o.beforeUIValueSet(null);
                         editor.getSubNode('POOL').append(o.getRoot());
-                        node.setBlurTrigger(editor.$xid);
-                        xui.Event.keyboardHook('esc');
+                        node.setBlurTrigger(sid);
+                        xui.Event.keyboardHook('esc',0,0,0,sid);
                         xui.asyRun(function(){
                             // destroyed
                             if(!editor||!editor.$win)return;
@@ -846,7 +847,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     xui.tryF(o.activate,[],o);
 
                     //for on blur disappear
-                    node.setBlurTrigger(editor.$xid, function(){
+                    node.setBlurTrigger(sid, function(){
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
                             var v=o._getCtrlValue(); 
@@ -857,7 +858,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     //for esc
                     xui.Event.keyboardHook('esc',0,0,0,function(){
                         _clear();
-                    },null,null,profile.domId);
+                    },sid,null,null,profile.domId);
                 }
                 //set beforeUIValueSet function
                 switch(cmd){

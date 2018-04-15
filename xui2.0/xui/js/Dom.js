@@ -1535,9 +1535,9 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(typeof label == 'string'){
                         label='$'+label;
                         if(k=t[name]){
+                            delete k[label];
                             if(xui.arr.indexOf(k,label)!=-1)
                                 xui.arr.removeValue(k,label);
-                            delete k[label];
                         }
                     }else
                         delete t[name];
@@ -1972,8 +1972,8 @@ xui.Class('xui.Dom','xui.absBox',{
                                     return b=false;
                             });
                         if(!b){
-                            xui.arr.removeValue(arr,i);
                             delete arr[i];
+                            xui.arr.removeValue(arr,i);
                         };
                     });
                     a=xui.copy(arr);
@@ -2008,8 +2008,8 @@ xui.Class('xui.Dom','xui.absBox',{
                             return false;
 
                         if(b){
-                            xui.arr.removeValue(arr,i);
                             delete arr[i];
+                            xui.arr.removeValue(arr,i);
                             xui.tryF(v.trigger,[p,e],v.target);
                             v=null;
                         }else if(v.stopNext){
@@ -2029,8 +2029,8 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.tryF(arr[id].trigger);
                     trigger=false;
                 }
-                xui.arr.removeValue(arr,id);
                 delete arr[id];
+                xui.arr.removeValue(arr,id);
             }
             // add trigger
             if(trigger){
@@ -4108,31 +4108,37 @@ xui.Class('xui.Dom','xui.absBox',{
                 ? ['inline-block', 'inline']
                 : ['inline-block'];
         var fun=function(p,e,cache,keydown){
-             var event=xui.Event,set,hash,rtnf,rst,
+             var event=xui.Event,set,hash,rtnf,rst,remove={},
                 ks=event.getKey(e);
             if(ks){
                 if(ks[0].length==1)ks[0]=ks[0].toLowerCase();
                 //if hot function return false, stop bubble
                 if(arr = cache[ks.join(":")]){
-                    xui.arr.each(arr,function(key,index){
+                    xui.arr.each(arr,function(key,i){
                         set = arr[key];
                         if(set){
+                            // remove hook for non-exist dom
                             if(set[3] && (typeof set[3]=='function'?false===(set[3])() : (!xui(set[3]).size()))){
                                 // do nothing and detach it
                                 delete arr[key];
-                                arr.pop();
+                                remove[i]=1;
+                                return;
                             }
-                            rst = xui.tryF(set[0],set[1],set[2]);
+                            rst = xui.tryF(set[0],set[1]||[arr,i,key],set[2]);
                             if(rst===false){
                                 rtnf=1;
                                 return false;
                             }else if(rst===true){
-                                // do nothing and detach it
+                                // detach it
                                 delete arr[key];
-                                arr.pop();
+                                remove[i]=1;
                             }
                         }
                     },null,true);
+                    // remove
+                    xui.filter(arr, function(key,i){
+                        return !remove[i];
+                    });
                     if(rtnf){
                         event.stopBubble(e);
                         return false;

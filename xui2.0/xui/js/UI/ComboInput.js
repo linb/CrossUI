@@ -445,24 +445,26 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     xui.tryF(o.activate,[],o);
 
                     //for on blur disappear
-                    node.setBlurTrigger(profile.key+":"+profile.$xid, function(){
+                    var sid=profile.key+":"+profile.$xid;
+                    node.setBlurTrigger(sid, function(){
                         box._cache('blur');
-                        xui.Event.keyboardHookUp('esc');
+                        xui.Event.keyboardHook('esc',0,0,0,sid);
                     });
 
                     //for esc
-                    xui.Event.keyboardHookUp('esc',0,0,0,function(){
+                    xui.Event.keyboardHook('esc',0,0,0,function(){
                         profile.$escclosedrop=1;
                         xui.asyRun(function(){
                             delete profile.$escclosedrop;
                         });
 
                         box.activate();
-                        //unhook
-                        xui.Event.keyboardHookUp('esc');
                         box._cache('esc',true);
-                        return true;
-                    });
+
+                        //unhook
+                        xui.Event.keyboardHook('esc',0,0,0,sid);
+                        return false;
+                    },sid,null,null,profile.domId);
                 }else if(type=='file'){
                     profile.boxing().popFileSelector();
                 }
@@ -850,14 +852,16 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var node=o.reBoxing();
                     node.popToTop(src,null,prop.parentID);
                     xui.tryF(o.activate,[],o);
-                    node.setBlurTrigger(profile.key+":unit:"+profile.$xid, function(){
-                        xui.Event.keyboardHook('esc');
+                    var sid=profile.key+":unit:"+profile.$xid;
+                    node.setBlurTrigger(sid, function(){
                         o.destroy();
+                        xui.Event.keyboardHook('esc',0,0,0,sid);
                     });
-                    xui.Event.keyboardHookUp('esc',0,0,0,function(){
-                        xui.Event.keyboardHook('esc');
+                    xui.Event.keyboardHook('esc',0,0,0,function(){
                         o.destroy();
-                    });
+                        xui.Event.keyboardHook('esc',0,0,0,sid);
+                        return false;
+                    },sid,null,null,profile.domId);
                 }
             },
             FILE:{
