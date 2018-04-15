@@ -14,6 +14,40 @@
   -moz-osx-font-smoothing: grayscale;
   vertical-align:-15%;
 }
+.xui-rotate-90, .xui-rotate-180, .xui-rotate-270, .xui-flip-horizontal, .xui-flip-vertical {
+    filter: none;
+}
+.xui-rotate-90 {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+    -webkit-transform: rotate(900deg);
+    -ms-transform: rotate(900deg);
+    transform: rotate(90deg);
+}
+.xui-rotate-180 {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.xui-rotate-270 {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+    -webkit-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
+.xui-horizontal {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+    -webkit-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+}
+.xui-vertical {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+    -webkit-transform: scale(1, -1);
+    -ms-transform: scale(1, -1);
+    transform: scale(1, -1);
+}
+
 .xui-icon-error:before { content: "\e674"  !important; }
 .xui-load-error:before { content: "\e682"  !important; }
 

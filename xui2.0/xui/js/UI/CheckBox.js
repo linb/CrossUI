@@ -11,7 +11,7 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             return this;
         },
         activate:function(){
-            this.getSubNode('FOCUS').focus();
+            this.getSubNode('FOCUS').focus(true);
             return this;
         },
         _setCtrlValue:function(value){
@@ -79,7 +79,7 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 if(p.readonly)return false;
                 b.setUIValue(!p.$UIvalue,null,null,'click');
                 if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
-                profile.getSubNode('FOCUS').focus();
+                profile.getSubNode('FOCUS').focus(true);
             },
             FOCUS:{
                 onKeydown:function(profile, e, src){

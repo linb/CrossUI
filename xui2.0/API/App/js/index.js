@@ -211,159 +211,211 @@ xui.Class('App', 'xui.Module',{
             return false;
         }, 
         iniComponents:function(){
-            // [[Code created by CrossUI RAD Tools
+            // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
             
-            append((new xui.UI.PopMenu())
-            .setHost(host,"popLang")
-            .setItems([{"id":"en", "caption":"$app.en"}, {"id":"cn", "caption":"$app.cn"}])
-            .onMenuSelected("_pop_onmenuselected")
+            append(
+                xui.create("xui.UI.PopMenu")
+                .setHost(host,"popLang")
+                .setItems([
+                    {
+                        "id":"en",
+                        "caption":"$app.en"
+                    },
+                    {
+                        "id":"cn",
+                        "caption":"$app.cn"
+                    }
+                ])
+                .onMenuSelected("_pop_onmenuselected")
             );
             
-            append((new xui.UI.Dialog())
-            .setHost(host,"dialog2")
-            .setTop(40)
-            .setWidth(420)
-            .setHeight(360)
-            .setRight(1)
-            .setZIndex(100)
-            .setResizer(false)
-            .setOverflow("hidden")
-            .setCaption("$app.search")
-            .setMaxBtn(false)
-            .setCloseBtn(false)
+            append(
+                xui.create("xui.UI.Dialog")
+                .setHost(host,"dialog2")
+                .setTop("3.3333333333333335em")
+                .setWidth("35em")
+                .setHeight("30em")
+                .setRight("0.08333333333333333em")
+                .setZIndex(100)
+                .setResizer(false)
+                .setCaption("$app.search")
+                .setMaxBtn(false)
+                .setCloseBtn(false)
+                .setOverflow("hidden")
             );
             
-            host.dialog2.append((new xui.UI.Block())
-            .setHost(host,"blockQ")
-            .setDock("fill")
-            .setZIndex(100)
+            host.dialog2.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"blockQ")
+                .setDock("fill")
+                .setZIndex(100)
+                .setBorderType("inset")
+                );
+            
+            host.blockQ.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"divQ")
+                .setWidth("auto")
+                .setHeight("auto")
+                .setPosition("relative")
+                );
+            
+            host.blockQ.append(
+                xui.create("xui.UI.List")
+                .setHost(host,"listQ")
+                .setDirtyMark(false)
+                .setDock("fill")
+                .setDockMargin({
+                    "left":4,
+                    "top":0,
+                    "right":4,
+                    "bottom":0
+                })
+                .setSelMode("none")
+                .setValue("")
+                .onItemSelected("_listq_onitemselected")
+                );
+            
+            host.blockQ.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"block20")
+                .setDock("bottom")
+                .setHeight("2.6666666666666665em")
+                .setBorderType("none")
+                );
+            
+            host.block20.append(
+                xui.create("xui.UI.PageBar")
+                .setHost(host,"pbQ")
+                .setLeft("0.4166666666666667em")
+                .setTop("0.5833333333333334em")
+                .setCaption("")
+                .onClick("_pbq_onclick")
+                );
+            
+            host.blockQ.append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"block6")
+                .setDock("top")
+                .setHeight("2.6666666666666665em")
+                .setBorderType("none")
+                .setOverflow("hidden")
+                );
+            
+            host.block6.append(
+                xui.create("xui.UI.Label")
+                .setHost(host,"lQ1")
+                .setLeft("0.4166666666666667em")
+                .setTop("0.8333333333333334em")
+                .setWidth("5.5em")
+                .setCaption("$app.lQ1")
+                );
+            
+            host.block6.append(
+                xui.create("xui.UI.Input")
+                .setHost(host,"iQ1")
+                .setDirtyMark(false)
+                .setLeft("6.083333333333333em")
+                .setTop("0.5em")
+                .setWidth("8.333333333333334em")
+                .setDynCheck(true)
+                .onChange("_iq1_afteruivalueset")
+                );
+            
+            host.block6.append(
+                xui.create("xui.UI.Label")
+                .setHost(host,"lQ2")
+                .setLeft("14.666666666666666em")
+                .setTop("0.8333333333333334em")
+                .setWidth("9.166666666666666em")
+                .setCaption("$app.lQ2")
+                );
+            
+            host.block6.append(
+                xui.create("xui.UI.Input")
+                .setHost(host,"iQ2")
+                .setDirtyMark(false)
+                .setLeft("24.083333333333332em")
+                .setTop("0.5em")
+                .setWidth("9.166666666666666em")
+                .setDynCheck(true)
+                .onChange("_iq2_afteruivalueset")
+                );
+            
+            append(
+                xui.create("xui.UI.Block")
+                .setHost(host,"paneTop")
+                .setDock("top")
+                .setHeight("3.3333333333333335em")
             );
             
-            host.blockQ.append((new xui.UI.Div())
-            .setHost(host,"divQ")
-            .setWidth("auto")
-            .setHeight("auto")
-            .setPosition("relative")
+            host.paneTop.append(
+                xui.create("xui.UI.Label")
+                .setHost(host,"labelName")
+                .setLeft("0.8333333333333334em")
+                .setTop("0.8333333333333334em")
+                .setWidth("22.5em")
+                .setCaption("$app.apititle")
+                .setHAlign("left")
+                .setFontSize("16px")
+                .setFontWeight("bold")
+                );
+            
+            host.paneTop.append(
+                xui.create("xui.UI.Button")
+                .setHost(host,"btnLang")
+                .setDomId("btnLang")
+                .setTop("0.75em")
+                .setRight("0.8333333333333334em")
+                .setCaption("btnLang")
+                .setType("drop")
+                .onClick("_butlang_onclickdrop")
+                .onClickDrop("_butlang_onclickdrop")
+                );
+            
+            append(
+                xui.create("xui.UI.Layout")
+                .setHost(host,"mainLayout")
+                .setItems([
+                    {
+                        "id":"before",
+                        "pos":"before",
+                        "locked":false,
+                        "size":240,
+                        "min":100,
+                        "max":400,
+                        "folded":false,
+                        "cmd":true,
+                        "hidden":false
+                    },
+                    {
+                        "id":"main",
+                        "min":10,
+                        "size":80
+                    }
+                ])
+                .setType("horizontal")
             );
             
-            host.blockQ.append((new xui.UI.List())
-            .setHost(host,"listQ")
-            .setDirtyMark(false)
-            .setDock("fill")
-            .setSelMode("none")
-            .setValue("")
-            .onItemSelected("_listq_onitemselected")
-            );
+            host.mainLayout.append(
+                xui.create("xui.UI.Div")
+                .setHost(host,"divHead")
+                .setDock("fill")
+                .setCustomStyle({
+                    "KEY":"overflow:auto;"
+                })
+                , "main");
             
-            host.blockQ.append((new xui.UI.Block())
-            .setHost(host,"block20")
-            .setDock("bottom")
-            .setHeight(32)
-            .setBorderType("groove")
-            );
-            
-            host.block20.append((new xui.UI.PageBar())
-            .setHost(host,"pbQ")
-            .setLeft(2)
-            .setTop(2)
-            .setCaption("")
-            .onClick("_pbq_onclick")
-            );
-            
-            host.blockQ.append((new xui.UI.Block())
-            .setHost(host,"block6")
-            .setDock("top")
-            .setHeight(32)
-            .setOverflow("hidden")
-            .setBorderType("groove")
-            );
-            
-            host.block6.append((new xui.UI.SLabel())
-            .setHost(host,"lQ1")
-            .setLeft(5)
-            .setTop(6)
-            .setWidth(66)
-            .setCaption("$app.lQ1")
-            );
-            
-            host.block6.append((new xui.UI.Input())
-            .setHost(host,"iQ1")
-            .setDirtyMark(false)
-            .setLeft(73)
-            .setTop(3)
-            .setWidth(100)
-            .setDynCheck(true)
-            .onChange("_iq1_afteruivalueset")
-            );
-            
-            host.block6.append((new xui.UI.SLabel())
-            .setHost(host,"lQ2")
-            .setLeft(176)
-            .setTop(6)
-            .setWidth(110)
-            .setCaption("$app.lQ2")
-            );
-            
-            host.block6.append((new xui.UI.Input())
-            .setHost(host,"iQ2")
-            .setDirtyMark(false)
-            .setLeft(289)
-            .setTop(3)
-            .setWidth(110)
-            .setDynCheck(true)
-            .onChange("_iq2_afteruivalueset")
-            );
-            
-            append((new xui.UI.Block())
-            .setHost(host,"paneTop")
-            .setDock("top")
-            .setHeight(40)
-            );
-            
-            host.paneTop.append((new xui.UI.Label())
-            .setHost(host,"labelName")
-            .setLeft(10)
-            .setTop(10)
-            .setWidth(270)
-            .setCaption("$app.apititle")
-            .setHAlign("left")
-            .setFontSize("16px")
-            .setFontWeight("bold")
-            );
-            
-            host.paneTop.append((new xui.UI.Button())
-            .setHost(host,"btnLang")
-            .setDomId("btnLang")
-            .setTop(9)
-            .setWidth(80)
-            .setRight(10)
-            .setCaption("btnLang")
-            .setType("drop")
-            .onClick("_butlang_onclickdrop")
-            .onClickDrop("_butlang_onclickdrop")
-            );
-            
-            append((new xui.UI.Layout())
-            .setHost(host,"mainLayout")
-            .setItems([{"id":"before", "pos":"before", "locked":false, "size":240, "min":100, "max":400, "folded":false, "cmd":true, "hidden":false}, {"id":"main", "min":10}])
-            .setType("horizontal")
-            );
-            
-            host.mainLayout.append((new xui.UI.TreeBar())
-            .setHost(host,"objTree")
-            .onRender("_objtree_aftercreated")
-            .onItemSelected("__itemsel")
-            , "before");
-            
-            host.mainLayout.append((new xui.UI.Div())
-            .setHost(host,"divHead")
-            .setDock("fill")
-            .setCustomStyle({"KEY":"overflow:auto;"})
-            , "main");
+            host.mainLayout.append(
+                xui.create("xui.UI.TreeBar")
+                .setHost(host,"objTree")
+                .onRender("_objtree_aftercreated")
+                .onItemSelected("__itemsel")
+                , "before");
             
             return children;
-            // ]]Code created by CrossUI RAD Tools
+            // ]]Code created by CrossUI RAD Studio
         }, 
         _pop_onmenuselected:function (profile, item) {
             if(xui.getLang()==item.id)return;

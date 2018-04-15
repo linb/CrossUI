@@ -371,7 +371,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(prop.disabled|| item.disabled)return false;
                     if(prop.readonly|| item.readonly)return false;
 
-                    profile.getSubNode('TITLE').focus();
+                    profile.getSubNode('TITLE').focus(true);
 
                     switch(prop.selMode){
                     case 'multi':

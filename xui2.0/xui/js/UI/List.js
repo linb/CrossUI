@@ -277,7 +277,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     if(profile.onClick)
                         box.onClick(profile,item,e,src);
 
-                    xui.use(src).focus();
+                    xui.use(src).focus(true);
 
                     switch(properties.selMode){
                     case 'none':
@@ -349,12 +349,12 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         case 'tab':
                             if(shift){
                                 if(cur.get(0)!=first.get(0)){
-                                    first.focus();
+                                    first.focus(true);
                                     return false;
                                 }
                             }else{
                                 if(cur.get(0)!=last.get(0)){
-                                    last.focus();
+                                    last.focus(true);
                                     return false;
                                 }
                             }
@@ -363,7 +363,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         case 'up':
                             var next = cur.nextFocus(false, true, false);
                             if(cur.get(0)==first.get(0))
-                                last.focus();
+                                last.focus(true);
                             else
                                 cur.nextFocus(false);
                             return false;
@@ -372,7 +372,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                         case 'down':
                             var next = cur.nextFocus(true, false, false);
                             if(cur.get(0)==last.get(0))
-                                first.focus();
+                                first.focus(true);
                             else
                                 cur.nextFocus();
                             return false;

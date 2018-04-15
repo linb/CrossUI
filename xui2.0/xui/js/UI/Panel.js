@@ -2,7 +2,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
     Instance:{
         activate:function(){
             var profile = this.get(0);
-            profile.getSubNode('CAPTION').focus();
+            profile.getSubNode('CAPTION').focus(true);
             return this;
         },
         resetPanelView:function(removeChildren,destroyChildren){

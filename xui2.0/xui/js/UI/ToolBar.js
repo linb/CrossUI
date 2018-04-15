@@ -290,7 +290,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                     var item = profile.getItemByDom(src);
                     if(item.disabled)return false;
 
-                    xui.use(src).focus();
+                    xui.use(src).focus(true);
                     if(item.type=="statusButton")
                         xui.use(src).tagClass('-checked',item.value=!item.value);
 

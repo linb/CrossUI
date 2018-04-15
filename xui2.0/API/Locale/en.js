@@ -6758,8 +6758,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"to filter the list",
                 $rtn:"[self]",
                 $paras:[
-                    "itemFilter [Required] : Function, The filter function. function(item, value, profile){if(item.tag == 'a') return true;}",
-                    "value [Optional]: Object, The filter value"
+                    "itemFilter [Required] : Function, The filter function. function(item, helper, profile){if(item.tag == 'a') return true;}",
+                    "helper [Optional]: Object, The filter helper object"
                 ]
             },
             fireItemClickEvent:{

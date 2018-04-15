@@ -268,7 +268,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         dragCursor:'default'
                     });
 
-                    xui.use(src).css('zIndex',10).focus();
+                    xui.use(src).css('zIndex',10).focus(true);
                     profile.getSubNode('IND2').css('zIndex',5);
                 },
                 beforeDragbegin:function(profile, e, src){
@@ -323,7 +323,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                         dragCursor:'default'
                     });
 
-                    xui.use(src).css('zIndex',10).focus();
+                    xui.use(src).css('zIndex',10).focus(true);
                     profile.getSubNode('IND1').css('zIndex',5);
                 },
                 beforeDragbegin:function(profile, e, src){

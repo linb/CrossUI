@@ -170,7 +170,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             });
             xui.asyRun(function(){
                 if(flag!==false && !ifocus){
-                    try{profile.getSubNode('CAPTION').focus();}catch(e){}
+                    try{profile.getSubNode('CAPTION').focus(true);}catch(e){}
                 }
                 if(self.onActivated)self.onActivated(profile);                        
             });
@@ -454,12 +454,12 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                         }
                     }
                     if(o){
-                        xui(o).focus();
+                        xui(o).focus(true);
                         xui.use(src).get(0).tabIndex=o.tabIndex;
                     }
                     else{
                         o=profile.getRoot().nextFocus(false,true,false);
-                        xui(o).focus();
+                        xui(o).focus(true);
                         xui.use(src).get(0).tabIndex=o.get(0).tabIndex;
                     }
                     children=o=null;
@@ -480,12 +480,12 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                         }
                     }
                     if(o){
-                        xui(o).focus();
+                        xui(o).focus(true);
                         xui.use(src).get(0).tabIndex=o.tabIndex;
                     }
                     else{
                         o=profile.getRoot().nextFocus(true,true,false);
-                        xui(o).focus();
+                        xui(o).focus(true);
                         xui.use(src).get(0).tabIndex=o.get(0).tabIndex;
                     }
                     children=o=null;
@@ -1055,10 +1055,12 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
 
                     // attach onresize event
                     if(p.get(0)===document.body || p.get(0)===document || p.get(0)===window)
-                        p=xui.win;
+                        p=xui.win,
+                        w=Math.max(p.width(),p.scrollWidth())+'px',    
+                        h=Math.max(p.height(),p.scrollHeight())+'px';
 
                     cover.css({
-                        display:'block',width:Math.max(p.width(),p.scrollWidth())+'px',height:Math.max(p.height(),p.scrollHeight())+'px'
+                        display:'block',width:w,height:h
                     })
                     .onMousedown(function(){return profile.$inDesign?null:false})
                     .topZindex(true);
@@ -1067,11 +1069,12 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
 
                     p.onSize(function(p){
                         p=xui(p);
+                        var w=p.width()+"px",h=p.height()+"px";
                         // set widht/height first
-                        cover.width(p.width()).height(p.height());
+                        cover.css({width:w,height:h});
                         xui.asyRun(function(){
-                            cover.width(Math.max(p.width(),p.scrollWidth()));
-                            cover.height(Math.max(p.height(),p.scrollHeight()));
+                            var w=Math.max(p.width(),p.scrollWidth())+"px",h=Math.max(p.height(),p.scrollHeight())+"px";
+                            cover.css({width:w,height:h});
                         });
                     },"dialog:"+profile.serialId);
                     
@@ -1111,7 +1114,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                                 }
                             }
                         }
-                        if(o)xui(o).focus();
+                        if(o)xui(o).focus(true);
                         else profile.getRoot().nextFocus();
 
                         children=o=null;

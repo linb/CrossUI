@@ -6818,8 +6818,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"过滤条目",
                 $rtn:"[self]",
                 $paras:[
-                    "itemFilter [必需参数] : Function, 过滤函数. function(item, value, profile){if(item.tag == 'a') return true;}",
-                    "value [可选参数] : Object, 过滤目标值"
+                    "itemFilter [必需参数] : Function, 过滤函数. function(item, value, helper){if(item.tag == 'a') return true;}",
+                    "helper [可选参数] : Object, 过滤辅助对象"
                 ]
             },
             activate:{

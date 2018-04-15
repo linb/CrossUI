@@ -288,12 +288,12 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         case 'tab':
                             if(shift){
                                 if(cur.get(0)!=first.get(0)){
-                                    first.focus();
+                                    first.focus(true);
                                     return false;
                                 }
                             }else{
                                 if(cur.get(0)!=last.get(0)){
-                                    last.focus();
+                                    last.focus(true);
                                     return false;
                                 }
                             }
@@ -302,7 +302,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         case 'up':
                             var next = cur.nextFocus(false, true, false);
                             if(cur.get(0)==first.get(0))
-                                last.focus();
+                                last.focus(true);
                             else
                                 cur.nextFocus(false);
                             return false;
@@ -311,7 +311,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         case 'down':
                             var next = cur.nextFocus(true, false, false);
                             if(cur.get(0)==last.get(0))
-                                first.focus();
+                                first.focus(true);
                             else
                                 cur.nextFocus();
                             return false;

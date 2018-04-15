@@ -1,4 +1,11 @@
 xui.Class("xui.UI.FusionChartsXT","xui.UI",{
+    Initialize:function(){
+        // for fusioncharts in IE<=7
+        if(!window.JSON)window.JSON={
+            parse:function(a){return xui.unserialize(a)},
+            stringify:function(a){return xui.stringify(a)}
+        };
+    },
     Instance:{
         initialize:function(){
             if(xui.isSet(window.FusionCharts) && FusionCharts.addEventListener){

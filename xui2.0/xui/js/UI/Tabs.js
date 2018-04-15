@@ -585,7 +585,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(prop.readonly || item.readonly)return false;
 
                     //for some input onblur event
-                    //profile.getSubNode('HANDLE', itemId).focus();
+                    //profile.getSubNode('HANDLE', itemId).focus(true);
 
                     if(dm.hasOwnProperty("selMode") &&
                         dm.hasOwnProperty("noPanel") &&
@@ -649,12 +649,12 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         case 'tab':
                             if(shift){
                                 if(cur.get(0)!=first.get(0)){
-                                    first.focus();
+                                    first.focus(true);
                                     return false;
                                 }
                             }else{
                                 if(cur.get(0)!=last.get(0)){
-                                    last.focus();
+                                    last.focus(true);
                                     return false;
                                 }
                             }
@@ -663,7 +663,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         case 'up':
                             var next = cur.nextFocus(false, true, false);
                             if(cur.get(0)==first.get(0))
-                                last.focus();
+                                last.focus(true);
                             else
                                 cur.nextFocus(false);
                             return false;
@@ -672,7 +672,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         case 'down':
                             var next = cur.nextFocus(true, false, false);
                             if(cur.get(0)==last.get(0))
-                                first.focus();
+                                first.focus(true);
                             else
                                 cur.nextFocus();
                             return false;

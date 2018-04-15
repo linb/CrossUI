@@ -623,7 +623,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 return;
             }
     
-            profile.getSubNode(profile.box._focusNodeKey, itemId).focus();
+            profile.getSubNode(profile.box._focusNodeKey, itemId).focus(true);
     
             switch(properties.selMode){
             case 'none':
@@ -704,12 +704,12 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 case 'tab':
                     if(shift){
                         if(cur.get(0)!=first.get(0)){
-                            first.focus();
+                            first.focus(true);
                             return false;
                         }
                     }else{
                         if(cur.get(0)!=last.get(0)){
-                            last.focus();
+                            last.focus(true);
                             return false;
                         }
                     }
@@ -720,9 +720,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         return false;
                     }
                     if(cur.get(0)==first.get(0))
-                        last.focus();
+                        last.focus(true);
                     else
-                        cur.nextFocus(false, true, false).focus();
+                        cur.nextFocus(false, true, false).focus(true);
                      return false;
                      break;
                 case 'down':
@@ -731,9 +731,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         return false;
                     }
                      if(cur.get(0)==last.get(0))
-                        first.focus();
+                        first.focus(true);
                      else
-                        cur.nextFocus(true, false, false).focus();
+                        cur.nextFocus(true, false, false).focus(true);
                      return false;
                      break;
                 case 'right':

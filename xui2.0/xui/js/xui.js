@@ -186,16 +186,26 @@ new function(){
         w.requestAnimationFrame = w[tag+'RequestAnimationFrame'];
         w.cancelAnimationFrame = w[tag+'CancelAnimationFrame']||w[tag+'CancelRequestAnimationFrame'];
     }
-    if (!w.requestAnimationFrame)
-        w.requestAnimationFrame=function(callback,element){
-            var currTime=(new Date()).getTime(),
-                timeToCall=Math.max(0,   1000 / 60 - (currTime-lastTime)),
-                id=setTimeout(function(){callback(currTime + timeToCall)}, timeToCall);
-            lastTime=currTime+timeToCall;
-            return id;
-        };
-    if (!w.cancelAnimationFrame)
-        w.cancelAnimationFrame = function(id){clearTimeout(id)};
+    w.requestAnimationFrame=w.requestAnimationFrame||function(callback,element){
+        var currTime=(new Date()).getTime(),
+            timeToCall=Math.max(0,   1000 / 60 - (currTime-lastTime)),
+            id=setTimeout(function(){callback(currTime + timeToCall)}, timeToCall);
+        lastTime=currTime+timeToCall;
+        return id;
+    };
+    w.cancelAnimationFrame = w.cancelAnimationFrame||function(id){clearTimeout(id)};
+    w.requestIdleCallback = w.requestIdleCallback || function (cb) {
+        return setTimeout(function () {
+          var start = Date.now();
+          cb({ 
+            didTimeout: false,
+            timeRemaining: function () {
+              return Math.max(0, 50 - (Date.now() - start));
+            }
+          });
+        }, 1);
+    };
+    w.cancelIdleCallback = w.cancelIdleCallback || function (id) {clearTimeout(id)}; 
 };
 
 new function(){
@@ -310,6 +320,9 @@ new function(){
         asyRun:function(fun, defer, args, scope){
             //defer must set in opera
             return xui.setTimeout(typeof fun=='string' ? function(){xui.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;}, defer);
+        },
+        idleRun:function(fun, args, scope){
+            return window.requestIdleCallback(typeof fun=='string' ? function(){xui.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;});
         },
         asyHTML:function(content, callback, defer, size){
             var div = document.createElement('div'),

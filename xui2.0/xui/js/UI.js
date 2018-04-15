@@ -3121,6 +3121,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var matrix=xui.Dom.getEmptyDiv(profile.$inDesign).get(0), r=[];
             // for control size
             matrix.style.position='relative';
+            matrix.style.display='none';
             matrix.innerHTML=str;
             //add event handlers
             this.$addEventsHanlder(profile, matrix);
@@ -3129,6 +3130,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui.$registerNode(t[i]);
                 r[r.length]=t[i].$xid;
             }
+            matrix.style.display='';
             matrix=null;
             return xui(r,false);
         },
@@ -4774,13 +4776,25 @@ xui.Class("xui.UI",  "xui.absObj", {
             var pad = prop.conDockPadding,
                   spc = prop.conDockSpacing,
                   c = panel.children(),
-                  l = c.size(),off,pw,w,tw,index=0,ww,rowtotal=0;
+                  l = c.size(),off,pw,w,tw,index=0,ww,rowtotal=0,
+                 scrollw,changed;
             if(!l)return;
-            off = pad.left + pad.right + (cols -1) * spc.width;
+            // ensure inline block
+            c.each(function(n,i,prf,p){
+                if(cur && n!=cur)return;
+                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
+                    p=xui(n).css('position');
+                    if(p=='relative'||p=='static')
+                        xui(n).setInlineBlock();
+                }
+            });
+            // calculate width
+            scrollw =  (panel.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0);
+            off = pad.left + pad.right + (cols -1) * spc.width + scrollw;
             pw = profile.$px(parentW) - off;
             // It must be integer
             w = Math.floor(pw/cols);
-
+            // set width
             c.each(function(n,i,prf,p){
                 if(cur && n!=cur)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
@@ -4805,12 +4819,26 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 ww=prf.$forceu( w );
                             }
                             // to trigger onsize
-                            xui(n).width(prf.properties.width = ww);
+                            xui(n).width( prf.properties.width = ww );
                             index++;
                         }
                     }
                 }
             });
+
+            if(cur){
+                if(scrollw && !profile._scrollY){
+                    profile._scrollY=1;
+                    changed=1;
+                }
+                if(!scrollw && profile._scrollY){
+                    delete profile._scrollY;
+                    changed=1;
+                }
+                if(changed){
+                    xui.UI._adjustConW(profile, panel, parentW, null);
+                }
+            };
         },
         /*copy item to hash, use 'without'
         exception: key start with $
@@ -4831,7 +4859,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 hashOut.hidden=hashIn.hidden;
             // filter: hidden
             var itemFilter=hashIn.itemFilter||profile.$itemFilter;
-            if(itemFilter)hashOut.hidden = !!itemFilter(hashIn,profile);
+            if(itemFilter)hashOut.hidden = !!itemFilter(hashIn,'prepareItem',profile);
 
             hashOut._itemDisplay=hashIn.hidden?'display:none;':'';
 
@@ -6633,7 +6661,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 tabindex = profile.properties.tabindex,
                 ajd=profile.box.adjustData,
                 itemFilter=profile.$itemFilter;
-            if(itemFilter)itemFilter('begin','preapre',profile);
+            if(itemFilter)itemFilter('begin','prepareItem',profile);
 
             //set map
             for(var i=0,l=items.length;i<l;i++){
@@ -6677,7 +6705,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 result.push(dataItem);
             }
 
-            if(itemFilter)itemFilter('end','preapre',profile);
+            if(itemFilter)itemFilter('end','prepareItem',profile);
             return result;
         },
         _showTips:function(profile, node, pos){
@@ -6695,7 +6723,7 @@ xui.Class("xui.absList", "xui.absObj",{
             var profile = this.get(0),
                 items = profile.getSubNode('ITEM',true);
             if(!items.isEmpty())
-                items.focus();
+                items.focus(true);
             return this;
         },
         /*
@@ -6771,11 +6799,10 @@ xui.Class("xui.absList", "xui.absObj",{
                 if(profile.$itemFilter){
                     var hideItems=[];
                     xui.arr.each(arr,function(item){
-                        if(item.sub && !item._checked)
-                            ns.toggleNode(item.id, true, false, true);
-
                        if(item.sub && !item.hidden){
-                           if(true!==profile.$itemFilter(item,null,profile)){
+                        //  if(!item._checked && item.id)
+                        //      ns.toggleNode(item.id, true, false, true);
+                           if(true!==profile.$itemFilter(item,'checkSub',profile)){
                                 var flag;
                                 for(var i=0,l=item.sub.length;i<l;i++){
                                    if( !item.sub[i].hidden){
@@ -7012,8 +7039,7 @@ xui.Class("xui.absList", "xui.absObj",{
             return self;
         },
         // filter: [true] => filter out
-        // value: the target value
-        doFilter:function(itemFilter, value, reLayout){
+        doFilter:function(itemFilter, helper, reLayout){
             var ns=this,
                 profile=ns.get(0);
             if(profile){
@@ -7037,13 +7063,13 @@ xui.Class("xui.absList", "xui.absObj",{
                             xui.arr.each(items,function(item){
                                 if(item.sub){
                                     // check parent node first
-                                    if(true===itemFilter(item, value, profile)){
+                                    if(true===itemFilter(item, helper, profile)){
                                         count++;
                                         if(item.hidden)showItems.push(item.id);
                                     }else{
                                         // ensure open all tree nodes
-                                        if(!item._checked)
-                                            (ns['toggleRow']||ns['toggleNode']).call(ns, item.id, true, false, true);
+                                        //if(!item._checked && item.id)
+                                        //    (ns['toggleRow']||ns['toggleNode']).call(ns, item.id, true, false, true);
                                         // check sub showed count next
                                         if(f1(item.sub, showItems, hideItems)){
                                             count++;
@@ -7053,7 +7079,7 @@ xui.Class("xui.absList", "xui.absObj",{
                                         }
                                     }                                       
                                 }else{
-                                    if(itemFilter(item, value, profile)){
+                                    if(itemFilter(item, helper, profile)){
                                         if(!item.hidden)hideItems.push(item.id);
                                     }else{
                                         count++;
@@ -7113,7 +7139,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 return v;
         },
         focusItem:function(itemId){
-            this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).focus();
+            this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).focus(true);
             return this;
         },
         scrollIntoView:function(itemId){
@@ -8086,7 +8112,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
 xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
     Instance:{
         activate:function(){
-            this.getRoot().focus();
+            this.getRoot().focus(true);
             return this;
         }
     },
@@ -8174,7 +8200,7 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
     },
     Instance:{
         activate:function(){
-            this.getRoot().focus();
+            this.getRoot().focus(true);
             return this;
         },
         _setCtrlValue:function(value){
