@@ -322,7 +322,7 @@ xui.Class("xui.CSS", null,{
                         ?"display:inline-box;display:inline;"
                     :"display:inline-block;")+
                 (b.ie?"zoom:1;":""),
-            css="html{color:#444;background:#FFF;}"+
+            css="html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0);color:#444;background:#FFF;}"+
                 "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}"+
                 "table{border-collapse:collapse;border-spacing:0;}"+
                 "fieldset,img{border:0;}"+
@@ -535,7 +535,7 @@ xui.Class("xui.CSS", null,{
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
             //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
-            ".xui-ui-ctrl{cursor:default;font-size:12px; font-size:0.75rem;}"+
+            ".xui-ui-ctrl{cursor:default;font-size:0.75rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 

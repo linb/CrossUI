@@ -558,12 +558,12 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
-                
+                cb=xui.browser.contentBox,
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 panelfz=panel._getEmSize(fzrate),
 
-                bordersize=profile.properties.borderType!='none'?panel._borderW():0,
-                h0=border._borderH(),
+                bordersize=!cb?0:profile.properties.borderType!='none'?panel._borderW():0,
+                h0=!cb?0:border._borderH(),
                 h1,h4,t;
 
             // caculate by px
@@ -596,12 +596,12 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             }
             if(width){
                 isize.width=adjustunit(width
-                    -(noFrame?0:(Math.round(parseFloat(v6.css('paddingRight')))||0))
-                    -(noFrame?0:(Math.round(parseFloat(v5.css('paddingLeft')))||0))
+                    -(!cb?0:noFrame?0:(Math.round(parseFloat(v6.css('paddingRight')))||0))
+                    -(!cb?0:noFrame?0:(Math.round(parseFloat(v5.css('paddingLeft')))||0))
                     -h0
                     -bordersize
-                    -v5._borderW()
-                    -v6._borderW()
+                    -(!cb?0:v5._borderW())
+                    -(!cb?0:v6._borderW())
                     , panelfz);
             }
 

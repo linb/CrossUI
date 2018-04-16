@@ -7605,6 +7605,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "dirtiedOnly [可选参数] : Boolean, 是否只获得脏控件的界面值",
                     "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块",
                     "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(返回 {fieldname:{value:xxx,caption:xxx}} ),默认为false",
                     "withCaptionField [可选参数] : Boolean, 如果字段控件有复合绑定(控件名: valueField:captionField)，决定是否连控件的caption 字段一起获取(返回{valueField:xxx,captionField:xxx}), 默认为false"
                 ]
@@ -7614,7 +7615,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Hash",
                 $paras:[
                     "values [必须参数] : Hash, 表单值键值对",
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             getFormElements:{
@@ -7622,14 +7624,16 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"xui.absValue",
                 $paras:[
                     "dirtiedOnly [可选参数] : Boolean, 是否只获得脏控件的表单项",
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             isDirtied:{
                 $desc:"判断是否有表单项被更改",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             checkValid:{
@@ -7637,7 +7641,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boollean",
                 $paras:[
                     "ignoreAlert [可选参数]: Boolean. 是否忽略表单验证警告",
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             checkRequired:{
@@ -7645,28 +7650,32 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boollean",
                 $paras:[
                     "ignoreAlert [可选参数]: Boolean. 是否忽略表单验证警告",
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             formClear:{
                 $desc:"清空表单",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             formReset:{
                 $desc:"重置表单值到原有状态",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             updateFormValues:{
                 $desc:"更新表单值到最新状态",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块"
                 ]
             },
             formSubmit:{
@@ -7674,7 +7683,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Boollean",
                 $paras:[
                     "ignoreAlert: Boolean. 是否忽略表单验证警告",
-                    "subId [可选参数]: String, 子容器id"
+                    "subId [可选参数]: String, 子容器id",
+                    "penetrate [可选参数]: Boolean, 穿透内部模块",
+                    "withCaption [可选参数] : Boolean, 是否连控件的caption一起获取(返回 {fieldname:{value:xxx,caption:xxx}} ),默认为false",
+                    "withCaptionField [可选参数] : Boolean, 如果字段控件有复合绑定(控件名: valueField:captionField)，决定是否连控件的caption 字段一起获取(返回{valueField:xxx,captionField:xxx}), 默认为false"
                 ]
             },
 

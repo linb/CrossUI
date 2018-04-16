@@ -953,14 +953,15 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 $hborder, $vborder,
 
                 clsname='xui-node xui-input-input',
-                paddingH=Math.round(v1._paddingH()/2)*2,
-                paddingW=Math.round(v1._paddingW()/2)*2,
+                cb=xui.browser.contentBox,
+                paddingH=!cb?0:Math.round(v1._paddingH()/2)*2,
+                paddingW=!cb?0:Math.round(v1._paddingW()/2)*2,
                 autoH;
             
             $hborder=$vborder=box._borderW() / 2;
             
             // calculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height

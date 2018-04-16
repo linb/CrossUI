@@ -570,7 +570,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 label = f('LABEL'),
                 cmd1 = f('INCREASE'),
                 cmd2 = f('DECREASE'),
-                
+                cb=xui.browser.contentBox,
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
@@ -604,7 +604,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 var w=profile.$px('1em'),
                     w1=prop.showIncreaseHandle?w:0,
                     w2=prop.showDecreaseHandle?w:0,
-                    w3=indb._borderH('top');
+                    w3=xui.browser.contentBox?indb._borderH('top'):0;
                 if(hh){
                     ruler.top(adjustunit(w1+offset,rulerfz))
                         .height(adjustunit(hh-w1-w2-2*offset,rulerfz));
@@ -627,7 +627,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 var w=profile.$px('1em'),
                     w1=prop.showDecreaseHandle?w:0,
                     w2=prop.showIncreaseHandle?w:0,
-                    w3=indb._borderW('left');
+                    w3=!cb?0:indb._borderW('left');
                 if(ww){
                     ruler.left(adjustunit(w1+offset, rulerfz))
                         .width(adjustunit(ww-w1-w2-2*offset,rulerfz));

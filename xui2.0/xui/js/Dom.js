@@ -1652,6 +1652,11 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.setNodeData(o,"_onxuisel",value?"true":"false");
             })
         },
+        contentBox : function(){
+            return (xui.browser.ie||xui.browser.opr) ?
+                    !/BackCompat|QuirksMode/.test(d.compatMode) :
+                    (this.css("box-sizing") || this.css("-moz-box-sizing")) == "content-box";
+        },
         setInlineBlock:function(){
             var ns=this;
             if(xui.browser.gek){
@@ -4092,6 +4097,7 @@ xui.Class('xui.Dom','xui.absBox',{
     },
     Initialize:function(){
         var w=window,d=document;
+        xui.browser.contentBox = xui(d.documentElement).contentBox();
         xui.set(xui.$cache.domPurgeData,'!window',{$xid:'!window',element:w});
         xui.set(xui.$cache.domPurgeData,'!document',{$xid:'!document',element:d});
 

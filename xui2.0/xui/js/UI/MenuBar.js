@@ -366,7 +366,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         LayoutTrigger:function(){
             var v=this.properties,nd=this.getSubNode("BORDER");
-            v.$hborder=v.$vborder=nd._borderW('left');
+            v.$hborder=v.$vborder=!xui.browser.contentBox?0:nd._borderW('left');
         },
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},

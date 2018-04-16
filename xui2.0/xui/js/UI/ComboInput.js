@@ -1629,6 +1629,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             return value;
         },
         _onresize:function(profile,width,height){
+            if(profile._$ignoreonsize)return;
+
             var prop=profile.properties,
                  type=prop.type,
                 cmp=prop.showMode=='compact',
@@ -1655,8 +1657,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $hborder, $vborder,
                 
                 clsname='xui-node xui-input-input',
-                paddingH=isB?0:Math.round(v1._paddingH()/2)*2,
-                paddingW=0,                   
+                cb=xui.browser.contentBox,
+                paddingH=!cb?0:isB?0:Math.round(v1._paddingH()/2)*2,
+                paddingH2=!cb?0:Math.round(v1._paddingH()/2)*2,
+                paddingW=0,
 
                 autoH,icbw,utw,btnw, 
                 pl=0,pr=0;
@@ -1665,11 +1669,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             btnw=profile.getEmSize() * 1.5;
 
             // calculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(1,null,true) + Math.round(v1._paddingH()/2)*2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
-            if(autoH)root.height(adjustunit(height));
+            if(autoH){
+                profile._$ignoreonsize=1;
+                root.height(adjustunit(height));
+                delete profile._$ignoreonsize;
+            }
 
             var labelPos=prop.labelPos || 'left',
                 // make it round to Integer
@@ -1810,7 +1818,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(pr)v1.css('paddingRight',adjustunit(pr,ut));
 
             // must recalculate here
-            paddingW = isB?0:v1._paddingW();
+            paddingW = !cb?0:isB?0:v1._paddingW();
             if(null!==iW && iW-paddingW>0)
                 v1.width(adjustunit(Math.max(0,iW-paddingW),v1fz));
             if(null!==iH && iH-paddingH>0)

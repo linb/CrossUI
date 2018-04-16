@@ -125,6 +125,7 @@ xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
         _onresize:function(profile,width,height,force,key){
               var prop=profile.properties,
                 noPanel=prop.noPanel,
+                  cb=xui.browser.contentBox,
                 item = profile.getItemByItemId(key);
 
             if(!item){
@@ -150,7 +151,7 @@ xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
 
                 type = prop.borderType,
                 // have to use borderLeftWidth( ff will result 0 with borderWidth)
-                bw = (type=='flat'||type=='inset'||type=='outset') ? box._borderW() : 0,
+                bw =!cb?0: (type=='flat'||type=='inset'||type=='outset') ? box._borderW() : 0,
                 wc=null,
                 hc=null,
                 off,

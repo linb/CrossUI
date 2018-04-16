@@ -907,23 +907,21 @@ new function(){
                 return arr.reverse();
             }
         },
-        _scope_set: function(){
+        _scope_set: function(dataMap){
             if(window.get)xui._scope_bak=get;
-            window.get=function(k){
+            xui._scope_datamap=dataMap;
+            window.get=function(key){
                 if(key){
-                    var arr = ("" +key).split(".");
-                    if(arr.length>=2){
-                        var scope = arr.shift(), name=arr.join(".");
-                        if(!hash[scope])hash[scope]={};
-                        hash[scope][name]=1;
-                    }
+                    var t, i=(key=""+key).indexOf("."), scope=i==-1?key:key.substr(0,i), name=i==-1?null:key.substr(i+1,key.length);
+                    return (t=xui._scope_datamap) &&  (t=t[scope]) && (name ? t[name] : t);
                 }
             };
         },
         _scope_clear: function(bak){
             if(bak=xui._scope_bak){
                 window.get=bak;
-                delete xui._scope_bak
+                delete xui._scope_bak;
+                delete xui._scope_datamap;
             }
         }
     });
@@ -2006,12 +2004,6 @@ new function(){
         b.ver=parseFloat(ua.split("/")[1].substring(0, 3));
         b["bb"+b.ver]=true;
     }
-
-    b.contentBox = function(n){
-        return (b.ie||b.opr) ?
-                !/BackCompat|QuirksMode/.test(d.compatMode) :
-                (n = (n=n||d.documentElement).style["-moz-box-sizing"] || n.style["box-sizing"]) ? (n=="content-box") : true;
-    }();
 
     if(!ini.path){
         var s,arr = document.getElementsByTagName('script'), reg = /js\/xui(-[\w]+)?\.js$/,l=arr.length;
@@ -4897,13 +4889,13 @@ xui.Class('xui.absObj',"xui.absBox",{
 
             var ns=this,prop,ins,fn,r;
             try{
-                if(!_scope_handled)scope_set.call(this);
+                if(!_scope_handled)scope_set.call(this,dataMap);
                 ns.each(function(prf){
                     prop=prf.properties;
                     if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
                         ins=prf.boxing();
                         xui.each(prop.propBinder, function(get_prop_value,key){
-                            if(false!==xui.tryF(ins._reBindProp, [prf, get_prop_value, key, inner], ins)){
+                            if(false!==xui.tryF(ins._reBindProp, [prf, get_prop_value, key], ins)){
                                 r= xui.isFun(get_prop_value) ? get_prop_value(prf) : xui.adjustVar(get_prop_value);
                                 switch(key){
                                     case "CA": ins.setCustomAttr(r); break;

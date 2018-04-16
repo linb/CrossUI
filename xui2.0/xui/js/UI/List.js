@@ -646,6 +646,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
+                cb=xui.browser.contentBox,
 
                 f=function(k){return profile.getSubNode(k)},
                 items = f('ITEMS'),
@@ -655,7 +656,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 itemsfz=items._getEmSize(fzrate),
                 labelfz=label._getEmSize(fzrate),
 
-                border=prop.borderType!='none'?items._borderW():0,
+                border=!cb?0:prop.borderType!='none'?items._borderW():0,
                 dock=prop.dock,
                 max=prop.maxHeight,
 
@@ -671,8 +672,8 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             items.cssRegion({
                 left : adjustunit(ll = labelPos=='left'?labelSize:0, itemsfz),
                 top : adjustunit(tt = labelPos=='top'?labelSize:0, itemsfz),
-                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - items._paddingW('both') - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), itemsfz),
-                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - items._paddingH('both') - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), itemsfz)
+                width : adjustunit(ww = width===null?null:width=='auto'?width:Math.max(0,(width - (!cb?0:items._paddingW('both')) - ((labelPos=='left'||labelPos=='right')?labelSize:0) - border)), itemsfz),
+                height : adjustunit(hh = height===null?null:height=='auto'?height:Math.max(0,(height - (!cb?0:items._paddingH('both')) - ((labelPos=='top'||labelPos=='bottom')?labelSize:0)- border)), itemsfz)
             });
 
 

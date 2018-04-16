@@ -7583,6 +7583,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     "dirtiedOnly [Optional] : Boolean, to determine whether return dirtied controls only",
                     "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules",
                     "withCaption [Optional] : Boolean, to determine whether include caption(returns {fieldname:{value:xxx,caption:xxx}} ), Default is [false]",
                     "withCaptionField [Optional] : Boolean, to determine whether include caption( returns {valueField:xxx,captionField:xxx}) if the field control name is 'valueField:captionField', Default is [false]"
                 ]
@@ -7592,7 +7593,8 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Hash",
                 $paras:[
                     "values [Optional] : Hash, key/value pairs",
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             getFormElements:{
@@ -7600,14 +7602,16 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"xui.absValue",
                 $paras:[
                     "dirtiedOnly [Optional] : Boolean, to determine whether return dirtied controls only",
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             isDirtied:{
                 $desc:"To determine whether the form is dirty or not",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             checkValid:{
@@ -7615,7 +7619,8 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Boollean",
                 $paras:[
                     "dirtiedOnly [Optional] : Boolean, to determine whether check dirtied controls only",
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             checkRequired:{
@@ -7623,28 +7628,32 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Boollean",
                 $paras:[
                     "dirtiedOnly [Optional] : Boolean, to determine whether check dirtied controls only",
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             formClear:{
                 $desc:"Empty all fields value and field controls",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             formReset:{
                 $desc:"Resets all field controls to original values",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             updateFormValues:{
                 $desc:"To update all fields' value according to field controls",
                 $rtn:"Boollean",
                 $paras:[
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules"
                 ]
             },
             formSubmit:{
@@ -7652,7 +7661,10 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Boollean",
                 $paras:[
                     "dirtiedOnly [Optional] : Boolean, to determine whether submit dirtied controls only",
-                    "subId [Optional]: String, id"
+                    "subId [Optional]: String, id",
+                    "penetrate [Optional]: Boolean, penetrate inner modules",
+                    "withCaption [Optional] : Boolean, to determine whether include caption(returns {fieldname:{value:xxx,caption:xxx}} ), Default is [false]",
+                    "withCaptionField [Optional] : Boolean, to determine whether include caption( returns {valueField:xxx,captionField:xxx}) if the field control name is 'valueField:captionField', Default is [false]"
                 ]
             },
 

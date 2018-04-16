@@ -938,7 +938,7 @@ xui.Class('xui.Module','xui.absProfile',{
             scope_clear=scope_clear || xui._scope_clear; 
             
             try{
-                scope_set.call(this);
+                scope_set.call(this, dataMap);
                  xui.each(this._ctrlpool, function(prf){
                     prf.boxing().reBindProp(dataMap,scope_set,scope_clear, true);
                 });

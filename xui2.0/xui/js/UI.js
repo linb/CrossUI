@@ -1314,7 +1314,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             a.length=arr.length=0;
             return ns;
         },
-        renderOnto:function(node, host){
+        renderOnto:function(node, host, alias){
             node=xui(node);
             if(node.isEmpty())return this;
 
@@ -1329,19 +1329,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                     r.position=node.css('position');
                     return r;
                 }),
+                CS=node.attr('style').replace(/\s*(left|top|width|height|right|bottom|position|z-index)\s*\:\s*[\w-.]+\s*/g,''),
+                CC=node.attr('class'),
                 id=node.id();
 
             xui.merge(pro.properties, paras(node),'all');
             pro.properties.dock='none';
-            if(!pro.alias && id)
-                pro.alias=id;
-            if(pro.alias)
-                self.setHost(host||window, pro.alias);
+
+            if(CS)self.setCustomStyle('KEY',CS);
+            if(CC)self.setCustomClass('KEY',CC);
+            
+            if(id) self.setDomId(id);
+            if(alias||id) self.setHost(host||window, alias||id);
+            
             self.render(true);
             node.replace(self.getRoot());
-
-            if(id)
-                self.setDomId(id);
 
             return self;
         },
@@ -1622,9 +1624,12 @@ xui.Class("xui.UI",  "xui.absObj", {
             var prf=this.get(0);
             if(prf)return prf.childrenId;
         },
+        // type: [true]/penetrate, all even in sub moudles
+        // type: [false]/include, with moudles
+        // type: [other], ignore moudles
         getChildren:function(subId, type){
             // return array only, don't recursive call in any module
-            if(type===false || type=="withModule"){
+            if(type===false || type=="include"){
                 var prf=this.get(0),
                     moduleHash={},
                     a=[],z,
@@ -1641,13 +1646,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     moduleHash[z]=1;
                                     var q = p.getModule();
                                     // module in module, we use the top mudule only( exclude the container's module )
-                                     if(q && q.moduleClass && q.moduleXid){
-                                         // look up toward top layer
-                                         if(q.moduleClass!==moduleClass && q.moduleXid!==moduleXid){
-                                            return getModlue(q);
-                                         }else{
-                                             return q;
-                                         }
+                                    // look up toward top layer
+                                     if(q && q.moduleClass && q.moduleXid && q.moduleClass!==moduleClass && q.moduleXid!==moduleXid){
+                                        return getModlue(q);
+                                     }else if(q){
+                                        return q;
                                      }
                                 }
                             }
@@ -1687,7 +1690,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui.arr.each(this.get(0).children,function(v){
                     if((subId&&typeof(subId)=="string")?v[1]===subId:1){
                         a.push(v[0]);
-                        if((type===true ||type=="recurse") && v[0].children && v[0].children.length)
+                        if((type===true ||type=="penetrate") && v[0].children && v[0].children.length)
                             f(v[0]);
                     }
                 });
@@ -3682,9 +3685,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                         getPanelChildren:function(){
                             return this.get(0).children;
                         },
-                        getFormValues:function(dirtiedOnly, subId, withCaption, withCaptionField){
+                        getFormValues:function(dirtiedOnly, subId, penetrate, withCaption, withCaptionField){
                             var hash={};
-                            this.getFormElements(false,subId).each(function(prf){
+                            this.getFormElements(false,subId,penetrate).each(function(prf){
                                 var p=prf.properties, key = p.name || prf.alias, keys,
                                     ins = prf.boxing(),
                                     // maybe return array
@@ -3713,9 +3716,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                             });
                             return hash;
                         },
-                        setFormValues:function(values, subId){
+                        setFormValues:function(values, subId, penetrate){
                             if(!xui.isEmpty(values)){
-                                this.getFormElements(false,subId).each(function(prf){
+                                this.getFormElements(false,subId,penetrate).each(function(prf){
                                     var prop=prf.properties, ins=prf.boxing(),key=prop.name || prf.alias,keys,cap;
                                     if(typeof(ins.setCaption)=="function" && key.indexOf(":")!=-1){
                                         keys=key.split(':');
@@ -3738,8 +3741,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             return this;
                         },
-                        getFormElements:function(dirtiedOnly, subId){
-                            var a=this.getChildren(subId, false),
+                        getFormElements:function(dirtiedOnly, subId, penetrate){
+                            var a=this.getChildren(subId, penetrate!==false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
                                 return !!xui.get(prf,['properties','isFormField']);
@@ -3756,8 +3759,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             return elems;
                         },
-                        isDirtied:function(subId){
-                           var elems = this.getFormElements(false,subId).get();
+                        isDirtied:function(subId,penetrate){
+                           var elems = this.getFormElements(false,subId,penetrate).get();
                            for(var i=0,l=elems.length;i<l;i++){
                                 var profile=elems[i],ins;
                                 if(profile.box["xui.absValue"]){
@@ -3769,15 +3772,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                             return false;
                         },
-                        checkValid:function(ignoreAlert, subId){
+                        checkValid:function(ignoreAlert, subId, penetrate){
                             var ns=this, profile=ns.get(0), result=true;
                             // check required first
-                            if(!ns.checkRequired(ignoreAlert, subId)){
+                            if(!ns.checkRequired(ignoreAlert, subId, penetrate)){
                                 return false;
                             }
-                            ns.getFormElements(false,subId).each(function(prf){
+                            ns.getFormElements(false,subId, penetrate).each(function(prf){
                                 var prop=prf.properties, ins=prf.boxing();
-                                if(!ins.checkValid()){
+                                if(!ins.checkValid(ignoreAlert, subId, penetrate)){
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'invalid')){
                                             xui.alert('$inline.invalid',xui.getRes('$inline.invalid2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
@@ -3792,9 +3795,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                             });
                             return result;
                         },
-                        checkRequired:function(ignoreAlert, subId){
+                        checkRequired:function(ignoreAlert, subId, penetrate){
                             var profile=this.get(0), result=true;
-                            this.getFormElements(false,subId).each(function(prf, i){
+                            this.getFormElements(false,subId, penetrate).each(function(prf, i){
                                 var prop=prf.properties, ins=prf.boxing();
                                 if(prop.required && (!(i=ins.getUIValue())) && i!==0){
                                     if(!ignoreAlert){
@@ -3811,16 +3814,16 @@ xui.Class("xui.UI",  "xui.absObj", {
                             });
                             return result;
                         },
-                        formClear:function(subId){
+                        formClear:function(subId, penetrate){
                             return this.each(function(prf){
-                                prf.boxing().getFormElements(false,subId).resetValue(null);
+                                prf.boxing().getFormElements(false,subId, penetrate).resetValue(null);
                             });
                         },
-                        formReset:function(subId){
+                        formReset:function(subId, penetrate){
                             return this.each(function(prf){
                                 var p = prf.properties,
-                                     elems = prf.boxing().getFormElements(false,subId);
-                                if(prf.beforeFormReset && false===prf.boxing().beforeFormReset(prf, elems, subId)){
+                                     elems = prf.boxing().getFormElements(false,subId, penetrate);
+                                if(prf.beforeFormReset && false===prf.boxing().beforeFormReset(prf, elems, subId, penetrate)){
                                         return;
                                 }
                                 elems.each(function(p,i){
@@ -3828,25 +3831,25 @@ xui.Class("xui.UI",  "xui.absObj", {
                                             p.boxing().resetValue(i);
                                 });
                                 if(prf.afterFormReset){
-                                        prf.boxing().afterFormReset(prf, elems, subId);
+                                        prf.boxing().afterFormReset(prf, elems, subId, penetrate);
                                 }
                             });
                         },
-                        updateFormValues:function(subId){
-                            this.getFormElements(false,subId).updateValue();
+                        updateFormValues:function(subId, penetrate){
+                            this.getFormElements(false,subId, penetrate).updateValue();
                         },
-                        formSubmit:function(ignoreAlert, subId){
+                        formSubmit:function(ignoreAlert, subId, penetrate, withCaption, withCaptionField){
                             var ns=this;
                             // check valid first
-                            if(!ignoreAlert && !ns.checkValid()){
+                            if(!ignoreAlert && !ns.checkValid(false, subId, penetrate)){
                                 return;
                             }
                             var prf=ns.get(0),
                               p = prf.properties, f,
-                              data = ns.getFormValues(false, subId),
+                              data = ns.getFormValues(false, subId, penetrate, withCaption, withCaptionField),
                               apicaller;
                             // call before event
-                            if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId)){
+                            if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId, penetrate, withCaption, withCaptionField)){
                                     return;
                             }
 
@@ -3876,9 +3879,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 }
                             }
                             // update UI
-                            ns.getFormElements().updateValue();
+                            ns.getFormElements(dirtiedOnly, subId, penetrate).updateValue();
 
-                            if(prf.afterFormSubmit)prf.boxing().afterFormSubmit(prf, data, subId);
+                            if(prf.afterFormSubmit)prf.boxing().afterFormSubmit(prf, data, subId, penetrate, withCaption, withCaptionField);
                         },
                         // use refrence to keep the Class's function mark
                         _e1:function(profile, item, e, src, type){},
@@ -4233,7 +4236,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                     if(profile.$inDesign){
                         profile.boxing().reLayout(true)
-                            .getChildren(true, "recurse").reLayout(true);
+                            .getChildren(true, "penetrate").reLayout(true);
                     }
                 };
             if(old){
@@ -5034,7 +5037,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             spaceUnit:{
                 listbox:['','px','em'],
                 action:function(){
-                        this.boxing().reLayout(true).getChildren(true, "recurse").reLayout(true);
+                        this.boxing().reLayout(true).getChildren(true, "penetrate").reLayout(true);
                 }
             },
             defaultFocus:false,
@@ -7173,15 +7176,16 @@ xui.Class("xui.absList", "xui.absObj",{
                         if(source.isEmpty())source = profile.getSubNodeByItemId('CAPTION',itemId);
                         if(!source.isEmpty()){
                             var pp=source.parent(),
+                            cb=xui.browser.contentBox,
                             pos = source.offset(null,pp.get(0)),
                             size = source.cssSize(),
                             pos2 = pp.offset(),
                             size2 = pp.cssSize();
 
                             // adjust
-                            pos2.left += source._paddingW('left');
-                            pos2.top += source._paddingH('top');
-                            size2.height += source._paddingH();
+                            pos2.left += !cb?0:source._paddingW('left');
+                            pos2.top += !cb?0:source._paddingH('top');
+                            size2.height += !cb?0:source._paddingH();
 
                             var editor;
                             if(profile.beforeIniEditor){
