@@ -462,10 +462,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             MENUCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
-                'font-size':'1em'
+                'font-size':'1em' 
             },
             ITEMS:{
-                padding:'0 0 4px 0',
+                padding:xui.browser.contentBox?'0 0 4px 0':'0 0 2px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -871,6 +871,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             dirtyMark:false,
 
             lazyAppend:true,
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
 
             dock:'fill',
             width:{

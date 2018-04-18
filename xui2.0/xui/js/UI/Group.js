@@ -105,8 +105,11 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                 'vertical-align': 'middle'
             },
             TBAR:{
-                'margin-left':'.5em',
-                'padding-bottom': '.1666667em'
+                width: 'auto',
+                padding: '0 0 .1666667em 0',
+                margin: '0 0 0 .5em',
+                border: 0,
+                'font-size': 'inherit'
             },
             'BORDER-checked TBAR':{
                 'margin-left':'-.5em'
@@ -196,7 +199,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                b=prop.$vborder*2,
+                
                 // compare with px
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
@@ -204,7 +207,8 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                 border = profile.getSubNode('BORDER'),
                 panel =profile.getSubNode('PANEL'), 
                 root = profile.getRoot(),
-
+                cb = border.contentBox(),
+                h0=border._borderH(),
                 // caculate by px
                 ww=width?profile.$px(width):null, 
                 hh=height?profile.$px(height):null;
@@ -220,8 +224,8 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                     root.height('auto');
                 }else{
                     if(profile._toggle){
-                        panel.height(adjustunit(hh - profile.getSubNode('TBAR').offsetHeight(true) - b/2, panel));
-                        border.height(adjustunit(hh - b, border));
+                        panel.height(adjustunit(hh - profile.getSubNode('TBAR').offsetHeight(true) - h0/2, panel));
+                        border.height(adjustunit(hh - (cb?h0:0), border));
                         root.height(adjustunit(hh));
                     }else{
                         // here, panel's display is 'none'

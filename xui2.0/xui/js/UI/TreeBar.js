@@ -531,6 +531,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         DataModel:{
             listKey:null,
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
+
             width:{
                 $spaceunit:1,
                 ini:'18em'

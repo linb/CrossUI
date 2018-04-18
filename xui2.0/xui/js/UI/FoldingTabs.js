@@ -418,7 +418,8 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             }
         },
         DataModel:{
-            $border:0,
+            $hborder:0,
+            $vborder:0,
             noPanel:null,
             noHandler:null,
             HAlign:null,

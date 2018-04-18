@@ -1663,13 +1663,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 paddingW=0,
 
                 autoH,icbw,utw,btnw, 
-                pl=0,pr=0;
+                pl=0,pr=0,
+                boxB=box._borderW(),
+                offset=boxB/2;
 
-            $hborder=$vborder=box._borderW() / 2;
-            btnw=profile.getEmSize() * 1.5;
+            $hborder=$vborder=!cb?0:offset;
+            btnw=parseInt(profile.getEmSize() * 1.5,10);
 
             // calculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH2 + boxB: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
@@ -1710,7 +1712,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 /*for ie6 bug*/
                 if(xui.browser.ie6&&null===width)box.ieRemedy();
             }
-            // offset 1px
             var iL=ww===null?null:left + (labelPos=='left'?labelSize:0),
                 iT=hh===null?null:top + (labelPos=='top'?labelSize:0),
                 iW=ww===null?null:Math.max(0,ww - ((labelPos=='left'||labelPos=='right')?labelSize:0)),
@@ -1750,8 +1751,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
                 // for left offset 1px
                 if(iW!==null){
-                    iL -=$hborder;
-                    iW += $hborder;
+                    iL -= offset;
+                    iW += offset;
                 }
             }
             //left 2
@@ -1774,7 +1775,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     iR += bwcmd - $hborder;
 
                     // for left offset 1px
-                    iW += $hborder;
+                    iW += offset;
                 }
             }
 
@@ -1786,7 +1787,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(iW!==null){
                     rbtn.css('right',adjustunit(iR));
                     // for left offset 1px
-                    iW += $hborder;
+                    iW += offset;
                 }
                if(iH2!==null && prop.type=='spin'){
                     if(iH2/2-$vborder*2>0){

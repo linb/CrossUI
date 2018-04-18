@@ -147,13 +147,13 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'KEY-h IND':{
                 'z-index':1,
                 top:'50%',
-                height:'2px',
+                height:xui.browser.contentBox?'2px':'4px',
                 'margin-top':'-1px'
             },
             'KEY-h RULER':{
                 $order:2,
                 top:'50%',
-                height:'2px',
+                height:xui.browser.contentBox?'2px':'4px',
                 'margin-top':'-2px'
             },
             'KEY-v DECREASE, KEY-v INCREASE':{
@@ -173,14 +173,14 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $order:10,
                 'z-index':1,
                 left:'50%',
-                width:'2px',
+                width:xui.browser.contentBox?'2px':'4px',
                 'margin-left':'-1px'
             },
             'KEY-v RULER':{
                 $order:10,
                 'z-index':1,
                 left:'50%',
-                width:'2px',
+                width:xui.browser.contentBox?'2px':'4px',
                 'margin-left':'-2px'
             },
             'KEY-h IND1,KEY-h IND2':{

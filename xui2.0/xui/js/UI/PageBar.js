@@ -329,6 +329,10 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             dirtyMark:false,
             showDirtyMark:false,
             parentID:'',
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
             caption:{
                 ini:' Page: ',
                 action:function(v){

@@ -312,39 +312,10 @@ xui.Class("xui.CSS", null,{
             target.disabled=false;
             return ns;
         },
-        resetCSS:function(){
-            var b=xui.browser,
-            inlineblock= (b.gek
-                    ? b.ver<3 
-                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
-                        :"display:inline-block;"
-                    : b.ie6
-                        ?"display:inline-box;display:inline;"
-                    :"display:inline-block;")+
-                (b.ie?"zoom:1;":""),
-            css="html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0);color:#444;background:#FFF;}"+
-                "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}"+
-                "table{border-collapse:collapse;border-spacing:0;}"+
-                "fieldset,img{border:0;}"+
-                "address,caption,cite,code,dfn,em,strong,th,ar{font-style:normal;font-weight:normal;}"+
-                "li{list-style:none;}"+
-                "caption,th{text-align:left;}"+
-                "h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}"+
-                "q:before,q:after{content:'';}"+
-                "abbr,acronym{border:0;font-variant:normal;}"+
-                "sup{vertical-align:text-top;}"+
-                "sub{vertical-align:text-bottom;}"+
-                "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
-                "input,textarea,select{*font-size:100%;}"+
-                "::-ms-clear,::-ms-reveal{display: none;width:0;height:0;}"+
-                "button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}"+
-                (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
-                "legend{color:#000;}"+
-                "span{outline-offset:-1px;"+
-                inlineblock+
-                "}";
+        /*resetCSS:function(){
+            var css = '';
             this.addStyleSheet(css,"xui.CSSreset");
-        },
+        },*/
         adjustFont:function(fontSize, fontFamily, fontWeight, fontStyle){
             if(fontSize)xui('html').css('font-size', fontSize);
             if(fontFamily)xui('html').css('font-family', fontFamily);
@@ -535,7 +506,8 @@ xui.Class("xui.CSS", null,{
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
             //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
-            ".xui-ui-ctrl{cursor:default;font-size:0.75rem;}"+
+            // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
+            ".xui-ui-ctrl{cursor:default;font-size:1rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 

@@ -9311,39 +9311,10 @@ xui.Class('xui.Event',null,{
             target.disabled=false;
             return ns;
         },
-        resetCSS:function(){
-            var b=xui.browser,
-            inlineblock= (b.gek
-                    ? b.ver<3 
-                        ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
-                        :"display:inline-block;"
-                    : b.ie6
-                        ?"display:inline-box;display:inline;"
-                    :"display:inline-block;")+
-                (b.ie?"zoom:1;":""),
-            css="html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0);color:#444;background:#FFF;}"+
-                "body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}"+
-                "table{border-collapse:collapse;border-spacing:0;}"+
-                "fieldset,img{border:0;}"+
-                "address,caption,cite,code,dfn,em,strong,th,ar{font-style:normal;font-weight:normal;}"+
-                "li{list-style:none;}"+
-                "caption,th{text-align:left;}"+
-                "h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}"+
-                "q:before,q:after{content:'';}"+
-                "abbr,acronym{border:0;font-variant:normal;}"+
-                "sup{vertical-align:text-top;}"+
-                "sub{vertical-align:text-bottom;}"+
-                "input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}"+
-                "input,textarea,select{*font-size:100%;}"+
-                "::-ms-clear,::-ms-reveal{display: none;width:0;height:0;}"+
-                "button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0;}"+
-                (b.isWebKit?"input,textarea,select{-webkit-user-select: auto;}":"")+
-                "legend{color:#000;}"+
-                "span{outline-offset:-1px;"+
-                inlineblock+
-                "}";
+        /*resetCSS:function(){
+            var css = '';
             this.addStyleSheet(css,"xui.CSSreset");
-        },
+        },*/
         adjustFont:function(fontSize, fontFamily, fontWeight, fontStyle){
             if(fontSize)xui('html').css('font-size', fontSize);
             if(fontFamily)xui('html').css('font-family', fontFamily);
@@ -9534,7 +9505,8 @@ xui.Class('xui.Event',null,{
             ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
             //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
-            ".xui-ui-ctrl{cursor:default;font-size:0.75rem;}"+
+            // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
+            ".xui-ui-ctrl{cursor:default;font-size:1rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"
            ;
 
@@ -20330,11 +20302,24 @@ xui.Class("xui.UI",  "xui.absObj", {
         self.setDataModel(hash);
 
         xui.UI.$cache_css += xui.UI.buildCSSText({
+            '.xui-css-viewport':{
+                '-webkit-text-size-adjust': '100%',
+                '-ms-text-size-adjust': '100%',
+                '-ms-overflow-style': 'scrollbar',
+                '-webkit-tap-highlight-color': 'transparent',
+                'font-size':'62.5%'
+            },
             '.xui-css-viewport, .xui-css-viewport body':{
                 height:'100%',
                 border:'0 none',
                 margin:'0',
                 padding:'0'
+            },
+            '.xui-css-viewport body':{
+                'font-size': '1rem'
+            },
+            '@-ms-viewport': {
+                width: 'device-width'
             },
             '.xui-ui-draggable':{},
             '.xui-inline-block':{
@@ -20995,8 +20980,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%',
 
-                width:'1em',
-                height:'1em',
+                width:xui.browser.contentBox?'1em':'1.625em',
+                height:xui.browser.contentBox?'1em':'1.625em',
                 padding: '.334em',
                 'background-color': '#eb6e1a',
                 color:'#fff !important',
@@ -21908,7 +21893,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             var a=this.getChildren(subId, penetrate!==false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
-                                return !!xui.get(prf,['properties','isFormField']);
+                                return prf._isFormField ? prf._isFormField(prf) : !!xui.get(prf,['properties','isFormField']);
                             });
                             if(dirtiedOnly){
                                 var arr=[],ins,t;
@@ -21990,8 +21975,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         return;
                                 }
                                 elems.each(function(p,i){
-                                        if((i=p.properties.value) !== p.properties.$UIvalue)
-                                            p.boxing().resetValue(i);
+                                    if((i=p.properties.value) !== p.properties.$UIvalue)
+                                        p.boxing().resetValue(i);
                                 });
                                 if(prf.afterFormReset){
                                         prf.boxing().afterFormReset(prf, elems, subId, penetrate);
@@ -25686,20 +25671,19 @@ xui.Class("xui.absValue", "xui.absObj",{
         resetValue:function(value){
             var self=this;
             self.each(function(profile){
-                var r,pro=profile.properties,ins=profile.boxing();
-                if(typeof (r=profile.box._ensureValue)=='function')
-                    value=r.call(profile.box, profile, value);
-                if(pro.value !== value || pro.$UIvalue!==value){
+                var r,pro=profile.properties,ins=profile.boxing(),
+                        v=typeof (r=profile.box._ensureValue)=='function'?r.call(profile.box, profile, value):value;
+                if(pro.value !== v || pro.$UIvalue!==v){
                     if(profile.box._beforeResetValue)profile.box._beforeResetValue(profile);
                     if(typeof(r=profile.$onValueSet)=='function'){
-                        r=r.call(profile,pro.value,value);
-                        if(xui.isSet(r))value=r;
+                        r=r.call(profile,pro.value,v);
+                        if(xui.isSet(r))v=r;
                     }
 
                     // _setCtrlValue maybe use $UIvalue
-                    profile.boxing()._setCtrlValue(pro.value = value);
+                    profile.boxing()._setCtrlValue(pro.value = v);
                     // So, maintain $UIvalue during _setCtrlValue call
-                    pro.$UIvalue = value;
+                    pro.$UIvalue = v;
                 }
                 profile._inValid=1;
                 ins._setDirtyMark();
@@ -25986,6 +25970,7 @@ xui.Class("xui.UI.Widget", "xui.UI",{
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 border = profile.getSubNode('BORDER'),
+                cb=border.contentBox(),
                 shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                 region,
                 us = xui.$us(prop),
@@ -25993,18 +25978,18 @@ xui.Class("xui.UI.Widget", "xui.UI",{
                 //caculate with px
                 ww=profile.$px(width),
                 hh=profile.$px(height),
-                left=Math.max(0, (prop.$b_lw||0)-(prop.$hborder||0)),
-                top=Math.max(0, (prop.$b_tw||0)-(prop.$vborder||0));
+                left=!cb?0:Math.max(0, (prop.$b_lw||0)-(prop.$hborder||0)),
+                top=!cb?0:Math.max(0, (prop.$b_tw||0)-(prop.$vborder||0));
 
             if(ww&&'auto'!==ww){
-                ww -= Math.max((prop.$hborder||0)*2, (prop.$b_lw||0)+(prop.$b_rw||0));
+                ww -= !cb?0:Math.max((prop.$hborder||0)*2, (prop.$b_lw||0)+(prop.$b_rw||0));
                 /*for ie6 bug*/
                 /*for example, if single number, 100% width will add 1*/
                 /*for example, if single number, attached shadow will overlap*/
                 if(xui.browser.ie&&xui.browser.ver<=6)ww=(profile.$px(ww/2))*2;
             }
             if(hh&&'auto'!==hh){
-                hh -=Math.max((prop.$vborder||0)*2, (prop.$b_lw||0) + (prop.$b_rw||0));
+                hh -= !cb?0:Math.max((prop.$vborder||0)*2, (prop.$b_lw||0) + (prop.$b_rw||0));
 
                 if(xui.browser.ie&&xui.browser.ver<=6)hh=(profile.$px(hh/2))*2;
                 /*for ie6 bug*/
@@ -26568,6 +26553,9 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
                     }
                 }
             }
+        },
+        _isFormField:function(profile){
+            return profile.properties.type=="status";
         },
         _ensureValue:function(profile,value){
             if(profile.properties.type=="status")
@@ -28414,9 +28402,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             maxWidth: 5000,
 
             // with px (base: 1em=12px)
-            handlerSize:8,
+            handlerSize: xui.browser.contentBox?8:12,
             // border 1
-            handlerOffset:1,
+            handlerOffset: xui.browser.contentBox?1:0,
             readonly:{
                 ini:false,
                 action:function(v){
@@ -29045,7 +29033,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             },
             SBBTN:{
                 'z-index':2,
-                padding:'0.33333em'
+                margin:'0.33333em'
             }
         });
         //set back
@@ -29126,7 +29114,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         reg=/^xui-uiborder-/,
                         b='xui-uiborder-',
                         r=b+'radius',
-                        i=b+'flat',
+                        i=b+'inset',
                         o=b+'outset',
                         f=b+'flat',
                         ibr = type=='left'?r+'-tr '+r+'-br':type=='top'?r+'-bl '+r+'-br':type=='right'?r+'-tl '+r+'-bl':type=='bottom'?r+'-tl '+r+'-tr':r,
@@ -29306,7 +29294,12 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 prop=profile.properties,
                 sbs=prop.sideBarStatus,
                 sbtype=prop.sideBarType,
-                b=(prop.$iborder||0)*2,
+                cb1=border.contentBox(),
+                bv=cb1?0:(prop.$vborder||0)*2,
+                bh=cb1?0:(prop.$hborder||0)*2,
+                
+                cb2=panel.contentBox(),
+                b2=(prop.$iborder||0)*2,
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
@@ -29320,27 +29313,34 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 sbsize2=adjustunit(sbsize);
 
             size.left=size.top=0;
-            if(sbtype!='none'){
+            if(sbtype && sbtype!='none'){
                 sbcap.css('line-height',adjustunit(sbsize - 2));
                 if(sbtype=='left'||sbtype=='right'){
                     sidebar.width(sbsize2);
                     if(height&&'auto'!==height)
-                        sidebar.height(adjustunit(hh));
+                        sidebar.height(adjustunit(hh-bv));
                 }else{
                     sidebar.height(sbsize2);
-                    sidebar.width(adjustunit(ww));
+                    sidebar.width(adjustunit(ww-bh));
                 }
 
                 if(sbs=='fold'){
                     if(sbtype=='left'||sbtype=='right'){
-                        root.width(adjustunit(sbsize+prop.$hborder*2));
-                        border.width(sbsize2);
+                        root.width(adjustunit(sbsize+bh+b2));
+                        border.width(adjustunit(sbsize+bv));
                     }else{
-                        root.height(adjustunit(sbsize+prop.$hborder*2));
-                        border.height(sbsize2);
+                        root.height(adjustunit(sbsize+bv+b2));
+                        border.height(adjustunit(sbsize+bv));
                     }
                     return;
                 }else{
+                    if(sbtype=='left'||sbtype=='right'){
+                        root.width(adjustunit(width));
+                        border.width(adjustunit(width-(cb1?bh:0)));
+                    }else{
+                        root.height(adjustunit(height));
+                        border.height(adjustunit(height-(cb1?bv:0)));
+                    }
                     switch(sbtype){
                         case 'left':
                             ww-=sbsize;
@@ -29359,9 +29359,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     }
                 }
             }
-            if(size.width) size.width = adjustunit(ww -b, panelfz);
+            if(size.width) size.width = adjustunit(ww -bh - (!cb2?0:b2), panelfz);
             if(size.height&&'auto'!==size.height)
-                size.height = adjustunit(hh - b, panelfz);
+                size.height = adjustunit(hh - bv- (!cb2?0:b2), panelfz);
             panel.cssRegion(size,true);
 
             if(size.width){
@@ -29663,7 +29663,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         LayoutTrigger:function(){
             var v=this.properties,nd=this.getSubNode("BORDER");
-            v.$hborder=v.$vborder=nd._borderW('left');
+            v.$hborder=v.$vborder= nd._borderW('left');
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -29866,13 +29866,13 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             'KEY-h IND':{
                 'z-index':1,
                 top:'50%',
-                height:'2px',
+                height:xui.browser.contentBox?'2px':'4px',
                 'margin-top':'-1px'
             },
             'KEY-h RULER':{
                 $order:2,
                 top:'50%',
-                height:'2px',
+                height:xui.browser.contentBox?'2px':'4px',
                 'margin-top':'-2px'
             },
             'KEY-v DECREASE, KEY-v INCREASE':{
@@ -29892,14 +29892,14 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 $order:10,
                 'z-index':1,
                 left:'50%',
-                width:'2px',
+                width:xui.browser.contentBox?'2px':'4px',
                 'margin-left':'-1px'
             },
             'KEY-v RULER':{
                 $order:10,
                 'z-index':1,
                 left:'50%',
-                width:'2px',
+                width:xui.browser.contentBox?'2px':'4px',
                 'margin-left':'-2px'
             },
             'KEY-h IND1,KEY-h IND2':{
@@ -31302,6 +31302,8 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             });
         },
         _onresize:function(profile,width,height){
+            if(profile._$ignoreonsize)return;
+
             var prop = profile.properties,
                 // if any node use other font-size which does not equal to xui-node, use 'px' 
                 f=function(k){if(!k) return null; k=profile.getSubNode(k); return k;},
@@ -31323,16 +31325,21 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 cb=xui.browser.contentBox,
                 paddingH=!cb?0:Math.round(v1._paddingH()/2)*2,
                 paddingW=!cb?0:Math.round(v1._paddingW()/2)*2,
-                autoH;
+                autoH,
+                boxB=box._borderW();
             
-            $hborder=$vborder=box._borderW() / 2;
+            $hborder=$vborder=!cb?0:boxB/ 2;
             
             // calculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH + boxB : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
-            if(autoH)root.height(adjustunit(height));
+            if(autoH){
+                profile._$ignoreonsize=1;
+                root.height(adjustunit(height));
+                delete profile._$ignoreonsize;
+            }
 
             var labelPos=prop.labelPos,
                 labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,
@@ -34410,13 +34417,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 paddingW=0,
 
                 autoH,icbw,utw,btnw, 
-                pl=0,pr=0;
+                pl=0,pr=0,
+                boxB=box._borderW(),
+                offset=boxB/2;
 
-            $hborder=$vborder=box._borderW() / 2;
-            btnw=profile.getEmSize() * 1.5;
+            $hborder=$vborder=!cb?0:offset;
+            btnw=parseInt(profile.getEmSize() * 1.5,10);
 
             // calculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH2 + 2*$vborder: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH2 + boxB: profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
@@ -34457,7 +34466,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 /*for ie6 bug*/
                 if(xui.browser.ie6&&null===width)box.ieRemedy();
             }
-            // offset 1px
             var iL=ww===null?null:left + (labelPos=='left'?labelSize:0),
                 iT=hh===null?null:top + (labelPos=='top'?labelSize:0),
                 iW=ww===null?null:Math.max(0,ww - ((labelPos=='left'||labelPos=='right')?labelSize:0)),
@@ -34497,8 +34505,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
                 // for left offset 1px
                 if(iW!==null){
-                    iL -=$hborder;
-                    iW += $hborder;
+                    iL -= offset;
+                    iW += offset;
                 }
             }
             //left 2
@@ -34521,7 +34529,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     iR += bwcmd - $hborder;
 
                     // for left offset 1px
-                    iW += $hborder;
+                    iW += offset;
                 }
             }
 
@@ -34533,7 +34541,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(iW!==null){
                     rbtn.css('right',adjustunit(iR));
                     // for left offset 1px
-                    iW += $hborder;
+                    iW += offset;
                 }
                if(iH2!==null && prop.type=='spin'){
                     if(iH2/2-$vborder*2>0){
@@ -34899,7 +34907,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'padding':'0 1px',
                 'margin-left': '-1px',
                 'margin-right':'1px',
-                'width':'1.75em'
+                'width':'2em'
             },
             'DATA div':{
                 'padding':'.5em 0'
@@ -38518,12 +38526,13 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
-                cb=xui.browser.contentBox,
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 panelfz=panel._getEmSize(fzrate),
 
-                bordersize=!cb?0:profile.properties.borderType!='none'?panel._borderW():0,
-                h0=!cb?0:border._borderH(),
+                cb1 = border.contentBox(),
+                h0=border._borderH(),
+                cb2 = panel.contentBox(),
+                bordersize=profile.properties.borderType!='none'?panel._borderW():0,
                 h1,h4,t;
 
             // caculate by px
@@ -38544,9 +38553,9 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                         h1=v1.offsetHeight(true);
                         h4=noFrame?0:v4.offsetHeight(true);
                         if((t=height-h0-h1-h4)>0)
-                            isize.height=adjustunit(t-bordersize, panelfz);
+                            isize.height=adjustunit(t-(cb2?bordersize:0), panelfz);
 
-                        border.height(adjustunit(height-h0, border));
+                        border.height(adjustunit(height-(cb1?h0:0), border));
                         root.height(adjustunit(height));
                     }else{
                         border.height('auto');
@@ -38556,12 +38565,12 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             }
             if(width){
                 isize.width=adjustunit(width
-                    -(!cb?0:noFrame?0:(Math.round(parseFloat(v6.css('paddingRight')))||0))
-                    -(!cb?0:noFrame?0:(Math.round(parseFloat(v5.css('paddingLeft')))||0))
+                    -(noFrame?0:(Math.round(parseFloat(v6.css('paddingRight')))||0))
+                    -(noFrame?0:(Math.round(parseFloat(v5.css('paddingLeft')))||0))
                     -h0
                     -bordersize
-                    -(!cb?0:v5._borderW())
-                    -(!cb?0:v6._borderW())
+                    -(v5._borderW())
+                    -(v6._borderW())
                     , panelfz);
             }
 
@@ -38680,8 +38689,11 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 'vertical-align': 'middle'
             },
             TBAR:{
-                'margin-left':'.5em',
-                'padding-bottom': '.1666667em'
+                width: 'auto',
+                padding: '0 0 .1666667em 0',
+                margin: '0 0 0 .5em',
+                border: 0,
+                'font-size': 'inherit'
             },
             'BORDER-checked TBAR':{
                 'margin-left':'-.5em'
@@ -38771,7 +38783,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                b=prop.$vborder*2,
+                
                 // compare with px
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
@@ -38779,7 +38791,8 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 border = profile.getSubNode('BORDER'),
                 panel =profile.getSubNode('PANEL'), 
                 root = profile.getRoot(),
-
+                cb = border.contentBox(),
+                h0=border._borderH(),
                 // caculate by px
                 ww=width?profile.$px(width):null, 
                 hh=height?profile.$px(height):null;
@@ -38795,8 +38808,8 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                     root.height('auto');
                 }else{
                     if(profile._toggle){
-                        panel.height(adjustunit(hh - profile.getSubNode('TBAR').offsetHeight(true) - b/2, panel));
-                        border.height(adjustunit(hh - b, border));
+                        panel.height(adjustunit(hh - profile.getSubNode('TBAR').offsetHeight(true) - h0/2, panel));
+                        border.height(adjustunit(hh - (cb?h0:0), border));
                         root.height(adjustunit(hh));
                     }else{
                         // here, panel's display is 'none'
@@ -39143,6 +39156,10 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             dirtyMark:false,
             showDirtyMark:false,
             parentID:'',
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
             caption:{
                 ini:' Page: ',
                 action:function(v){
@@ -39774,10 +39791,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             MENUCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
-                'font-size':'1em'
+                'font-size':'1em' 
             },
             ITEMS:{
-                padding:'0 0 4px 0',
+                padding:xui.browser.contentBox?'0 0 4px 0':'0 0 2px 0',
                 position:'relative',
                 left:0,
                 top:0,
@@ -40183,6 +40200,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             dirtyMark:false,
 
             lazyAppend:true,
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
 
             dock:'fill',
             width:{
@@ -41088,7 +41109,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 panelfz=panel._getEmSize(fzrate),
                 hsfz=hs._getEmSize(fzrate),
                 hlfz=hl._getEmSize(fzrate),
-                cb=xui.browser.contentBox,
+                cb=xui(root).contentBox(),
                 type = prop.borderType,
                 bw = !cb?0:(type=='flat'||type=='inset'||type=='outset') ? hs._borderW() : 0,
                 wc=null,
@@ -41187,7 +41208,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }
                     if(height || width){
                         var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz);
-                        var vv = !cb?0:(hl._paddingW() + hl._marginW());
+                        var vv = hl._paddingW() + hl._marginW();
 
                         //caculate by px
                         left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz):0;
@@ -41995,6 +42016,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         },
         DataModel:{
             listKey:null,
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
+
             width:{
                 $spaceunit:1,
                 ini:'18em'
@@ -42626,12 +42652,13 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
                         us = xui.$us(prop),
+                        cb = border.contentBox(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});
  
-                        hh = items.height() ;
+                        hh = items.height() + (cb?0:border._borderH());
                         if(xui.browser.ie67 && hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
                         nodes.each(function(n){
@@ -43827,7 +43854,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         LayoutTrigger:function(){
             var v=this.properties,nd=this.getSubNode("BORDER");
-            v.$hborder=v.$vborder=!xui.browser.contentBox?0:nd._borderW('left');
+            v.$hborder=v.$vborder= nd._borderW('left');
         },
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},
@@ -44584,12 +44611,12 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             'MOVE-TOP, MOVE-BOTTOM':{
                 width:'100%',
-                height:'.5em',
+                height:xui.browser.contentBox?'.75em':'.83333em',
                 cursor:'n-resize'
             },
             'MOVE-LEFT, MOVE-RIGHT':{
                 height:'100%',
-                width:'.5em',
+                width:xui.browser.contentBox?'.75em':'.83333em',
                 cursor:'w-resize'
             },
             'MOVE-TOP':{
@@ -44619,7 +44646,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 bottom:0,
                 width:'2em',
-                height:'.5em',
+                height:xui.browser.contentBox?'.66667em':'.75em',
                 'text-align':'center'
             },
             'CMD-BOTTOM':{
@@ -44628,7 +44655,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 top:0,
                 width:'2em',
-                height:'.5em',
+                height:xui.browser.contentBox?'.66667em':'.75em',
                 'text-align':'center'
             },
             'CMD-LEFT':{
@@ -44637,7 +44664,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 right:0,
                 height:'2em',
-                width:'.5em',
+                width:xui.browser.contentBox?'.66667em':'.75em',
                 'line-height':'2em'
             },
             'CMD-RIGHT':{
@@ -44646,7 +44673,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 left:0,
                 height:'2em',
-                width:'.5em',
+                width:xui.browser.contentBox?'.66667em':'.75em',
                 'line-height':'2em'
             },
             'MOVE-MAIN':{
@@ -47010,6 +47037,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var pp=cellNode.parent(),
                     size2 = pp.cssSize(),
                     baseNode = profile.getSubNode('BORDER'),
+                    borderW=baseNode.contentBox()?2:0,
                     absPos = cellNode.offset(null, pp),
                     absPos2 = pp.offset(null, baseNode);
                 // too small
@@ -47021,8 +47049,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     editor=new xui.UI.ComboInput({type:"input",zIndex:100});
                     profile.$cache_editor['firstCellEditor'] = editor;
                 }
-                editor.setWidth(size2.width - absPos.left + 2)
-                    .setHeight(size2.height + 2)
+                editor.setWidth(size2.width - absPos.left + borderW)
+                    .setHeight(size2.height + borderW)
                     .setValue(row.value||row.value||"");
 
                 if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,row,editor, 'row');
@@ -47215,7 +47243,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         adjustEditor:function(adjustFun){
-            var ns=this,prf=this.get(0);
+            var ns=this,prf=this.get(0),borderW=this.getRoot().contentBox();
             if(prf && prf.$curEditor){
                 var editor=prf.$curEditor,
                     cell=prf.$cellInEditor;
@@ -47226,7 +47254,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         absPos=cellNode.offset(null, prf.getSubNode('SCROLL22')),
                         size = cellNode.cssSize();
                     editor.setLeft(absPos.left-1).setTop(absPos.top-1)
-                    .setWidth(size.width+3).setHeight(size.height+2)
+                    .setWidth(size.width+borderW+1).setHeight(size.height+borderW)
                     .reLayout(true);
                 }
             }
@@ -48039,7 +48067,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                  width: '100%'
             },
             'HEADER1, HEADER2':{
-                'background-color':'EDEDED',
+                'background-color':'#EDEDED',
                 position:'relative',
                 overflow:'hidden',
                 'text-align':'left'
@@ -49686,6 +49714,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             dock:'fill',
             togglePlaceholder:false,
+            isFormField:{
+                hidden:true,
+                ini:false
+            },
             altRowsBg: {
                 ini:false,
                 action:function(value){
@@ -50650,6 +50682,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var SubID=xui.UI.$tag_subId,
                 prop=profile.properties,
                 headerHeight=profile.$px(prop.headerHeight),
+                borderH=profile.getRoot().contentBox()?2:0,
                 NONE='display:none',iid,
                 ii=1,tt,
                 oid, uicol;
@@ -50685,7 +50718,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             col.width = col._cellWidth = col._colWidth = profile.$forceu(_ww);
-            col._hcellheight=profile.$forceu(headerHeight-2);
+            col._hcellheight=profile.$forceu(headerHeight-borderH);
 
             uicol={
                 sortDisplay : NONE,
@@ -50760,6 +50793,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(prop.showHeader && arr && xui.isArr(arr)&& arr.length){
                 var header=prop.header,
                     headerHeight=profile.$px(prop.headerHeight),
+                     borderH=profile.getRoot().contentBox()?2:0,
                     SubID=xui.UI.$tag_subId,
                     NONE='display:none',
                     _ngrp=[],
@@ -50773,7 +50807,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     _grp={};
                     w=0;
                     flag=false;
-                    _left=0;//prop.rowHandler?(profile.$px(prop.rowHandlerWidth)+2):0;
+                    _left=0;//prop.rowHandler?(profile.$px(prop.rowHandlerWidth)+borderH):0;
 
                     grp=arr[j];
                     xui.UI.adjustData(profile, grp, _grp, 'sub');
@@ -50783,14 +50817,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             flag=true;
                             _grp._hcellleft=profile.$forceu(_left);
                         }
-                        _left+= _ww + 2;
+                        _left+= _ww + borderH;
                         if(flag && !o.hidden){
-                            w += _ww + 2;
+                            w += _ww + borderH;
                         }
                     }
-                    _grp._colWidth = _grp._cellWidth = profile.$forceu(w -2);
+                    _grp._colWidth = _grp._cellWidth = profile.$forceu(w -borderH);
 
-                    _grp._hcellheight = profile.$forceu(h-2);
+                    _grp._hcellheight = profile.$forceu(h-borderH);
                     _grp._hcelltop = profile.$forceu(h*(grp._layer-1));
 
                     _grp._tabindex=prop.tabindex;
@@ -50803,7 +50837,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 for(var k=0,n=header.length,o,p;k<n;k++){
                     o=header[k];p=_header[k];
                     if(o._grp && o._grp.length){
-                        p._hcellheight=profile.$forceu(headerHeight - o._grp.length*h - 2);
+                        p._hcellheight=profile.$forceu(headerHeight - o._grp.length*h - borderH);
                     }
                 }
                 return _ngrp;
@@ -51692,7 +51726,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     i=i.split(":")[2];
                     if(i=profile.cellMap[i])
                            if(i._editor)
-                                i._editor.setWidth(width+2);
+                                i._editor.setWidth(width);
                 });
             }
         },
@@ -51724,6 +51758,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var editor,
                 grid = this,
                 prop = profile.properties,
+                cb=profile.getRoot().contentBox(),
                 type=getPro('type')||'input',
                 //region = prop.freezedColumn prop.freezedRow
                 col = cell._col,
@@ -51817,8 +51852,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 left:0,
                                 top:0,
                                 cachePopWnd:true,
-                                width:profile.$px(cell._col._colWidth)+2,
-                                height:profile.$px(cell._row._rowHeight)+1,
+                                width:profile.$px(cell._col._colWidth)+(cb?2:1),
+                                height:profile.$px(cell._row._rowHeight)+(cb?1:0),
                                 visibility:'visible',
                                 zIndex:100
                             },'all');
@@ -52166,17 +52201,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(absPos2)absPos2.left+=w2;
                         // too small
                         if(  toggleNode && (absPos2.left > size.width - 8))return;
-
+ 
                         //show editor
                         if(type=='textarea'){
-                            editor.setWidth(Math.max(200,size.width  - (toggleNode?absPos2.left:0)  +3)).setHeight(Math.max(100,size.height+2))
+                            editor.setWidth(Math.max(200,size.width  - (toggleNode?absPos2.left:0)  +(cb?3:0))).setHeight(Math.max(100,size.height +(cb?2:0)))
                             .reLayout(true,true)
                             .reBoxing()
                             .popToTop(cellNode, 4, baseNode);
                         }else{
                             //**toggleNode
-                            editor.setWidth(size.width  - (toggleNode?absPos2.left:0)  +3).setHeight(size.height+2).reLayout(true);
-                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0) -1)+'px',(absPos.top-1)+'px');
+                            editor.setWidth(size.width  - (toggleNode?absPos2.left:0)  +(cb?3:0)).setHeight(size.height +(cb?2:0)).reLayout(true);
+                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0)  -(cb?1:0))+'px',(absPos.top -(cb?1:0))+'px');
                         }
 
                         var expand,
@@ -52263,11 +52298,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     us = xui.$us(prop),
                     adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                     size = profile.getSubNode("BORDER").cssSize(),
+                    _border = profile.getRoot().contentBox()?2:0,
                     width = profile.$px(size.width),
                     height = profile.$px(size.height),
 
                     //left region
-                    w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + 2):0,
+                    w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + _border):0,
                     w2,
                     h1 = profile.getSubNode('HEADER1'),
                     h2 = profile.getSubNode('HEADER2'),
@@ -52285,7 +52321,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(prop.freezedColumn){
                     xui.arr.each(prop.header,function(col,i){
                         if(i==prop.freezedColumn)return false;
-                        if(!col.hidden)w1 += profile.$px(col.width) + 2;
+                        if(!col.hidden)w1 += profile.$px(col.width) + _border;
                     });
                 }
                 // for border-bottom
@@ -52392,7 +52428,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     w = 0;
                     xui.arr.each(hd,function(o){
                         if(o.hidden!==true)
-                            w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + 2);
+                            w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + _border);
                     });
                     bodyw = adjustunit(bw=w);
                 }
@@ -52405,7 +52441,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 // must use 'auto' for Android
                 scroll.css('overflow','auto');
 
-                if(bw>scroll.width()+2){
+                if(bw>scroll.width()+_border){
                     overflowX="auto";
                 }
 
@@ -52585,7 +52621,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _adjustColsWidth:function(profile){
             var prop=profile.properties,
                 header=prop.header,
-                arr=prop.grpCols;
+                arr=prop.grpCols,
+                border=profile.getRoot().contentBox()?2:0;
+
             if(prop.showHeader){
                 if(arr && xui.isArr(arr)&& arr.length){
                     var _left,_l,_w,flag=false,_ww,
@@ -52606,30 +52644,30 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 flag=true;
                                 _l=_left;
                             }
-                            _left+= _ww + 2;
+                            _left+= _ww + border;
                             if(flag && !o.hidden){
-                                _w += _ww + 2;
+                                _w += _ww + border;
                             }
                         }
                         n=profile.getSubNode("HCELL",grp._serialId);
-                        if(_w>2){
+                        if(_w>border){
                             n.css({display:'',left:profile.$forceu(_l - (prop.freezedColumn
                                                                         ? (grp['to'] > prop.freezedColumn - 1 
                                                                                 ? _l2 
-                                                                                : (prop.rowHandler ? -(profile.$px(prop.rowHandlerWidth)+2) : 0) 
+                                                                                : (prop.rowHandler ? -(profile.$px(prop.rowHandlerWidth)+border) : 0) 
                                                                             )
                                                                         : 0
                                                                     )
-                                                          ), width:profile.$forceu(_w-2)});
+                                                          ), width:profile.$forceu(_w-border)});
                         }else{
                             n.css({display:'none'});
                         }
                         if(prop.freezedColumn && prop.rowHandler && grp._shadow){
                             n=profile.getSubNode("HSCELL",grp._serialId);
-                            if(_w>2){
+                            if(_w>border){
                                 n.css({display:'',
-                                    left: profile.$forceu(_l + (profile.$px(prop.rowHandlerWidth)+2) ) , 
-                                    width:profile.$forceu(_w-2)
+                                    left: profile.$forceu(_l + (profile.$px(prop.rowHandlerWidth)+border) ) , 
+                                    width:profile.$forceu(_w-border)
                                 });
                             }else{
                                 n.css({display:'none'});
@@ -52647,6 +52685,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 headerh=profile.properties.headerHeight,
                 h=profile.$px(headerh,0,true),
                 cacuH=profile.$px(profile.box.$DataModel.headerHeight.ini,0,true)*(_layers+1),
+                border=profile.getRoot().contentBox()?2:0,
                 tt,l,th,col,rt,rh,upper,grpcolsh,h2;
             // ensure height here
             if(force||h<cacuH){
@@ -52654,7 +52693,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             
             profile.getSubNodes(['HCELLS1','HCELLS2','GRPCELLBOX1','GRPCELLBOX2']).height(profile.$px2em(h)+'em');
-            h2=profile.$px2em(h-2)+"em";
+            h2=profile.$px2em(h-border)+"em";
             profile.getSubNode('FHCELL').css({height:h2});
             if(!_layers){
                  profile.getSubNode('HCELL',true).css({height:h2});
@@ -52688,12 +52727,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }else
                                 rh = h;
                         }
-                        xui(o).height(profile.$px2em(rh-2)+'em');
+                        xui(o).height(profile.$px2em(rh-border)+'em');
                         
                         if(col && col._isgroup && col._shadow){
                             o=profile.getSubNode("HSCELL",col._serialId);
                             xui(o).top(profile.$px2em(upper)+'em');
-                            xui(o).height(profile.$px2em(rh-2)+'em');
+                            xui(o).height(profile.$px2em(rh-border)+'em');
                         }
                     }
                 });
@@ -52802,6 +52841,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cols=profile.colMap,
                 t2=profile.getSubNode('SCROLL22'),
                 t3=profile.getSubNode('BODY22'),
+                bW = t3.contentBox()?2:0,
                 width=t2.width(),
                 borderW=0,
                 borderC=0;
@@ -52903,7 +52943,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(n._nodes.length){
                         nodes.push(n.get(0));
                     }
-                    profile.box._adjusteditorW(profile, xui(nodes).width(col._colWidth), profile.$px(col._colWidth));
+                    profile.box._adjusteditorW(profile, xui(nodes).width(col._colWidth), profile.$px(col._colWidth)+bW);
                 });
             }
             return overflowX;
@@ -52939,7 +52979,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
-                w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + 2):0,
+                borderW = root.contentBox()?2:0,
+                w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + borderW):0,
                 w2,
                 border = f('BORDER'),
                 h1 = f('HEADER1'),
@@ -52969,7 +53010,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(prop.freezedColumn){
                     xui.arr.each(prop.header,function(col,i){
                         if(i==prop.freezedColumn)return false;
-                        if(!col.hidden)w1 += profile.$px(col.width) + 2;
+                        if(!col.hidden)w1 += profile.$px(col.width) + borderW;
                     });
                 }
                 // for border-bottom
@@ -54534,15 +54575,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var prop=profile.properties,
                 us=xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
-
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
-
+                v0=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
                 v2=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
+                cb1=v0.contentBox(),
+                cb2=v2.contentBox(),
                 h1,h4,t;
             // caculate with px
             if(width)width=profile.$px(width);
@@ -54564,12 +54606,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             }
             if(height)
-                isize.height -= (parseFloat(v6.css('paddingTop'))||0) + (parseFloat(v6.css('paddingBottom'))||0);
+                isize.height = isize.height - v6._paddingH() - (cb1?0:v0._borderH())- (cb2?0:v2._borderH());
 
             if(width)
-                isize.width=size.width
+                isize.width = size.width
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
                     - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
+                    - (cb1?0:v0._borderW()) -  (cb2?0:v2._borderW())
             
             if(width&&us>0)isize.width=adjustunit(isize.width);
             if(height&&us>0)isize.height=adjustunit(isize.height);
@@ -55346,7 +55389,8 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             }
         },
         DataModel:{
-            $border:0,
+            $hborder:0,
+            $vborder:0,
             noPanel:null,
             noHandler:null,
             HAlign:null,

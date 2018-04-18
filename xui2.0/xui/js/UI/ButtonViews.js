@@ -278,7 +278,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 panelfz=panel._getEmSize(fzrate),
                 hsfz=hs._getEmSize(fzrate),
                 hlfz=hl._getEmSize(fzrate),
-                cb=xui.browser.contentBox,
+                cb=xui(root).contentBox(),
                 type = prop.borderType,
                 bw = !cb?0:(type=='flat'||type=='inset'||type=='outset') ? hs._borderW() : 0,
                 wc=null,
@@ -376,12 +376,12 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hc=hh;
                     }
                     if(height || width){
-                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz);
+                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz,true);
                         var vv = !cb?0:(hl._paddingW() + hl._marginW());
 
                         //caculate by px
-                        left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz):0;
-                        wc = ww-profile.$px(v+vv, hsfz)-bw;
+                        left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz,true):0;
+                        wc = ww-profile.$px(v+vv, hsfz,true)-bw;
 
                         hl.width('auto');
 

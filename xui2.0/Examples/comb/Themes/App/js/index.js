@@ -113,6 +113,10 @@ xui.Class('App', 'xui.Module',{
                 .setLabelGap("0.3333333333333333em")
                 .setType("listbox")
                 .setItems([{
+                    "id" : "12px",
+                    "caption" : "12 px"
+                },
+                {
                     "id" : "16px",
                     "caption" : "16 px"
                 },
@@ -123,12 +127,8 @@ xui.Class('App', 'xui.Module',{
                 {
                     "id" : "24px",
                     "caption" : "24 px"
-                },
-                {
-                    "id" : "32px",
-                    "caption" : "32 px"
                 }])
-                .setValue("16px")
+                .setValue("12px")
                 .afterUIValueSet("_xui_ui_comboinput32_afteruivalueset")
                 );
             

@@ -11,12 +11,13 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
                         us = xui.$us(prop),
+                        cb = border.contentBox(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
                        
                        items.cssSize({width:'auto',height:'auto'});
  
-                        hh = items.height() ;
+                        hh = items.height() + (cb?0:border._borderH());
                         if(xui.browser.ie67 && hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
                         nodes.each(function(n){

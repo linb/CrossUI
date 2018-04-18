@@ -2167,11 +2167,24 @@ xui.Class("xui.UI",  "xui.absObj", {
         self.setDataModel(hash);
 
         xui.UI.$cache_css += xui.UI.buildCSSText({
+            '.xui-css-viewport':{
+                '-webkit-text-size-adjust': '100%',
+                '-ms-text-size-adjust': '100%',
+                '-ms-overflow-style': 'scrollbar',
+                '-webkit-tap-highlight-color': 'transparent',
+                'font-size':'62.5%'
+            },
             '.xui-css-viewport, .xui-css-viewport body':{
                 height:'100%',
                 border:'0 none',
                 margin:'0',
                 padding:'0'
+            },
+            '.xui-css-viewport body':{
+                'font-size': '1rem'
+            },
+            '@-ms-viewport': {
+                width: 'device-width'
             },
             '.xui-ui-draggable':{},
             '.xui-inline-block':{
@@ -2832,8 +2845,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%',
 
-                width:'1em',
-                height:'1em',
+                width:xui.browser.contentBox?'1em':'1.625em',
+                height:xui.browser.contentBox?'1em':'1.625em',
                 padding: '.334em',
                 'background-color': '#eb6e1a',
                 color:'#fff !important',
@@ -3745,7 +3758,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             var a=this.getChildren(subId, penetrate!==false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
-                                return !!xui.get(prf,['properties','isFormField']);
+                                return prf._isFormField ? prf._isFormField(prf) : !!xui.get(prf,['properties','isFormField']);
                             });
                             if(dirtiedOnly){
                                 var arr=[],ins,t;
@@ -3827,8 +3840,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         return;
                                 }
                                 elems.each(function(p,i){
-                                        if((i=p.properties.value) !== p.properties.$UIvalue)
-                                            p.boxing().resetValue(i);
+                                    if((i=p.properties.value) !== p.properties.$UIvalue)
+                                        p.boxing().resetValue(i);
                                 });
                                 if(prf.afterFormReset){
                                         prf.boxing().afterFormReset(prf, elems, subId, penetrate);
@@ -4225,7 +4238,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        _refreshSBTheme:function(profile, cssSetting, tag, callback){
+        _refreshSBTheme:function(profile, cssSetting, tag, callback, relayout){
             var domId=profile.getDomId(),
                 id=domId+"sandboxtheme",
                 // escape special char
@@ -4234,7 +4247,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 applyCss=function(css){
                     xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId,tag), id, true);
 
-                    if(profile.$inDesign){
+                    if(relayout || profile.$inDesign){
                         profile.boxing().reLayout(true)
                             .getChildren(true, "penetrate").reLayout(true);
                     }
@@ -7523,20 +7536,19 @@ xui.Class("xui.absValue", "xui.absObj",{
         resetValue:function(value){
             var self=this;
             self.each(function(profile){
-                var r,pro=profile.properties,ins=profile.boxing();
-                if(typeof (r=profile.box._ensureValue)=='function')
-                    value=r.call(profile.box, profile, value);
-                if(pro.value !== value || pro.$UIvalue!==value){
+                var r,pro=profile.properties,ins=profile.boxing(),
+                        v=typeof (r=profile.box._ensureValue)=='function'?r.call(profile.box, profile, value):value;
+                if(pro.value !== v || pro.$UIvalue!==v){
                     if(profile.box._beforeResetValue)profile.box._beforeResetValue(profile);
                     if(typeof(r=profile.$onValueSet)=='function'){
-                        r=r.call(profile,pro.value,value);
-                        if(xui.isSet(r))value=r;
+                        r=r.call(profile,pro.value,v);
+                        if(xui.isSet(r))v=r;
                     }
 
                     // _setCtrlValue maybe use $UIvalue
-                    profile.boxing()._setCtrlValue(pro.value = value);
+                    profile.boxing()._setCtrlValue(pro.value = v);
                     // So, maintain $UIvalue during _setCtrlValue call
-                    pro.$UIvalue = value;
+                    pro.$UIvalue = v;
                 }
                 profile._inValid=1;
                 ins._setDirtyMark();
@@ -7823,6 +7835,7 @@ xui.Class("xui.UI.Widget", "xui.UI",{
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 border = profile.getSubNode('BORDER'),
+                cb=border.contentBox(),
                 shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                 region,
                 us = xui.$us(prop),
@@ -7830,18 +7843,18 @@ xui.Class("xui.UI.Widget", "xui.UI",{
                 //caculate with px
                 ww=profile.$px(width),
                 hh=profile.$px(height),
-                left=Math.max(0, (prop.$b_lw||0)-(prop.$hborder||0)),
-                top=Math.max(0, (prop.$b_tw||0)-(prop.$vborder||0));
+                left=!cb?0:Math.max(0, (prop.$b_lw||0)-(prop.$hborder||0)),
+                top=!cb?0:Math.max(0, (prop.$b_tw||0)-(prop.$vborder||0));
 
             if(ww&&'auto'!==ww){
-                ww -= Math.max((prop.$hborder||0)*2, (prop.$b_lw||0)+(prop.$b_rw||0));
+                ww -= !cb?0:Math.max((prop.$hborder||0)*2, (prop.$b_lw||0)+(prop.$b_rw||0));
                 /*for ie6 bug*/
                 /*for example, if single number, 100% width will add 1*/
                 /*for example, if single number, attached shadow will overlap*/
                 if(xui.browser.ie&&xui.browser.ver<=6)ww=(profile.$px(ww/2))*2;
             }
             if(hh&&'auto'!==hh){
-                hh -=Math.max((prop.$vborder||0)*2, (prop.$b_lw||0) + (prop.$b_rw||0));
+                hh -= !cb?0:Math.max((prop.$vborder||0)*2, (prop.$b_lw||0) + (prop.$b_rw||0));
 
                 if(xui.browser.ie&&xui.browser.ver<=6)hh=(profile.$px(hh/2))*2;
                 /*for ie6 bug*/
@@ -8405,6 +8418,9 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
                     }
                 }
             }
+        },
+        _isFormField:function(profile){
+            return profile.properties.type=="status";
         },
         _ensureValue:function(profile,value){
             if(profile.properties.type=="status")

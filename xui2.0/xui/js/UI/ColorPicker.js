@@ -320,7 +320,7 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 'padding':'0 1px',
                 'margin-left': '-1px',
                 'margin-right':'1px',
-                'width':'1.75em'
+                'width':'2em'
             },
             'DATA div':{
                 'padding':'.5em 0'

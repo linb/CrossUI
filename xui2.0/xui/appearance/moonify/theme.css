@@ -1,8 +1,7 @@
 /*font*/
 .xui-ui-ctrl, .xui-ui-reset{
     color:#fff; 
-    font-size: 12px;
-		font-size: 0.75rem;
+    font-size: 1rem;
     font-family:arial, helvetica, clean, sans-serif; 
     font-weight:normal; 
 }

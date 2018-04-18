@@ -1,8 +1,7 @@
 /*Font Setting*/
 .xui-ui-ctrl, .xui-ui-reset{
     color:#666;
-    font-size: 16px;
-		font-size: 1rem;
+		font-size: 1.3333333333rem;
     font-family:'PT Sans', Tahoma;
     font-weight:normal;
 }

@@ -935,6 +935,8 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             });
         },
         _onresize:function(profile,width,height){
+            if(profile._$ignoreonsize)return;
+
             var prop = profile.properties,
                 // if any node use other font-size which does not equal to xui-node, use 'px' 
                 f=function(k){if(!k) return null; k=profile.getSubNode(k); return k;},
@@ -956,16 +958,21 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 cb=xui.browser.contentBox,
                 paddingH=!cb?0:Math.round(v1._paddingH()/2)*2,
                 paddingW=!cb?0:Math.round(v1._paddingW()/2)*2,
-                autoH;
+                autoH,
+                boxB=box._borderW();
             
-            $hborder=$vborder=box._borderW() / 2;
+            $hborder=$vborder=!cb?0:boxB/ 2;
             
             // calculate by px
-            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH + 2*$vborder : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
+            if(height)height = (autoH=height=='auto') ? profile.$em2px(!cb?1.6666667:1,null,true) + paddingH + boxB : profile.$isEm(height) ? profile.$em2px(height,null,true) : height;
             if(width)width = profile.$isEm(width) ? profile.$em2px(width,null,true) : width;
 
             // for auto height
-            if(autoH)root.height(adjustunit(height));
+            if(autoH){
+                profile._$ignoreonsize=1;
+                root.height(adjustunit(height));
+                delete profile._$ignoreonsize;
+            }
 
             var labelPos=prop.labelPos,
                 labelSize=(labelPos=='none'||!labelPos)?0:profile.$px(prop.labelSize,labelfz)||0,

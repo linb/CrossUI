@@ -39,7 +39,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             },
             SBBTN:{
                 'z-index':2,
-                padding:'0.33333em'
+                margin:'0.33333em'
             }
         });
         //set back
@@ -120,7 +120,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                         reg=/^xui-uiborder-/,
                         b='xui-uiborder-',
                         r=b+'radius',
-                        i=b+'flat',
+                        i=b+'inset',
                         o=b+'outset',
                         f=b+'flat',
                         ibr = type=='left'?r+'-tr '+r+'-br':type=='top'?r+'-bl '+r+'-br':type=='right'?r+'-tl '+r+'-bl':type=='bottom'?r+'-tl '+r+'-tr':r,
@@ -300,7 +300,12 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 prop=profile.properties,
                 sbs=prop.sideBarStatus,
                 sbtype=prop.sideBarType,
-                b=(prop.$iborder||0)*2,
+                cb1=border.contentBox(),
+                bv=cb1?0:(prop.$vborder||0)*2,
+                bh=cb1?0:(prop.$hborder||0)*2,
+                
+                cb2=panel.contentBox(),
+                b2=(prop.$iborder||0)*2,
                 us = xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
@@ -314,27 +319,34 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 sbsize2=adjustunit(sbsize);
 
             size.left=size.top=0;
-            if(sbtype!='none'){
+            if(sbtype && sbtype!='none'){
                 sbcap.css('line-height',adjustunit(sbsize - 2));
                 if(sbtype=='left'||sbtype=='right'){
                     sidebar.width(sbsize2);
                     if(height&&'auto'!==height)
-                        sidebar.height(adjustunit(hh));
+                        sidebar.height(adjustunit(hh-bv));
                 }else{
                     sidebar.height(sbsize2);
-                    sidebar.width(adjustunit(ww));
+                    sidebar.width(adjustunit(ww-bh));
                 }
 
                 if(sbs=='fold'){
                     if(sbtype=='left'||sbtype=='right'){
-                        root.width(adjustunit(sbsize+prop.$hborder*2));
-                        border.width(sbsize2);
+                        root.width(adjustunit(sbsize+bh+b2));
+                        border.width(adjustunit(sbsize+bv));
                     }else{
-                        root.height(adjustunit(sbsize+prop.$hborder*2));
-                        border.height(sbsize2);
+                        root.height(adjustunit(sbsize+bv+b2));
+                        border.height(adjustunit(sbsize+bv));
                     }
                     return;
                 }else{
+                    if(sbtype=='left'||sbtype=='right'){
+                        root.width(adjustunit(width));
+                        border.width(adjustunit(width-(cb1?bh:0)));
+                    }else{
+                        root.height(adjustunit(height));
+                        border.height(adjustunit(height-(cb1?bv:0)));
+                    }
                     switch(sbtype){
                         case 'left':
                             ww-=sbsize;
@@ -353,9 +365,9 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                     }
                 }
             }
-            if(size.width) size.width = adjustunit(ww -b, panelfz);
+            if(size.width) size.width = adjustunit(ww -bh - (!cb2?0:b2), panelfz);
             if(size.height&&'auto'!==size.height)
-                size.height = adjustunit(hh - b, panelfz);
+                size.height = adjustunit(hh - bv- (!cb2?0:b2), panelfz);
             panel.cssRegion(size,true);
 
             if(size.width){

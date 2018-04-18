@@ -490,9 +490,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             maxWidth: 5000,
 
             // with px (base: 1em=12px)
-            handlerSize:8,
+            handlerSize: xui.browser.contentBox?8:12,
             // border 1
-            handlerOffset:1,
+            handlerOffset: xui.browser.contentBox?1:0,
             readonly:{
                 ini:false,
                 action:function(v){

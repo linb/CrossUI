@@ -124,7 +124,6 @@
 }
 .xui-icon-loading:after{
   position:absolute;
-	margin-top:-2.5em;
 	content: "\e68d" !important;
   -webkit-animation: fa-spin 1.5s infinite linear;
   animation: fa-spin 1.5s infinite linear;

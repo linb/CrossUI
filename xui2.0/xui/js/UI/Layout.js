@@ -275,12 +275,12 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             'MOVE-TOP, MOVE-BOTTOM':{
                 width:'100%',
-                height:'.5em',
+                height:xui.browser.contentBox?'.75em':'.83333em',
                 cursor:'n-resize'
             },
             'MOVE-LEFT, MOVE-RIGHT':{
                 height:'100%',
-                width:'.5em',
+                width:xui.browser.contentBox?'.75em':'.83333em',
                 cursor:'w-resize'
             },
             'MOVE-TOP':{
@@ -310,7 +310,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 bottom:0,
                 width:'2em',
-                height:'.5em',
+                height:xui.browser.contentBox?'.66667em':'.75em',
                 'text-align':'center'
             },
             'CMD-BOTTOM':{
@@ -319,7 +319,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-left':'-1em',
                 top:0,
                 width:'2em',
-                height:'.5em',
+                height:xui.browser.contentBox?'.66667em':'.75em',
                 'text-align':'center'
             },
             'CMD-LEFT':{
@@ -328,7 +328,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 right:0,
                 height:'2em',
-                width:'.5em',
+                width:xui.browser.contentBox?'.66667em':'.75em',
                 'line-height':'2em'
             },
             'CMD-RIGHT':{
@@ -337,7 +337,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 'margin-top':'-1em',
                 left:0,
                 height:'2em',
-                width:'.5em',
+                width:xui.browser.contentBox?'.66667em':'.75em',
                 'line-height':'2em'
             },
             'MOVE-MAIN':{

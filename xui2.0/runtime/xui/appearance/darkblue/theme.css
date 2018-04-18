@@ -1,7 +1,6 @@
 /*base size*/
 .xui-ui-ctrl, .xui-ui-reset{
-    font-size: 12px;
-		font-size: 0.75rem;
+    font-size: 1rem;
 }
 .xui-title-node{
 		font-size:1.1667em;

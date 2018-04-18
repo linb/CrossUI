@@ -1522,15 +1522,16 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             var prop=profile.properties,
                 us=xui.$us(prop),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
-
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
-
+                v0=profile.getSubNode('BORDER'),
                 v1=profile.getSubNode('TBAR'),
                 v2=profile.getSubNode('PANEL'),
                 v4=profile.getSubNode('BBAR'),
                 v5=profile.getSubNode('MAIN'),
                 v6=profile.getSubNode('MAINI'),
+                cb1=v0.contentBox(),
+                cb2=v2.contentBox(),
                 h1,h4,t;
             // caculate with px
             if(width)width=profile.$px(width);
@@ -1552,12 +1553,13 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 }
             }
             if(height)
-                isize.height -= (parseFloat(v6.css('paddingTop'))||0) + (parseFloat(v6.css('paddingBottom'))||0);
+                isize.height = isize.height - v6._paddingH() - (cb1?0:v0._borderH())- (cb2?0:v2._borderH());
 
             if(width)
-                isize.width=size.width
+                isize.width = size.width
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
                     - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
+                    - (cb1?0:v0._borderW()) -  (cb2?0:v2._borderW())
             
             if(width&&us>0)isize.width=adjustunit(isize.width);
             if(height&&us>0)isize.height=adjustunit(isize.height);
