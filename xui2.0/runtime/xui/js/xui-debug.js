@@ -14577,6 +14577,8 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.show(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
+            xui.UI.$trytoApplyCSS();
+
             if(false===this._fireEvent('beforeShow'))return false;
             parent=parent||xui('body');
             
@@ -19056,7 +19058,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         delete self.Appearances;
 
         if(t=self.PublicAppearance){
-            xui.UI.$cache_css += self.buildCSSText(t);
+            xui.UI.$cache_css_before += self.buildCSSText(t);
             delete self.PublicAppearance;
         }
     },
@@ -19426,7 +19428,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         render:function(triggerLayOut){
             var ns=this, arr=[], i, l, o, n=ns._nodes, matrix, a=[],byId=xui.Dom.byId;
 
-            xui.UI.$applyCSS();
+            xui.UI.$trytoApplyCSS();
 
             //get those no-html items
             for(i=0;o=n[i++];)
@@ -20301,7 +20303,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
         self.setDataModel(hash);
 
-        xui.UI.$cache_css += xui.UI.buildCSSText({
+        xui.UI.$cache_css_before += xui.UI.buildCSSText({
             '.xui-css-viewport':{
                 '-webkit-text-size-adjust': '100%',
                 '-ms-text-size-adjust': '100%',
@@ -21076,7 +21078,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
         });
 
-        xui.UI.$cache_css2 += xui.UI.buildCSSText({
+        xui.UI.$cache_css_after += xui.UI.buildCSSText({
             '.xui-css-innerimage':{
                 'vertical-align': 'middle'
             },
@@ -21233,11 +21235,11 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(arr1.length)hash[arr1.join(", ")]=o;
         });
         this.setAppearance(hash);
-        xui.UI.$cache_css += this.buildCSSText(this.$Appearances);
+        xui.UI.$cache_css_before += this.buildCSSText(this.$Appearances);
     },
     Static:{
-        $cache_css:'',
-        $cache_css2:'',
+        $cache_css_before:'',
+        $cache_css_after:'',
         $css_tag_dirty: "xui-ui-dirty",
         $css_tag_invalid: "xui-ui-invalid",
         $tag_left:"{",
@@ -21893,7 +21895,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             var a=this.getChildren(subId, penetrate!==false),
                                 elems = xui.absValue.pack(a);
                             xui.filter(elems._nodes, function(prf){
-                                return prf._isFormField ? prf._isFormField(prf) : !!xui.get(prf,['properties','isFormField']);
+                                return prf.box._isFormField ? prf.box._isFormField(prf) : !!xui.get(prf,['properties','isFormField']);
                             });
                             if(dirtiedOnly){
                                 var arr=[],ins,t;
@@ -22373,7 +22375,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             });
             return self;
         },
-        _refreshSBTheme:function(profile, cssSetting, tag, callback){
+        _refreshSBTheme:function(profile, cssSetting, tag, callback, relayout){
             var domId=profile.getDomId(),
                 id=domId+"sandboxtheme",
                 // escape special char
@@ -22382,7 +22384,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 applyCss=function(css){
                     xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId,tag), id, true);
 
-                    if(profile.$inDesign){
+                    if(relayout || profile.$inDesign){
                         profile.boxing().reLayout(true)
                             .getChildren(true, "penetrate").reLayout(true);
                     }
@@ -22564,8 +22566,9 @@ xui.Class("xui.UI",  "xui.absObj", {
         getBehavior:function(){
             return this.$Behaviors;
         },
-        $applyCSS:function( ){
-            var self=xui.UI, cache1=self.$cache_css, cache2=self.$cache_css2;
+        $trytoApplyCSS:function( ){
+            var self=xui.UI, css=xui.CSS, id='xui.UI-CSS', cache1=self.$cache_css_before, cache2=self.$cache_css_after;
+            // only the first time
             if(!self.$cssNo){
                 self.$cssNo=1;
                 var b=xui.browser;
@@ -22578,16 +22581,17 @@ xui.Class("xui.UI",  "xui.absObj", {
                         + (b.isMac ? "xui-css-mac": b.isLinux ? "xui-css-linux " :"")
                 );
                 xui('html').addClass("xui-css-base xui-css-viewport xui-uicontainer" + (b.isStrict?" xui-css-strict":""));
+                css.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon', true);
             }
+            // maybe more times for new UI widgets 
             if(cache1){
-                xui.CSS.includeLink(xui.ini.path+"iconfont/iconfont.css", 'xui-font-icon', true);
-
-                xui.CSS.addStyleSheet(cache1, 'xui.UI-CSS'+(self.$cssNo++));
-                xui.UI.$cache_css='';
+                css.addStyleSheet(cache1, id+(self.$cssNo++));
+                self.$cache_css_before='';
             }
+            // only the first time
             if(cache2){
-                xui.CSS.addStyleSheet(cache2, 'xui.UI-CSS'+(self.$cssNo++),true);
-                xui.UI.$cache_css2='';
+                css.addStyleSheet(cache2, id+(self.$cssNo++),true);
+                self.$cache_css_after='';
             }
         },
         buildCSSText:function(hash){
@@ -29663,7 +29667,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         LayoutTrigger:function(){
             var v=this.properties,nd=this.getSubNode("BORDER");
-            v.$hborder=v.$vborder= nd._borderW('left');
+            v.$hborder=v.$vborder=nd._borderW('left');
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -41207,12 +41211,12 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hc=hh;
                     }
                     if(height || width){
-                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz);
-                        var vv = hl._paddingW() + hl._marginW();
+                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz,true);
+                        var vv = !cb?0:(hl._paddingW() + hl._marginW());
 
                         //caculate by px
-                        left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz):0;
-                        wc = ww-profile.$px(v+vv, hsfz)-bw;
+                        left = prop.barLocation=='left'?bw+profile.$px(v+vv, hsfz,true):0;
+                        wc = ww-profile.$px(v+vv, hsfz,true)-bw;
 
                         hl.width('auto');
 

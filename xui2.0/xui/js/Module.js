@@ -468,6 +468,8 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.show(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
+            xui.UI.$trytoApplyCSS();
+
             if(false===this._fireEvent('beforeShow'))return false;
             parent=parent||xui('body');
             
