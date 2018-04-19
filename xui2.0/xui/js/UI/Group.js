@@ -142,9 +142,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
             borderType:null,
             toggleBtn:{
                 ini:true
-            },
-            $hborder:1,
-            $vborder:1
+            } 
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
