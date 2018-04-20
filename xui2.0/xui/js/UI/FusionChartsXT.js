@@ -1,3 +1,7 @@
+/*
+xui.UI.FusionChartsXT is a CrossUI wrap for FusionChartsXT(www.FusionCharts.com), it is NOT part of Crossui products
+If you use this widget in commercial projects, please purchase it separately
+*/
 xui.Class("xui.UI.FusionChartsXT","xui.UI",{
     Initialize:function(){
         // for fusioncharts in IE<=7
