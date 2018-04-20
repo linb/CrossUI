@@ -2172,7 +2172,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-text-size-adjust': '100%',
                 '-ms-overflow-style': 'scrollbar',
                 '-webkit-tap-highlight-color': 'transparent',
-                'font-size':'62.5%'
+                'font-size':'75%'
             },
             '.xui-css-viewport, .xui-css-viewport body':{
                 height:'100%',
