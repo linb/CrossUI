@@ -20309,7 +20309,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-text-size-adjust': '100%',
                 '-ms-overflow-style': 'scrollbar',
                 '-webkit-tap-highlight-color': 'transparent',
-                'font-size':'62.5%'
+                'font-size':'75%'
             },
             '.xui-css-viewport, .xui-css-viewport body':{
                 height:'100%',
@@ -38730,9 +38730,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             borderType:null,
             toggleBtn:{
                 ini:true
-            },
-            $hborder:1,
-            $vborder:1
+            } 
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);

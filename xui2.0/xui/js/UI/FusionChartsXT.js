@@ -291,7 +291,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                // Gauges
                         "HLinearGauge","Cylinder","HLED","VLED","Thermometer","AngularGauge",
                // others
-                        "Pyramid ","Radar","MultiLevelPie"
+                        "Pyramid ","Radar"//,"MultiLevelPie"
                 ],
                 action:function(){
                     if(this.renderId){

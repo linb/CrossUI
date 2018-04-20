@@ -1,3 +1,7 @@
+/*
+xui.UI.FusionChartsXT is a CrossUI wrap for FusionChartsXT(www.FusionCharts.com), it is NOT part of Crossui products
+If you use this widget in commercial projects, please purchase it separately
+*/
 xui.Class("xui.UI.FusionChartsXT","xui.UI",{
     Initialize:function(){
         // for fusioncharts in IE<=7
@@ -287,7 +291,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                // Gauges
                         "HLinearGauge","Cylinder","HLED","VLED","Thermometer","AngularGauge",
                // others
-                        "Pyramid ","Radar","MultiLevelPie"
+                        "Pyramid ","Radar"//,"MultiLevelPie"
                 ],
                 action:function(){
                     if(this.renderId){
