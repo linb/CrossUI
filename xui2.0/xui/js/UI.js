@@ -7062,8 +7062,10 @@ xui.Class("xui.absList", "xui.absObj",{
                 profile=ns.get(0);
             if(profile){
                 if(!itemFilter){
-                    delete profile.$itemFilter;
-                    itemFilter=function(){return false};
+                    if(profile.$itemFilter){
+                        delete profile.$itemFilter;
+                        itemFilter=function(){return false};
+                    }else return this;
                 }else if(xui.isFun(itemFilter)){
                     profile.$itemFilter=itemFilter;
                 }else if(itemFilter===true){

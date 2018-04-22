@@ -294,7 +294,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self.properties[key]=value;
             else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.properties = xui.clone(key);
+                    self.properties = xui.copy(key);
                 }else{
                     xui.merge(self.properties, key, 'all');
                 }
@@ -1301,9 +1301,16 @@ xui.Class('xui.Module','xui.absProfile',{
             });
             return hash;
         },
+        // module: module class name
+        // xid: moudle xid
+        // xui.Module.getInstance("App.Cls1",1)
+        // xui.Module.getInstance("App.Cls1","c")
+        // App.Cls1.getInstance(1)
+        // App.Cls1.getInstance('c')
+        // App.Cls1.getInstance() == App.Cls1.getInstance(0) : get the first instance
         getInstance:function(module, xid){
             var m=this;
-            if(!xid){
+            if(!xid && module){
                 if(module['xui.Profile'] && module.moduleClass && module.moduleXid){
                     xid = module.moduleXid;
                     module = module.moduleClass;
@@ -1315,10 +1322,17 @@ xui.Class('xui.Module','xui.absProfile',{
             if(module){
                 m=xui.SC.get(module);
                 if(!m||!m['xui.Module'])return;
+            }else{
+                m=this;
             }
             var c=m._cache;
-            for(var i in c)
-                if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)return c[i];
+            if(xid){
+                for(var i in m._cache)
+                    if(xui.isFinite(i) ? (xid+"")==i : ('$'+xid)==i)
+                        return m._cache[i];
+            }else{
+                return c[0];
+            }
         },
         postMessage:function(cls, msg1, msg2, msg3, msg4, msg5,  sender){
            var m = xui.SC.get(cls),hash;

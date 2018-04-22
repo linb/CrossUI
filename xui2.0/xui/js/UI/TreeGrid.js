@@ -6393,12 +6393,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         getCellOption:function(profile, cell, key){
             var t=cell,p=profile.properties;
-            return (t && t.hasOwnProperty(key)&&xui.isSet(t[key]))?t[key]
-                    :(cell&&(t=cell._row)&&t.hasOwnProperty(key)&&xui.isSet(t[key]))? t[key]
-                    :((t=p.rowOptions)&&t.hasOwnProperty(key)&&xui.isSet(t[key]))? t[key]
-                    :(cell&&(t=cell._col)&&t.hasOwnProperty(key)&&xui.isSet(t[key]))?t[key]
-                    :((t=p.colOptions)&&t.hasOwnProperty(key)&&xui.isSet(t[key]))?t[key]
-                    :((t=p)&&t.hasOwnProperty(key)&&xui.isSet(t[key]))?t[key]:null;
+            return (t && t.hasOwnProperty(key)&&xui.isSet(t=t[key]))?t
+                    :(cell&&(t=cell._row)&&t.hasOwnProperty(key)&&xui.isSet(t=t[key]))? t
+                    :((t=p.rowOptions)&&t.hasOwnProperty(key)&&xui.isSet(t=t[key]))? t
+                    :(cell&&(t=cell._col)&&t.hasOwnProperty(key)&&xui.isSet(t=t[key]))?t
+                    :((t=p.colOptions)&&t.hasOwnProperty(key)&&xui.isSet(t=t[key]))?t
+                    :((t=p)&&t.hasOwnProperty(key)&&xui.isSet(t=t[key]))?t:null;
         },
         _trycheckrowdirty:function(profile,cell){
             if(!cell || !cell._row)return;
@@ -6452,7 +6452,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             cellId=cell._serialId;
 
             var box=profile.box,
-                getPro=function(key){return box.getCellOption(profile, cell, key)};
+                getPro=function(key, _cell){return box.getCellOption(profile, _cell||cell, key)};
 
             if(getPro('disabled') || getPro('readonly') ||  !getPro('editable'))return ;
 
@@ -6816,7 +6816,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     })
                     .afterUIValueSet(function(editorPrf,oV,nV,force,tag){
-                        var type=getPro('type'),caption;
+                        cc=_getcell(editorPrf);
+                        if(!cc)return;
+
+                        var type=getPro('type',cc),caption;
                         switch(type){
                             case 'number':
                             case 'spin':
@@ -6849,7 +6852,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(editorPrf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(editorPrf.properties.tagVar))
                             options.tagVar=editorPrf.properties.tagVar;
 
-                        cc=_getcell(editorPrf);
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell'))){
                             grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
                             if((nc=_getcell(editorPrf)) && nc!==cc){

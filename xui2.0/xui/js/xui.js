@@ -833,13 +833,13 @@ new function(){
              flag: is add array
 
              For example:
-             [1,2].insertAny(3)
+             insertAny([1,2],3)
                 will return [1,2,3]
-             [1,2].insertAny(3,0)
+             insertAny([1,2],3,0)
                 will return [3,1,2]
-             [1,2].insertAny([3,4])
+             insertAny([1,2],[3,4])
                 will return [1,2,3,4]
-             [1,2].insertAny([3,4],3,true)
+             insertAny([1,2],[3,4],3,true)
                 will return [1,2,[3,4]]
             */
             insertAny:function (arr, target,index, flag) {
@@ -937,7 +937,7 @@ xui.merge(xui.fun,{
         var s=""+fun;
         s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});
         s=s.slice(s.indexOf("(") + 1, s.indexOf(")")).split(/\s*,\s*/);
-        return s[0]&&s;
+        return s[0]?s:[];
     },
     clone:function(fun){
         return new Function(xui.fun.args(fun),xui.fun.body(fun));
@@ -1059,9 +1059,26 @@ xui.merge(xui,{
     _rnd:function(){
         return xui.debugMode?xui.$rand+"="+xui.rand():null;
     },
+    _debugPre:function(arr){
+        arr=xui.toArr(arr);
+        arr[0]="%c ["+arr[0] + "@xui]";
+        xui.arr.insertAny(arr,'color:#0000ff; font-style: italic;',1);
+        return arr;
+    },
     _debugInfo:function(){
-        if(xui.debugMode && xui.isDefined(window.console) && typeof(console.log)=='function')
-            console.log.apply(console, xui.toArr(arguments));
+        if(xui.debugMode && xui.isDefined(window.console) && typeof(console.log)=='function'){
+            console.log.apply(console, xui._debugPre(arguments));
+        }
+    },
+    _debugGroup:function(){
+        if(xui.debugMode && xui.isDefined(window.console) && typeof(console.group)=='function'){
+            console.group.apply(console, xui._debugPre(arguments));
+        }else xui._debugInfo.apply(xui, arguments);
+    },
+    _debugGroupEnd:function(){
+        if(xui.debugMode && xui.isDefined(window.console) && typeof(console.groupEnd)=='function'){
+            console.groupEnd();
+        }else xui._debugInfo.apply(xui, arguments);
     },
     SpaceUnit:'em',
     $us:function(p){
@@ -2242,7 +2259,7 @@ new function(){
                 iconditions=[],t1,t2,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
             
-            var _debug = [conf.desc + " - "+ type +" > " + target +" > " +  method]; 
+            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf}; 
 
             // cover with inline params
             if(method.indexOf("-")!=-1){
@@ -2261,10 +2278,10 @@ new function(){
                     !xui.isDefined(t2=xui.adjustVar(con.right, _ns))?xui.adjustVar(con.right):t2,
                     con.symbol)){
                     if(typeof resumeFun=="function"){
-                        xui._debugInfo.apply(xui, [xui.str.repeat('|', level||1) +" x ", _debug, conf]);
+                        xui._debugInfo.apply(xui, ["pseudo",xui.str.repeat('  ', level||1) , "//", _debug, _var]);
                         return resumeFun();
                     }
-                    xui._debugInfo.apply(xui, [xui.str.repeat('|', level||1) +" x ", _debug, conf]);
+                    xui._debugInfo.apply(xui, ["pseudo",xui.str.repeat('  ', level||1) ,"//",_debug, _var]);
                     return;
                 }
             }
@@ -2284,6 +2301,7 @@ new function(){
 
                 var fun=function(){
                     if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
+                    xui._debugInfo.apply(xui, ["pseudo",xui.str.repeat('  ', level||1) ,_debug, _var]);
                     switch(type){
                         case 'page':
                             // handle switch
@@ -2476,7 +2494,7 @@ new function(){
                                             }
                                             break;
                                          case "call":
-                                            var args=iparams.slice(3), doit,doit2;
+                                            var args=iparams.slice(3), doit,doit2,y;
                                             t=iparams[0];
                                             if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
                                                 // args[0] => args.0
@@ -2496,10 +2514,14 @@ new function(){
                                                     if(xui.isFun(t[m])){
                                                         doit=1;
                                                     }
-                                                    // it's pseudo
+                                                    // it's pseudo actions or function
                                                     else if( (t[m].actions && xui.isArr(t[m].actions) && t[m].actions.length ) || t[m]['return']){
                                                         t=t[m];
                                                         doit2=1;
+                                                        if(args&&args.length&&t.params&&t.params.length)
+                                                            for(var i=0,l=args.length;i<l;i++)
+                                                                if(y=t.params[i]&&t.params[i].type)
+                                                                    args[i]=y=='String'?(args[i]+''):y=='Number'?(parseFloat(args[i])||0):y=='Boolean'?(!!args[i]):args[i];
                                                     }
                                                 }
                                             }else if(xui.isStr(t=iparams[0])&&xui.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
@@ -2510,7 +2532,7 @@ new function(){
                                             }else if(doit2){
                                                 // nested call
                                                 // arguemsnt of function/event is modified
-                                                t=ns._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested '+(t.desc||t.id||""), (level||1)+1);
+                                                t=ns._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested'+(t.desc||t.id||""), (level||1)+1);
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
@@ -2521,7 +2543,6 @@ new function(){
                             }
                             break;
                     }
-                    xui._debugInfo.apply(xui, [xui.str.repeat('|', level||1) +" v ", _debug, iparams,conf]);
                 };
                 // asy
                 if(timeout!==null)xui.asyRun(fun,timeout);
@@ -2578,10 +2599,15 @@ new function(){
                     if(resume==j)resume=recursive=null;
                     return irtn;
                 };
-            if(!innerE)xui._debugInfo(xui.str.repeat('|',(level||1)-1)+ "<#pseudo ", "["+fromtag+"]", pseudo, _ns); 
+            if(!innerE){
+                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo},{scope:_ns}); 
+                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "{");
+            }
             funsrtn = recursive();
-            if(!innerE)xui._debugInfo(xui.str.repeat('|',(level||1)-1)+">"); 
-
+            if(!innerE){
+                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "}");
+                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1)); 
+            }
             if(rtn){
                 rtn=xui.adjustVar(t=rtn, _ns);
                 if(!xui.isDefined(rtn))rtn=xui.adjustVar(t);
@@ -5260,7 +5286,7 @@ xui.Class("xui.ExcelFormula",null,{
                     str = xui.fun.body(str);
                     new Function("",str);
                 }catch(e){
-                    xui._debugInfo("#VALUE! ",  formula, str , e);
+                    xui._debugInfo("throw","#VALUE! ",  formula, str , e);
                     return false;
                 }
             }else{
@@ -5283,7 +5309,7 @@ xui.Class("xui.ExcelFormula",null,{
                 try{
                     eval(str);
                 }catch(e){
-                    xui._debugInfo("#VALUE! ",  formula, str , e);
+                    xui._debugInfo("throw","#VALUE! ",  formula, str , e);
                     return false;
                 }
             }
@@ -5362,7 +5388,7 @@ xui.Class("xui.ExcelFormula",null,{
                                 rtn = xui.isHash(cellsMap) ? (new Function("",str)).call(null, CELLS, formula) : str;
                             }
                         }catch(e){
-                            xui._debugInfo("#VALUE! ",  formula, str , e);
+                            xui._debugInfo("throw","#VALUE! ",  formula, str , e);
                         }finally{
                             return rtn;
                         }
@@ -5386,7 +5412,7 @@ xui.Class("xui.ExcelFormula",null,{
                                 rtn = xui.isHash(cellsMap) ? eval(str) :str;
                             }
                         }catch(e){
-                            xui._debugInfo("#VALUE! ",  formula, str , e);
+                            xui._debugInfo("throw","#VALUE! ",  formula, str , e);
                         }finally{
                             return rtn;
                         }
