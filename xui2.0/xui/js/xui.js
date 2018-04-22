@@ -1046,7 +1046,7 @@ xui.merge(xui.Class, {
 
 //function Dependencies: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:2.1,
+    version:2.14,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
