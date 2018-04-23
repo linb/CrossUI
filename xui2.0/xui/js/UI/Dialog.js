@@ -1054,26 +1054,23 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     p.append(cover);
 
                     // attach onresize event
-                    if(p.get(0)===document.body || p.get(0)===document || p.get(0)===window)
-                        p=xui.win,
-                        w=Math.max(p.width(),p.scrollWidth())+'px',    
-                        h=Math.max(p.height(),p.scrollHeight())+'px';
+                    if(p.get(0)===document.body || p.get(0)===document || p.get(0)===window) p=xui.win;
 
                     cover.css({
-                        display:'block',width:w,height:h
+                        display:'block',width:Math.max(p.width(), p.scrollWidth())+'px',height:Math.max(p.height(), p.scrollHeight())+'px'
                     })
                     .onMousedown(function(){return profile.$inDesign?null:false})
                     .topZindex(true);
 
                     if(profile.$inDesign)cover.onClick(function(){s.onClick(true)});
 
-                    p.onSize(function(p){
-                        p=xui(p);
-                        var w=p.width()+"px",h=p.height()+"px";
+                    p.onSize(function(node){
+                        node=xui(node);
+                        var w=node.width()+"px",h=node.height()+"px";
                         // set widht/height first
                         cover.css({width:w,height:h});
                         xui.asyRun(function(){
-                            var w=Math.max(p.width(),p.scrollWidth())+"px",h=Math.max(p.height(),p.scrollHeight())+"px";
+                            var w=Math.max(node.width(),node.scrollWidth())+"px",h=Math.max(node.height(),node.scrollHeight())+"px";
                             cover.css({width:w,height:h});
                         });
                     },"dialog:"+profile.serialId);
@@ -1122,7 +1119,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     */
 
                     profile.$inModal=true;
-                    p.setBlurTrigger(profile.$xid+"_anti", true, xui([cover.get(0),profile.getRootNode()]));
+                    if(p!==xui.win) p.setBlurTrigger(profile.$xid+"_anti", true, xui([cover.get(0),profile.getRootNode()]));
                 }
             }
         },

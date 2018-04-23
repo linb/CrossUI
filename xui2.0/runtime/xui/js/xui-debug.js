@@ -1047,7 +1047,7 @@ xui.merge(xui.Class, {
 
 //function Dependencies: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:2.1,
+    version:2.14,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -15524,9 +15524,9 @@ xui.Class('xui.Module','xui.absProfile',{
                         // for CDN font icons
                         if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
                             xui.each(t,function(o,i){
-                                if(o.href){
+                                if(o.href && !o.disabled){
                                     var attr={crossorigin:'anonymous'};
-                                    xui.merge(attr, o, function(v,j){return j!=='href'});
+                                    xui.merge(attr, o, function(v,j){return j!=='href' && j!=='disabled'});
                                     xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
                                 }
                             });
@@ -54154,12 +54154,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     // attach onresize event
                     if(p.get(0)===document.body || p.get(0)===document || p.get(0)===window)
-                        p=xui.win,
-                        w=Math.max(p.width(),p.scrollWidth())+'px',    
-                        h=Math.max(p.height(),p.scrollHeight())+'px';
+                        p=xui.win;
 
                     cover.css({
-                        display:'block',width:w,height:h
+                        display:'block',width:Math.max(p.width(), p.scrollWidth())+'px',height:Math.max(p.height(), p.scrollHeight())+'px'
                     })
                     .onMousedown(function(){return profile.$inDesign?null:false})
                     .topZindex(true);

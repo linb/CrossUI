@@ -1389,9 +1389,9 @@ xui.Class('xui.Module','xui.absProfile',{
                         // for CDN font icons
                         if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
                             xui.each(t,function(o,i){
-                                if(o.href){
+                                if(o.href && !o.disabled){
                                     var attr={crossorigin:'anonymous'};
-                                    xui.merge(attr, o, function(v,j){return j!=='href'});
+                                    xui.merge(attr, o, function(v,j){return j!=='href' && j!=='disabled'});
                                     xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
                                 }
                             });
