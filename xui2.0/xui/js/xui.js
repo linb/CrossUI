@@ -572,14 +572,14 @@ new function(){
                     if(isArr){
                         l=hash.length;
                         for(;i<l;i++){
-                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,_layer+1))continue;
+                            if(typeof filter=='function'&&false===filter.call(hash,hash[i],i,_layer+1,h))continue;
                             h[h.length]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,_layer+1):v;
                         }
                     }else{
                         for(i in hash){
                             if(filter===true?i.charAt(0)=='_':
                                 filter===false?(i.charAt(0)=='_'||i.charAt(0)=='$'):
-                                typeof filter=='function'?false===filter.call(hash,hash[i],i,_layer+1):0)
+                                typeof filter=='function'?false===filter.call(hash,hash[i],i,_layer+1,h):0)
                                 continue;
                             h[i]=((v=hash[i]) && deep && (xui.isHash(v)||xui.isArr(v)))?me(v,filter,deep-1,_layer+1):v;
                         }
@@ -713,6 +713,7 @@ new function(){
         isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
         isStr:function(target)   {return _to.call(target)==='[object String]'},
         isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
+        isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!target.$xuievent))},
         isElem:function(target) {return !!(target && target.nodeType === 1)},
         isNaN:function(target) {return typeof target == 'number' && target != +target;},
         //for handling String

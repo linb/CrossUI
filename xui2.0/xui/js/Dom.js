@@ -2219,183 +2219,189 @@ xui.Class('xui.Dom','xui.absBox',{
         type:1,2,3,4
         */
         getPopPos : function(pos, type, target, parent){
-            var region, node, abspos, t, box;
-            parent=xui(parent);
-            if(parent.isEmpty())
-                parent=xui('body');
-            if(pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string'){
-                if(typeof(type)!="function"){
-                    type=(type||12)+'';
-                }
-                node=xui(pos);
-                //base region
-                abspos = node.offset(null, parent);
-                region = {
-                    left:abspos.left,
-                    top:abspos.top,
-                    width:node.offsetWidth(),
-                    height:node.offsetHeight()
-                };
+            var result={left :0, top :0};
+            if(!pos){
+                return result;
+            }else if(xui.isEvent(pos)){
+                return xui.Event.getPos(pos);
             }else{
-                if(typeof(type)!="function"){
-                    type = type?'3':'0';
-                }
-                t=type=='0'?0:8;
-                region = pos.region || {
-                    left:pos.left-t,
-                    top:pos.top-t,
-                    width:t*2,
-                    height:t*2
-                };
-            }
-            pos={left :0, top :0};
-
-            //window edge
-            t=(parent.get(0)===document.body || parent.get(0)===document || parent.get(0)===window)?xui.win:parent;
-            box = {};
-
-            box.left=t.scrollLeft();
-            box.top=t.scrollTop();
-            box.width =t.width()+box.left;
-            box.height =t.height()+box.top;
-            /*
-                type:1
-                    +------------------+    +------------------+
-                    |        3         |    |        4         |
-                    +--------------+---+    +---+--------------+
-                    |              |            |              |
-                    |              |            |              |
-                    +--------------+---+    +---+--------------+
-                    |        1         |    |        2         |
-                    +------------------+    +------------------+
-                type:2
-                                         +---+              +---+
-                                         |   |              |   |
-                +---+--------------+---+ |   +--------------+   |
-                |   |              |   | | 3 |              | 4 |
-                | 2 |              | 1 | |   |              |   |
-                |   +--------------+   | +---+--------------+---+
-                |   |              |   |
-                +---+              +---+
-                type:3
-                                         +---+              +---+
-                                         | 3 |              | 4 |
-                    +--------------+     +---+--------------+---+
-                    |              |         |              |
-                    |              |         |              |
-                +---+--------------+---+     +--------------+
-                | 2 |              | 1 |
-                +---+              +---+
-                type:4
-                                     +------------------+
-                                     | 3                |
-                +--------------+---+ |   +--------------+ +----+--------------+ +--------------+----+
-                |              |   | |   |              | |    |              | |              |    |
-                |              |   | |   |              | |    |              | |              |    |
-                +--------------+   | +---+--------------+ |    +--------------+ +--------------+    |
-                |                1 |                      |  2                | |               4   |
-                +------------------+                      +-------------------- +-------------------+
-            */
-            if(typeof(type)=='function'){
-                pos=type(region, box, target, t);
-            }else{
-                //target size
-                var w = target?target.offsetWidth():0,
-                    h = target?target.offsetHeight():0,
-                    arr=type.split(/-/g);
-                if(arr.length==2){
-                    var hp=arr[0],vp=arr[1];
-                    switch(vp){
-                        case "outertop":
-                            pos.top=region.top-h;break;
-                        case "top":
-                            pos.top=region.top;break;
-                        case "middle":
-                            pos.top=region.top+region.height/2-h/2;break;
-                        case "bottom":
-                            pos.top=region.top+region.height-h;break;
-                        default:
-                        //case "outerbottom":
-                            pos.top=region.top+region.height;
+                var region, node, abspos, t, box;
+                if((parent=xui(parent)).isEmpty())
+                    parent=xui('body');
+                if(pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string'){
+                    if(typeof(type)!="function"){
+                        type=(type||12)+'';
                     }
-                    switch(hp){
-                        case "outerleft":
-                            pos.left=region.left-w;break;
-                        case "left":
-                            pos.left=region.left;break;
-                        case "center":
-                            pos.left=region.left+region.width/2-w/2;break;
-                        case "right":
-                            pos.left=region.left+region.width-w;break;
-                        default:
-                        //case "outerright":
-                            pos.left=region.left+region.width;
-                    }
-                }else{
-                    if(type=="outer")type="12";
-                    else if(type=="inner")type="4";
-
-                    var adjust=function(type){
-                        var hi,wi;
-                        switch(type){
-                            case '2':
-                                hi=true;wi=false;
-                            break;
-                            case '3':
-                                hi=wi=false;
-                            break;
-                            case '4':
-                                hi=wi=true;
-                            break;
-                            default:
-                            //case '1':
-                                hi=false;wi=true;
-                        }
-
-                        if(hi){
-                            if(region.top + h < box.height)
-                                pos.top=region.top;
-                            else
-                                pos.top=region.top+region.height-h;
-                        }else{
-                            if(region.top + region.height + h < box.height)
-                                pos.top=region.top + region.height;
-                            else
-                                pos.top=region.top - h;
-                        }
-                        if(wi){
-                            if(region.left + w < box.width)
-                                pos.left=region.left;
-                            else
-                                pos.left=region.left+region.width-w;
-                        }else{
-                            if(region.left + region.width + w < box.width)
-                                pos.left=region.left + region.width;
-                            else
-                                pos.left=region.left - w;
-                        }
-                        //over right
-                        if(pos.left + w>  box.width)pos.left = box.width - w;
-                        //over left
-                        if(pos.left < box.left)pos.left = box.left;
-                        //over bottom
-                        if(pos.top + h>  box.height)pos.top = box.height - h;
-                        //over top
-                        if(pos.top < box.top)pos.top = box.top;
+                    node=xui(pos);
+                    //base region
+                    abspos = node.offset(null, parent);
+                    region = {
+                        left:abspos.left,
+                        top:abspos.top,
+                        width:node.offsetWidth(),
+                        height:node.offsetHeight()
                     };
+                }else{
+                    if(typeof(type)!="function"){
+                        type = type?'3':'0';
+                    }
+                    t=type=='0'?0:8;
+                    region = pos.region || {
+                        left:pos.left-t,
+                        top:pos.top-t,
+                        width:t*2,
+                        height:t*2
+                    };
+                }
+                
 
-                    if(type=='12'){
-                        adjust('1');
-                        if(pos.top < region.top+region.height && pos.top+h > region.top)adjust('2');
-                    }else if(type=='21'){
-                        adjust('2');
-                        if(pos.left < region.left+region.width && pos.left+w > region.left)adjust('1');
+                //window edge
+                t=(parent.get(0)===document.body || parent.get(0)===document || parent.get(0)===window)?xui.win:parent;
+                box = {};
+
+                box.left=t.scrollLeft();
+                box.top=t.scrollTop();
+                box.width =t.width()+box.left;
+                box.height =t.height()+box.top;
+                /*
+                    type:1
+                        +------------------+    +------------------+
+                        |        3         |    |        4         |
+                        +--------------+---+    +---+--------------+
+                        |              |            |              |
+                        |              |            |              |
+                        +--------------+---+    +---+--------------+
+                        |        1         |    |        2         |
+                        +------------------+    +------------------+
+                    type:2
+                                             +---+              +---+
+                                             |   |              |   |
+                    +---+--------------+---+ |   +--------------+   |
+                    |   |              |   | | 3 |              | 4 |
+                    | 2 |              | 1 | |   |              |   |
+                    |   +--------------+   | +---+--------------+---+
+                    |   |              |   |
+                    +---+              +---+
+                    type:3
+                                             +---+              +---+
+                                             | 3 |              | 4 |
+                        +--------------+     +---+--------------+---+
+                        |              |         |              |
+                        |              |         |              |
+                    +---+--------------+---+     +--------------+
+                    | 2 |              | 1 |
+                    +---+              +---+
+                    type:4
+                                         +------------------+
+                                         | 3                |
+                    +--------------+---+ |   +--------------+ +----+--------------+ +--------------+----+
+                    |              |   | |   |              | |    |              | |              |    |
+                    |              |   | |   |              | |    |              | |              |    |
+                    +--------------+   | +---+--------------+ |    +--------------+ +--------------+    |
+                    |                1 |                      |  2                | |               4   |
+                    +------------------+                      +-------------------- +-------------------+
+                */
+                if(typeof(type)=='function'){
+                    result=type(region, box, target, t);
+                }else{
+                    //target size
+                    var w = target?target.offsetWidth():0,
+                        h = target?target.offsetHeight():0,
+                        arr=type.split(/-/g);
+                    if(arr.length==2){
+                        var hp=arr[0],vp=arr[1];
+                        switch(vp){
+                            case "outertop":
+                                result.top=region.top-h;break;
+                            case "top":
+                                result.top=region.top;break;
+                            case "middle":
+                                result.top=region.top+region.height/2-h/2;break;
+                            case "bottom":
+                                result.top=region.top+region.height-h;break;
+                            default:
+                            //case "outerbottom":
+                                result.top=region.top+region.height;
+                        }
+                        switch(hp){
+                            case "outerleft":
+                                result.left=region.left-w;break;
+                            case "left":
+                                result.left=region.left;break;
+                            case "center":
+                                result.left=region.left+region.width/2-w/2;break;
+                            case "right":
+                                result.left=region.left+region.width-w;break;
+                            default:
+                            //case "outerright":
+                                result.left=region.left+region.width;
+                        }
                     }else{
-                        adjust(type);
+                        if(type=="outer")type="12";
+                        else if(type=="inner")type="4";
+
+                        var adjust=function(type){
+                            var hi,wi;
+                            switch(type){
+                                case '2':
+                                    hi=true;wi=false;
+                                break;
+                                case '3':
+                                    hi=wi=false;
+                                break;
+                                case '4':
+                                    hi=wi=true;
+                                break;
+                                default:
+                                //case '1':
+                                    hi=false;wi=true;
+                            }
+
+                            if(hi){
+                                if(region.top + h < box.height)
+                                    result.top=region.top;
+                                else
+                                    result.top=region.top+region.height-h;
+                            }else{
+                                if(region.top + region.height + h < box.height)
+                                    result.top=region.top + region.height;
+                                else
+                                    result.top=region.top - h;
+                            }
+                            if(wi){
+                                if(region.left + w < box.width)
+                                    result.left=region.left;
+                                else
+                                    result.left=region.left+region.width-w;
+                            }else{
+                                if(region.left + region.width + w < box.width)
+                                    result.left=region.left + region.width;
+                                else
+                                    result.left=region.left - w;
+                            }
+                            //over right
+                            if(result.left + w>  box.width)result.left = box.width - w;
+                            //over left
+                            if(result.left < box.left)result.left = box.left;
+                            //over bottom
+                            if(result.top + h>  box.height)result.top = box.height - h;
+                            //over top
+                            if(result.top < box.top)result.top = box.top;
+                        };
+
+                        if(type=='12'){
+                            adjust('1');
+                            if(result.top < region.top+region.height && result.top+h > region.top)adjust('2');
+                        }else if(type=='21'){
+                            adjust('2');
+                            if(result.left < region.left+region.width && result.left+w > region.left)adjust('1');
+                        }else{
+                            adjust(type);
+                        }
                     }
                 }
+                return result;
             }
-            return pos;
         },
         _scrollBarSize:0,
         getScrollBarSize: function(force){

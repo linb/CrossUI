@@ -347,6 +347,8 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             }
         };
         this.setTemplate(t);
+        
+        this.prototype.popUp = this.prototype.pop;
     },
     Static:{
         $initRootHidden:true,
