@@ -131,7 +131,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }, profile.$popGrp);
             }
         },
-        pop:function(obj, type, parent,ignoreEffects){
+        pop:function(pos, type, parent,ignoreEffects){
             var ns=this,
                 profile=ns.get(0),
                 p=profile.properties,
@@ -151,7 +151,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             // set container
             profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
 
-            profile.getRoot().popToTop(obj, type, profile._conainer);
+            profile.getRoot().popToTop(pos, type, profile._conainer);
 
             ns._setScroll();
             ns.adjustSize();

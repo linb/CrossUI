@@ -5063,7 +5063,7 @@ xui.Class("xui.MessageService","xui.absObj",{
         _after_ini:function(profile){
             if(profile.$inDesign)return;
             var t, p=profile.properties;
-            if(t = p.msgType)profile.boxing().setMsgType(t, true);
+            if(t = p.recipientType||p.msgType)profile.boxing().seRecipientType(t, true);
         },
         destroy:function(){
             this.each(function(profile){
@@ -5079,9 +5079,15 @@ xui.Class("xui.MessageService","xui.absObj",{
                 profile.__gc();
             });
         },
-        broadcast:function(type, msg1, msg2, msg3, msg4, msg5, callback){
-            xui.arr.each(type.split(/[\s,;:]+/),function(t){
-                xui.publish(t, [msg1, msg2, msg3, msg4, msg5, callback], null, this);
+        broadcast:function(recipientType, msg1, msg2, msg3, msg4, msg5, readReceipt){
+            return this.each(function(profile){
+                var ins=profile.boxing();
+                xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
+                    xui.publish(t, [msg1, msg2, msg3, msg4, msg5, function(){
+                        xui.tryF(readReceipt);
+                        if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
+                    }], null, ins);
+                });
             });
         },
         getParent:xui.Timer.prototype.getParent,
@@ -5091,16 +5097,18 @@ xui.Class("xui.MessageService","xui.absObj",{
         _objectProp:xui.Timer._objectProp,
         _beforeSerialized:xui.Timer._beforeSerialized,
         DataModel:{
-            msgType:{
+            dataBinder:null,
+            dataField:null,
+            recipientType:{
                 ini:"",
                 set:function(value){
                         var profile=this, t, p=profile.properties,id=profile.$xid;
-                        if(t = p.msgType){
+                        if(t = p.recipientType){
                             xui.arr.each(t.split(/[\s,;:]+/),function(t){
                                 xui.unsubscribe(t,id);
                             });
                         }
-                        if(t = p.msgType = value||""){
+                        if(t = p.recipientType = value||""){
                             xui.arr.each(t.split(/[\s,;:]+/),function(t){
                                 xui.subscribe(t, id, function(){
                                     var a=xui.toArr(arguments), ins=profile.boxing();
@@ -5114,7 +5122,8 @@ xui.Class("xui.MessageService","xui.absObj",{
             asynReceive:false
         },
         EventHandlers:{
-            onMessageReceived:function(profile, msg1, msg2, msg3, msg4, msg5, callback){}
+            onMessageReceived:function(profile, msg1, msg2, msg3, msg4, msg5, readReceipt){},
+            onReceipt:function(profile, recipientType, args){}
         }
     }
 });

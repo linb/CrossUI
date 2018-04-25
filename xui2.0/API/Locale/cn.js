@@ -1765,24 +1765,24 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"发布消息到指定接收类型的消息服务",
                 $rtn:"undefined",
                 $paras:[
-                    "type [必需参数]: String, 指定接收类型，如果空表示发送到所有接收类型",
+                    "recipientType [必需参数]: String, 指定接收类型，如果空表示发送到所有接收类型",
                     "msg1 [必需参数]: Object, 消息1",
                     "msg2 [可选参数]: Object, 消息2",
                     "msg3 [可选参数]: Object, 消息3",
                     "msg4 [可选参数]: Object, 消息4",
                     "msg5 [可选参数]: Object, 消息5",
-                    "callback [可选参数]: Function, 回调"
+                    "readReceipt [可选参数]: Function, 已读收据"
                 ]
             },
             destroy:{
                 $desc:"销毁类",
                 $memo:"通常不用手工调用"
             },
-            getMsgType:{
+            getRecipientType:{
                 $desc:"得到可接收的消息类型",
                 $rtn:"String"
             },
-            setMsgType:{
+            setRecipientType:{
                 $desc:"设置可接收的消息类型",
                 $rtn:"[self]",
                 $paras:[
@@ -1811,7 +1811,15 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg3 : Object, 消息 3",
                     "msg4 : Object, 消息 4",
                     "msg5 : Object, 消息 5",
-                    "callback : Function,  回调"
+                    "readReceipt : Function,  回调"
+                ]
+            },
+            onReceipt:{
+                $desc:"当接收到收条的时候调用",
+                $paras:[
+                    "profile : xui.Profile",
+                    "recipientType : String, 接受者的消息类型",
+                    "args : Array,  收条函数的参数"
                 ]
             }
         }
@@ -3676,7 +3684,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "hideEffects[Optional] : Object, 隐去动画的配置"
                 ]
             },
-            pop:{
+            popup:{
                 $desc:"将第一个元素显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
                 $rtn:"String, 区域外点击隐藏的唯一标识",
                 $paras:[
@@ -14886,11 +14894,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"按照列表的内容自动调整列表的宽度和高度",
                 $rtn:"[self]"
             },
-            pop:{
+            popup:{
                 $desc:"弹出菜单",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number}或是DOM元素",
+                    "pos [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number},DOM元素,控件或事件对象",
                     "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
                     "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象"
                 ],

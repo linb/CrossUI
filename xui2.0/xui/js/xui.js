@@ -713,7 +713,7 @@ new function(){
         isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
         isStr:function(target)   {return _to.call(target)==='[object String]'},
         isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
-        isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!target.$xuievent))},
+        isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!(target.$xuievent||target.$xuieventpara)))},
         isElem:function(target) {return !!(target && target.nodeType === 1)},
         isNaN:function(target) {return typeof target == 'number' && target != +target;},
         //for handling String

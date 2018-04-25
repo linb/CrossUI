@@ -437,7 +437,7 @@ xui.Class('xui.Event',null,{
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
                 altKey:keys.altKey,
-                $xuievent:true
+                $xuieventpara:true
             };
             for(var i in event)if(i.charAt(0)=='$')h[i]=event[i];
             return h;

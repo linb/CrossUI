@@ -1753,24 +1753,24 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Broadcast message to specific type MessageService",
                 $rtn:"undefined",
                 $paras:[
-                    "type [Required]: String, If it was not specified, the message will be published to all MessageServices",
+                    "recipientType [Required]: String, If it was not specified, the message will be published to all MessageServices",
                     "msg1 [Optional]: Object, message 1",
                     "msg2 [Optional]: Object, message 2",
                     "msg3 [Optional]: Object, message 3",
                     "msg4 [Optional]: Object, message 4",
                     "msg5 [Optional]: Object, message 5",
-                    "callback [Optional]: Functin, callback"
+                    "readReceipt [Optional]: Function, read receipt"
                 ]
             },
             destroy:{
                 $desc:"To destroy the current Object",
                 $memo:"Usually, we do not need to call this function manually"
             },
-            getMsgType:{
+            getRecipientType:{
                 $desc:"Gets the acceptable message type",
                 $rtn:"String"
             },
-            setMsgType:{
+            setRecipientType:{
                 $desc:"Sets the acceptable message type",
                 $rtn:"[self]",
                 $paras:[
@@ -1799,7 +1799,15 @@ xui.set(xui.Locale,["en","app"], {
                     "msg3: Object, message object 3",
                     "msg4: Object, message object 4",
                     "msg5: Object, message object 5",
-                    "callback: Functin, callback"
+                    "readReceipt: Function, read receipt"
+                ]
+            },
+            onReceipt:{
+                $desc:"When it got the read receipt",
+                $paras:[
+                    "profile : xui.Profile",
+                    "recipientType : String, the receiver type for the receiptor",
+                    "args : Array,  the arguments for the read receipt function"
                 ]
             }
         }
@@ -3437,7 +3445,7 @@ xui.set(xui.Locale,["en","app"], {
                     "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
-            pop:{
+            popup:{
                 $desc:"Pops it onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
                 $rtn:"String, the blur trigger id",
                 $paras:[
@@ -3665,7 +3673,7 @@ xui.set(xui.Locale,["en","app"], {
                     "hideEffects[Optional] : Object, hide effects config object"
                 ]
             },
-            pop:{
+            popup:{
                 $desc:"Pops the first element onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
                 $rtn:"String, the blur trigger id",
                 $paras:[
@@ -5370,6 +5378,8 @@ xui.set(xui.Locale,["en","app"], {
                     "msg1 [Required]: Object, message 1",
                     "msg2 [Optional]: Object, message 2",
                     "msg3 [Optional]: Object, message 3",
+                    "msg4 [Optional]: Object, message object 4",
+                    "msg5 [Optional]: Object, message object 5",
                     "sender [Optional] : Object, the message sender"
                 ]
             },
@@ -9168,7 +9178,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
                 ]
             },
-            pop:{
+            popup:{
                 $desc:"Pops it onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
                 $rtn:"String, the blur trigger id",
                 $paras:[
@@ -14972,11 +14982,11 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"To adjust pop menu width automatically",
                 $rtn:"[self]"
             },
-            pop:{
+            popup:{
                 $desc:"Pops this menu",
                 $rtn:"[self]",
                 $paras:[
-                    "obj [Required] : Object{left:Nubmer,top:Number}/Element",
+                    "pos [Required] : Object{left:Nubmer,top:Number}/xui.UIProfile/Element/Event",
                     "type [Optional] : String. one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'.Default is 'outer'",
                     "parent [Optional} : xui.Dom/Element,The popmenu's parent element"
                 ],

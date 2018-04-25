@@ -96,7 +96,7 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
         propSetAction:function(prop){
             var module=this;
             if(module._innerModulesCreated && module.xui_msgs1){
-                if('inMsgType' in prop) module.xui_msgs1.setMsgType(prop.inMsgType);
+                if('inMsgType' in prop) module.xui_msgs1.setRecipientType(prop.inMsgType);
             }
         },
         loadGridData:function(page, size){

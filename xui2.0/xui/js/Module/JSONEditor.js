@@ -78,6 +78,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 .beforeIniEditor("_tg_beforeIniEditor")
                 .onBeginEdit("_tg_onEdit")
                 .beforeRowActive('_tg_beforerowactive')
+                .beforeEditApply("_tg_beforecellapply")
                 .beforeCellUpdated("_tg_beforecellupdated")
             );
             
@@ -221,6 +222,9 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         (/^\{[\s\S]*\}$/.test(v) && xui.isHash(xui.unserialize(v))) ||
                       //array
                         (/^\[[\s\S]*\]$/.test(v)  ) && xui.isArr(xui.unserialize(v))) ;
+        },
+        _tg_beforecellapply:function(profile, cc, options, editor, tag){
+            if(tag!=='onchange')return false;
         },
         _tg_beforecellupdated:function (profile, cell, options) {
             var ns=this,
