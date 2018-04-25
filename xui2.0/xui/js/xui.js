@@ -5090,6 +5090,8 @@ xui.Class("xui.MessageService","xui.absObj",{
         _objectProp:xui.Timer._objectProp,
         _beforeSerialized:xui.Timer._beforeSerialized,
         DataModel:{
+            dataBinder:null,
+            dataField:null,
             msgType:{
                 ini:"",
                 set:function(value){
