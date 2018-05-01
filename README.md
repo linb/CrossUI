@@ -23,11 +23,11 @@ Examples: http://www.linb.net/Examples
 
 These tools (commercial license) can reduce development time significantly:
 
-* CrossUI Front-end builder: http://crossui.com/RAD
+* CrossUI Front-end builder: https://crossui.com/RAD
 
-* CrossUI Single Page Builder: http://www.crossui.com/RAD/Builder.html
+* CrossUI Single Page Builder: https://www.crossui.com/RAD/Builder.html
 
-* CrossUI Embeddable Desginer: http://crossui.com/Desginer
+* CrossUI Embeddable Desginer: https://www.crossui.com/Designer/
 
 * CrossUI Theme Roller: https://www.crossui.com/ThemeRoller
 
