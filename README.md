@@ -27,7 +27,7 @@ These tools (commercial license) can reduce development time significantly:
 
 * CrossUI Single Page Builder: http://www.crossui.com/RAD/Builder.html
 
-* CrossUI Embeddable Desginer: http://crossui.com/RAD
+* CrossUI Embeddable Desginer: http://crossui.com/Desginer
 
 * CrossUI Theme Roller: https://www.crossui.com/ThemeRoller
 
