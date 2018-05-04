@@ -714,7 +714,7 @@ new function(){
         isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
         isStr:function(target)   {return _to.call(target)==='[object String]'},
         isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
-        isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!target.$xuievent))},
+        isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!(target.$xuievent||target.$xuieventpara)))},
         isElem:function(target) {return !!(target && target.nodeType === 1)},
         isNaN:function(target) {return typeof target == 'number' && target != +target;},
         //for handling String
@@ -7099,7 +7099,7 @@ xui.Class('xui.Event',null,{
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,
                 altKey:keys.altKey,
-                $xuievent:true
+                $xuieventpara:true
             };
             for(var i in event)if(i.charAt(0)=='$')h[i]=event[i];
             return h;
@@ -13353,14 +13353,15 @@ xui.Class('xui.Dom','xui.absBox',{
                 window.open(action,target);
             }
         },
-        selectFile:function(callback, accept){
+        selectFile:function(callback, accept, multiple){
             var fileInput=document.createElement( "input" );
             fileInput.type="file";
             // "image/*, video/*, audio/*"
             if(accept)fileInput.accept = accept;
+            if(multiple)fileInput.multiple = "multiple";
 
             fileInput.onchange=function(){
-                xui.tryF(callback, [this, this.files[0]], this);
+                xui.tryF(callback, [this, this.files[0], this.files], this);
             };
             if (!!window.ActiveXObject || "ActiveXObject" in window)  {
               var label=document.createElement( "div" );
@@ -33039,11 +33040,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 return o;
             }
-        },
-        popFileSelector:function(){
+        }, 
+        popFileSelector:function(accept, multiple){
             var profile=this.get(0),prop=profile.properties;
             if(profile.renderId && prop.type=='file'){
-                var fileInput = profile.getSubNode('FILE').get(0);
+                var input = profile.getSubNode('FILE'), fileInput=input.get(0);
+                input.attr("accept",accept||prop.fileAccept||null);
+                input.attr("multiple",multiple||prop.fileMultiple?"multiple":null);
+
                 // for IE11
                 if (xui.browser.ie11)  {
                   var label=document.createElement( "div");
@@ -33547,6 +33551,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 cursor:'pointer',
                 'text-align':'left',
+                'white-space': 'normal',
                 overflow:'hidden'
             },
             'KEY-type-button INPUT, KEY-type-dropbutton INPUT':{
@@ -33688,7 +33693,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,src);
                 },
                 onChange:function(profile, e, src){
-                    profile.boxing().setUIValue(xui.use(src).get(0).value+'',null,null,'onchange');
+                    var prop=profile.properties,
+                        input=xui.use(src).get(0),
+                        value=input.value+'';
+                    if(prop.type=='file'){
+                        var arr=[];
+                        for(var i=0,f=input.files,l=f.length;i<l;i++)arr.push(f[i].name);
+                        value=arr.length ? '"'+arr.join('", "')+'"' : '';
+                    }
+                    profile.boxing().setUIValue(value,null,null,'onchange');
                 }
             },
             LBTN:{
@@ -34190,7 +34203,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 get:function(){
                     return this.boxing().getShowValue();
                 }
-            }
+            },
+            fileAccept:"",
+            fileMultiple:false
         },
         RenderTrigger:function(){
             var self=this,
@@ -34226,6 +34241,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             var properties = profile.properties,
                 type=properties.type,
                 multiLines=properties.multiLines,
+                fileAccept=properties.fileAccept,
+                fileMultiple=properties.fileMultiple,
                 showMode=properties.showMode,
                 hash = profile._exhash = "$" +
                     'multiLines:'+multiLines+';'+
@@ -34306,6 +34323,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             className:'xui-ui-unselectable  {_radius_dropr}',
                             tagName:'input',
                             type:'file',
+                            accept:fileAccept||null,
+                            multiple:fileMultiple?"multiple":null,
                             hidefocus:xui.browser.ie?"hidefocus":null,
                             size:'1'
                         };
@@ -42833,7 +42852,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }, profile.$popGrp);
             }
         },
-        pop:function(obj, type, parent,ignoreEffects){
+        pop:function(pos, type, parent,ignoreEffects){
             var ns=this,
                 profile=ns.get(0),
                 p=profile.properties,
@@ -42853,7 +42872,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             // set container
             profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
 
-            profile.getRoot().popToTop(obj, type, profile._conainer);
+            profile.getRoot().popToTop(pos, type, profile._conainer);
 
             ns._setScroll();
             ns.adjustSize();

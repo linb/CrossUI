@@ -222,11 +222,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 return o;
             }
-        },
-        popFileSelector:function(){
+        }, 
+        popFileSelector:function(accept, multiple){
             var profile=this.get(0),prop=profile.properties;
             if(profile.renderId && prop.type=='file'){
-                var fileInput = profile.getSubNode('FILE').get(0);
+                var input = profile.getSubNode('FILE'), fileInput=input.get(0);
+                input.attr("accept",accept||prop.fileAccept||null);
+                input.attr("multiple",multiple||prop.fileMultiple?"multiple":null);
+
                 // for IE11
                 if (xui.browser.ie11)  {
                   var label=document.createElement( "div");
@@ -730,6 +733,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 cursor:'pointer',
                 'text-align':'left',
+                'white-space': 'normal',
                 overflow:'hidden'
             },
             'KEY-type-button INPUT, KEY-type-dropbutton INPUT':{
@@ -871,7 +875,15 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,src);
                 },
                 onChange:function(profile, e, src){
-                    profile.boxing().setUIValue(xui.use(src).get(0).value+'',null,null,'onchange');
+                    var prop=profile.properties,
+                        input=xui.use(src).get(0),
+                        value=input.value+'';
+                    if(prop.type=='file'){
+                        var arr=[];
+                        for(var i=0,f=input.files,l=f.length;i<l;i++)arr.push(f[i].name);
+                        value=arr.length ? '"'+arr.join('", "')+'"' : '';
+                    }
+                    profile.boxing().setUIValue(value,null,null,'onchange');
                 }
             },
             LBTN:{
@@ -1373,7 +1385,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 get:function(){
                     return this.boxing().getShowValue();
                 }
-            }
+            },
+            fileAccept:"",
+            fileMultiple:false
         },
         RenderTrigger:function(){
             var self=this,
@@ -1409,6 +1423,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             var properties = profile.properties,
                 type=properties.type,
                 multiLines=properties.multiLines,
+                fileAccept=properties.fileAccept,
+                fileMultiple=properties.fileMultiple,
                 showMode=properties.showMode,
                 hash = profile._exhash = "$" +
                     'multiLines:'+multiLines+';'+
@@ -1489,6 +1505,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             className:'xui-ui-unselectable  {_radius_dropr}',
                             tagName:'input',
                             type:'file',
+                            accept:fileAccept||null,
+                            multiple:fileMultiple?"multiple":null,
                             hidefocus:xui.browser.ie?"hidefocus":null,
                             size:'1'
                         };

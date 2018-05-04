@@ -3796,14 +3796,15 @@ xui.Class('xui.Dom','xui.absBox',{
                 window.open(action,target);
             }
         },
-        selectFile:function(callback, accept){
+        selectFile:function(callback, accept, multiple){
             var fileInput=document.createElement( "input" );
             fileInput.type="file";
             // "image/*, video/*, audio/*"
             if(accept)fileInput.accept = accept;
+            if(multiple)fileInput.multiple = "multiple";
 
             fileInput.onchange=function(){
-                xui.tryF(callback, [this, this.files[0]], this);
+                xui.tryF(callback, [this, this.files[0], this.files], this);
             };
             if (!!window.ActiveXObject || "ActiveXObject" in window)  {
               var label=document.createElement( "div" );
