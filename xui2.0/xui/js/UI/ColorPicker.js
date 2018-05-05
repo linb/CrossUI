@@ -81,7 +81,7 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
         ns.setTemplate({
             style:'{_style};height:auto;width:auto',
             tagName : 'div',
-            onselectstart:'return false',
+            //onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
                 className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
@@ -152,7 +152,7 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                                     DATA:{
                                         $order:0,
                                         tagName:'div',
-                                        onselectstart:'return false',
+                                        //onselectstart:'return false',
                                         text:data
                                     },
                                     EXAM:{

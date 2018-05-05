@@ -237,14 +237,14 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             tagName : 'div',
             style:'{_style}',
             className:'{_className}',
-            ondrag:'return false',
-            onselectstart:'return false',
+            //ondrag:'return false',
+            //onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
                 className:"xui-uibase",
                 BOX:{
                     tagName : 'div',
-                    onselectstart:'return false',
+                    //onselectstart:'return false',
                     ITEMS:{
                         tagName : 'div',
                         className:'{_cmdsalign}',

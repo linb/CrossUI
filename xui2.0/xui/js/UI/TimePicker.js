@@ -57,7 +57,7 @@ xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         
         this.setTemplate({
             tagName : 'div',
-            onselectstart:'return false',
+            //onselectstart:'return false',
             style:'{_style};height:auto;',
             BORDER:{
                 tagName : 'div',

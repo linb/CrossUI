@@ -34750,7 +34750,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         ns.setTemplate({
             style:'{_style};height:auto;width:auto',
             tagName : 'div',
-            onselectstart:'return false',
+            //onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
                 className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
@@ -34821,7 +34821,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                                     DATA:{
                                         $order:0,
                                         tagName:'div',
-                                        onselectstart:'return false',
+                                        //onselectstart:'return false',
                                         text:data
                                     },
                                     EXAM:{
@@ -35717,7 +35717,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         self.setTemplate({
             tagName : 'div',
             style:'{_style};height:auto;',
-            onselectstart:'return false',
+            //onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
                 className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
@@ -36513,7 +36513,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         
         this.setTemplate({
             tagName : 'div',
-            onselectstart:'return false',
+            //onselectstart:'return false',
             style:'{_style};height:auto;',
             BORDER:{
                 tagName : 'div',
@@ -41802,14 +41802,14 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             tagName : 'div',
             style:'{_style}',
             className:'{_className}',
-            ondrag:'return false',
-            onselectstart:'return false',
+            //ondrag:'return false',
+            //onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
                 className:"xui-uibase",
                 BOX:{
                     tagName : 'div',
-                    onselectstart:'return false',
+                    //onselectstart:'return false',
                     ITEMS:{
                         tagName : 'div',
                         className:'{_cmdsalign}',

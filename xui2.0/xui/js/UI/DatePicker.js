@@ -55,7 +55,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
         self.setTemplate({
             tagName : 'div',
             style:'{_style};height:auto;',
-            onselectstart:'return false',
+            //onselectstart:'return false',
             BORDER:{
                 tagName : 'div',
                 className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
