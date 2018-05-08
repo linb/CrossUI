@@ -87,7 +87,9 @@
 	background-position:left top;
 	background-color:#CFE4FE;
 }
-
+.xui-block-fold .xui-block-sidebar{
+  background-color:#CFE4FE;
+}
 
 /*gradient*/
 .xui-uigradient{

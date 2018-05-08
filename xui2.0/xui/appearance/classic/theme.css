@@ -99,7 +99,9 @@
   background-color:#CFE4FE;
   border-left: solid 3px #ff0000;
 }
-
+.xui-block-fold .xui-block-sidebar{
+  background-color:#CFE4FE;
+}
 /*gradient*/
 .xui-uigradient{
     color:#444; 

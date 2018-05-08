@@ -2242,12 +2242,12 @@ xui.Class("xui.UI",  "xui.absObj", {
             ".xui-uitembg-active":{
                 $order:2,
                 'background-color':'#CDCDCD',
-                'border-color':'B6B6B6'
+                'border-color':'#B6B6B6'
             },
             ".xui-uitembg-checked":{
                 $order:3,
                 'background-color':'#CDCDCD',
-                'border-color':'B6B6B6'
+                'border-color':'#B6B6B6'
             },
 
             ".xui-uicell":{

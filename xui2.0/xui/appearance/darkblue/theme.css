@@ -75,6 +75,9 @@
   background-position: left -200px;
   background-color:#2B6394;
 }
+.xui-block-fold .xui-block-sidebar{
+  background-color:#2B6394;
+}
 .xui-uitembg-checked{
 	color:#ffffff;
 }

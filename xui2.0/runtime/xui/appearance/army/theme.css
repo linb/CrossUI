@@ -82,6 +82,9 @@
   border-color:#779880;
   background-color: #8CB796;
 }
+.xui-block-fold .xui-block-sidebar{
+  background-color:#8CB796;
+}
 .xui-uitembg-checked{
 	color:#ffffff;
 }

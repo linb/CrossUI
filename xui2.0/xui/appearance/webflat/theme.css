@@ -167,6 +167,9 @@
     background-color: #27AE60;
     border-color: transparent;
 }
+.xui-block-fold .xui-block-sidebar{
+  background-color:#27AE60;
+}
 /*gradient*/
 .xui-uigradient{
     color:#666; 

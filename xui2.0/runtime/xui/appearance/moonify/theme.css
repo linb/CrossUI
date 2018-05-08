@@ -89,7 +89,9 @@
 .xui-uitembg-checked{
     background-color:#282D34;
 }
-
+.xui-block-fold .xui-block-sidebar{
+  background-color:#282D34;
+}
 /*gradient*/
 .xui-uigradient{
     color:#fff; 

@@ -37,6 +37,11 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 position:'relative',
                 overflow:'auto'
             },
+            SBCAP:{
+                'text-overflow': 'ellipsis',
+                'white-space': 'nowrap',
+                overflow: 'hidden'
+            },
             SBBTN:{
                 'z-index':2,
                 margin:'0.33333em'
@@ -61,12 +66,9 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             },
             SBBTN:{
                 onClick:function(profile, e, src){
-                    var p=profile.properties,
-                        a=p.sideBarType,
-                        b=p.sideBarStatus,
-                        c;
+                    var p=profile.properties;
                     if(p.disabled)return false;
-                    profile.boxing().setSideBarStatus(c  = b=='fold'?'expand':'fold');                    
+                    profile.boxing().setSideBarStatus(p.sideBarStatus=='fold'?'expand':'fold');
                 }
             },
             SIDEBAR:{
@@ -114,90 +116,38 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 listbox:['none','flat','inset','outset','groove','ridge'],
                 action:function(v){
                     var ns=this,
-                        p=ns.properties,
-                        type=p.sideBarType,
-                        n1=ns.getSubNode('BORDER'), n2=ns.getSubNode('PANEL'),
-                        reg=/^xui-uiborder-/,
-                        b='xui-uiborder-',
-                        r=b+'radius',
-                        i=b+'inset',
-                        o=b+'outset',
-                        f=b+'flat',
-                        ibr = type=='left'?r+'-tr '+r+'-br':type=='top'?r+'-bl '+r+'-br':type=='right'?r+'-tl '+r+'-bl':type=='bottom'?r+'-tl '+r+'-tr':r,
-                        flat=f+' ' +r,
-                        ins=i+' '+r,
-                        outs=o+' ' +r,
-                        ins2=i + ' '+ibr,
-                        outs2=o+' '+ibr,
-                        root=ns.getRoot();
-                    n1.removeClass(reg);
-                    n2.removeClass(reg);
-                    switch(v){
-                        case 'flat':
-                        n1.addClass(flat);
-                        n2.addClass(ibr);
-                        break;
-                        case 'inset':
-                        n1.addClass(ins);
-                        n2.addClass(ibr);
-                        break;
-                        case 'outset':
-                        n1.addClass(outs);
-                        n2.addClass(ibr);
-                        break;
-                        case 'groove':
-                        n1.addClass(ins);
-                        n2.addClass(outs2);
-                        break;
-                        case 'ridge':
-                        n1.addClass(outs);
-                        n2.addClass(ins2);
-                        break;
-                    }
-
-                    //force to resize
-                    ns.box._setB(ns);
-                    ns.adjustSize();
+                        p=ns.properties;
+                    ns.box._borderType(ns, v, p.sideBarStatus, p.sideBarType.split('-'), true);
                 }
             },
 
             // for side bar
-            sideBarType:{
-                ini:'none',
-                listbox:['none','left','top','right','bottom'],
-                action:function(v){
-                    var ns=this, 
-                        prop=ns.properties,
-                        reg=/^xui-uisb-/,
-                        node=ns.getSubNode('SIDEBAR');
-                    
-                    node.removeClass(reg).addClass('xui-uisb-'+v);
-
-                    ns.box._sbicon(ns,true);
-
-                    ns.boxing().setBorderType(prop.borderType,true);
-
-                    if(prop.dock=='none')
-                        ns.adjustSize();
-                    else
-                        ns.boxing().adjustDock(true);
-                }
-            },
             sideBarCaption:{
                 ini:'',
                 action:function(v){
                     this.getSubNode("SBCAP").html(v);
                 }
             },
+            sideBarType:{
+                ini:'none',
+                listbox:['none','left','right','top','bottom','left-top','left-bottom','right-top','right-bottom','top-left','top-right','bottom-left','bottom-right'],
+                action:function(v){
+                    var ns=this, 
+                        prop=ns.properties;
+                    ns.box._adjustSideBar(ns, prop.sideBarStatus, v);
+
+                    if(prop.dock!='none') ns.boxing().adjustDock(true);
+                    else ns.adjustSize();
+                }
+            },
             sideBarStatus:{
                 ini:'expand',
                 listbox:['expand','fold'],
                 action:function(v){
-                    var ns=this, 
-                        prop=ns.properties;
+                    var ns=this,  prop=ns.properties;
                     ns.getRoot().tagClass('-fold', v!='expand');
 
-                    ns.box._sbicon(ns,true);
+                    ns.box._adjustSideBar(ns, v, prop.sideBarType);
 
                     // use sync way
                     xui.UI.$doResize(ns, prop.width, prop.height,true);
@@ -240,7 +190,8 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 display:'none'
             },
             'KEY-fold SIDEBAR':{
-                cursor:'pointer'
+                cursor:'pointer',
+                'background-color':'#B6B6B6'
             }
         },
         RenderTrigger:function(){
@@ -250,13 +201,71 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                     xui.UI.Div._applyAutoLoad(this);
         },
-        _sbicon:function(profile, ui){
-            var p=profile.properties,
-                a=p.sideBarType,
-                target=p.sideBarStatus=='fold'
-                ? a=='left'?'left':a=='right'?'right':a=='top'?'up':'down'
-                : a=='left'?'right':a=='right'?'left':a=='top'?'down':'up';
+        _sbicon:function(profile, sideBarStatus, type, ui){
+            var target=sideBarStatus=='fold'
+                ? type=='left'?'left':type=='right'?'right':type=='top'?'up':'down'
+                : type=='left'?'right':type=='right'?'left':type=='top'?'down':'up';
+
             return ui ? profile.getSubNode('SBBTN').replaceClass(/(xui-icon-double)[\w]+/g,'$1' + target) : 'xui-icon-double'+target;
+        },
+        _borderType:function(profile, borderType, sideBarStatus, type, adjust){
+            type = sideBarStatus=='expand'?type[0]:(type[1]||type[0]);
+            var ns=profile,
+                v=borderType,
+                n1=ns.getSubNode('BORDER'), n2=ns.getSubNode('PANEL'),
+                reg=/^xui-uiborder-/,
+                b='xui-uiborder-',
+                r=b+'radius',
+                i=b+'inset',
+                o=b+'outset',
+                f=b+'flat',
+                ibr = type=='left'?r+'-tr '+r+'-br':type=='top'?r+'-bl '+r+'-br':type=='right'?r+'-tl '+r+'-bl':type=='bottom'?r+'-tl '+r+'-tr':r,
+                flat=f+' ' +r,
+                ins=i+' '+r,
+                outs=o+' ' +r,
+                ins2=i + ' '+ibr,
+                outs2=o+' '+ibr,
+                root=ns.getRoot();
+            n1.removeClass(reg);
+            n2.removeClass(reg);
+            switch(v){
+                case 'flat':
+                n1.addClass(flat);
+                n2.addClass(ibr);
+                break;
+                case 'inset':
+                n1.addClass(ins);
+                n2.addClass(ibr);
+                break;
+                case 'outset':
+                n1.addClass(outs);
+                n2.addClass(ibr);
+                break;
+                case 'groove':
+                n1.addClass(ins);
+                n2.addClass(outs2);
+                break;
+                case 'ridge':
+                n1.addClass(outs);
+                n2.addClass(ins2);
+                break;
+            }
+
+            //force to resize
+            ns.box._setB(ns);
+            
+            if(adjust)
+                ns.adjustSize();
+        },
+        _adjustSideBar:function(prf, sideBarStatus, sideBarType){
+            var ns=prf, 
+                prop=ns.properties,
+                reg=/^xui-uisb-/,
+                arr=sideBarType.split('-'),
+                node=ns.getSubNode('SIDEBAR');
+            node.removeClass(reg).addClass('xui-uisb-' + (sideBarStatus=='expand'?arr[0]:(arr[1]||arr[0])));
+            ns.box._sbicon(ns, sideBarStatus, arr[1]||arr[0], true);
+            ns.box._borderType(ns, prop.borderType, sideBarStatus, arr, false);
         },
         _setB:function(profile){
             var p=profile.properties,
@@ -277,16 +286,15 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile),
-                a=data.sideBarType,
+                a=data.sideBarType.split('-'),
                 b=data.sideBarStatus;
             data.background= data.background?'background:'+data.background:'';
             if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
-            
-            data._sidebar = 'xui-uisb-' + a;
-            data._sidebarStatus = b=='fold'?profile.getClass('KEY','-fold'):'';
 
-            data._fi_btn =  profile.box._sbicon(profile);
+            data._sidebar = 'xui-uisb-' + (b=='expand'?a[0]:(a[1]||a[0]));
+            data._sidebarStatus = b=='fold'?profile.getClass('KEY','-fold'):'';
+            data._fi_btn =  profile.box._sbicon(profile, b, a[1]||a[0]);
 
             return data;
         },        
@@ -299,10 +307,10 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 sbcap=profile.getSubNode('SBCAP'),
                 prop=profile.properties,
                 sbs=prop.sideBarStatus,
-                sbtype=prop.sideBarType,
+                sbtype=prop.sideBarType.split('-'),
                 cb1=border.contentBox(),
-                bv=cb1?0:(prop.$vborder||0)*2,
-                bh=cb1?0:(prop.$hborder||0)*2,
+                bv=(prop.$vborder||0)*2,
+                bh=(prop.$hborder||0)*2,
                 
                 cb2=panel.contentBox(),
                 b2=(prop.$iborder||0)*2,
@@ -318,34 +326,36 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 sbsize=profile.$px(prop.sideBarSize),
                 sbsize2=adjustunit(sbsize);
 
+            sbtype=sbs=='expand'?sbtype[0]:(sbtype[1]||sbtype[0]);
+
             size.left=size.top=0;
             if(sbtype && sbtype!='none'){
-                sbcap.css('line-height',adjustunit(sbsize - 2));
+                sbcap.css('line-height',adjustunit(sbsize - (!cb1?0:bh)));
                 if(sbtype=='left'||sbtype=='right'){
                     sidebar.width(sbsize2);
                     if(height&&'auto'!==height)
-                        sidebar.height(adjustunit(hh-bv));
+                        sidebar.height(adjustunit(hh- (cb1?0:bv) ));
                 }else{
                     sidebar.height(sbsize2);
-                    sidebar.width(adjustunit(ww-bh));
+                    sidebar.width(adjustunit(ww- (cb1?0:bh) ));
                 }
 
                 if(sbs=='fold'){
                     if(sbtype=='left'||sbtype=='right'){
-                        root.width(adjustunit(sbsize+bh+b2));
-                        border.width(adjustunit(sbsize+bv));
+                        root.width(adjustunit(sbsize + bh));
+                        border.width(adjustunit(sbsize+ (cb1?0:bh)));
                     }else{
-                        root.height(adjustunit(sbsize+bv+b2));
-                        border.height(adjustunit(sbsize+bv));
+                        root.height(adjustunit(sbsize + bv));
+                        border.height(adjustunit(sbsize+ (cb1?0:bv)));
                     }
                     return;
                 }else{
                     if(sbtype=='left'||sbtype=='right'){
                         root.width(adjustunit(width));
-                        border.width(adjustunit(width-(cb1?bh:0)));
+                        border.width(adjustunit(ww));
                     }else{
                         root.height(adjustunit(height));
-                        border.height(adjustunit(height-(cb1?bv:0)));
+                        border.height(adjustunit(hh));
                     }
                     switch(sbtype){
                         case 'left':
@@ -365,9 +375,9 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                     }
                 }
             }
-            if(size.width) size.width = adjustunit(ww -bh - (!cb2?0:b2), panelfz);
+            if(size.width) size.width = adjustunit(ww - (cb1?0:bh) - (!cb2?0:b2), panelfz);
             if(size.height&&'auto'!==size.height)
-                size.height = adjustunit(hh - bv- (!cb2?0:b2), panelfz);
+                size.height = adjustunit(hh - (cb1?0:bv) - (!cb2?0:b2), panelfz);
             panel.cssRegion(size,true);
 
             if(size.width){
