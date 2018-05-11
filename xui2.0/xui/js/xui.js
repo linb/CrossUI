@@ -565,10 +565,9 @@ new function(){
                         isArr=xui.isArr(hash),
                         h=isArr?[]:{},
                         i=0,v,l;
-                    if(!deep){
-                        if(deep<=0)return hash;
-                        else deep=100;
-                    }
+                    
+                    if(!xui.isSet(deep)) deep=100; else if(deep<=0)return hash;
+
                     if(isArr){
                         l=hash.length;
                         for(;i<l;i++){
@@ -1819,7 +1818,7 @@ xui.merge(xui,{
 
     //create:function(tag, properties, events, host){
     create:function(tag,bak){
-        var arr,o,t,me=xui.create,r1=me.r1||(me.r1=/</);
+        var arr,o,t,r1=/</;
         if(xui.isArr(tag)){
             arr=[];
             for(var i=0,l=tag.length;i<l;i++)Array.prototype.push.apply(arr, xui.create(tag[i]).get());
@@ -1841,13 +1840,16 @@ xui.merge(xui,{
                     o = new xui.UI.MoudluePlaceHolder();
                     xui.require(tag,function(module){
                          if(module&&module["xui.Module"]){
-                            if(o.get(0).renderId){
-                                var m=new module();
-                                m.create(function(){
-                                    o.replaceWithModule(m);
-                                });
-                            }else{
-                                o.get(0)._module = new module();
+                            var t=o.get(0);
+                            if(t){
+                                if(t.renderId){
+                                    var m=new module();
+                                    m.create(function(){
+                                        o.replaceWithModule(m);
+                                    });
+                                }else{
+                                    t._module = new module();
+                                }
                             }
                          }
                      }); 

@@ -1119,7 +1119,8 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     */
 
                     profile.$inModal=true;
-                    if(p!==xui.win) p.setBlurTrigger(profile.$xid+"_anti", true, xui([cover.get(0),profile.getRootNode()]));
+                    // avoid triggering the previously set trigger
+                    p.setBlurTrigger(profile.$xid+"_anti", true, xui([cover.get(0),profile.getRootNode()]));
                 }
             }
         },

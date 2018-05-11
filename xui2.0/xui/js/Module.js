@@ -108,7 +108,7 @@ xui.Class('xui.Module','xui.absProfile',{
 	             alias = opt.alias;
 	             host = opt.host;
 	        }else{
-	            properties = properties || (self.properties?xui.clone(self.properties):{});
+	            properties = properties || (self.properties?xui.clone(self.properties,true):{});
 	            events = events || (self.events?xui.clone(self.events):{});
 	        }
 	    }
@@ -296,7 +296,11 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.properties = xui.copy(key);
                 }else{
-                    xui.merge(self.properties, key, 'all');
+                    var h=xui.clone(self.properties, true);
+                    xui.merge(h, key, 'all');
+                    if(value && xui.isHash(value))
+                        xui.merge(h, value, 'all');
+                    self.properties=h;
                 }
             }
 
@@ -427,7 +431,7 @@ xui.Class('xui.Module','xui.absProfile',{
         // for outter events
         fireEvent:function(name, args, host){
             var self = this;
-            if(self.$inDesign)return;
+            if(self.$inDesign || (self.host && self.host.$inDesign))return;
 
             var r, tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
@@ -539,6 +543,8 @@ xui.Class('xui.Module','xui.absProfile',{
                 host=o.host,
                 alias=o.alias,
                 $xid=o.$xid,
+                hashIn=o._render_conf,
+                pPrf=o._render_holder,
                 rt = o.$refreshTrigger,
                 mcls = o.moduleClass,
                 mxid = o.moduleXid;
@@ -556,6 +562,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 childId=firstUI.childrenId;
             }else{
                 p=firstUI.getParent();
+                if(!p) p=firstUI.getRoot().parent();
             }
 
             //unserialize
@@ -566,6 +573,9 @@ xui.Class('xui.Module','xui.absProfile',{
             // notice: remove destroyed here
             delete o.destroyed;
             o.$xid=$xid;
+            if(hashIn)o._render_conf=hashIn;
+            if(pPrf)o._render_holder=pPrf;
+
             //create, must keep the original refrence pointer
             new box(o);
             if(host)o.setHost(host,alias);
@@ -632,7 +642,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(self.iniComponents){
                 var arr=[];
                 try{
-                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\(['"]([\w.]+)['"]\)/g,function(a,b){
+                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                         if(!xui.SC.get(b))arr.push(b);
                     });
                 }catch(e){}

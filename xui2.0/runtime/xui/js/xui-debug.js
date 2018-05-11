@@ -566,10 +566,9 @@ new function(){
                         isArr=xui.isArr(hash),
                         h=isArr?[]:{},
                         i=0,v,l;
-                    if(!deep){
-                        if(deep<=0)return hash;
-                        else deep=100;
-                    }
+                    
+                    if(!xui.isSet(deep)) deep=100; else if(deep<=0)return hash;
+
                     if(isArr){
                         l=hash.length;
                         for(;i<l;i++){
@@ -1820,7 +1819,7 @@ xui.merge(xui,{
 
     //create:function(tag, properties, events, host){
     create:function(tag,bak){
-        var arr,o,t,me=xui.create,r1=me.r1||(me.r1=/</);
+        var arr,o,t,r1=/</;
         if(xui.isArr(tag)){
             arr=[];
             for(var i=0,l=tag.length;i<l;i++)Array.prototype.push.apply(arr, xui.create(tag[i]).get());
@@ -1842,13 +1841,16 @@ xui.merge(xui,{
                     o = new xui.UI.MoudluePlaceHolder();
                     xui.require(tag,function(module){
                          if(module&&module["xui.Module"]){
-                            if(o.get(0).renderId){
-                                var m=new module();
-                                m.create(function(){
-                                    o.replaceWithModule(m);
-                                });
-                            }else{
-                                o.get(0)._module = new module();
+                            var t=o.get(0);
+                            if(t){
+                                if(t.renderId){
+                                    var m=new module();
+                                    m.create(function(){
+                                        o.replaceWithModule(m);
+                                    });
+                                }else{
+                                    t._module = new module();
+                                }
                             }
                          }
                      }); 
@@ -14261,7 +14263,7 @@ xui.Class('xui.Module','xui.absProfile',{
 	             alias = opt.alias;
 	             host = opt.host;
 	        }else{
-	            properties = properties || (self.properties?xui.clone(self.properties):{});
+	            properties = properties || (self.properties?xui.clone(self.properties,true):{});
 	            events = events || (self.events?xui.clone(self.events):{});
 	        }
 	    }
@@ -14449,7 +14451,11 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.properties = xui.copy(key);
                 }else{
-                    xui.merge(self.properties, key, 'all');
+                    var h=xui.clone(self.properties, true);
+                    xui.merge(h, key, 'all');
+                    if(value && xui.isHash(value))
+                        xui.merge(h, value, 'all');
+                    self.properties=h;
                 }
             }
 
@@ -14580,7 +14586,7 @@ xui.Class('xui.Module','xui.absProfile',{
         // for outter events
         fireEvent:function(name, args, host){
             var self = this;
-            if(self.$inDesign)return;
+            if(self.$inDesign || (self.host && self.host.$inDesign))return;
 
             var r, tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],
@@ -14692,6 +14698,8 @@ xui.Class('xui.Module','xui.absProfile',{
                 host=o.host,
                 alias=o.alias,
                 $xid=o.$xid,
+                hashIn=o._render_conf,
+                pPrf=o._render_holder,
                 rt = o.$refreshTrigger,
                 mcls = o.moduleClass,
                 mxid = o.moduleXid;
@@ -14709,6 +14717,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 childId=firstUI.childrenId;
             }else{
                 p=firstUI.getParent();
+                if(!p) p=firstUI.getRoot().parent();
             }
 
             //unserialize
@@ -14719,6 +14728,9 @@ xui.Class('xui.Module','xui.absProfile',{
             // notice: remove destroyed here
             delete o.destroyed;
             o.$xid=$xid;
+            if(hashIn)o._render_conf=hashIn;
+            if(pPrf)o._render_holder=pPrf;
+
             //create, must keep the original refrence pointer
             new box(o);
             if(host)o.setHost(host,alias);
@@ -14785,7 +14797,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(self.iniComponents){
                 var arr=[];
                 try{
-                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\(['"]([\w.]+)['"]\)/g,function(a,b){
+                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                         if(!xui.SC.get(b))arr.push(b);
                     });
                 }catch(e){}
@@ -18469,7 +18481,12 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
                 if(ns.$attached){
                     for(var i=0,v;v=ns.$attached[i++];){
+                        //(ns.$innerObj||(ns.$innerObj=[])).push(v);
                         if(v._render)v._render(true);
+                        if((t=v._render_holder||v._inline_holder)&&t.$afterAttached)
+                            xui.tryF(t.$afterAttached,[v],t);
+                        else
+                            xui.tryF(ns.$afterAttached,[v],ns);
                     }
                     delete ns.$attached;
                 }
@@ -19603,7 +19620,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return arguments.callee.upper.apply(this,["domId"]);
         },
         refresh:function(remedy){
-            var paras,node,b,p,s,$xid,serialId,mcls,mxid,ar,fun,box,children,uiv,ns=this;
+            var paras,node,b,p,s,$xid,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,ns=this;
             return ns.each(function(o,i){
                 if(!o.renderId)return;
 
@@ -19620,6 +19637,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 serialId=o.serialId;
                 mcls = o.moduleClass;
                 mxid = o.moduleXid;
+                renderConf=o._render_conf;
+                renderHolder=o._render_holder;
+                inlineConf=o._inline_conf;
+                inlineHolder=o._inline_holder;
                 ar=o.$afterRefresh;
 
                 if(typeof o.boxing().getUIValue=='function'){
@@ -19672,6 +19693,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 o.serialId=serialId;
                 o.moduleClass=mcls;
                 o.moduleXid=mxid;
+                if(renderConf)o._render_conf=renderConf;
+                if(renderHolder)o._render_holder=renderHolder;
+                if(inlineConf)o._inline_conf=inlineConf;
+                if(inlineHolder)o._inline_holder=inlineHolder;
 
                 //create
                 var n=new box(o).render();
@@ -21230,6 +21255,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                 display:"block",
                 'white-space': 'nowrap'
             },
+            '.xui-item-cell':{
+                display:xui.$inlineBlock,
+                zoom:xui.browser.ie?1:null,
+                'white-space': 'normal'
+            },
             ".xui-required":{
                 "color":"#ff0000 !important"
             },
@@ -21477,7 +21507,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }
             }else{
-                if(t=properties.object){
+                if(t=properties['object']){
                     //[properties] is for xui.Template
                     result[result.length]=t.toHtml();
                 }else{
@@ -22727,8 +22757,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
 
                     if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
-                    if(c.object){
-                        c.object = ns._prepareInlineObj(profile, c, p.tabindex);
+                    if(c['object']){
+                        c['object'] = ns._prepareInlineObj(profile, c, p.tabindex);
                         c.type='profile';
                     }else{
                         if(!'caption' in c)c.caption=c.id;
@@ -23063,7 +23093,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var box=profile.box, dm = box.$DataModel,i,o;
 
             for(i in hashIn){
-                if(i.charAt(0)=='$')continue;
+                if(i.charAt(0)=='$'||i=='renderer')continue;
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i)){
                     hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1,false,null,null,type=='sub'&&hashIn) : xui.adjustRes(o,true,false,null,null,type=='sub'&&hashIn) : o;
                 }
@@ -23142,11 +23172,58 @@ xui.Class("xui.UI",  "xui.absObj", {
             //Avoid Empty Image src
             // ensoure to trigger load event of img
             if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_blank;
-
-            if((typeof (o=hashOut.renderer)=='function') || (typeof (o=hashIn.renderer)=='function'))
-                hashOut.caption=xui.adjustRes(o.call(profile,hashIn,hashOut));
-
+            if(o=hashOut.renderer||hashIn.renderer){
+                hashOut.caption = xui.UI._applyRenderer(profile, o, hashIn, hashOut);
+            }
             return hashOut;
+        },
+        _applyRenderer:function(profile, renderer, hashIn, hashOut){
+            if(xui.isFun(renderer)){
+                return xui.adjustRes(renderer.call(profile,hashIn,hashOut));
+            }else if(xui.isStr(renderer)){
+                var obj,prf,alias,prop,
+                    _h={id:1,caption:1,title:1,name:1,desc:1,message:1,image:1,icon:1,img:1,type:1,tag:1,tagVar:1};
+
+                if(/^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/.test(renderer) && (obj=xui.SC.get(renderer))){
+                    if(obj['xui.UI']||obj['xui.Module']){
+                        obj=new obj();
+                        prf=obj.get(0);
+                        alias=xui.get(hashOut,['tagVar','alias'])||prf.alias;
+                        if(hashIn){
+                            hashIn._render_xid=prf.$xid;
+                            hashIn._render_obj=prf;
+                            prf._render_conf=hashIn;
+                        }
+                        prf._render_holder=profile;
+
+                        if(obj['xui.Module']){
+                            var mp=(new xui.UI.MoudluePlaceHolder());
+                            prf=mp.get(0);
+                            prf._module=obj;
+                            obj=mp;
+                        }else{
+                            if(obj.setPosition)obj.setPosition('relative');
+                            if(obj.setDisplay)obj.setDisplay('inline-block');
+                        }
+
+                        obj.setHost(profile.host, alias);
+                        // after host setting
+                        prop=xui.copy(hashOut,hashIn==profile.properties ? function(o,i){
+                            return !!_h[i];
+                        }: true);
+                        prop = xui.merge(prop, xui.get(hashOut,['tagVar','properties']), 'all');
+                        // ensure no renderer
+                        delete prop.renderer;
+                        
+                        obj.setProperties(prop);
+                        obj.setEvents(xui.get(hashOut,['tagVar','events']));
+                        
+                        (profile.$attached||(profile.$attached=[])).push(prf);
+                        return obj.toHtml();
+                    }
+                }                
+                return xui.adjustVar(renderer, hashOut)
+            }
         },
         $iconAction:function(profile,key,oldImageClass){
             var p=profile.properties,
@@ -24849,7 +24926,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return data;
         },
         _prepareInlineObj:function(profile, item, tabindex){
-            var obj=item.object;
+            var obj=item['object'];
             obj=obj['xui.absBox']?obj.get(0):obj['xui.UIProfile']?obj:xui.create(obj).get(0);
             if(obj.destroyed)return null;
             if(obj['xui.UIProfile']){
@@ -24858,10 +24935,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                 var addcls='xui-inline-object', cck = obj.CC.KEY || (cck=obj.CC.KEY='');
                 if(cck.indexOf(addcls)===-1) obj.CC.KEY = cck + " " + addcls;
             }
-            item.$xid=obj.$xid;
-            item.$inlineobj=obj;
-            obj.$conf=item;
-            obj.$holder=profile;
+            
+            item._inline_xid=obj.$xid;
+            item._inline_obj=obj;
+            obj._inline_conf=item;
+            obj._inline_holder=profile;
+
             if(obj.alias && (!obj.host||obj.host===obj))obj.boxing().setHost(profile.host,obj.alias);
             (profile.$attached||(profile.$attached=[])).push(obj);
             return obj;
@@ -24871,7 +24950,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 result=[],
                 item,dataItem,t,
                 SubID=xui.UI.$tag_subId,id ,
-                tabindex = profile.properties.tabindex,
+                prop = profile.properties,
+                tabindex = prop.tabindex,
                 ajd=profile.box.adjustData,
                 itemFilter=profile.$itemFilter;
             if(itemFilter)itemFilter('begin','prepareItem',profile);
@@ -24898,6 +24978,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                 dataItem={id: item.id};
                 if(pid)dataItem._pid = pid;
+                dataItem.renderer=item.renderer||prop.renderer;
 
                 id=dataItem[SubID]=typeof serialId=='string'?serialId:profile.pickSubId('items');
 
@@ -24905,8 +24986,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                     profile.ItemIdMapSubSerialId[item.id] = id;
                     profile.SubSerialIdMapItem[id] = item;
                 }
-                if(item.object){
-                    dataItem.object = ns._prepareInlineObj(profile, item, tabindex);
+                if(item['object']){
+                    dataItem['object'] = ns._prepareInlineObj(profile, item, tabindex);
                 }else{
                     dataItem._tabindex=tabindex;
 
@@ -24976,7 +25057,12 @@ xui.Class("xui.absList", "xui.absObj",{
                     // try to render inner xui.UI
                     if(profile.$attached){
                         for(var i=0,v;v=profile.$attached[i++];){
+                            //(profile.$innerObj||(profile.$innerObj=[])).push(v);
                             if(v._render)v._render(true);
+                            if((t=v._render_holder||v._inline_holder)&&t.$afterAttached)
+                                xui.tryF(t.$afterAttached,[v],t);
+                            else
+                                xui.tryF(ns.$afterAttached,[v],ns);
                         }
                         delete profile.$attached;
                     }
@@ -26338,7 +26424,7 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
             className:'xui-ui-unselectable xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {_className}',
             style:'{_style};',
             tabindex: '{tabindex}',
-            text:'{html}'+xui.UI.$childTag
+            text:'{caption}'+xui.UI.$childTag
         },
         Appearances:{
             KEY:{
@@ -26351,6 +26437,18 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
             tabindex:1,
             width:'auto',
             height:'auto',
+            html:{
+                hidden:1,
+                get:function(){return this.boxing().getCaption()},
+                set:function(v,ov){return this.boxing().setCaption(v,ov)}
+            },
+            caption:{
+                ini:undefined,
+                action: function(v){
+                    v=(xui.isSet(v)?v:"")+"";
+                    this.getRoot().html(xui.adjustRes(v,0,1));
+                }
+            },
             disabled:{
                 ini:false,
                 action: function(v){
@@ -27098,7 +27196,11 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             if(!self._properties)self._properties={};
             if(!key)self._properties={};
             else if(typeof key=='string') self._properties[key]=value;
-            else xui.merge(self._properties, key, 'all');
+            else{
+                xui.merge(self._properties, key, 'all');
+                if(value && xui.isHash(value))
+                    xui.merge(self._properties, value, 'all');
+            }
             return this;
         },
         getValue:function(){
@@ -27139,7 +27241,18 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
         replaceWithModule:function(module){
             var self=this,
                 prf=self.get(0),
-                m,t,parent,subId;
+                m,t,parent,subId,
+                onEnd=function(t){
+                    if(prf.$afterReplaced)prf.$afterReplaced.call(module);
+                    if((t=prf._render_holder||prf._inline_holder)&&t.$afterAttached)
+                        module.getUIComponents().each(function(prf){
+                            xui.tryF(t.$afterAttached,[prf],t);
+                        });
+                    // Avoid being removed from host
+                    prf.alias=null;
+                    prf._module=null;
+                    if(prf.box)prf.boxing().destroy();
+                };
 
             if(!prf || prf.destroyed || prf._replaced || !prf.getRootNode())return;
             prf._replaced=1;
@@ -27158,21 +27271,9 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             }
             if(parent = prf.parent){
                 subId = prf.childrenId;
-                module.show(function(){
-                    if(prf.$afterReplaced)prf.$afterReplaced.call(module);
-                    // Avoid being removed from host
-                    prf.alias=null;
-                    prf._module=null;
-                    if(prf.box)prf.boxing().destroy();
-                },parent,subId);
+                module.show(onEnd,parent,subId);
             }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
-                module.show(function(){
-                    if(prf.$afterReplaced)prf.$afterReplaced.call(module);
-                    // Avoid being removed from host
-                    prf.alias=null;
-                    prf._module=null;
-                    if(prf.box)prf.boxing().destroy();
-                },parent);
+                module.show(onEnd,parent);
             }
 
             if(prf.$afterReplaced)prf.$afterReplaced.call(module);
@@ -37487,10 +37588,12 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             maxHeight:420,
             itemRow:{
-                ini:false,
+                ini:'',
+                combobox:["row","cell"],
                 action:function(v){
                     var ns=this.getSubNode('ITEM',true);
-                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
+                    ns.removeClass(/xui-item-[\w]+/);
+                    if(v)ns.addClass('xui-item-'+(v||'row'));
                 }
             },
             optBtn:{
@@ -37622,9 +37725,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             return d;
         },
         _prepareItem:function(profile, item){
-            var p=profile.properties,m=p.selMode;
+            var p=profile.properties,m=p.selMode,t;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
-            item._itemRow = profile.properties.itemRow?'xui-item-row':'';
+            item._itemRow = (t=profile.properties.itemRow)?('xui-item-'+t):'';
 
             if(xui.browser.fakeTouch || xui.browser.deviceType !== 'mouseOnly'){
                 item._optDisplay = p.optBtn?'display:block;':'';
@@ -44377,8 +44480,8 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         profile.SubSerialIdMapItem[id] = item;
                     }
 
-                    if(item.object){
-                        dataItem.object=ns._prepareInlineObj(profile, item, tabindex);
+                    if(item['object']){
+                        dataItem['object']=ns._prepareInlineObj(profile, item, tabindex);
                     }else{
                         // for compitable with older versions
                         if(item.statusButton){item.type="statusButton";delete item.statusButton;}
@@ -50966,9 +51069,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 reg1=/</g,
                 dcls='xui-uicell-disabled',
                 rcls='xui-ui-readonly',
-                ren=function(profile,cell,uicell,fun){return (
+                ren=function(profile,cell,uicell,fun,o){return (
                         // 1 renderer in cell
-                        typeof (cell.renderer||cell._renderer)=='function'? (cell.renderer||cell._renderer).call(profile,cell) :
+                        (o=cell.renderer||cell._renderer)? xui.UI._applyRenderer(profile, o, cell, uicell) :
+                        // typeof (cell.renderer||cell._renderer)=='function'? (cell.renderer||cell._renderer).call(profile,cell) :
                         // 2 template in cell
                         (uicell && typeof uicell.caption =='string') ? uicell.caption:
                         // 3 default caption function
@@ -51353,9 +51457,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var self=this,
                 prop=profile.properties,
                 col=cell._col,
-                renderer=self.getCellOption(profile, cell, 'cellRenderer'),
-                cellCapTpl=self.getCellOption(profile, cell, 'cellCapTpl'),
-                renderer;
+                renderer=self.getCellOption(profile, cell, 'cellRenderer') || prop.renderer,
+                cellCapTpl=self.getCellOption(profile, cell, 'cellCapTpl');
 
             // allow to set caption dynamically
             if(cellCapTpl)
@@ -54266,7 +54369,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     */
 
                     profile.$inModal=true;
-                    if(p!==xui.win) p.setBlurTrigger(profile.$xid+"_anti", true, xui([cover.get(0),profile.getRootNode()]));
+                    // avoid triggering the previously set trigger
+                    p.setBlurTrigger(profile.$xid+"_anti", true, xui([cover.get(0),profile.getRootNode()]));
                 }
             }
         },

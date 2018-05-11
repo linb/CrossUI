@@ -407,8 +407,8 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         profile.SubSerialIdMapItem[id] = item;
                     }
 
-                    if(item.object){
-                        dataItem.object=ns._prepareInlineObj(profile, item, tabindex);
+                    if(item['object']){
+                        dataItem['object']=ns._prepareInlineObj(profile, item, tabindex);
                     }else{
                         // for compitable with older versions
                         if(item.statusButton){item.type="statusButton";delete item.statusButton;}

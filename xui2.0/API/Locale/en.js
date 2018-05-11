@@ -13121,14 +13121,14 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             getItemRow:{
-                $desc:"Gets whether items shows as row or not",
+                $desc:"Gets whether items shows as row or a cell",
                 $rtn:"Boolean"
             },
             setItemRow:{
-                $desc:"Specifys whether items shows as row or not",
+                $desc:"Specifys whether items shows as row or a cell",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Boolean",
+                    "value [Required] : String",
                     $force
                 ]
             },

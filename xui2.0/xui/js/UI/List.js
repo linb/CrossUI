@@ -483,10 +483,12 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             maxHeight:420,
             itemRow:{
-                ini:false,
+                ini:'',
+                combobox:["row","cell"],
                 action:function(v){
                     var ns=this.getSubNode('ITEM',true);
-                    if(v)ns.addClass('xui-item-row');else ns.removeClass('xui-item-row');
+                    ns.removeClass(/xui-item-[\w]+/);
+                    if(v)ns.addClass('xui-item-'+(v||'row'));
                 }
             },
             optBtn:{
@@ -618,9 +620,9 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             return d;
         },
         _prepareItem:function(profile, item){
-            var p=profile.properties,m=p.selMode;
+            var p=profile.properties,m=p.selMode,t;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
-            item._itemRow = profile.properties.itemRow?'xui-item-row':'';
+            item._itemRow = (t=profile.properties.itemRow)?('xui-item-'+t):'';
 
             if(xui.browser.fakeTouch || xui.browser.deviceType !== 'mouseOnly'){
                 item._optDisplay = p.optBtn?'display:block;':'';

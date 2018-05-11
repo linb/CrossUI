@@ -13033,14 +13033,14 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getItemRow:{
-                $desc:"得到是否是显示成行样式",
+                $desc:"得到是否是显示成行样式或单元格样式",
                 $rtn:"Boolean"
             },
             setItemRow:{
-                $desc:"设置是否是显示成行样式",
+                $desc:"设置是否是显示成行样式或单元格样式",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Boolean",
+                    "value [必需参数] : String",
                     $force
                 ]
             },

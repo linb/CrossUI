@@ -5575,9 +5575,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 reg1=/</g,
                 dcls='xui-uicell-disabled',
                 rcls='xui-ui-readonly',
-                ren=function(profile,cell,uicell,fun){return (
+                ren=function(profile,cell,uicell,fun,o){return (
                         // 1 renderer in cell
-                        typeof (cell.renderer||cell._renderer)=='function'? (cell.renderer||cell._renderer).call(profile,cell) :
+                        (o=cell.renderer||cell._renderer)? xui.UI._applyRenderer(profile, o, cell, uicell) :
+                        // typeof (cell.renderer||cell._renderer)=='function'? (cell.renderer||cell._renderer).call(profile,cell) :
                         // 2 template in cell
                         (uicell && typeof uicell.caption =='string') ? uicell.caption:
                         // 3 default caption function
@@ -5962,9 +5963,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var self=this,
                 prop=profile.properties,
                 col=cell._col,
-                renderer=self.getCellOption(profile, cell, 'cellRenderer'),
-                cellCapTpl=self.getCellOption(profile, cell, 'cellCapTpl'),
-                renderer;
+                renderer=self.getCellOption(profile, cell, 'cellRenderer') || prop.renderer,
+                cellCapTpl=self.getCellOption(profile, cell, 'cellCapTpl');
 
             // allow to set caption dynamically
             if(cellCapTpl)
