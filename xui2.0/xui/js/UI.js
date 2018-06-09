@@ -5272,8 +5272,12 @@ xui.Class("xui.UI",  "xui.absObj", {
             activeAnim:{
                 ini:"",
                 action:function(key){
-                    if(key)this._activeAnim = this.boxing().animate(key).id;
-                    else delete thie._activeAnim;
+                    var prf=this;
+                    if(key)prf._activeAnim = prf.boxing().animate(key).id;
+                    else if(key = prf._activeAnim){
+                        xui.Thread(key).abort();
+                        delete prf._activeAnim;
+                    }
                 }
             }
         },
