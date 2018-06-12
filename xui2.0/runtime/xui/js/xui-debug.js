@@ -11284,7 +11284,7 @@ xui.Class('xui.Dom','xui.absBox',{
         animate: function(endpoints, onStart, onEnd, duration, step, type, threadid, unit, restore, times, _goback){
             var self=this,  f, map={left:1,top:1,right:1,bottom:1,width:1,height:1},
                 prf = xui.$cache.profileMap[self.id()],
-                ctrl = prf?prf.boxing():null,
+                ctrl = prf?prf['xui.DomProfile']?xui(prf):prf.boxing():null,
                 css = xui.CSS,
                 tween = xui.Dom.$AnimateEffects,
                 _get = function(node, ctrl, key, t){
@@ -14232,7 +14232,7 @@ xui.Class('xui.Module','xui.absProfile',{
         self._cache=[];
     },
     Constructor:function(properties, events, host){
-        var self=this,opt,alias;
+        var self=this,opt,alias,t;
 
         // If it's a older moudle object, set xid first
 		if(properties && properties.constructor==self.constructor){
@@ -14263,8 +14263,14 @@ xui.Class('xui.Module','xui.absProfile',{
 	             alias = opt.alias;
 	             host = opt.host;
 	        }else{
-	            properties = properties || (self.properties?xui.clone(self.properties,true):{});
-	            events = events || (self.events?xui.clone(self.events):{});
+                if(!properties){
+                    if(self.properties){
+                        properties =  xui.clone(self.properties,true);
+                        // for inner coms prf
+                        if(t=self.properties.__inner_coms_prf__)properties.__inner_coms_prf__=t;
+                    }else properties =  {};
+                }
+                events = events || (self.events?xui.clone(self.events):{});
 	        }
 	    }
         
@@ -14451,7 +14457,9 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(value/*force*/){
                     self.properties = xui.copy(key);
                 }else{
-                    var h=xui.clone(self.properties, true);
+                    var h=xui.clone(self.properties, true),t;
+                    // for inner coms prf
+                    if(t=self.properties.__inner_coms_prf__)h.__inner_coms_prf__=t;
                     xui.merge(h, key, 'all');
                     if(value && xui.isHash(value))
                         xui.merge(h, value, 'all');
@@ -14558,11 +14566,15 @@ xui.Class('xui.Module','xui.absProfile',{
             //properties
             var c={}, p=o.box.$DataModel;
             xui.merge(c,o.properties, function(o,i){return p[i]!==o});
+
+            // for inner coms prf
+            if(t=o.properties.__inner_coms_prf__)c.__inner_coms_prf__=t;
+
             if(!xui.isEmpty(c))r.properties=c;
             if(xui.isEmpty(r.properties))delete r.properties;
 
             //functions
-            if(!xui.isEmpty(o.functions))r.functions=c;
+            if(!xui.isEmpty(c=o.functions))r.functions=c;
             if(xui.isEmpty(r.functions))delete r.functions;
 
             //events

@@ -1725,7 +1725,7 @@ xui.Class('xui.Dom','xui.absBox',{
         animate: function(endpoints, onStart, onEnd, duration, step, type, threadid, unit, restore, times, _goback){
             var self=this,  f, map={left:1,top:1,right:1,bottom:1,width:1,height:1},
                 prf = xui.$cache.profileMap[self.id()],
-                ctrl = prf?prf.boxing():null,
+                ctrl = prf?prf['xui.DomProfile']?xui(prf):prf.boxing():null,
                 css = xui.CSS,
                 tween = xui.Dom.$AnimateEffects,
                 _get = function(node, ctrl, key, t){
