@@ -256,7 +256,6 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             ClickEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
-            onSize:xui.UI.$onSize,
             ITEM:{
                 onDblclick:function(profile, e, src){
                     var properties = profile.properties,

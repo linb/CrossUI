@@ -56,8 +56,7 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             }
         },
         Behaviors:{
-            HotKeyAllowed:false,
-            onSize:xui.UI.$onSize
+            HotKeyAllowed:false
         },
         DataModel:{
             selectable:true,

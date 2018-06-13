@@ -58,9 +58,6 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                 }
             }
         },
-        Behaviors:{
-            onSize:xui.UI.$onSize
-        },
         RenderTrigger:function(){
             var profile=this,
                 root=profile.getRootNode(),

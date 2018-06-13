@@ -430,7 +430,6 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             DraggableKeys:["BAR"],
             NoDraggableKeys:['TOGGLE'],
             DroppableKeys:["BAR","TOGGLE","BOX"],
-            onSize:xui.UI.$onSize,
             TOGGLE:{
                 onClick:function(profile, e, src){
                     var properties = profile.properties,

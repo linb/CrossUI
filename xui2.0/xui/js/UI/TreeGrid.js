@@ -3051,8 +3051,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ClickEffected:  {ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], CMD:'CMD'},
             DraggableKeys:['FCELL'],
             DroppableKeys:['SCROLL21','SCROLL22','CELLS1','CELLS2','FCELL'],
-
-            onSize:xui.UI.$onSize,
             HFMARK:{
                 onClick:function(profile,e,src){
                     if(profile.properties.selMode!='multi'&&profile.properties.selMode!='multibycheckbox')return;
@@ -5820,6 +5818,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     cellanode.addClass(t2);
             }
             return cell;
+        },
+        _applyRendererEx:function(profile, prop, events, cell, adjustRenderer, t){
+            // for cell only
+            if(cell){
+                if(t = cell._col){
+                    adjustRenderer(t, prop, events);
+                    adjustRenderer(t.tagVar, prop, events);
+                }
+                if(t = cell._row){
+                    adjustRenderer(t, prop, events);
+                    adjustRenderer(t.tagVar, prop, events);
+                }
+            }
         },
         _prepareItems:function(profile, arr, pid ,temparr){
             var self=this,

@@ -1509,13 +1509,13 @@ xui.merge(xui,{
                             });
                         }
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'script'}).start();
                 }else{
@@ -1537,13 +1537,13 @@ xui.merge(xui,{
                             });
                         }
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'text',asy:true}).start();
                 }
@@ -1553,7 +1553,7 @@ xui.merge(xui,{
                 if(onAlert)f[uri][2].push(onAlert);
                 if(threadid){
                     f[uri][3].push(threadid);
-                    xui.Thread(threadid).suspend();
+                    xui.Thread.suspend(threadid);
                 }
             }
         }
@@ -1566,10 +1566,10 @@ xui.merge(xui,{
         };
         for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
         return xui.Thread.group(null, hash, null, function(){
-            xui.Thread(threadid).suspend();
+            xui.Thread.suspend(threadid);
         }, function(){
             xui.tryF(onEnd,arguments,this);
-            xui.Thread(threadid).resume();
+            xui.Thread.resume(threadid);
         }).start();
     },
     // Recursive require
@@ -3104,6 +3104,7 @@ xui.Class('xui.Thread',null,{
     After:function(){
         /*
         give shortcut to some functions
+        only for the existing thread
         */
         var self=this, f=function(i){
             self[i]=function(id){
@@ -3112,7 +3113,7 @@ xui.Class('xui.Thread',null,{
                     (t=xui.Thread(id))[i].apply(t,Array.prototype.slice.call(arguments,1));
             }
         },
-        a = 'start,suspend,resume,abort'.split(',');
+        a = 'start,suspend,resume,abort,links,insert,isAlive,getStatus'.split(',');
         for(var i=0,l=a.length;i<l;i++)f(a[i]);
     },
     Static:{
@@ -3136,7 +3137,7 @@ xui.Class('xui.Thread',null,{
             if(xui.$cache.thread[threadid]){
                 if(typeof onEnd=='function')
                     tasks.push(onEnd);
-                thread(threadid).insert(tasks);
+                thread.insert(threadid,tasks);
             //if does not exist, create a new thread
             }else{
                 thread(threadid, tasks,
@@ -3399,11 +3400,11 @@ xui.Class('xui.absIO',null,{
             };
             for(i in hash)f(hash[i],i,hash);
             return xui.Thread.group(null, hash, callback, function(){
-                xui.Thread(threadid).suspend();
+                xui.Thread.suspend(threadid);
                 xui.tryF(onStart,arguments,this);
             }, function(){
                 xui.tryF(onEnd,arguments,this);
-                xui.Thread(threadid).resume();
+                xui.Thread.resume(threadid);
             }).start();
         }
     }
@@ -4115,7 +4116,7 @@ xui.Class('xui.SC',null,{
                     self._call(j, {threadid:threadid},true);
                 //set abort function to the next step
                 if(pathArr.length<i)
-                    xui.Thread(threadid).abort();
+                    xui.Thread.abort(threadid);
                 if(pathArr.length==i)i++;
             };
             xui.Thread(null, [fun], 1000, callback, onStart, onEnd, true).start();
@@ -4412,21 +4413,24 @@ xui.Class('xui.Profile','xui.absProfile',{
             }
         },
         getProperties:function(key){
-            if(this._getProperties)this.properties=this._getProperties();
-            var prop=this.properties;
+            var self=this, prop=self.properties;
+            if(xui.isFun(self._propGetter))prop=self._propGetter(prop);
+            if(xui.isFun(self.propGetter))prop=self.propGetter(prop);
             return key?prop[key]:xui.copy(prop);
         },
         setProperties:function(key, value){
+            var self=this;
             if(xui.isHash(key)){
-                xui.merge(key, this.box.$DataStruct, function(o,i){
+                xui.merge(key, self.box.$DataStruct, function(o,i){
                     if(!(i in key)){
                         key[i] = xui.isObj(o)?xui.clone(o):o;
                     }
                 });
-                this.properties=key;
+                self.properties=key;
+                if(xui.isFun(self._propSetAction))self._propSetAction(key);
+                if(xui.isFun(self.propSetAction))self.propSetAction(key);
             }else
-                this.properties[key]=value;
-            if(this.propSetAction)this.propSetAction(this.properties);
+                self.properties[key]=value;
         },
         _applySetAction:function(fun, value, ovalue, force, tag, tag2){
             return fun.call(this,value, ovalue, force, tag, tag2);
@@ -4580,7 +4584,12 @@ xui.Class('xui.absObj',"xui.absBox",{
             desc:'',
             tag:'',
             tagVar:{
-                ini:{}
+                ini:{},
+                action:function(){
+                    var r=this.properties.renderer;
+                    if(r && /^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/.test(r))
+                        this.boxing().refresh();
+                }
             },
             propBinder:{
                 hidden:1,
@@ -4995,7 +5004,7 @@ xui.Class("xui.Timer","xui.absObj",{
         },
         destroy:function(){
             this.each(function(profile){
-                if(profile._threadid)xui.Thread(profile._threadid).abort();
+                if(profile._threadid)xui.Thread.abort(profile._threadid);
                 //free profile
                 profile.__gc();
             });
@@ -5004,7 +5013,7 @@ xui.Class("xui.Timer","xui.absObj",{
             return this.each(function(profile){
                 if(profile.$inDesign)return;
                 if(profile._threadid){
-                    xui.Thread(profile._threadid).resume();
+                    xui.Thread.resume(profile._threadid);
                 }else{
                     var p=profile.properties,box=profile.boxing(),
                     t=xui.Thread.repeat(function(threadId){
@@ -5021,7 +5030,7 @@ xui.Class("xui.Timer","xui.absObj",{
         },
         suspend:function(){
             return this.each(function(profile){
-                if(profile._threadid)xui.Thread(profile._threadid).suspend();
+                if(profile._threadid)xui.Thread.suspend(profile._threadid);
                 profile.onSuspend && box.onSuspend(profile,threadId);
             });
         },

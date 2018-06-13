@@ -292,44 +292,48 @@ xui.Class('xui.Module','xui.absProfile',{
             }
         },
         setProperties:function(key,value,ignoreEvent,innerDataOnly){
-            var self=this;
+            var self=this,
+                h=self.properties,
+                oDataBinder=('dataBinder' in h)?h.dataBinder:null,
+                t;
 
             if(!key)
-                self.properties={};
+                h={};
             else if(typeof key=='string')
-                self.properties[key]=value;
+                h[key]=value;
             else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.properties = xui.copy(key);
+                    h = xui.copy(key);
                 }else{
-                    var h=xui.clone(self.properties, true),t;
+                    h=xui.clone(h, true);
                     // for inner coms prf
                     if(t=self.properties.__inner_coms_prf__)h.__inner_coms_prf__=t;
                     xui.merge(h, key, 'all');
                     if(value && xui.isHash(value))
                         xui.merge(h, value, 'all');
-                    self.properties=h;
                 }
             }
+            self.properties=h;
 
-            if(self.propSetAction)self.propSetAction(self.properties);
             if(!ignoreEvent){
                 if(!innerDataOnly){
-                    var oDataBinder;
-                    if('dataBinder' in self.properties){
-                        oDataBinder = self.properties.dataBinder;
-                    }
-                    if('dataBinder' in self.properties){
-                        if(oDataBinder!==self.properties.dataBinder){
+                    if('dataBinder' in h){
+                        if(oDataBinder!==(t=h.dataBinder||null)){
                             if(oDataBinder)xui.DataBinder._unBind(oDataBinder, self);
-                            if(self.properties.dataBinder)xui.DataBinder._bind(self.properties.dataBinder, self);
+                            if(t)xui.DataBinder._bind(t, self);
                         }
                     }
                 }
 
-                if(self._innerModulesCreated && ('__inner_coms_prf__' in self.properties))
-                    self.setProfile(self.properties.__inner_coms_prf__);
-            
+                if(self._innerModulesCreated){
+                    // to apply inner control profile setting
+                    if(t=self.properties.__inner_coms_prf__) self.setProfile(t);
+                    // to apply inner control prop map
+                    if(xui.isFun(self._propSetAction))self._propSetAction(self.properties);
+                }
+
+                if(xui.isFun(self.propSetAction))self.propSetAction(self.properties);
+
                 // the last one
                 if(!innerDataOnly){
                     self._fireEvent('onModulePropChange');
@@ -337,11 +341,28 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
+        /*
+        _propGetter:function(prop){
+            var mdl=this,reg=/^\s*([^>\s]+)\s*>\s*([^>\s]+)\s*$/,r,t,f;
+            xui.each(prop,function(o,i){
+                if( (r=reg.exec(i)) && (t=mdl[r[1]]) )
+                    prop[i] = xui.isFun(t[f='get'+xui.str.initial(r[2])]) ? t[f]() : xui.get(mdl,[r[1],'properties',r[2]]);
+            });
+            return prop;
+        },*/
+        _propSetAction:function(prop){
+            var mdl=this,reg=/^\s*([^>\s]+)\s*>\s*([^>\s]+)\s*$/,r,t,f;
+            xui.each(prop,function(o,i){
+                // ignore [null/undifined]
+                if(xui.isSet(o) && (r=reg.exec(i)) && (t=mdl[r[1]]) )
+                    xui.isFun(t[f='set'+xui.str.initial(r[2])]) ? t[f](o) : xui.set(mdl,[r[1],'properties',r[2]],o);
+            });
+        },
         getProperties:function(key){
-             var self=this;
-             if(self._getProperties)self.properties=self._getProperties();
-
-            return key?self.properties[key]:self.properties;
+            var self=this, prop=self.properties;
+            if(xui.isFun(self._propGetter))prop=self._propGetter(prop);
+            if(xui.isFun(self.propGetter))prop=self.propGetter(prop);
+            return key?prop[key]:xui.copy(prop);
         },
         setEvents:function(key,value){
             var self=this;

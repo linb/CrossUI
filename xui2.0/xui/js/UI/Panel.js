@@ -213,7 +213,6 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             NoDraggableKeys:['INFO','OPT','CLOSE','POP','REFRESH','TOGGLE','CMD','TOGGLE'],
             HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',CMD:'CMD',TOGGLE:'TOGGLE',ICON:'ICON'},
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',CMD:'CMD',TOGGLE:'TOGGLE'},
-            onSize:xui.UI.$onSize,
             TOGGLE:{
                 onClick:function(profile, e, src){
                     if(profile.properties.toggleBtn){

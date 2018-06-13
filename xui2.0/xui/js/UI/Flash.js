@@ -50,9 +50,6 @@ xui.Class("xui.UI.Flash", "xui.UI",{
                 style:"background-image:url("+xui.ini.img_bg+");"
             }
         },
-        Behaviors:{
-            onSize:xui.UI.$onSize
-        },
         DataModel:{
             selectable:true,
             width:{

@@ -72,7 +72,7 @@ xui.Class('xui.ModuleFactory',null,{
             if(!id){
                 var e=new Error("No id");
                 xui.tryF(onEnd,[e,null,threadid]);
-                if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                xui.Thread.abort(threadid);
                 throw e;
                 return;
             }
@@ -133,7 +133,7 @@ xui.Class('xui.ModuleFactory',null,{
 
                         //insert first
                         if(onEnd)
-                            xui.Thread(threadid).insert({
+                            xui.Thread.insert(threadid,{
                                 task:onEnd,
                                 args:[null,o,threadid],
                                 scope:o
@@ -147,14 +147,14 @@ xui.Class('xui.ModuleFactory',null,{
                         var cls=this||xui.SC.get(clsPath);
                         // it must be a xui Class
                         if(cls&&cls.$xui$){
-                            xui.Thread(threadid).insert({
+                            xui.Thread.insert(threadid, {
                                 task:task,
                                 args:[cls, config,threadid]
                             });
                         }else{
                             var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
                             xui.tryF(onEnd,[e,null,threadid]);
-                            if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                            xui.Thread.abort(threadid);
                             throw e;
                         }
                     };
@@ -164,7 +164,7 @@ xui.Class('xui.ModuleFactory',null,{
                         else{
                             var e=new Error("No class name");
                             xui.tryF(onEnd,[e,null, threadid]);
-                            if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                            xui.Thread.abort(threadid);
                             throw e;
                         }
                     }, true,threadid,{

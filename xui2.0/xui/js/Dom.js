@@ -628,7 +628,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     var s,t=xui(src).get(0);
                     var tid=xui.getNodeData(t,'_inthread');
                     if(tid){
-                        xui.Thread(tid).abort();
+                        xui.Thread.abort(tid);
                         xui.setNodeData(t,'_inthread');
                     }
 
@@ -1087,7 +1087,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort();
+                    xui.Thread.abort(tid);
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -1124,7 +1124,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort();
+                    xui.Thread.abort(tid);
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -1785,7 +1785,7 @@ xui.Class('xui.Dom','xui.absBox',{
             if((type||"").indexOf('-')!=-1)type=type.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
             type = (type in tween)?type:'circIn';
 
-            var starttime, node=self.get(0), fun=function(threadid){
+            var starttime, node=self.get(0), fun=function(tid){
                 var offtime=xui.stamp() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
                 xui.each(endpoints,function(o,i){
@@ -1834,7 +1834,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         }
                     }
                     if(!times){
-                        xui.Thread(threadid).abort('normal');
+                        xui.Thread.abort(tid,'normal');
                     }
                     return false;
                 }
@@ -1842,7 +1842,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
             var tid=xui.getNodeData(node,'_inthread');
             if(tid && xui.Thread.isAlive(tid)){
-                xui.Thread(tid).abort('force');
+                xui.Thread.abort(tid,'force');
                 xui.setNodeData(node,'_inthread',null);
             }
             var reset=xui.getNodeData(node,'_animationreset');
@@ -1850,8 +1850,8 @@ xui.Class('xui.Dom','xui.absBox',{
                 reset();
                 xui.setNodeData(node,'_animationreset',null);
             }
-
-            return xui.Thread(threadid||xui.id(), funs, 0, null, function(tid){
+            // allow custom threadid, except existing one
+            return xui.Thread((!threadid || xui.Thread.get(threadid)) ? xui.id()  : threadid, funs, 0, null, function(tid){
                 xui.setNodeData(node,'_inthread',tid);
                 starttime=xui.stamp();
                 xui.setNodeData(node,'_animationreset',function(){

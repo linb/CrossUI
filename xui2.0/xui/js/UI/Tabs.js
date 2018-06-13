@@ -553,7 +553,6 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DraggableKeys:['ITEM'],
             HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',ICON:'ICON',CMD:'CMD'},
             ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',CMD:'CMD'},
-            onSize:xui.UI.$onSize,
             CAPTION:{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;

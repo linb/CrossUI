@@ -205,7 +205,6 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
         Behaviors:{
             HoverEffected:{IND1:'IND1',IND2:'IND2',DECREASE:'DECREASE',INCREASE:'INCREASE'},
             ClickEffected:{IND1:'IND1',IND2:'IND2',DECREASE:'DECREASE',INCREASE:'INCREASE'},
-            onSize:xui.UI.$onSize,
             IND:{
                 onClick:function(profile, e, src){
                     var p=profile.properties;

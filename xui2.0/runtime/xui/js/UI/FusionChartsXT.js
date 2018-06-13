@@ -249,8 +249,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             }
         },
         Behaviors:{
-            HotKeyAllowed:false,
-            onSize:xui.UI.$onSize
+            HotKeyAllowed:false
         },
         DataModel:{
             tabindex:null,

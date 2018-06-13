@@ -212,7 +212,6 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             }
         },
         Behaviors:{
-            onSize:xui.UI.$onSize,
             LABEL:{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;

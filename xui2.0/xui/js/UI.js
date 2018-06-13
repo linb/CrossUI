@@ -938,7 +938,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 tid=xui.getNodeData(node,'_inthread'),
                 reset=xui.getNodeData(node,'_animationreset'),t;
             if(tid && xui.Thread.isAlive(tid)){
-                xui.Thread(tid).abort('force');
+                xui.Thread.abort(tid,'force');
                 xui.setNodeData(node,'_inthread',null);
             }
             if(typeof reset=="function"){
@@ -2061,7 +2061,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
 
                     if(p.position=='absolute' && p.dock!='none'){
-                            args={
+                        args={
                             $type:p.dock,
                             $dockid:xui.arr.indexOf(['width','height','fill','cover'],p.dock)!=-1?self.$xid:null
                         };
@@ -3139,12 +3139,6 @@ xui.Class("xui.UI",  "xui.absObj", {
         $TAGCLASS:"\x01tagcls\x01",
         $childTag:"<!--\x03{id}\x04-->",
 
-        $onSize:function(profile,e){
-            var style = profile.getRootNode().style;
-            if(e.width||e.height)
-                xui.UI.$tryResize(profile, style.width, style.height);
-            style=null;
-        },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
         objectProp:{},
         $toDom:function(profile, str, addEventHandler){
@@ -4974,10 +4968,25 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(xui.isFun(renderer)){
                 return xui.adjustRes(renderer.call(profile,hashIn,hashOut));
             }else if(xui.isStr(renderer)){
-                var obj,prf,alias,prop,
-                    _h={id:1,caption:1,title:1,name:1,desc:1,message:1,image:1,icon:1,img:1,type:1,tag:1,tagVar:1};
+                var obj,prf,alias,prop={},events={},t, 
+                    clsReg=/^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/,
+                    adjustRenderer = function(hash, prop, events){
+                        if(hash){
+                            var mapReg=/^\s*([^>\s]+)?\s*>\s*([^>\s]+)\s*$/;
+                            // 'alias > propName' in item
+                            xui.each(hash,function(o,i){
+                                // alias > key =>alias > key
+                                // > key => key
+                                if(mapReg.test(i)) prop[i.replace(/^\s*>\s*/,'')]=o;
+                            });
+                            // 'ModuleProp' in item
+                            if(xui.isHash(hash.ModuleProp))prop = xui.merge(prop, hash.ModuleProp, 'all');
+                            // 'ModuleEvents' in item
+                            if(xui.isHash(hash.ModuleEvents))events = xui.merge(events, hash.ModuleEvents, 'all');                
+                        }
+                    };
 
-                if(/^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/.test(renderer) && (obj=xui.SC.get(renderer))){
+                if(clsReg.test(renderer) && (obj=xui.SC.get(renderer))){
                     if(obj['xui.UI']||obj['xui.Module']){
                         obj=new obj();
                         prf=obj.get(0);
@@ -5000,16 +5009,25 @@ xui.Class("xui.UI",  "xui.absObj", {
                         }
 
                         obj.setHost(profile.host, alias);
+                        
                         // after host setting
-                        prop=xui.copy(hashOut,hashIn==profile.properties ? function(o,i){
-                            return !!_h[i];
-                        }: true);
-                        prop = xui.merge(prop, xui.get(hashOut,['tagVar','properties']), 'all');
+                        // for item/cell/row/col etc.
+                        if(hashIn!==profile.properties){
+                            if(t=profile.box._applyRendererEx)t.call(profile.box, profile, prop, events, hashOut, adjustRenderer);
+                            // 'alias > propName' in item
+                            // 'ModuleProp' in item
+                            // 'ModuleEvents' in item
+                            adjustRenderer(hashOut, prop, events);
+                        }
+                        // 'alias > propName' in tagVar
+                        // 'ModuleProp' in tagVar
+                        // 'ModuleEvents' in tagVar
+                        adjustRenderer(hashOut.tagVar, prop, events);
+
                         // ensure no renderer
                         delete prop.renderer;
-                        
-                        obj.setProperties(prop);
-                        obj.setEvents(xui.get(hashOut,['tagVar','events']));
+                        if(!xui.isEmpty(prop))obj.setProperties(prop);
+                        if(!xui.isEmpty(events))obj.setEvents(events);
                         
                         (profile.$attached||(profile.$attached=[])).push(prf);
                         return obj.toHtml();
@@ -5084,6 +5102,11 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
 
         Behaviors:{
+            onSize:function(profile,e){
+                var root = profile.getRootNode(),  style = root && root.style;
+                if(style && (e.width||e.height))
+                    xui.UI.$tryResize(profile, style.width, style.height);
+            },
             HotKeyAllowed:true,
             onContextmenu:function(profile, e, src){
                 if(profile.onContextmenu)
@@ -5275,7 +5298,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     var prf=this;
                     if(key)prf._activeAnim = prf.boxing().animate(key).id;
                     else if(key = prf._activeAnim){
-                        xui.Thread(key).abort();
+                        xui.Thread.abort(key);
                         delete prf._activeAnim;
                     }
                 }
@@ -5342,20 +5365,36 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["activeAnim"]=function(t){
                 if(t = prf._activeAnim)
-                    xui.Thread(t).abort();
+                    xui.Thread.abort(t);
             }
 
             prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){
             if(force || ((w||h) && (profile._resize_w!=w || profile._resize_h!=h))){
+                var root=profile.getRootNode(),con;
                 //destroyed before resize
-                if(!profile.getRootNode())return false;
+                if(!root)return false;
 
                 profile._resize_w=w;
                 profile._resize_h=h;
                 xui.tryF(profile.box._onresize,[profile,w,h,force,key],profile.box);
 
+                // to resize auto-width children for flow layout
+                if( (force||w)
+                    && profile.box && profile.box['xui.absContainer']
+                    && (con=profile.getContainer(true)) 
+                ) {
+                    con.children().each(function(o,i,p){
+                        if( (i=xui.UIProfile.getFromDom(o.id)) 
+                            && i.box && i.box._onresize
+                            && (p=i.properties)
+                            && (('position' in p) && ('width' in p))
+                            && (p.position=='static'||p.position=='relative') 
+                            && (p.width===''||p.width=='auto')
+                        )  xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                    });
+                }
                 // for have _onresize widget only
                 if(profile.onResize)
                     profile.boxing().onResize(profile,w,h);
@@ -7874,9 +7913,6 @@ xui.Class("xui.UI.Widget", "xui.UI",{
                     className:'xui-uiw-border'
                 }
             }
-        },
-        Behaviors:{
-            onSize:xui.UI.$onSize
         },
         DataModel:{
             width:{

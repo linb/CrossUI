@@ -1510,13 +1510,13 @@ xui.merge(xui,{
                             });
                         }
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'script'}).start();
                 }else{
@@ -1538,13 +1538,13 @@ xui.merge(xui,{
                             });
                         }
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },function(){
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread(f[uri][3][i]).abort();
+                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
                         if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
                     },threadid,{rspType:'text',asy:true}).start();
                 }
@@ -1554,7 +1554,7 @@ xui.merge(xui,{
                 if(onAlert)f[uri][2].push(onAlert);
                 if(threadid){
                     f[uri][3].push(threadid);
-                    xui.Thread(threadid).suspend();
+                    xui.Thread.suspend(threadid);
                 }
             }
         }
@@ -1567,10 +1567,10 @@ xui.merge(xui,{
         };
         for(var i=0,l=uris.length;i<l;i++)f(uris[i],i,hash);
         return xui.Thread.group(null, hash, null, function(){
-            xui.Thread(threadid).suspend();
+            xui.Thread.suspend(threadid);
         }, function(){
             xui.tryF(onEnd,arguments,this);
-            xui.Thread(threadid).resume();
+            xui.Thread.resume(threadid);
         }).start();
     },
     // Recursive require
@@ -3105,6 +3105,7 @@ xui.Class('xui.Thread',null,{
     After:function(){
         /*
         give shortcut to some functions
+        only for the existing thread
         */
         var self=this, f=function(i){
             self[i]=function(id){
@@ -3113,7 +3114,7 @@ xui.Class('xui.Thread',null,{
                     (t=xui.Thread(id))[i].apply(t,Array.prototype.slice.call(arguments,1));
             }
         },
-        a = 'start,suspend,resume,abort'.split(',');
+        a = 'start,suspend,resume,abort,links,insert,isAlive,getStatus'.split(',');
         for(var i=0,l=a.length;i<l;i++)f(a[i]);
     },
     Static:{
@@ -3137,7 +3138,7 @@ xui.Class('xui.Thread',null,{
             if(xui.$cache.thread[threadid]){
                 if(typeof onEnd=='function')
                     tasks.push(onEnd);
-                thread(threadid).insert(tasks);
+                thread.insert(threadid,tasks);
             //if does not exist, create a new thread
             }else{
                 thread(threadid, tasks,
@@ -3400,11 +3401,11 @@ xui.Class('xui.absIO',null,{
             };
             for(i in hash)f(hash[i],i,hash);
             return xui.Thread.group(null, hash, callback, function(){
-                xui.Thread(threadid).suspend();
+                xui.Thread.suspend(threadid);
                 xui.tryF(onStart,arguments,this);
             }, function(){
                 xui.tryF(onEnd,arguments,this);
-                xui.Thread(threadid).resume();
+                xui.Thread.resume(threadid);
             }).start();
         }
     }
@@ -4116,7 +4117,7 @@ xui.Class('xui.SC',null,{
                     self._call(j, {threadid:threadid},true);
                 //set abort function to the next step
                 if(pathArr.length<i)
-                    xui.Thread(threadid).abort();
+                    xui.Thread.abort(threadid);
                 if(pathArr.length==i)i++;
             };
             xui.Thread(null, [fun], 1000, callback, onStart, onEnd, true).start();
@@ -4413,21 +4414,24 @@ xui.Class('xui.Profile','xui.absProfile',{
             }
         },
         getProperties:function(key){
-            if(this._getProperties)this.properties=this._getProperties();
-            var prop=this.properties;
+            var self=this, prop=self.properties;
+            if(xui.isFun(self._propGetter))prop=self._propGetter(prop);
+            if(xui.isFun(self.propGetter))prop=self.propGetter(prop);
             return key?prop[key]:xui.copy(prop);
         },
         setProperties:function(key, value){
+            var self=this;
             if(xui.isHash(key)){
-                xui.merge(key, this.box.$DataStruct, function(o,i){
+                xui.merge(key, self.box.$DataStruct, function(o,i){
                     if(!(i in key)){
                         key[i] = xui.isObj(o)?xui.clone(o):o;
                     }
                 });
-                this.properties=key;
+                self.properties=key;
+                if(xui.isFun(self._propSetAction))self._propSetAction(key);
+                if(xui.isFun(self.propSetAction))self.propSetAction(key);
             }else
-                this.properties[key]=value;
-            if(this.propSetAction)this.propSetAction(this.properties);
+                self.properties[key]=value;
         },
         _applySetAction:function(fun, value, ovalue, force, tag, tag2){
             return fun.call(this,value, ovalue, force, tag, tag2);
@@ -4581,7 +4585,12 @@ xui.Class('xui.absObj',"xui.absBox",{
             desc:'',
             tag:'',
             tagVar:{
-                ini:{}
+                ini:{},
+                action:function(){
+                    var r=this.properties.renderer;
+                    if(r && /^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/.test(r))
+                        this.boxing().refresh();
+                }
             },
             propBinder:{
                 hidden:1,
@@ -4996,7 +5005,7 @@ xui.Class("xui.Timer","xui.absObj",{
         },
         destroy:function(){
             this.each(function(profile){
-                if(profile._threadid)xui.Thread(profile._threadid).abort();
+                if(profile._threadid)xui.Thread.abort(profile._threadid);
                 //free profile
                 profile.__gc();
             });
@@ -5005,7 +5014,7 @@ xui.Class("xui.Timer","xui.absObj",{
             return this.each(function(profile){
                 if(profile.$inDesign)return;
                 if(profile._threadid){
-                    xui.Thread(profile._threadid).resume();
+                    xui.Thread.resume(profile._threadid);
                 }else{
                     var p=profile.properties,box=profile.boxing(),
                     t=xui.Thread.repeat(function(threadId){
@@ -5022,7 +5031,7 @@ xui.Class("xui.Timer","xui.absObj",{
         },
         suspend:function(){
             return this.each(function(profile){
-                if(profile._threadid)xui.Thread(profile._threadid).suspend();
+                if(profile._threadid)xui.Thread.suspend(profile._threadid);
                 profile.onSuspend && box.onSuspend(profile,threadId);
             });
         },
@@ -10187,7 +10196,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     var s,t=xui(src).get(0);
                     var tid=xui.getNodeData(t,'_inthread');
                     if(tid){
-                        xui.Thread(tid).abort();
+                        xui.Thread.abort(tid);
                         xui.setNodeData(t,'_inthread');
                     }
 
@@ -10646,7 +10655,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort();
+                    xui.Thread.abort(tid);
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -10683,7 +10692,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
                 if(tid){
-                    xui.Thread(tid).abort();
+                    xui.Thread.abort(tid);
                     xui.setNodeData(o,'_inthread');
                 }
 
@@ -11344,7 +11353,7 @@ xui.Class('xui.Dom','xui.absBox',{
             if((type||"").indexOf('-')!=-1)type=type.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
             type = (type in tween)?type:'circIn';
 
-            var starttime, node=self.get(0), fun=function(threadid){
+            var starttime, node=self.get(0), fun=function(tid){
                 var offtime=xui.stamp() - starttime, curvalue,u,eu,su,s,e;
                 if(offtime >= duration)offtime=duration;
                 xui.each(endpoints,function(o,i){
@@ -11393,7 +11402,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         }
                     }
                     if(!times){
-                        xui.Thread(threadid).abort('normal');
+                        xui.Thread.abort(tid,'normal');
                     }
                     return false;
                 }
@@ -11401,7 +11410,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
             var tid=xui.getNodeData(node,'_inthread');
             if(tid && xui.Thread.isAlive(tid)){
-                xui.Thread(tid).abort('force');
+                xui.Thread.abort(tid,'force');
                 xui.setNodeData(node,'_inthread',null);
             }
             var reset=xui.getNodeData(node,'_animationreset');
@@ -11409,8 +11418,8 @@ xui.Class('xui.Dom','xui.absBox',{
                 reset();
                 xui.setNodeData(node,'_animationreset',null);
             }
-
-            return xui.Thread(threadid||xui.id(), funs, 0, null, function(tid){
+            // allow custom threadid, except existing one
+            return xui.Thread((!threadid || xui.Thread.get(threadid)) ? xui.id()  : threadid, funs, 0, null, function(tid){
                 xui.setNodeData(node,'_inthread',tid);
                 starttime=xui.stamp();
                 xui.setNodeData(node,'_animationreset',function(){
@@ -14447,44 +14456,48 @@ xui.Class('xui.Module','xui.absProfile',{
             }
         },
         setProperties:function(key,value,ignoreEvent,innerDataOnly){
-            var self=this;
+            var self=this,
+                h=self.properties,
+                oDataBinder=('dataBinder' in h)?h.dataBinder:null,
+                t;
 
             if(!key)
-                self.properties={};
+                h={};
             else if(typeof key=='string')
-                self.properties[key]=value;
+                h[key]=value;
             else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.properties = xui.copy(key);
+                    h = xui.copy(key);
                 }else{
-                    var h=xui.clone(self.properties, true),t;
+                    h=xui.clone(h, true);
                     // for inner coms prf
                     if(t=self.properties.__inner_coms_prf__)h.__inner_coms_prf__=t;
                     xui.merge(h, key, 'all');
                     if(value && xui.isHash(value))
                         xui.merge(h, value, 'all');
-                    self.properties=h;
                 }
             }
+            self.properties=h;
 
-            if(self.propSetAction)self.propSetAction(self.properties);
             if(!ignoreEvent){
                 if(!innerDataOnly){
-                    var oDataBinder;
-                    if('dataBinder' in self.properties){
-                        oDataBinder = self.properties.dataBinder;
-                    }
-                    if('dataBinder' in self.properties){
-                        if(oDataBinder!==self.properties.dataBinder){
+                    if('dataBinder' in h){
+                        if(oDataBinder!==(t=h.dataBinder||null)){
                             if(oDataBinder)xui.DataBinder._unBind(oDataBinder, self);
-                            if(self.properties.dataBinder)xui.DataBinder._bind(self.properties.dataBinder, self);
+                            if(t)xui.DataBinder._bind(t, self);
                         }
                     }
                 }
 
-                if(self._innerModulesCreated && ('__inner_coms_prf__' in self.properties))
-                    self.setProfile(self.properties.__inner_coms_prf__);
-            
+                if(self._innerModulesCreated){
+                    // to apply inner control profile setting
+                    if(t=self.properties.__inner_coms_prf__) self.setProfile(t);
+                    // to apply inner control prop map
+                    if(xui.isFun(self._propSetAction))self._propSetAction(self.properties);
+                }
+
+                if(xui.isFun(self.propSetAction))self.propSetAction(self.properties);
+
                 // the last one
                 if(!innerDataOnly){
                     self._fireEvent('onModulePropChange');
@@ -14492,11 +14505,28 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
+        /*
+        _propGetter:function(prop){
+            var mdl=this,reg=/^\s*([^>\s]+)\s*>\s*([^>\s]+)\s*$/,r,t,f;
+            xui.each(prop,function(o,i){
+                if( (r=reg.exec(i)) && (t=mdl[r[1]]) )
+                    prop[i] = xui.isFun(t[f='get'+xui.str.initial(r[2])]) ? t[f]() : xui.get(mdl,[r[1],'properties',r[2]]);
+            });
+            return prop;
+        },*/
+        _propSetAction:function(prop){
+            var mdl=this,reg=/^\s*([^>\s]+)\s*>\s*([^>\s]+)\s*$/,r,t,f;
+            xui.each(prop,function(o,i){
+                // ignore [null/undifined]
+                if(xui.isSet(o) && (r=reg.exec(i)) && (t=mdl[r[1]]) )
+                    xui.isFun(t[f='set'+xui.str.initial(r[2])]) ? t[f](o) : xui.set(mdl,[r[1],'properties',r[2]],o);
+            });
+        },
         getProperties:function(key){
-             var self=this;
-             if(self._getProperties)self.properties=self._getProperties();
-
-            return key?self.properties[key]:self.properties;
+            var self=this, prop=self.properties;
+            if(xui.isFun(self._propGetter))prop=self._propGetter(prop);
+            if(xui.isFun(self.propGetter))prop=self.propGetter(prop);
+            return key?prop[key]:xui.copy(prop);
         },
         setEvents:function(key,value){
             var self=this;
@@ -17477,7 +17507,7 @@ xui.Class("xui.Tips", null,{
                         s=xui.adjustRes(s);
                         xui.Tips._curTips=s;
                         if(!item.transTips || !html)
-                            s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c xui-custom">'+s+'</div>';
+                            s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xui-cls-wordwrap */xui-custom">'+s+'</div>';
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
@@ -17860,7 +17890,7 @@ xui.Class("xui.Tips", null,{
             if(!id){
                 var e=new Error("No id");
                 xui.tryF(onEnd,[e,null,threadid]);
-                if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                xui.Thread.abort(threadid);
                 throw e;
                 return;
             }
@@ -17921,7 +17951,7 @@ xui.Class("xui.Tips", null,{
 
                         //insert first
                         if(onEnd)
-                            xui.Thread(threadid).insert({
+                            xui.Thread.insert(threadid,{
                                 task:onEnd,
                                 args:[null,o,threadid],
                                 scope:o
@@ -17935,14 +17965,14 @@ xui.Class("xui.Tips", null,{
                         var cls=this||xui.SC.get(clsPath);
                         // it must be a xui Class
                         if(cls&&cls.$xui$){
-                            xui.Thread(threadid).insert({
+                            xui.Thread.insert(threadid, {
                                 task:task,
                                 args:[cls, config,threadid]
                             });
                         }else{
                             var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
                             xui.tryF(onEnd,[e,null,threadid]);
-                            if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                            xui.Thread.abort(threadid);
                             throw e;
                         }
                     };
@@ -17952,7 +17982,7 @@ xui.Class("xui.Tips", null,{
                         else{
                             var e=new Error("No class name");
                             xui.tryF(onEnd,[e,null, threadid]);
-                            if(threadid&&xui.Thread.isAlive(threadid))xui.Thread(threadid).abort();
+                            xui.Thread.abort(threadid);
                             throw e;
                         }
                     }, true,threadid,{
@@ -19157,7 +19187,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 tid=xui.getNodeData(node,'_inthread'),
                 reset=xui.getNodeData(node,'_animationreset'),t;
             if(tid && xui.Thread.isAlive(tid)){
-                xui.Thread(tid).abort('force');
+                xui.Thread.abort(tid,'force');
                 xui.setNodeData(node,'_inthread',null);
             }
             if(typeof reset=="function"){
@@ -20280,7 +20310,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
 
                     if(p.position=='absolute' && p.dock!='none'){
-                            args={
+                        args={
                             $type:p.dock,
                             $dockid:xui.arr.indexOf(['width','height','fill','cover'],p.dock)!=-1?self.$xid:null
                         };
@@ -21358,12 +21388,6 @@ xui.Class("xui.UI",  "xui.absObj", {
         $TAGCLASS:"\x01tagcls\x01",
         $childTag:"<!--\x03{id}\x04-->",
 
-        $onSize:function(profile,e){
-            var style = profile.getRootNode().style;
-            if(e.width||e.height)
-                xui.UI.$tryResize(profile, style.width, style.height);
-            style=null;
-        },
         $ps:{left:1,top:1,width:1,height:1,right:1,bottom:1},
         objectProp:{},
         $toDom:function(profile, str, addEventHandler){
@@ -23193,10 +23217,25 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(xui.isFun(renderer)){
                 return xui.adjustRes(renderer.call(profile,hashIn,hashOut));
             }else if(xui.isStr(renderer)){
-                var obj,prf,alias,prop,
-                    _h={id:1,caption:1,title:1,name:1,desc:1,message:1,image:1,icon:1,img:1,type:1,tag:1,tagVar:1};
+                var obj,prf,alias,prop={},events={},t, 
+                    clsReg=/^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/,
+                    adjustRenderer = function(hash, prop, events){
+                        if(hash){
+                            var mapReg=/^\s*([^>\s]+)?\s*>\s*([^>\s]+)\s*$/;
+                            // 'alias > propName' in item
+                            xui.each(hash,function(o,i){
+                                // alias > key =>alias > key
+                                // > key => key
+                                if(mapReg.test(i)) prop[i.replace(/^\s*>\s*/,'')]=o;
+                            });
+                            // 'ModuleProp' in item
+                            if(xui.isHash(hash.ModuleProp))prop = xui.merge(prop, hash.ModuleProp, 'all');
+                            // 'ModuleEvents' in item
+                            if(xui.isHash(hash.ModuleEvents))events = xui.merge(events, hash.ModuleEvents, 'all');                
+                        }
+                    };
 
-                if(/^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/.test(renderer) && (obj=xui.SC.get(renderer))){
+                if(clsReg.test(renderer) && (obj=xui.SC.get(renderer))){
                     if(obj['xui.UI']||obj['xui.Module']){
                         obj=new obj();
                         prf=obj.get(0);
@@ -23219,16 +23258,25 @@ xui.Class("xui.UI",  "xui.absObj", {
                         }
 
                         obj.setHost(profile.host, alias);
+                        
                         // after host setting
-                        prop=xui.copy(hashOut,hashIn==profile.properties ? function(o,i){
-                            return !!_h[i];
-                        }: true);
-                        prop = xui.merge(prop, xui.get(hashOut,['tagVar','properties']), 'all');
+                        // for item/cell/row/col etc.
+                        if(hashIn!==profile.properties){
+                            if(t=profile.box._applyRendererEx)t.call(profile.box, profile, prop, events, hashOut, adjustRenderer);
+                            // 'alias > propName' in item
+                            // 'ModuleProp' in item
+                            // 'ModuleEvents' in item
+                            adjustRenderer(hashOut, prop, events);
+                        }
+                        // 'alias > propName' in tagVar
+                        // 'ModuleProp' in tagVar
+                        // 'ModuleEvents' in tagVar
+                        adjustRenderer(hashOut.tagVar, prop, events);
+
                         // ensure no renderer
                         delete prop.renderer;
-                        
-                        obj.setProperties(prop);
-                        obj.setEvents(xui.get(hashOut,['tagVar','events']));
+                        if(!xui.isEmpty(prop))obj.setProperties(prop);
+                        if(!xui.isEmpty(events))obj.setEvents(events);
                         
                         (profile.$attached||(profile.$attached=[])).push(prf);
                         return obj.toHtml();
@@ -23303,6 +23351,11 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
 
         Behaviors:{
+            onSize:function(profile,e){
+                var root = profile.getRootNode(),  style = root && root.style;
+                if(style && (e.width||e.height))
+                    xui.UI.$tryResize(profile, style.width, style.height);
+            },
             HotKeyAllowed:true,
             onContextmenu:function(profile, e, src){
                 if(profile.onContextmenu)
@@ -23494,7 +23547,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     var prf=this;
                     if(key)prf._activeAnim = prf.boxing().animate(key).id;
                     else if(key = prf._activeAnim){
-                        xui.Thread(key).abort();
+                        xui.Thread.abort(key);
                         delete prf._activeAnim;
                     }
                 }
@@ -23561,20 +23614,36 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["activeAnim"]=function(t){
                 if(t = prf._activeAnim)
-                    xui.Thread(t).abort();
+                    xui.Thread.abort(t);
             }
 
             prf._inValid=1;
         },
         $doResize:function(profile,w,h,force,key){
             if(force || ((w||h) && (profile._resize_w!=w || profile._resize_h!=h))){
+                var root=profile.getRootNode(),con;
                 //destroyed before resize
-                if(!profile.getRootNode())return false;
+                if(!root)return false;
 
                 profile._resize_w=w;
                 profile._resize_h=h;
                 xui.tryF(profile.box._onresize,[profile,w,h,force,key],profile.box);
 
+                // to resize auto-width children for flow layout
+                if( (force||w)
+                    && profile.box && profile.box['xui.absContainer']
+                    && (con=profile.getContainer(true)) 
+                ) {
+                    con.children().each(function(o,i,p){
+                        if( (i=xui.UIProfile.getFromDom(o.id)) 
+                            && i.box && i.box._onresize
+                            && (p=i.properties)
+                            && (('position' in p) && ('width' in p))
+                            && (p.position=='static'||p.position=='relative') 
+                            && (p.width===''||p.width=='auto')
+                        )  xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                    });
+                }
                 // for have _onresize widget only
                 if(profile.onResize)
                     profile.boxing().onResize(profile,w,h);
@@ -26094,9 +26163,6 @@ xui.Class("xui.UI.Widget", "xui.UI",{
                 }
             }
         },
-        Behaviors:{
-            onSize:xui.UI.$onSize
-        },
         DataModel:{
             width:{
                 $spaceunit:1,
@@ -27696,9 +27762,6 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 style:"background-image:url("+xui.ini.img_bg+");"
             }
         },
-        Behaviors:{
-            onSize:xui.UI.$onSize
-        },
         DataModel:{
             selectable:true,
             width:{
@@ -27897,8 +27960,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
             }
         },
         Behaviors:{
-            HotKeyAllowed:false,
-            onSize:xui.UI.$onSize
+            HotKeyAllowed:false
         },
         DataModel:{
             selectable:true,
@@ -30115,7 +30177,6 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         Behaviors:{
             HoverEffected:{IND1:'IND1',IND2:'IND2',DECREASE:'DECREASE',INCREASE:'INCREASE'},
             ClickEffected:{IND1:'IND1',IND2:'IND2',DECREASE:'DECREASE',INCREASE:'INCREASE'},
-            onSize:xui.UI.$onSize,
             IND:{
                 onClick:function(profile, e, src){
                     var p=profile.properties;
@@ -32066,7 +32127,6 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             }
         },
         Behaviors:{
-            onSize:xui.UI.$onSize,
             LABEL:{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
@@ -37377,7 +37437,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             ClickEffected:{ITEM:'ITEM', OPT:'OPT',CMD:'CMD'},
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
-            onSize:xui.UI.$onSize,
             ITEM:{
                 onDblclick:function(profile, e, src){
                     var properties = profile.properties,
@@ -38392,7 +38451,6 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             NoDraggableKeys:['INFO','OPT','CLOSE','POP','REFRESH','TOGGLE','CMD','TOGGLE'],
             HoverEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',CMD:'CMD',TOGGLE:'TOGGLE',ICON:'ICON'},
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',CMD:'CMD',TOGGLE:'TOGGLE'},
-            onSize:xui.UI.$onSize,
             TOGGLE:{
                 onClick:function(profile, e, src){
                     if(profile.properties.toggleBtn){
@@ -40091,7 +40149,6 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             DraggableKeys:['ITEM'],
             HoverEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',ICON:'ICON',CMD:'CMD'},
             ClickEffected:{ITEM:'ITEM',MENU:'MENU',MENU2:'MENU2',MENUICON2:'MENUICON2',OPT:'OPT',CLOSE:'CLOSE',MENUCLOSE:'MENUCLOSE',POP:'POP',CMD:'CMD'},
-            onSize:xui.UI.$onSize,
             CAPTION:{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
@@ -42124,7 +42181,6 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             DraggableKeys:["BAR"],
             NoDraggableKeys:['TOGGLE'],
             DroppableKeys:["BAR","TOGGLE","BOX"],
-            onSize:xui.UI.$onSize,
             TOGGLE:{
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
@@ -44901,7 +44957,6 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             PanelKeys:['PANEL'],
             HoverEffected:{MOVE:'MOVE',CMD:['MOVE','CMD']},
             ClickEffected:{CMD:'CMD'},
-            onSize:xui.UI.$onSize,
             MOVE:{
                 beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
@@ -48561,8 +48616,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ClickEffected:  {ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELL', CELL:'CELL', HCELL:['HCELL','HSCELL'],HSCELL:['HCELL','HSCELL'], CMD:'CMD'},
             DraggableKeys:['FCELL'],
             DroppableKeys:['SCROLL21','SCROLL22','CELLS1','CELLS2','FCELL'],
-
-            onSize:xui.UI.$onSize,
             HFMARK:{
                 onClick:function(profile,e,src){
                     if(profile.properties.selMode!='multi'&&profile.properties.selMode!='multibycheckbox')return;
@@ -51330,6 +51383,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     cellanode.addClass(t2);
             }
             return cell;
+        },
+        _applyRendererEx:function(profile, prop, events, cell, adjustRenderer, t){
+            // for cell only
+            if(cell){
+                if(t = cell._col){
+                    adjustRenderer(t, prop, events);
+                    adjustRenderer(t.tagVar, prop, events);
+                }
+                if(t = cell._row){
+                    adjustRenderer(t, prop, events);
+                    adjustRenderer(t.tagVar, prop, events);
+                }
+            }
         },
         _prepareItems:function(profile, arr, pid ,temparr){
             var self=this,
@@ -67691,9 +67757,6 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     this.getSubNode('SVG').css('zIndex',v);
                 }
             }
-        },
-        Behaviors:{
-            onSize:xui.UI.$onSize
         },
         RenderTrigger:function(){
             var profile=this,

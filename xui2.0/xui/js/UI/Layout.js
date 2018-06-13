@@ -354,7 +354,6 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             PanelKeys:['PANEL'],
             HoverEffected:{MOVE:'MOVE',CMD:['MOVE','CMD']},
             ClickEffected:{CMD:'CMD'},
-            onSize:xui.UI.$onSize,
             MOVE:{
                 beforeMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
