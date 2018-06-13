@@ -23089,13 +23089,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 'margin-left': (i===0 ? pad.left : spc.width)+'px',
                                 'margin-top': (i===0 ? pad.top : spc.height)+'px'
                             });
-                            ww=prf.$forceu( w );
+                            var min = prf.properties.dockMinW;
+                            min = min?xui.CSS.$px(min):0;
                             if((index+1)%cols===0){
-                                ww=prf.$forceu( pw -  rowtotal);
+                                ww=prf.$forceu( Math.max(min, pw -  rowtotal));
                                 rowtotal=0;
                             }else{
                                 rowtotal += w;
-                                ww=prf.$forceu( w );
+                                ww=prf.$forceu( Math.max(min, w) );
                             }
                             // to trigger onsize
                             xui(n).width( prf.properties.width = ww );
