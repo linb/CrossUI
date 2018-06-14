@@ -2016,8 +2016,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }else{
                     if(xui.get(o,['parent','properties','conDockRelative'])||xui.get(o,['parent','properties','conLayoutColumns'])){
-                        var pp=o.parent;
-                        xui.UI._adjustConW(pp, pp.getRoot(), o.getRoot().parent().width(), o.getRootNode());
+                        xui.resetRun('conLayoutColumns:'+o.parent.$xid, function(){
+                            if(!o.destroyed && !o.parent.destroyed)
+                                xui.UI._adjustConW(o.parent, o.getRoot().parent());
+                        });
                     }
                 }
                 // adjust children
@@ -4797,7 +4799,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return self;
         },
         //for relative , static children
-        _adjustConW:function(profile, panel, parentW, cur){
+        _adjustConW:function(profile, container, newAdd){
             var prop = profile.properties,cols;
             if(!(cols = prop.conLayoutColumns))
                 cols=prop.conDockRelative?1:0;
@@ -4805,13 +4807,34 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             var pad = prop.conDockPadding,
                   spc = prop.conDockSpacing,
-                  c = panel.children(),
-                  l = c.size(),off,pw,w,tw,index=0,ww,rowtotal=0,
-                 scrollw,changed;
+                  c = container.children(),
+                  l = c.size(),containerWidth,off,pw,w,tw,index=0,ww,rowtotal=0, 
+                allCtrls=[],
+                // redo last row
+                redoLastRow = function(pw, row, allCtrls){
+                    var rowLen = row.length,
+                         colW = Math.floor(pw/rowLen),
+                         rowtotal = 0,
+                         rw, ww, prf, node, min ,max;
+                    for(var i=0; i<rowLen; i++){
+                        node = row[i][0];
+                        prf = row[i][1];
+                        min = row[i][2];
+                        max = row[i][3];
+                        if(i==rowLen-1){
+                            ww = prf.$forceu( Math.min(max, Math.max(min, pw -  rowtotal) ) );
+                        }else{
+                            ww = prf.$forceu( rw = Math.min(max, Math.max(min, colW) ) );
+                            rowtotal += rw;
+                        }
+                        allCtrls.push([node, prf, ww, rw]);
+                    }
+                };
+
             if(!l)return;
             // ensure inline block
             c.each(function(n,i,prf,p){
-                if(cur && n!=cur)return;
+                //if(newAdd && n!=newAdd)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static')
@@ -4819,19 +4842,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
             });
             // calculate width
-            scrollw =  (panel.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0);
-            off = pad.left + pad.right + (cols -1) * spc.width + scrollw;
-            pw = profile.$px(parentW) - off;
+            containerWidth = profile._containerWidth = container.scrollWidth();
+            off = pad.left + pad.right + (cols -1) * spc.width;
+            pw = containerWidth - off;
             // It must be integer
             w = Math.floor(pw/cols);
+            var curCtrl, lastRow=[], min, max;
             // set width
             c.each(function(n,i,prf,p){
-                if(cur && n!=cur)return;
+                //if(newAdd && n!=newAdd)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
-                    p=xui(n).css('position');
+                    curCtrl=xui(n);
+                    p=curCtrl.css('position');
                     if(p=='relative'||p=='static'){
                         if(prf){
-                            xui(n).css({
+                            curCtrl.css({
                                 position:'relative',
                                 left:'auto',
                                 top:'auto',
@@ -4840,36 +4865,42 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 'margin-left': (i===0 ? pad.left : spc.width)+'px',
                                 'margin-top': (i===0 ? pad.top : spc.height)+'px'
                             });
-                            var min = prf.properties.dockMinW;
-                            min = min?xui.CSS.$px(min):0;
-                            if((index+1)%cols===0){
-                                ww=prf.$forceu( Math.max(min, pw -  rowtotal));
-                                rowtotal=0;
-                            }else{
-                                rowtotal += w;
-                                ww=prf.$forceu( Math.max(min, w) );
+                            min = xui.CSS.$px(prf.properties.dockMinW)||0;
+                            max = xui.CSS.$px(prf.properties.dockMaxW) || (pw + off);
+                            ww=prf.$forceu( rw = Math.min(max, Math.max(min, w) ) );
+                            rowtotal += rw;
+                            if(rowtotal > pw){
+                                // redo last row
+                                redoLastRow(pw + (cols-lastRow.length)*spc.width, lastRow, allCtrls);
+                                lastRow=[];
+                                rowtotal=rw;
                             }
-                            // to trigger onsize
-                            xui(n).width( prf.properties.width = ww );
-                            index++;
+                            lastRow.push([curCtrl,prf,min,max]);
                         }
                     }
                 }
             });
+            // redo last row
+            if(lastRow.length)
+                redoLastRow(pw + (cols-lastRow.length)*spc.width, lastRow,  allCtrls);
 
-            if(cur){
-                if(scrollw && !profile._scrollY){
-                    profile._scrollY=1;
-                    changed=1;
-                }
-                if(!scrollw && profile._scrollY){
-                    delete profile._scrollY;
-                    changed=1;
-                }
-                if(changed){
-                    xui.UI._adjustConW(profile, panel, parentW, null);
-                }
-            };
+            // set width to ctrls (properties.width + dom width);
+            for(var i=0,l=allCtrls.length;i<l;i++){
+                var node=allCtrls[i][0];
+                //if(newAdd && node.get(0)!=newAdd)return;
+                // to trigger onsize
+                node.width( allCtrls[i][1].properties.width = allCtrls[i][2] );
+                // set %
+                // node.get(0).style.width = Math.floor(allCtrls[i][3]  / containerWidth * 10000)/100 +'%';
+            }
+
+            // caculate again
+            containerWidth = container.scrollWidth();
+            if(profile._containerWidth && profile._containerWidth!=containerWidth){
+                xui.UI._adjustConW(profile, container);
+            }
+            profile._containerWidth = containerWidth;
+            
         },
         /*copy item to hash, use 'without'
         exception: key start with $
@@ -5203,13 +5234,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                         xui.UI.$dock(self,true,true);
                 }
             },
+            // dockOrder is for compitable with older version only
             dockOrder:{
-                ini: 1,
-                action:function(v){
-                    var self=this;
-                    if(self.properties.dock!='none')
-                        xui.UI.$dock(self,true,true);
-                }
+                hidden:true
             },
             showEffects:"",
             hideEffects:"",
@@ -5481,8 +5508,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
             }else{
                 if(xui.get(self,['parent','properties','conDockRelative'])||xui.get(self,['parent','properties','conLayoutColumns'])){
-                    var pp=self.parent;
-                    xui.UI._adjustConW(pp, self.getRoot().parent(), self.getRoot().parent().width(), self.getRootNode());
+                    xui.resetRun('conLayoutColumns:'+self.parent.$xid, function(){
+                        if(!self.destroyed && !self.parent.destroyed)
+                            xui.UI._adjustConW(self.parent, self.getRoot().parent());
+                    });
                 }
             }
         },
@@ -5644,7 +5673,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 value = prop.dock || 'none',
                 pid=xui.Event.getId(p.get(0)),
                 order=function(x,y){
-                    x=parseInt(x.properties.dockOrder,10)||0;y=parseInt(y.properties.dockOrder,10)||0;
+                    // _dockOrder is for designer mode only
+                    // dockOrder is for compitable with older version only
+                    x=parseInt(x.properties._dockOrder||x.properties.dockOrder,10)||0;y=parseInt(y.properties._dockOrder||y.properties.dockOrder,10)||0;
                     return x>y?1:x==y?0:-1;
                 },
                 region,
@@ -8810,7 +8841,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
             }
         },
         _onresize:function(profile,width){
-            if(width)xui.UI._adjustConW(profile, profile.getRoot(), width);
+            if(width)xui.UI._adjustConW(profile, profile.getRoot());
         }
     }
 });
