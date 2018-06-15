@@ -756,7 +756,7 @@ xui.Class('xui.Dom','xui.absBox',{
             };
         },
         _getEmSize:function(rate){
-            return this.get(0) ? (parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true))||0) * (rate||1) : null;
+            return this.get(0) ? (parseFloat(xui.Dom.getStyle(this.get(0), 'fontSize', true))||xui.CSS._getDftEmSize() ) * (rate||1) : null;
         },
         rotate:function(v){
             if(xui.isSet(v)){
@@ -1652,9 +1652,9 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.setNodeData(o,"_onxuisel",value?"true":"false");
             })
         },
-        contentBox : function(){
+        contentBox : function(d){
             return (xui.browser.ie||xui.browser.opr) ?
-                    !/BackCompat|QuirksMode/.test(d.compatMode) :
+                    !/BackCompat|QuirksMode/.test((d||document).compatMode) :
                     (this.css("box-sizing") || this.css("-moz-box-sizing")) == "content-box";
         },
         setInlineBlock:function(){
@@ -4044,7 +4044,7 @@ xui.Class('xui.Dom','xui.absBox',{
         });
         xui.arr.each(['scrollLeft','scrollTop'],function(o){
             self.plugIn(o,function(value){
-                var a=document.documentElement,b=document.body;
+                var a=document.documentElement,b=document.body,v;
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){

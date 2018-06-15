@@ -1793,11 +1793,17 @@ xui.Class("xui.svg", "xui.UI",{
             defaultFocus:null,
             renderer:null,
             position:null,
+            // tabindex/zIndex is for compitable only
+            tabindex:{
+                hidden:true
+            },
+            zIndex:{
+                hidden:true
+            },
             disableClickEffect:null,
             disableHoverEffect:null,
             disableTips:null,
             disabled:null,
-            //zIndex:null,
             left:null,
             top:null,
             right:null,

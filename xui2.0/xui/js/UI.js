@@ -1,144 +1,148 @@
 new function(){
     xui.builtinFontIcon={
-        "xui-icon-xui":'&#xe61b;',
-        "xui-load-error":'&#xe682;',
-        "xui-icon-numbers":'&#xe681;',
-        "xui-icon-number0":'&#xe67c;',
-        "xui-icon-number1":'&#xe67d;',
-        "xui-icon-number2":'&#xe680;',
-        "xui-icon-number3":'&#xe67b;',
-        "xui-icon-number4":'&#xe64c;',
-        "xui-icon-number5":'&#xe61c;',
-        "xui-icon-number6":'&#xe67a;',
-        "xui-icon-number7":'&#xe65a;',
-        "xui-icon-number8":'&#xe67e;',
-        "xui-icon-number9":'&#xe67f;',
-        "xui-icon-placeholder":'&#xe62c;',
-        "xui-icon-empty": '&#xe62c;',
-        "xui-icon-filter":'&#xe61a;',
-        "xui-icon-search":'&#xe619;',
-        "xui-uicmd-helpinput": '&#xe671;',
-        "xui-icon-zoomin": '&#xe61d;',
-        "xui-icon-zoomout": '&#xe61e;',
-        "xui-icon-bullet": '&#xe632;',
-        "xui-icon-minus": '&#xe606;',
-        "xui-uicmd-add": '&#xe609;',
-        "xui-icon-star": '&#xe649;',
-        "xui-icon-dragmove": '&#xe64a;',
-        "xui-uicmd-check": '&#xe631;',
-        "xui-uicmd-date": '&#xe64b;',
-        "xui-icon-number": '&#xe633;',
-        "xui-uicmd-pop": '&#xe61f;',
-        "xui-icon-mouse": '&#xe64d;',
-        "xui-icon-prev": '&#xe60a;',
-        "xui-icon-question": '&#xe63d;',
-        "xui-icon-loading": '&#xe68d;',
-        "xui-icon-indent": '&#xe634;',
-        "xui-icon-outdent": '&#xe635;',
-        "xui-icon-strikethrough": '&#xe636;',
-        "xui-icon-inserthr": '&#xe637;',
-        "xui-uicmd-remove": '&#xe66d;',
-        "xui-icon-super": '&#xe638;',
-        "xui-icon-sub": '&#xe639;',
-        "xui-icon-alignjustify": '&#xe62b;',
-        "xui-icon-alignright": '&#xe646;',
-        "xui-uicmd-arrowdrop": '&#xe623;',
-        "xui-icon-upload": '&#xe624;',
-        "xui-icon-formatbrush": '&#xe63a;',
-        "xui-refresh": '&#xe625;',
-        "xui-icon-undo": '&#xe660;',
-        "xui-uicmd-refresh": '&#xe621;',
-        "xui-icon-date": '&#xe626;',
-        "xui-icon-trash": '&#xe60c;',
-        "xui-icon-alignleft": '&#xe647;',
-        "xui-icon-singleright": '&#xe672;',
-        "xui-icon-singleleft": '&#xe673;',
-        "xui-icon-singledown":'&#xe82e;',
-        "xui-icon-singleup":'&#xe82f;',
-        "xui-uicmd-max": '&#xe60d;',
-        "xui-icon-last": '&#xe60f;',
-        "xui-icon-error": '&#xe674;',
-        "xui-icon-remove": '&#xe627;',
-        "xui-uicmd-pin": '&#xe628;',
-        "xui-icon-link": '&#xe63b;',
-        "xui-icon-forecolor": '&#xe63c;',
-        "xui-uicmd-time": '&#xe64f;',
-        "xui-icon-aligncenter": '&#xe666;',
-        "xui-uicmd-check-checked": '&#xe608;',
-        "xui-uicmd-cmdbox": '&#xe64e;',
-        "xui-uicmd-toggle": '&#xe601;',
-        "xui-uicmd-getter": '&#xe657;',
-        "xui-uicmd-save": '&#xe629;',
-        "xui-icon-dragcopy": '&#xe612;',
-        "xui-icon-dropdown": '&#xe679;',
-        "xui-uicmd-popbox": '&#xe668;',
-        "xui-uicmd-close": '&#xe62a;',
-        "xui-uicmd-datetime": '&#xe66c;',
-        "xui-icon-arrowright": '&#xe652;',
-        "xui-icon-font": '&#xe63e;',
-        "xui-icon-bgcolor": '&#xe63f;',
-        "xui-icon-mobile": '&#xe600;',
-        "xui-icon-clock": '&#xe602;',
-        "xui-icon-circledown": '&#xe603;',
-        "xui-icon-circleleft": '&#xe607;',
-        "xui-icon-circleright": '&#xe658;',
-        "xui-icon-circleup": '&#xe659;',
-        "xui-uicmd-opt": '&#xe610;',
-        "xui-icon-italic": '&#xe640;',
-        "xui-icon-redo": '&#xe661;',
-        "xui-icon-bold": '&#xe641;',
-        "xui-icon-bigup": '&#xe650;',
-        "xui-icon-doubledown": '&#xe65c;',
-        "xui-icon-doubleleft": '&#xe65d;',
-        "xui-icon-doubleright": '&#xe65e;',
-        "xui-icon-doubleup": '&#xe65f;',
-        "xui-uicmd-color": '&#xe62e;',
-        "xui-icon-breaklink": '&#xe642;',
-        "xui-icon-picture": '&#xe643;',
-        "xui-icon-back": '&#xe62d;',
-        "xui-icon-dragadd": '&#xe614;',
-        "xui-icon-formatclear": '&#xe644;',
-        "xui-uicmd-select": '&#xe66e;',
-        "xui-uicmd-file": '&#xe66b;',
-        "xui-icon-triangle-up": '&#xe676;',
-        "xui-icon-dragstop": '&#xe651;',
-        "xui-uicmd-dotted": '&#xe62f;',
-        "xui-icon-dialog": '&#xe82c;',
-        "xui-icon-print": '&#xe613;',
-        "xui-icon-right": '&#xe616;',
-        "xui-icon-file": '&#xe617;',
-        "xui-uicmd-info": '&#xe618;',
-        "xui-icon-smill": '&#xe65b;',
-        "xui-icon-sort": '&#xe620;',
-        "xui-icon-arrowtop": '&#xe654;',
-        "xui-icon-file-fold": '&#xe622;',
-        "xui-icon-circle": '&#xe656;',
-        "xui-icon-underline": '&#xe645;',
-        "xui-uicmd-radio": '&#xe604;',
-        "xui-uicmd-radio-checked": '&#xe605;',
-        "xui-uicmd-restore": '&#xe630;',
-        "xui-uicmd-toggle-checked": '&#xe662;',
-        "xui-icon-smallup": '&#xe663;',
-        "xui-icon-smalldown": '&#xe664;',
-        "xui-icon-html": '&#xe665;',
-        "xui-icon-code": '&#xe648;',
-        "xui-uicmd-min": '&#xe667;',
-        "xui-uicmd-location": '&#xe66f;',
-        "xui-icon-file-expand": '&#xe669;',
-        "xui-uicmd-delete": '&#xe670;',
-        "xui-uicmd-land": '&#xe615;',
-        "xui-icon-arrowbottom": '&#xe655;',
-        "xui-icon-arrowleft": '&#xe653;',
-        "xui-icon-next": '&#xe60b;',
-        "xui-icon-first": '&#xe66a;',
-        "xui-icon-triangle-left": '&#xe675;',
-        "xui-icon-triangle-down": '&#xe677;',
-        "xui-icon-triangle-right": '&#xe678;',
-        "xui-icon-sort-checked": '&#xe6bb;',
-        "xui-icon-transparent":'&#xe60e;',
-        "xui-icon-menu":'&#xe611;',
-        "xui-icon-menu-checked":'&#xe82d;'
+        'xui-icon-xui':'&#xe6a7;',
+        'xui-icon-placeholder':'&#xe668;',
+        'xui-icon-empty':'&#xe668;',
+        'xui-icon-loading':'&#xe678;',
+        'xui-icon-star':'&#xe69c;',
+        'xui-icon-smill':'&#xe69a;',
+        'xui-icon-trash':'&#xe6a1;',
+        'xui-icon-error':'&#xe666;',
+        'xui-icon-back':'&#xe64e;',
+        'xui-icon-bold':'&#xe650;',
+        'xui-icon-bgcolor':'&#xe64f;',
+        'xui-icon-breaklink':'&#xe652;',
+        'xui-icon-clock':'&#xe657;',
+        'xui-icon-circle':'&#xe651;',
+        'xui-icon-bigup':'&#xe658;',
+        'xui-icon-code':'&#xe659;',
+        'xui-icon-dialog':'&#xe65a;',
+        'xui-icon-bullet':'&#xe65b;',
+        'xui-icon-date':'&#xe65c;',
+
+        'xui-icon-dragadd':'&#xe661;',
+        'xui-icon-dragmove':'&#xe662;',
+        'xui-icon-dragcopy':'&#xe663;',
+        'xui-icon-dropdown':'&#xe664;',
+        'xui-icon-dragstop':'&#xe665;',
+        'xui-icon-file':'&#xe667;',
+        'xui-icon-file-expand':'&#xe669;',
+        'xui-icon-file-fold':'&#xe66a;',
+        'xui-icon-filter':'&#xe66b;',
+        'xui-icon-font':'&#xe66c;',
+        'xui-icon-forecolor':'&#xe66e;',
+        'xui-icon-formatbrush':'&#xe66f;',
+        'xui-icon-formatclear':'&#xe670;',
+        'xui-icon-indent':'&#xe671;',
+        'xui-icon-html':'&#xe672;',
+        'xui-icon-italic':'&#xe673;',
+        'xui-icon-link':'&#xe675;',
+        'xui-icon-inserthr':'&#xe676;',
+        'xui-icon-menu':'&#xe677;',
+        'xui-icon-minus':'&#xe679;',
+        'xui-icon-menu-checked':'&#xe67a;',
+        'xui-icon-mobile':'&#xe67b;',
+        'xui-icon-mouse':'&#xe67c;',
+        'xui-icon-outdent':'&#xe689;',
+        'xui-icon-picture':'&#xe68a;',
+        'xui-icon-print':'&#xe68c;',
+        'xui-icon-numbers':'&#xe68d;',
+        'xui-icon-right':'&#xe68e;',
+        'xui-icon-search':'&#xe68f;',
+        'xui-icon-question':'&#xe690;',
+        'xui-icon-remove':'&#xe693;',
+        'xui-icon-sort':'&#xe699;',
+        'xui-icon-sort-checked':'&#xe69b;',
+        'xui-icon-strikethrough':'&#xe69d;',
+        'xui-icon-sub':'&#xe69e;',
+        'xui-icon-super':'&#xe69f;',
+        'xui-icon-transparent':'&#xe6a0;',
+        'xui-icon-triangle-down':'&#xe6a2;',
+        'xui-icon-triangle-left':'&#xe6a3;',
+        'xui-icon-triangle-right':'&#xe6a4;',
+        'xui-icon-triangle-up':'&#xe6a5;',
+        'xui-icon-undo':'&#xe6a6;',
+        'xui-icon-redo':'&#xe691;',
+        'xui-icon-upload':'&#xe6a8;',
+        'xui-icon-zoomin':'&#xe6a9;',
+        'xui-icon-zoomout':'&#xe6ac;',
+        'xui-icon-underline':'&#xe6aa;',
+        'xui-load-error':'&#xe6ab;',
+        'xui-refresh':'&#xe6ae;',
+        'xui-uicmd-arrowdrop':'&#xe6af;',
+        'xui-uicmd-check':'&#xe6b0;',
+        'xui-uicmd-check-checked':'&#xe6b1;',
+        'xui-uicmd-add':'&#xe6ad;',
+        'xui-uicmd-close':'&#xe6b2;',
+        'xui-uicmd-cmdbox':'&#xe6b3;',
+        'xui-uicmd-date':'&#xe6b4;',
+        'xui-uicmd-color':'&#xe6b5;',
+        'xui-uicmd-delete':'&#xe6b6;',
+        'xui-uicmd-dotted':'&#xe6b7;',
+        'xui-uicmd-datetime':'&#xe6b8;',
+        'xui-uicmd-helpinput':'&#xe6b9;',
+        'xui-uicmd-getter':'&#xe6ba;',
+        'xui-uicmd-file':'&#xe6bb;',
+        'xui-uicmd-info':'&#xe6bc;',
+        'xui-uicmd-land':'&#xe6bd;',
+        'xui-uicmd-max':'&#xe6be;',
+        'xui-uicmd-min':'&#xe6bf;',
+        'xui-uicmd-location':'&#xe6c0;',
+        'xui-uicmd-opt':'&#xe6c1;',
+        'xui-uicmd-pop':'&#xe6c2;',
+        'xui-uicmd-pin':'&#xe6c3;',
+        'xui-uicmd-radio':'&#xe6c4;',
+        'xui-uicmd-radio-checked':'&#xe6c5;',
+        'xui-uicmd-popbox':'&#xe6c6;',
+        'xui-uicmd-refresh':'&#xe6c7;',
+        'xui-uicmd-restore':'&#xe6c8;',
+        'xui-uicmd-remove':'&#xe6c9;',
+        'xui-uicmd-time':'&#xe6ca;',
+        'xui-uicmd-select':'&#xe6cb;',
+        'xui-uicmd-save':'&#xe6cc;',
+        'xui-uicmd-toggle':'&#xe6cd;',
+        'xui-uicmd-toggle-checked':'&#xe6ce;',
+        'xui-icon-alignleft':'&#xe6d2;',
+        'xui-icon-aligncenter':'&#xe6d0;',
+        'xui-icon-alignjustify':'&#xe6d1;',
+        'xui-icon-alignright':'&#xe6cf;',
+
+
+        'xui-icon-singleleft':'&#xe694;',
+        'xui-icon-singleright':'&#xe695;',
+        'xui-icon-singleup':'&#xe696;',
+        'xui-icon-singledown':'&#xe692;',
+        'xui-icon-smalldown':'&#xe697;',
+        'xui-icon-smallup':'&#xe698;',
+        'xui-icon-arrowleft':'&#xe64c;',
+        'xui-icon-arrowright':'&#xe64b;',
+        'xui-icon-arrowtop':'&#xe64d;',
+        'xui-icon-arrowbottom':'&#xe6d3;',
+        'xui-icon-circleleft':'&#xe654;',
+        'xui-icon-circleright':'&#xe655;',
+        'xui-icon-circleup':'&#xe656;',
+        'xui-icon-circledown':'&#xe653;',
+        'xui-icon-doubleleft':'&#xe65e;',
+        'xui-icon-doubleright':'&#xe660;',
+        'xui-icon-doubleup':'&#xe65f;',
+        'xui-icon-doubledown':'&#xe65d;',
+        'xui-icon-first':'&#xe66d;',
+        'xui-icon-prev':'&#xe68b;',
+        'xui-icon-next':'&#xe67d;',
+        'xui-icon-last':'&#xe674;',
+        'xui-icon-number':'&#xe67e;',
+        'xui-icon-number0':'&#xe680;',
+        'xui-icon-number1':'&#xe67f;',
+        'xui-icon-number2':'&#xe681;',
+        'xui-icon-number3':'&#xe682;',
+        'xui-icon-number4':'&#xe683;',
+        'xui-icon-number5':'&#xe686;',
+        'xui-icon-number6':'&#xe687;',
+        'xui-icon-number7':'&#xe684;',
+        'xui-icon-number8':'&#xe685;',
+        'xui-icon-number9':'&#xe688;'
     };
+
     // IE67 don't support :before/:after
     // and, IE8 is buggy, force to ignore :before/:after
     if(xui.browser.ie678){
@@ -410,7 +414,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 root=prf.getRoot(),
                 node=root.get(0);
             // for special parent css
-            return (!force && prf._nodeEmSize) ||  ( node ? (prf._nodeEmSize = root._getEmSize()) : xui.CSS._getDftEmSize() ) ;
+            return (!force && prf._nodeEmSize) ||  ( node && (prf._nodeEmSize = root._getEmSize())) || xui.CSS._getDftEmSize()  ;
         },
         adjustSize:function(useProp, asy, flag){
             var prf=this,
@@ -2016,10 +2020,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }else{
                     if(xui.get(o,['parent','properties','conDockRelative'])||xui.get(o,['parent','properties','conLayoutColumns'])){
-                        xui.resetRun('conLayoutColumns:'+o.parent.$xid, function(){
-                            if(!o.destroyed && !o.parent.destroyed)
-                                xui.UI._adjustConW(o.parent, o.getRoot().parent());
-                        });
+                        //xui.resetRun('conLayoutColumns:'+o.parent.$xid, function(){
+                        //    if(!o.destroyed && !o.parent.destroyed)
+                                xui.UI._adjustConW(o.parent, o.getRoot().parent(),o);
+                        //});
                     }
                 }
                 // adjust children
@@ -4799,16 +4803,21 @@ xui.Class("xui.UI",  "xui.absObj", {
             return self;
         },
         //for relative , static children
-        _adjustConW:function(profile, container, newAdd){
-            var prop = profile.properties,cols;
+        _adjustConW:function(profile, container, trigger, _adjust){
+            var prop = profile.properties,cols,containerWidth;
             if(!(cols = prop.conLayoutColumns))
                 cols=prop.conDockRelative?1:0;
             if(!cols)return;
+            // container width
+            containerWidth = profile._containerWidth = container.scrollWidth();
+
+            // if it's an adjust action, check first
+            if(_adjust && _adjust==containerWidth)return;
 
             var pad = prop.conDockPadding,
                   spc = prop.conDockSpacing,
                   c = container.children(),
-                  l = c.size(),containerWidth,off,pw,w,tw,index=0,ww,rowtotal=0, 
+                  l = c.size(),off,pw,w,tw,index=0,ww,rowtotal=0, 
                 allCtrls=[],
                 // redo last row
                 redoLastRow = function(pw, row, allCtrls){
@@ -4834,23 +4843,21 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(!l)return;
             // ensure inline block
             c.each(function(n,i,prf,p){
-                //if(newAdd && n!=newAdd)return;
+                //if(trigger && n!=trigger)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static')
                         xui(n).setInlineBlock();
                 }
             });
-            // calculate width
-            containerWidth = profile._containerWidth = container.scrollWidth();
             off = pad.left + pad.right + (cols -1) * spc.width;
             pw = containerWidth - off;
             // It must be integer
             w = Math.floor(pw/cols);
             var curCtrl, lastRow=[], min, max;
             // set width
-            c.each(function(n,i,prf,p){
-                //if(newAdd && n!=newAdd)return;
+            c.each(function(n,i,prf,p,rw){
+                //if(trigger && n!=trigger)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
                     curCtrl=xui(n);
                     p=curCtrl.css('position');
@@ -4887,20 +4894,22 @@ xui.Class("xui.UI",  "xui.absObj", {
             // set width to ctrls (properties.width + dom width);
             for(var i=0,l=allCtrls.length;i<l;i++){
                 var node=allCtrls[i][0];
-                //if(newAdd && node.get(0)!=newAdd)return;
+                //if(trigger && node.get(0)!=trigger)return;
                 // to trigger onsize
                 node.width( allCtrls[i][1].properties.width = allCtrls[i][2] );
+                allCtrls[i][1]._conLayout=1;
                 // set %
                 // node.get(0).style.width = Math.floor(allCtrls[i][3]  / containerWidth * 10000)/100 +'%';
             }
-
-            // caculate again
-            containerWidth = container.scrollWidth();
-            if(profile._containerWidth && profile._containerWidth!=containerWidth){
-                xui.UI._adjustConW(profile, container);
-            }
-            profile._containerWidth = containerWidth;
-            
+            var checkScroll=function(profile, container){
+                if(profile.destroyed || !profile._containerWidth || container.isEmpty())return;
+                if(profile._containerWidth != container.scrollWidth())
+                    xui.UI._adjustConW(profile, container, profile, profile._containerWidth);
+            };
+            // caculate again for container's scrollbar show/hide
+            checkScroll(profile, container);
+            // caculate asyn for parent's scrollbar show/hide
+            xui.asyRun(checkScroll,0,[profile, container]);
         },
         /*copy item to hash, use 'without'
         exception: key start with $
@@ -5508,10 +5517,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
             }else{
                 if(xui.get(self,['parent','properties','conDockRelative'])||xui.get(self,['parent','properties','conLayoutColumns'])){
-                    xui.resetRun('conLayoutColumns:'+self.parent.$xid, function(){
-                        if(!self.destroyed && !self.parent.destroyed)
-                            xui.UI._adjustConW(self.parent, self.getRoot().parent());
-                    });
+                    if(!self._conLayout){
+                        xui.resetRun('conLayoutColumns:'+self.parent.$xid, function(){
+                            if(!self._conLayout && !self.destroyed && !self.parent.destroyed)
+                                xui.UI._adjustConW(self.parent, self.getRoot().parent(), self);
+                        });
+                    }
                 }
             }
         },
@@ -8841,7 +8852,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
             }
         },
         _onresize:function(profile,width){
-            if(width)xui.UI._adjustConW(profile, profile.getRoot());
+            if(width)xui.UI._adjustConW(profile, profile.getRoot(), profile);
         }
     }
 });

@@ -334,20 +334,26 @@ xui.Class("xui.CSS", null,{
         _getDftEmSize: function(force){
             var ns=this;
             if(force || !ns._dftEm){
-                var fz=ns.$getCSSValue('.xui-ui-ctrl','fontSize');
+                var fz=ns.$getCSSValue('.xui-ui-ctrl','fontSize'),num;
 
                 // only can be triggerred by modifing font-size of '.xui-ui-ctrl' itslef.
                 if(!ns._dftEmStr || ns._dftEmStr!=fz){
-                    ns._dftEmStr=fz;
-                    if(ns.$isPx(fz)){
-                        ns._dftEm=parseFloat(fz);
-                    }else if(ns.$isRem(fz)){
-                        ns._dftEm=parseFloat(fz)*ns._getDftRemSize();
+                    num=parseFloat(fz);
+                    if(num && ns.$isPx(fz)){
+                        ns._dftEm=num;
+
+                        ns._dftEmStr=fz;
+                    }else if(num && ns.$isRem(fz)){
+                        ns._dftEm=num*ns._getDftRemSize();
+
+                        ns._dftEmStr=fz;
                     }else{
                         var div;
                         xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
                         ns._dftEm=div.get(0).offsetHeight;
                         div.remove();
+
+                        ns._dftEmStr=ns._dftEm+"px";
                     }
                 }
             }
