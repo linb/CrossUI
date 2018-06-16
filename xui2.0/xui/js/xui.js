@@ -1914,10 +1914,12 @@ xui.merge(xui,{
 /* xui.ini xui.browser dom ready
 */
 new function(){
-    var ini=xui.ini={};
+    var ini=xui.ini={
+        rootModuleName:'_xui_root'
+    };
     //special var
     if(window.xui_ini)
-        xui.merge(ini,window.xui_ini);
+        xui.merge(ini,window.xui_ini,'all');
 
     //browser sniffer
     var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={

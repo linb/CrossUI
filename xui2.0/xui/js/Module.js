@@ -32,7 +32,10 @@ xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
-            ns.load.apply(ns, arguments);
+            ns.load.apply(ns, [cls, function(err, module){
+                module.setHost(window, xui.ini.rootModuleName);
+                xui.tryF(onEnd, [err, module]);
+            }, lang, theme, showUI, parent, subId, onCreated]);
         };
         // compitable
         ns['xui.Com']=ns.prototype['xui.Com']=1;
@@ -79,7 +82,7 @@ xui.Class('xui.Module','xui.absProfile',{
     Constructor:function(properties, events, host){
         var self=this,opt,alias,t;
 
-        // If it's a older moudle object, set xid first
+        // If it's a older module object, set xid first
 		if(properties && properties.constructor==self.constructor){
 			if(properties.$xid){
 				self.$xid = properties.$xid;
@@ -90,7 +93,7 @@ xui.Class('xui.Module','xui.absProfile',{
         if(upper)upper.call(self);
         upper=null;
 
-        // If it's a older moudle object, refresh itself
+        // If it's a older module object, refresh itself
         if(properties && properties.constructor==self.constructor){
         	 var oldm = properties; 
              
@@ -641,6 +644,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var prf=this.getUIComponents().get(0);
             if(prf)return prf.childrenId;
         },
+        // onEnd(err, module, threadid)
         create:function(onEnd, threadid){
             //get paras
             var self=this;
@@ -1345,7 +1349,7 @@ xui.Class('xui.Module','xui.absProfile',{
             return hash;
         },
         // module: module class name
-        // xid: moudle xid
+        // xid: module xid
         // xui.Module.getInstance("App.Cls1",1)
         // xui.Module.getInstance("App.Cls1","c")
         // App.Cls1.getInstance(1)
@@ -1389,6 +1393,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
+        // onEnd(err, module)
         load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
             if(!cls){
                 var e=new Error("No cls");

@@ -4256,6 +4256,8 @@ xui.Class('xui.Dom','xui.absBox',{
 
             xui('body').empty();
             xui([w, d]).$clearEvent();
+            // root module ref
+            w[xui.ini.rootModuleName]=undefined;
             //unlink link 'App'
             xui.SC.__gc();
             xui.Thread.__gc();
