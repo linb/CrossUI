@@ -376,9 +376,9 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         //set innerHTML empty
         //flag = false: no gc
-        empty:function(triggerGC){
+        empty:function(triggerGC, purgeNow){
             return this.each(function(o){
-                xui([o]).html('',triggerGC);
+                xui([o]).html('',triggerGC, null, purgeNow);
             });
         },
 
@@ -4219,12 +4219,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 return true;
             };
         //free memory
-        xui.win.afterUnload(function(){
-            w.onresize=null;
+        xui.win.afterUnload(xui._destroy = function(){
+            var t, _cw=function(w,k){
+                w[k]=undefined;
+                delete w[k];
+            };
+
             if(w.removeEventListener)
                 w.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
-
-            d.onmousewheel=w.onmousewheel=null;
+            else if(w.detachEvent)
+                w.detachEvent("DOMMouseScroll", xui.Event.$eventhandler3);
 
             // for simulation mouse event in touable device
             if(xui.browser.isTouch){
@@ -4249,22 +4253,40 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
             }
 
-            if(xui.browser.ie && d.body)
-                d.body.onselectstart=null;
-
-            if("onhashchange" in w)w.onhashchange=null;
-
-            xui('body').empty();
+            // xui.win.afterUnload ...
             xui([w, d]).$clearEvent();
+
+            // [[ todo: clear those dirty things
+            w.onresize=null;
+            d.onmousewheel=w.onmousewheel=null;
+            if(xui.browser.ie && d.body)d.body.onselectstart=null;
+            if("onhashchange" in w)w.onhashchange=null;
+            // ]]
+
+            // destroy all widgets and moudles
+            // xui('body').empty(true,true);
+            for(var i in (t=xui._pool)){
+                t[i] && t[i].destroy && t[i].destroy(1,1);
+                t[i] && t[i].Instace && t[i].Instace.destroy && t[i].Instace.destroy(1,1);
+            }
+
             // root module ref
-            w[xui.ini.rootModuleName]=undefined;
-            //unlink link 'App'
+            _cw(w,xui.ini.rootModuleName);
+            if(w.Raphael && w.Raphael._in_xui){
+                _cw(w,'Raphael');
+            }
+
             xui.SC.__gc();
             xui.Thread.__gc();
             xui.Class.__gc();
+            if(/xui\.Class\.apply/.test(w.Class)) _cw(w,'Class');
+            if((t=xui.Namespace._all))for(var i in t)  _cw(w, t[i]);
             xui.breakO(xui.$cache,2);
             xui.breakO([xui.Class, xui],3);
-            w.xui=w.xui_ini=undefined;
+            _cw(w,'xui_ini');
+            _cw(w,'xui');
+            
+            w=d=null;
         },"window",-1);
 
     }

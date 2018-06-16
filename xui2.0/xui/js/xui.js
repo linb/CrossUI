@@ -146,8 +146,9 @@ xui.Class=function(key, pkey, obj){
 };
 xui.Namespace=function(key){
     var a=key.split('.'),w=window;
-    return xui.get(w, a) || xui.set(w, a, {});
+    return xui.get(w, a) || ((this._all[a[0]]=1) && xui.set(w, a, {}));
 };
+xui.Namespace._all={};
 
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
