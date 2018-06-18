@@ -147,8 +147,9 @@ xui.Class=function(key, pkey, obj){
 };
 xui.Namespace=function(key){
     var a=key.split('.'),w=window;
-    return xui.get(w, a) || xui.set(w, a, {});
+    return xui.get(w, a) || ((this._all[a[0]]=1) && xui.set(w, a, {}));
 };
+xui.Namespace._all={};
 
 //window.onerror will be redefined in xui.Debugger
 //window.onerror=function(){return true};
@@ -1754,7 +1755,9 @@ xui.merge(xui,{
             proMap=cache.profileMap,
             ch=cache.UIKeyMapEvents,
             pdata=cache.domPurgeData,
-            handler=xui.Event.$eventhandler,
+            event=xui.Event,
+            handler=event.$eventhandler,
+            handler3=event.$eventhandler3,
             // ie<=10
             children=(xui.browser.ie && node.all )? node.all : node.getElementsByTagName('*'),
             l=children.length,
@@ -1764,16 +1767,15 @@ xui.merge(xui,{
             if(!(v=children[i]))continue;
             if(t=v.$xid){
                 if(o=pdata[t]){
+
+                    //clear event handler
                     if(w=o.eHandlers){
-                        if(xui.browser.isTouch && w['onxuitouchdown']){
-                            if(v.removeEventListener){
-                                v.removeEventListener("xuitouchdown", handler,false);
-                            }else if(v.detachEvent){
-                                v.detachEvent("xuitouchdown", handler);
-                            }
+                        if(xui.browser.isTouch && w['onxuitouchdown'])
+                            event._removeEventListener(v, "xuitouchdown", handler);
+                        for(j in w){
+                            event._removeEventListener(v, j, handler);
+                            event._removeEventListener(v, j, handler3);
                         }
-                        for(j in w)
-                            v[j]=null;
                     }
                     for(j in o)
                         o[j]=null;
@@ -1788,7 +1790,6 @@ xui.merge(xui,{
                     delete v.$xid;
             }
 
-            //clear event handler
             if(id=v.id){
                 //clear dom cache
                 //trigger object __gc
@@ -1915,10 +1916,12 @@ xui.merge(xui,{
 /* xui.ini xui.browser dom ready
 */
 new function(){
-    var ini=xui.ini={};
+    var ini=xui.ini={
+        rootModuleName:'_xui_root'
+    };
     //special var
     if(window.xui_ini)
-        xui.merge(ini,window.xui_ini);
+        xui.merge(ini,window.xui_ini,'all');
 
     //browser sniffer
     var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
@@ -6689,7 +6692,7 @@ xui.Class('xui.Event',null,{
             return false;
         }
         node=null;
-
+ 
         //type
         var type = event.type,
             xuievent=event.$xuievent,
@@ -6844,9 +6847,9 @@ xui.Class('xui.Event',null,{
         _type:{},
         _kb:{keydown:1,keypress:1,keyup:1},
         _reg:/(-[\w]+)|([\w]+$)/g,
-        $eventhandler:function(){return xui.Event(arguments[0],this)},
-        $eventhandler2:function(){return xui.Event(arguments[0],this,1)},
-        $eventhandler3:function(){return xui.Event(arguments[0],xui.Event.getSrc(arguments[0]||window.event))},
+        $eventhandler:function(){return xui.Event(arguments[0], this)},
+        $eventhandler2:function(){return xui.Event(arguments[0], this,1)},
+        $eventhandler3:function(){return xui.Event(arguments[0], xui.Event.getSrc(arguments[0]||window.event))},
         $lastMouseupTime:0,
         $dblcInterval:500,
         $lastClickFunMark:0,
@@ -6865,6 +6868,86 @@ xui.Class('xui.Event',null,{
                 // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
+        _addEventListener : function(node, evt, fnc) {
+            // name: click/onclick/onClick/beforeClick/afterClick
+            var getName=function(name){
+                return name.replace(/^on|before|after/,'').toLowerCase();
+            },
+            // name: click/onclick/onClick/beforeClick/afterClick
+            getHandler=function(name, force){
+                var map={touchstart:1,touchmove:1,touchend:1,touchcancel:1};
+                name=getName(name);
+                return (force || !map[name]) ? ('on'+name) : name;
+            };
+            // W3C model
+            if (node.addEventListener) {
+                node.addEventListener(getName(evt), fnc, false);
+                return true;
+            } 
+            // Microsoft model (ignore attachEvent)
+            // reason: [this] is the window object, not the element; 
+            //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
+            //else if (node.attachEvent) {
+            //    return node.attachEvent(getHandler(evt),  fnc);
+            //}
+            // Browser don't support W3C or MSFT model, go on with traditional
+            else {
+                evt = getHandler(evt,true);
+                if(typeof node[evt] === 'function'){
+                    // Node already has a function on traditional
+                    // Let's wrap it with our own function inside another function
+                    fnc = (function(f1,f2){
+                        var f = function(){
+                            var funs=arguments.callee._funs;
+                            for(var i=0,l=funs.length;i<l;i++)
+                                funs[i].apply(this,arguments);
+                        };
+                        f._funs=f1._funs||[f1];
+                        f1._funs=null;
+                        f._funs.push(f2);
+                        return f;
+                    })(node[evt], fnc);
+                }
+                node[evt] = fnc;
+                return true;
+            }
+            return false;
+        },
+        _removeEventListener : function(node, evt, fnc) {
+            // name: click/onclick/onClick/beforeClick/afterClick
+            var getName=function(name){
+                return name.replace(/^on|before|after/,'').toLowerCase();
+            },
+            // name: click/onclick/onClick/beforeClick/afterClick
+            getHandler=function(name, force){
+                var map={touchstart:1,touchmove:1,touchend:1,touchcancel:1};
+                name=getName(name);
+                return (force || !map[name]) ? ('on'+name) : name;
+            };
+            // W3C model
+            if (node.removeEventListener) {
+                node.removeEventListener(getName(evt), fnc, false);
+                return true;
+            } 
+            // Microsoft model (ignore attachEvent)
+            // reason: [this] is the window object, not the element; 
+            //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
+            //else if (node.detachEvent) {
+            //    return node.detachEvent(getHandler(evt), fnc);
+            //}
+            // Browser don't support W3C or MSFT model, go on with traditional
+            else {
+                evt = getHandler(evt,true);
+                if(node[evt]  === fnc){
+                    node[evt]=null;
+                    return true;
+                }else if(node[evt] && node[evt]._funs && xui.arr.indexOf(node[evt]._funs, fnc)!=-1){
+                    xui.arr.removeValue(node[evt]._funs, fnc);
+                    return true;
+                }
+            }
+            return false;
+        },
         simulateEvent : function(target, type, options, fromtype) {
             options = options || {};
             if(target[0])target = target[0];
@@ -7249,10 +7332,18 @@ xui.Class('xui.Event',null,{
             return true;
         },
         stopPageTouchmove:function(){
-            document.addEventListener(
+            xui.Event._addEventListener(document,
                 (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
                 (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                'touchmove', function(e){ e.preventDefault(); });
+                'touchmove', xui.Event.stopDefault
+            );
+        },
+        allowPageTouchmove:function(){
+            xui.Event._removeEventListener(document,
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                'touchmove', xui.Event.stopDefault
+            );
         }
     },
     Initialize:function(){
@@ -7292,39 +7383,28 @@ xui.Class('xui.Event',null,{
         });
         
         //add the root resize handler
-        w.onresize=ns.$eventhandler;
-
-        if (w.addEventListener)
-            w.addEventListener('DOMMouseScroll', ns.$eventhandler3, false);
+        ns._addEventListener(w, "resize", ns.$eventhandler);
+        
+        // DOMMouseScroll is for firefox only
+        ns._addEventListener(w, "DOMMouseScroll", ns.$eventhandler3);
 
         // for simulation dblclick event in touchable device
         if(xui.browser.isTouch){
-            if(d.addEventListener){
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                    "touchstart", ns._simulateMousedown, false/*need bubble*/);
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                    "touchend", ns._simulateMouseup, false/*need bubble*/);
-                d.addEventListener("xuitouchdown", ns.$eventhandler,false);
-            }else if(d.attachEvent){
-                d.attachEvent(
+            ns._addEventListener(d, 
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
                     "touchstart", ns._simulateMousedown);
-                d.attachEvent(
+            ns._addEventListener(d, 
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
                     "touchend", ns._simulateMouseup);
-                d.attachEvent("xuitouchdown", ns.$eventhandler);
-            }
+            ns._addEventListener(d,  "xuitouchdown", ns.$eventhandler);
         }
 
         // for simulation
-        d.onmousewheel=w.onmousewheel =ns.$eventhandler3;
-        
+        ns._addEventListener(w, "mousewheel", ns.$eventhandler3);
+        ns._addEventListener(d, "mousewheel", ns.$eventhandler3);
+
         var keyEvent=function(target, type , options){
             switch(type) {
                 case "textevent":
@@ -9387,16 +9467,20 @@ xui.Class('xui.Event',null,{
                 if(!ns._dftEmStr || ns._dftEmStr!=fz){
                     num=parseFloat(fz);
                     if(num && ns.$isPx(fz)){
-                        ns._dftEmStr=fz;
                         ns._dftEm=num;
-                    }else if(num && ns.$isRem(fz)){
+
                         ns._dftEmStr=fz;
+                    }else if(num && ns.$isRem(fz)){
                         ns._dftEm=num*ns._getDftRemSize();
+
+                        ns._dftEmStr=fz;
                     }else{
                         var div;
                         xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
                         ns._dftEm=div.get(0).offsetHeight;
                         div.remove();
+
+                        ns._dftEmStr=ns._dftEm+"px";
                     }
                 }
             }
@@ -9946,9 +10030,9 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         //set innerHTML empty
         //flag = false: no gc
-        empty:function(triggerGC){
+        empty:function(triggerGC, purgeNow){
             return this.each(function(o){
-                xui([o]).html('',triggerGC);
+                xui([o]).html('',triggerGC, null, purgeNow);
             });
         },
 
@@ -10211,7 +10295,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(t){
                         if(type=='xy'||type=='x'){
-                            ox=t.scrollXLeft;
+                            ox=t.scrollLeft;
                             opx=s.pageX;
                         }
                         if(type=='xy'||type=='y'){
@@ -10839,8 +10923,22 @@ xui.Class('xui.Dom','xui.absBox',{
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
                         add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
-                    else
-                        add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
+                    else{ 
+                        // old:
+                        // add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
+
+                        // new:
+                        // getBoundingClientRect returns different value in different browser
+                        // some include window.scrollX/Y, others do not include
+                        // we have to use a base div {left:0,top:0} to do offset, to replace "scrollXXX" offset solution
+                        var base = xui.Dom.getEmptyDiv();
+                        base.css({left:0,top:0,position:'absolute'});
+                        var basRect=base.get(0).getBoundingClientRect();
+                        base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE});
+
+                        // var basRect=db.getBoundingClientRect();
+                        add(pos, -basRect.left, -basRect.top);
+                    }
                 }else{
                     pos = {left :0, top :0};
                     add(pos, node.offsetLeft, node.offsetTop );
@@ -10989,16 +11087,12 @@ xui.Class('xui.Dom','xui.absBox',{
 
                 //set to dom node
                 if(type=event._eventHandler[name]){
-                    o[type]=handler;
                     xui.setNodeData(o, ['eHandlers', type], handler);
+                    event._addEventListener(o, event._eventMap[name], handler);
 
                     if(xui.browser.isTouch && type=='onmousedown'){
                         xui.setNodeData(o, ['eHandlers', 'onxuitouchdown'], handler);
-                        if(o.addEventListener){
-                            o.addEventListener("xuitouchdown", handler,false);
-                        }else if(o.attachEvent){
-                            o.attachEvent("xuitouchdown", handler);
-                        }
+                        event._addEventListener(o, "xuitouchdown", handler);
                     }
                 }
             });
@@ -11012,20 +11106,18 @@ xui.Class('xui.Dom','xui.absBox',{
         $removeEventHandler:function(name){
             var event=xui.Event,
                 handler=event.$eventhandler,
+                handler3=event.$eventhandler3,
                 type;
             return this.each(function(o){
                 //remove from dom node
                 if(type=event._eventHandler[name]){
-                    o[type]=null;
+                    event._removeEventListener(o, type, handler);
+                    event._removeEventListener(o, type, handler3);
+                    
                     if(xui.browser.isTouch && type=='onmousedown'){
-                        if(o.removeEventListener){
-                            o.removeEventListener("xuitouchdown", handler,false);
-                        }else if(o.detachEvent){
-                            o.detachEvent("xuitouchdown", handler);
-                        }
+                        event._removeEventListener(o, 'xuitouchdown', handler);
                     }
                 }
-
                 //remove from purge map
                 if(o=xui.getNodeData(o,'eHandlers')){
                     type='on'+event._eventMap[name];
@@ -11135,14 +11227,25 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         $clearEvent:function(){
             return this.each(function(o,i){
-                if(!(i=xui.Event.getId(o)))return;
-                if(!(i=xui.$cache.profileMap[i]))return;
-                xui.breakO(i.events,2);
-                delete i.events;
+                var event=xui.Event,
+                    handler=event.$eventhandler,
+                    handler3=event.$eventhandler3,
+                    type;
 
-                xui.arr.each(xui.Event._events,function(s){
-                   if(o["on"+s])o["on"+s]=null;
-                });
+                if(!(i=event.getId(o)))return;
+                if(!(i=xui.$cache.profileMap[i]))return;
+                if(i.events){
+                    xui.each(i.events, function(f, name){
+                        type=xui.Event._eventMap[name];
+                        if(type){
+                            event._removeEventListener(o, type, handler);
+                            event._removeEventListener(o, type, handler3);
+                        }
+                    });
+                    xui.breakO(i.events,2);
+                    delete i.events;
+                }
+                xui.set(xui.$cache.domPurgeData,[o.$xid,'eHandlers'],{});
             });
         },
         $fireEvent:function(name, args){
@@ -13775,64 +13878,81 @@ xui.Class('xui.Dom','xui.absBox',{
             }
         },'hookA',0);
 
+        var _ieselectstart=function(n,v){
+            n=window.event.srcElement;
+            while(n&&n.nodeName&&n.nodeName!="BODY"&&n.nodeName!="HTML"){
+                if(v=xui.getNodeData(n,"_onxuisel"))
+                    return v!='false';
+                // check self only
+                if(n.nodeName=="INPUT"||n.nodeName=="TEXTAREA")
+                    break;
+                n=n.parentNode;
+            }
+            return true;
+        };
         if(xui.browser.ie && xui.browser.ver<10 && d.body)
-            d.body.onselectstart=function(n,v){
-                n=event.srcElement;
-                while(n&&n.nodeName&&n.nodeName!="BODY"&&n.nodeName!="HTML"){
-                    if(v=xui.getNodeData(n,"_onxuisel"))
-                        return v!='false';
-                    // check self only
-                    if(n.nodeName=="INPUT"||n.nodeName=="TEXTAREA")
-                        break;
-                    n=n.parentNode;
-                }
-                return true;
-            };
+            xui.Event._addEventListener(d.body,"selectstart", _ieselectstart);
+
         //free memory
-        xui.win.afterUnload(function(){
-            w.onresize=null;
-            if(w.removeEventListener)
-                w.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
+        xui.win.afterUnload(xui._destroy = function(){
+            var t, 
+            lowie=xui.browser.ie && xui.browser.ver<=8,
+            e=xui.Event,
+            _cw=function(w,k){
+                w[k]=undefined;
+                if(!lowie)
+                    delete w[k];
+            };
+            
+            if(xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
+            e._removeEventListener(d.body, "selectstart", _ieselectstart);
+            e._removeEventListener(w, "resize", e.$eventhandler);
 
-            d.onmousewheel=w.onmousewheel=null;
-
+            e._removeEventListener(w, "mousewheel", e.$eventhandler3);
+            e._removeEventListener(d, "mousewheel", e.$eventhandler3);
+            // firfox only
+            e._removeEventListener(w, "DOMMouseScroll", e.$eventhandler3);
             // for simulation mouse event in touable device
             if(xui.browser.isTouch){
-                if(d.removeEventListener){
-                    d.removeEventListener(
-                        (xui.browser.ie&&w.PointerEvent)?"pointerdown":
-                        (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
-                        "touchstart", xui.Event._simulateMousedown, false);
-                    d.removeEventListener(
-                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                        "touchend", xui.Event._simulateMouseup, false);
-                }else if(d.detachEvent){
-                    d.detachEvent(
-                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                        "touchstart", xui.Event._simulateMousedown);
-                    d.detachEvent(
-                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                        "touchend", xui.Event._simulateMouseup);
-                }
+                e._removeEventListener(d, 
+                    (xui.browser.ie&&w.PointerEvent)?"pointerdown":
+                    (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
+                    "touchstart", e._simulateMousedown);
+                e._removeEventListener(d, 
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", e._simulateMouseup);
             }
 
-            if(xui.browser.ie && d.body)
-                d.body.onselectstart=null;
+            // xui.win.afterUnload ...
+            for(var i in (t=xui.$cache.domPurgeData))
+                if(t[i].eHandlers)
+                    xui(i).$clearEvent();
 
-            if("onhashchange" in w)w.onhashchange=null;
+            // destroy all widgets and moudles
+            // xui('body').empty(true,true);
+            for(var i in (t=xui._pool)){
+                t[i] && t[i].destroy && t[i].destroy(1,1);
+                t[i] && t[i].Instace && t[i].Instace.destroy && t[i].Instace.destroy(1,1);
+            }
 
-            xui('body').empty();
-            xui([w, d]).$clearEvent();
-            //unlink link 'App'
+            // root module ref
+            _cw(w,xui.ini.rootModuleName);
+            if(w.Raphael && w.Raphael._in_xui){
+                _cw(w,'Raphael');
+            }
+
             xui.SC.__gc();
             xui.Thread.__gc();
             xui.Class.__gc();
+            if(/xui\.Class\.apply/.test(w.Class)) _cw(w,'Class');
+            if((t=xui.Namespace._all))for(var i in t)  _cw(w, t[i]);
             xui.breakO(xui.$cache,2);
             xui.breakO([xui.Class, xui],3);
-            w.xui=w.xui_ini=undefined;
+            _cw(w,'xui_ini');
+            _cw(w,'xui');
+            
+            w=d=null;
         },"window",-1);
 
     }
@@ -13984,7 +14104,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     eh=xui.Event._eventHandler,
                     children=div.getElementsByTagName('*'),
                     domId=self.$domId,
-                    f=function(){return xui.Event(arguments[0],this,0,domId)},
+                    f=xui.Event.$eventhandler,
                     i,l,j,k,o,key,id,t,v;
                 if(l=children.length){
                     for(i=0;i<l;i++){
@@ -14001,8 +14121,10 @@ xui.Class('xui.Dom','xui.absBox',{
                                     //attach event handler to domPurgeData
                                     v[j]=f;
                                     //attach event handler to dom node
-                                    if(k=eh[j])
-                                        v[k]=o[k]=f;
+                                    if(k=eh[j]){
+                                        v[k]=f;
+                                        xui.Event._addEventListener(o, k, f);
+                                    }
                                 }
                             }
                             o.removeAttribute('tpl_evkey');
@@ -14198,7 +14320,10 @@ xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
-            ns.load.apply(ns, arguments);
+            ns.load.apply(ns, [cls, function(err, module){
+                module.setHost(window, xui.ini.rootModuleName);
+                xui.tryF(onEnd, [err, module]);
+            }, lang, theme, showUI, parent, subId, onCreated]);
         };
         // compitable
         ns['xui.Com']=ns.prototype['xui.Com']=1;
@@ -14245,7 +14370,7 @@ xui.Class('xui.Module','xui.absProfile',{
     Constructor:function(properties, events, host){
         var self=this,opt,alias,t;
 
-        // If it's a older moudle object, set xid first
+        // If it's a older module object, set xid first
 		if(properties && properties.constructor==self.constructor){
 			if(properties.$xid){
 				self.$xid = properties.$xid;
@@ -14256,7 +14381,7 @@ xui.Class('xui.Module','xui.absProfile',{
         if(upper)upper.call(self);
         upper=null;
 
-        // If it's a older moudle object, refresh itself
+        // If it's a older module object, refresh itself
         if(properties && properties.constructor==self.constructor){
         	 var oldm = properties; 
              
@@ -14807,6 +14932,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var prf=this.getUIComponents().get(0);
             if(prf)return prf.childrenId;
         },
+        // onEnd(err, module, threadid)
         create:function(onEnd, threadid){
             //get paras
             var self=this;
@@ -15511,7 +15637,7 @@ xui.Class('xui.Module','xui.absProfile',{
             return hash;
         },
         // module: module class name
-        // xid: moudle xid
+        // xid: module xid
         // xui.Module.getInstance("App.Cls1",1)
         // xui.Module.getInstance("App.Cls1","c")
         // App.Cls1.getInstance(1)
@@ -15555,6 +15681,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!o.destroyed)o.destroy(ignoreEffects, purgeNow);
             });
         },
+        // onEnd(err, module)
         load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
             if(!cls){
                 var e=new Error("No cls");
@@ -17286,7 +17413,7 @@ xui.Class('xui.DragDrop',null,{
                 if(!target || !target.get(0)){
                     target=self;
                 }
-                self.addClass('xui-ui-unselectable');
+                self.removeClass('xui-ui-selectable').addClass('xui-ui-unselectable')
                 if(flag===undefined)
                     flag=true;
                 else if(typeof flag=='object'){
@@ -17701,7 +17828,7 @@ xui.Class("xui.Tips", null,{
             self._activited=1;
             switch(self._type){
                 case 'event':
-                    window.onhashchange=self._checker;
+                    xui.Event._addEventListener(window, "hashchange",self._checker);
                 break;
                 case "iframe":
                     document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));
@@ -18591,7 +18718,9 @@ xui.Class('xui.UIProfile','xui.Profile', {
             // try to clear parent host
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
-                delete ns.host[ns.alias];
+                ns.host[ns.alias]=null;
+                if(!(ns.host===window && xui.browser.ie && xui.browser.ver<=8))
+                    delete ns.host[ns.alias];
             }
 
             //clear anti link
@@ -20010,6 +20139,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         draggable:function(dragKey, dragData, key, options, target){
             return this.each(function(o){
                 o.getSubNode(o.keys[key] || 'KEY', true)
+                .removeClass('xui-ui-selectable').addClass('xui-ui-unselectable')
                 .beforeMousedown(dragKey?function(pro,e,src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(pro.properties.disabled)return;
@@ -20739,7 +20869,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-webkit-user-select': xui.browser.kde?'none':null,
                 '-o-user-select':xui.browser.opr?'none':null,
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'none':null,
-                'user-select':'none'
+                'user-select':'none',
+                'touch-action':'none'
             },
             '.xui-ui-selectable':{
                 $order:1,
@@ -20748,7 +20879,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-webkit-user-select': xui.browser.kde?'text':null,
                 '-o-user-select':xui.browser.opr?'text':null,
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
-                'user-select':'text'
+                'user-select':'text',
+                'touch-action':'auto'
             },
             '.xui-uiw-shell':{
 //                background:'transparent',
@@ -21433,9 +21565,10 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         $addEventsHanlder:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
-                eh=xui.Event._eventHandler,
+                event=xui.Event,
+                eh=event._eventHandler,
                 hash=this.$evtsindesign,
-                handler=xui.Event.$eventhandler,
+                handler=event.$eventhandler,
                 children=xui.toArr(node.getElementsByTagName('*')),
                 i,l,j,k,id,t,v;
 
@@ -21453,15 +21586,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 //attach event handler to domPurgeData
                                 v[j]=t[j];
                                 //attach event handler to dom node
-                                if(k=eh[j]){
-                                    v[k]=node[k]=t[j];
+                                if(k = eh[j]){
+                                    v[k] = t[j];
+                                    event._addEventListener(node, k, t[j]);
                                     if(xui.browser.isTouch && k=='onmousedown'){
-                                        xui.setNodeData(node, ['eHandlers', 'onxuitouchdown'], handler);
-                                        if(node.addEventListener){
-                                            node.addEventListener("xuitouchdown", handler,false);
-                                        }else if(node.attachEvent){
-                                            node.attachEvent("xuitouchdown", handler);
-                                        }
+                                        v['onxuitouchdown'] = handler;
+                                        event._addEventListener(node, "xuitouchdown", handler);
                                     }
                                 }
                             }
@@ -21499,7 +21629,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 return !(i==k||i.indexOf(k+'-')==0);
             });
             // add for base class
-            Class.__gc(k);
+            xui.Class.__gc(k);
         },
         _pickSerialId:function(){
             //get id from cache or id
@@ -22625,13 +22755,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                     ch=xui.$cache.UIKeyMapEvents,
                     skey=self.$key,
                     check=xui.absObj.$specialChars,
-                    handler = xui.Event.$eventhandler,
-                    eventType=xui.Event._eventMap,
+                    event = xui.Event,
+                    handler = event.$eventhandler,
+                    eventType=event._eventMap,
                     me=arguments.callee,
                     r1=me.r1||(me.r1=/[a-z]/),
                     r2=me.r2||(me.r2=/^(on|before|after)/),
                     t= self.$Behaviors,
                     m,i,j,k,o,v, type;
+
+
+                //remove all handler cache
+                xui.filter(ch,function(o,i){
+                    return !(i==skey||i.indexOf(skey+'-')==0);
+                });
+
                 //set shortcut first
                 self._setDefaultBehavior(hash);
                 //merge KEY
@@ -22669,10 +22807,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }
 
-                //remove all handler cache
-                xui.filter(ch,function(o,i){
-                    return !(i==skey||i.indexOf(skey+'-')==0);
-                });
                 //add handler cache
                 for(i in t){
                     o=t[i];
@@ -22682,12 +22816,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                             for(j in o){
                                 if(!check[j.charAt(0)] && o[j]){
                                     k=skey+'-'+i;
-                                    (ch[k]||(ch[k]={}))['on'+eventType[j]]=handler;
+                                    ch[k]=ch[k]||{};
+                                    ch[k]['on'+eventType[j]] = ch[k]['on'+eventType[j]] || handler;
                                 }
                             }
                         }else if(r2.test(i) && o){
                             k=skey;
-                            (ch[k]||(ch[k]={}))['on'+eventType[i]]=handler;
+                            ch[k]=ch[k]||{};
+                            ch[k]['on'+eventType[i]] = ch[k]['on'+eventType[i]] || handler;
                         }
                     }
                 }
@@ -28067,31 +28203,21 @@ xui.Class("xui.AnimBinder","xui.absObj",{
             var prf = this,
                 H5 = prf.getSubNode('H5'),
                 prop = prf.properties,
-                ef = function(){
+                ef = function(event){
                     if(prf.onMediaEvent){
-                        prf.boxing().onMediaEvent(prf, event,  arguments);
+                        prf.boxing().onMediaEvent(prf, (event||window.event).type,  arguments);
                     }
                 },t;
    
             xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "), function(event, i){
-                if(i = H5&&H5.get(0)){
-                    if(i.addEventListener){
-                        i.addEventListener(event, ef,false);
-                    }else if(i.attachEvent){
-                        i.attachEvent(event, ef);
-                    }                
-                }
+                if(i = H5&&H5.get(0))
+                    xui.Event._addEventListener(i, event, ef);
             });
             
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["detachEvents"]=function(){
                 xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "),function(event, i){
-                    if(i=H5&&H5.get(0)){
-                        if(i.removeEventListener){
-                            i.removeEventListener(event, ef, false);  
-                        }else if(i.detachEvent){
-                            i.detachEvent(event, ef);
-                        }
-                    }   
+                    if(i=H5&&H5.get(0))
+                        xui.Event._removeEventListener(i, event, ef);
                 });
             };
 
@@ -55849,7 +55975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(1), __webpack_require__(3), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function(R) {
-
+        R._in_xui=1;
 	    return R;
 
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
