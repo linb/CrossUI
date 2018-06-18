@@ -146,7 +146,7 @@ xui.Class('xui.Template','xui.absProfile',{
                     eh=xui.Event._eventHandler,
                     children=div.getElementsByTagName('*'),
                     domId=self.$domId,
-                    f=function(){return xui.Event(arguments[0],this,0,domId)},
+                    f=xui.Event.$eventhandler,
                     i,l,j,k,o,key,id,t,v;
                 if(l=children.length){
                     for(i=0;i<l;i++){
@@ -163,8 +163,10 @@ xui.Class('xui.Template','xui.absProfile',{
                                     //attach event handler to domPurgeData
                                     v[j]=f;
                                     //attach event handler to dom node
-                                    if(k=eh[j])
-                                        v[k]=o[k]=f;
+                                    if(k=eh[j]){
+                                        v[k]=f;
+                                        xui.Event._addEventListener(o, k, f);
+                                    }
                                 }
                             }
                             o.removeAttribute('tpl_evkey');

@@ -641,7 +641,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(t){
                         if(type=='xy'||type=='x'){
-                            ox=t.scrollXLeft;
+                            ox=t.scrollLeft;
                             opx=s.pageX;
                         }
                         if(type=='xy'||type=='y'){
@@ -1269,8 +1269,22 @@ xui.Class('xui.Dom','xui.absBox',{
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
                         add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
-                    else
-                        add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
+                    else{ 
+                        // old:
+                        // add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
+
+                        // new:
+                        // getBoundingClientRect returns different value in different browser
+                        // some include window.scrollX/Y, others do not include
+                        // we have to use a base div {left:0,top:0} to do offset, to replace "scrollXXX" offset solution
+                        var base = xui.Dom.getEmptyDiv();
+                        base.css({left:0,top:0,position:'absolute'});
+                        var basRect=base.get(0).getBoundingClientRect();
+                        base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE});
+
+                        // var basRect=db.getBoundingClientRect();
+                        add(pos, -basRect.left, -basRect.top);
+                    }
                 }else{
                     pos = {left :0, top :0};
                     add(pos, node.offsetLeft, node.offsetTop );
@@ -1419,16 +1433,12 @@ xui.Class('xui.Dom','xui.absBox',{
 
                 //set to dom node
                 if(type=event._eventHandler[name]){
-                    o[type]=handler;
                     xui.setNodeData(o, ['eHandlers', type], handler);
+                    event._addEventListener(o, event._eventMap[name], handler);
 
                     if(xui.browser.isTouch && type=='onmousedown'){
                         xui.setNodeData(o, ['eHandlers', 'onxuitouchdown'], handler);
-                        if(o.addEventListener){
-                            o.addEventListener("xuitouchdown", handler,false);
-                        }else if(o.attachEvent){
-                            o.attachEvent("xuitouchdown", handler);
-                        }
+                        event._addEventListener(o, "xuitouchdown", handler);
                     }
                 }
             });
@@ -1442,20 +1452,18 @@ xui.Class('xui.Dom','xui.absBox',{
         $removeEventHandler:function(name){
             var event=xui.Event,
                 handler=event.$eventhandler,
+                handler3=event.$eventhandler3,
                 type;
             return this.each(function(o){
                 //remove from dom node
                 if(type=event._eventHandler[name]){
-                    o[type]=null;
+                    event._removeEventListener(o, type, handler);
+                    event._removeEventListener(o, type, handler3);
+                    
                     if(xui.browser.isTouch && type=='onmousedown'){
-                        if(o.removeEventListener){
-                            o.removeEventListener("xuitouchdown", handler,false);
-                        }else if(o.detachEvent){
-                            o.detachEvent("xuitouchdown", handler);
-                        }
+                        event._removeEventListener(o, 'xuitouchdown', handler);
                     }
                 }
-
                 //remove from purge map
                 if(o=xui.getNodeData(o,'eHandlers')){
                     type='on'+event._eventMap[name];
@@ -1565,14 +1573,25 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         $clearEvent:function(){
             return this.each(function(o,i){
-                if(!(i=xui.Event.getId(o)))return;
-                if(!(i=xui.$cache.profileMap[i]))return;
-                xui.breakO(i.events,2);
-                delete i.events;
+                var event=xui.Event,
+                    handler=event.$eventhandler,
+                    handler3=event.$eventhandler3,
+                    type;
 
-                xui.arr.each(xui.Event._events,function(s){
-                   if(o["on"+s])o["on"+s]=null;
-                });
+                if(!(i=event.getId(o)))return;
+                if(!(i=xui.$cache.profileMap[i]))return;
+                if(i.events){
+                    xui.each(i.events, function(f, name){
+                        type=xui.Event._eventMap[name];
+                        if(type){
+                            event._removeEventListener(o, type, handler);
+                            event._removeEventListener(o, type, handler3);
+                        }
+                    });
+                    xui.breakO(i.events,2);
+                    delete i.events;
+                }
+                xui.set(xui.$cache.domPurgeData,[o.$xid,'eHandlers'],{});
             });
         },
         $fireEvent:function(name, args){
@@ -4205,63 +4224,56 @@ xui.Class('xui.Dom','xui.absBox',{
             }
         },'hookA',0);
 
+        var _ieselectstart=function(n,v){
+            n=window.event.srcElement;
+            while(n&&n.nodeName&&n.nodeName!="BODY"&&n.nodeName!="HTML"){
+                if(v=xui.getNodeData(n,"_onxuisel"))
+                    return v!='false';
+                // check self only
+                if(n.nodeName=="INPUT"||n.nodeName=="TEXTAREA")
+                    break;
+                n=n.parentNode;
+            }
+            return true;
+        };
         if(xui.browser.ie && xui.browser.ver<10 && d.body)
-            d.body.onselectstart=function(n,v){
-                n=event.srcElement;
-                while(n&&n.nodeName&&n.nodeName!="BODY"&&n.nodeName!="HTML"){
-                    if(v=xui.getNodeData(n,"_onxuisel"))
-                        return v!='false';
-                    // check self only
-                    if(n.nodeName=="INPUT"||n.nodeName=="TEXTAREA")
-                        break;
-                    n=n.parentNode;
-                }
-                return true;
-            };
+            xui.Event._addEventListener(d.body,"selectstart", _ieselectstart);
+
         //free memory
         xui.win.afterUnload(xui._destroy = function(){
-            var t, _cw=function(w,k){
+            var t, 
+            lowie=xui.browser.ie && xui.browser.ver<=8,
+            e=xui.Event,
+            _cw=function(w,k){
                 w[k]=undefined;
-                delete w[k];
+                if(!lowie)
+                    delete w[k];
             };
+            
+            if(xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
+            e._removeEventListener(d.body, "selectstart", _ieselectstart);
+            e._removeEventListener(w, "resize", e.$eventhandler);
 
-            if(w.removeEventListener)
-                w.removeEventListener('DOMMouseScroll', xui.Event.$eventhandler3, false);
-            else if(w.detachEvent)
-                w.detachEvent("DOMMouseScroll", xui.Event.$eventhandler3);
-
+            e._removeEventListener(w, "mousewheel", e.$eventhandler3);
+            e._removeEventListener(d, "mousewheel", e.$eventhandler3);
+            // firfox only
+            e._removeEventListener(w, "DOMMouseScroll", e.$eventhandler3);
             // for simulation mouse event in touable device
             if(xui.browser.isTouch){
-                if(d.removeEventListener){
-                    d.removeEventListener(
-                        (xui.browser.ie&&w.PointerEvent)?"pointerdown":
-                        (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
-                        "touchstart", xui.Event._simulateMousedown, false);
-                    d.removeEventListener(
-                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                        "touchend", xui.Event._simulateMouseup, false);
-                }else if(d.detachEvent){
-                    d.detachEvent(
-                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                        "touchstart", xui.Event._simulateMousedown);
-                    d.detachEvent(
-                        (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                        (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                        "touchend", xui.Event._simulateMouseup);
-                }
+                e._removeEventListener(d, 
+                    (xui.browser.ie&&w.PointerEvent)?"pointerdown":
+                    (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
+                    "touchstart", e._simulateMousedown);
+                e._removeEventListener(d, 
+                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
+                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
+                    "touchend", e._simulateMouseup);
             }
 
             // xui.win.afterUnload ...
-            xui([w, d]).$clearEvent();
-
-            // [[ todo: clear those dirty things
-            w.onresize=null;
-            d.onmousewheel=w.onmousewheel=null;
-            if(xui.browser.ie && d.body)d.body.onselectstart=null;
-            if("onhashchange" in w)w.onhashchange=null;
-            // ]]
+            for(var i in (t=xui.$cache.domPurgeData))
+                if(t[i].eHandlers)
+                    xui(i).$clearEvent();
 
             // destroy all widgets and moudles
             // xui('body').empty(true,true);

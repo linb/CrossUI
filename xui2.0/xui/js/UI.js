@@ -340,7 +340,9 @@ xui.Class('xui.UIProfile','xui.Profile', {
             // try to clear parent host
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
-                delete ns.host[ns.alias];
+                ns.host[ns.alias]=null;
+                if(!(ns.host===window && xui.browser.ie && xui.browser.ver<=8))
+                    delete ns.host[ns.alias];
             }
 
             //clear anti link
@@ -1759,6 +1761,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         draggable:function(dragKey, dragData, key, options, target){
             return this.each(function(o){
                 o.getSubNode(o.keys[key] || 'KEY', true)
+                .removeClass('xui-ui-selectable').addClass('xui-ui-unselectable')
                 .beforeMousedown(dragKey?function(pro,e,src){
                     if(xui.Event.getBtn(e)!="left")return;
                     if(pro.properties.disabled)return;
@@ -2488,7 +2491,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-webkit-user-select': xui.browser.kde?'none':null,
                 '-o-user-select':xui.browser.opr?'none':null,
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'none':null,
-                'user-select':'none'
+                'user-select':'none',
+                'touch-action':'none'
             },
             '.xui-ui-selectable':{
                 $order:1,
@@ -2497,7 +2501,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-webkit-user-select': xui.browser.kde?'text':null,
                 '-o-user-select':xui.browser.opr?'text':null,
                 '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'text':null,
-                'user-select':'text'
+                'user-select':'text',
+                'touch-action':'auto'
             },
             '.xui-uiw-shell':{
 //                background:'transparent',
@@ -3182,9 +3187,10 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         $addEventsHanlder:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
-                eh=xui.Event._eventHandler,
+                event=xui.Event,
+                eh=event._eventHandler,
                 hash=this.$evtsindesign,
-                handler=xui.Event.$eventhandler,
+                handler=event.$eventhandler,
                 children=xui.toArr(node.getElementsByTagName('*')),
                 i,l,j,k,id,t,v;
 
@@ -3202,15 +3208,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 //attach event handler to domPurgeData
                                 v[j]=t[j];
                                 //attach event handler to dom node
-                                if(k=eh[j]){
-                                    v[k]=node[k]=t[j];
+                                if(k = eh[j]){
+                                    v[k] = t[j];
+                                    event._addEventListener(node, k, t[j]);
                                     if(xui.browser.isTouch && k=='onmousedown'){
-                                        xui.setNodeData(node, ['eHandlers', 'onxuitouchdown'], handler);
-                                        if(node.addEventListener){
-                                            node.addEventListener("xuitouchdown", handler,false);
-                                        }else if(node.attachEvent){
-                                            node.attachEvent("xuitouchdown", handler);
-                                        }
+                                        v['onxuitouchdown'] = handler;
+                                        event._addEventListener(node, "xuitouchdown", handler);
                                     }
                                 }
                             }
@@ -3248,7 +3251,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 return !(i==k||i.indexOf(k+'-')==0);
             });
             // add for base class
-            Class.__gc(k);
+            xui.Class.__gc(k);
         },
         _pickSerialId:function(){
             //get id from cache or id
@@ -4374,13 +4377,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                     ch=xui.$cache.UIKeyMapEvents,
                     skey=self.$key,
                     check=xui.absObj.$specialChars,
-                    handler = xui.Event.$eventhandler,
-                    eventType=xui.Event._eventMap,
+                    event = xui.Event,
+                    handler = event.$eventhandler,
+                    eventType=event._eventMap,
                     me=arguments.callee,
                     r1=me.r1||(me.r1=/[a-z]/),
                     r2=me.r2||(me.r2=/^(on|before|after)/),
                     t= self.$Behaviors,
                     m,i,j,k,o,v, type;
+
+
+                //remove all handler cache
+                xui.filter(ch,function(o,i){
+                    return !(i==skey||i.indexOf(skey+'-')==0);
+                });
+
                 //set shortcut first
                 self._setDefaultBehavior(hash);
                 //merge KEY
@@ -4418,10 +4429,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }
 
-                //remove all handler cache
-                xui.filter(ch,function(o,i){
-                    return !(i==skey||i.indexOf(skey+'-')==0);
-                });
                 //add handler cache
                 for(i in t){
                     o=t[i];
@@ -4431,12 +4438,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                             for(j in o){
                                 if(!check[j.charAt(0)] && o[j]){
                                     k=skey+'-'+i;
-                                    (ch[k]||(ch[k]={}))['on'+eventType[j]]=handler;
+                                    ch[k]=ch[k]||{};
+                                    ch[k]['on'+eventType[j]] = ch[k]['on'+eventType[j]] || handler;
                                 }
                             }
                         }else if(r2.test(i) && o){
                             k=skey;
-                            (ch[k]||(ch[k]={}))['on'+eventType[i]]=handler;
+                            ch[k]=ch[k]||{};
+                            ch[k]['on'+eventType[i]] = ch[k]['on'+eventType[i]] || handler;
                         }
                     }
                 }

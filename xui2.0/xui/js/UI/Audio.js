@@ -118,31 +118,21 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             var prf = this,
                 H5 = prf.getSubNode('H5'),
                 prop = prf.properties,
-                ef = function(){
+                ef = function(event){
                     if(prf.onMediaEvent){
-                        prf.boxing().onMediaEvent(prf, event,  arguments);
+                        prf.boxing().onMediaEvent(prf, (event||window.event).type,  arguments);
                     }
                 },t;
    
             xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "), function(event, i){
-                if(i = H5&&H5.get(0)){
-                    if(i.addEventListener){
-                        i.addEventListener(event, ef,false);
-                    }else if(i.attachEvent){
-                        i.attachEvent(event, ef);
-                    }                
-                }
+                if(i = H5&&H5.get(0))
+                    xui.Event._addEventListener(i, event, ef);
             });
             
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["detachEvents"]=function(){
                 xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "),function(event, i){
-                    if(i=H5&&H5.get(0)){
-                        if(i.removeEventListener){
-                            i.removeEventListener(event, ef, false);  
-                        }else if(i.detachEvent){
-                            i.detachEvent(event, ef);
-                        }
-                    }   
+                    if(i=H5&&H5.get(0))
+                        xui.Event._removeEventListener(i, event, ef);
                 });
             };
 

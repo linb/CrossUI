@@ -16,7 +16,7 @@ xui.Class('xui.Event',null,{
             return false;
         }
         node=null;
-
+ 
         //type
         var type = event.type,
             xuievent=event.$xuievent,
@@ -171,9 +171,9 @@ xui.Class('xui.Event',null,{
         _type:{},
         _kb:{keydown:1,keypress:1,keyup:1},
         _reg:/(-[\w]+)|([\w]+$)/g,
-        $eventhandler:function(){return xui.Event(arguments[0],this)},
-        $eventhandler2:function(){return xui.Event(arguments[0],this,1)},
-        $eventhandler3:function(){return xui.Event(arguments[0],xui.Event.getSrc(arguments[0]||window.event))},
+        $eventhandler:function(){return xui.Event(arguments[0], this)},
+        $eventhandler2:function(){return xui.Event(arguments[0], this,1)},
+        $eventhandler3:function(){return xui.Event(arguments[0], xui.Event.getSrc(arguments[0]||window.event))},
         $lastMouseupTime:0,
         $dblcInterval:500,
         $lastClickFunMark:0,
@@ -192,6 +192,86 @@ xui.Class('xui.Event',null,{
                 // touch event
                 "touchstart,touchmove,touchend,touchcancel,mspointerdown,mspointermove,mspointerup,mspointercancel,pointerdown,pointermove,pointerup,pointercancel")
                 .split(','),
+        _addEventListener : function(node, evt, fnc) {
+            // name: click/onclick/onClick/beforeClick/afterClick
+            var getName=function(name){
+                return name.replace(/^on|before|after/,'').toLowerCase();
+            },
+            // name: click/onclick/onClick/beforeClick/afterClick
+            getHandler=function(name, force){
+                var map={touchstart:1,touchmove:1,touchend:1,touchcancel:1};
+                name=getName(name);
+                return (force || !map[name]) ? ('on'+name) : name;
+            };
+            // W3C model
+            if (node.addEventListener) {
+                node.addEventListener(getName(evt), fnc, false);
+                return true;
+            } 
+            // Microsoft model (ignore attachEvent)
+            // reason: [this] is the window object, not the element; 
+            //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
+            //else if (node.attachEvent) {
+            //    return node.attachEvent(getHandler(evt),  fnc);
+            //}
+            // Browser don't support W3C or MSFT model, go on with traditional
+            else {
+                evt = getHandler(evt,true);
+                if(typeof node[evt] === 'function'){
+                    // Node already has a function on traditional
+                    // Let's wrap it with our own function inside another function
+                    fnc = (function(f1,f2){
+                        var f = function(){
+                            var funs=arguments.callee._funs;
+                            for(var i=0,l=funs.length;i<l;i++)
+                                funs[i].apply(this,arguments);
+                        };
+                        f._funs=f1._funs||[f1];
+                        f1._funs=null;
+                        f._funs.push(f2);
+                        return f;
+                    })(node[evt], fnc);
+                }
+                node[evt] = fnc;
+                return true;
+            }
+            return false;
+        },
+        _removeEventListener : function(node, evt, fnc) {
+            // name: click/onclick/onClick/beforeClick/afterClick
+            var getName=function(name){
+                return name.replace(/^on|before|after/,'').toLowerCase();
+            },
+            // name: click/onclick/onClick/beforeClick/afterClick
+            getHandler=function(name, force){
+                var map={touchstart:1,touchmove:1,touchend:1,touchcancel:1};
+                name=getName(name);
+                return (force || !map[name]) ? ('on'+name) : name;
+            };
+            // W3C model
+            if (node.removeEventListener) {
+                node.removeEventListener(getName(evt), fnc, false);
+                return true;
+            } 
+            // Microsoft model (ignore attachEvent)
+            // reason: [this] is the window object, not the element; 
+            //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
+            //else if (node.detachEvent) {
+            //    return node.detachEvent(getHandler(evt), fnc);
+            //}
+            // Browser don't support W3C or MSFT model, go on with traditional
+            else {
+                evt = getHandler(evt,true);
+                if(node[evt]  === fnc){
+                    node[evt]=null;
+                    return true;
+                }else if(node[evt] && node[evt]._funs && xui.arr.indexOf(node[evt]._funs, fnc)!=-1){
+                    xui.arr.removeValue(node[evt]._funs, fnc);
+                    return true;
+                }
+            }
+            return false;
+        },
         simulateEvent : function(target, type, options, fromtype) {
             options = options || {};
             if(target[0])target = target[0];
@@ -576,10 +656,18 @@ xui.Class('xui.Event',null,{
             return true;
         },
         stopPageTouchmove:function(){
-            document.addEventListener(
+            xui.Event._addEventListener(document,
                 (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
                 (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
-                'touchmove', function(e){ e.preventDefault(); });
+                'touchmove', xui.Event.stopDefault
+            );
+        },
+        allowPageTouchmove:function(){
+            xui.Event._removeEventListener(document,
+                (xui.browser.ie&&xui.browser.ver>=11)?"pointermove":
+                (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerMove":
+                'touchmove', xui.Event.stopDefault
+            );
         }
     },
     Initialize:function(){
@@ -619,39 +707,28 @@ xui.Class('xui.Event',null,{
         });
         
         //add the root resize handler
-        w.onresize=ns.$eventhandler;
-
-        if (w.addEventListener)
-            w.addEventListener('DOMMouseScroll', ns.$eventhandler3, false);
+        ns._addEventListener(w, "resize", ns.$eventhandler);
+        
+        // DOMMouseScroll is for firefox only
+        ns._addEventListener(w, "DOMMouseScroll", ns.$eventhandler3);
 
         // for simulation dblclick event in touchable device
         if(xui.browser.isTouch){
-            if(d.addEventListener){
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
-                    "touchstart", ns._simulateMousedown, false/*need bubble*/);
-                d.addEventListener(
-                    (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
-                    (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
-                    "touchend", ns._simulateMouseup, false/*need bubble*/);
-                d.addEventListener("xuitouchdown", ns.$eventhandler,false);
-            }else if(d.attachEvent){
-                d.attachEvent(
+            ns._addEventListener(d, 
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
                     "touchstart", ns._simulateMousedown);
-                d.attachEvent(
+            ns._addEventListener(d, 
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
                     "touchend", ns._simulateMouseup);
-                d.attachEvent("xuitouchdown", ns.$eventhandler);
-            }
+            ns._addEventListener(d,  "xuitouchdown", ns.$eventhandler);
         }
 
         // for simulation
-        d.onmousewheel=w.onmousewheel =ns.$eventhandler3;
-        
+        ns._addEventListener(w, "mousewheel", ns.$eventhandler3);
+        ns._addEventListener(d, "mousewheel", ns.$eventhandler3);
+
         var keyEvent=function(target, type , options){
             switch(type) {
                 case "textevent":

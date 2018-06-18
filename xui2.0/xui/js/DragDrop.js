@@ -910,7 +910,7 @@ xui.Class('xui.DragDrop',null,{
                 if(!target || !target.get(0)){
                     target=self;
                 }
-                self.addClass('xui-ui-unselectable');
+                self.removeClass('xui-ui-selectable').addClass('xui-ui-unselectable')
                 if(flag===undefined)
                     flag=true;
                 else if(typeof flag=='object'){

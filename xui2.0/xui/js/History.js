@@ -6,7 +6,7 @@ xui.Class("xui.History",null,{
             self._activited=1;
             switch(self._type){
                 case 'event':
-                    window.onhashchange=self._checker;
+                    xui.Event._addEventListener(window, "hashchange",self._checker);
                 break;
                 case "iframe":
                     document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));

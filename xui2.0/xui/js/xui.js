@@ -1754,7 +1754,9 @@ xui.merge(xui,{
             proMap=cache.profileMap,
             ch=cache.UIKeyMapEvents,
             pdata=cache.domPurgeData,
-            handler=xui.Event.$eventhandler,
+            event=xui.Event,
+            handler=event.$eventhandler,
+            handler3=event.$eventhandler3,
             // ie<=10
             children=(xui.browser.ie && node.all )? node.all : node.getElementsByTagName('*'),
             l=children.length,
@@ -1764,16 +1766,15 @@ xui.merge(xui,{
             if(!(v=children[i]))continue;
             if(t=v.$xid){
                 if(o=pdata[t]){
+
+                    //clear event handler
                     if(w=o.eHandlers){
-                        if(xui.browser.isTouch && w['onxuitouchdown']){
-                            if(v.removeEventListener){
-                                v.removeEventListener("xuitouchdown", handler,false);
-                            }else if(v.detachEvent){
-                                v.detachEvent("xuitouchdown", handler);
-                            }
+                        if(xui.browser.isTouch && w['onxuitouchdown'])
+                            event._removeEventListener(v, "xuitouchdown", handler);
+                        for(j in w){
+                            event._removeEventListener(v, j, handler);
+                            event._removeEventListener(v, j, handler3);
                         }
-                        for(j in w)
-                            v[j]=null;
                     }
                     for(j in o)
                         o[j]=null;
@@ -1788,7 +1789,6 @@ xui.merge(xui,{
                     delete v.$xid;
             }
 
-            //clear event handler
             if(id=v.id){
                 //clear dom cache
                 //trigger object __gc
