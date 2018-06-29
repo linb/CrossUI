@@ -2,6 +2,7 @@
 *  Dependencies: base _ ; Class ; xui ;
 */
 xui.Class('xui.Event',null,{
+    //Reserved: fordrag
     Constructor:function(event,node,fordrag,tid){
         var self = xui.Event,
             w=window,
@@ -172,6 +173,7 @@ xui.Class('xui.Event',null,{
         _kb:{keydown:1,keypress:1,keyup:1},
         _reg:/(-[\w]+)|([\w]+$)/g,
         $eventhandler:function(){return xui.Event(arguments[0], this)},
+        // Reserved
         $eventhandler2:function(){return xui.Event(arguments[0], this,1)},
         $eventhandler3:function(){return xui.Event(arguments[0], xui.Event.getSrc(arguments[0]||window.event))},
         $lastMouseupTime:0,

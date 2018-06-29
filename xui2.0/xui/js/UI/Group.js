@@ -199,7 +199,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
             var prop=profile.properties,
                 
                 // compare with px
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 border = profile.getSubNode('BORDER'),

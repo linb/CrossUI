@@ -206,7 +206,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                    var self = this,
                         t = self.properties,
-                        us = xui.$us(t),
+                        us = xui.$us(self),
                         adjustunit = function(v,emRate){return self.$forceu(v, us>0?'em':'px', emRate)},
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
@@ -264,7 +264,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             if(!item)return;
 
             var panel = profile.boxing().getPanel(key),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
                 ww=width?profile.$px(width, null, true):width, 

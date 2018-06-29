@@ -1664,7 +1664,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 lbtn=f(type=='counter'?'LBTN':null),
                 rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),

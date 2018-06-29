@@ -1086,7 +1086,7 @@ xui.merge(xui,{
     $us:function(p){
         // ie67 always px
         return (xui.browser.ie6||xui.browser.ie7) ? p ? -2 : -1:
-            ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'px' ? -2 :  p=='em'? 2 : 
+            ( p = p ? (p._spaceUnit || (p.properties && p.properties.spaceUnit)) :'') == 'px' ? -2 :  p=='em'? 2 : 
                 xui.SpaceUnit == 'px' ? -1 : xui.SpaceUnit == 'em' ? 1 : 0;
         },
     // for show xui.echo
@@ -2708,7 +2708,7 @@ new function(){
                 a[0] = '[';
                 l = x.length;
                 for(i=0;i<l;++i){
-                    if(typeof filter=='function' && false==filter.call(x,x[i],i))continue;
+                    if(typeof filter=='function' && false==filter.call(x,x[i],i,b))continue;
                     
                     if(xui.isNaN(v=x[i]))b[b.length]="NaN";
                     else if(xui.isNull(v))b[b.length]="null";
@@ -2752,7 +2752,7 @@ new function(){
                         a[0] = '{';
                         for(i in x){
                             if(map[i] ||
-                                (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i):0))
+                                (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i,b):0))
                                 continue;
                             if(xui.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
                             else if(xui.isNull(v))b[b.length]=T.string(i) + ':' + "null";
@@ -6678,6 +6678,7 @@ xui.Locale.en.editor={
 *  Dependencies: base _ ; Class ; xui ;
 */
 xui.Class('xui.Event',null,{
+    //Reserved: fordrag
     Constructor:function(event,node,fordrag,tid){
         var self = xui.Event,
             w=window,
@@ -6848,6 +6849,7 @@ xui.Class('xui.Event',null,{
         _kb:{keydown:1,keypress:1,keyup:1},
         _reg:/(-[\w]+)|([\w]+$)/g,
         $eventhandler:function(){return xui.Event(arguments[0], this)},
+        // Reserved
         $eventhandler2:function(){return xui.Event(arguments[0], this,1)},
         $eventhandler3:function(){return xui.Event(arguments[0], xui.Event.getSrc(arguments[0]||window.event))},
         $lastMouseupTime:0,
@@ -22644,6 +22646,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
                 applyCss=function(css){
+                    if(profile.destroyed)return;
                     xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId,tag), id, true);
 
                     if(relayout || profile.$inDesign){
@@ -23016,7 +23019,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         _droppable:function(key){
             var self=this,
-                h2=xui.Event.$eventhandler2,
+                h2=xui.Event.$eventhandler,
                 o=self.$Behaviors,
                 v=key=='KEY'?o:(o[key]||(o[key]={})),
                 handler=xui.$cache.UIKeyMapEvents,
@@ -23136,7 +23139,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         _draggable:function(key){
             var self=this,
-                h2=xui.Event.$eventhandler2,
+                h2=xui.Event.$eventhandler,
                 o=self.$Behaviors,
                 v=key=='KEY'?o:(o[key]||(o[key]={})),
                 handler=xui.$cache.UIKeyMapEvents,
@@ -24064,7 +24067,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(!p.get(0))
                 return;
             var prop = profile.properties,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate, true)},
                 margin=prop.dockMargin,
                 auto = 'auto',
@@ -24199,7 +24202,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                              var pn=node.get(0),
                                 style=pn.style,
-                                us = xui.$us(prop),
+                                us = xui.$us(profile),
                                 nodefz = node._getEmSize(),
                                 adjustunit = function(v,emRate){return css.$forceu(v, us>0?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
@@ -24477,7 +24480,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 root = node.get(0),
                                 style = root.style,
-                                us = xui.$us(prop),
+                                us = xui.$us(profile),
                                 nodefz = node._getEmSize(),
                                 adjustunit = function(v){return css.$forceu(v, us>0?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
@@ -25011,7 +25014,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         && (p[i]===0||p[i]==='0'||p[i]==='0px'||p[i]==='0em') ) delete p[i];
                     else if( (dm[i].ini + (xui.isFinite(dm[i].ini)?'px':'')) == (p[i] + (xui.isFinite(p[i])?'px':'')) ) delete p[i];
                     else if(p[i] != 'auto'){
-                        t=xui.$us(p);
+                        t=xui.$us(o);
                         p[i]=profile.$forceu(p[i],t==2?'em':t==-2?'px':null);
                     }
                 }
@@ -25120,7 +25123,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             // *** force to em
              xui.each(prop,function(o,i){
                 if(dm[i] && dm[i]['$spaceunit']){
-                    if(xui.$us(prop)>0)
+                    if(xui.$us(profile)>0)
                         if(prop[i]===0||prop[i]=='0')prop[i]='0em';
                     else
                         if(prop[i]===0||prop[i]=='0')prop[i]='0px';
@@ -26386,7 +26389,7 @@ xui.Class("xui.UI.Widget", "xui.UI",{
                 cb=border.contentBox(),
                 shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                 region,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 //caculate with px
                 ww=profile.$px(width),
@@ -27788,7 +27791,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
         _adjust:function(profile,width,height){
             var prop=profile.properties,
                 src=profile.getRootNode(),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             width=width?profile.$px(width, null, true):width;
@@ -28057,7 +28060,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                us=xui.$us(prop),
+                us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 size = profile.getSubNode('BOX').cssSize(),
@@ -28246,7 +28249,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
             var H5=profile.getSubNode('H5'), 
                 size=H5.cssSize(),
                 prop=profile.properties,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 // caculate by px
@@ -29722,7 +29725,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 
                 cb2=panel.contentBox(),
                 b2=(prop.$iborder||0)*2,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
@@ -30100,7 +30103,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
-                us = xui.$us(p),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 inn = profile.getSubNode('INN'),
@@ -30713,7 +30716,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 cmd1 = f('INCREASE'),
                 cmd2 = f('DECREASE'),
                 cb=xui.browser.contentBox,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
@@ -31735,7 +31738,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 box = f('BOX'),
                 label = f('LABEL'),
 
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
@@ -32173,7 +32176,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -33104,7 +33107,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                     box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
 
-                    us = xui.$us(prop),
+                    us = xui.$us(profile),
                     adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                     fzrate=profile.getEmSize()/root._getEmSize(),
@@ -34840,7 +34843,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 lbtn=f(type=='counter'?'LBTN':null),
                 rbtn=f(type=='spin'?'SPINBTN':(type=='none'||type=='input'||type=='password'||type=='currency'||type=='number'||type=='button')?null:'RBTN'),
                 // determine em
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),
@@ -37996,7 +37999,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 cb=xui.browser.contentBox,
@@ -38954,7 +38957,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         _onresize:function(profile,width,height){
            var prop=profile.properties,
                 // compare with px
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot();
 
@@ -39223,7 +39226,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             var prop=profile.properties,
                 
                 // compare with px
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 border = profile.getSubNode('BORDER'),
@@ -40931,7 +40934,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             }
             if(!item)return;
             var panel = profile.boxing().getPanel(key),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
@@ -41191,7 +41194,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(!item)return;
 
             var panel = profile.boxing().getPanel(key),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
@@ -41474,7 +41477,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                    var self = this,
                         t = self.properties,
-                        us = xui.$us(t),
+                        us = xui.$us(self),
                         adjustunit = function(v,emRate){return self.$forceu(v, us>0?'em':'px', emRate)},
                         hl = self.getSubNode('ITEMS'),
                         menu2 =  self.getSubNode('MENUICON2');
@@ -41532,7 +41535,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             if(!item)return;
 
             var panel = profile.boxing().getPanel(key),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
                 ww=width?profile.$px(width, null, true):width, 
@@ -43087,7 +43090,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items = profile.getSubNode('ITEMS'),
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
-                        us = xui.$us(prop),
+                        us = xui.$us(profile),
                         cb = border.contentBox(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
@@ -45568,7 +45571,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 sum=0,
 
                 move, _handlerSize,
-                us = xui.$us(t),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 fzrate=profile.getEmSize()/profile.getRoot()._getEmSize();
 
@@ -52745,7 +52748,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!profile.renderId || profile.destroyed)return;
                 
                 var prop = profile.properties,
-                    us = xui.$us(prop),
+                    us = xui.$us(profile),
                     adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                     size = profile.getSubNode("BORDER").cssSize(),
                     _border = profile.getRoot().contentBox()?2:0,
@@ -53426,7 +53429,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 borderW = root.contentBox()?2:0,
@@ -53512,7 +53515,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    us = xui.$us(p),
+                    us = xui.$us(profile),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -53601,7 +53604,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
-                    us = xui.$us(pro),
+                    us = xui.$us(profile),
                     root=profile.getRoot();
 
                 var fun=function(){
@@ -53927,7 +53930,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             onDragstop:function(profile){
                 var p = profile.properties,
-                    us = xui.$us(p),
+                    us = xui.$us(profile),
                     root=profile.getRoot(),
                     pos = root.cssPos(),
                     l = null, t = null;
@@ -54661,7 +54664,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(!profile.renderId) return;
             var prop=profile.properties, 
                 root=profile.getRoot(),
-                us=xui.$us(prop),
+                us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 nr=root.cssRegion();
 
@@ -55021,7 +55024,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     			width=profile.properties.minWidth;
 
             var prop=profile.properties,
-                us=xui.$us(prop),
+                us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},
@@ -55898,7 +55901,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(panel.offsetWidth){
                         xui(panel).width('auto');
                         var w=xui(panel).width(), prop=profile.properties;
-                        if(xui.$us(prop)>0)w=profile.$px2em(w, panel)+'em';
+                        if(xui.$us(profile)>0)w=profile.$px2em(w, panel)+'em';
                         xui(panel).width(w);
 
                         xui.UI._adjustConW(profile, panel, w);
@@ -67989,7 +67992,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         _onresize:function(profile,width,height){
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             // caculate by px

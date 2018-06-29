@@ -10,7 +10,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         items = profile.getSubNode('ITEMS'),
                         nodes = profile.getSubNode('ITEM',true),
                         prop=profile.properties,
-                        us = xui.$us(prop),
+                        us = xui.$us(profile),
                         cb = border.contentBox(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;

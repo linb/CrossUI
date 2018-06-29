@@ -9,7 +9,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(profile.inShowing)return;
                 var t,
                     p=profile.properties,
-                    us = xui.$us(p),
+                    us = xui.$us(profile),
                     ins = profile.boxing();
                 // default to center dlg
                 switch(p.initPos){
@@ -98,7 +98,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             this.each(function(profile){
                 var pro=profile.properties,
                     box=profile.box,
-                    us = xui.$us(pro),
+                    us = xui.$us(profile),
                     root=profile.getRoot();
 
                 var fun=function(){
@@ -424,7 +424,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             onDragstop:function(profile){
                 var p = profile.properties,
-                    us = xui.$us(p),
+                    us = xui.$us(profile),
                     root=profile.getRoot(),
                     pos = root.cssPos(),
                     l = null, t = null;
@@ -1158,7 +1158,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             if(!profile.renderId) return;
             var prop=profile.properties, 
                 root=profile.getRoot(),
-                us=xui.$us(prop),
+                us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 nr=root.cssRegion();
 
@@ -1518,7 +1518,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
     			width=profile.properties.minWidth;
 
             var prop=profile.properties,
-                us=xui.$us(prop),
+                us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 size = arguments.callee.upper.apply(this,arguments),
                 isize={},

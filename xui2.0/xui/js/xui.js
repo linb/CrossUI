@@ -1085,7 +1085,7 @@ xui.merge(xui,{
     $us:function(p){
         // ie67 always px
         return (xui.browser.ie6||xui.browser.ie7) ? p ? -2 : -1:
-            ( p = p ? p.properties ? p.properties.spaceUnit : p.spaceUnit : '' ) == 'px' ? -2 :  p=='em'? 2 : 
+            ( p = p ? (p._spaceUnit || (p.properties && p.properties.spaceUnit)) :'') == 'px' ? -2 :  p=='em'? 2 : 
                 xui.SpaceUnit == 'px' ? -1 : xui.SpaceUnit == 'em' ? 1 : 0;
         },
     // for show xui.echo
@@ -2707,7 +2707,7 @@ new function(){
                 a[0] = '[';
                 l = x.length;
                 for(i=0;i<l;++i){
-                    if(typeof filter=='function' && false==filter.call(x,x[i],i))continue;
+                    if(typeof filter=='function' && false==filter.call(x,x[i],i,b))continue;
                     
                     if(xui.isNaN(v=x[i]))b[b.length]="NaN";
                     else if(xui.isNull(v))b[b.length]="null";
@@ -2751,7 +2751,7 @@ new function(){
                         a[0] = '{';
                         for(i in x){
                             if(map[i] ||
-                                (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i):0))
+                                (filter===true?i.charAt(0)=='_':typeof filter=='function'?false===filter.call(x,x[i],i,b):0))
                                 continue;
                             if(xui.isNaN(v=x[i]))b[b.length]=T.string(i) + ':' + "NaN";
                             else if(xui.isNull(v))b[b.length]=T.string(i) + ':' + "null";

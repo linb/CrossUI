@@ -495,7 +495,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             var size = prf.getSubNode('BOX').cssSize(),
                 prop=prf.properties,
                 // compare with px
-                us = xui.$us(prop),
+                us = xui.$us(prf),
                 adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
                 root = prf.getRoot(),
                 

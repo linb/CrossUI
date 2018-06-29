@@ -83,7 +83,7 @@ xui.Class("xui.UI.Image", "xui.UI",{
         _adjust:function(profile,width,height){
             var prop=profile.properties,
                 src=profile.getRootNode(),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             width=width?profile.$px(width, null, true):width;

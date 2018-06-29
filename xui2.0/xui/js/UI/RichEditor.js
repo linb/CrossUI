@@ -87,7 +87,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:sans-serif,Arial,Verdana,"Trebuchet MS";font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -1018,7 +1018,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     box = profile.getSubNode('BOX'),
                     label = profile.getSubNode('LABEL'),
 
-                    us = xui.$us(prop),
+                    us = xui.$us(profile),
                     adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                     fzrate=profile.getEmSize()/root._getEmSize(),

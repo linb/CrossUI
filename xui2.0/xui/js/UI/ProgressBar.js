@@ -117,7 +117,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
-                us = xui.$us(p),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 inn = profile.getSubNode('INN'),

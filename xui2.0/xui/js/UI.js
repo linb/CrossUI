@@ -4266,6 +4266,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 prevId=this._getThemePrevId(profile),
                 old=xui(id).get(0),
                 applyCss=function(css){
+                    if(profile.destroyed)return;
                     xui.CSS._appendSS(profile.getRootNode(), xui.UI._adjustCSS(css,prevId,tag), id, true);
 
                     if(relayout || profile.$inDesign){
@@ -4638,7 +4639,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         _droppable:function(key){
             var self=this,
-                h2=xui.Event.$eventhandler2,
+                h2=xui.Event.$eventhandler,
                 o=self.$Behaviors,
                 v=key=='KEY'?o:(o[key]||(o[key]={})),
                 handler=xui.$cache.UIKeyMapEvents,
@@ -4758,7 +4759,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         _draggable:function(key){
             var self=this,
-                h2=xui.Event.$eventhandler2,
+                h2=xui.Event.$eventhandler,
                 o=self.$Behaviors,
                 v=key=='KEY'?o:(o[key]||(o[key]={})),
                 handler=xui.$cache.UIKeyMapEvents,
@@ -5686,7 +5687,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(!p.get(0))
                 return;
             var prop = profile.properties,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate, true)},
                 margin=prop.dockMargin,
                 auto = 'auto',
@@ -5821,7 +5822,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                              var pn=node.get(0),
                                 style=pn.style,
-                                us = xui.$us(prop),
+                                us = xui.$us(profile),
                                 nodefz = node._getEmSize(),
                                 adjustunit = function(v,emRate){return css.$forceu(v, us>0?'em':'px', emRate||nodefz)},
                                 obj,i,k,o,key,target,
@@ -6099,7 +6100,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 ins = profile.boxing(),
                                 root = node.get(0),
                                 style = root.style,
-                                us = xui.$us(prop),
+                                us = xui.$us(profile),
                                 nodefz = node._getEmSize(),
                                 adjustunit = function(v){return css.$forceu(v, us>0?'em':'px', nodefz)},
                                 left, top, right, bottom,temp, other,
@@ -6633,7 +6634,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         && (p[i]===0||p[i]==='0'||p[i]==='0px'||p[i]==='0em') ) delete p[i];
                     else if( (dm[i].ini + (xui.isFinite(dm[i].ini)?'px':'')) == (p[i] + (xui.isFinite(p[i])?'px':'')) ) delete p[i];
                     else if(p[i] != 'auto'){
-                        t=xui.$us(p);
+                        t=xui.$us(o);
                         p[i]=profile.$forceu(p[i],t==2?'em':t==-2?'px':null);
                     }
                 }
@@ -6742,7 +6743,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             // *** force to em
              xui.each(prop,function(o,i){
                 if(dm[i] && dm[i]['$spaceunit']){
-                    if(xui.$us(prop)>0)
+                    if(xui.$us(profile)>0)
                         if(prop[i]===0||prop[i]=='0')prop[i]='0em';
                     else
                         if(prop[i]===0||prop[i]=='0')prop[i]='0px';
@@ -8008,7 +8009,7 @@ xui.Class("xui.UI.Widget", "xui.UI",{
                 cb=border.contentBox(),
                 shadow = (xui.browser.ie && xui.browser.ver <=8)?profile.getSubNode('IE67_SHADOW'):null,
                 region,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 //caculate with px
                 ww=profile.$px(width),

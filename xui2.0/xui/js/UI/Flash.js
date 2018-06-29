@@ -164,7 +164,7 @@ xui.Class("xui.UI.Flash", "xui.UI",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                us=xui.$us(prop),
+                us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 size = profile.getSubNode('BOX').cssSize(),

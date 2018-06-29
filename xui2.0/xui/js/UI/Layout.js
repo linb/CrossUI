@@ -794,7 +794,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 sum=0,
 
                 move, _handlerSize,
-                us = xui.$us(t),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 fzrate=profile.getEmSize()/profile.getRoot()._getEmSize();
 

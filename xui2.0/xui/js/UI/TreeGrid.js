@@ -7009,7 +7009,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!profile.renderId || profile.destroyed)return;
                 
                 var prop = profile.properties,
-                    us = xui.$us(prop),
+                    us = xui.$us(profile),
                     adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                     size = profile.getSubNode("BORDER").cssSize(),
                     _border = profile.getRoot().contentBox()?2:0,
@@ -7690,7 +7690,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _onresize:function(profile,width,height){
             var prop = profile.properties,
                 f=function(k){return profile.getSubNode(k)},
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 borderW = root.contentBox()?2:0,

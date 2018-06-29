@@ -570,7 +570,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 cmd1 = f('INCREASE'),
                 cmd2 = f('DECREASE'),
                 cb=xui.browser.contentBox,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),

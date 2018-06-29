@@ -945,7 +945,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 box = f('BOX'),
                 label = f('LABEL'),
 
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 fzrate=profile.getEmSize()/root._getEmSize(),

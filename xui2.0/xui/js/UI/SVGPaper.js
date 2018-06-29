@@ -112,7 +112,7 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
         _onresize:function(profile,width,height){
             var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
             // caculate by px

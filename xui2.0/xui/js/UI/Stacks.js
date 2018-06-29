@@ -139,7 +139,7 @@ xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
             if(!item)return;
 
             var panel = profile.boxing().getPanel(key),
-                us = xui.$us(prop),
+                us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 box=profile.getSubNode('BOX'),
