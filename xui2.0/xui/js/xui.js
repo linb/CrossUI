@@ -4000,7 +4000,13 @@ xui.Class('xui.SC',null,{
         __gc:function(k){
             xui.$cache.SC={};
         },
-
+        // default, SC will get script from url: 
+        //        App.Name => ./App/Name.js
+        //onSucess(text,rspType,threadid)
+        //onFail(text,rspType,threadid)
+        // "return false" will stop the default Ajax calling
+        beforeGetScript:function(path, onSucess, onFail){
+        },
         //get object from obj string
         get:function (path, obj1, obj2, v){
             // a[1][2].b[3] => a,1,2,b,3
@@ -4020,7 +4026,7 @@ xui.Class('xui.SC',null,{
         _call : function (s, options, isAsy, force){
             isAsy = !!isAsy;
             var i,t,r,o,funs=[],ep=xui.SC.get,ct=xui.$cache.snipScript,
-            f= function(text,n,threadid){
+            f= function(text,rspType,threadid){
                 var self=this,t,uri=this.uri;
                 if(text){
                     //test again when asy end.
@@ -4042,7 +4048,7 @@ xui.Class('xui.SC',null,{
                     xui.asyRun(function(){
                             throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
                     });
-            },fe=function(text){
+            },fe=function(text,rspType,threadid){
                 var self=this;
                 //for loadSnips resume with error too
                 xui.tryF(self.$cb,[null,null,self.threadid],self);
@@ -4073,7 +4079,9 @@ xui.Class('xui.SC',null,{
                         ajax=xui.Ajax;
                     }
                     //get text from sy ajax
-                    ajax(o, xui._rnd(), f, fe, null, options).start();
+                    if(xui.SC.beforeGetScript(o, f, fe)!==false){
+                        ajax(o, xui._rnd(), f, fe, null, options).start();
+                    }
                     //for asy once only
                     if(!isAsy)
                         r=ep(s);

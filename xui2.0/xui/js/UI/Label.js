@@ -28,21 +28,31 @@ xui.Class("xui.UI.Label", "xui.UI",{
         Templates:{
             tagName:"label",
             className:'{_className}',
-            style:'{_style};text-align:{hAlign}',
-            ICON:{
+            style:'{_hAlign};{_style}',
+            VALIGN:{
                 $order:0,
+                style:'{_vAlign}'
+            },
+            ICON:{
+                $order:1,
                 className:'xuicon {imageClass}  {picClass}',
                 style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
+                $order:2,
                 text : '{caption}',
                 style:'{_fc}{_fw}{_fs}{_ff}',
-                'font-size':'1em',
-                $order:1
+                'font-size':'1em'
             }
         },
         Appearances:{
+            VALIGN: {
+                'font-size':0,
+                width:0,
+                display: 'inline-block',
+                height: '100%'
+            }
         },
         DataModel:{
             selectable:true,
@@ -106,11 +116,15 @@ xui.Class("xui.UI.Label", "xui.UI",{
                 ini:'right',
                 listbox:['left','center','right'],
                 action: function(v){
-                    this.getRoot().css('textAlign',v);
+                    this.getRoot().css('textAlign', v||'');
                 }
             },
             vAlign:{
-                hidden:true
+                ini:'top',
+                listbox:['top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('VALIGN').css('verticalAlign', v||'');
+                }
             },
             fontColor:xui.UI.Button.$DataModel.fontColor,
             fontSize:xui.UI.Button.$DataModel.fontSize,
@@ -157,11 +171,14 @@ xui.Class("xui.UI.Label", "xui.UI",{
         },
         _prepareData:function(profile, data){
             data=arguments.callee.upper.call(this, profile,data);
+            var v;
             if(data.clock)data.caption='';
-            data._fs = 'font-size:' + data.fontSize + ';';
-            data._fw = 'font-weight:' + data.fontWeight + ';';
-            data._fc = 'color:' + data.fontColor + ';';
-            data._ff = 'font-family:' + data.fontFamily + ';';
+            if(v=data.fontSize)data._fs = 'font-size:' + v + ';';
+            if(v=data.fontWeight)data._fw = 'font-weight:' + v + ';';
+            if(v=data.fontColor)data._fc = 'color:' + v + ';';
+            if(v=data.fontFamily)data._ff = 'font-family:' + v + ';';
+            data._hAlign = 'text-align:'+(data.hAlign||'');
+            data._vAlign = 'vertical-align:'+(data.vAlign||'');
             return data;
         }        
     }

@@ -55,7 +55,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             className:'{_className} xui-ui-selectable',
             LABEL:{
                 className:'{_required} xui-ui-ellipsis',
-                style:'{labelShow};width:{_labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{_labelHAlign};{_labelVAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -166,7 +166,17 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 ini:'right',
                 listbox:['','left','center','right'],
                 action: function(v){
-                    this.getSubNode('LABEL').css('textAlign',v);
+                    this.getSubNode('LABEL').css({
+                        'textAlign': v||'',
+                        'justifyContent':v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':''
+                    });
+                }
+            },
+            labelVAlign:{
+                ini:'top',
+                listbox:['','top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
                 }
             }
         },
@@ -196,6 +206,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                'z-index':1,
                top:0,
                left:0,
+               display:xui.browser.isWebKit?'-webkit-flex':'flex',
                position:'absolute',
                'padding-top':'.5em'
             },
@@ -287,8 +298,9 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             ]
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile),t;
-            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            var d=arguments.callee.upper.call(this, profile),t,v;
+            d._labelHAlign = 'text-align:'+(v=d.labelHAlign||'')+';justify-content:'+(v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':'');
+            d._labelVAlign = 'align-items:'+((v=d.labelVAlign)=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
             d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption

@@ -151,7 +151,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             style:'',
             LABEL:{
                 className:'{_required} xui-ui-ellipsis',
-                style:'{labelShow};width:{_labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{_labelHAlign};{_labelVAlign};',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -212,6 +212,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                'z-index':1,
                top:0,
                left:0,
+               display:xui.browser.isWebKit?'-webkit-flex':'flex',
                position:'absolute',
                //don't change it in custom class or style
                'padding-top':'4px',
@@ -512,10 +513,19 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:'right',
                 listbox:['','left','center','right'],
                 action: function(v){
-                    this.getSubNode('LABEL').css('textAlign',v);
+                    this.getSubNode('LABEL').css({
+                        'textAlign': v||'',
+                        'justifyContent':v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':''
+                    });
                 }
             },
-
+            labelVAlign:{
+                ini:'top',
+                listbox:['','top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
+                }
+            },
             valueFormat:{
                 helpinput:[
                     {caption : 'required', id: "[^.*]"},
@@ -670,10 +680,12 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
         },
         _prepareData:function(profile){
-            var data={},prop=profile.properties,t
+            var data={},prop=profile.properties,t,v;
+
             if(prop.height=='auto'){
                 data.height  = '1.83em';
             }
+
             var d=arguments.callee.upper.call(this, profile, data);
 
             d._inputtype = d.type || '';
@@ -681,15 +693,18 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             
             if(xui.browser.kde)
                 d._css='resize:none;';
-            d.hAlign=d.hAlign?("text-align:" + d.hAlign):"";
+
+            d.hAlign=(v=d.hAlign)?("text-align:" + v):"";
             
-            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            data._labelHAlign = 'text-align:'+(v=data.labelHAlign||'')+';justify-content:'+(v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':'');
+            data._labelVAlign = 'align-items:'+((v=data.labelVAlign)=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
+
             d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
     
             // adjustRes for labelCaption
-            if(d.labelCaption)
-                d.labelCaption=xui.adjustRes(d.labelCaption,true);
+            if(v=d.labelCaption)
+                d.labelCaption=xui.adjustRes(v,true);
 
             return d;
         },

@@ -4001,7 +4001,13 @@ xui.Class('xui.SC',null,{
         __gc:function(k){
             xui.$cache.SC={};
         },
-
+        // default, SC will get script from url: 
+        //        App.Name => ./App/Name.js
+        //onSucess(text,rspType,threadid)
+        //onFail(text,rspType,threadid)
+        // "return false" will stop the default Ajax calling
+        beforeGetScript:function(path, onSucess, onFail){
+        },
         //get object from obj string
         get:function (path, obj1, obj2, v){
             // a[1][2].b[3] => a,1,2,b,3
@@ -4021,7 +4027,7 @@ xui.Class('xui.SC',null,{
         _call : function (s, options, isAsy, force){
             isAsy = !!isAsy;
             var i,t,r,o,funs=[],ep=xui.SC.get,ct=xui.$cache.snipScript,
-            f= function(text,n,threadid){
+            f= function(text,rspType,threadid){
                 var self=this,t,uri=this.uri;
                 if(text){
                     //test again when asy end.
@@ -4043,7 +4049,7 @@ xui.Class('xui.SC',null,{
                     xui.asyRun(function(){
                             throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
                     });
-            },fe=function(text){
+            },fe=function(text,rspType,threadid){
                 var self=this;
                 //for loadSnips resume with error too
                 xui.tryF(self.$cb,[null,null,self.threadid],self);
@@ -4074,7 +4080,9 @@ xui.Class('xui.SC',null,{
                         ajax=xui.Ajax;
                     }
                     //get text from sy ajax
-                    ajax(o, xui._rnd(), f, fe, null, options).start();
+                    if(xui.SC.beforeGetScript(o, f, fe)!==false){
+                        ajax(o, xui._rnd(), f, fe, null, options).start();
+                    }
                     //for asy once only
                     if(!isAsy)
                         r=ep(s);
@@ -29846,21 +29854,31 @@ xui.Class("xui.UI.Label", "xui.UI",{
         Templates:{
             tagName:"label",
             className:'{_className}',
-            style:'{_style};text-align:{hAlign}',
-            ICON:{
+            style:'{_hAlign};{_style}',
+            VALIGN:{
                 $order:0,
+                style:'{_vAlign}'
+            },
+            ICON:{
+                $order:1,
                 className:'xuicon {imageClass}  {picClass}',
                 style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
+                $order:2,
                 text : '{caption}',
                 style:'{_fc}{_fw}{_fs}{_ff}',
-                'font-size':'1em',
-                $order:1
+                'font-size':'1em'
             }
         },
         Appearances:{
+            VALIGN: {
+                'font-size':0,
+                width:0,
+                display: 'inline-block',
+                height: '100%'
+            }
         },
         DataModel:{
             selectable:true,
@@ -29924,11 +29942,15 @@ xui.Class("xui.UI.Label", "xui.UI",{
                 ini:'right',
                 listbox:['left','center','right'],
                 action: function(v){
-                    this.getRoot().css('textAlign',v);
+                    this.getRoot().css('textAlign', v||'');
                 }
             },
             vAlign:{
-                hidden:true
+                ini:'top',
+                listbox:['top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('VALIGN').css('verticalAlign', v||'');
+                }
             },
             fontColor:xui.UI.Button.$DataModel.fontColor,
             fontSize:xui.UI.Button.$DataModel.fontSize,
@@ -29975,11 +29997,14 @@ xui.Class("xui.UI.Label", "xui.UI",{
         },
         _prepareData:function(profile, data){
             data=arguments.callee.upper.call(this, profile,data);
+            var v;
             if(data.clock)data.caption='';
-            data._fs = 'font-size:' + data.fontSize + ';';
-            data._fw = 'font-weight:' + data.fontWeight + ';';
-            data._fc = 'color:' + data.fontColor + ';';
-            data._ff = 'font-family:' + data.fontFamily + ';';
+            if(v=data.fontSize)data._fs = 'font-size:' + v + ';';
+            if(v=data.fontWeight)data._fw = 'font-weight:' + v + ';';
+            if(v=data.fontColor)data._fc = 'color:' + v + ';';
+            if(v=data.fontFamily)data._ff = 'font-family:' + v + ';';
+            data._hAlign = 'text-align:'+(data.hAlign||'');
+            data._vAlign = 'vertical-align:'+(data.vAlign||'');
             return data;
         }        
     }
@@ -30245,6 +30270,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                'z-index':1,
                top:0,
                left:0,
+               display:xui.browser.isWebKit?'-webkit-flex':'flex',
                position:'absolute',
                'padding-top':'.5em'
             },
@@ -30608,7 +30634,17 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:'right',
                 listbox:['','left','center','right'],
                 action: function(v){
-                    this.getSubNode('LABEL').css('textAlign',v);
+                    this.getSubNode('LABEL').css({
+                        'textAlign': v||'',
+                        'justifyContent':v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':''
+                    });
+                }
+            },
+            labelVAlign:{
+                ini:'top',
+                listbox:['','top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
                 }
             }
         },
@@ -30619,12 +30655,13 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         },
         _prepareData:function(profile){
             var d=arguments.callee.upper.call(this, profile),
-                N='display:none',t;
+                N='display:none',t,v;
             d._showDes=d.showDecreaseHandle?'':N,
             d._showIns=d.showIncreaseHandle?'':N,
             d._showD2=d.isRange?'':N;
             d._cls=profile.getClass('KEY',d.type=='vertical'?'-v':'-h');
-            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            d._labelHAlign = 'text-align:'+(v=d.labelHAlign||'')+';justify-content:'+(v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':'');
+            d._labelVAlign = 'align-items:'+((v=d.labelVAlign)=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
             d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
 
@@ -30944,7 +30981,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             style:'',
             LABEL:{
                 className:'{_required} xui-ui-ellipsis',
-                style:'{labelShow};width:{_labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{_labelHAlign};{_labelVAlign};',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -31005,6 +31042,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                'z-index':1,
                top:0,
                left:0,
+               display:xui.browser.isWebKit?'-webkit-flex':'flex',
                position:'absolute',
                //don't change it in custom class or style
                'padding-top':'4px',
@@ -31305,10 +31343,19 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:'right',
                 listbox:['','left','center','right'],
                 action: function(v){
-                    this.getSubNode('LABEL').css('textAlign',v);
+                    this.getSubNode('LABEL').css({
+                        'textAlign': v||'',
+                        'justifyContent':v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':''
+                    });
                 }
             },
-
+            labelVAlign:{
+                ini:'top',
+                listbox:['','top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
+                }
+            },
             valueFormat:{
                 helpinput:[
                     {caption : 'required', id: "[^.*]"},
@@ -31463,10 +31510,12 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             }
         },
         _prepareData:function(profile){
-            var data={},prop=profile.properties,t
+            var data={},prop=profile.properties,t,v;
+
             if(prop.height=='auto'){
                 data.height  = '1.83em';
             }
+
             var d=arguments.callee.upper.call(this, profile, data);
 
             d._inputtype = d.type || '';
@@ -31474,15 +31523,18 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             
             if(xui.browser.kde)
                 d._css='resize:none;';
-            d.hAlign=d.hAlign?("text-align:" + d.hAlign):"";
+
+            d.hAlign=(v=d.hAlign)?("text-align:" + v):"";
             
-            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            data._labelHAlign = 'text-align:'+(v=data.labelHAlign||'')+';justify-content:'+(v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':'');
+            data._labelVAlign = 'align-items:'+((v=data.labelVAlign)=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
+
             d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
     
             // adjustRes for labelCaption
-            if(d.labelCaption)
-                d.labelCaption=xui.adjustRes(d.labelCaption,true);
+            if(v=d.labelCaption)
+                d.labelCaption=xui.adjustRes(v,true);
 
             return d;
         },
@@ -32144,7 +32196,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             className:'{_className} xui-ui-selectable',
             LABEL:{
                 className:'{_required} xui-ui-ellipsis',
-                style:'{labelShow};width:{_labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{_labelHAlign};{_labelVAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
@@ -32255,7 +32307,17 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                 ini:'right',
                 listbox:['','left','center','right'],
                 action: function(v){
-                    this.getSubNode('LABEL').css('textAlign',v);
+                    this.getSubNode('LABEL').css({
+                        'textAlign': v||'',
+                        'justifyContent':v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':''
+                    });
+                }
+            },
+            labelVAlign:{
+                ini:'top',
+                listbox:['','top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
                 }
             }
         },
@@ -32285,6 +32347,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                'z-index':1,
                top:0,
                left:0,
+               display:xui.browser.isWebKit?'-webkit-flex':'flex',
                position:'absolute',
                'padding-top':'.5em'
             },
@@ -32376,8 +32439,9 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             ]
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile),t;
-            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            var d=arguments.callee.upper.call(this, profile),t,v;
+            d._labelHAlign = 'text-align:'+(v=d.labelHAlign||'')+';justify-content:'+(v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':'');
+            d._labelVAlign = 'align-items:'+((v=d.labelVAlign)=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
             d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
@@ -37477,7 +37541,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             className:'{_className}',
             LABEL:{
                 className:'{_required} xui-ui-ellipsis',
-                style:'{labelShow};width:{_labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{_labelHAlign};{_labelVAlign}',
                 text:'{labelCaption}'
             },
             ITEMS:{
@@ -37554,6 +37618,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                'z-index':1,
                top:0,
                left:0,
+               display:xui.browser.isWebKit?'-webkit-flex':'flex',
                position:'absolute',
                'padding-top':'.333em'
             },
@@ -37900,7 +37965,17 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ini:'right',
                 listbox:['','left','center','right'],
                 action: function(v){
-                    this.getSubNode('LABEL').css('textAlign',v);
+                    this.getSubNode('LABEL').css({
+                        'textAlign': v||'',
+                        'justifyContent':v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':''
+                    });
+                }
+            },
+            labelVAlign:{
+                ini:'top',
+                listbox:['','top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
                 }
             }
         },
@@ -37962,9 +38037,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             return false;
         },
         _prepareData:function(profile){
-            var d=arguments.callee.upper.call(this, profile),t;
+            var d=arguments.callee.upper.call(this, profile),t,v;
             d._bordertype='xui-uiborder-'+d.borderType;
-            d.labelHAlign=d.labelHAlign?("text-align:" + d.labelHAlign):"";
+            d._labelHAlign = 'text-align:'+(v=d.labelHAlign||'')+';justify-content:'+(v=='right'?'flex-end':v=='center'?'center':v=='left'?'flex-start':'');
+            d._labelVAlign = 'align-items:'+((v=d.labelVAlign)=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
             d.labelShow=d.labelPos!='none'&&d.labelSize&&d.labelSize!='auto'?"":"display:none";
             d._labelSize=d.labelSize?'':0+profile.$picku();
             // adjustRes for labelCaption
