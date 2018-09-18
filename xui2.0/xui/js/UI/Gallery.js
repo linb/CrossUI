@@ -46,7 +46,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                                     tagName : 'img',
                                     src:xui.ini.img_bg,
                                     title:'{image}',
-                                    style:'{imgStyle}'
+                                    style:'{_innerimgSize};{imgStyle}'
                                 }
                         },
                         COMMENT:{
@@ -312,16 +312,19 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             var p = profile.properties,
                 cols=p.columns,
                 rows=p.rows,
-                auto=item.autoItemSize||p.autoItemSize,
+                auto1=item.autoItemSize||p.autoItemSize,
+                auto2=item.autoImgSize||p.autoImgSize,
                 t;
 
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize'),function(i){
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize,autoImgSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            item.itemWidth=(!auto&&(t=item.itemWidth))?profile.$forceu(t):'';
-            item.itemHeight=(!auto&&(t=item.itemHeight))?profile.$forceu(t):'';
+            item.itemWidth=(!auto1&&(t=item.itemWidth))?profile.$forceu(t):'';
+            item.itemHeight=(!auto1&&(t=item.itemHeight))?profile.$forceu(t):'';
             item.itemMargin=(t=item.itemMargin)?profile.$forceu(t):0;
             item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
+            item.imgWidth=(!auto2&&(t=item.imgWidth))?profile.$forceu(t):'';
+            item.imgHeight=(!auto2&&(t=item.imgHeight))?profile.$forceu(t):'';
             item._tabindex = p.tabindex;
 
             if(t=item.iconFontSize)item._fontSize="font-size:"+t;
@@ -345,10 +348,10 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             if(rows)
                 item._itemSize+='height:'+(100/rows+'%')+';border:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;';
 
-            if(!auto){
-                item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
+            if(!auto1) item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
                     (!rows&&item.itemHeight?('height:'+item.itemHeight):'');
-            }
+            if(!auto2)
+                item._innerimgSize=(item.imgWidth?('width:'+item.imgWidth+';'):'') + (!rows&&item.imgHeight?('height:'+item.imgHeight):'');
         },
         RenderTrigger:function(){
             this.boxing()._afterInsertItems(this);

@@ -5549,6 +5549,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 adjustOverflow=function(p,isWin){
                     var f,t,c,x,y;
                     if(isWin){
+                        // $frame.type has high priority
+                        if(xui.ini.$frame && !xui.isNumb(xui.ini.$frame.zoom))return;
+
                         f=xui.win.$getEvent('onSize','dock');
                     }else if(p && p.get(0)){
                         f=p.$getEvent('onSize','dock');
@@ -5815,7 +5818,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 conDockStretch=(pprop && ('conDockStretch' in pprop))?pprop.conDockStretch.split(/[,;\s]+/):[],
                                 perW=conDockFlexFill=="width"||conDockFlexFill=="both",
                                 perH=conDockFlexFill=="height"||conDockFlexFill=="both",
-                                node=isWin?xui.win:xui(pid);
+                                // if enable zoom, use a visualized frame (in <html> tag style)
+                                node=isWin?xui.frame:xui(pid);
 
                              if(!node.get(0))
                                 return;

@@ -31,11 +31,11 @@
 xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
-        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
+        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated, onDomReady){
             ns.load.apply(ns, [cls, function(err, module){
-                module.setHost(window, xui.ini.rootModuleName);
-                xui.tryF(onEnd, [err, module]);
-            }, lang, theme, showUI, parent, subId, onCreated]);
+                if(module)module.setHost(window, xui.ini.rootModuleName);
+                xui.tryF(onEnd, [err, module], module);
+            }, lang, theme, showUI, parent, subId, onCreated, onDomReady]);
         };
         // compitable
         ns['xui.Com']=ns.prototype['xui.Com']=1;
@@ -528,7 +528,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 // no UI control in module
                 if(self.getUIComponents().isEmpty()){
                     xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    xui.tryF(onEnd,[null, self, threadid],self.host);
+                    xui.tryF(onEnd,[null, self, threadid], self);
                 }else{
                     // if parent is an ui object without rendered, dont render the module
                     if(!(parent && parent['xui.UI']  && !parent.get(0).renderId))
@@ -546,7 +546,7 @@ xui.Class('xui.Module','xui.absProfile',{
                         });
                     }
                     self.renderId='ok';
-                    xui.tryF(onEnd,[null, self, threadid],self.host);
+                    xui.tryF(onEnd,[null, self, threadid], self);
                 }
                 self._showed=1;
                 self._fireEvent('afterShow');
@@ -650,7 +650,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this;
 
             if(self.created){
-                xui.tryF(onEnd,[null, self, threadid],self.host);
+                xui.tryF(onEnd,[null, self, threadid], self);
                 return;
             }
 
@@ -731,7 +731,7 @@ xui.Class('xui.Module','xui.absProfile',{
             });
             funs.push(function(threadid){
                 self.created=true;
-                xui.tryF(onEnd,[null, self, threadid],self.host);
+                xui.tryF(onEnd,[null, self, threadid], self);
             });
             if(threadid===false){
                 xui.arr.each(funs,function(fun){
@@ -1394,48 +1394,100 @@ xui.Class('xui.Module','xui.absProfile',{
             });
         },
         // onEnd(err, module)
-        load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
+        load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated, onDomReady){
             if(!cls){
                 var e=new Error("No cls");
                 xui.tryF(onEnd,[e,null]);
                 throw e;
             }
             // compitable
-            if(typeof theme=='function')thowUI=theme;
-            var ifun=function(path){
-                var a=this,
-                    t, bg, zoom,
-                    f=function(i,l,flag){
-                        if(zoom)
-                            xui.Dom.$setZoom(xui('html').get(0), zoom);
-                        if(bg && xui.isHash(bg)){
-                            xui.each(bg,function(v,k){
-                                xui('html').css(k, xui.adjustRes(v));
-                            });
+            if(typeof theme=='function')showUI=theme;
+
+            var applyEnv=function(setting){
+                var t;
+
+                // overwrite theme
+                if((t=setting.theme)/* && !theme*/)theme=t;
+
+                //[[ apply memory
+                    // apply SpaceUnit
+                    if(t=setting.SpaceUnit)xui.SpaceUnit=t;
+                    // apply DefaultProp
+                    if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
+                        var allp={}, ctl;
+                        xui.each(t,function(v,k){
+                            if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
+                                ctl.setDftProp(v);
+                            }else{
+                                allp[k]=v;
+                            }
+                        });
+                        if(!xui.isEmpty(allp)){
+                            xui.UI.setDftProp(allp);
                         }
+                    }
+                //]] apply memory
 
-                        if(!xui.isFun(a)){
-                            var e=new Error( "'"+cls+"' is not a constructor");
-                            xui.tryF(onEnd,[e,null]);
-                            throw e;
-                        }else{
-                            var o=new a();
-                            // record it
-                            a._callfrom=cls;
+                //[[ apply dom
+                   // apply zoom
+                   // use setting.zoom to determine whether to call zoom or not
+                   if(setting.zoom){
+                        var  zoom=function(type, width, height){
+                            var rw=parseInt(width,10)||800,rh=parseInt(height,10)||600;
+                            if(!xui.isNumb(type)){
+                                var win=xui.win, ww=win&&win.width(), wh=win&&win.height(),cl;
+                                if(ww && wh){
+                                    var r_w=ww/rw,r_h=wh/rh;
+                                    switch(type.split('-')[0]){
+                                        case 'width': type = r_w; cl='xui-css-noscrollx'; break;
+                                        case 'height': type = r_h;  cl='xui-css-noscrolly'; break;
+                                        case 'cover': type = Math.max(r_w,r_h);  cl='xui-css-noscroll'+(r_w>=r_h?'x':'y'); break;
+                                        case 'contain': type = Math.min(r_w,r_h);  cl='xui-css-noscroll'; break;
+                                    }
+                                    xui('html').removeClass(/^xui-css-noscroll(x|y)?$/).addClass(cl);
+                                    xui.ini.$fixFrame=1;
+                                }
+                            }
+                            if((type=parseFloat(type)) && type!=1){
+                                if(xui.ini.$fixFrame){
+                                    xui('html').css({width:rw+'px',height:rh+'px'});
+                                    xui.frame=xui('html');
+                                }
 
-                            xui.set(xui.ModuleFactory,["_cache",cls],o);
+                                // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
+                                xui.ini.$zoomScale = type;
+                                if(!xui.Dom.$setZoom(xui('html').get(0), type)){
+                                    // if use transform for zoom, 'getBoundingClientRect' will need to adjust too
+                                    xui.ini.$transformScale = type;
+                                }
+                            }
+                        };
+                        if(t=xui.ini.$frame){
+                            zoom(t.zoom, t.width, t.height);
 
-                            if(onCreated)xui.tryF(onCreated, [o]);
-
-                            if(showUI!==false)o.show(onEnd, parent, subId);
-                            else xui.tryF(onEnd,[null,o],o);
+                            if(!xui.isNumb(t.zoom) && /-resize$/.test(t.zoom+'')){
+                                xui.win.onSize(function(){
+                                    var t=xui.ini.$frame;
+                                    xui.resetRun("_xui_auto_zoom", zoom, 0, [t.zoom, t.width, t.height]);
+                                },"_xui_auto_zoom");
+                            }
                         }
-                    };
-                //if successes
-                if(path){
-                    try{
-                        // for CDN font icons
-                        if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                    }
+                    // apply background
+                    if((t=setting.background) && xui.isHash(t)){
+                        xui.each(t,function(v,k){
+                            xui('html').css(k, xui.adjustRes(v));
+                        });
+                    }
+                    // apply xui-custom
+                    if((t=xui.ini.$ElementStyle) && xui.isHash(t)) xui.CSS.setStyleRules(".xui-custom",t,true);
+                //]] apply dom
+
+                 //[[ apply url
+                // apply CDN font icons
+                    if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                        // use asyn
+                        xui.asyRun(function(){
                             xui.each(t,function(o,i){
                                 if(o.href && !o.disabled){
                                     var attr={crossorigin:'anonymous'};
@@ -1443,48 +1495,61 @@ xui.Class('xui.Module','xui.absProfile',{
                                     xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
                                 }
                             });
+                        },20);
+                    }
+                //]] apply url
+            },
+            createModule=function(path){
+                var clsObj=this, t, setting={},
+                    showModule=function(i,l,flag){
+                        if(!xui.isFun(clsObj)){
+                            var e=new Error( "'"+cls+"' is not a constructor");
+                            xui.tryF(onEnd,[e,null]);
+                            throw e;
+                        }else{
+                            var o=new clsObj();
+                            // record it
+                            clsObj._callfrom=cls;
+
+                            xui.set(xui.ModuleFactory,["_cache",cls],o);
+
+                            if(onCreated)xui.tryF(onCreated, [o]);
+
+                            if(showUI!==false)o.show(onEnd, parent, subId);
+                            else xui.tryF(onEnd,[null,o], o);
                         }
-                        // for theme or background of root
-                        if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
-                            if(t.theme)theme=t.theme;
-                            if(t.lang)lang=t.lang;
-                            if('background' in t)bg=t.background;
-                            if('zoom' in t)zoom=t.zoom;
-                        }else if((t=this.viewStyles) && xui.isHash(t)){
-                            if(t.theme)theme=t.theme;
-                            bg={};
-                            xui.each(t,function(o,i){
-                                if(i=='theme')return;
-                                bg[i]=o;
-                            });
-                        }
-                        if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
-                            xui.CSS.setStyleRules(".xui-custom",t,true);
-                        }
-                        if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
-                            var allp={}, ctl;
-                            xui.each(t,function(v,k){
-                                if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
-                                    ctl.setDftProp(v);
-                                }else{
-                                    allp[k]=v;
-                                }
-                            });
-                            if(!xui.isEmpty(allp)){
-                                xui.UI.setDftProp(allp);
-                            }
-                        }
-                    }catch(e){}
+                    };
+                //if successes
+                if(path){
+                    //[[ collect setting (background, spaceunit, view size,  view zoom ...
+                    // for non-project
+                    if((t=this.designViewConf) && xui.isHash(t)) xui.merge(setting, t);
+                    if((t=this.viewStyles) && xui.isHash(t)){
+                        xui.each(t,function(o,i){
+                            if(/^background/.test(i)) (setting.background||(setting.background={}))[i]=o;
+                            else setting[i]=o;
+                        });
+                    }
+                    //]] collect setting
+
+                    // for zoom
+                    if(setting.zoom)xui.set(xui.ini, ['$frame','zoom'], setting.zoom);
+                    if(setting.width)xui.set(xui.ini, ['$frame','width'], setting.width);
+                    if(setting.height)xui.set(xui.ini, ['$frame','height'], setting.height);
+
+                    if(!xui.isEmpty(setting)) applyEnv(setting);
+
+                    // If theme is not 'default', apply theme frist
                     if(theme&&theme!="default"){
                         xui.setTheme(theme,true,function(){
-                            if(lang) xui.setLang(lang, f); else f();
+                            if(lang&&lang!='en') xui.setLang(lang, showModule); else showModule();
                         },function(){
                             xui.alert("Can't load theme - " + theme);
-                            if(lang) xui.setLang(lang, f); else f();
+                            if(lang&&lang!='en') xui.setLang(lang, showModule); else showModule();
                         });
                     }else{
-                        //get locale info
-                        if(lang) xui.setLang(lang, f);else f();
+                        // If lang is not 'en', apply lang frist
+                        if(lang&&lang!='en') xui.setLang(lang, showModule);else showModule();
                     }
                 }else{
                     var e=new Error("No class name");
@@ -1492,29 +1557,49 @@ xui.Class('xui.Module','xui.absProfile',{
                     throw e;
                 }
             },
-            fun=function(){
-                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+            domReady=function(){
+                if(onDomReady)xui.tryF(onDomReady);
+
+                var t, setting={};
+                //[[ collect setting (background, spaceunit, view size,  view zoom ...
+                // for project
+                if((t=xui.ini.$DevEnv) && xui.isHash(t)){
+                    if(t.SpaceUnit)setting.SpaceUnit=t.SpaceUnit;
+                    if(t=t.designViewConf)xui.merge(setting, t, 'all');
+                }
+                if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
+                    xui.merge(setting, t, 'all');
+                }
+                //]] collect setting
+
+                // for zoom
+                if(setting.zoom)xui.set(xui.ini, ['$frame','zoom'], setting.zoom);
+                if(setting.width)xui.set(xui.ini, ['$frame','width'], setting.width);
+                if(setting.height)xui.set(xui.ini, ['$frame','height'], setting.height);
+
+                if(!xui.isEmpty(setting)) applyEnv(setting);
+
+                if(typeof(cls)=='function'&&cls.$xui$)createModule.apply(['ok'],cls);
                 else cls=cls+"";
                 if(/\//.test(cls) && !/\.js$/i.test(cls))
                     cls=cls+".js";
                 if(/\.js$/i.test(cls)){
-                    xui.fetchClass(cls,ifun,
+                    xui.fetchClass(cls,createModule,
                         function(e){
                             xui.tryF(onEnd,[e,null]);
                         });
-                }else
+                }else{
                     //get app class
-                    xui.SC(cls,ifun,true,null,{
+                    xui.SC(cls,createModule,true,null,{
                         retry:0,
                         onFail:function(e){
                             xui.tryF(onEnd,[e,null]);
                         }
                     });
+                }
             };
-            if(xui.isDomReady)
-                fun();
-            else
-                xui.main(fun);
+
+            if(xui.isDomReady) domReady(); else xui.main(domReady);
         },
         unserialize:function(hash){
             return new this(hash);

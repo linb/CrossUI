@@ -190,8 +190,8 @@ xui.Class("xui.Tips", null,{
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
-                        self._ww=xui.win.width();
-                        self._hh=xui.win.height();
+                        self._ww=xui.frame.width();
+                        self._hh=xui.frame.height();
 
                         //get width
                         w=Math.min(html?self._ww:tips.MAXWIDTH, _ruler.get(0).offsetWidth + 2);

@@ -1265,10 +1265,10 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
                 //for IE, firefox3(except document.body)
                 if(!(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
-                    t = node.getBoundingClientRect();
+                    t = xui.Dom.$getBoundingClientRect(node);
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
-                        add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
+                        add(pos, -(t=xui.Dom.$getBoundingClientRect(boundary)).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
                     else{ 
                         // old:
                         // add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
@@ -1279,10 +1279,10 @@ xui.Class('xui.Dom','xui.absBox',{
                         // we have to use a base div {left:0,top:0} to do offset, to replace "scrollXXX" offset solution
                         var base = xui.Dom.getEmptyDiv();
                         base.css({left:0,top:0,position:'absolute'});
-                        var basRect=base.get(0).getBoundingClientRect();
+                        var basRect=xui.Dom.$getBoundingClientRect(base.get(0));
                         base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE});
 
-                        // var basRect=db.getBoundingClientRect();
+                        // var basRect=xui.Dom.$getBoundingClientRect(db);
                         add(pos, -basRect.left, -basRect.top);
                     }
                 }else{
@@ -2282,6 +2282,12 @@ xui.Class('xui.Dom','xui.absBox',{
                 box.top=t.scrollTop();
                 box.width =t.width()+box.left;
                 box.height =t.height()+box.top;
+
+                if(t == xui.win && xui.ini.$zoomScale){
+                    for(var i in box)
+                        box[i] /= xui.ini.$zoomScale;
+                }
+
                 /*
                     type:1
                         +------------------+    +------------------+
@@ -2501,6 +2507,13 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
+        $getBoundingClientRect:function(node, value) {
+            var rect = node.getBoundingClientRect(),t;
+            if(t = xui.ini.$transformScale)
+                for(var i in rect)
+                    rect[i] /= t;
+            return rect;
+        },
         $transformIE:function(node, value) {
             var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
             if(xui.browser.ie8)node.style.msfilter = t;
@@ -2670,7 +2683,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(node.getBoundingClientRect){
                     var transX=matrix.getX(), 
                         transY=matrix.getY(),
-                        rect = node.getBoundingClientRect(),
+                        rect = xui.Dom.$getBoundingClientRect(node),
                         w=rect.right - rect.left, 
                         h=rect.bottom-rect.top;
      
@@ -3305,12 +3318,16 @@ xui.Class('xui.Dom','xui.absBox',{
             value=parseFloat(value);
             if(xui.isNaN(value) || value<=0)value='';
             var b=xui.browser,n=xui(node),h={};
-            if(b.ie678)h.zoom=value;
+            if(!('$supportZoom' in xui.Dom))
+                xui.Dom.$supportZoom = b.ie678 || document.createElement("detect").style.zoom === "";
+            if(xui.Dom.$supportZoom)
+                h.zoom=value;
             else{
                 h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
                 h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
             }
             n.css(h);
+            return 'zoom' in h;
         },
         _vAnimate:function(node,setting,callback){
             if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
@@ -4129,6 +4146,8 @@ xui.Class('xui.Dom','xui.absBox',{
 
         xui.win=xui(['!window'],false);
         xui.doc=xui(['!document'],false);
+        xui.frame=xui.win;
+
         xui.busy=xui.Dom.busy;
         xui.free=xui.Dom.free;
 

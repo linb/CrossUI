@@ -28,10 +28,11 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                             top=left.top+(left.height-profile.$px(p.height))/2;
                             left=left.left+(left.width-profile.$px(p.width))/2;
                         }else{
-                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent);
+                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent),
+                                scale =  pr == xui.win && xui.ini.$zoomScale || 1;
                             // here, have to use global em
-                            top=(top||top===0)?top:Math.max(0,(pr.height()-profile.$px(p.height))/2+pr.scrollTop());
-                            left=(left||left===0)?left:Math.max(0,(pr.width()-profile.$px(p.width))/2+pr.scrollLeft());
+                            top=(top||top===0)?top:Math.max(0,(pr.height()/scale-profile.$px(p.height))/2 + pr.scrollTop()/scale);
+                            left=(left||left===0)?left:Math.max(0,(pr.width()/scale-profile.$px(p.width))/2 + pr.scrollLeft()/scale);
                         }
                     break;
                 }

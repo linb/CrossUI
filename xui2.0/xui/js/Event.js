@@ -389,9 +389,10 @@ xui.Class('xui.Event',null,{
             if(xui.browser.isTouch && event.changedTouches && event.changedTouches[0])
                 event = event.changedTouches[0];
 
-            if('pageX' in event)
-                return {left:event.pageX, top:event.pageY};
-            else{
+            if('pageX' in event){
+                var scale=xui.ini.$zoomScale||1;
+                return {left:event.pageX/scale, top:event.pageY/scale};
+            }else{
     			var d=document, doc = d.documentElement, body = d.body,t,
     			_L = (xui.isSet(t=doc && doc.scrollLeft)?t:xui.isSet(t=body && body.scrollLeft)?t:0) - (xui.isSet(t=doc.clientLeft)?t:0),
     			_T = (xui.isSet(t=doc && doc.scrollTop)?t:xui.isSet(t=body && body.scrollTop)?t:0) - (xui.isSet(t=doc.clientTop)?t:0);

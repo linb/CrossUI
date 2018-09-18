@@ -1503,11 +1503,9 @@ xui.merge(xui,{
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         var s=xui.getClassName(uri);
                         if(t&&t.KEY!=s){
-                            var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                             for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
-                            xui.asyRun(function(){
-                                throw msg;
-                            });
+                            xui.log( msg );
                         }
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
@@ -1531,11 +1529,9 @@ xui.merge(xui,{
                         if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         if(t&&t.KEY!=s){
-                            var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                             for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
-                            xui.asyRun(function(){
-                                throw msg;
-                            });
+                            xui.log( msg );
                         }
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
@@ -1855,14 +1851,17 @@ xui.merge(xui,{
                          }
                      }); 
                 }
-            //from HTML string
-            }else if(r1.test(tag)){
-                o = xui.str.toDom(tag);
             //from HTML element tagName
-            }else{
+            }else if(/^[\w-]+$/.test(tag)){
                 o=document.createElement(tag);
                 o.id = typeof id=='string'?id:xui.id();
                 o=xui(o);
+            //from HTML string
+            }else{
+                if(r1.test(tag))
+                    o = xui.str.toDom(tag);
+                if(!(o&&o.n0))
+                    o = xui.str.toDom("<xui>"+tag+"</xui>");
             }
         //Any class inherited from xui.absBox
         }else{
@@ -2306,8 +2305,8 @@ new function(){
                 }
 
                 var fun=function(){
-                    if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
                     xui._debugInfo.apply(xui, ["pseudo",xui.str.repeat('  ', level||1) ,_debug, _var]);
+                    if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
                     switch(type){
                         case 'page':
                             // handle switch
@@ -4045,9 +4044,7 @@ xui.Class('xui.SC',null,{
                 // and give a change to load the last class in code, if specified class doesn't exist
                 xui.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
                 if(!ep(s)&&t&&t.KEY!=s)
-                    xui.asyRun(function(){
-                            throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
-                    });
+                    xui.log( "[xui] > '"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered." );
             },fe=function(text,rspType,threadid){
                 var self=this;
                 //for loadSnips resume with error too
@@ -4225,7 +4222,7 @@ xui.Class('xui.absBox',null, {
             return !this._nodes.length;
         },
         merge:function(obj){
-            if(this==xui.win||this==xui.doc||this==xui('body'))return this;
+            if(this==xui.win||this==xui.doc||this==xui('body')||this==xui('html'))return this;
             var self=this, c=self.constructor, obj=obj._nodes, i=0, t, n=self._nodes;
             if(obj.length){
                 for(;t=obj[i++];)n[n.length]=t;
