@@ -1504,11 +1504,9 @@ xui.merge(xui,{
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         var s=xui.getClassName(uri);
                         if(t&&t.KEY!=s){
-                            var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                             for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
-                            xui.asyRun(function(){
-                                throw msg;
-                            });
+                            xui.log( msg );
                         }
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
@@ -1532,11 +1530,9 @@ xui.merge(xui,{
                         if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
                         if(t&&t.KEY!=s){
-                            var msg="The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
+                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
                             for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
-                            xui.asyRun(function(){
-                                throw msg;
-                            });
+                            xui.log( msg );
                         }
                         // for Thread.group in fetchClasses
                         for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
@@ -1856,14 +1852,17 @@ xui.merge(xui,{
                          }
                      }); 
                 }
-            //from HTML string
-            }else if(r1.test(tag)){
-                o = xui.str.toDom(tag);
             //from HTML element tagName
-            }else{
+            }else if(/^[\w-]+$/.test(tag)){
                 o=document.createElement(tag);
                 o.id = typeof id=='string'?id:xui.id();
                 o=xui(o);
+            //from HTML string
+            }else{
+                if(r1.test(tag))
+                    o = xui.str.toDom(tag);
+                if(!(o&&o.n0))
+                    o = xui.str.toDom("<xui>"+tag+"</xui>");
             }
         //Any class inherited from xui.absBox
         }else{
@@ -2307,8 +2306,8 @@ new function(){
                 }
 
                 var fun=function(){
-                    if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
                     xui._debugInfo.apply(xui, ["pseudo",xui.str.repeat('  ', level||1) ,_debug, _var]);
+                    if(false===xui.tryF(ns._Handlers, [type, method, iparams, adjust, target, conf]))return;
                     switch(type){
                         case 'page':
                             // handle switch
@@ -4046,9 +4045,7 @@ xui.Class('xui.SC',null,{
                 // and give a change to load the last class in code, if specified class doesn't exist
                 xui.tryF(self.$cb,[self.$tag,text,threadid],ep(s)||t||{});
                 if(!ep(s)&&t&&t.KEY!=s)
-                    xui.asyRun(function(){
-                            throw "'"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered.";
-                    });
+                    xui.log( "[xui] > '"+s+"' doesn't in '"+uri+"'. The last class '"+t.KEY+"' was triggered." );
             },fe=function(text,rspType,threadid){
                 var self=this;
                 //for loadSnips resume with error too
@@ -4226,7 +4223,7 @@ xui.Class('xui.absBox',null, {
             return !this._nodes.length;
         },
         merge:function(obj){
-            if(this==xui.win||this==xui.doc||this==xui('body'))return this;
+            if(this==xui.win||this==xui.doc||this==xui('body')||this==xui('html'))return this;
             var self=this, c=self.constructor, obj=obj._nodes, i=0, t, n=self._nodes;
             if(obj.length){
                 for(;t=obj[i++];)n[n.length]=t;
@@ -6054,7 +6051,7 @@ xui.Class("xui.ExcelFormula",null,{
                         if(key.indexOf(":")!=-1){
                             keys=key.split(':');
                         }
-                        if(kyes && keys[0] && keys[1]){
+                        if(keys && keys[0] && keys[1]){
                             hash[keys[0]]=uv;
                             hash[keys[1]]=ins.getCaption();
                         }else if(withCaption){
@@ -7073,9 +7070,10 @@ xui.Class('xui.Event',null,{
             if(xui.browser.isTouch && event.changedTouches && event.changedTouches[0])
                 event = event.changedTouches[0];
 
-            if('pageX' in event)
-                return {left:event.pageX, top:event.pageY};
-            else{
+            if('pageX' in event){
+                var scale=xui.ini.$zoomScale||1;
+                return {left:event.pageX/scale, top:event.pageY/scale};
+            }else{
     			var d=document, doc = d.documentElement, body = d.body,t,
     			_L = (xui.isSet(t=doc && doc.scrollLeft)?t:xui.isSet(t=body && body.scrollLeft)?t:0) - (xui.isSet(t=doc.clientLeft)?t:0),
     			_T = (xui.isSet(t=doc && doc.scrollTop)?t:xui.isSet(t=body && body.scrollTop)?t:0) - (xui.isSet(t=doc.clientTop)?t:0);
@@ -10929,10 +10927,10 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
                 //for IE, firefox3(except document.body)
                 if(!(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
-                    t = node.getBoundingClientRect();
+                    t = xui.Dom.$getBoundingClientRect(node);
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
-                        add(pos, -(t=boundary.getBoundingClientRect()).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
+                        add(pos, -(t=xui.Dom.$getBoundingClientRect(boundary)).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
                     else{ 
                         // old:
                         // add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
@@ -10943,10 +10941,10 @@ xui.Class('xui.Dom','xui.absBox',{
                         // we have to use a base div {left:0,top:0} to do offset, to replace "scrollXXX" offset solution
                         var base = xui.Dom.getEmptyDiv();
                         base.css({left:0,top:0,position:'absolute'});
-                        var basRect=base.get(0).getBoundingClientRect();
+                        var basRect=xui.Dom.$getBoundingClientRect(base.get(0));
                         base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE});
 
-                        // var basRect=db.getBoundingClientRect();
+                        // var basRect=xui.Dom.$getBoundingClientRect(db);
                         add(pos, -basRect.left, -basRect.top);
                     }
                 }else{
@@ -11946,6 +11944,12 @@ xui.Class('xui.Dom','xui.absBox',{
                 box.top=t.scrollTop();
                 box.width =t.width()+box.left;
                 box.height =t.height()+box.top;
+
+                if(t == xui.win && xui.ini.$zoomScale){
+                    for(var i in box)
+                        box[i] /= xui.ini.$zoomScale;
+                }
+
                 /*
                     type:1
                         +------------------+    +------------------+
@@ -12165,6 +12169,13 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
+        $getBoundingClientRect:function(node, value) {
+            var rect = node.getBoundingClientRect(),t;
+            if(t = xui.ini.$transformScale)
+                for(var i in rect)
+                    rect[i] /= t;
+            return rect;
+        },
         $transformIE:function(node, value) {
             var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
             if(xui.browser.ie8)node.style.msfilter = t;
@@ -12334,7 +12345,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(node.getBoundingClientRect){
                     var transX=matrix.getX(), 
                         transY=matrix.getY(),
-                        rect = node.getBoundingClientRect(),
+                        rect = xui.Dom.$getBoundingClientRect(node),
                         w=rect.right - rect.left, 
                         h=rect.bottom-rect.top;
      
@@ -12969,12 +12980,16 @@ xui.Class('xui.Dom','xui.absBox',{
             value=parseFloat(value);
             if(xui.isNaN(value) || value<=0)value='';
             var b=xui.browser,n=xui(node),h={};
-            if(b.ie678)h.zoom=value;
+            if(!('$supportZoom' in xui.Dom))
+                xui.Dom.$supportZoom = b.ie678 || document.createElement("detect").style.zoom === "";
+            if(xui.Dom.$supportZoom)
+                h.zoom=value;
             else{
                 h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
                 h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
             }
             n.css(h);
+            return 'zoom' in h;
         },
         _vAnimate:function(node,setting,callback){
             if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
@@ -13793,6 +13808,8 @@ xui.Class('xui.Dom','xui.absBox',{
 
         xui.win=xui(['!window'],false);
         xui.doc=xui(['!document'],false);
+        xui.frame=xui.win;
+
         xui.busy=xui.Dom.busy;
         xui.free=xui.Dom.free;
 
@@ -14329,11 +14346,11 @@ xui.Class('xui.Dom','xui.absBox',{
 xui.Class('xui.Module','xui.absProfile',{
     Initialize:function(){
         var ns=this;
-        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
+        xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated, onDomReady){
             ns.load.apply(ns, [cls, function(err, module){
-                module.setHost(window, xui.ini.rootModuleName);
-                xui.tryF(onEnd, [err, module]);
-            }, lang, theme, showUI, parent, subId, onCreated]);
+                if(module)module.setHost(window, xui.ini.rootModuleName);
+                xui.tryF(onEnd, [err, module], module);
+            }, lang, theme, showUI, parent, subId, onCreated, onDomReady]);
         };
         // compitable
         ns['xui.Com']=ns.prototype['xui.Com']=1;
@@ -14826,7 +14843,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 // no UI control in module
                 if(self.getUIComponents().isEmpty()){
                     xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    xui.tryF(onEnd,[null, self, threadid],self.host);
+                    xui.tryF(onEnd,[null, self, threadid], self);
                 }else{
                     // if parent is an ui object without rendered, dont render the module
                     if(!(parent && parent['xui.UI']  && !parent.get(0).renderId))
@@ -14844,7 +14861,7 @@ xui.Class('xui.Module','xui.absProfile',{
                         });
                     }
                     self.renderId='ok';
-                    xui.tryF(onEnd,[null, self, threadid],self.host);
+                    xui.tryF(onEnd,[null, self, threadid], self);
                 }
                 self._showed=1;
                 self._fireEvent('afterShow');
@@ -14948,7 +14965,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this;
 
             if(self.created){
-                xui.tryF(onEnd,[null, self, threadid],self.host);
+                xui.tryF(onEnd,[null, self, threadid], self);
                 return;
             }
 
@@ -15029,7 +15046,7 @@ xui.Class('xui.Module','xui.absProfile',{
             });
             funs.push(function(threadid){
                 self.created=true;
-                xui.tryF(onEnd,[null, self, threadid],self.host);
+                xui.tryF(onEnd,[null, self, threadid], self);
             });
             if(threadid===false){
                 xui.arr.each(funs,function(fun){
@@ -15692,48 +15709,100 @@ xui.Class('xui.Module','xui.absProfile',{
             });
         },
         // onEnd(err, module)
-        load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated){
+        load:function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated, onDomReady){
             if(!cls){
                 var e=new Error("No cls");
                 xui.tryF(onEnd,[e,null]);
                 throw e;
             }
             // compitable
-            if(typeof theme=='function')thowUI=theme;
-            var ifun=function(path){
-                var a=this,
-                    t, bg, zoom,
-                    f=function(i,l,flag){
-                        if(zoom)
-                            xui.Dom.$setZoom(xui('html').get(0), zoom);
-                        if(bg && xui.isHash(bg)){
-                            xui.each(bg,function(v,k){
-                                xui('html').css(k, xui.adjustRes(v));
-                            });
+            if(typeof theme=='function')showUI=theme;
+
+            var applyEnv=function(setting){
+                var t;
+
+                // overwrite theme
+                if((t=setting.theme)/* && !theme*/)theme=t;
+
+                //[[ apply memory
+                    // apply SpaceUnit
+                    if(t=setting.SpaceUnit)xui.SpaceUnit=t;
+                    // apply DefaultProp
+                    if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
+                        var allp={}, ctl;
+                        xui.each(t,function(v,k){
+                            if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
+                                ctl.setDftProp(v);
+                            }else{
+                                allp[k]=v;
+                            }
+                        });
+                        if(!xui.isEmpty(allp)){
+                            xui.UI.setDftProp(allp);
                         }
+                    }
+                //]] apply memory
 
-                        if(!xui.isFun(a)){
-                            var e=new Error( "'"+cls+"' is not a constructor");
-                            xui.tryF(onEnd,[e,null]);
-                            throw e;
-                        }else{
-                            var o=new a();
-                            // record it
-                            a._callfrom=cls;
+                //[[ apply dom
+                   // apply zoom
+                   // use setting.zoom to determine whether to call zoom or not
+                   if(setting.zoom){
+                        var  zoom=function(type, width, height){
+                            var rw=parseInt(width,10)||800,rh=parseInt(height,10)||600;
+                            if(!xui.isNumb(type)){
+                                var win=xui.win, ww=win&&win.width(), wh=win&&win.height(),cl;
+                                if(ww && wh){
+                                    var r_w=ww/rw,r_h=wh/rh;
+                                    switch(type.split('-')[0]){
+                                        case 'width': type = r_w; cl='xui-css-noscrollx'; break;
+                                        case 'height': type = r_h;  cl='xui-css-noscrolly'; break;
+                                        case 'cover': type = Math.max(r_w,r_h);  cl='xui-css-noscroll'+(r_w>=r_h?'x':'y'); break;
+                                        case 'contain': type = Math.min(r_w,r_h);  cl='xui-css-noscroll'; break;
+                                    }
+                                    xui('html').removeClass(/^xui-css-noscroll(x|y)?$/).addClass(cl);
+                                    xui.ini.$fixFrame=1;
+                                }
+                            }
+                            if((type=parseFloat(type)) && type!=1){
+                                if(xui.ini.$fixFrame){
+                                    xui('html').css({width:rw+'px',height:rh+'px'});
+                                    xui.frame=xui('html');
+                                }
 
-                            xui.set(xui.ModuleFactory,["_cache",cls],o);
+                                // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
+                                xui.ini.$zoomScale = type;
+                                if(!xui.Dom.$setZoom(xui('html').get(0), type)){
+                                    // if use transform for zoom, 'getBoundingClientRect' will need to adjust too
+                                    xui.ini.$transformScale = type;
+                                }
+                            }
+                        };
+                        if(t=xui.ini.$frame){
+                            zoom(t.zoom, t.width, t.height);
 
-                            if(onCreated)xui.tryF(onCreated, [o]);
-
-                            if(showUI!==false)o.show(onEnd, parent, subId);
-                            else xui.tryF(onEnd,[null,o],o);
+                            if(!xui.isNumb(t.zoom) && /-resize$/.test(t.zoom+'')){
+                                xui.win.onSize(function(){
+                                    var t=xui.ini.$frame;
+                                    xui.resetRun("_xui_auto_zoom", zoom, 0, [t.zoom, t.width, t.height]);
+                                },"_xui_auto_zoom");
+                            }
                         }
-                    };
-                //if successes
-                if(path){
-                    try{
-                        // for CDN font icons
-                        if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                    }
+                    // apply background
+                    if((t=setting.background) && xui.isHash(t)){
+                        xui.each(t,function(v,k){
+                            xui('html').css(k, xui.adjustRes(v));
+                        });
+                    }
+                    // apply xui-custom
+                    if((t=xui.ini.$ElementStyle) && xui.isHash(t)) xui.CSS.setStyleRules(".xui-custom",t,true);
+                //]] apply dom
+
+                 //[[ apply url
+                // apply CDN font icons
+                    if((t=xui.ini.$FontIconsCDN) && xui.isHash(t)){
+                        // use asyn
+                        xui.asyRun(function(){
                             xui.each(t,function(o,i){
                                 if(o.href && !o.disabled){
                                     var attr={crossorigin:'anonymous'};
@@ -15741,48 +15810,61 @@ xui.Class('xui.Module','xui.absProfile',{
                                     xui.CSS.includeLink(xui.adjustRes(o.href), 'xui_app_fscdn-'+i, false,attr);
                                 }
                             });
+                        },20);
+                    }
+                //]] apply url
+            },
+            createModule=function(path){
+                var clsObj=this, t, setting={},
+                    showModule=function(i,l,flag){
+                        if(!xui.isFun(clsObj)){
+                            var e=new Error( "'"+cls+"' is not a constructor");
+                            xui.tryF(onEnd,[e,null]);
+                            throw e;
+                        }else{
+                            var o=new clsObj();
+                            // record it
+                            clsObj._callfrom=cls;
+
+                            xui.set(xui.ModuleFactory,["_cache",cls],o);
+
+                            if(onCreated)xui.tryF(onCreated, [o]);
+
+                            if(showUI!==false)o.show(onEnd, parent, subId);
+                            else xui.tryF(onEnd,[null,o], o);
                         }
-                        // for theme or background of root
-                        if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
-                            if(t.theme)theme=t.theme;
-                            if(t.lang)lang=t.lang;
-                            if('background' in t)bg=t.background;
-                            if('zoom' in t)zoom=t.zoom;
-                        }else if((t=this.viewStyles) && xui.isHash(t)){
-                            if(t.theme)theme=t.theme;
-                            bg={};
-                            xui.each(t,function(o,i){
-                                if(i=='theme')return;
-                                bg[i]=o;
-                            });
-                        }
-                        if((t=xui.ini.$ElementStyle) && xui.isHash(t)){
-                            xui.CSS.setStyleRules(".xui-custom",t,true);
-                        }
-                        if((t=xui.ini.$DefaultProp) && xui.isHash(t)){
-                            var allp={}, ctl;
-                            xui.each(t,function(v,k){
-                                if(/^xui\.UI\./.test(k) && xui.isHash(v) && (ctl=xui.get(window, k.split('.')))) {
-                                    ctl.setDftProp(v);
-                                }else{
-                                    allp[k]=v;
-                                }
-                            });
-                            if(!xui.isEmpty(allp)){
-                                xui.UI.setDftProp(allp);
-                            }
-                        }
-                    }catch(e){}
+                    };
+                //if successes
+                if(path){
+                    //[[ collect setting (background, spaceunit, view size,  view zoom ...
+                    // for non-project
+                    if((t=this.designViewConf) && xui.isHash(t)) xui.merge(setting, t);
+                    if((t=this.viewStyles) && xui.isHash(t)){
+                        xui.each(t,function(o,i){
+                            if(/^background/.test(i)) (setting.background||(setting.background={}))[i]=o;
+                            else setting[i]=o;
+                        });
+                    }
+                    //]] collect setting
+
+                    // for zoom
+                    if(setting.zoom)xui.set(xui.ini, ['$frame','zoom'], setting.zoom);
+                    if(setting.width)xui.set(xui.ini, ['$frame','width'], setting.width);
+                    if(setting.height)xui.set(xui.ini, ['$frame','height'], setting.height);
+
+                    if(!xui.isEmpty(setting)) applyEnv(setting);
+
+                    // If theme is not 'default', apply theme frist
                     if(theme&&theme!="default"){
                         xui.setTheme(theme,true,function(){
-                            if(lang) xui.setLang(lang, f); else f();
+                            if(lang&&lang!='en') xui.setLang(lang, showModule); else showModule();
                         },function(){
                             xui.alert("Can't load theme - " + theme);
-                            if(lang) xui.setLang(lang, f); else f();
+                            if(lang&&lang!='en') xui.setLang(lang, showModule); else showModule();
                         });
                     }else{
-                        //get locale info
-                        if(lang) xui.setLang(lang, f);else f();
+                        // If lang is not 'en', apply lang frist
+                        if(lang&&lang!='en') xui.setLang(lang, showModule);else showModule();
                     }
                 }else{
                     var e=new Error("No class name");
@@ -15790,29 +15872,49 @@ xui.Class('xui.Module','xui.absProfile',{
                     throw e;
                 }
             },
-            fun=function(){
-                if(typeof(cls)=='function'&&cls.$xui$)ifun(ok);
+            domReady=function(){
+                if(onDomReady)xui.tryF(onDomReady);
+
+                var t, setting={};
+                //[[ collect setting (background, spaceunit, view size,  view zoom ...
+                // for project
+                if((t=xui.ini.$DevEnv) && xui.isHash(t)){
+                    if(t.SpaceUnit)setting.SpaceUnit=t.SpaceUnit;
+                    if(t=t.designViewConf)xui.merge(setting, t, 'all');
+                }
+                if((t=xui.ini.$PageAppearance) && xui.isHash(t)){
+                    xui.merge(setting, t, 'all');
+                }
+                //]] collect setting
+
+                // for zoom
+                if(setting.zoom)xui.set(xui.ini, ['$frame','zoom'], setting.zoom);
+                if(setting.width)xui.set(xui.ini, ['$frame','width'], setting.width);
+                if(setting.height)xui.set(xui.ini, ['$frame','height'], setting.height);
+
+                if(!xui.isEmpty(setting)) applyEnv(setting);
+
+                if(typeof(cls)=='function'&&cls.$xui$)createModule.apply(['ok'],cls);
                 else cls=cls+"";
                 if(/\//.test(cls) && !/\.js$/i.test(cls))
                     cls=cls+".js";
                 if(/\.js$/i.test(cls)){
-                    xui.fetchClass(cls,ifun,
+                    xui.fetchClass(cls,createModule,
                         function(e){
                             xui.tryF(onEnd,[e,null]);
                         });
-                }else
+                }else{
                     //get app class
-                    xui.SC(cls,ifun,true,null,{
+                    xui.SC(cls,createModule,true,null,{
                         retry:0,
                         onFail:function(e){
                             xui.tryF(onEnd,[e,null]);
                         }
                     });
+                }
             };
-            if(xui.isDomReady)
-                fun();
-            else
-                xui.main(fun);
+
+            if(xui.isDomReady) domReady(); else xui.main(domReady);
         },
         unserialize:function(hash){
             return new this(hash);
@@ -17650,8 +17752,8 @@ xui.Class("xui.Tips", null,{
                         //set to this one
                         self._n.get(0).innerHTML=s;
 
-                        self._ww=xui.win.width();
-                        self._hh=xui.win.height();
+                        self._ww=xui.frame.width();
+                        self._hh=xui.frame.height();
 
                         //get width
                         w=Math.min(html?self._ww:tips.MAXWIDTH, _ruler.get(0).offsetWidth + 2);
@@ -23937,6 +24039,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 adjustOverflow=function(p,isWin){
                     var f,t,c,x,y;
                     if(isWin){
+                        // $frame.type has high priority
+                        if(xui.ini.$frame && !xui.isNumb(xui.ini.$frame.zoom))return;
+
                         f=xui.win.$getEvent('onSize','dock');
                     }else if(p && p.get(0)){
                         f=p.$getEvent('onSize','dock');
@@ -24203,7 +24308,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 conDockStretch=(pprop && ('conDockStretch' in pprop))?pprop.conDockStretch.split(/[,;\s]+/):[],
                                 perW=conDockFlexFill=="width"||conDockFlexFill=="both",
                                 perH=conDockFlexFill=="height"||conDockFlexFill=="both",
-                                node=isWin?xui.win:xui(pid);
+                                // if enable zoom, use a visualized frame (in <html> tag style)
+                                node=isWin?xui.frame:xui(pid);
 
                              if(!node.get(0))
                                 return;
@@ -38177,7 +38283,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                                     tagName : 'img',
                                     src:xui.ini.img_bg,
                                     title:'{image}',
-                                    style:'{imgStyle}'
+                                    style:'{_innerimgSize};{imgStyle}'
                                 }
                         },
                         COMMENT:{
@@ -38443,16 +38549,19 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             var p = profile.properties,
                 cols=p.columns,
                 rows=p.rows,
-                auto=item.autoItemSize||p.autoItemSize,
+                auto1=item.autoItemSize||p.autoItemSize,
+                auto2=item.autoImgSize||p.autoImgSize,
                 t;
 
-            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize'),function(i){
+            xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize,autoImgSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
-            item.itemWidth=(!auto&&(t=item.itemWidth))?profile.$forceu(t):'';
-            item.itemHeight=(!auto&&(t=item.itemHeight))?profile.$forceu(t):'';
+            item.itemWidth=(!auto1&&(t=item.itemWidth))?profile.$forceu(t):'';
+            item.itemHeight=(!auto1&&(t=item.itemHeight))?profile.$forceu(t):'';
             item.itemMargin=(t=item.itemMargin)?profile.$forceu(t):0;
             item.itemPadding=(t=item.itemPadding)?profile.$forceu(t):0;
+            item.imgWidth=(!auto2&&(t=item.imgWidth))?profile.$forceu(t):'';
+            item.imgHeight=(!auto2&&(t=item.imgHeight))?profile.$forceu(t):'';
             item._tabindex = p.tabindex;
 
             if(t=item.iconFontSize)item._fontSize="font-size:"+t;
@@ -38476,10 +38585,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(rows)
                 item._itemSize+='height:'+(100/rows+'%')+';border:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;';
 
-            if(!auto){
-                item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
+            if(!auto1) item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
                     (!rows&&item.itemHeight?('height:'+item.itemHeight):'');
-            }
+            if(!auto2)
+                item._innerimgSize=(item.imgWidth?('width:'+item.imgWidth+';'):'') + (!rows&&item.imgHeight?('height:'+item.imgHeight):'');
         },
         RenderTrigger:function(){
             this.boxing()._afterInsertItems(this);
@@ -53610,10 +53719,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             top=left.top+(left.height-profile.$px(p.height))/2;
                             left=left.left+(left.width-profile.$px(p.width))/2;
                         }else{
-                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent);
+                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent),
+                                scale =  pr == xui.win && xui.ini.$zoomScale || 1;
                             // here, have to use global em
-                            top=(top||top===0)?top:Math.max(0,(pr.height()-profile.$px(p.height))/2+pr.scrollTop());
-                            left=(left||left===0)?left:Math.max(0,(pr.width()-profile.$px(p.width))/2+pr.scrollLeft());
+                            top=(top||top===0)?top:Math.max(0,(pr.height()/scale-profile.$px(p.height))/2 + pr.scrollTop()/scale);
+                            left=(left||left===0)?left:Math.max(0,(pr.width()/scale-profile.$px(p.width))/2 + pr.scrollLeft()/scale);
                         }
                     break;
                 }
