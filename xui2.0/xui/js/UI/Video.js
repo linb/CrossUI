@@ -13,6 +13,7 @@ xui.Class("xui.UI.Video", "xui.UI.Audio",{
                 controls:'{_controls}',
                 loop:'{_loop}',
                 muted:'{_muted}',
+                type:'application/x-mpegURL',
 
                 preload:'{preload}',
                 volume:'{volume}',
@@ -20,7 +21,7 @@ xui.Class("xui.UI.Video", "xui.UI.Audio",{
 
                 width:'{width}',
                 height:'{height}',
-                text:'Your browser does not support the audio element.'
+                text:'Your browser does not support the video element.'
             },
             COVER:{
                 tagName:'div',
