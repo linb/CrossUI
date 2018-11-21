@@ -37,7 +37,7 @@ xui.set(xui.Locale,["cn","app"], {
         ]
     };
     var $force="force [可选参数] : Boolean, 强制设置该属性值,即使属性已经设置为该值. 默认为 [false]";
-    var $profile="profile : xui.UIProfile, 当前控件的配置对象";
+    var $profile="profile : xui.UIProfile, 当前控件的配置对象(特征数据)";
     /*
     $desc string
     $paras array
@@ -5658,7 +5658,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"重算模拟Excel单元格的公式",
                 $rtn:"[self]",
                 $paras:[
-                    "profileTo [可选参数] : xui.UIProfile. 模拟Excel单元格的控件配置对象"
+                    "profileTo [可选参数] : xui.UIProfile. 模拟Excel单元格的控件配置对象(特征数据)"
                 ]
             },
             triggerExcelFormulas:{
@@ -7048,7 +7048,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeEditApply:{
-                $desc:"在编辑内容生效前调用,返回false可以阻止该动作",
+                $desc:"在编辑内容生效前调用,返回false可以阻止",
                 $paras:[
                     $profile,
                     "item : Object, 子项对象",
@@ -9323,7 +9323,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeDestroy:{
-                $desc:"在控件被销毁前触发,如果返回false,控件销毁的动作将被取消",
+                $desc:"在控件被销毁前触发,如果返回false,控件将不会被销毁",
                 $paras:[
                     $profile
                 ],
@@ -9459,7 +9459,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforePropertyChanged:{
-                $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变",
+                $desc:"当控件的某个属性被改变前触发,返回false可以阻止这个属性被改变",
                 $paras:[
                     $profile,
                     "name : String, 属性名",
@@ -9476,7 +9476,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             afterPropertyChanged:{
-                $desc:"当控件的某个属性被改变前出发,返回false可以阻止这个属性被改变",
+                $desc:"当控件的某个属性被改变前触发,返回false可以阻止这个属性被改变",
                 $paras:[
                     $profile,
                     "name : String, 属性名",
@@ -9493,7 +9493,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeAppend:{
-                $desc:"当向控件添加子控件前触发,返回false可以阻止该动作",
+                $desc:"当向控件添加子控件前触发,返回false可以阻止",
                 $paras:[
                     $profile,
                     "child : xui.UI, 添加的子控件"
@@ -9523,7 +9523,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeRemove:{
-                $desc:"当从控件中移除子控件前触发,返回false可以阻止该动作",
+                $desc:"当从控件中移除子控件前触发,返回false可以阻止",
                 $paras:[
                     $profile,
                     "child : xui.UIProfile, 移除的子控件",
@@ -9557,7 +9557,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             onShowTips:{
-                $desc:"当控件显示tips时调用. 如返回false将会阻止系统默认的工具信息显示",
+                $desc:"当控件显示 tips 时调用. 如返回false将会阻止系统默认的 tips 显示",
                 $paras:[
                     $profile,
                     "src: String, 事件所属DOM元素的xid",
@@ -18257,7 +18257,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             beforeEditApply:{
-                $desc:"在编辑内容生效前调用,返回false可以阻止该动作",
+                $desc:"在编辑内容生效前调用,返回false可以阻止",
                 $paras:[
                     $profile,
                     "cell : Object, 单元格对象",
