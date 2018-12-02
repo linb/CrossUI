@@ -1445,10 +1445,10 @@ xui.merge(xui,{
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.JSONP(path,xui._rnd(),onSuccess,onFail,0,options).start()
+                xui.JSONP(path,options.cache?"":xui._rnd(),onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,xui._rnd(),function(rsp){
+                xui.Ajax(path,options.cache?"":xui._rnd(),function(rsp){
                     try{xui.exec(rsp,id)}
                     catch(e){xui.tryF(onFail,[e.name + ": " + e.message])}
                     xui.tryF(onSuccess);

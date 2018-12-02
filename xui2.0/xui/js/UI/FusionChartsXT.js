@@ -12,24 +12,10 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
     },
     Instance:{
         initialize:function(){
-            if(xui.isSet(window.FusionCharts) && FusionCharts.addEventListener){
-                if(!FusionCharts._xui_attaced){
-                    FusionCharts._xui_attaced = 1;
-                    FusionCharts.addEventListener(["beforeRender","renderCancelled","beforeResize","resized","resizeCancelled","beforeDispose","disposed","disposeCancelled","pageNavigated","rotationEnd","rotationStart","centerLabelRollover","centerLabelRollout","centerLabelClick","centerLabelChanged","linkClicked","chartTypeChanged","chartClick","chartMouseMove","chartRollOver","chartRollOut","backgroundLoaded","backgroundLoadError","logoRollover","logoRollout","logoClick","logoLoaded","logoLoadError","scrollStart","scrollEnd","slicingStart","slicingEnd","dataRestored","beforeDataSubmit","dataSubmitError","dataSubmitted","dataSubmitCancelled","chartUpdated","nodeAdded","nodeUpdated","nodeDeleted","connectorAdded","connectorUpdated","connectorDeleted","labelAdded","labelDeleted","selectionRemoved","labelClick","labelRollOver","labelRollOut","labelDragStart","labelDragEnd","dataplotDragStart","dataplotDragEnd","alertComplete","realTimeUpdateComplete","realTimeUpdateError","chartCleared","zoomReset","zoomedOut","zoomedIn","zoomed","zoomModeChanged","pinned","beforeExport","exported","exportCancelled","beforePrint","printComplete","printCancelled","<static> ready","legendPointerDragStart","legendPointerDragStop","legendRangeUpdated","legendItemClicked","legendItemRollover","legendItemRollout","beforeLinkedItemOpen","linkedItemOpened","beforeLinkedItemClose","linkedItemClosed","entityRollOut","entityRollOver","entityClick","connectorRollOver","connectorRollOut","markerRollOver","markerRollOut","markerClick","printReadyStateChange","dataplotRollOver","dataplotRollOut","dataplotClick","processClick","processRollOver","processRollOut","categoryClick","categoryRollOver","categoryRollOut","milestoneClick","milestoneRollOver","milestoneRollOut","overlayButtonClick","loaded","rendered","drawComplete","renderComplete","dataInvalid","dataXMLInvalid","dataLoaded","noDataToDisplay","connectorClick","selectionStart","selectionEnd","dataLabelClick","dataLabelRollOver","dataLabelRollOut","dataLoadRequestCompleted","dataLoadError","dataLoadCancelled","dataLoadRequestCancelled","dataUpdated","dataUpdateCancelled","dataLoadRequested","beforeDataUpdate"], 
-                        function(eventObject, argumentsObject){
-                            xui.UI.FusionChartsXT.getAll().each(function(prf,t){
-                                 if(prf.onFusionChartsEvent && prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId)) && t==eventObject.sender)
-                                    prf.boxing().onFusionChartsEvent(prf,eventObject,argumentsObject);
-                            });
-                        }
-                    );
-                }
-            }else{
-                throw "No FusionCharts Namespace!";
-            }
         },
         refreshChart:function(dataFormat){
             return this.each(function(prf){
+                if(!prf || !prf.box)return;
                 prf.boxing().busy(false,'');
                 if(prf.renderId){
                     var fun=function(){
@@ -269,6 +255,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 $spaceunit:1,
                 ini:'25em'
             },
+            chartCDN:"https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js",
             chartType:{
                 ini:"Column2D",
                 //Single Series Charts
@@ -460,28 +447,43 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             return data;
         },
         RenderTrigger:function(){
-            var prf=this;
-            // give chart dom id
-            prf._chartId="FC_"+prf.properties.chartType+"_"+prf.$xid;
+            var prf=this,prop=prf.properties;
+            prf.boxing().busy(false, "Loading charts ...");
 
-            if(!xui.isEmpty(prf.properties.configure)){
-                prf.boxing().setConfigure(prf.properties.configure, true);
-            }
-            if(prf.theme)
-                prf.boxing().setTheme(prf.theme);
-            // render it
-            prf.boxing().refreshChart();
-            
-            // set before destroy function
-            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
-                var t;
-                if(this._chartId && (t=FusionCharts(this._chartId))){
-                    t.removeEventListener("dataplotClick",prf._f1);
-                    t.removeEventListener("dataLabelClick",prf._f2);
-                    t.removeEventListener("annotationClick",prf._f3);
-                    prf._f1=prf._f2=prf._f3=null;
-                    t.dispose();
+            var fun=function(){
+                if(!prf || !prf.box)return;
+
+                prf.boxing().free();
+
+                // give chart dom id
+                prf._chartId="FC_"+prf.properties.chartType+"_"+prf.$xid;
+
+                if(!xui.isEmpty(prf.properties.configure)){
+                    prf.boxing().setConfigure(prf.properties.configure, true);
                 }
+                if(prf.theme)
+                    prf.boxing().setTheme(prf.theme);
+                // render it
+                prf.boxing().refreshChart();
+                
+                // set before destroy function
+                (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
+                    var t;
+                    if(this._chartId && (t=FusionCharts(this._chartId))){
+                        t.removeEventListener("dataplotClick",prf._f1);
+                        t.removeEventListener("dataLabelClick",prf._f2);
+                        t.removeEventListener("annotationClick",prf._f3);
+                        prf._f1=prf._f2=prf._f3=null;
+                        t.dispose();
+                    }
+                }
+            };
+
+            if(window.FusionCharts)fun();
+            else{
+                xui.include("FusionCharts",prop.chartCDN,function(){
+                    if(prf && prf.box) fun();
+                },null,false,{cache:true});
             }
         },
         EventHandlers:{

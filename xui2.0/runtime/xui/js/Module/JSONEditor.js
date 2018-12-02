@@ -1,5 +1,6 @@
 xui.Class('xui.Module.JSONEditor', 'xui.Module',{
     Instance:{ 
+        activate:function(){},
         setValue:function(str){
             var ns=this,
                 obj=xui.isStr(str)?str?xui.unserialize(str):false:str,
@@ -22,12 +23,13 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             append(
                 xui.create("xui.UI.TreeGrid")
                 .setHost(host,"tg")
+                .setTogglePlaceholder(true)
                 .setEditable(true)
                 .setIniFold(false)
                 .setRowHandler(false)
                 .setColSortable(false)
-                .setTogglePlaceholder(true)
-                .setHeader([{
+                .setHeader([
+                    {
                     "id" : "key",
                     "width" : 100,
                     "type" : "input",
@@ -42,8 +44,10 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     "caption" : "value",
                     "editorCacheKey" : "textarea",
                     "flexSize" : true
-                }])
-                .setTagCmds([{
+                    }
+                ])
+                .setTagCmds([
+                    {
                     "id" : "add",
                     "type" : "text",
                     "caption" : "",
@@ -51,35 +55,39 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     "itemClass":"xuicon xui-uicmd-getter",
                     "tag" : "header row",
                     "tips" : "Append a child"
-                },{
+                    },
+                    {
                     "id" : "up",
                     "type" : "text",
                     "location": "right",
                     "itemClass":"xuicon xui-icon-arrowtop",
                     "tag" : "row",
                     "tips" : "Add a node to the front of the node" 
-                },{
+                    },
+                    {
                     "id" : "down",
                     "type" : "text",
                     "location": "right",
                     "itemClass":"xuicon xui-icon-arrowbottom",
                     "tag" : "row",
                     "tips" : "Add a node at the back of this node"
-                },{
+                    },
+                    {
                     "id" : "del",
                     "type" : "text",
                     "location": "right",
                     "itemClass":"xuicon xui-uicmd-close",
                     "tag" : "row",
                     "tips" : "Delete this node"
-                }])
+                    }
+                ])
                 .setTreeMode("infirstcell")
                 .onCmd("_tg_oncmd")
+                .beforeRowActive("_tg_beforerowactive")
+                .beforeCellUpdated("_tg_beforecellupdated")
                 .beforeIniEditor("_tg_beforeIniEditor")
                 .onBeginEdit("_tg_onEdit")
-                .beforeRowActive('_tg_beforerowactive')
                 .beforeEditApply("_tg_beforecellapply")
-                .beforeCellUpdated("_tg_beforecellupdated")
             );
             
             return children;
@@ -252,7 +260,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         tg.updateRow(rowId, ops);
                         // must get
                         row = tg.getRowbyRowId(rowId);
-                        row._type=va[0];
+                        if(row)row._type=va[0];
 
                         ns.fireEvent("onchange", [ns]);
                     },100);

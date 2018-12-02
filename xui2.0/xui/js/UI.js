@@ -952,7 +952,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui.setNodeData(node,'_animationreset',null);
             }
 
-            if(key && (t=xui.AnimBinder.getFromName(key))) {
+            if(key && (t=xui.AnimBinder.getFromName(key===true?"blinkAlert":key))) {
                 return t.apply(node, callback);
             }else{
                 if(!key)key="blinkAlert";
@@ -5342,8 +5342,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             activeAnim:{
                 ini:"",
                 action:function(key){
-                    var prf=this;
-                    if(key)prf._activeAnim = prf.boxing().animate(key).id;
+                    var prf=this,t;
+                    if(key)prf._activeAnim = (t=prf.boxing().animate(key))&&t.id;
                     else if(key = prf._activeAnim){
                         xui.Thread.abort(key);
                         delete prf._activeAnim;
@@ -5895,6 +5895,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         if(parseFloat(t=prop['dockMin'+direction]))numb=Math.max(prf.$px(t),numb);
                                         if(parseFloat(t=prop['dockMax'+direction]))numb=Math.min(prf.$px(t),numb);
                                         return numb;
+                                    },originalSize=function(prf,dir){
+                                        return parseFloat(prf.$px(prf.properties[dir]))||0;
                                     };
                                     // collect controls (w/h) to be percentaged, no dockIgnore
                                     for(k=0;key=arr[k++];){
@@ -5905,15 +5907,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
-                                                        tmp= adjustMM(o,"W", node.width()) ;
-                                                        wSum +=tmp;
+                                                        tmp= adjustMM(o,"W", originalSize(o,'width'));
+                                                        wSum += tmp;
                                                         if(o.properties.dock!="fill"){
-                                                            hMax = Math.max(hMax, adjustMM(o,"H", node.height()));
+                                                            hMax = Math.max(hMax, adjustMM(o,"H", originalSize(o,'height')));
                                                         }
                                                     }
                                                     if(perH && (key=='top'||key=='bottom'||key=='height')){
                                                         hCount++;
-                                                        hSum += adjustMM(o,"H", node.height());
+                                                        hSum += adjustMM(o,"H", originalSize(o,'height'));
                                                     }
                                                 }
                                             }
@@ -5932,7 +5934,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     if(o.properties.position=='absolute' && !o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            innerW -= adjustMM(o,"W", node.width());
+                                                            innerW -= adjustMM(o,"W", originalSize(o,'width'));
                                                             innerH -= conDockSpacing.width;
                                                         }
                                                     }
@@ -5941,7 +5943,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     if(!(o.properties.position!='absolute'|| o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
-                                                            node.width(adjustunit( adjustMM(o,"W",Math.min(1, ( node.width()) / wSum) * innerW)) );
+                                                            node.width(adjustunit( adjustMM(o,"W",Math.min(1, originalSize(o,'width') / wSum) * innerW)) );
                                                         }
                                                     }
                                                 }
@@ -5958,7 +5960,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     if(o.properties.position=='absolute' && !o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            innerH -= adjustMM(o,"H",  node.height());
+                                                            innerH -= adjustMM(o,"H", originalSize(o,'height'));
                                                             innerH -= conDockSpacing.height;
                                                         }
                                                     }
@@ -5967,7 +5969,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
-                                                            node.height(adjustunit( adjustMM(o,"H",Math.min(1, ( node.height())/ hSum) * innerH)) );
+                                                            node.height(adjustunit( adjustMM(o,"H",Math.min(1, originalSize(o,'height')/ hSum) * innerH)) );
                                                         }
                                                     }
                                                 }

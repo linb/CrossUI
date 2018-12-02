@@ -78,7 +78,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     else{
                         // resize immidiately here, maybe max here
                         xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
-                        root.show(left?adjustunit(left):null, top?adjustunit(top):null, fun,null,ignoreEffects);
+                        root.show(left||left===0?adjustunit(left):null, top||top===0?adjustunit(top):null, fun,null,ignoreEffects);
                         box._refreshRegion(profile);
                     }
                 };

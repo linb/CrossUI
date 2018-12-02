@@ -116,6 +116,8 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\ThirdParty\raphael.js /b ^
 + %relPath%xui\js\svg.js /b ^
 + %relPath%xui\js\UI\SVGPaper.js /b ^
++ %relPath%xui\js\UI\FusionChartsXT.js /b ^
++ %relPath%xui\js\UI\ECharts.js /b ^
 + %relPath%xui\js\_end.js /b ^
 xui.js
 
@@ -126,21 +128,9 @@ copy xui.js  %outPath%xui\js%debugPath%
 rem ==================
 rem for extra classes
 rem ==================
-rem -----------------------
-rem for FusionChartsXT.js
-rem -----------------------
-copy %relPath%xui\js\UI\FusionChartsXT.js /b ^
-+ %relPath%xui\js\ThirdParty\fusioncharts.js /b ^
-+ %relPath%xui\js\ThirdParty\fusioncharts.charts.js /b ^
-+ %relPath%xui\js\ThirdParty\fusioncharts.widgets.js /b ^
-+ %relPath%xui\js\ThirdParty\fusioncharts.powercharts.js /b ^
-+ %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.carbon.js /b ^
-+ %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.fint.js /b ^
-+ %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.ocean.js /b ^
-+ %relPath%xui\js\ThirdParty\themes\fusioncharts.theme.zune.js /b ^
-FusionChartsXT.js
 
-copy FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
+copy %relPath%xui\js\UI\FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
+copy %relPath%xui\js\UI\ECharts.js  %outPath%xui\js\UI\ECharts.js
 
 rem -----------------------
 rem for Coder.js
@@ -161,7 +151,6 @@ xcopy %outPath%*.* %oPath%%outPath% /E /Y
 rd %outPath% /S /Q
 
 del /q xui.js
-del /q FusionChartsXT.js
 
 if %errorlevel% == 0 goto done
 pause
