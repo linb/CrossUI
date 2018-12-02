@@ -186,14 +186,13 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                         }
                         if((v=prop.tagVar.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
                         if((v=ins.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
-                        if(ins.beforeSetOption && false!==ins.beforeSetOption(prf, option)){
+                        if(ins.beforeSetOption && false===ins.beforeSetOption(prf, option)){}else{
                             prf.$echarts.setOption(option);
                         }
                     }
                 }
             },
             optionUpdater:{
-                hidden:true,
                 ini:{},
                 action:function(v){
                     var prf=this;

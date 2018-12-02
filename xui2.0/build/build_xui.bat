@@ -129,8 +129,8 @@ rem ==================
 rem for extra classes
 rem ==================
 
-copy %relPath%xui\js\UI\FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
-copy %relPath%xui\js\UI\ECharts.js  %outPath%xui\js\UI\ECharts.js
+rem copy %relPath%xui\js\UI\FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
+rem copy %relPath%xui\js\UI\ECharts.js  %outPath%xui\js\UI\ECharts.js
 
 rem -----------------------
 rem for Coder.js
