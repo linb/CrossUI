@@ -4687,6 +4687,29 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return one?data[0]:data;
                 }
             },
+            dataset:{
+                ini:{},
+                get:function(){
+                     var prf=this, ins=prf.boxing(),prop=prf.properties;
+                     return {
+                        name:prop.gridHandlerCaption,
+                        dimensions:ins.getHeader('min'),
+                        source:ins.getRows('min')
+                     };
+                },
+                set:function(v){
+                    var prf=this, ins=prf.boxing(), prop=prf.properties;
+                    var dataset = xui.isFun(v.getDataset)?v.getDataset():v;
+                    if((v=prop.tagVar.datasetAdapter) && xui.isFun(v))dataset=v.call(ins, dataset,prf);
+                    if((v=ins.datasetAdapter) && xui.isFun(v))dataset=v.call(ins, dataset,prf);
+                    if(ins.beforeApplyDataset && false===ins.beforeApplyDataset(prf, dataset)){}else{
+                        if(xui.isArr(dataset))dataset=dataset[0];
+                        if('name' in dataset)ins.setGridHandlerCaption(dataset.name);
+                        if('dimensions' in dataset)ins.setHeader(dataset.dimensions);
+                        if('source' in dataset)ins.setRows(dataset.source);
+                    }
+                }
+            },
             tagCmds:{
                 ini:[],
                 action:function(){
@@ -4778,6 +4801,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onBodyLayout:function(profile, trigger){},
+            beforeApplyDataset:function(profile, dataset){},
 
             beforeCellKeydown:function(profile,cell,keys){},
             afterCellFocused:function(profile, cell, row){},
@@ -5307,6 +5331,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             delete op.activeRow;
             delete op.activeCell;
             delete op.rawData;
+            delete op.dataset;
             return o;
         },
         _clsCache:{},

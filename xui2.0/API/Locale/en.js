@@ -17749,6 +17749,17 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getDataset:{
+                $desc:"Gets the grid's dataset",
+                $rtn:"Object"
+            },
+            setDataset:{
+                $desc:"Sets the grid's dataset",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, json object"
+                ]
+            },
             getRawData :{
                 $desc:"Gets the grid's raw mapped data",
                 $rtn:"Array"

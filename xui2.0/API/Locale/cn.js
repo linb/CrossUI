@@ -17667,6 +17667,17 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getDataset:{
+                $desc:"得到表格的数据集",
+                $rtn:"Object"
+            },
+            setDataset:{
+                $desc:"设置表格的数据集合",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, 数据对象"
+                ]
+            },
             getRawData :{
                 $desc:"获取表格的键值对数据",
                 $rtn:"Array"
