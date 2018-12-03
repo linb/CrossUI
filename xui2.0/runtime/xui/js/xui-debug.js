@@ -68907,8 +68907,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
         echarts_getOptoin:function(){
             return this.echarts_call("getOptoin",[]);
         },
-        echarts_setOptoin:function(opts){
-            return this.echarts_call("setOptoin",[opts]);
+        echarts_setOptoin:function(option){
+            return this.echarts_call("setOptoin",[option, notMerge,lazyUpdate,silent]);
         },
         echarts_getDataURL:function(opts){
             return this.echarts_call("getDataURL",[opts]);

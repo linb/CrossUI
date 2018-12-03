@@ -18863,7 +18863,219 @@ xui.set(xui.Locale,["en","app"], {
             }
         }
     });
+     xui.set(xui.Locale,["cn","doc","xui","UI","ECharts"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.UI.ECharts Class",
+        constructor:{
+            $desc:"Creates a xui.UI.ECharts Object"
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            getECharts:{
+                $desc:"Gets ECharts object",
+                $rtn:"Object, Echarts object"
+            },
+            optionAdapter:{
+                $desc:"Function for adjusting ECharts' option object (will be called before setOption )",
+                $rtn:"Object, Echarts option",
+                $paras:[
+                    "option [Required] : String, Echarts option"
+                ]
+            },
+            echarts_call:{
+                $desc:"Calls ECharts' function",
+                $rtn:"Object",
+                $paras:[
+                    "funName [Required] : String, function name",
+                    "params [Optional] : Array,  function parameters"
+                ]
+            },
+            echarts_dispatchAction:{
+                $desc:"Triggers chart actions",
+                $rtn:"null",
+                $paras:[
+                    "payload [Required] : Object, parameter can trigger multiple actions through batch attribute." 
+                ]
+            }, 
+            echarts_showLoading:{
+                $desc:"Shows loading animation.",
+                $rtn:"null",
+                $paras:[
+                    "type [Optional] : String,  Optional; type of loading animation; only 'default' is supported by far",
+                    "params [Optional] : Object,  Optional; configuration item of loading animation, which is related to type"
+                ]
+            },
+            echarts_hideLoading:{
+                $desc:"Hides animation loading effect",
+                $rtn:"null"
+            },
+            echarts_getOptoin:{
+                $desc:"Gets option object maintained in current instance, which contains configuration item and data merged from previous setOption operations by users, along with user interaction states",
+                $rtn:"Object"
+            },  
+            echarts_setOptoin:{
+                $desc:"Configuration item, data, universal interface, all parameters and data can all be modified through setOption",
+                $rtn:"null",
+                $paras:[
+                    "option [Required] : Object, Configuration item and data",
+                    "notMerge[Optional] : Boolean, Optional; states whether not to merge with previous option; false by defualt, stating merging",
+                    "lazyUpdate[Optional] : Boolean, Optional; states whether not to update chart immediately; false by defualt, stating update immediately",
+                    "silent[Optional] : Boolean, Optional; states whether not to prevent triggering events when calling setOption; false by defualt, stating trigger events"
+                ]
+            },
+            echarts_getDataURL: {
+                $desc:"Exports chart image; returns a base64 URL; can be set to src of Image",
+                $rtn:"String",
+                $paras:[
+                    "opts [Optional] : Object, options"
+                ]
+            },
+            echarts_getConnectedDataURL: {
+                $desc:"Exports connected chart image; returns a base64 url; can be set to src of Image",
+                $rtn:"String",
+                $paras:[
+                    "opts [Optional] : Object, options"
+                ]
+            },
+            echarts_appendData: {
+                $desc:"The method is used in rendering millions of data , to load required chunked data",
+                $rtn:"String",
+                $paras:[
+                    "opts [Optional] : Object, options"
+                ]
+            },
+            echarts_clear: {
+                $desc:"Clears current instance; removes all components and charts in current instance",
+                $rtn:"null"
+            },
+            echarts_isDisposed: {
+                $desc:"Returns whether current instance has been disposed",
+                $rtn:"Boolean"
+            },
+            getChartCDN:{
+                $desc:"Gets ECharts base lib CDN address",
+                $rtn:'String'
+            },
+            setChartCDN:{
+                $desc:"Sets ECharts base lib CDN address",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getChartCDNGL:{
+                $desc:"Gets ECharts GL lib CDN address",
+                $rtn:'String'
+            },
+            setChartCDNGL:{
+                $desc:"Sets ECharts GL lib CDN address",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getChartTheme:{
+                $desc:"Gets ECharts theme",
+                $rtn:'String'
+            },
+            setChartTheme:{
+                $desc:"Sets ECharts theme",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String",
+                    $force
+                ]
+            },
+            getChartRenderer:{
+                $desc:"Gets ECharts rendering type",
+                $rtn:'String'
+            },
+            setChartRenderer:{
+                $desc:"Sets ECharts rendering type",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'canvas' or 'svg'. Default is 'svg'",
+                    $force
+                ]
+            },
+            getChartDevicePixelRatio:{
+                $desc:"Gets ECharts device pixel ratio",
+                $rtn:'Number'
+            },
+            setChartDevicePixelRatio:{
+                $desc:"Sets ECharts device pixel ratio",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Number. Ratio of one physical pixel to the size of one device independent pixels. Browser's window.devicePixelRatio is used by default",
+                    $force
+                ]
+            },
+            getChartResizeSilent:{
+                $desc:"To determine whether or not to prevent triggering events when resize",
+                $rtn:'Boolean'
+            },
+            setChartResizeSilent:{
+                $desc:"To specify whether or not to prevent triggering events when resize. Default is false",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean",
+                    $force
+                ]
+            },
+            getChartOption:{
+                $desc:"Gets option object maintained in current instance, which contains configuration item and data merged from previous setOption operations by users, along with user interaction states",
+                $rtn:'Object'
+            },
+            setChartOption:{
+                $desc:"Configuration item, data, universal interface, all parameters and data can all be modified through setOption",
+                $rtn:"[self]",
+                $paras:[
+                    "JSON: Object, JSON object"
+                ]
+            },
+            getDataset:{
+                $desc:"Gets dataset",
+                $rtn:"Object"
+            },
+            setDataset:{
+                $desc:"Sets dataset to ECharts (only for some certain types)",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, dataset object"
+                ]
+            },
+            getOptionUpdater:{
+                $desc:"Gets option updater object",
+                $rtn:"Object"
+            },
+            setOptionUpdater:{
+                $desc:"Sets option updater object",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, update object"
+                ]
+            },
 
+            onMouseEvent:{
+                $desc:"Triggerred when any ECharts mouse event is raised",
+                $paras:[
+                    $profile,
+                    "eventName: String, event name",
+                    "eventParams : Object, event parameters"
+                ] 
+            },
+            onChartEvent:{
+                $desc:"Triggerred when any ECharts non-mouse event is raised",
+                $paras:[
+                    $profile,
+                    "eventName: String, event name",
+                    "eventParams : Object, event parameters"
+                ]
+            }
+        }
+    });
     xui.set(xui.Locale,["en","doc","xui","UI","FusionChartsXT"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.FusionChartsXT Class",

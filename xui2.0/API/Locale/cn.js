@@ -18780,6 +18780,221 @@ xui.set(xui.Locale,["cn","app"], {
             }
         }
     });
+    xui.set(xui.Locale,["cn","doc","xui","UI","ECharts"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.UI.ECharts 类",
+        constructor:{
+            $desc:"生成一个xui.UI.ECharts"
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            getECharts:{
+                $desc:"得到 ECharts 对象",
+                $rtn:"Object, Echarts对象"
+            },
+            optionAdapter:{
+                $desc:"ECharts 设置配置项前的数据调配函数",
+                $rtn:"Object, Echarts的配置项",
+                $paras:[
+                    "option [必需参数] : String, Echarts的配置项"
+                ]
+            },
+            echarts_call:{
+                $desc:"调用 ECharts 内部函数",
+                $rtn:"Object",
+                $paras:[
+                    "funName [必需参数] : String, 函数名称",
+                    "params [可选参数] : Array, 函数参数"
+                ]
+            },
+            echarts_dispatchAction:{
+                $desc:"触发图表行为",
+                $rtn:"null",
+                $paras:[
+                    "payload [必需参数] : Object, 参数可以通过batch属性同时触发多个行为" 
+                ]
+            }, 
+            echarts_showLoading:{
+                $desc:"显示加载动画效果",
+                $rtn:"null",
+                $paras:[
+                    "type [可选参数] : String, 可选，加载动画类型，目前只有一种'default'",
+                    "params [可选参数] : Object, 可选，加载动画配置项，跟type有关"
+                ]
+            },
+            echarts_hideLoading:{
+                $desc:"隐藏动画加载效果",
+                $rtn:"null"
+            },
+            echarts_getOptoin:{
+                $desc:"获取当前实例中维护的option对象",
+                $rtn:"Object"
+            },  
+            echarts_setOptoin:{
+                $desc:"设置图表实例的配置项以及数据",
+                $rtn:"null",
+                $paras:[
+                    "option [必需参数] : Object, 图表的配置项和数据",
+                    "notMerge[可选参数] : Boolean, 是否不跟之前设置的option进行合并，默认为false，即合并",
+                    "lazyUpdate[可选参数] : Boolean, 在设置完option后是否不立即更新图表，默认为false，即立即更新",
+                    "silent[可选参数] : Boolean, 阻止调用 setOption 时抛出事件，默认为false，即抛出事件"
+                ]
+            },
+            echarts_getDataURL: {
+                $desc:"导出图表图片，返回一个 base64 的 URL，可以设置为Image的src",
+                $rtn:"String",
+                $paras:[
+                    "opts [可选参数] : Object, 导出配置"
+                ]
+            },
+            echarts_getConnectedDataURL: {
+                $desc:"导出联动的图表图片，返回一个 base64 的 URL，可以设置为Image的src",
+                $rtn:"String",
+                $paras:[
+                    "opts [可选参数] : Object, 导出配置"
+                ]
+            },
+            echarts_appendData: {
+                $desc:"用于在大数据量（百万以上）的渲染场景，分片加载数据和增量渲染",
+                $rtn:"String",
+                $paras:[
+                    "opts [可选参数] : Object, 配置"
+                ]
+            },
+            echarts_clear: {
+                $desc:"清空当前实例，会移除实例中所有的组件和图表",
+                $rtn:"null"
+            },
+            echarts_isDisposed: {
+                $desc:"当前实例是否已经被释放",
+                $rtn:"Boolean"
+            },
+            getChartCDN:{
+                $desc:"得到 ECharts 基本库js文件的CDN地址",
+                $rtn:'String'
+            },
+            setChartCDN:{
+                $desc:"设置 ECharts 基本库js文件的CDN地址",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getChartCDNGL:{
+                $desc:"得到 ECharts gl库js文件的CDN地址",
+                $rtn:'String'
+            },
+            setChartCDNGL:{
+                $desc:"设置 ECharts gl库js文件的CDN地址",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getChartTheme:{
+                $desc:"得到 ECharts 主题",
+                $rtn:'String'
+            },
+            setChartTheme:{
+                $desc:"设置 ECharts 主题",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String",
+                    $force
+                ]
+            },
+            getChartRenderer:{
+                $desc:"得到 ECharts 渲染方式",
+                $rtn:'String'
+            },
+            setChartRenderer:{
+                $desc:"设置 ECharts 渲染方式",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, canvas 或 svg, 默认为 svg",
+                    $force
+                ]
+            },
+            getChartDevicePixelRatio:{
+                $desc:"得到 ECharts 设备像素比",
+                $rtn:'Number'
+            },
+            setChartDevicePixelRatio:{
+                $desc:"设置 设备像素比，默认取浏览器的值window.devicePixelRatio",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Number",
+                    $force
+                ]
+            },
+            getChartResizeSilent:{
+                $desc:"得到当ECharts改变大小的时候是否禁止抛出事件",
+                $rtn:'Boolean'
+            },
+            setChartResizeSilent:{
+                $desc:"设置当ECharts改变大小的时候是否禁止抛出事件。默认为 false",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean",
+                    $force
+                ]
+            },
+            getChartOption:{
+                $desc:"得到 ECharts  的option配置对象",
+                $rtn:'Object'
+            },
+            setChartOption:{
+                $desc:"设置ECharts  的option配置对象",
+                $rtn:"[self]",
+                $paras:[
+                    "JSON: Object, JSON 对象"
+                ]
+            },
+            getDataset:{
+                $desc:"得到ECharts数据集",
+                $rtn:"Object"
+            },
+            setDataset:{
+                $desc:"设置ECharts数据集合",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, 数据对象"
+                ]
+            },
+            getOptionUpdater:{
+                $desc:"得到ECharts的option数据更新项",
+                $rtn:"Object"
+            },
+            setOptionUpdater:{
+                $desc:"设置ECharts的option数据更新项",
+                $rtn:"[self]",
+                $paras:[
+                    "data: Object, 数据对象"
+                ]
+            },
+
+            onMouseEvent:{
+                $desc:"所有 ECharts 的鼠标事件",
+                $paras:[
+                    $profile,
+                    "eventName: String, 事件的名称",
+                    "eventParams : Object, 事件的参数"
+                ],
+                $memo:"请参见 ECharts 的所有内置事件"
+            },
+            onChartEvent:{
+                $desc:"所有 ECharts 的非鼠标事件",
+                $paras:[
+                    $profile,
+                    "eventName: String, 事件的名称",
+                    "eventParams : Object, 事件的参数"
+                ],
+                $memo:"请参见 ECharts 的所有内置事件"
+            }
+        }
+    });
 
     xui.set(xui.Locale,["cn","doc","xui","UI","FusionChartsXT"], {
         KEY:{$desc:"本类名"},
