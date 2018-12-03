@@ -1262,7 +1262,7 @@ xui.Class('xui.Module','xui.absProfile',{
             
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
-                delete self.host[self.alias];
+                try{delete self.host[self.alias]}catch(e){self.host[self.alias]=null}
             }
 
             //set once

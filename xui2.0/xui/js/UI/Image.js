@@ -143,7 +143,10 @@ xui.Class("xui.UI.Image", "xui.UI",{
                 action:function(v){
                     var self=this;
                     if(false!==self.boxing().beforeLoad(this))
-                        xui.asyRun(function(){self.getRoot().attr({width:'0',height:'0',src:xui.adjustRes(v)})});
+                        xui.asyRun(function(){
+                            var p=self.properties, r=self.getRoot(), src=xui.adjustRes(v); 
+                            if(r.attr('src')!==src)r.attr('src',src);
+                        });
                     if(!self.$inner)
                         self.properties.activeItem="";
                 }
@@ -164,14 +167,14 @@ xui.Class("xui.UI.Image", "xui.UI",{
                     var items=this.properties.items,
                         i=xui.arr.subIndexOf(items,"id",""+v),
                         item,ins=this.boxing(),
-                        src,alt,tips;
+                        src=xui.ini.img_bg,alt,tips;
                     if((i!=-1) && (item=items[i])){
-                        src=item.image||xui.ini.img_bg;
+                        src=item.image;
                         alt=item.alt||"";
                         tips=item.tips||"";
                     }
                     this.$inner=1;
-                    ins.setSrc(src||xui.ini.img_bg, true);
+                    ins.setSrc(src);
                     delete this.$inner;
                     ins.setAlt(alt||"");
                     ins.setTips(tips||"");
