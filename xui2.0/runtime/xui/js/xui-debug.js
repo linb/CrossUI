@@ -68929,11 +68929,11 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
         echarts_hideLoading:function(){
             return this.echarts_call("hideLoading");
         },
-        echarts_getOptoin:function(){
-            return this.echarts_call("getOptoin",[]);
+        echarts_getOption:function(){
+            return this.echarts_call("getOption",[]);
         },
-        echarts_setOptoin:function(option){
-            return this.echarts_call("setOptoin",[option, notMerge,lazyUpdate,silent]);
+        echarts_setOption:function(option){
+            return this.echarts_call("setOption",[option, notMerge,lazyUpdate,silent]);
         },
         echarts_getDataURL:function(opts){
             return this.echarts_call("getDataURL",[opts]);
@@ -69037,6 +69037,32 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         for(var i in binder){
                             xui.set(option, i.split('.'), binder[i]);
                         }
+                        if('dataset' in option && !xui.isEmpty(option.dataset)){
+                            var t;
+                            var dataset = option.dataset.source || option.dataset;
+                            if(option.xAxis && xui.isHash(option.xAxis))option.xAxis=[option.xAxis];
+                            if(option.yAxis && xui.isHash(option.yAxis))option.yAxis=[option.yAxis];
+
+                            // clear/init series data
+                            // first column is category
+                            for(var i=0,l=dataset.length-1;i<l;i++){
+                                if(!option.series[i])option.series[i]={type:'line'};
+                                delete option.series[i].data;
+                            }
+                            // clear xAxis data
+                            if(t=option.xAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
+                            // clear yAxis data
+                            if(t=option.yAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
+
+                            // clear the char inner data, if exists
+                            var opt = prf.$echarts.getOption();
+                            if(opt){
+                                if(t=opt.series)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
+                                if(t=opt.xAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
+                                if(t=opt.yAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
+                                prf.$echarts.setOption(opt, true, false, true);
+                            }
+                        }
                         if((v=prop.tagVar.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
                         if((v=ins.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
                         if(ins.beforeSetOption && false===ins.beforeSetOption(prf, option)){}else{
@@ -69055,16 +69081,15 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 }
             },
             dataset:{
-                ini:[],
+                ini:{},
                 get:function(){
                     var v = this.properties.optionUpdater.dataset;
-                    if(!v)v=[];
-                    if(xui.isHash(v))v=[v];
+                    if(!v)v={};
                     return v;
                 },
                 set:function(v){
                     var o=this.properties.optionUpdater;
-                    if(!v || !xui.isArr(v) || v.length===0){
+                    if(!v || !xui.isHash(v)){
                         delete o.dataset;
                     } else {
                         o.dataset=v;

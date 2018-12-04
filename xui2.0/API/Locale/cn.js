@@ -18837,11 +18837,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"隐藏动画加载效果",
                 $rtn:"null"
             },
-            echarts_getOptoin:{
+            echarts_getOption:{
                 $desc:"获取当前实例中维护的option对象",
                 $rtn:"Object"
             },  
-            echarts_setOptoin:{
+            echarts_setOption:{
                 $desc:"设置图表实例的配置项以及数据",
                 $rtn:"null",
                 $paras:[

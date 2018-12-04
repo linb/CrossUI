@@ -18920,11 +18920,11 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Hides animation loading effect",
                 $rtn:"null"
             },
-            echarts_getOptoin:{
+            echarts_getOption:{
                 $desc:"Gets option object maintained in current instance, which contains configuration item and data merged from previous setOption operations by users, along with user interaction states",
                 $rtn:"Object"
             },  
-            echarts_setOptoin:{
+            echarts_setOption:{
                 $desc:"Configuration item, data, universal interface, all parameters and data can all be modified through setOption",
                 $rtn:"null",
                 $paras:[
