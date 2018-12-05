@@ -516,6 +516,10 @@ xui.Class("xui.svg", "xui.UI",{
                 prf._elset.forEach(function(el){
                     arr.push(el.node);
                 });
+                if(prf._shadow)
+                    prf._shadow.forEach(function(el){
+                        arr.push(el.node);
+                    });
             }
             return xui(arr);
         },
@@ -1961,11 +1965,15 @@ xui.Class("xui.svg", "xui.UI",{
             prf.box._initAttr2UI(prf);
             xui.setTimeout(function(){
                 if(prf.destroyed)return;
-                if(t=prf.properties.animDraw){
-                    prf.boxing().setAnimDraw(t,true);
-                }else if(t=prf.properties.offsetFlow){
-                    prf.boxing().setOffsetFlow(t,true);
+                var prop=prf.properties,ins=prf.boxing(),alln=ins.getAllNodes(),t;
+                if(t=prop.animDraw){
+                    ins.setAnimDraw(t,true);
+                }else if(t=prop.offsetFlow){
+                    ins.setOffsetFlow(t,true);
                 }
+                if(v=prop.visibility)alln.css('visibility',v);
+                if(v=prop.display)alln.css('display',v);
+                if(v=prop.className)alln.addClass(v);
             });
         },
         _RenderSVG:function(prf){

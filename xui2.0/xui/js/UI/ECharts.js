@@ -270,7 +270,8 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                                 if(t=opt.series)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                                 if(t=opt.xAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                                 if(t=opt.yAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
-                                prf.$echarts.setOption(opt, true, false, true);
+                                // only reset option
+                                prf.$echarts.setOption(opt, true, true, true);
                             }
                         }
                         if((v=prop.tagVar.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);

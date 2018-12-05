@@ -2157,7 +2157,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             visibility:{
                 listbox:['','visible','hidden'],
                 action:function(value){
-                    this.getRoot().css('visibility',value);
+                    if(this.box['xui.svg'])this.boxing().getAllNodes().css('visibility',value);
+                    else this.getRoot().css('visibility',value);
                     // special for resizer
                     if(this.$resizer){
                         if(value=='hidden')
@@ -2172,10 +2173,11 @@ xui.Class("xui.UI",  "xui.absObj", {
             display:{
                 listbox:['','none','block','inline','inline-block'],
                 action:function(value){
+                    var n= this.box['xui.svg'] ? this.boxing().getAllNodes() : this.getRoot();
                     if(value=='inline-block')
-                        this.getRoot().setInlineBlock();
+                        n.setInlineBlock();
                     else
-                        this.getRoot().css('display',value);
+                        n.css('display',value);
                 }
             },
             selectable:{
@@ -5342,12 +5344,12 @@ xui.Class("xui.UI",  "xui.absObj", {
             activeAnim:{
                 ini:"",
                 action:function(key){
-                    var prf=this,t;
-                    if(key)prf._activeAnim = (t=prf.boxing().animate(key))&&t.id;
-                    else if(key = prf._activeAnim){
-                        xui.Thread.abort(key);
+                    var prf=this,okey,t;
+                    if(okey = prf._activeAnim){
+                        xui.Thread.abort(okey);
                         delete prf._activeAnim;
                     }
+                    if(key)prf._activeAnim = (t=prf.boxing().animate(key))&&t.id;
                 }
             }
         },

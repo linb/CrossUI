@@ -20648,7 +20648,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             visibility:{
                 listbox:['','visible','hidden'],
                 action:function(value){
-                    this.getRoot().css('visibility',value);
+                    if(this.box['xui.svg'])this.boxing().getAllNodes().css('visibility',value);
+                    else this.getRoot().css('visibility',value);
                     // special for resizer
                     if(this.$resizer){
                         if(value=='hidden')
@@ -20663,10 +20664,11 @@ xui.Class("xui.UI",  "xui.absObj", {
             display:{
                 listbox:['','none','block','inline','inline-block'],
                 action:function(value){
+                    var n= this.box['xui.svg'] ? this.boxing().getAllNodes() : this.getRoot();
                     if(value=='inline-block')
-                        this.getRoot().setInlineBlock();
+                        n.setInlineBlock();
                     else
-                        this.getRoot().css('display',value);
+                        n.css('display',value);
                 }
             },
             selectable:{
@@ -23833,12 +23835,12 @@ xui.Class("xui.UI",  "xui.absObj", {
             activeAnim:{
                 ini:"",
                 action:function(key){
-                    var prf=this,t;
-                    if(key)prf._activeAnim = (t=prf.boxing().animate(key))&&t.id;
-                    else if(key = prf._activeAnim){
-                        xui.Thread.abort(key);
+                    var prf=this,okey,t;
+                    if(okey = prf._activeAnim){
+                        xui.Thread.abort(okey);
                         delete prf._activeAnim;
                     }
+                    if(key)prf._activeAnim = (t=prf.boxing().animate(key))&&t.id;
                 }
             }
         },
@@ -64952,6 +64954,10 @@ return /******/ (function(modules) { // webpackBootstrap
                 prf._elset.forEach(function(el){
                     arr.push(el.node);
                 });
+                if(prf._shadow)
+                    prf._shadow.forEach(function(el){
+                        arr.push(el.node);
+                    });
             }
             return xui(arr);
         },
@@ -66397,11 +66403,15 @@ return /******/ (function(modules) { // webpackBootstrap
             prf.box._initAttr2UI(prf);
             xui.setTimeout(function(){
                 if(prf.destroyed)return;
-                if(t=prf.properties.animDraw){
-                    prf.boxing().setAnimDraw(t,true);
-                }else if(t=prf.properties.offsetFlow){
-                    prf.boxing().setOffsetFlow(t,true);
+                var prop=prf.properties,ins=prf.boxing(),alln=ins.getAllNodes(),t;
+                if(t=prop.animDraw){
+                    ins.setAnimDraw(t,true);
+                }else if(t=prop.offsetFlow){
+                    ins.setOffsetFlow(t,true);
                 }
+                if(v=prop.visibility)alln.css('visibility',v);
+                if(v=prop.display)alln.css('display',v);
+                if(v=prop.className)alln.addClass(v);
             });
         },
         _RenderSVG:function(prf){
@@ -69123,7 +69133,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                                 if(t=opt.series)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                                 if(t=opt.xAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                                 if(t=opt.yAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
-                                prf.$echarts.setOption(opt, true, false, true);
+                                // only reset option
+                                prf.$echarts.setOption(opt, true, true, true);
                             }
                         }
                         if((v=prop.tagVar.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
