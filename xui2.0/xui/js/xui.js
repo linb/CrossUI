@@ -4941,14 +4941,15 @@ xui.Class('xui.absObj',"xui.absBox",{
                     if(prop.propBinder && !xui.isEmpty(prop.propBinder)){
                         ins=prf.boxing();
                         xui.each(prop.propBinder, function(get_prop_value,key){
-                            if(false!==xui.tryF(ins._reBindProp, [prf, get_prop_value, key], ins)){
-                                r= xui.isFun(get_prop_value) ? get_prop_value(prf) : xui.adjustVar(get_prop_value);
-                                switch(key){
-                                    case "CA": ins.setCustomAttr(r); break;
-                                    case "CC": ins.setCustomClass(r); break;
-                                    case "CS": ins.setCustomStyle(r);break;
-                                    default:
-                                        if(xui.isFun(ins[fn='set'+xui.str.initial(key)])) ins[fn](r,true);
+                            if(xui.isDefined( r = xui.isFun(get_prop_value) ? get_prop_value(prf) : xui.adjustVar(get_prop_value))){
+                                if(false!==xui.tryF(ins._reBindProp, [prf, r, key, get_prop_value], ins)){
+                                    switch(key){
+                                        case "CA": ins.setCustomAttr(r); break;
+                                        case "CC": ins.setCustomClass(r); break;
+                                        case "CS": ins.setCustomStyle(r);break;
+                                        default:
+                                            if(xui.isFun(ins[fn='set'+xui.str.initial(key)])) ins[fn](r,true);
+                                    }
                                 }
                             }
                         });

@@ -4703,7 +4703,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if((v=prop.tagVar.datasetAdapter) && xui.isFun(v))dataset=v.call(ins, dataset,prf);
                     if((v=ins.datasetAdapter) && xui.isFun(v))dataset=v.call(ins, dataset,prf);
                     if(ins.beforeApplyDataset && false===ins.beforeApplyDataset(prf, dataset)){}else{
-                        if(xui.isArr(dataset))dataset=dataset[0];
                         if('name' in dataset)ins.setGridHandlerCaption(dataset.name);
                         if('dimensions' in dataset)ins.setHeader(dataset.dimensions);
                         if('source' in dataset)ins.setRows(dataset.source);

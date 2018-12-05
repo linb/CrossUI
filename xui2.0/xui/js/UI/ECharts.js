@@ -3,41 +3,103 @@ xui.Class("xui.UI.ECharts","xui.UI",{
 /*
         var dataModals={};
         for(var i=0;i<9;i++){
-            dataModals["seriesData"+(i+1)]={
-                ini:null,
-                dynamic:true,
-                get:(function(index){
+        	dataModals["dataValue"+(i+1)]={
+        		ini:"",
+        		caption:"dataValue"+(i+1),
+        		dynamic:true,
+        		get:(function(index){
                     return function(v){
-                        v=this.properties.optionUpdater["series.0.data."+index];
-                        return v?xui.stringify(v):"";
+                        var option = this.boxing().getECharts().getOption();
+                        if(!option.series)return "";
+                        var arr=[];
+                        for(var i=0,l=option.series.length;i<l;i++){
+                        	var data = option.series[i].data;
+                        	if(data){
+	                        	if(index<data.length){
+		                        	data = data && data[index];
+		                        	arr.push(xui.isSet(data) ? data : "");
+	                        	}
+                        	}else{
+                        		return "";
+                        	}
+                        }
+                        return arr.join(":");
                     }
                 })(i),
                 set:(function(index){
-                    return function(v){
-                        var p=this.properties;
-                        v=v&&typeof(v)=="string"?xui.unserialize(v):v;
-                        if(v)p.optionUpdater["series.0.data."+index]=v;
-                        else delete p.optionUpdater["series.0.data."+index];
-                        this.boxing().setoptionUpdater(p.optionUpdater,true);
+                    return function(v,force){
+                        var option = this.boxing().getECharts().getOption(),updated;
+                        if(!option.series)return;
+
+                        var updater=this.properties.optionUpdater,s,d;
+                        if(!updater.series){
+                        	updater.series=option.series;
+                        }
+                        var arr = v.split(":");
+                        for(var i=0,l=arr.length;i<l;i++){
+                        	if(i>=updater.series.length){
+                        		updater.series[i] = {type:'line',data:[]};
+                        	}
+                        	s=updater.series[i];
+                        	if(!s.data)s.data=[];
+                        	d=s.data;
+                        	d[index]=
+                            v=parseFloat(arr[i])||0;
+                            if(force || v!==d[index]){
+                                d[index]=v;
+                                updated=1;
+                            }
+                        }
+                        if(updated)
+                            this.boxing().setOptionUpdater(updater, true);
                     }
                 })(i)
-            };
-            dataModals["datasetSource"+(i+1)]={
-                ini:null,
+        	}
+            dataModals["realTimeData"+(i+1)]={
+                ini:"",
+                caption:"realTimeData"+(i+1),
                 dynamic:true,
                 get:(function(index){
                     return function(v){
-                        v=this.properties.optionUpdater["dataset.source."+index];
-                        return v?xui.stringify(v):"";
+                        var option = this.boxing().getECharts().getOption();
+                        if(!option.series || !option.xAxis)return;
+                        var values = option.series[index] && option.series[index].data;
+                        return values && values[values.length-1]||"";
                     }
                 })(i),
                 set:(function(index){
                     return function(v){
-                        var p=this.properties;
-                        v=v&&typeof(v)=="string"?xui.unserialize(v):v;
-                        if(v)p.optionUpdater["dataset.source."+index]=v;
-                        else delete p.optionUpdater["dataset.source."+index];
-                        this.boxing().setoptionUpdater(p.optionUpdater,true);
+                    	v=parseFloat(v)||0;
+                        var option = this.boxing().getECharts().getOption();
+                        if(!option.series || !option.xAxis)return;
+
+                        var updater=this.properties.optionUpdater,s,d,columnSize=this.properties.realTimeDataPoints;
+                        if(!updater.xAxis){
+                        	updater.xAxis=option.xAxis;
+                        }
+                        if(!updater.series){
+                        	updater.series=option.series;
+                        }
+                        var time = xui.Date.format(new Date, this.properties.realTimeDateDateFormatter);
+                        if((s=updater.xAxis[index]) &&(d = s.data)){
+                        	d.push(time);
+                        	if(d.length>=columnSize)d.shift();
+                        	while(d.length<columnSize)d.unshift(0);
+                        }
+                        if(index>=updater.series.length){
+                        	updater.series[index] = {type:'line',data:[]};
+                        }
+                        
+                        s=updater.series[index];
+                		if(!s.data)s.data=[];
+                		d=s.data;
+                    	
+                    	d.push(v);
+                    	if(d.length>=columnSize)d.shift();
+                    	while(d.length<columnSize)d.unshift(0);
+                    	
+                        //console.log(index, v, d, updater);
+                        this.boxing().setOptionUpdater(updater, true);
                     }
                 })(i)
             };
@@ -48,7 +110,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
     Instance:{
         _reBindProp:function(prf, hash, key){
             var ins=prf.boxing(),fn,nhash={};
-            if(key=="optionUpdater" && xui.isHash(hash)){
+            if(key=="optionUpdater" && xui.isHash(hash)) {
                 for(var i in hash)
                     nhash[i] =  xui.isFun(hash[i])?hash[i](prf):xui.adjustVar(hash[i]);
                 if(xui.isFun(ins[fn='set'+xui.str.initial(key)])) ins[fn](nhash,true);
@@ -185,17 +247,18 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                             xui.set(option, i.split('.'), binder[i]);
                         }
                         if('dataset' in option && !xui.isEmpty(option.dataset)){
-                            var t;
-                            var dataset = option.dataset.source || option.dataset;
+                            var t=option.dataset;
+                            var dimensions = (t.dimensions || (t.source&&t.source[0]) || [0]).length;
                             if(option.xAxis && xui.isHash(option.xAxis))option.xAxis=[option.xAxis];
                             if(option.yAxis && xui.isHash(option.yAxis))option.yAxis=[option.yAxis];
 
                             // clear/init series data
                             // first column is category
-                            for(var i=0,l=dataset.length-1;i<l;i++){
+                            for(var i=0,l=dimensions-1;i<l;i++){
                                 if(!option.series[i])option.series[i]={type:'line'};
-                                delete option.series[i].data;
+                                else delete option.series[i].data;
                             }
+
                             // clear xAxis data
                             if(t=option.xAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                             // clear yAxis data
@@ -231,11 +294,11 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 ini:{},
                 get:function(){
                     var v = this.properties.optionUpdater.dataset;
-                    if(!v)v={};
-                    return v;
+                    return v||{};
                 },
-                set:function(v){
+                set:function(v,force){
                     var o=this.properties.optionUpdater;
+                    if(v===o.dataset && !force)return;
                     if(!v || !xui.isHash(v)){
                         delete o.dataset;
                     } else {
