@@ -271,13 +271,17 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                                 if(t=opt.xAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                                 if(t=opt.yAxis)for(var i=0,l=t.length;i<l;i++)delete t[i].data;
                                 // only reset option
-                                prf.$echarts.setOption(opt, true, true, true);
+                                try{
+                                    prf.$echarts.setOption(opt, true, true, true);
+                                }catch(e){throw e}
                             }
                         }
                         if((v=prop.tagVar.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
                         if((v=ins.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
-                        if(ins.beforeSetOption && false===ins.beforeSetOption(prf, option)){}else{
-                            prf.$echarts.setOption(option);
+                        if(!(ins.beforeSetOption && false===ins.beforeSetOption(prf, option))){
+                            try{
+                                prf.$echarts.setOption(option);
+                            }catch(e){throw e}
                         }
                     }
                 }

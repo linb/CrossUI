@@ -34,6 +34,7 @@ rem ==================
 copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\APICaller.js /b ^
++ %relPath%xui\js\MQTT.js /b ^
 + %relPath%xui\js\DataBinder.js /b ^
 + %relPath%xui\js\Event.js /b ^
 + %relPath%xui\js\CSS.js /b ^
@@ -57,6 +58,7 @@ rem ==================
 copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\xui.js /b ^
 + %relPath%xui\js\APICaller.js /b ^
++ %relPath%xui\js\MQTT.js /b ^
 + %relPath%xui\js\DataBinder.js /b ^
 + %relPath%xui\Locale\en.js /b ^
 + %relPath%xui\js\Event.js /b  ^
