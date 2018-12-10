@@ -1,34 +1,39 @@
 xui.Class("xui.UI.ECharts","xui.UI",{
     Initialize:function(){
-/*
         var dataModals={};
         for(var i=0;i<9;i++){
         	dataModals["dataValue"+(i+1)]={
         		ini:"",
-        		caption:"dataValue"+(i+1),
         		dynamic:true,
         		get:(function(index){
                     return function(v){
-                        var option = this.boxing().getECharts().getOption();
-                        if(!option.series)return "";
-                        var arr=[];
+                        var echarts = this.boxing().getECharts();
+                        if(!echarts)return "";
+                        var option = echarts.getOption();
+                        if(!option.series)return "[x]";
+                        var arr=[],hasData;
                         for(var i=0,l=option.series.length;i<l;i++){
                         	var data = option.series[i].data;
                         	if(data){
 	                        	if(index<data.length){
 		                        	data = data && data[index];
-		                        	arr.push(xui.isSet(data) ? data : "");
-	                        	}
+		                        	arr.push(xui.isSet(data) ? xui.isHash(data) ? data.value : data : "");
+                                    hasData=1;
+	                        	}else{
+                                    arr.push("");
+                                }
                         	}else{
                         		return "";
                         	}
                         }
-                        return arr.join(":");
+                        return hasData?arr.join(":"):"";
                     }
                 })(i),
                 set:(function(index){
                     return function(v,force){
-                        var option = this.boxing().getECharts().getOption(),updated;
+                        var echarts = this.boxing().getECharts();
+                        if(!echarts)return;
+                        var option = echarts.getOption(),updated;
                         if(!option.series)return;
 
                         var updater=this.properties.optionUpdater,s,d;
@@ -37,57 +42,62 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                         }
                         var arr = v.split(":");
                         for(var i=0,l=arr.length;i<l;i++){
-                        	if(i>=updater.series.length){
+                        	if(i>=updater.series.length)
                         		updater.series[i] = {type:'line',data:[]};
-                        	}
                         	s=updater.series[i];
-                        	if(!s.data)s.data=[];
-                        	d=s.data;
-                        	d[index]=
-                            v=parseFloat(arr[i])||0;
-                            if(force || v!==d[index]){
-                                d[index]=v;
-                                updated=1;
+                            if(arr[i]!==""){
+                                if(!s.data)s.data=[];
+                                d=s.data;
+                                v=parseFloat(arr[i])||0;
+                                if(force || v!==(xui.isHash(d[index])?d[index].value:d[index])){
+                                    if(xui.isHash(d[index]))d[index].value=v;
+                                    else d[index]=v;
+                                    updated=1;
+                                }
                             }
                         }
                         if(updated)
-                            this.boxing().setOptionUpdater(updater, true);
+                        	this.boxing().setOptionUpdater(updater, true);
                     }
                 })(i)
         	}
             dataModals["realTimeData"+(i+1)]={
                 ini:"",
-                caption:"realTimeData"+(i+1),
                 dynamic:true,
                 get:(function(index){
                     return function(v){
-                        var option = this.boxing().getECharts().getOption();
-                        if(!option.series || !option.xAxis)return;
+                        var echarts = this.boxing().getECharts();
+                        if(!echarts)return "";
+                        var option = echarts.getOption();
+                        if(!option.series || !option.xAxis)return "[x]";
                         var values = option.series[index] && option.series[index].data;
-                        return values && values[values.length-1]||"";
+                        var dataI = values && values[values.length-1];
+                        return  xui.isSet(dataI) ? xui.isHash(dataI) ? dataI.value : dataI : "";
                     }
                 })(i),
                 set:(function(index){
                     return function(v){
                     	v=parseFloat(v)||0;
-                        var option = this.boxing().getECharts().getOption();
+                        var echarts = this.boxing().getECharts();
+                        if(!echarts)return;
+                        var option = echarts.getOption();
                         if(!option.series || !option.xAxis)return;
 
-                        var updater=this.properties.optionUpdater,s,d,columnSize=this.properties.realTimeDataPoints;
+                        var updater=this.properties.optionUpdater,s,d,columnSize=this.properties.realTimePoints;
                         if(!updater.xAxis){
                         	updater.xAxis=option.xAxis;
                         }
                         if(!updater.series){
                         	updater.series=option.series;
                         }
-                        var time = xui.Date.format(new Date, this.properties.realTimeDateDateFormatter);
+                        var time = xui.Date.format(new Date, this.properties.realTimeDateFormatter);
                         if((s=updater.xAxis[index]) &&(d = s.data)){
                         	d.push(time);
                         	if(d.length>=columnSize)d.shift();
                         	while(d.length<columnSize)d.unshift(0);
                         }
                         if(index>=updater.series.length){
-                        	updater.series[index] = {type:'line',data:[]};
+                            for(var m=updater.series.length-1;m<=index;m++)updater.series[m] = {type:'line',data:[]};
                         }
                         
                         s=updater.series[index];
@@ -99,13 +109,13 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                     	while(d.length<columnSize)d.unshift(0);
                     	
                         //console.log(index, v, d, updater);
-                        this.boxing().setOptionUpdater(updater, true);
+                		this.boxing().setOptionUpdater(updater, true);
                     }
                 })(i)
             };
         }
-        this.setDataModel(dataModals);
-*/
+        
+        xui.UI.ECharts.setDataModel(dataModals);
     },
     Instance:{
         _reBindProp:function(prf, hash, key){
@@ -273,7 +283,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                                 // only reset option
                                 try{
                                     prf.$echarts.setOption(opt, true, true, true);
-                                }catch(e){throw e}
+                                }catch(e){xui.log(e)}
                             }
                         }
                         if((v=prop.tagVar.optionAdapter) && xui.isFun(v))option=v.call(ins, option,prf);
@@ -281,7 +291,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                         if(!(ins.beforeSetOption && false===ins.beforeSetOption(prf, option))){
                             try{
                                 prf.$echarts.setOption(option);
-                            }catch(e){throw e}
+                            }catch(e){xui.log(e)}
                         }
                     }
                 }
@@ -290,7 +300,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 ini:{},
                 action:function(v){
                     var prf=this;
-                    xui.resetRun("echart-data-setting:" + prf.xid, function(){
+                    xui.resetRun("echart-data-setting:" + prf.$xid, function(){
                         if(prf&&prf.box)prf.boxing().setChartOption(prf.properties.chartOption, true);
                     });
                 }
@@ -311,7 +321,9 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                     }
                     return this.boxing().setOptionUpdater(o, true);
                 }
-            }
+            },
+            realTimeDateFormatter : "hh:mm:ss",
+            realTimePoints : 5
         },
         RenderTrigger:function(){
             var prf=this,prop=prf.properties;
@@ -372,6 +384,16 @@ xui.Class("xui.UI.ECharts","xui.UI",{
             onMouseEvent:function(profile, eventName, eventParams){},
             onChartEvent:function(profile, eventName, eventParams){},
             onShowTips:null
+        },
+        _beforeSerialized:function(profile){
+            var o=xui.UI._beforeSerialized.call(this, profile),
+                op=o.properties;
+            for(var i=0;i<9;i++){
+                delete op["realTimeData"+(i+1)];
+                delete op["dataValue"+(i+1)];
+            }
+            delete op.optionUpdater;
+            return o;
         },
         _onresize:function(prf,width,height){
             var size = prf.getSubNode('BOX').cssSize(),

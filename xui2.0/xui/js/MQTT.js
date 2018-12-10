@@ -3,11 +3,13 @@ xui.Class("xui.MQTT","xui.absObj",{
        _ini:xui.Timer.prototype._ini,
         _after_ini:function(prf){
             var prop=prf.properties, fun=function(){
-                if(!prf.$inDesign){
-                    if(prop.autoConn){
-                        prf.boxing().connect();
+                xui.asyRun(function(){
+                    if(!prf.$inDesign && !(prf.host && prf.host.$inDesign)){
+                        if(prop.autoConn){
+                            prf.boxing().connect();
+                        }
                     }
-                }
+                });
             };
             if(xui.get(window,"Paho.Client"))fun();
             else{
@@ -28,14 +30,20 @@ xui.Class("xui.MQTT","xui.absObj",{
         getChildrenId:xui.Timer.prototype.getChildrenId,
 
         connect:function(){
-            var prf=this.get(0),prop=prf.properties,t,p;
-            t = prf.$mqtt = new Paho.Client(prop.server, parseInt(prop.port,10), prop.path, prop.clientId);
+            var prf=this.get(0),prop=prf.properties,t,p,
+                path=xui.str.trim(prop.path),
+                server=xui.str.trim(prop.server);
+            if(path.length && path[0]!="/")path="/"+path;
+
+            t = prf.$mqtt = new Paho.Client(server, parseInt(prop.port,10), path, prop.clientId);
             t.onConnected = function(reconnect){
                 if(prf.onConnSuccess)prf.boxing().onConnSuccess(prf,reconnect);
             };
             t.onConnectionLost = function(err){
-                prf.boxing()._clear();
-                if(prf.onConnLost)prf.boxing().onConnLost(prf,err);
+                if(prf&&prf.box){
+                    prf.boxing()._clear();
+                    if(prf.onConnLost)prf.boxing().onConnLost(prf,err);
+                }
             };
             t.onMessageDelivered = function(msgObj){
                 if(prf.onMsgDelivered)prf.boxing().onMsgDelivered(prf,msgObj.payloadString,msgObj);
@@ -60,9 +68,11 @@ xui.Class("xui.MQTT","xui.absObj",{
                     }
                 },
                 onFailure:function(e){
-                    if(prf.onConnFailed)prf.boxing().onConnFailed(prf,e);
-                    else xui.log(e.errorMessage+"["+e.errorCode+"]");
-                    prf.boxing()._clear();
+                    if(prf&&prf.box){
+                        if(prf.onConnFailed)prf.boxing().onConnFailed(prf,e);
+                        else xui.log(e.errorMessage+"["+e.errorCode+"]");
+                        prf.boxing()._clear();
+                    }
                 }
             };
             if(p=prop.timeout)opt.timeout=p;
@@ -135,7 +145,7 @@ xui.Class("xui.MQTT","xui.absObj",{
         publish:function(topic, payload, qos, retained){
             var prf=this.get(0),prop=prf.properties,t=prf.$mqtt;
             if(t&&prf.$mqtt_connected && prf.$mqtt_subed && prf.$mqtt_subed[topic]){
-                t.publish(topic, payload, parseInt(qos)||0, retained||false);
+                t.publish(topic, typeof(payload)=='string'?payload:xui.stringify(payload), parseInt(qos)||0, retained||false);
             }
         }
     },
@@ -153,7 +163,7 @@ xui.Class("xui.MQTT","xui.absObj",{
 
             server:"iot.eclipse.org",
             port:"80",
-            path:"/ws",
+            path:"ws",
             clientId:"xui_mqtt_client",
             
             timeout:30,
