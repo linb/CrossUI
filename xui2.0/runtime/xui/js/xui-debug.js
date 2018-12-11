@@ -6109,7 +6109,7 @@ xui.Class("xui.ExcelFormula",null,{
             subscribers:[],
 
             server:"iot.eclipse.org",
-            port:"80",
+            port:"443", 
             path:"ws",
             clientId:"xui_mqtt_client",
             
@@ -6118,7 +6118,7 @@ xui.Class("xui.ExcelFormula",null,{
             password:"",
             keepAliveInterval:60,
             cleanSession:true,
-            useSSL:false,
+            useSSL:true,
             reconnect:true,
 
             willTopic:"",
@@ -69283,8 +69283,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 $spaceunit:1,
                 ini:'25em'
             },
-            chartCDN:"http://echarts.baidu.com/dist/echarts.min.js",
-            chartCDNGL:"http://echarts.baidu.com/dist/echarts-gl.min.js",
+            chartCDN:"https://cdn.jsdelivr.net/npm/echarts@4.2.0-rc.2/dist/echarts.min.js",
+            chartCDNGL:"https://cdn.jsdelivr.net/npm/echarts-gl@1.1.1/dist/echarts-gl.min.js",
             chartTheme:{
                 ini:"",
                 action: function(v){

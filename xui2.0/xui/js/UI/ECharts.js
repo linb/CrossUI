@@ -224,8 +224,8 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 $spaceunit:1,
                 ini:'25em'
             },
-            chartCDN:"http://echarts.baidu.com/dist/echarts.min.js",
-            chartCDNGL:"http://echarts.baidu.com/dist/echarts-gl.min.js",
+            chartCDN:"https://cdn.jsdelivr.net/npm/echarts@4.2.0-rc.2/dist/echarts.min.js",
+            chartCDNGL:"https://cdn.jsdelivr.net/npm/echarts-gl@1.1.1/dist/echarts-gl.min.js",
             chartTheme:{
                 ini:"",
                 action: function(v){

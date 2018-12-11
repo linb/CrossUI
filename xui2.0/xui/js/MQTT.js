@@ -162,7 +162,7 @@ xui.Class("xui.MQTT","xui.absObj",{
             subscribers:[],
 
             server:"iot.eclipse.org",
-            port:"80",
+            port:"443", 
             path:"ws",
             clientId:"xui_mqtt_client",
             
@@ -171,7 +171,7 @@ xui.Class("xui.MQTT","xui.absObj",{
             password:"",
             keepAliveInterval:60,
             cleanSession:true,
-            useSSL:false,
+            useSSL:true,
             reconnect:true,
 
             willTopic:"",
