@@ -40,10 +40,10 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                         if(!updater.series){
                         	updater.series=option.series;
                         }
-                        var arr = v.split(":");
+                        var arr = (v+"").split(":");
                         for(var i=0,l=arr.length;i<l;i++){
                         	if(i>=updater.series.length)
-                        		updater.series[i] = {type:'line',data:[]};
+                        		updater.series[i] = {type:updater.series[0]&&updater.series[0].type||'line',data:[]};
                         	s=updater.series[i];
                             if(arr[i]!==""){
                                 if(!s.data)s.data=[];
@@ -90,14 +90,14 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                         if(!updater.series){
                         	updater.series=option.series;
                         }
-                        var time = xui.Date.format(new Date, this.properties.realTimeDateFormatter);
+                        var time = xui.Date.format(new Date, this.properties.xAxisDateFormatter);
                         if((s=updater.xAxis[index]) &&(d = s.data)){
                         	d.push(time);
                         	if(d.length>=columnSize)d.shift();
                         	while(d.length<columnSize)d.unshift(0);
                         }
                         if(index>=updater.series.length){
-                            for(var m=updater.series.length-1;m<=index;m++)updater.series[m] = {type:'line',data:[]};
+                            for(var m=updater.series.length-1;m<=index;m++)updater.series[m] = {type:updater.series[0]&&updater.series[0].type||'line',data:[]};
                         }
                         
                         s=updater.series[index];
@@ -265,7 +265,8 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                             // clear/init series data
                             // first column is category
                             for(var i=0,l=dimensions-1;i<l;i++){
-                                if(!option.series[i])option.series[i]={type:'line'};
+                                var type=option.series[0]&&option.series[0].type||'line'
+                                if(!option.series[i])option.series[i]={type:type};
                                 else delete option.series[i].data;
                             }
 
@@ -312,17 +313,23 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                     return v||{};
                 },
                 set:function(v,force){
-                    var o=this.properties.optionUpdater;
+                    var prop=this.properties,f=prop.xAxisDateFormatter,o=prop.optionUpdater;
                     if(v===o.dataset && !force)return;
                     if(!v || !xui.isHash(v)){
                         delete o.dataset;
                     } else {
                         o.dataset=v;
+                        if(f)
+                            xui.each(o.dataset.source,function(h,i){
+                                if(xui.isNumb(h[0])){
+                                    h[0]=xui.Date.format(h[0], f)
+                                }
+                            });
                     }
                     return this.boxing().setOptionUpdater(o, true);
                 }
             },
-            realTimeDateFormatter : "hh:mm:ss",
+            xAxisDateFormatter : "hh:mm:ss",
             realTimePoints : 5
         },
         RenderTrigger:function(){
@@ -383,6 +390,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
         EventHandlers:{
             onMouseEvent:function(profile, eventName, eventParams){},
             onChartEvent:function(profile, eventName, eventParams){},
+            beforeSetOption:function(prf, option){},
             onShowTips:null
         },
         _beforeSerialized:function(profile){

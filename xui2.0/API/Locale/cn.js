@@ -19003,6 +19003,13 @@ xui.set(xui.Locale,["cn","app"], {
                     "eventParams : Object, 事件的参数"
                 ],
                 $memo:"请参见 ECharts 的所有内置事件"
+            },
+            beforeSetOption:{
+                $desc:"在设置图表选项前调用",
+                $paras:[
+                    $profile,
+                    "option: Object, option 对象"
+                ]
             }
         }
     });

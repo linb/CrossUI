@@ -19084,6 +19084,13 @@ xui.set(xui.Locale,["en","app"], {
                     "eventName: String, event name",
                     "eventParams : Object, event parameters"
                 ]
+            },
+            beforeSetOption:{
+                $desc:"Triggerred before settig option to ECharts",
+                $paras:[
+                    $profile,
+                    "option: Object, option object"
+                ]
             }
         }
     });
