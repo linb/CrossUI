@@ -175,7 +175,7 @@ xui.Class('xui.Event',null,{
         $eventhandler:function(){return xui.Event(arguments[0], this)},
         // Reserved
         $eventhandler2:function(){return xui.Event(arguments[0], this,1)},
-        $eventhandler3:function(){return xui.Event(arguments[0], xui.Event.getSrc(arguments[0]||window.event))},
+        $eventhandler3:function(){var a=arguments[0], t=xui.Event.getSrc(a||window.event), r=xui.Event(a, t); if(r===false)return r; else if(t!==this) return xui.Event(a, this)},
         $lastMouseupTime:0,
         $dblcInterval:500,
         $lastClickFunMark:0,
@@ -730,7 +730,8 @@ xui.Class('xui.Event',null,{
 
         // for simulation
         ns._addEventListener(w, "mousewheel", ns.$eventhandler3);
-        ns._addEventListener(d, "mousewheel", ns.$eventhandler3);
+        // window enough
+        // ns._addEventListener(d, "mousewheel", ns.$eventhandler3);
 
         var keyEvent=function(target, type , options){
             switch(type) {

@@ -7053,7 +7053,7 @@ xui.Class('xui.Event',null,{
         $eventhandler:function(){return xui.Event(arguments[0], this)},
         // Reserved
         $eventhandler2:function(){return xui.Event(arguments[0], this,1)},
-        $eventhandler3:function(){return xui.Event(arguments[0], xui.Event.getSrc(arguments[0]||window.event))},
+        $eventhandler3:function(){var a=arguments[0], t=xui.Event.getSrc(a||window.event), r=xui.Event(a, t); if(r===false)return r; else if(t!==this) return xui.Event(a, this)},
         $lastMouseupTime:0,
         $dblcInterval:500,
         $lastClickFunMark:0,
@@ -7608,7 +7608,8 @@ xui.Class('xui.Event',null,{
 
         // for simulation
         ns._addEventListener(w, "mousewheel", ns.$eventhandler3);
-        ns._addEventListener(d, "mousewheel", ns.$eventhandler3);
+        // window enough
+        // ns._addEventListener(d, "mousewheel", ns.$eventhandler3);
 
         var keyEvent=function(target, type , options){
             switch(type) {
@@ -10470,26 +10471,38 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         $touchscroll:function(type){
             if(xui.browser.fakeTouch || (xui.browser.isTouch && (xui.browser.isAndroid||xui.browser.isBB))){
-                var hash={"x":1,"y":1,"xy":1},opx=null,opy=null,ox=null,oy=null,speedx=0,speedy=0,nodes=this._nodes,
-                      doSwipe = function(t){
-                            if(speedx||speedy){
+                var hash={"x":1,"y":1,"xy":1},nodes=this._nodes,getD=function(t){
+                        var o=xui.getNodeData(t,'_wheelscroll');
+                        if(!o)xui.setNodeData(t,'_wheelscroll',o={});
+                        return o;
+                    },
+                    doSwipe = function(t){
+                            var wheel=getD(t);
+                            if((wheel._speedx||wheel._speedy) && ((new Date).getTime() - wheel._lastTime)<50){
                                 var params={},sl=t.scrollLeft,st=t.scrollTop,limit=50,rate=40,duration=2000;
-                                if(speedx)params.scrollLeft=[sl, sl + Math.sign(speedx)*Math.min(limit,Math.abs(speedx))*rate];
-                                if(speedy)params.scrollTop=[st, st + Math.sign(speedy)*Math.min(limit,Math.abs(speedy))*rate];
+                                if(wheel._speedx)params.scrollLeft=[sl, sl + Math.sign(wheel._speedx)*Math.min(limit,Math.abs(wheel._speedx))*rate];
+                                if(wheel._speedy)params.scrollTop=[st, st + Math.sign(wheel._speedy)*Math.min(limit,Math.abs(wheel._speedy))*rate];
+                                var tid=xui.getNodeData(t,'_inthread');
+                                if(tid){
+                                    xui.Thread.abort(tid);
+                                    xui.setNodeData(t,'_inthread');
+                                    xui.setData(['!document','$fakescroll']);
+                                }
                                 xui(t).animate(params, null, null,duration,null,"expoOut").start();
                             }
-                            speedx=speedy=opx=opy=ox=oy=null;
+                            wheel._opx=wheel._opy=wheel._ox=wheel._oy=wheel._lastTime=wheel._speedx=wheel._speedy=null;
                     };
                 if(!hash[type])type=null;
                 xui(nodes)[xui.browser.fakeTouch?'onMousedown':'onTouchstart'](hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-
+                    if(!xui(src).scrollable('x') && !xui(src).scrollable('y'))return true;
                     var s,t=xui(src).get(0);
                     var tid=xui.getNodeData(t,'_inthread');
                     if(tid){
                         xui.Thread.abort(tid);
                         xui.setNodeData(t,'_inthread');
                     }
+                    var wheel=getD(t);
 
                     if(xui.browser.fakeTouch){
                         if(xui.Event.getBtn(e)!=='left')return true;
@@ -10500,17 +10513,17 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(t){
                         if(type=='xy'||type=='x'){
-                            ox=t.scrollLeft;
-                            opx=s.pageX;
+                            wheel._ox=t.scrollLeft;
+                            wheel._opx=s.pageX;
                         }
                         if(type=='xy'||type=='y'){
-                            oy=t.scrollTop
-                            opy=s.pageY;
+                            wheel._oy=t.scrollTop
+                            wheel._opy=s.pageY;
                         }
                     }
                     // ***add for fake case
                     if(xui.browser.fakeTouch){
-                        xui.setData(['!document','$fakescroll'],1);
+                        xui.setData(['!document','$fakescroll'],src);
                         xui.doc.onMouseup(function(p,e,src){
                             xui.setData(['!document','$fakescroll']);
                             xui.asyRun(function(){xui.setData(['!document','$fakescrolling']);});
@@ -10525,7 +10538,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
                 xui(nodes)[xui.browser.fakeTouch?'onMousemove':'onTouchmove'](hash[type]?function(p,e,src){
                     if(xui.DragDrop._profile.isWorking) return true;
-                    if(xui.browser.fakeTouch && !xui.getData(['!document','$fakescroll']))return true;
+                    if(xui.browser.fakeTouch && xui.getData(['!document','$fakescroll'])!=src)return true;
                     var s,t=xui(src).get(0),x1,y1,first;
                     if(xui.browser.fakeTouch){
                         if(xui.Event.getBtn(e)!=='left')return true;
@@ -10535,24 +10548,27 @@ xui.Class('xui.Dom','xui.absBox',{
                         s=e.touches[0];
                     }
                     if(t){
+                        var wheel=getD(t);
+                        wheel._lastTime=(new Date).getTime();
                         x1=t.scrollLeft;y1=t.scrollTop;
                         if(type=='xy'||type=='x'){
-                            t.scrollLeft=ox + opx - s.pageX;
+                            t.scrollLeft=wheel._ox + wheel._opx - s.pageX;
                             if(x1==t.scrollLeft){
-                                ox=t.scrollLeft;
-                                opx=s.pageX;
+                                wheel._ox=t.scrollLeft;
+                                wheel._opx=s.pageX;
                             }else{
-                                speedx=t.scrollLeft-x1;
+                                wheel._speedx=t.scrollLeft-x1;
                             }
                         }
                         if(type=='xy'||type=='y'){
-                            if(oy===null)oy=t.scrollTop+opy;
-                            t.scrollTop=oy + opy - s.pageY;
+                            if(wheel._oy===null)wheel._oy=t.scrollTop+wheel._opy;
+                            t.scrollTop=wheel._oy + wheel._opy - s.pageY;
+
                             if(y1==t.scrollTop){
-                                oy=t.scrollTop;
-                                opy=s.pageY;
+                                wheel._oy=t.scrollTop;
+                                wheel._opy=s.pageY;
                             }else{
-                                speedy=t.scrollTop-y1;
+                                wheel._speedy=t.scrollTop-y1;
                             }
                         }
                         // effected
@@ -13179,14 +13195,21 @@ xui.Class('xui.Dom','xui.absBox',{
             var b=xui.browser,n=xui(node),h={};
             if(!('$supportZoom' in xui.Dom))
                 xui.Dom.$supportZoom = b.ie678 || document.createElement("detect").style.zoom === "";
-            if(xui.Dom.$supportZoom)
-                h.zoom=value;
-            else{
-                h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
-                h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
+            if(xui.Dom.$supportZoom){
+                if(value>=1){
+                    h[b.cssTag1 + "transform"] = h.transform = '';
+                    h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '';
+                    h.zoom=value;
+                    n.css(h);
+                    return true;
+                }
+                h.zoom="";
             }
+            h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
+            h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
             n.css(h);
-            return 'zoom' in h;
+            
+            return false;
         },
         _vAnimate:function(node,setting,callback){
             if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
@@ -22918,6 +22941,18 @@ xui.Class("xui.UI",  "xui.absObj", {
                 self.NoDroppableKeys=t;
             }
             if((t=hash.PanelKeys) && t.length){
+                xui.each(hash.PanelKeys,function(i){
+                    t=map[i]?hash:(hash[i]||(hash[i]={}));
+                    t.onMousewheel = function(profile,e,src){
+                        var id=xui.use(src).id(),
+                            cid = profile.getSubId(id),
+                            item = profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid];
+                        if(profile.onMousewheel)
+                            return profile.boxing().onMousewheel(profile, xui.Event.getWheelDelta(e), item, e, src);
+                    };
+                    t=i=='KEY'?hls:(hls[i]||(hls[i]={}));
+                });
+
                 t=self.prototype;
                 xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conLayoutColumns,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
@@ -22935,8 +22970,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 hls.beforeInputAlert=src._e6;
                 hls.beforeFormReset=hls.afterFormReset=src._e7;
                 hls.beforeFormSubmit=hls.afterFormSubmit=src._e8;
+                hls.onMousewheel=function(profile, delta, item, e, src){};
 
-                 self['xui.absContainer']=true;
+                self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
         },

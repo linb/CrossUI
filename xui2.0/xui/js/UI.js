@@ -4231,6 +4231,18 @@ xui.Class("xui.UI",  "xui.absObj", {
                 self.NoDroppableKeys=t;
             }
             if((t=hash.PanelKeys) && t.length){
+                xui.each(hash.PanelKeys,function(i){
+                    t=map[i]?hash:(hash[i]||(hash[i]={}));
+                    t.onMousewheel = function(profile,e,src){
+                        var id=xui.use(src).id(),
+                            cid = profile.getSubId(id),
+                            item = profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid];
+                        if(profile.onMousewheel)
+                            return profile.boxing().onMousewheel(profile, xui.Event.getWheelDelta(e), item, e, src);
+                    };
+                    t=i=='KEY'?hls:(hls[i]||(hls[i]={}));
+                });
+
                 t=self.prototype;
                 xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conLayoutColumns,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
@@ -4248,8 +4260,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 hls.beforeInputAlert=src._e6;
                 hls.beforeFormReset=hls.afterFormReset=src._e7;
                 hls.beforeFormSubmit=hls.afterFormSubmit=src._e8;
+                hls.onMousewheel=function(profile, delta, item, e, src){};
 
-                 self['xui.absContainer']=true;
+                self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
         },
