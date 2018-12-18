@@ -135,6 +135,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             var ns=this,
                 profile=ns.get(0),
                 p=profile.properties,
+                pid=p.parentID||xui.ini.$rootContainer,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
                 cm='$childPopMenu';
@@ -149,7 +150,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 xui([profile.$highLight]).tagClass('-hover',false);
 
             // set container
-            profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
+            profile._conainer = pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : parent || null;
 
             profile.getRoot().popToTop(pos, type, profile._conainer);
 

@@ -442,7 +442,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             var prop=profile.properties;
             if(prop.disabled||prop.readonly)return false;
 
-            var prop = profile.properties,
+            var pid=prop.parentID||xui.ini.$rootContainer,
                 arr = profile.box._v2a(prop.value),
                 min=arr[0],
                 cur=arr[1],
@@ -484,7 +484,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             pop.html(a.join(' '));
             xui('body').append(pop);
             if(pop.width()>300)pop.width(300);
-            pop.popToTop(src,null,prop.parentID?xui(prop.parentID):null);
+            pop.popToTop(src,null,pid? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
             pop.setBlurTrigger(profile.key+":"+profile.$xid, function(){
                 pool.append(pop);
             });

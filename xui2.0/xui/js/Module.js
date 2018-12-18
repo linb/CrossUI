@@ -1456,10 +1456,9 @@ xui.Class('xui.Module','xui.absProfile',{
 
                                 // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
                                 xui.ini.$zoomScale = type;
-                                if(!xui.Dom.$setZoom(xui('html').get(0), type)){
-                                    // if use transform for zoom, 'getBoundingClientRect' will need to adjust too
-                                    xui.ini.$transformScale = type;
-                                }
+                                xui.Dom.$setZoom(xui('html').get(0), type);
+                                // 'getBoundingClientRect' will need to adjust too
+                                xui.ini.$transformScale = type;
                             }
                         };
                         if(t=xui.ini.$frame){

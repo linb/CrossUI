@@ -442,8 +442,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
-                    var node=o.reBoxing();
-                    node.popToTop(baseNode||profile.getSubNode('BOX'),null,pro.parentID);
+                    var node=o.reBoxing(),pid=pro.parentID||xui.ini.$rootContainer;
+                    node.popToTop(baseNode||profile.getSubNode('BOX'),null,
+                         pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
 
                     xui.tryF(o.activate,[],o);
 
@@ -853,8 +854,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     });
                     o.render();
                     //pop
-                    var node=o.reBoxing();
-                    node.popToTop(src,null,prop.parentID);
+                    var node=o.reBoxing(), pid=prop.parentID||xui.ini.$rootContainer;
+                    node.popToTop(src,null,
+                        pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
                     xui.tryF(o.activate,[],o);
                     var sid=profile.key+":unit:"+profile.$xid;
                     node.setBlurTrigger(sid, function(){

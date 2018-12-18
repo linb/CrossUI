@@ -384,13 +384,13 @@ xui.Class('xui.Event',null,{
                                 'right':
                                     'left';
         },
-        getPos:function(event){
+        getPos:function(event,original){
             event = event || window.event;
             if(xui.browser.isTouch && event.changedTouches && event.changedTouches[0])
                 event = event.changedTouches[0];
 
             if('pageX' in event){
-                var scale=xui.ini.$zoomScale||1;
+                var scale=original?1:(xui.ini.$zoomScale||1);
                 return {left:event.pageX/scale, top:event.pageY/scale};
             }else{
     			var d=document, doc = d.documentElement, body = d.body,t,

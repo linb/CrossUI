@@ -7262,13 +7262,13 @@ xui.Class('xui.Event',null,{
                                 'right':
                                     'left';
         },
-        getPos:function(event){
+        getPos:function(event,original){
             event = event || window.event;
             if(xui.browser.isTouch && event.changedTouches && event.changedTouches[0])
                 event = event.changedTouches[0];
 
             if('pageX' in event){
-                var scale=xui.ini.$zoomScale||1;
+                var scale=original?1:(xui.ini.$zoomScale||1);
                 return {left:event.pageX/scale, top:event.pageY/scale};
             }else{
     			var d=document, doc = d.documentElement, body = d.body,t,
@@ -11099,7 +11099,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
         # is the offset position in CrossUI
         */
-        offset:function (pos,boundary){
+        offset:function (pos,boundary,original){
             var r,t,
             browser = xui.browser,
             ns=this,
@@ -11140,10 +11140,10 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
                 //for IE, firefox3(except document.body)
                 if(!(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
-                    t = xui.Dom.$getBoundingClientRect(node);
+                    t = xui.Dom.$getBoundingClientRect(node,original);
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
-                        add(pos, -(t=xui.Dom.$getBoundingClientRect(boundary)).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
+                        add(pos, -(t=xui.Dom.$getBoundingClientRect(boundary,original)).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
                     else{ 
                         // old:
                         // add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
@@ -11154,10 +11154,10 @@ xui.Class('xui.Dom','xui.absBox',{
                         // we have to use a base div {left:0,top:0} to do offset, to replace "scrollXXX" offset solution
                         var base = xui.Dom.getEmptyDiv();
                         base.css({left:0,top:0,position:'absolute'});
-                        var basRect=xui.Dom.$getBoundingClientRect(base.get(0));
+                        var basRect=xui.Dom.$getBoundingClientRect(base.get(0), original);
                         base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE});
 
-                        // var basRect=xui.Dom.$getBoundingClientRect(db);
+                        // var basRect=xui.Dom.$getBoundingClientRect(db, original);
                         add(pos, -basRect.left, -basRect.top);
                     }
                 }else{
@@ -12382,9 +12382,9 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             return b?value?(parseFloat(value.match(/alpha\(opacity=(.*)\)/)[1] )||0)/100:1:(value||'');
         },
-        $getBoundingClientRect:function(node, value) {
+        $getBoundingClientRect:function(node, original) {
             var rect = node.getBoundingClientRect(),t;
-            if(t = xui.ini.$transformScale)
+            if(!original && (t = xui.ini.$transformScale))
                 for(var i in rect)
                     rect[i] /= t;
             return rect;
@@ -13189,27 +13189,13 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
             }
         },
-        $setZoom:function(node,value){
-            value=parseFloat(value);
-            if(xui.isNaN(value) || value<=0)value='';
-            var b=xui.browser,n=xui(node),h={};
-            if(!('$supportZoom' in xui.Dom))
-                xui.Dom.$supportZoom = b.ie678 || document.createElement("detect").style.zoom === "";
-            if(xui.Dom.$supportZoom){
-                if(value>=1){
-                    h[b.cssTag1 + "transform"] = h.transform = '';
-                    h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '';
-                    h.zoom=value;
-                    n.css(h);
-                    return true;
-                }
-                h.zoom="";
-            }
-            h[b.cssTag1 + "transform"] = h.transform = 'scale('+value+')';
-            h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = '0 0 0';
-            n.css(h);
-            
-            return false;
+        $setZoom:function(node,scale,transx,transy,origin){
+            scale=parseFloat(scale);
+            if(xui.isNaN(scale) || scale<=0)scale='';
+            var b=xui.browser,h={};
+            h[b.cssTag1 + "transform"] = h.transform = scale===''?'': ((xui.isNumb(transx)&&xui.isNumb(transy)?('translate('+transx+'px,'+transy+'px) '):'') + 'scale('+scale+','+scale+')');
+            h[b.cssTag1 + "transform-origin"] = h["transform-origin"] = scale===''?'':(origin||'0 0 0');
+            xui(node).css(h);
         },
         _vAnimate:function(node,setting,callback){
             if(!setting || !setting.endpoints || xui.isEmpty(setting.endpoints)){
@@ -15991,10 +15977,9 @@ xui.Class('xui.Module','xui.absProfile',{
 
                                 // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
                                 xui.ini.$zoomScale = type;
-                                if(!xui.Dom.$setZoom(xui('html').get(0), type)){
-                                    // if use transform for zoom, 'getBoundingClientRect' will need to adjust too
-                                    xui.ini.$transformScale = type;
-                                }
+                                xui.Dom.$setZoom(xui('html').get(0), type);
+                                // 'getBoundingClientRect' will need to adjust too
+                                xui.ini.$transformScale = type;
                             }
                         };
                         if(t=xui.ini.$frame){
@@ -34032,8 +34017,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
-                    var node=o.reBoxing();
-                    node.popToTop(baseNode||profile.getSubNode('BOX'),null,pro.parentID);
+                    var node=o.reBoxing(),pid=pro.parentID||xui.ini.$rootContainer;
+                    node.popToTop(baseNode||profile.getSubNode('BOX'),null,
+                         pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
 
                     xui.tryF(o.activate,[],o);
 
@@ -34443,8 +34429,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     });
                     o.render();
                     //pop
-                    var node=o.reBoxing();
-                    node.popToTop(src,null,prop.parentID);
+                    var node=o.reBoxing(), pid=prop.parentID||xui.ini.$rootContainer;
+                    node.popToTop(src,null,
+                        pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
                     xui.tryF(o.activate,[],o);
                     var sid=profile.key+":unit:"+profile.$xid;
                     node.setBlurTrigger(sid, function(){
@@ -40136,7 +40123,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             var prop=profile.properties;
             if(prop.disabled||prop.readonly)return false;
 
-            var prop = profile.properties,
+            var pid=prop.parentID||xui.ini.$rootContainer,
                 arr = profile.box._v2a(prop.value),
                 min=arr[0],
                 cur=arr[1],
@@ -40178,7 +40165,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             pop.html(a.join(' '));
             xui('body').append(pop);
             if(pop.width()>300)pop.width(300);
-            pop.popToTop(src,null,prop.parentID?xui(prop.parentID):null);
+            pop.popToTop(src,null,pid? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
             pop.setBlurTrigger(profile.key+":"+profile.$xid, function(){
                 pool.append(pop);
             });
@@ -43641,6 +43628,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             var ns=this,
                 profile=ns.get(0),
                 p=profile.properties,
+                pid=p.parentID||xui.ini.$rootContainer,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
                 cm='$childPopMenu';
@@ -43655,7 +43643,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 xui([profile.$highLight]).tagClass('-hover',false);
 
             // set container
-            profile._conainer = p.parentID ? xui(p.parentID) : parent || null;
+            profile._conainer = pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : parent || null;
 
             profile.getRoot().popToTop(pos, type, profile._conainer);
 
@@ -44391,6 +44379,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 var menu, 
                     id=item.id,
                     pro=profile.properties,
+                    pid=pro.parentID||xui.ini.$rootContainer,
                     all='$allPops';
                 
                 profile.$curPop=id;
@@ -44427,7 +44416,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
                 // popmenu
                 if(profile[all][id])
-                    profile[all][id].pop(xui(src), 1, xui(pro.parentID));
+                    profile[all][id].pop(xui(src), 1, pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : null);
 
                 return false;
             }
