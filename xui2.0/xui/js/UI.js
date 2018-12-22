@@ -3618,7 +3618,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             nodes=xui(nodes);
                             box=profile.boxing();
                             if(mode==1){
-                                if(!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
+                                if(/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
                                     if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
                                         return;
                                     if(prop.disableHoverEffect===true)return;
@@ -3636,7 +3636,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
-                                nodes.tagClass('-'+((!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
+                                nodes.tagClass('-'+((/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
                                     if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))

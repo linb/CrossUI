@@ -3112,7 +3112,7 @@ xui.Class('xui.Thread',null,{
             self[i]=function(id){
                 var t;
                 if(xui.$cache.thread[id])
-                    (t=xui.Thread(id))[i].apply(t,Array.prototype.slice.call(arguments,1));
+                    return (t=xui.Thread(id))[i].apply(t,Array.prototype.slice.call(arguments,1));
             }
         },
         a = 'start,suspend,resume,abort,links,insert,isAlive,getStatus'.split(',');

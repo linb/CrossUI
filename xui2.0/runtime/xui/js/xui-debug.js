@@ -3113,7 +3113,7 @@ xui.Class('xui.Thread',null,{
             self[i]=function(id){
                 var t;
                 if(xui.$cache.thread[id])
-                    (t=xui.Thread(id))[i].apply(t,Array.prototype.slice.call(arguments,1));
+                    return (t=xui.Thread(id))[i].apply(t,Array.prototype.slice.call(arguments,1));
             }
         },
         a = 'start,suspend,resume,abort,links,insert,isAlive,getStatus'.split(',');
@@ -10479,16 +10479,24 @@ xui.Class('xui.Dom','xui.absBox',{
                     doSwipe = function(t){
                             var wheel=getD(t);
                             if((wheel._speedx||wheel._speedy) && ((new Date).getTime() - wheel._lastTime)<50){
-                                var params={},sl=t.scrollLeft,st=t.scrollTop,limit=50,rate=40,duration=2000;
-                                if(wheel._speedx)params.scrollLeft=[sl, sl + Math.sign(wheel._speedx)*Math.min(limit,Math.abs(wheel._speedx))*rate];
-                                if(wheel._speedy)params.scrollTop=[st, st + Math.sign(wheel._speedy)*Math.min(limit,Math.abs(wheel._speedy))*rate];
-                                var tid=xui.getNodeData(t,'_inthread');
-                                if(tid){
-                                    xui.Thread.abort(tid);
-                                    xui.setNodeData(t,'_inthread');
-                                    xui.setData(['!document','$fakescroll']);
+                                var params={},sl=t.scrollLeft,st=t.scrollTop,limit=50,rate=40,duration=2000,m;
+                                if(wheel._speedx){
+                                    m=[Math.max(0,sl), Math.max(0,sl + Math.sign(wheel._speedx)*Math.min(limit,Math.abs(wheel._speedx))*rate)];
+                                    if(m[0]!==m[1])params.scrollLeft=m;
                                 }
-                                xui(t).animate(params, null, null,duration,null,"expoOut").start();
+                                if(wheel._speedy){
+                                    m=[Math.max(0,st), Math.max(0,st + Math.sign(wheel._speedy)*Math.min(limit,Math.abs(wheel._speedy))*rate)];
+                                    if(m[0]!==m[1])params.scrollTop=m;
+                                }
+                                if(!xui.isEmpty(params)){
+                                    var tid=xui.getNodeData(t,'_inthread');
+                                    if(tid){
+                                        xui.Thread.abort(tid);
+                                        xui.setNodeData(t,'_inthread');
+                                        xui.setData(['!document','$fakescroll']);
+                                    }
+                                    xui(t).animate(params, null, null,duration,null,"expoOut").start();
+                                }
                             }
                             wheel._opx=wheel._opy=wheel._ox=wheel._oy=wheel._lastTime=wheel._speedx=wheel._speedy=null;
                     };
@@ -22313,7 +22321,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             nodes=xui(nodes);
                             box=profile.boxing();
                             if(mode==1){
-                                if(!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
+                                if(/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
                                     if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
                                         return;
                                     if(prop.disableHoverEffect===true)return;
@@ -22331,7 +22339,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
-                                nodes.tagClass('-'+((!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
+                                nodes.tagClass('-'+((/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
                                     if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
