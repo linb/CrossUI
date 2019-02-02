@@ -1433,23 +1433,24 @@ xui.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, onSuccess, onFail, options){
-        return xui.Ajax(uri, xui._rnd(),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, options&&options.force?xui._rnd():null,onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,xui._rnd(),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,options&&options.force?xui._rnd():null,onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
             xui.tryF(onSuccess);
         else{
-            options=typeof options=='object'?options:{};
+            options=options||{};
+            var rnd=options.force?xui._rnd():null;
             if(!sync){
                 options.rspType='script';
                 options.checkKey=id;
-                xui.JSONP(path,options.cache?"":xui._rnd(),onSuccess,onFail,0,options).start()
+                xui.JSONP(path,rnd,onSuccess,onFail,0,options).start()
             }else{
                 options.asy=!sync;
-                xui.Ajax(path,options.cache?"":xui._rnd(),function(rsp){
+                xui.Ajax(path,rnd,function(rsp){
                     try{xui.exec(rsp,id)}
                     catch(e){xui.tryF(onFail,[e.name + ": " + e.message])}
                     xui.tryF(onSuccess);
@@ -1472,16 +1473,20 @@ xui.merge(xui,{
         xui.XDMI(url).start();
     },
     fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
-        if(/\//.test(uri) && !/\.js$/i.test(uri))
-            uri=uri+".js";
         options=options||{};
-        var isPath=/\.js$/i.test(uri), 
+        var isPath=options.uri || /\//.test(uri) || /\.js$/i.test(uri), 
             c=xui.$cache.clsByURI,
-            f=xui.$cache.fetching,
-            cls,t;
+            onFetching=xui.$cache.fetching,
+            clearFetching=function(){
+                for(var i in onFetching[uri][3])xui.Thread.abort(onFetching[uri][3][i]);
+                if(onFetching[uri]){onFetching[uri][0].length=0;onFetching[uri][1].length=0;onFetching[uri][2].length=0;onFetching[uri][3].length=0;onFetching[uri].length=0;delete onFetching[uri];}
+                onFetching=null;
+            },
+            rnd=options.force?xui._rnd():null,
+            cls,obj;
         if(isPath){
             cls=xui.getClassName(uri);
-            if(xui.SC.get(cls))
+            if(cls && xui.SC.get(cls))
                 isPath=false;
         }else{
              // special path( dont use any dynamic
@@ -1489,68 +1494,70 @@ xui.merge(xui,{
              cls=uri;
              uri=xui.getPath(uri,'.js','js',options);
          }
-        if(!force && (isPath?((t=c[uri]) && t.$xui$):(t=xui.SC.get(cls))))
-            xui.tryF(onSuccess,[uri,cls],t);
+        if(!force && (isPath?((obj=c[uri]) && obj.$xui$):(obj=xui.SC.get(cls))))
+            xui.tryF(onSuccess,[uri,cls],obj);
         else{
             // For fetching one class multiple times
-            if(!f[uri]){
-                f[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-                if((options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
-                    xui.Class._ignoreNSCache=1;xui.Class._last=null;
-                    xui.JSONP(uri,xui._rnd(),function(){
-                        if(xui.Class._last)t=c[uri]=xui.Class._last;
-                        xui.Class._ignoreNSCache=xui.Class._last=null;
-                        if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
-                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
-                        var s=xui.getClassName(uri);
-                        if(t&&t.KEY!=s){
-                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, t.KEY]);
-                            xui.log( msg );
+            if(!onFetching[uri]){
+                onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
+                if(!cls || (options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
+                    if(cls){xui.Class._ignoreNSCache=1;xui.Class._last=null; }
+                    xui.JSONP(uri,rnd,function(){
+                        if(cls){
+                            if(xui.Class._last)obj=c[uri]=xui.Class._last;
+                            xui.Class._ignoreNSCache=xui.Class._last=null;
+                            if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
+                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                            var s=xui.getClassName(uri);
+                            if(obj&&s&&obj.KEY!=s){
+                                var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
+                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, obj.KEY]);
+                                xui.log( msg );
+                            }
+                        }else{
+                            for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri]);
                         }
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
-                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                        clearFetching();
                     },function(){
-                        xui.Class._ignoreNSCache=1;xui.Class._last=null;
+                        if(cls){xui.Class._ignoreNSCache=1;xui.Class._last=null;}
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
-                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                        clearFetching();
                     },threadid,{rspType:'script'}).start();
                 }else{
-                    xui.Ajax(uri,xui._rnd(),function(rsp){
+                    xui.Ajax(uri,rnd,function(rsp){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         var scriptnode;
                         var s=xui.getClassName(uri);
-                        try{scriptnode=xui.exec(rsp, s)}
-                        catch(e){for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);xui.Class._last=null;}
-                        if(xui.Class._last)t=c[uri]=xui.Class._last;
-                        xui.Class._last=null;
-                        if(t){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,t.KEY],t);}
+                        try{scriptnode=xui.exec(rsp, s)}catch(e){
+                            for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);
+                            xui.Class._last=null;
+                        }
+                        if(xui.Class._last)obj=c[uri]=xui.Class._last;
+                        xui.Class._ignoreNSCache=xui.Class._last=null;
+                        if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
                         else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
-                        if(t&&t.KEY!=s){
-                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+t.KEY+"'!";
-                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  t.KEY]);
+                        if(obj&&obj.KEY!=s){
+                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
+                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  obj.KEY]);
                             xui.log( msg );
                         }
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
-                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                        clearFetching();
                     },function(){
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
-                        for(var i in f[uri][3])xui.Thread.abort(f[uri][3][i]);
-                        if(f[uri]){f[uri][0].length=0;f[uri][1].length=0;f[uri][2].length=0;f[uri][3].length=0;f[uri].length=0;delete f[uri];}
+                        clearFetching();
                     },threadid,{rspType:'text',asy:true}).start();
                 }
             }else{
-                if(onSuccess)f[uri][0].push(onSuccess);
-                if(onFail)f[uri][1].push(onFail);
-                if(onAlert)f[uri][2].push(onAlert);
+                if(onSuccess)onFetching[uri][0].push(onSuccess);
+                if(onFail)onFetching[uri][1].push(onFail);
+                if(onAlert)onFetching[uri][2].push(onAlert);
                 if(threadid){
-                    f[uri][3].push(threadid);
+                    onFetching[uri][3].push(threadid);
                     xui.Thread.suspend(threadid);
                 }
             }
@@ -1575,18 +1582,18 @@ xui.merge(xui,{
         if(xui.isStr(clsArr))clsArr=[clsArr];
         var fun=function(paths, tid){
             xui.fetchClasses(paths,function(){ 
-                var a2=[], t, r;
+                var a2=[], obj, r;
                 for(var i=0,l=paths.length;i<l;i++){
-                    t=xui.SC.get(paths[i]);
+                    obj=xui.SC.get(paths[i]);
                     //collect  required class
-                    if(t && (r=t.Required) && r.length){
+                    if(obj && (r=obj.Required) && r.length){
                         for(var j=0,m=r.length;j<m;j++){
                             if(!xui.SC.get(r[j]))a2.push(r[j]);
                         }
                     }
                     // if it's module, collect required class in iniComponents
-                    if(t && t['xui.Module'] && (t=t.prototype&&t.prototype.iniComponents)){
-                        xui.fun.body(t).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                    if(obj && obj['xui.Module'] && (obj=obj.prototype&&obj.prototype.iniComponents)){
+                        xui.fun.body(obj).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                             if(!(a=xui.SC.get(b))){
                                 a2.push(b);
                                 a=null;
@@ -11610,7 +11617,22 @@ xui.Class('xui.Dom','xui.absBox',{
             self=null;
             return node;
         },
-
+        fullScreen:function(full){
+            var e=this.get(0), d=document;
+            if(e){
+                if(e===d)e=d.documentElement;
+                var requestMethod =  full!==false ? (e.requestFullScreen || e.webkitRequestFullScreen || e.mozRequestFullScreen || e.msRequestFullScreen)
+                    : (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.webkitExitFullscreen);
+                if (requestMethod) {
+                    requestMethod.call(full!==false ? e : d);
+                }else if (typeof window.ActiveXObject !== "undefined") {
+                    var wscript = new ActiveXObject("WScript.Shell");
+                    if (wscript !== null) {
+                        wscript.SendKeys("{F11}");
+                    }
+                }
+            }
+        },
         /*
         args:{
             width:[0,100],
@@ -15985,6 +16007,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
                                 // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
                                 xui.ini.$zoomScale = type;
+                                h[b.cssTag1 + "transform-origin"] = h["transform-origin"] ='0 0 0';
                                 xui.Dom.$setZoom(xui('html').get(0), type);
                                 // 'getBoundingClientRect' will need to adjust too
                                 xui.ini.$transformScale = type;
@@ -26014,7 +26037,10 @@ xui.Class("xui.absList", "xui.absObj",{
             }
             return this;
         },
-        showItems:function(itemId,/*default is the current*/ show){
+        hideItems:function(itemId){
+            return this.showItems(itemId, false);
+        },
+        showItems:function(itemId/*default is the current*/, show){
            var ns=this,
                 profile = ns.get(0), 
                 showNodes=xui(),
@@ -28226,7 +28252,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                         tips=item.tips||"";
                     }
                     this.$inner=1;
-                    ins.setSrc(src);
+                    ins.setSrc(src,true);
                     delete this.$inner;
                     ins.setAlt(alt||"");
                     ins.setTips(tips||"");
@@ -41648,7 +41674,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
                     // force to get offsetHeight
-                    off=obj.offsetHeight(true);
+                    off= o.hidden?0:obj.offsetHeight(true);
                     t1 += off
                     if(o.id == key)return false;
                 });
@@ -41658,7 +41684,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});
 
                     // offsetHeight maybe not set here
-                    off=obj.offsetHeight(true);
+                    off= o.hidden?0:obj.offsetHeight(true);
                     t2+= off
                 },null,true);
 

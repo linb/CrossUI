@@ -174,7 +174,7 @@ xui.Class("xui.UI.Image", "xui.UI",{
                         tips=item.tips||"";
                     }
                     this.$inner=1;
-                    ins.setSrc(src);
+                    ins.setSrc(src,true);
                     delete this.$inner;
                     ins.setAlt(alt||"");
                     ins.setTips(tips||"");

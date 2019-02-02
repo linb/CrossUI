@@ -172,7 +172,7 @@ xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     obj.cssRegion({bottom:'auto',top:adjustunit(t1,obj)});
 
                     // force to get offsetHeight
-                    off=obj.offsetHeight(true);
+                    off= o.hidden?0:obj.offsetHeight(true);
                     t1 += off
                     if(o.id == key)return false;
                 });
@@ -182,7 +182,7 @@ xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
                     obj.cssRegion({top:'auto',bottom:adjustunit(t2,obj)});
 
                     // offsetHeight maybe not set here
-                    off=obj.offsetHeight(true);
+                    off= o.hidden?0:obj.offsetHeight(true);
                     t2+= off
                 },null,true);
 

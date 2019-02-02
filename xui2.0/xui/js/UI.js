@@ -7311,7 +7311,10 @@ xui.Class("xui.absList", "xui.absObj",{
             }
             return this;
         },
-        showItems:function(itemId,/*default is the current*/ show){
+        hideItems:function(itemId){
+            return this.showItems(itemId, false);
+        },
+        showItems:function(itemId/*default is the current*/, show){
            var ns=this,
                 profile = ns.get(0), 
                 showNodes=xui(),

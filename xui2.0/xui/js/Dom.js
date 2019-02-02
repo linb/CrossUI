@@ -1750,7 +1750,22 @@ xui.Class('xui.Dom','xui.absBox',{
             self=null;
             return node;
         },
-
+        fullScreen:function(full){
+            var e=this.get(0), d=document;
+            if(e){
+                if(e===d)e=d.documentElement;
+                var requestMethod =  full!==false ? (e.requestFullScreen || e.webkitRequestFullScreen || e.mozRequestFullScreen || e.msRequestFullScreen)
+                    : (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.webkitExitFullscreen);
+                if (requestMethod) {
+                    requestMethod.call(full!==false ? e : d);
+                }else if (typeof window.ActiveXObject !== "undefined") {
+                    var wscript = new ActiveXObject("WScript.Shell");
+                    if (wscript !== null) {
+                        wscript.SendKeys("{F11}");
+                    }
+                }
+            }
+        },
         /*
         args:{
             width:[0,100],
