@@ -5313,14 +5313,28 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 pp=profile.properties,
                 map=xui.absObj.$specialChars,
                 op=o.properties,
+                us=xui.$us(profile),
+                unit=us==2?'em':us==-2?'px':null,
                 t;
-            op.header = xui.clone(pp.header, function(o,i,d){
+            op.header = xui.clone(pp.header, function(o,i,d,h){
+                if(d===2&&i==='width'&& o && o!='auto'){
+                    h[i] = profile.$forceu(o,unit);
+                    return false;
+                }else 
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
             op.grpCols = xui.clone(pp.grpCols, function(o,i,d){
+                if(d===2&&i==='width'&& o && o!='auto'){
+                    h[i] = profile.$forceu(o,unit);
+                    return false;
+                }else 
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined
             });
             op.rows = xui.clone(pp.rows, function(o,i,d){
+                if(d===2&&i==='height'&& o && o!='auto'){
+                    h[i] = profile.$forceu(o,unit);
+                    return false;
+                }else 
                 return !map[((d===1?o.id:i)+'').charAt(0)]  && o!=undefined && ((i=="id"&&typeof(o)=="string")?o.charAt(0)!="-":true);
             });
             if(xui.isEmpty(op.header))delete op.header;
