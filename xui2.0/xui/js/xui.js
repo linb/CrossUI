@@ -1443,8 +1443,8 @@ xui.merge(xui,{
         else{
             options=options||{};
             var rnd=options.force?xui._rnd():null;
+            options.rspType='script';
             if(!sync){
-                options.rspType='script';
                 options.checkKey=id;
                 xui.JSONP(path,rnd,onSuccess,onFail,0,options).start()
             }else{
@@ -1815,9 +1815,12 @@ xui.merge(xui,{
          for(i=0;i<bak.length;)
              delete proMap[bak[i++]];
          //clear dom content
-         //while(node.firstChild)
+         //1)while(node.firstChild)
          //   node.removeChild(node.firstChild);
-         node.innerHTML='';
+         //2) node.innerHTML='';
+         //3) the best one: remove first level by removeChild desc
+        for (i=node.childNodes.length-1; i>=0; i--)
+            node.removeChild(node.childNodes[i]);
     },
 
     //create:function(tag, properties, events, host){

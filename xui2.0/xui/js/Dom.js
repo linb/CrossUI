@@ -359,10 +359,9 @@ xui.Class('xui.Dom','xui.absBox',{
                 // append to ghost first
                 this.each(function(o){
                     c.appendChild(o);
-                });
+                },true);
                 var f=function(){
                     xui.$purgeChildren(c);
-                    c.innerHTML='';
                     if(callback){
                         xui.tryF(callback);
                         callback=null;
@@ -384,7 +383,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
         //flag = false: no gc
         html:function(content,triggerGC,loadScripts,purgeNow, callback){
-            var s='',t,o=this.get(0);triggerGC=triggerGC!==false;
+            var s='',t,i,o=this.get(0);triggerGC=triggerGC!==false;
             if(content!==undefined){
                 if(o){
                     if(o.nodeType==3)
@@ -398,12 +397,10 @@ xui.Class('xui.Dom','xui.absBox',{
                          if(triggerGC){
                             // append to ghost first
                             var c=xui.$getGhostDiv();
-                            xui(o).children().each(function(k){
-                                c.appendChild(k);
-                            });
+                            for (i=o.childNodes.length-1; i>=0; i--)
+                                c.appendChild(o.childNodes[i]);
                             var f=function(){
                                 xui.$purgeChildren(c);
-                                c.innerHTML='';
                                 if(callback){
                                     xui.tryF(callback);
                                     callback=null;
@@ -1714,7 +1711,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         topZindex:function(flag){
             //set the minimum to 1000
-            var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o;
+            var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o, style;
             if(xui.browser.ie && (!p||(p.nodeName+"").toUpperCase()=="HTML")){
                 p=xui("body").get(0);
             }
@@ -1722,8 +1719,9 @@ xui.Class('xui.Dom','xui.absBox',{
 
             t=p.childNodes;
             for(k=0;o=t[k];k++){
-                if(o==node || o.nodeType !=1 || !o.$xid || o.style.display=='none' || o.style.visibility=='hidden' || o.zIndexIgnore ||  xui.getNodeData(o,'zIndexIgnore') )continue;
-                j = parseInt(o.style && o.style.zIndex,10) || 0 ;
+                style = o.style;
+                if(o==node || o.nodeType !=1 || !o.$xid || (style&&style.display=='none') || (style&&style.visibility=='hidden') || o.zIndexIgnore ||  xui.getNodeData(o,'zIndexIgnore') )continue;
+                j = parseInt(style && style.zIndex,10) || 0 ;
                 i=i>j?i:j;
             }
             i++;
@@ -2136,21 +2134,22 @@ xui.Class('xui.Dom','xui.absBox',{
         //IE not trigger dimension change, when change height only in overflow=visible.
         ieRemedy:function(){
             if(xui.browser.ie&&xui.browser.ver<=6){
-                var a1=this.get(),a2=[],a3=[],l=a1.length;
+                var a1=this.get(),a2=[],a3=[],l=a1.length,style;
                 //xui.asyRun(function(){                    
                     for(var i=0;i<l;i++){
+                        style=a1[i].style;
                         // allow once
                         if(!xui.isSet(a1[i].$ieRemedy)){
-                            if(xui.isSet(a1[i].style.width)){
-                                a1[i].$ieRemedy=a1[i].style.width;
-                                a1[i].style.width=((xui.CSS.$px(a1[i].$ieRemedy,a1[i])||0)+1)+"px";
+                            if(xui.isSet(style.width)){
+                                a1[i].$ieRemedy=style.width;
+                                style.width=((xui.CSS.$px(a1[i].$ieRemedy,a1[i])||0)+1)+"px";
                             }
                         }
                         /*
-                        if((a3[i]=a1[i].style.WordWrap)=='break-word')
-                            a1[i].style.WordWrap='normal';
+                        if((a3[i]=style.WordWrap)=='break-word')
+                            style.WordWrap='normal';
                         else
-                            a1[i].style.WordWrap='break-word';
+                            style.WordWrap='break-word';
                         */
                     }
                     xui.asyRun(function(){
@@ -2200,21 +2199,22 @@ xui.Class('xui.Dom','xui.absBox',{
         fixPng:function(n){
             if(xui.browser.ie&&xui.browser.ver<=6){
                 if(n.nodeName=='IMG' && n.src.toLowerCase().search(/\.png$/) != -1){
-                    n.style.height = n.height;
-                    n.style.width = n.width;
-                    n.style.backgroundImage ="none";
-                    var t= ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
-                    if(xui.browser.ie8)n.style.msfilter = t;
-                    n.style.filter = t;
+                    var style=n.style;
+                    style.height = n.height;
+                    style.width = n.width;
+                    style.backgroundImage ="none";
+                    var t= ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + n.src + "', sizingMethod='image')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter = t;
                     n.src = xui.ini.img_bg;
                 }
-                var bgimg = n.currentStyle.backgroundImage || n.style.backgroundImage,
+                var bgimg = n.currentStyle.backgroundImage || style.backgroundImage,
                     bgmatch = (bgimg||"").toLowerCase().match(/^url[("']+(.*\.png[^\)"']*)[\)"']+[^\)]*$/i);
                 if(bgmatch){
-                    n.style.backgroundImage ="none";
-                    var t = ((n.style.filter?(n.style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
-                    if(xui.browser.ie8)n.style.msfilter = t;
-                    n.style.filter=t;
+                    style.backgroundImage ="none";
+                    var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=" + bgmatch[1] + "', sizingMethod='crop')").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/[,\s]+/g,', ');
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter=t;
                 }
             }
         },
@@ -2483,13 +2483,13 @@ xui.Class('xui.Dom','xui.absBox',{
                return xui(node).rotate();
             }
             var ns=xui.Dom,
-                css3prop=xui.Dom._css3prop;
-
-            var value,b;
+                css3prop=xui.Dom._css3prop,
+                style=node.style,
+                value,b;
             if(name=='opacity' && (!ns.css3Support("opacity")) && xui.browser.ie)
                 b = name = 'filter';
 
-            value= node.style[name];
+            value= style[name];
             if(force || !value || value==="initial"){
                 var me =xui.Dom.getStyle,t,
                 brs=xui.browser,
@@ -2525,7 +2525,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         :''
                     :node.currentStyle?
                         (node.currentStyle[name] || node.currentStyle[name2] || (name3 && (node.currentStyle[name3] || node.currentStyle[name4])))
-                :((node.style && (node.style[name]||(name3 && node.style[name3])))||'');
+                :((style && (style[name]||(name3 && style[name3])))||'');
             /*
                             if(xui.browser.opr){
                                 var map2 = me.map2 || (me.map2={left:1,top:1,right:1,bottom:1});
@@ -2553,10 +2553,10 @@ xui.Class('xui.Dom','xui.absBox',{
             return rect;
         },
         $transformIE:function(node, value) {
-            var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-            if(xui.browser.ie8)node.style.msfilter = t;
-            node.style.filter = t;
-            node.style.marginTop=node.style.marginLeft="";
+            var style=node.style, t = (style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Matrix\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+            if(xui.browser.ie8)style.msfilter = t;
+            style.filter = t;
+            style.marginTop=style.marginLeft="";
             if(value){
                 var tmatrix = function(){
                     var current,
@@ -2712,9 +2712,9 @@ xui.Class('xui.Dom','xui.absBox',{
                 var ow=node.offsetWidth,oh=node.offsetHeight;
                 var filter=matrix.getFilter();
 //xui.echo(filter);
-                var t=((node.style.filter?(node.style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                if(xui.browser.ie8)node.style.msfilter = t;
-                node.style.filter=t;
+                var t=((style.filter?(style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                if(xui.browser.ie8)style.msfilter = t;
+                style.filter=t;
 //xui.echo(t);
 
                 // for fake case
@@ -2725,26 +2725,27 @@ xui.Class('xui.Dom','xui.absBox',{
                         w=rect.right - rect.left, 
                         h=rect.bottom-rect.top;
      
-                    node.style.marginLeft =Math.round(parseFloat((ow-w)/2  + 10 + transX))+'px';
-                    node.style.marginTop = Math.round(parseFloat((oh-h)/2 + 10 + transY))+ 'px';
+                    style.marginLeft =Math.round(parseFloat((ow-w)/2  + 10 + transX))+'px';
+                    style.marginTop = Math.round(parseFloat((oh-h)/2 + 10 + transY))+ 'px';
                 }
 
                 // fake
-                node.style.transform=value;
+                style.transform=value;
             }
         },
         $textShadowIE:function(node, value, box){
+            var style=node.style;
             if(!value){
                 var f=function(s){
                     return (s||"").replace(/progid\:DXImageTransform\.Microsoft\.(Chroma|DropShadow|Glow)\([^)]+\)/ig,"").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 },
-                s1=node.style.filter;
+                s1=style.filter;
                 if(s1){
-                    if(xui.browser.ie8)node.style.msfilter=f(s1);
-                    node.style.filter=f(s1);
+                    if(xui.browser.ie8)style.msfilter=f(s1);
+                    style.filter=f(s1);
                 }
                 if(!box)
-                    node.style.backgroundColor="";
+                    style.backgroundColor="";
             }else{
                 var f=function(x,y,r,c){
                     return (box?"":"progid:DXImageTransform.Microsoft.Chroma(Color=#cccccc) ")
@@ -2753,11 +2754,11 @@ xui.Class('xui.Dom','xui.absBox',{
                 },
                 r=value.match(/([\d\.-]+)px\s+([\d\.-]+)px(\s+([\d\.-]+)px)?(\s+([#\w]+))?/);
                 if(r){
-                    var t=((node.style.filter?(node.style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if(xui.browser.ie8)node.style.msfilter=t;
-                    node.style.filter=t;
+                    var t=((style.filter?(style.filter+","):"")+f(r[1],r[2],r[4],r[6]||"#000000")).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)style.msfilter=t;
+                    style.filter=t;
                     if(!box)
-                        node.style.backgroundColor="#C5C5C5";
+                        style.backgroundColor="#C5C5C5";
                 }
             }
         },
@@ -2816,7 +2817,8 @@ xui.Class('xui.Dom','xui.absBox',{
             var iecracker1=function(node, orient, stops, shape, size, rate){
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType != 1 || !node.style)return;
-                var tmp1=ns.getStyle(node,'overflow'),
+                var style=node.style, 
+                    tmp1=ns.getStyle(node,'overflow'),
                     tmp2=ns.getStyle(node,'display');
                 if(tmp1!='hidden' || (tmp2!='block' && tmp2!='relative'))return;
 
@@ -2828,10 +2830,10 @@ xui.Class('xui.Dom','xui.absBox',{
                             break;
                         }
                     }
-                    node.style.backgroundColor='';
-                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if(xui.browser.ie8)node.style.msfilter = t;
-                    node.style.filter=t;
+                    style.backgroundColor='';
+                    var t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter=t;
                 }else{
                     rate=rate||1;
 
@@ -2905,18 +2907,19 @@ xui.Class('xui.Dom','xui.absBox',{
                         node.insertBefore(at, node.firstChild);
                     else
                         node.appendChild(at);
-                    node.style.backgroundColor = outerColor;
+                    style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if(xui.browser.ie8)node.style.msfilter = t;
-                        node.style.filter=t;
+                        var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if(xui.browser.ie8)style.msfilter = t;
+                        style.filter=t;
                     }
                 }
             },
             iecracker21=function(node, orient, stops){
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType != 1 || !node.style)return;
-                var tmp1=ns.getStyle(node,'overflow'),
+                var style=node.style, 
+                    tmp1=ns.getStyle(node,'overflow'),
                     tmp2=ns.getStyle(node,'display');
                 if(tmp1!='hidden'){
                     ns.setStyle(node,'overflow','hidden');
@@ -2933,10 +2936,10 @@ xui.Class('xui.Dom','xui.absBox',{
                             break;
                         }
                     }
-                    node.style.backgroundColor='';
-                    var t = (node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if(xui.browser.ie8)node.style.msfilter = t;
-                    node.style.filter=t;
+                    style.backgroundColor='';
+                    var t = (style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter=t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
@@ -2994,21 +2997,22 @@ xui.Class('xui.Dom','xui.absBox',{
                         node.insertBefore(at, node.firstChild);
                     else
                         node.appendChild(at);
-                    node.style.backgroundColor = outerColor;
+                    style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                        if(xui.browser.ie8)node.style.msfilter = t;
-                        node.style.filter=t;
+                        var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        if(xui.browser.ie8)style.msfilter = t;
+                        style.filter=t;
                     }
                 }
             },
             iecracker2=function(node,orient,stops){
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
+                 var style=node.style;
                 if(!orient){
-                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if(xui.browser.ie8)node.style.msfilter = t;
-                    node.style.filter=t;
+                    var t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter=t;
                     var i,a=node.childNodes,l=a.length;
                     for(i=0;i<l;i++){
                         if(a[i].nodeType==1 && a[i].id==id){
@@ -3016,10 +3020,10 @@ xui.Class('xui.Dom','xui.absBox',{
                             break;
                         }
                     }
-                    node.style.backgroundColor='';
-                    var t = ((node.style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if(xui.browser.ie8)node.style.msfilter = t;
-                    node.style.filter = t;
+                    style.backgroundColor='';
+                    var t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter = t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr,
@@ -3054,9 +3058,9 @@ xui.Class('xui.Dom','xui.absBox',{
                             outerColor=t;
                         break;
                     }
-                    var t = ((node.style.filter?(node.style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
-                    if(xui.browser.ie8)node.style.msfilter = t;
-                    node.style.filter =t;
+                    var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    if(xui.browser.ie8)style.msfilter = t;
+                    style.filter =t;
                 }
             },
             svgcracker1=function(node,orient,stops, shape, size, rate){
@@ -3378,22 +3382,22 @@ xui.Class('xui.Dom','xui.absBox',{
             },setting.duration,0,setting.type).start();
         },
         $adjustCss:function(hash,returnStr){
-            var fack={nodeType:1,style:{}};
+            var fack={nodeType:1,style:{}}, style=fack.style;
             xui.Dom.setStyle(fack,hash);
             if(returnStr){
                 var arr=[];
                 if(xui.browser.ie&&xui.browser.ver==8){
-                    if(fack.style.filter)
-                        fack.style["-ms-filter"]=fack.style.filter;
-                    if(fack.style['background-image']=='none')
-                        fack.style['background-image']="url(about:blank)";
+                    if(style.filter)
+                        style["-ms-filter"]=style.filter;
+                    if(style['background-image']=='none')
+                        style['background-image']="url(about:blank)";
                 }
-                xui.each(fack.style,function(o,i){
+                xui.each(style,function(o,i){
                     arr.push(i.replace(/([A-Z])/g, "-$1" ).toLowerCase()+":"+o);
                 });
                 return arr.join(';').replace(/[;]+/g,';');
             }else{
-                return fack.style;
+                return style;
             }
         },
         _cssfake:{rotate:1, scaleX:1,scaleY:1,translateX:1,translateY:1,skewX:1,skewY:1},
@@ -3405,7 +3409,8 @@ xui.Class('xui.Dom','xui.absBox',{
             var ns=xui.Dom,
                 css3prop=xui.Dom._css3prop,
                 xb=xui.browser,
-                fake=ns._cssfake;
+                fake=ns._cssfake,
+                style=node.style;
 
             if(node.nodeType != 1)return;
             if(typeof name == 'string'){
@@ -3440,10 +3445,10 @@ xui.Class('xui.Dom','xui.absBox',{
                         if((!ns.css3Support("opacity"))&&xb.ie){
                             if(value==='')value=1;
                             // fake
-                            node.style.opacity=value;
-                            node.style.zoom=1;
+                            style.opacity=value;
+                            style.zoom=1;
                             value = "alpha(opacity="+ 100*value +")";
-                            var ov = (node.style.filter||"").replace(r1, "");
+                            var ov = (style.filter||"").replace(r1, "");
                             value = (ov?(ov+","):"") + value;
                             name="filter";
                             if(xb.ver==8)name2="msfilter";
@@ -3478,10 +3483,10 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(name=="filter"){
                         value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     }
-                    node.style[name]=value;
-                    if(name2)node.style[name2]=value;
-                    if(name3)node.style[name3]=value;
-                    if(name4)node.style[name4]=value;
+                    style[name]=value;
+                    if(name2)style[name2]=value;
+                    if(name3)style[name3]=value;
+                    if(name4)style[name4]=value;
                 }
             }else
                 for(var i in name)
@@ -4115,9 +4120,8 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){
-                            a[o]=b[o]=value;
-                        }else
-                            v[o]=value;
+                            if(a)a[o]=value;if(b)b[o]=value;
+                        }else if(v)v[o]=value;
                     });
                 else
                     return (v=this.get(0)) ? (v===window || v===document) ? (window["scrollTop"==o?"pageYOffset":"pageXOffset"] || (a[o]||b[o]||0))
@@ -4127,17 +4131,18 @@ xui.Class('xui.Dom','xui.absBox',{
         });
         xui.arr.each('width,height,left,top'.split(','),function(o){
             self.plugIn(o,function(value){
-                var self=this, node=self.get(0),b=xui.browser,type=typeof value,doc=document,t;
+                var self=this, node=self.get(0),b=xui.browser,type=typeof value,doc=document,t,style;
                 if(!node || node.nodeType==3)return;
                 if(type=='undefined'||type=='boolean'){
                     if((o=='width' && (t='Width'))||(o=='height' && (t='Height'))){
                         if(doc===node)return Math.max( doc.body['scroll'+t], doc.body['offset'+t], doc.documentElement['scroll'+t], doc.documentElement['offset'+t]);
                         if(window===node)return b.opr?Math.max(doc.body['client'+t],window['inner'+t]):b.kde?window['inner'+t]:(xui.browser.contentBox && doc.documentElement['client'+t]) ||doc.body['client'+t];
                     }
+                    style=node.style;
                     // give shortcut
                     // we force to get px number of width/height 
-                    if(o=='width')value=(xui.CSS.$isPx(node.style.width)&&parseFloat(node.style.width))||self._W(node,1,value);
-                    else if(o=='height')value=(xui.CSS.$isPx(node.style.height)&&parseFloat(node.style.height))||self._H(node,1,value);
+                    if(o=='width')value=(xui.CSS.$isPx(style.width)&&parseFloat(style.width))||self._W(node,1,value);
+                    else if(o=='height')value=(xui.CSS.$isPx(style.height)&&parseFloat(style.height))||self._H(node,1,value);
                     else
                         value = xui.Dom.getStyle(node, o, true);
                     return (value=='auto'||value==='')?value:(value||0);

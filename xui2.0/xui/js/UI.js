@@ -2008,13 +2008,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // adjust self
                 if(prop.position=='absolute'){
                     if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
-                        var n=o.getRootNode();
+                        var n=o.getRootNode(),style=n.style;
                         // ensure display
                         if(n && n.clientHeight){
                             if(force){
                                 // ensure force 1
-                                n.style.width = ((parseFloat(o.$px(n.style.width))||0)+1)+'px';
-                                n.style.height = ((parseFloat(o.$px(n.style.height))||0)+1)+'px';
+                                style.width = ((parseFloat(o.$px(style.width))||0)+1)+'px';
+                                style.height = ((parseFloat(o.$px(style.height))||0)+1)+'px';
                                 // ensure force 
                                 o._resize_h=o._resize_w=-1;
                             }
@@ -3159,10 +3159,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 return xui.str.toDom(str);
 
             //must use empty div for RenderTriggers
-            var matrix=xui.Dom.getEmptyDiv(profile.$inDesign).get(0), r=[];
+            var matrix=xui.Dom.getEmptyDiv(profile.$inDesign).get(0), r=[],style=matrix.style;
             // for control size
-            matrix.style.position='relative';
-            matrix.style.display='none';
+            style.position='relative';
+            style.display='none';
             matrix.innerHTML=str;
             //add event handlers
             this.$addEventsHanlder(profile, matrix);
@@ -3171,7 +3171,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui.$registerNode(t[i]);
                 r[r.length]=t[i].$xid;
             }
-            matrix.style.display='';
+            style.display='';
             matrix=null;
             return xui(r,false);
         },
