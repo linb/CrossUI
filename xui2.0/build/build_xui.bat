@@ -120,6 +120,7 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\UI\SVGPaper.js /b ^
 + %relPath%xui\js\UI\FusionChartsXT.js /b ^
 + %relPath%xui\js\UI\ECharts.js /b ^
++ %relPath%xui\js\UI\FormLayout.js /b ^
 + %relPath%xui\js\_end.js /b ^
 xui.js
 
