@@ -229,16 +229,26 @@ xui.Class("xui.Coder", null,{
                 var Brackets={};
                 if(!reverse){
                     arr=[
-                        [/([\[\{])\s*([\[\{])/.source, function(a,i){Brackets[deep+2]=a[i+2]=='['; return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
+                        // a[b[6]]
+                        [/\[[^,;\n{}\x01\x03]+\]/.source, "$0"],
+                        // [{ 
+                        [/(\[)\s*(\{)/.source, function(a,i){Brackets[deep+1]=1; return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
+                        // [   or  {
                         [/[\[\{]/.source, function(a,i){Brackets[deep+1]=a[i]=='['; return a[i]+'\n'+space[++deep]}],
+
                         [/[\x02\;]/.source, function(a,i){return a[i]+'\n'+space[deep]}],
                         [/(\,)([\x03\x04\w_\-]+\:)/.source, function(a,i){return a[i+1]+'\n'+space[deep]+a[i+2]}],
                         [/,/.source, function(a,i){return Brackets[deep]? ',\n'+space[deep] : ','}],
                         [/\x01/.source, function(a,i){return '\n'+space[deep]+a[i]}],
-                        [/([\]\}])\s*([\]\}])\s*([\,]*)/.source, function(a,i){if(Brackets[deep]&&a[i+1]==']')Brackets[deep-1]=0; return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
-                        [/([\]\}])\s*([\]\}])\s*([\;]*)/.source, function(a,i){if(Brackets[deep]&&a[i+1]==']')Brackets[deep-1]=0; return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
-                        [/[\]\}]\s*[\,]*/.source, function(a,i){if(Brackets[deep]&&a[i]==']')Brackets[deep]=0; return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
-                        [/[\]\}]\s*[\;]*/.source, function(a,i){if(Brackets[deep]&&a[i]==']')Brackets[deep]=0; return '\n'+space[--deep]+a[i]+'\n'+space[deep] }]
+                        
+                        // ]}   or   ]},    or   ]};
+                        [/(\])\s*(\})\s*([\,\;]*)/.source, function(a,i){Brackets[deep-1]=0; return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
+                        // }    or   },   or   };
+                        [/\}\s*[\,\;]*/.source, function(a,i){return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
+                        // ],   or   ];
+                        [/\]\s*[\,\;]+/.source, function(a,i){Brackets[deep]=0; return '\n'+space[--deep]+a[i]+'\n'+space[deep] }],
+                        // ]
+                        [/\]/.source, function(a,i){Brackets[deep]=0; return '\n'+space[--deep]+a[i] }]
                     ];
                     if(type!='css'){
                         arr.push([/for\s*\([\w ]+\sin\s/.source, "$0"],

@@ -216,6 +216,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
             renderer:null,
             selectable:null,
             tips:null,
+            autoTips:null,
             width:{
                 $spaceunit:1,
                 ini:'30em'
@@ -334,12 +335,8 @@ xui.Class("xui.UI.ECharts","xui.UI",{
         },
         RenderTrigger:function(){
             var prf=this,prop=prf.properties;
-            prf.boxing().busy(false, "Loading charts ...");
             var fun=function(){
                 if(!prf || !prf.box)return;
-
-                prf.boxing().free();
-                
                 var opts = {
                     width:prf.$px(prop.width),
                     height:prf.$px(prop.height)
@@ -379,10 +376,14 @@ xui.Class("xui.UI.ECharts","xui.UI",{
             };
             if(window.echarts)fun();
             else{
+                prf.boxing().busy(false, "Loading charts ...");
                 var gl=prop.chartCDNGL;
                 xui.include("echarts",prop.chartCDN,function(){
                     if(gl) xui.include("",gl,function(){
-                        if(prf && prf.box) fun();
+                        if(prf && prf.box){
+                            prf.boxing().free();
+                            fun();
+                        }
                     },null,false,{cache:true});
                 },null,false,{cache:true});
             }

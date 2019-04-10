@@ -176,12 +176,12 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
                 //e.g. use div.innerHTML = ui.toHtml();
                 if(!ele.$xid)
-                    xui.UI.$addEventsHanlder(ns,ele, true);
+                    xui.UI.$addEventsHandler(ns,ele, true);
 
                 // for svg widget
                 if(ns._elset){
                     for(var i=1,l=ns._elset.length;i<l;i++)
-                        xui.UI.$addEventsHanlder(ns,ns._elset[i].node, true);
+                        xui.UI.$addEventsHandler(ns,ns._elset[i].node, true);
                 }
 
                 // unselectable="on" will kill onBlur
@@ -408,7 +408,10 @@ xui.Class('xui.UIProfile','xui.Profile', {
         },
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
-            return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
+            if(subId===true||subId===null||typeof subId=='string')
+                return this.box._SUBCONTAINERKEY?this.getSubNodes(this.box._SUBCONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
+            else
+                return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
         },
         // wrap these functions from xui.CSS
         getEmSize:function(force){
@@ -1575,6 +1578,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
+            if(pro.box.$beforeAppend && false===pro.box.$beforeAppend(pro,target,subId,pre,base))
+                return;
             if(pro.beforeAppend && false===this.beforeAppend(pro,target,subId,pre,base))
                 return;
 
@@ -1631,6 +1636,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
             }
 
+            if(pro.box.$afterAppend)
+                pro.box.$afterAppend(pro,target,subId,pre,base);
             if(pro.afterAppend)
                 this.afterAppend(pro,target,subId,pre,base);
             return this;
@@ -2008,10 +2015,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // adjust self
                 if(prop.position=='absolute'){
                     if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
-                        var n=o.getRootNode(),style=n.style;
+                        var n=o.getRootNode();
                         // ensure display
                         if(n && n.clientHeight){
                             if(force){
+                                var style=n.style;
                                 // ensure force 1
                                 style.width = ((parseFloat(o.$px(style.width))||0)+1)+'px';
                                 style.height = ((parseFloat(o.$px(style.height))||0)+1)+'px';
@@ -2040,7 +2048,7 @@ xui.Class("xui.UI",  "xui.absObj", {
     Initialize:function(){
         var ns=this.prototype;
         xui.arr.each('getSubNode,getSubNodes,getDomId,getRootNode,getRoot,getContainer'.split(','),function(o){
-            if(!ns[o])
+            if(!ns[o]){
                 ns[o]=function(){
                     var p=this.get(0);
                     return p ? p[o].apply(p,arguments) : null;
@@ -2048,6 +2056,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 ns[o].$original$='xui.UI';
                 ns[o].$type$='instance';
                 ns[o].$name$=o;
+            }
         });
 
         var self=this, hash={};
@@ -3165,7 +3174,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             style.display='none';
             matrix.innerHTML=str;
             //add event handlers
-            this.$addEventsHanlder(profile, matrix);
+            this.$addEventsHandler(profile, matrix);
             for(var i=0,t=matrix.childNodes,l=t.length;i<l;i++){
                 //ensure the root nodes
                 xui.$registerNode(t[i]);
@@ -3187,7 +3196,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         _handleEventConf:function(conf, args){
             var ns=this;
         },
-        $addEventsHanlder:function(profile, node, includeSelf){
+        $addEventsHandler:function(profile, node, includeSelf){
             var ch=xui.$cache.UIKeyMapEvents,
                 event=xui.Event,
                 eh=event._eventHandler,
@@ -5852,11 +5861,20 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                             // 1. set overflow for size
                             if(style)style.overflow=style.overflowX=style.overflowY="hidden";
-
+                            var hasCover;
+                            for(var i in me.dockall){
+                                if(me.dockall[i].$dockType=="cover"){
+                                    hasCover=1;
+                                    break;
+                                }
+                            }
 
                             //2. get width / height
                             var width=(style&&css.$px(style.width,nodefz))||node.width()||0,
-                                height=(style&&css.$px(style.height,nodefz))||node.height()||0;
+                                height=(style&&css.$px(style.height,nodefz))||node.height()||0,
+                                offsetH=hasCover?node.offsetHeight():height,
+                                offsetW=hasCover?node.offsetWidth():width;
+
                             if(width=='auto')width=0;
                             if(height=='auto')height=0;
                             //width=Math.max( node.scrollWidth()||0,  (style&&css.$px(style.width,nodefz))||node.width()||0);
@@ -5892,7 +5910,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     bottom: conDockPadding.bottom,
                                     // size
                                     width: width,
-                                    height: height
+                                    height: height,
+                                    // for dock='cover'
+                                    offsetW:offsetW,
+                                    offsetH:offsetH
                                 };
                                 obj.preX = obj.oX = obj.left;
                                 obj.preY = obj.oY = obj.top;
@@ -6532,7 +6553,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     right = sEnd?((isCover?0:(flt?0:obj.right))  + margin.right):(obj.width-css.$px(prop.width,nodefz)-css.$px(prop.left,nodefz));
                                     top = prop.dock=='width'?(css.$px(prop.top,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.top)) + margin.top):css.$px(prop.top,nodefz));
                                     //later call for w/h change once
-                                    temp=checkLimits(profile, prop, 'W', obj.width - left - right - x);
+                                    temp=checkLimits(profile, prop, 'W', (isCover?obj.offsetW:obj.width) - left - right - x);
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};
@@ -6564,7 +6585,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     left = prop.dock=='height'?(css.$px(prop.left,nodefz) || 0):(sStart?((isCover?0:(flt?0:obj.left)) + margin.left):css.$px(prop.left,nodefz));
                                     
                                     //later call for w/h change once
-                                    temp=checkLimits(profile, prop, 'H', obj.height - top - bottom - y);
+                                    temp=checkLimits(profile, prop, 'H', (isCover?obj.offsetH:obj.height) - top - bottom - y);
 
                                     obj.later=obj.later||{};
                                     obj.later[profile.$xid] = obj.later[profile.$xid] || {};

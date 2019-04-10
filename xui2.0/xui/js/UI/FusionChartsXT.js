@@ -448,12 +448,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
         },
         RenderTrigger:function(){
             var prf=this,prop=prf.properties;
-            prf.boxing().busy(false, "Loading charts ...");
-
             var fun=function(){
                 if(!prf || !prf.box)return;
-
-                prf.boxing().free();
 
                 // give chart dom id
                 prf._chartId="FC_"+prf.properties.chartType+"_"+prf.$xid;
@@ -481,8 +477,12 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
 
             if(window.FusionCharts)fun();
             else{
+                prf.boxing().busy(false, "Loading charts ...");
                 xui.include("FusionCharts",prop.chartCDN,function(){
-                    if(prf && prf.box) fun();
+                    if(prf && prf.box){
+                        prf.boxing().free();
+                        fun();
+                    }
                 },null,false,{cache:true});
             }
         },

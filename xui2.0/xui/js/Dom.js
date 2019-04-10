@@ -441,7 +441,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         }
 
                         //if(triggerGC)
-                        //    xui.UI.$addEventsHanlder(o);
+                        //    xui.UI.$addEventsHandler(o);
 
                     }
                     o=null;
@@ -2471,11 +2471,22 @@ xui.Class('xui.Dom','xui.absBox',{
             var ns=this;
             if(force||!ns._scrollBarSize){
                 var div;
-                xui('body').append(div=xui.create('<div style="width:50px;height:50px;visibility:hidden;position:absolute;margin:0;padding:0;left:-10000px;overflow:scroll;"></div>'));
+                xui('body').append(div=xui.create('<div style="width:50px;height:50px;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
                 ns._scrollBarSize=div.get(0).offsetWidth-div.get(0).clientWidth;
                 div.remove();
             }
             return ns._scrollBarSize;
+        },
+        _dpi:0,
+        getDPI:function(force){
+            var ns=this;
+            if(force||!ns._dpi){
+                var div;
+                xui('body').append(div=xui.create('<div style="width:1in;height:1in;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
+                ns._dpi=div.get(0).offsetHeight;
+                div.remove();
+            }
+            return ns._dpi;
         },
         getStyle:function(node, name, force){
             if(!node || node.nodeType!=1)return '';
