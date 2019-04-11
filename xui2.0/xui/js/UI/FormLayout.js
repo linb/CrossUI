@@ -1,8 +1,15 @@
 xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
     Initialize:function(){
-        this.addTemplateKeys(['ITEM','HODER']);
+        this.addTemplateKeys(['ITEM','HOLDER','SPREADER']);
     },
     Instance:{
+        selectCell:function (row, col){
+            var prf=this.get(0),prop=prf.properties;
+            if(prop.renderType=="handsontable"){
+                if(prf.$htable)
+                    prf.$htable.selectCell(row, col);
+            }
+        },
         getHTable:function(){
             return this.get(0) && this.get(0).$htable;
         },
@@ -16,7 +23,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
     Static:{
         _SUBCONTAINERKEY:"ITEM",
         //_CONTAINERKEY:"BOX",
-        _ACTIVEHANDLER:["KEY","HODER"],
+        _ACTIVEHANDLER:["KEY","HOLDER"],
+        _NoProp : {"conLayoutColumns":1},
         _objectProp:{columns:1,rows:1,cells:1,merged:1,borders:1},
         Appearances:{
             KEY:{
@@ -88,6 +96,16 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             selectable:null,
             tips:null,
             autoTips:null,
+            mode:{
+                ini:'',
+                listbox:['','design','write','read'],
+                get:function(){
+                    return this.$inDesign?'design':(this.properties.mode || 'read');
+                },
+                action:function(){
+                    this.boxing().refresh();
+                }
+            },
             width:{
                 $spaceunit:1,
                 ini:'30em'
@@ -96,14 +114,61 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 $spaceunit:1,
                 ini:'25em'
             },
+            menuCaptions:{
+                ini:{
+                    'row_above':'Insert row above',
+                    'row_below':'Insert row below',
+                    'col_left':'Insert column left',
+                    'col_right':'Insert column right',
+                    'clear_column':'Clear selected column',
+                    'remove_row':'Remove row',
+                    'remove_col':'Remove column',
+                    'alignment:left':'Left',
+                    'alignment:top':'Top',
+                    'alignment:right':'Right',
+                    'alignment:bottom':'Bottom',
+                    'alignment:middle':'Middle',
+                    'alignment:center':'Center',
+                    'alignment:justify':'Justify',
 
-            solidGridlines:true,
+                    'bgcolor':'Background color'
+                }
+            },
+            solidGridlines:{
+                ini:true,
+                action:function(value){
+                    var cls = value ? "solidgridline" : this.boxing().getMode()=='design' ? "" : "nogridline",
+                        node = this.getSubNode('BOX');
+                    node.removeClass("solidgridline nogridline");
+                    if(cls)node.addClass(cls);
+                }
+            },
             stretchH:{
                 ini:"all",
-                listBox:["","none","last","all"]
+                listbox:["","none","last","all"],
+                action:function(){
+                    this.box.$updateSetting(this,'stretchH');
+                }
             },
-            defaultRowHeight: 50,//23,
+            rowHeaderWidth:{
+                ini:25,
+                action:function(){
+                    this.box.$updateSetting(this,'rowHeaderWidth');
+                    var size=this.getRoot().cssSize();
+                    xui.UI.$tryResize(this, size.width, size.height);
+                }
+            },
+            columnHeaderHeight:{
+                ini:25,
+                action:function(){
+                    this.box.$updateSetting(this,'columnHeaderHeight');
+                    var size=this.getRoot().cssSize();
+                    xui.UI.$tryResize(this, size.width, size.height);
+                }
+            },
+            defaultRowHeight: 50,
             defaultColumnWidth: 50,
+
             //[{...}]
             columns:{
                 ini:[]
@@ -147,11 +212,15 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         if(xui(cssId).get(0)){
                             //prf.boxing().free();
                             cls._renderAsHandsontable(prf);
+                            var size=prf.getRoot().cssSize();
+                            xui.UI.$tryResize(prf, size.width, size.height);
                         }else{
                             xui.Thread.repeat(function(){
                                 if(xui(cssId).get(0)){
                                     //prf.boxing().free();
                                     cls._renderAsHandsontable(prf);
+                                    var size=prf.getRoot().cssSize();
+                                    xui.UI.$tryResize(prf, size.width, size.height);
                                     return false;
                                 }
                             },200);
@@ -159,44 +228,169 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     },null,false,{cache:true});
                 }
             }
+
+            prf.boxing().setSolidGridlines(prop.solidGridlines, true);
         },
         EventHandlers:{
-            onChange: function(profile, changes, source){},
             onShowTips:null
+        },
+        _popMenu : function(prf, _menu, capMap){
+            var ignoreMap={cut:1,copy:1,make_read_only:1,undo:1,redo:1};
+            var xuimenu, htable = _menu.hot;
+            if(xuimenu = prf.$popmenu){
+                xui.each(_menu.menuItems,function(item){
+                     if(item.name!='---------'){
+                        xuimenu.updateItem(item.key, {disabled: item.disabled ? item.disabled.call(htable) : false});
+                     }
+                });
+            }else{
+                xuimenu = new xui.UI.PopMenu();
+                var mapMenu=function(items){
+                    var nitems=[], lastSplit;
+                    xui.each(items,function(item){
+                        if(ignoreMap[item.key])return;
+                        if(item.name=='---------'){
+                            if(!lastSplit){
+                                lastSplit=1;
+                                nitems.push({type:'split'});
+                            }
+                        }else{
+                            lastSplit=0;
+                            nitems.push({
+                                    id: item.key,
+                                    disabled: item.disabled ? item.disabled.call(htable) : false,
+                                    caption: capMap && capMap[item.key] || item.name.call(htable),
+                                    sub: item.submenu?mapMenu(item.submenu.items):null,
+                                    _cb: item.callback
+                            });
+                        }
+                    });
+                    return nitems;
+                },
+                normalizeSelection = function(selRanges) {
+                    var arr=[];
+                    for(var i=0,l=selRanges.length;i<l;i++){
+                        arr.push({
+                                start: selRanges[i].getTopLeftCorner(),
+                                end: selRanges[i].getBottomRightCorner()
+                        });
+                    }
+                    return arr;
+                },
+                nitems = mapMenu(_menu.menuItems);
+                nitems.push({type:'split'});
+                nitems.push({
+                    id:'bgcolor',
+                    caption: capMap && capMap.bgcolor || 'bgcolor',
+                    sub:true
+                });
+
+                xuimenu.setItems(nitems);
+
+                xuimenu.onMenuSelected(function(prf, item){
+                    if(item._cb){
+                            item._cb.call(htable, item.id, normalizeSelection(htable.getSelectedRange()));
+                    }else{
+                        if(item.id=='bgcolor'){
+                            xui.each(htable.getSelectedRange(), function(selection){
+                                var fromRow = Math.min(selection.from.row, selection.to.row),
+                                    toRow = Math.max(selection.from.row, selection.to.row),
+                                    fromCol = Math.min(selection.from.col, selection.to.col),
+                                    toCol = Math.max(selection.from.col, selection.to.col);
+                                
+                                for (var row = fromRow; row <= toRow; row++) {
+                                  for (var col = fromCol; col <= toCol; col++) {
+                                    var cellMeta = htable.getCellMeta(row, col),
+                                        TD = htable.getCell(row, col);
+                                    TD.style.backgroundColor =  "#"+item.value;
+                                    cellMeta.style=cellMeta.style||{};
+                                    cellMeta.style.backgroundColor =  "#"+item.value;
+                                  }
+                                }
+                            });
+                            // no need render
+                            //htable.render();
+                        }
+                    }
+                })
+                .onShowSubMenu(function(profile, item, src) {
+                    var menubar=profile.boxing(), obj;
+                    switch(item.id){
+                        case 'bgcolor':
+                            obj=(new xui.UI.ColorPicker).render(true);
+                            obj.afterUIValueSet(function(p, old, n){ 
+                               menubar.hide(false); 
+                               menubar.onMenuSelected(profile,{
+                                  id : item.id, 
+                                  value : n 
+                               });
+                            });
+                            obj.get(0).$rootmenu = profile;
+                        break;
+                    }
+                    return obj;
+                }); 
+
+                prf.$popmenu = xuimenu;
+            }
+
+            xuimenu.pop(prf.$lastMousePos);
+        },
+        _getHeaderOffset:function(prf){
+            var prop=prf.properties,
+                  offset = {left:0,top:0};
+            if(prop.renderType=="handsontable"){
+                if(prf.boxing().getMode()=="design"){
+                    offset.left=prop.rowHeaderWidth;
+                    offset.top=prop.columnHeaderHeight + 1;
+                }
+/*
+                var node = prf.getSubNode("BOX");
+                node.children().each(function(n){
+                    if(xui(n).hasClass("ht_clone_top")){
+                        offset.top = xui(n).first(2).height();
+                    }else if(xui(n).hasClass("ht_clone_left")){
+                        offset.left = xui(n).first(4).width();
+                    }
+                });
+*/
+            }
+            return offset;
         },
         _renderAsHandsontable: function(prf){
             if(!prf || !prf.box)return;
-            var elem = prf.getSubNode("BOX").get(0), htable, 
-                prop=prf.properties,
+            var boxNode = prf.getSubNode("BOX"),
+                elem = boxNode.get(0), 
+                htable, 
+                prop = prf.properties,
+                mode = prf.boxing().getMode(),
+                designMode = mode == "design",
                 fixedSet = {
                     // "fix" some functions for handsontable
                     autoWrapRow: true,
                     renderAllRows: true,
 
                     // "readonly" handsontable
-                    disableVisualSelection: false,
-                    enterBeginsEditing:true,
-                    manualRowResize: true,
-                    manualColumnResize: true,
-                    rowHeaders: true,
-                    manualRowMove: true,
-                    manualColumnMove: true,
-                    contextMenu: true,
-                    mergeCells: true,
-                    copyable: true,
-                    copyPaste: true,
-                    colHeaders: true,
-/*                    cells : function(){
-                        return {readOnly:true};
-                    },
-*/
-                    beforeOnCellMouseDown:function(e,c){
+                    readOnly: !designMode,
+                    comments: !designMode,
+                    disableVisualSelection: !designMode,
+                    enterBeginsEditing: designMode,
+                    manualRowResize: designMode,
+                    manualColumnResize: designMode,
+                    manualRowMove: designMode,
+                    manualColumnMove: designMode,
+                    contextMenu: designMode,
+                    mergeCells: designMode,
+                    copyable: designMode,
+                    copyPaste: designMode,
+
+                    beforeOnCellMouseDown:!designMode?null:function(e,c){
                         // fire event
                         if(c.row===-1 && c.col===-1){
                             e.stopImmediatePropagation();
                         }
                     },
-                    afterOnCellMouseUp:function(e,c){
+                    afterOnCellMouseUp:!designMode?null:function(e,c){
                         // fire event
                         if(c.row===-1 && c.col===-1){
                             this.deselectCell();
@@ -204,15 +398,11 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             e.stopImmediatePropagation();
                         }
                     },
-                    // export events
-                    afterChange : function(changes, source){
-console.log('afterChange');
-                        if(prf && prf.onChange)prf.onChange(prf, changes, source);
-                    },
+
                     /* cell render*/
                     // for xui dom id & event handler
                     beforeRenderer : function(TD, row, col, prop, value, cellprop){
-                        var subSerialId = prf.pickSubId('items');             ;
+                        var subSerialId = prf.pickSubId('items');
                         // memory map
                         cellprop.id=subSerialId;
                         prf.ItemIdMapSubSerialId[subSerialId] = subSerialId;
@@ -221,6 +411,12 @@ console.log('afterChange');
                         TD.id = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
                         xui.UI.$addEventsHandler(prf, TD, true);
+
+                        // custom
+                        if(cellprop.style){
+                            for(var i in cellprop.style)
+                                TD.style[i] = cellprop.style[i];
+                        }
                     },
                     // for append xui widgets
                     afterRenderer : function(TD, row, col, prop, value, cellprop){
@@ -254,12 +450,13 @@ console.log('afterChange');
                         }
                     },
                     afterRender:function(){
+                        console.log("afterRender");
                         xui.tryF(prf.$onrender,[],prf);
 
                         // Set id for important nodes, for getting profile from dom id
                         var node = prf.getSubNode("BOX");
                         node = node.first(); node.id(prf.key + "-MASTER:" + prf.serialId + ":");
-                        node = node.first(); node.id(prf.key + "-HODER:" + prf.serialId + ":");
+                        node = node.first(); node.id(prf.key + "-HOLDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-HIDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-SPREADER:" + prf.serialId + ":");
                         
@@ -273,6 +470,7 @@ console.log('afterChange');
                                 delete prf._pool_children;
                             }
                         }else{
+                            //
                             // lazy append
                             var arr=[];
                             xui.each(prf.children,function(v){
@@ -283,22 +481,51 @@ console.log('afterChange');
                                 prf.boxing().append(v[0], v[1]);
                             });
 
+                            prf.getRoot().onMouseup(function(p,e){
+                                prf.$lastMousePos = xui.Event.getPos(e);
+                            });
                             prf._$renderedAll=1;
                         }
+                    },
+
+                    afterSelection: mode=='read'?null:function(){
+                        prf.getRoot().css('overflow','visible');
+                    },
+                    outsideClickDeselects: mode=='read'?null:function(node){
+                        var p=xui.UIProfile.getFromDom(node);
+                        if(p && prf.$popmenu){
+                            var r=prf.$popmenu.get(0);
+                            if(p==r || p.$rootmenu==r){
+                                return false;
+                            }
+                        }
+
+                        prf.getRoot().css('overflow','');
+                        return true;
+                    },
+
+                    afterContextMenuShow: !designMode?null:function(context){
+                         prf.box._popMenu(prf, context.menu, prop.menuCaptions);
+                         // don't use dft menu
+                         context.menu.container.style.display='none';
                     }
                 },
                 settings={},t;
 
+            var offset = prf.box._getHeaderOffset(prf);
             // TODO : xui to handsontable
-            settings.height = prf.$px(prop.height);
-            settings.width = prf.$px(prop.width);
-
+            settings.height = prf.$px(prop.height) + offset.top;
+            settings.width = prf.$px(prop.width) + offset.left;
             settings.stretchH = (t=prop.stretchH)=="last"?"last":t=="all"?"all":"none";
-            settings.rowHeights = prop.defaultRowHeight;
-            settings.defaultColumnWidth = prop.defaultColumnWidth;
-            
-            settings.className=prop.solidGridlines?"solidgridline":prf.$inDesign?"":"nogridline";
 
+            settings.defaultColumnWidth = prop.defaultColumnWidth;
+            settings.rowHeaderWidth  = prop.rowHeaderWidth;
+            settings.columnHeaderHeight = prop.columnHeaderHeight;
+            // row 
+            settings.rowHeaders = designMode;
+            settings.rowHeights = prop.defaultRowHeight;
+            // column 
+            settings.colHeaders =  designMode;
 /*
             //[{...}]
             columns:{
@@ -322,27 +549,46 @@ console.log('afterChange');
             },
 */
             prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
-
+            
             // set before destroy function
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){
-                // must purge lazy-bound node here
-                xui.$purgeChildren(this.getSubNode("BOX").get(0));
+                var t;
+                if(t=this.$htable){
+                    // must purge lazy-bound node here
+                    var node=this.getSubNode("BOX").get(0);
+                    if(node)
+                        xui.$purgeChildren(node);
 
-                var t=this.$htable;
-                if(t){
                     if(!t.isDestroyed){
                         Handsontable.hooks.destroy(t);
                         t.destroy();
                     }
                     delete this.$htable;
                 }
+                if(t = this.$popmenu){
+                    t.destroy();
+                }
             }
         },
         _resizeHTable: function(prf,size){
             var t;
             if(prf.properties.renderType=="handsontable" && (t=prf.$htable)){
-                // ensure by px
-                t.updateSettings(size);
+                var holder = prf.getSubNode("HOLDER").cssSize();
+                if(holder.width!=size.width || holder.height!=size.height){
+                    // ensure by px
+                    t.updateSettings(size);
+                }
+            }
+        },
+        $updateSetting:function(prf, opt){
+            var t;
+            if(prf.properties.renderType=="handsontable" && (t=prf.$htable)){
+                if(typeof opt=="string"){
+                    var h={};
+                    h[opt] = prf.properties[opt];
+                    opt=h;
+                }
+                t.updateSettings(opt);
             }
         },
         _beforeSerialized:function(prf){
@@ -374,33 +620,32 @@ console.log('afterChange');
             }
         },
         _onresize:function(prf,width,height){
-            var size = prf.getSubNode('BOX').cssSize(),
-                prop=prf.properties,
+            var prop=prf.properties,
                 // compare with px
                 us = xui.$us(prf),
                 adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
                 root = prf.getRoot(),
-                
+                boxNode = prf.getSubNode('BOX'),
+                offset = prf.box._getHeaderOffset(prf),
                 // caculate by px
                 ww=width?prf.$px(width):width, 
                 hh=height?prf.$px(height):height,
                 t;
-
-            if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
+            if( width ||  height){
                 // reset here
                 if(width)prop.width=adjustunit(ww);
                 if(height)prop.height=adjustunit(hh);
 
-                size={
-                    width:width?prop.width:null,
-                    height:height?prop.height:null
-                };
-                prf.getSubNode('BOX').cssSize(size,true);
-                if(prf.renderId){
-                    xui.resetRun(prf.key+":"+prf.$xid+"|resize",function(){
-                        if(prf&&prf.box)prf.box._resizeHTable(prf, root.cssSize());
-                    });
-                }
+                boxNode.css({
+                    marginLeft:-offset.left+"px",
+                    marginTop:-offset.top+"px",
+                    width:width?(ww+offset.left+'px'):null,
+                    height:height?(hh+offset.top+'px'):null
+                });
+
+                xui.resetRun(prf.key+":"+prf.$xid+"|resize",function(){
+                   if(prf&&prf.box)prf.box._resizeHTable(prf, prf.getSubNode('BOX').cssSize());
+                });
             }
         }
     }

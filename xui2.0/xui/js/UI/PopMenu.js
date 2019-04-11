@@ -176,8 +176,6 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     if(!root || root.css('display')=='none')return;
 
-                    //remove trigger
-                    root.setBlurTrigger(profile.$xid,null);
                     if(xui.get(profile,['$hideMenuPool','_nodes',0]))
                         profile.$hideMenuPool.append(root);
                     else
@@ -199,6 +197,10 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                     if(profile.$popGrp)
                         xui.arr.removeValue(profile.$popGrp,root._get(0));
+
+                    //remove trigger
+                    if(!profile.$popGrp || !profile.$popGrp.length)
+                        root.setBlurTrigger(profile.$xid,null);
 
                     if(false!==triggerEvent)
                         profile.boxing().onHide(profile);

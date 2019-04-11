@@ -1435,6 +1435,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
                 //save related id
                 $xid=o.$xid;
+                $inDesign=o.$inDesign;
 
                 serialId=o.serialId;
                 mcls = o.moduleClass;
@@ -1492,6 +1493,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // notice: remove destroyed here
                 delete o.destroyed;
                 o.$xid=$xid;
+                o.$inDesign=$inDesign;
                 o.serialId=serialId;
                 o.moduleClass=mcls;
                 o.moduleXid=mxid;
@@ -4259,8 +4261,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                     f='set'+xui.str.initial(o);
                     if(!t[f])t[f]=src[f];
                     dm=xui.absContainer.$DataModel[o];
-                    self.$DataStruct[o]=xui.isSet(dm.ini)?xui.copy(dm.ini):"";
-                    self.$DataModel[o]=xui.copy(dm);
+                    if(!(self._NoProp && self._NoProp[o])){
+                        self.$DataStruct[o]=xui.isSet(dm.ini)?xui.copy(dm.ini):"";
+                        self.$DataModel[o]=xui.copy(dm);
+                    }
                 });
 
                  xui.merge(hls, xui.absContainer.$EventHandlers);

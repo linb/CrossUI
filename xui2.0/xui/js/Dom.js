@@ -1352,6 +1352,7 @@ xui.Class('xui.Dom','xui.absBox',{
             return false;
         },
         addClass:function(name){
+            if(!name)return this;
             var arr, i,l,me=arguments.callee,reg=(me.reg||(me.reg=/\s+/)),t,ok,
                   arr2 = (name+"").split(reg);                
             if(!arr2.length)return this;
