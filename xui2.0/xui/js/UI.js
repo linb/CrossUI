@@ -408,10 +408,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
         },
         getContainer:function(subId){
             if(subId!==true&&(subId=typeof subId=='string'?subId:null))subId=this.getSubIdByItemId(subId);
-            if(subId===true||subId===null||typeof subId=='string')
-                return this.box._SUBCONTAINERKEY?this.getSubNodes(this.box._SUBCONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
-            else
-                return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
+            return this.box._CONTAINERKEY?this.getSubNodes(this.box._CONTAINERKEY, subId):this.keys.PANEL?this.getSubNodes(this.keys.PANEL, subId):this.getRoot();
         },
         // wrap these functions from xui.CSS
         getEmSize:function(force){
@@ -1422,7 +1419,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return arguments.callee.upper.apply(this,["domId"]);
         },
         refresh:function(remedy){
-            var paras,node,b,p,s,$xid,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,ns=this;
+            var paras,node,b,p,s,$xid,$inDesign,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,ns=this;
             return ns.each(function(o,i){
                 if(!o.renderId)return;
 
@@ -5916,8 +5913,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     width: width,
                                     height: height,
                                     // for dock='cover'
-                                    offsetW:offsetW,
-                                    offsetH:offsetH
+                                    offsetW:offsetW||width,
+                                    offsetH:offsetH||height
                                 };
                                 obj.preX = obj.oX = obj.left;
                                 obj.preY = obj.oY = obj.top;

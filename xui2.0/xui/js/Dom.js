@@ -4045,16 +4045,24 @@ xui.Class('xui.Dom','xui.absBox',{
                             r=xui.CSS.$px(r,node)||0;
                             break;
                         case 2:
-                            r=node[o[6]];
-                            //get from css setting before css applied
-                            if(!r){
-                                if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);
-                            }else r-=t[o[3]]();
+                            if(node===document||node===window){
+                                r=xui(node)[o[1]]();
+                            }else{
+                                r=node[o[6]];
+                                //get from css setting before css applied
+                                if(!r){
+                                    if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);
+                                }else r-=t[o[3]]();
+                            }
                             break;
                         case 3:
-                            r=node[o[6]];
-                            //get from css setting before css applied
-                            if(!r)r=_size(node,1,value,true)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            if(node===document||node===window){
+                                r=xui(node)[o[1]]();
+                            }else{
+                                r=node[o[6]];
+                                //get from css setting before css applied
+                                if(!r)r=_size(node,1,value,true)+(contentBox?t[o[2]]():0)+t[o[3]]();
+                            }
                             break;
                         case 4:
                             r=_size(node,3,value);
