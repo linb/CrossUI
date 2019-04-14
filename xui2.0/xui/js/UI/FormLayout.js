@@ -483,7 +483,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         var p=xui.UIProfile.getFromDom(node);
                         if(p && prf.$popmenu){
                             var r=prf.$popmenu.get(0);
-                            if(p==r || p.$parentPopMenu==r){
+                            if(p==r || p.$parentPopMenu==r || p.$popGrp==r.$popGrp){
                                 return false;
                             }
                         }
