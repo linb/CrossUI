@@ -4299,6 +4299,9 @@ xui.Class('xui.absProfile',null,{
         getId:function(){
             return this.$xid;
         },
+        getUid:function(ext){
+            return this.key+":"+this.$xid+(ext?(":"+ext):"");
+        },
         link:function(obj,id,target,index){
             return xui.absProfile.prototype.$link(this,obj,id,target,index);
         },

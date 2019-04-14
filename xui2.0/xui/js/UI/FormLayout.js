@@ -50,6 +50,20 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             ITEM: {
               "position": "relative"
             },
+            // reset bg
+            "KEY ITEM": {
+              "position": "relative",
+                background:"transparent"
+            },
+             "KEY .handsontable tr":{
+                  background:"transparent"
+              },
+
+            "ITEM.xui-children-in-td":{
+                padding:'0',
+                margin:'0',
+                border:'0'
+            },
             // for handsontable solid grid lines
             ".handsontable.solidgridline td": {
               "border-right": "1px solid #444",
@@ -62,14 +76,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 "border-left": "1px solid #444"
             },
             ".handsontable.nogridline td": {
-              "border-right": "1px solid #fff",
-              "border-bottom": "1px solid #fff"
+              "border-right": "1px solid transparent",
+              "border-bottom": "1px solid transparent"
             },
             ".handsontable.nogridline tr:first-child td": {
-                "border-top": "1px solid #fff"
+                "border-top": "1px solid transparent"
             },
             ".handsontable.nogridline th:nth-child(2), .handsontable.nogridline .htNoFrame + th, .handsontable.nogridline .htNoFrame + td": {
-                "border-left": "1px solid #fff"
+                "border-left": "1px solid transparent"
             }
         },
         Templates:{
@@ -118,26 +132,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 $spaceunit:1,
                 ini:'25em'
             },
-            menuCaptions:{
-                ini:{
-                    'row_above':'Insert row above',
-                    'row_below':'Insert row below',
-                    'col_left':'Insert column left',
-                    'col_right':'Insert column right',
-                    'clear_column':'Clear selected column',
-                    'remove_row':'Remove row',
-                    'remove_col':'Remove column',
-                    'alignment:left':'Left',
-                    'alignment:top':'Top',
-                    'alignment:right':'Right',
-                    'alignment:bottom':'Bottom',
-                    'alignment:middle':'Middle',
-                    'alignment:center':'Center',
-                    'alignment:justify':'Justify',
-
-                    'bgcolor':'Background color'
-                }
-            },
             solidGridlines:{
                 ini:true,
                 action:function(value){
@@ -151,13 +145,13 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 ini:"all",
                 listbox:["","none","last","all"],
                 action:function(){
-                    this.box.$updateSetting(this,'stretchH');
+                    this.box._updateSetting(this,'stretchH');
                 }
             },
             rowHeaderWidth:{
                 ini:25,
                 action:function(){
-                    this.box.$updateSetting(this,'rowHeaderWidth');
+                    this.box._updateSetting(this,'rowHeaderWidth');
                     var size=this.getRoot().cssSize();
                     xui.UI.$tryResize(this, size.width, size.height);
                 }
@@ -165,7 +159,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             columnHeaderHeight:{
                 ini:25,
                 action:function(){
-                    this.box.$updateSetting(this,'columnHeaderHeight');
+                    this.box._updateSetting(this,'columnHeaderHeight');
                     var size=this.getRoot().cssSize();
                     xui.UI.$tryResize(this, size.width, size.height);
                 }
@@ -177,7 +171,10 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
 
             // rows:5, cols:5, rowSetting:{'3':{}}, colSetting:{"B":{}}, cells:{A3:{type:"",value:"",className:"",style:"",border:""}}, merged:[]
             tableData:{
-                ini:{}
+                ini:{},
+                action:function(){
+                    this.boxing().refresh();
+                }
             },
             // if use handsontable 6.22 (MIT license) as renderer
             rendererCDNJS:"https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.js",
@@ -217,108 +214,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         EventHandlers:{
             onShowTips:null
         },
-        _popMenu : function(prf, _menu, capMap){
-            var ignoreMap={cut:1,copy:1,make_read_only:1,undo:1,redo:1};
-            var xuimenu, htable = _menu.hot;
-            if(xuimenu = prf.$popmenu){
-                xui.each(_menu.menuItems,function(item){
-                     if(item.name!='---------'){
-                        xuimenu.updateItem(item.key, {disabled: item.disabled ? item.disabled.call(htable) : false});
-                     }
-                });
-            }else{
-                xuimenu = new xui.UI.PopMenu();
-                var mapMenu=function(items){
-                    var nitems=[], lastSplit;
-                    xui.each(items,function(item){
-                        if(ignoreMap[item.key])return;
-                        if(item.name=='---------'){
-                            if(!lastSplit){
-                                lastSplit=1;
-                                nitems.push({type:'split'});
-                            }
-                        }else{
-                            lastSplit=0;
-                            nitems.push({
-                                    id: item.key,
-                                    disabled: item.disabled ? item.disabled.call(htable) : false,
-                                    caption: capMap && capMap[item.key] || item.name.call(htable),
-                                    sub: item.submenu?mapMenu(item.submenu.items):null,
-                                    _cb: item.callback
-                            });
-                        }
-                    });
-                    return nitems;
-                },
-                normalizeSelection = function(selRanges) {
-                    var arr=[];
-                    for(var i=0,l=selRanges.length;i<l;i++){
-                        arr.push({
-                                start: selRanges[i].getTopLeftCorner(),
-                                end: selRanges[i].getBottomRightCorner()
-                        });
-                    }
-                    return arr;
-                },
-                nitems = mapMenu(_menu.menuItems);
-                nitems.push({type:'split'});
-                nitems.push({
-                    id:'bgcolor',
-                    caption: capMap && capMap.bgcolor || 'bgcolor',
-                    sub:true
-                });
-
-                xuimenu.setItems(nitems);
-
-                xuimenu.onMenuSelected(function(prf, item){
-                    if(item._cb){
-                            item._cb.call(htable, item.id, normalizeSelection(htable.getSelectedRange()));
-                    }else{
-                        if(item.id=='bgcolor'){
-                            xui.each(htable.getSelectedRange(), function(selection){
-                                var fromRow = Math.min(selection.from.row, selection.to.row),
-                                    toRow = Math.max(selection.from.row, selection.to.row),
-                                    fromCol = Math.min(selection.from.col, selection.to.col),
-                                    toCol = Math.max(selection.from.col, selection.to.col);
-                                
-                                for (var row = fromRow; row <= toRow; row++) {
-                                  for (var col = fromCol; col <= toCol; col++) {
-                                    var cellMeta = htable.getCellMeta(row, col),
-                                        TD = htable.getCell(row, col);
-                                    TD.style.backgroundColor =  "#"+item.value;
-                                    cellMeta.style=cellMeta.style||{};
-                                    cellMeta.style.backgroundColor =  "#"+item.value;
-                                  }
-                                }
-                            });
-                            // no need render
-                            //htable.render();
-                        }
-                    }
-                })
-                .onShowSubMenu(function(profile, item, src) {
-                    var menubar=profile.boxing(), obj;
-                    switch(item.id){
-                        case 'bgcolor':
-                            obj=(new xui.UI.ColorPicker).render(true);
-                            obj.afterUIValueSet(function(p, old, n){ 
-                               menubar.hide(false); 
-                               menubar.onMenuSelected(profile,{
-                                  id : item.id, 
-                                  value : n 
-                               });
-                            });
-                            obj.get(0).$parentPopMenu = profile;
-                        break;
-                    }
-                    return obj;
-                }); 
-
-                prf.$popmenu = xuimenu;
-            }
-
-            xuimenu.pop(prf.$lastMousePos);
-        },
         _getHeaderOffset:function(prf){
             var prop=prf.properties,
                   offset = {left:0,top:0};
@@ -327,7 +222,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     offset.left=prop.rowHeaderWidth;
                     offset.top=prop.columnHeaderHeight + 1;
                 }
-/*
+               /*
                 var node = prf.getSubNode("BOX");
                 node.children().each(function(n){
                     if(xui(n).hasClass("ht_clone_top")){
@@ -336,12 +231,84 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         offset.left = xui(n).first(4).width();
                     }
                 });
-*/
+               */
             }
             return offset;
         },
+        _layoutChanged:function(prf, force){
+            if(force || prf._$tableInited)
+                xui.resetRun(prf.getUid("layoutchanged"),function(){
+//console.log("onLayoutChanged");
+                    var oData = prf.properties.tableData;
+                    prf.properties.tableData = prf.box._getTableData(prf);
+                    if(prf.$onLayoutChanged)prf.$onLayoutChanged(prf, oData, prf.properties.tableData);
+                });
+        },
+        _getTableData:function(prf){
+            var prop=prf.properties, 
+                cells={}, rowSetting={}, colSetting={}, merged=[],
+                tableData = {},
+                data, rows, cols, t, p, s, tmp;
+
+            // handsontable to xui
+             if(prf.box.renderType=="handsontable" && (t = prf.$htable)){
+                // rows:5, cols:5, merged:[]
+                tableData.rows = t.countRows();
+                tableData.cols = t.countCols();
+                merged = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
+                if(!xui.isEmpty(merged)) tableData.merged=merged;
+
+                s = t.getSettings();
+                // rowSetting:{'3':{}}
+                p = t.getPlugin("ManualRowResize");
+                for(var i=0, l=tableData.rows,h; i<l;i++){
+                    if(p.manualRowHeights && p.manualRowHeights[i]) xui.set(rowSetting, [i+1, 'manualHeight'], p.manualRowHeights[i]);
+                    if(tmp = xui.isArr(s.rowHeights)?s.rowHeights[i]:s.rowHeights) xui.set(rowSetting, [i+1, 'height'], tmp);
+                }
+                if(!xui.isEmpty(rowSetting)) tableData.rowSetting=rowSetting;
+
+                // colSetting:{"B":{}}
+                p = t.getPlugin("ManualColumnResize");
+                for(var i=0, l=tableData.cols,w; i<l;i++){
+                    if(p.manualColumnWidths && p.manualColumnWidths[i]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[i]);
+                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[i]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
+                }
+                if(!xui.isEmpty(colSetting)) tableData.colSetting=colSetting;
+
+
+                // cells:{A3:{type:"",value:"",className:"",style:"",border:""}
+                data = t.getData();
+                // cells:{A3:{value:"v"}
+                for(var i=0,l=data.length;i<l;i++){
+                    var row=data[i];
+                    for(var m=0,n=row.length;m<n;m++){
+                       // ignore null/undefined/""
+                       if(xui.isSet(data[i][m]) && data[i][m]!==""){
+                           xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "value"], data[i][m]);
+                       }
+                    }
+                }
+                // cells:{A3:{style:{}}
+                for(var i=0,l=tableData.rows;i<l;i++){
+                    var rowMetas = t.getCellMetaAtRow(i)
+                    for(var m=0,n=rowMetas.length;m<n;m++){
+                        // align settings
+                        if(rowMetas[m].className)
+                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "className"], xui.str.trim(rowMetas[m].className));
+                        // style: ignore empty {}
+                        if(!xui.isEmpty(rowMetas[m].style))
+                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "style"], xui.copy(rowMetas[m].style));
+                    }
+                }
+                if(!xui.isEmpty(cells)) tableData.cells=cells;
+            }
+            return tableData;
+        },
         _renderAsHandsontable: function(prf){
             if(!prf || !prf.box)return;
+            var onLayoutChanged = function(prf, force){
+                prf.box._layoutChanged(prf,force);
+            };
             var boxNode = prf.getSubNode("BOX"),
                 elem = boxNode.get(0), 
                 htable, 
@@ -380,14 +347,20 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             e.stopImmediatePropagation();
                         }
                     },
- 
+
                     /* cell render*/
                     // for xui dom id & event handler
-                    beforeRenderer : function(TD, row, col, vprop, value, cellprop){
+                    beforeRenderer: function(TD, row, col, vprop, value, cellprop){
                         var subSerialId = prf.pickSubId('items');
+                        var itemId = xui.ExcelFormula.toCellId(col,row);
                         // memory map
-                        cellprop.id=subSerialId;
-                        prf.ItemIdMapSubSerialId[subSerialId] = subSerialId;
+                        cellprop.oid=cellprop.id;
+                        cellprop.id=itemId;
+                        if(cellprop.oid && cellprop.oid!=cellprop.id){
+                            prf.$cellIdChangedMap[cellprop.oid]=cellprop.id;
+                        }
+                        cellprop._serialId=subSerialId;
+                        prf.ItemIdMapSubSerialId[itemId] = subSerialId;
                         prf.SubSerialIdMapItem[subSerialId] = cellprop;
 
                         TD.id = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
@@ -404,17 +377,32 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             cellprop.className = xui.get(prop.tableData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
                         }
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
+
+                        if(cellprop._child_autoexpandH){
+                            TD.style.height=cellprop._child_autoexpandH+"px";
+                        }else{
+                            TD.style.height="";
+                        }
                     },
-                    // for append xui widgets
-                    afterRenderer : function(TD, row, col, prop, value, cellprop){
-                        //
+                    /*
+                    renderer : function(instance, TD, row, col, vprop, value, cellprop){
+                        TD.innerHTML = value;
+                        for(var i=0,l=prf.children.length;i<l;i++){
+                            if(prf.children[i][1]==xui.ExcelFormula.toCellId(row, col)){
+                                TD.innerHTML = "";
+                                return TD;
+                            }
+                        }
+                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+                        return TD;
                     },
-                    
+                    */
                     /* table render*/
-                    beforeRender: function(){
+                    beforeRender: function(flag){
                         // **: updateSetting will re-render all table elements
                         // we have to reset memory map, and keep children here
-                        if(prf._$renderedAll){
+                        if(prf._$tableInited){
+                            prf.$cellIdChangedMap={};
                             //*** save children first
                             var pool=prf.getSubNode("POOL").get(0),arr=[];
                             xui.arr.each(prf.children,function(v){
@@ -436,9 +424,13 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             prf.SubSerialIdMapItem={};
                         }
                     },
-                    afterRender:function(){
-                        console.log("afterRender");
+                    afterInit:function(){
+                        prf._$tableInited=1;
+                    },
+                    afterRender:function(isForced){
                         xui.tryF(prf.$onrender,[],prf);
+
+//                        onLayoutChanged(prf);
 
                         // Set id for important nodes, for getting profile from dom id
                         var node = prf.getSubNode("BOX");
@@ -447,12 +439,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         node = node.first(); node.id(prf.key + "-HIDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-SPREADER:" + prf.serialId + ":");
                         
-                        if(prf._$renderedAll){
+                        if(prf._$tableInited){
+                            var map = prf.$cellIdChangedMap;
+
                             //*** restore children
                             if(prf._pool_children){
                                 xui.arr.each(prf._pool_children,function(v){
                                     delete v[0].$dockParent;
-                                    prf.boxing().append(v[0], v[1]);
+                                    prf.boxing().append(v[0], map[v[1]]||v[1]);
                                 });
                                 delete prf._pool_children;
                             }
@@ -471,7 +465,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             prf.getRoot().onMouseup(function(p,e){
                                 prf.$lastMousePos = xui.Event.getPos(e);
                             });
-                            prf._$renderedAll=1;
                         }
                     },
 
@@ -479,6 +472,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         prf.getRoot().css('overflow','visible');
                     },
                     outsideClickDeselects: mode=='read'?null:function(node){
+                        //for lang span, or inner renderer
+                        while((
+                                (!node.id)
+                                || node.id==xui.$localeDomId
+                                || node.tagName=='tspan'
+                            ) 
+                            && node.parentNode!==document && node.parentNode!==window
+                        ) node=node.parentNode;
                         var p=xui.UIProfile.getFromDom(node);
                         if(p && prf.$popmenu){
                             var r=prf.$popmenu.get(0);
@@ -490,15 +491,69 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         prf.getRoot().css('overflow','');
                         return true;
                     },
-
                     afterContextMenuShow: !designMode?null:function(context){
-                         prf.box._popMenu(prf, context.menu, prop.menuCaptions);
+                         prf.$popmenu = prf.$onPopMenu(prf, prf.$popmenu, context.menu);
                          // don't use dft menu
                          context.menu.container.style.display='none';
                     },
 
+                    afterUpdateSettings:function(){
+                    // only resize use this
+                    //    onLayoutChanged(prf);
+                    },
+                    afterRedo:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterUndo:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterChange:function(change, source){
+                        if(source!='loadData' && source!='populateFromArray')
+                            onLayoutChanged(prf);
+                    },
+                    beforeCellAlignment:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterMergeCells:function(a,b,auto){
+                        if(!auto)
+                            onLayoutChanged(prf);
+                    },
+                    afterUnmergeCells:function(a,b,auto){
+                        if(!auto)
+                            onLayoutChanged(prf);
+                    },
+
+                    // reset autoexpand
+                    afterRowResize:function(row, size, dblclick){
+                        onLayoutChanged(prf);
+                        var cells = this.getCellMetaAtRow(row);
+                        for(var i=0, l=cells.length;i<l;i++){
+                            var target = prf.boxing().getChildren(cells[i].id);
+                            if(target['xui.UI.Input'] 
+                                && target.getMultiLines && target.getMultiLines()
+                                && target.setAutoexpand
+                                ) {
+                                    target.get(0)._autoexpand = (size-1)+"px";
+                                }
+                        }
+                    },
+
+                    afterColumnResize:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterRowMove:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterColumnMove:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterColumnSort:function(){
+                        onLayoutChanged(prf);
+                    },
+
                     // for fix ManualColumnResize and ManualRowResize
                     afterCreateCol:function(index,amount){
+                        onLayoutChanged(prf);
                         var p = this.getPlugin("ManualColumnResize");
                         // new cols
                         var arr=[];
@@ -516,6 +571,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         });
                     },
                     afterCreateRow:function(index,amount){
+                        onLayoutChanged(prf);
                         var p = this.getPlugin("ManualRowResize");
                         // new row
                         var arr=[];
@@ -533,6 +589,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         });
                     },
                     afterRemoveCol:function(index,amount){
+                        onLayoutChanged(prf);
                         var p = this.getPlugin("ManualColumnResize");
                         if(p.manualColumnWidths){
                             p.manualColumnWidths.splice(index, amount);
@@ -540,6 +597,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         this.deselectCell();
                     },
                     afterRemoveRow:function(index,amount){
+                        onLayoutChanged(prf);
                         var p = this.getPlugin("ManualRowResize");
                         if(p.manualRowHeights){
                             p.manualRowHeights.splice(index, amount);
@@ -623,6 +681,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
 
                 // set data only
                  settings.data = Handsontable.helper.createSpreadsheetData(prop.defaultRowSize, prop.defaultColumnSize);
+
+                // reset tableData
+                prf.properties.tableData = prf.box._getTableData(prf);
             }
             prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
             
@@ -658,7 +719,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 }
             }
         },
-        $updateSetting:function(prf, opt){
+        _updateSetting:function(prf, opt){
             var t;
             if(prf.box.renderType=="handsontable" && (t=prf.$htable)){
                 if(typeof opt=="string"){
@@ -670,67 +731,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 opt.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
                 t.updateSettings(opt);
             }
-        },
-        _beforeSerialized:function(prf){
-            var o=xui.UI._beforeSerialized.call(this, prf),
-                prop=prf.properties, 
-                cells={}, rowSetting={}, colSetting={}, merged=[],
-                tableData = o.properties.tableData={},
-                data, rows, cols, t, p, s, tmp;
-
-            // handsontable to xui
-             if(prf.box.renderType=="handsontable" && (t = prf.$htable)){
-                // rows:5, cols:5, merged:[]
-                tableData.rows = t.countRows();
-                tableData.cols = t.countCols();
-                merged = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
-                if(!xui.isEmpty(merged)) tableData.merged=merged;
-
-                s = t.getSettings();
-                // rowSetting:{'3':{}}
-                p = t.getPlugin("ManualRowResize");
-                for(var i=0, l=tableData.rows,h; i<l;i++){
-                    if(p.manualRowHeights && p.manualRowHeights[i]) xui.set(rowSetting, [i+1, 'manualHeight'], p.manualRowHeights[i]);
-                    if(tmp = xui.isArr(s.rowHeights)?s.rowHeights[i]:s.rowHeights) xui.set(rowSetting, [i+1, 'height'], tmp);
-                }
-                if(!xui.isEmpty(rowSetting)) tableData.rowSetting=rowSetting;
-
-                // colSetting:{"B":{}}
-                p = t.getPlugin("ManualColumnResize");
-                for(var i=0, l=tableData.cols,w; i<l;i++){
-                    if(p.manualColumnWidths && p.manualColumnWidths[i]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[i]);
-                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[i]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
-                }
-                if(!xui.isEmpty(colSetting)) tableData.colSetting=colSetting;
-
-
-                // cells:{A3:{type:"",value:"",className:"",style:"",border:""}
-                data = t.getData();
-                // cells:{A3:{value:"v"}
-                for(var i=0,l=data.length;i<l;i++){
-                    var row=data[i];
-                    for(var m=0,n=row.length;m<n;m++){
-                       // ignore null/undefined/""
-                       if(xui.isSet(data[i][m]) && data[i][m]!==""){
-                           xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "value"], data[i][m]);
-                       }
-                    }
-                }
-                // cells:{A3:{style:{}}
-                for(var i=0,l=tableData.rows;i<l;i++){
-                    var rowMetas = t.getCellMetaAtRow(i)
-                    for(var m=0,n=rowMetas.length;m<n;m++){
-                        // align settings
-                        if(rowMetas[m].className)
-                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "className"], xui.str.trim(rowMetas[m].className));
-                        // style: ignore empty {}
-                        if(!xui.isEmpty(rowMetas[m].style))
-                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "style"], xui.copy(rowMetas[m].style));
-                    }
-                }
-                if(!xui.isEmpty(cells)) tableData.cells=cells;
-            }
-            return o;
         },
         $beforeAppend:function(prf,target,subId){
             if(!subId)return;
@@ -745,9 +745,57 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         },
         $afterAppend:function(prf, target,subId){
             if(!subId)return;
-            // force dock for single widget
-            if(target['xui.UI'] && target.size()==1){
-                target.setDock("cover");
+            // force dock for the only widget
+            if(prf.renderId && target['xui.UI'] && target.size()==1){
+                var item = prf.getItemByItemId(subId),
+                    cell = prf.getSubNode("ITEM", item._serialId),
+                    inputPrf = target.get(0),
+                    adjustSize = function(){
+                        target.setPosition('absolute').setLeft(0).setTop(0).setWidth(cell.offsetWidth()-1).setHeight(cell.offsetHeight()-1);
+                    };
+                adjustSize();
+                if(!inputPrf._attached2cell){
+                    inputPrf._attached2cell=1;
+
+                    cell.onSize(adjustSize,'cellresize');
+
+                    if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
+                    if(target.setVAlign)  target.setVAlign('middle');
+                    if(target['xui.UI.Input'] 
+                        && target.getMultiLines && target.getMultiLines()
+                        && target.setAutoexpand
+                    ) 
+                    {
+                        // use the hidden one: _autoexpand
+                        // once: set minH from subId
+                        if(!parseFloat(inputPrf._autoexpand)){
+                            // need set autoexpand in afterRowResize too
+                            inputPrf._autoexpand = (cell.offsetHeight()-1)+"px";
+                            inputPrf.$beforeAutoexpand=function(p,h){
+                                item._child_autoexpandH = target.getAutoexpandHeight();
+                                // ensure to trigger table render once
+                                xui.resetRun(prf.getUid("autoex"), function(){
+                                    if(prf.$htable)prf.$htable.render();
+                                });
+                                return false;
+                            };
+                            // try to trigger aoutoexpand
+                            inputPrf.box._checkAutoexpand(inputPrf);
+                        }
+                    }
+
+                    inputPrf.$prfCustomVars=function(d){
+                        if(d){
+                            for(var i in d)if(d[i])this[i]=d[i];
+                        }else{
+                            return {
+                                _attached2cell: this._attached2cell,
+                                _autoexpand: this._autoexpand,
+                                $beforeAutoexpand: this.$beforeAutoexpand
+                            }
+                        }
+                    }
+                }
             }
         },
         _onresize:function(prf,width,height){
@@ -774,7 +822,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     height:height?(hh+offset.top+'px'):null
                 });
 
-                xui.resetRun(prf.key+":"+prf.$xid+"|resize",function(){
+                xui.resetRun(prf.getUid("resize"),function(){
                    if(prf&&prf.box)prf.box._resizeHTable(prf, prf.getSubNode('BOX').cssSize());
                 });
             }

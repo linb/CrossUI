@@ -34,6 +34,10 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             }
             return this;
         },
+        getAutoexpandHeight:function(){
+            var prf=this.get(0),prop=prf.properties;
+            return (prop.multiLines && parseFloat(prf._autoexpand || prop.autoexpand)) ? (prf.$autoExpandH || prf.$px(prf._autoexpand || prop.autoexpand)): null ;
+        },
         _setCtrlValue:function(value){
             if(xui.isNull(value) || !xui.isDefined(value))value='';
             return this.each(function(profile){
@@ -42,6 +46,9 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
                 profile.$_inner=1;
                 profile.getSubNode('INPUT').attr('value',value+"");
+
+                profile.box._checkAutoexpand(profile);
+
                 delete profile.$_inner;
             });
         },
@@ -244,6 +251,12 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                'overflow-x':xui.browser.ie678?'hidden':'hidden',
                resize:'none'
             },
+            "INPUT.autoexpand":{
+                overflow:'hidden'
+            },
+            "KEY textarea":{
+                'white-space':'normal'
+            },
             ERROR:{
                 position:'absolute',
                 right:'.25em',
@@ -300,6 +313,9 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         evt=xui.Event,
                         k=evt.getKey(e);
                     if(p.disabled || p.readonly)return;
+
+                    if(parseInt(p.autoexpand))
+                        b._checkAutoexpand(profile);
 
                     //fire onchange first
                     if(k.key=='enter'&& (!m||k.altKey))
@@ -624,6 +640,13 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     this.boxing().refresh();
                 }
             },
+            autoexpand:{
+                $spaceunit:1,
+                ini:"",
+                action:function(v){
+                    this.boxing().refresh();
+                }
+            },
             tipsBinder:{
                 ini:'',
                 set:function(value){
@@ -668,7 +691,44 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
             onGetExcelCellValue:function(profile, excelCellId, dftValue){},
             beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
-            afterApplyExcelFormula:function(profile, excelCellFormula, value){}
+            afterApplyExcelFormula:function(profile, excelCellFormula, value){},
+
+            onAutoexpand:function(profile, height, offset){}
+        },
+        _checkAutoexpand:function(profile){
+                var prop=profile.properties;
+                if(profile.renderId && parseFloat(profile._autoexpand || prop.autoexpand)){
+                    xui.resetRun(profile.key+":"+profile.$xid+":autoexpand",function(){
+                        if(profile.renderId && !profile.destroyed){
+                            var root = profile.getRoot(),
+                                min = profile.$px(profile._autoexpand || prop.autoexpand), 
+                                t = profile.getSubNode('INPUT'),
+                                rh = root.height(),
+                                th1, th2, oth, offset;
+                            //get offset
+                            {
+                                oth = t.get(0).style.height;
+                                th1 = t.height();
+                                ph = t._paddingH();
+                                th2 = t.scrollHeight();
+                                min -= rh - th1;
+                                t.height(min+"px");
+                                min = Math.max(min, t.scrollHeight() - ph);
+                                offset = parseInt(min - th1,10);
+                                t.get(0).style.height = oth;
+                            }
+                            if(offset){
+                                var toH = profile.$autoExpandH = rh + offset;
+                                if(!(profile.$beforeAutoexpand && false===profile.$beforeAutoexpand(profile, toH, offset))){
+                                    profile.boxing().setHeight(toH);
+                                    if(profile.$onAutoexpand)
+                                        toH = profile.$onAutoexpand(profile, toH, offset);
+                                    if(profile.onAutoexpand) profile.boxing().onAutoexpand(profile, toH, offset);
+                                }
+                            }
+                        }
+                    });
+                }
         },
         _handleInput:function(prf,cls, v){
             var i=prf.getSubNode('INPUT');                        
@@ -684,6 +744,9 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
             if(prop.height=='auto'){
                 data.height  = '1.83em';
+            }
+            if(parseFloat(profile._autoexpand || prop.autoexpand)){
+                data.height  = profil._autoexpand || prop.autoexpand;
             }
 
             var d=arguments.callee.upper.call(this, profile, data);
@@ -709,19 +772,19 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             return d;
         },
         _dynamicTemplate:function(profile){
-            var properties = profile.properties,t,
-                hash = profile._exhash = "$" +'multiLines:'+properties.multiLines,
+            var prop = profile.properties,t,
+                hash = profile._exhash = "$" +'multiLines:'+prop.multiLines,
                 template = profile.box.getTemplate(hash);
 
-            properties.$UIvalue = properties.value;
+            prop.$UIvalue = prop.value;
 
             // set template dynamic
             if(!template){
                 template = xui.clone(profile.box.getTemplate());
-                if(properties.multiLines){
+                if(prop.multiLines){
                     t=template.FRAME.BORDER.BOX.WRAP.INPUT;
                     t.tagName='textarea';
-                    t.className='';
+                    t.className==(profile._autoexpand || prop.autoexpand)?'autoexpand':'';
                     delete t.type;
                 }
 

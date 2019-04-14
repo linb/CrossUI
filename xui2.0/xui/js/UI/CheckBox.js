@@ -30,7 +30,11 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
     Static:{
         Templates:{
             className:'{_className} ',
-            style:'{_style} {_align}',
+            style:'{_style} {_hAlign}',
+            VALIGN:{
+                $order:0,
+                style:'{_vAlign}'
+            },
             FOCUS:{
                 tabindex: '{tabindex}',
                 MARK:{
@@ -58,6 +62,12 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                cursor:'pointer',
                margin: '0 .334em 0 .1667em',
                'vertical-align':'middle'
+            },
+            VALIGN: {
+                'font-size':0,
+                width:0,
+                display: 'inline-block',
+                height: '100%'
             },
             FOCUS:{
                 cursor:'default',
@@ -98,6 +108,13 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 listbox:['left','center','right'],
                 action: function(v){
                     this.getRoot().css('textAlign',v);
+                }
+            },
+            vAlign:{
+                ini:'top',
+                listbox:['top','middle','bottom'],
+                action: function(v){
+                    this.getSubNode('VALIGN').css('verticalAlign', v||'');
                 }
             },
             iconPos:{
@@ -159,7 +176,8 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
-            data._align = 'text-align:'+data.hAlign+';';
+            data._hAlign = 'text-align:'+data.hAlign+';';
+            data._vAlign = 'vertical-align:'+(data.vAlign||'');
             data._iconPosCls = 'xui-float-'+data.iconPos;
             return data;
         },

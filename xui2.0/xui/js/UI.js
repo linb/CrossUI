@@ -1419,7 +1419,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return arguments.callee.upper.apply(this,["domId"]);
         },
         refresh:function(remedy){
-            var paras,node,b,p,s,$xid,$inDesign,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,ns=this;
+            var paras,node,b,p,s,$xid,$inDesign,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,save,special,ns=this;
             return ns.each(function(o,i){
                 if(!o.renderId)return;
 
@@ -1433,6 +1433,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 //save related id
                 $xid=o.$xid;
                 $inDesign=o.$inDesign;
+                special=o.$prfCustomVars;
 
                 serialId=o.serialId;
                 mcls = o.moduleClass;
@@ -1442,6 +1443,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 inlineConf=o._inline_conf;
                 inlineHolder=o._inline_holder;
                 ar=o.$afterRefresh;
+                if(o.$prfCustomVars)save=o.$prfCustomVars();
 
                 if(typeof o.boxing().getUIValue=='function'){
                     uiv=o.boxing().getUIValue();
@@ -1491,6 +1493,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 delete o.destroyed;
                 o.$xid=$xid;
                 o.$inDesign=$inDesign;
+                o.$prfCustomVars=special;
                 o.serialId=serialId;
                 o.moduleClass=mcls;
                 o.moduleXid=mxid;
@@ -1541,6 +1544,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                     n.get(0).$afterRefresh=ar;
                     ar(n.get(0));
                 }
+                if(save&&o.$prfCustomVars)o.$prfCustomVars(save);
+
                 if(n.host&&n.host['xui.Module']){
                     delete n.host.$ignoreAutoDestroy;
                 }
