@@ -32,8 +32,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         _setCtrlValue:function(value){
             var ns=this,me=arguments.callee, r1=me._r1||(me._r1=/\</),r2=me._r2||(me._r2=/\<\/?[^>]+\>/g);
             return this.each(function(profile){
-                if(!profile.$typeOK)
-                    profile.box._iniType(profile);
+                if(!profile.$typeOK) profile.box._iniType(profile);
                 var o=profile.getSubNode('INPUT'), type=profile.properties.type;
 
                 value=profile.$_onedit
@@ -70,6 +69,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pro=profile.properties,v,t;
             if(!xui.isDefined(value))
                 value=pro.$UIvalue;
+
+            if(!profile.$typeOK) profile.box._iniType(profile);
 
             // try to give default caption
             if(t = profile.CF.getShowValue||profile.$getShowValue)

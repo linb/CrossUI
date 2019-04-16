@@ -215,7 +215,15 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     },null,false,{cache:true});
                 }
             }
-
+            // will be called in refresh()
+            prf.$handleCustomVars=function(d){
+                if(!d){
+                    xui.arr.each(prf.children,function(c){
+                        delete c[0]._attached2cell;
+                        delete c[0]._autoexpand;
+                    });
+                }
+            }
             prf.boxing().setSolidGridlines(prop.solidGridlines, true);
         },
         EventHandlers:{
@@ -245,7 +253,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         _layoutChanged:function(prf, force){
             if(force || prf._$tableInited)
                 xui.resetRun(prf.getUid("layoutchanged"),function(){
-//console.log("onLayoutChanged");
+                    //console.log("onLayoutChanged");
                     var oData = prf.properties.layoutData;
                     prf.properties.layoutData = prf.box._getLayoutData(prf);
                     if(prf.$onLayoutChanged)prf.$onLayoutChanged(prf, oData, prf.properties.layoutData);
@@ -367,8 +375,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     /* cell render*/
                     // for xui dom id & event handler
                     beforeRenderer: function(TD, row, col, vprop, value, cellprop){
-                        var subSerialId = prf.pickSubId('items');
-                        var itemId = xui.ExcelFormula.toCellId(col,row);
+                        var subSerialId = prf.pickSubId('items'),
+                              itemId = xui.ExcelFormula.toCellId(col,row);
                         // memory map
                         cellprop.oid=cellprop.id;
                         cellprop.id=itemId;
@@ -378,41 +386,60 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         cellprop._serialId=subSerialId;
                         prf.ItemIdMapSubSerialId[itemId] = subSerialId;
                         prf.SubSerialIdMapItem[subSerialId] = cellprop;
-
-                        TD.id = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
-                        xui.UI.$addEventsHandler(prf, TD, true);
-
                         // customized styles
                         // first time, set cellprop.style from prop.layoutData
                         if(!cellprop.style){
                             cellprop.style = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"style"]) || {};
                         }
+                        // dom
+                        TD.id = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
+                        xui.UI.$addEventsHandler(prf, TD, true);
                         for(var i in cellprop.style) TD.style[i] = cellprop.style[i];
                         // align class
 //                        if(!cellprop.className){
 //                            cellprop.className = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
 //                        }
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
-
                         if(cellprop._child_autoexpandH){
                             TD.style.height=cellprop._child_autoexpandH+"px";
                         }else{
                             TD.style.height="";
                         }
                     },
-                    /*
+                    // cell renderer
                     renderer : function(instance, TD, row, col, vprop, value, cellprop){
-                        TD.innerHTML = value;
-                        for(var i=0,l=prf.children.length;i<l;i++){
-                            if(prf.children[i][1]==xui.ExcelFormula.toCellId(row, col)){
-                                TD.innerHTML = "";
-                                return TD;
+                        delete cellprop.hiddenChild;
+                        var cellId=xui.ExcelFormula.toCellId(col,row),
+                              children = prf.children.length ? prf.children : prf._pool_children;
+                        if(children){
+                            for(var i=0,l=children.length;i<l;i++){
+                                if(children[i][1]==cellId){
+                                    if(prf.boxing().getMode()=="read"){
+                                        var c = children[i][0],ins=c.boxing();
+                                        cellprop.hiddenChild = 1;
+                                        if(c.key=='xui.UI.CheckBox'||c.key=='xui.UI.SCheckBox'){
+                                            TD.innerHTML = '<input type="checkbox" disabled tabindex="-1" '
+                                                + (ins.getUIValue()?"checked":"")
+                                                +'>' + ins.getCaption();
+                                            return TD;
+                                        }else{
+                                            value = ins.getShowValue?ins.getShowValue():
+                                                    ins.getUIValue?ins.getUIValue():
+                                                    ins.getCaption?ins.getCaption():
+                                                    ins.getHtml?ins.getHtml():
+                                                    ins.getLabel?ins.getLabel():
+                                            '';
+                                        }
+                                    }else{
+                                        value='';
+                                    }
+                                }
                             }
                         }
-                        Handsontable.renderers.TextRenderer.apply(this, arguments);
+
+                        Handsontable.renderers.TextRenderer.apply(this, [instance, TD, row, col, vprop, value, cellprop]);
                         return TD;
                     },
-                    */
                     /* table render*/
                     beforeRender: function(flag){
                         // **: updateSetting will re-render all table elements
@@ -444,7 +471,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         prf._$tableInited=1;
                     },
                     afterRender:function(isForced){
-console.log('afterRender');
+                        //console.log('afterRender');
                         xui.tryF(prf.$onrender,[],prf);
 
 //                        onLayoutChanged(prf);
@@ -769,47 +796,50 @@ console.log('afterRender');
             if(!subId)return;
             // force dock for the only widget
             if(prf.renderId && target['xui.UI'] && target.size()==1){
-                var item = prf.getItemByItemId(subId),
-                    cell = prf.getSubNode("ITEM", item._serialId),
-                    inputPrf = target.get(0),
-                    adjustSize = function(){
-                        target.setPosition('absolute').setLeft(0).setTop(0);
-                        // first row/col , 2 pix border
-                        if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
-                        if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
-                    };
-                adjustSize();
+                var item = prf.getItemByItemId(subId), inputPrf = target.get(0);
                 if(!inputPrf._attached2cell){
-                    inputPrf._attached2cell=1;
-
-                    cell.onSize(adjustSize,'cellresize');
-
-                    if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
-                    if(target.setVAlign)  target.setVAlign('middle');
-                    if(target['xui.UI.Input'] 
-                        && target.getMultiLines && target.getMultiLines()
-                        && target.setAutoexpand
-                    ) 
-                    {
-                        // use the hidden one: _autoexpand
-                        // once: set minH from subId
-                        if(!parseFloat(inputPrf._autoexpand)){
-                            // need set autoexpand in afterRowResize too
-                            inputPrf._autoexpand = (cell.offsetHeight()-1)+"px";
-                            inputPrf.$beforeAutoexpand=function(p,h){
-                                item._child_autoexpandH = target.getAutoexpandHeight();
-                                // ensure to trigger table render once
-                                xui.resetRun(prf.getUid("autoex"), function(){
-                                    if(prf.$htable)prf.$htable.render();
-                                });
-                                return false;
+                    //console.log('afterappend',subId);
+                    inputPrf._attached2cell = inputPrf.locked = 1;
+                    if(item.hiddenChild){
+                        target.setDisplay('none');
+                    }else{
+                        target.setDisplay('');
+                        var cell = prf.getSubNode("ITEM", item._serialId),
+                            adjustSize = function(){
+                                target.setPosition('absolute').setLeft(0).setTop(0);
+                                // first row/col , 2 pix border
+                                if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
+                                if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
                             };
-                            // try to trigger aoutoexpand
-                            inputPrf.box._checkAutoexpand(inputPrf);
+                        adjustSize();
+                        cell.onSize(adjustSize,'cellresize');
+
+                        if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
+                        if(target.setVAlign)  target.setVAlign('middle');
+                        if(target['xui.UI.Input'] 
+                            && target.getMultiLines && target.getMultiLines()
+                            && target.setAutoexpand
+                        ) 
+                        {
+                            // use the hidden one: _autoexpand
+                            // once: set minH from subId
+                            if(!parseFloat(inputPrf._autoexpand)){
+                                // need set autoexpand in afterRowResize too
+                                inputPrf._autoexpand = (cell.offsetHeight()-1)+"px";
+                                inputPrf.$beforeAutoexpand=function(p,h){
+                                    item._child_autoexpandH = target.getAutoexpandHeight();
+                                    // ensure to trigger table render once
+                                    xui.resetRun(prf.getUid("autoex"), function(){
+                                        if(prf.$htable)prf.$htable.render();
+                                    });
+                                    return false;
+                                };
+                                // try to trigger aoutoexpand
+                                inputPrf.box._checkAutoexpand(inputPrf);
+                            }
                         }
                     }
-
-                    inputPrf.$prfCustomVars=function(d){
+                    inputPrf.$handleCustomVars=function(d){
                         if(d){
                             for(var i in d)if(d[i])this[i]=d[i];
                         }else{

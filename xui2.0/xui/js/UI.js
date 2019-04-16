@@ -1419,7 +1419,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return arguments.callee.upper.apply(this,["domId"]);
         },
         refresh:function(remedy){
-            var paras,node,b,p,s,$xid,$inDesign,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,save,special,ns=this;
+            var paras,node,b,p,s,$xid,$inDesign,locked,serialId,renderConf,renderHolder,inlineConf,inlineHolder,mcls,mxid,ar,fun,box,children,uiv,save,special,ns=this;
             return ns.each(function(o,i){
                 if(!o.renderId)return;
 
@@ -1433,7 +1433,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 //save related id
                 $xid=o.$xid;
                 $inDesign=o.$inDesign;
-                special=o.$prfCustomVars;
+                locked=o.locked;
 
                 serialId=o.serialId;
                 mcls = o.moduleClass;
@@ -1443,7 +1443,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 inlineConf=o._inline_conf;
                 inlineHolder=o._inline_holder;
                 ar=o.$afterRefresh;
-                if(o.$prfCustomVars)save=o.$prfCustomVars();
+                special=o.$handleCustomVars;
+                if(special)save=special();
 
                 if(typeof o.boxing().getUIValue=='function'){
                     uiv=o.boxing().getUIValue();
@@ -1493,7 +1494,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 delete o.destroyed;
                 o.$xid=$xid;
                 o.$inDesign=$inDesign;
-                o.$prfCustomVars=special;
+                o.locked=locked;
+                o.$handleCustomVars=special;
                 o.serialId=serialId;
                 o.moduleClass=mcls;
                 o.moduleXid=mxid;
@@ -1502,6 +1504,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(inlineConf)o._inline_conf=inlineConf;
                 if(inlineHolder)o._inline_holder=inlineHolder;
 
+                // set children link first
+                if(children)o.children=children;
                 //create
                 var n=new box(o).render();
 
@@ -1544,7 +1548,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                     n.get(0).$afterRefresh=ar;
                     ar(n.get(0));
                 }
-                if(save&&o.$prfCustomVars)o.$prfCustomVars(save);
+                // call it anyway => another $afterRefresh
+                if(special && save)o.$handleCustomVars(save);
 
                 if(n.host&&n.host['xui.Module']){
                     delete n.host.$ignoreAutoDestroy;
@@ -4078,7 +4083,19 @@ xui.Class("xui.UI",  "xui.absObj", {
                            formEnctype:{
                                 ini:'application/x-www-form-urlencoded',
                                 listbox:['application/x-www-form-urlencoded','multipart/form-data','text/plain']
-                            }
+                           },
+                           readonly:{
+                               ini:false,
+                                action:function(v){
+                                    this.boxing().getChildren().each(function(prf){
+                                        var ins = prf.boxing();
+                                        if(typeof ins.setReadonly == 'function')
+                                            ins.setReadonly(v||false);
+                                        else if(typeof ins.setDisabled == 'function')
+                                            ins.setDisabled(v||false);
+                                    });
+                                }
+                           }
                         }
                     }
                 });
@@ -4256,7 +4273,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 });
 
                 t=self.prototype;
-                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conLayoutColumns,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype'.split(','),function(o){
+                xui.arr.each('overflow,panelBgClr,panelBgImg,panelBgImgPos,panelBgImgRepeat,panelBgImgAttachment,conDockRelative,conLayoutColumns,conDockPadding,conDockSpacing,conDockFlexFill,conDockStretch,sandboxTheme,formMethod,formTarget,formDataPath,formAction,formEnctype,readonly'.split(','),function(o){
                     var f='get'+xui.str.initial(o),dm;
                     if(!t[f])t[f]=src[f];
                     f='set'+xui.str.initial(o);
@@ -4279,6 +4296,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                 self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
+            self.$RenderTrigger=self.$RenderTrigger||[];
+            self.$RenderTrigger.push(function(){
+                if(this.properties.readonly){
+                    this.boxing().setReadonly(true, true);
+                }
+            });
+
         },
 
         addTemplateKeys:function(arr){
@@ -8653,7 +8677,7 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             }
         },
         _isFormField:function(profile){
-            return profile.properties.type=="status";
+            return profile.properties.type=="status" && profile.properties.isFormField;
         },
         _ensureValue:function(profile,value){
             if(profile.properties.type=="status")
