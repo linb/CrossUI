@@ -169,7 +169,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             defaultRowHeight: 50,
             defaultColumnWidth: 50,
 
-            // rows:5, cols:5, rowSetting:{'3':{}}, colSetting:{"B":{}}, cells:{A3:{type:"",value:"",className:"",style:"",border:""}}, merged:[]
+            // don't use handsometable's cell className - buggy (when moving row/column)
+            // rows:5, cols:5, rowSetting:{'3':{}}, colSetting:{"B":{}}, cells:{A3:{type:"",value:"",,style:"",border:""}}, merged:[]
             tableData:{
                 ini:{},
                 action:function(){
@@ -246,7 +247,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         },
         _getTableData:function(prf){
             var prop=prf.properties, 
-                cells={}, rowSetting={}, colSetting={}, merged=[],
+                cells={}, borders, rowSetting={}, colSetting={}, merged=[],
                 tableData = {},
                 data, rows, cols, t, p, s, tmp;
 
@@ -262,21 +263,22 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 // rowSetting:{'3':{}}
                 p = t.getPlugin("ManualRowResize");
                 for(var i=0, l=tableData.rows,h; i<l;i++){
-                    if(p.manualRowHeights && p.manualRowHeights[i]) xui.set(rowSetting, [i+1, 'manualHeight'], p.manualRowHeights[i]);
-                    if(tmp = xui.isArr(s.rowHeights)?s.rowHeights[i]:s.rowHeights) xui.set(rowSetting, [i+1, 'height'], tmp);
+                    var row=t.toPhysicalRow(i);
+                    if(p.manualRowHeights && p.manualRowHeights[row]) xui.set(rowSetting, [i+1, 'manualHeight'], p.manualRowHeights[row]);
+                    if(tmp = xui.isArr(s.rowHeights)?s.rowHeights[row]:s.rowHeights) xui.set(rowSetting, [i+1, 'height'], tmp);
                 }
                 if(!xui.isEmpty(rowSetting)) tableData.rowSetting=rowSetting;
 
                 // colSetting:{"B":{}}
                 p = t.getPlugin("ManualColumnResize");
                 for(var i=0, l=tableData.cols,w; i<l;i++){
-                    if(p.manualColumnWidths && p.manualColumnWidths[i]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[i]);
-                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[i]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
+                    var col=t.toPhysicalColumn(i);
+                    if(p.manualColumnWidths && p.manualColumnWidths[col]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[col]);
+                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[col]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
                 }
                 if(!xui.isEmpty(colSetting)) tableData.colSetting=colSetting;
 
-
-                // cells:{A3:{type:"",value:"",className:"",style:"",border:""}
+                // cells:{A3:{type:"",value:"",style:"",border:""}
                 data = t.getData();
                 // cells:{A3:{value:"v"}
                 for(var i=0,l=data.length;i<l;i++){
@@ -290,17 +292,25 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 }
                 // cells:{A3:{style:{}}
                 for(var i=0,l=tableData.rows;i<l;i++){
-                    var rowMetas = t.getCellMetaAtRow(i)
+                    var row=t.toPhysicalRow(i);
+                    var rowMetas = t.getCellMetaAtRow(row);
                     for(var m=0,n=rowMetas.length;m<n;m++){
+                        var col=t.toPhysicalColumn(m);
                         // align settings
-                        if(rowMetas[m].className)
-                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "className"], xui.str.trim(rowMetas[m].className));
+                        // don't use className - buggy
+//                        if(rowMetas[col].className)
+//                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "className"], xui.str.trim(rowMetas[col].className));
                         // style: ignore empty {}
-                        if(!xui.isEmpty(rowMetas[m].style))
-                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "style"], xui.copy(rowMetas[m].style));
+                        if(!xui.isEmpty(rowMetas[col].style))
+                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "style"], xui.copy(rowMetas[col].style));
                     }
                 }
                 if(!xui.isEmpty(cells)) tableData.cells=cells;
+
+                var cbPlugin = t.getPlugin('customBorders');
+                if((borders = cbPlugin.getBorders()).length){
+                    tableData.customBorders = xui.clone(borders,function(h,i){return i!='id' && i!='border'});
+                }
             }
             return tableData;
         },
@@ -320,6 +330,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     // "fix" some functions for handsontable
                     autoWrapRow: true,
                     renderAllRows: true,
+                    persistentState:false ,
 
                     // "readonly" handsontable
                     readOnly: !designMode,
@@ -332,7 +343,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     contextMenu: designMode,
                     copyable: designMode,
                     copyPaste: designMode,
-
                     beforeOnCellMouseDown:!designMode?null:function(e,c){
                         // fire event
                         if(c.row===-1 && c.col===-1){
@@ -373,9 +383,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         }
                         for(var i in cellprop.style) TD.style[i] = cellprop.style[i];
                         // align class
-                        if(!cellprop.className){
-                            cellprop.className = xui.get(prop.tableData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
-                        }
+//                        if(!cellprop.className){
+//                            cellprop.className = xui.get(prop.tableData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
+//                        }
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
 
                         if(cellprop._child_autoexpandH){
@@ -428,6 +438,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         prf._$tableInited=1;
                     },
                     afterRender:function(isForced){
+console.log('afterRender');
                         xui.tryF(prf.$onrender,[],prf);
 
 //                        onLayoutChanged(prf);
@@ -541,19 +552,20 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     afterColumnResize:function(){
                         onLayoutChanged(prf);
                     },
-                    afterRowMove:function(){
+                    afterColumnSort:function(){
+                        onLayoutChanged(prf);
+                    },
+                    afterRowMove:function(rows, target){
                         onLayoutChanged(prf);
                     },
                     afterColumnMove:function(){
                         onLayoutChanged(prf);
                     },
-                    afterColumnSort:function(){
-                        onLayoutChanged(prf);
-                    },
-
                     // for fix ManualColumnResize and ManualRowResize
                     afterCreateCol:function(index,amount){
                         onLayoutChanged(prf);
+
+                        // patch for ManualColumnResize
                         var p = this.getPlugin("ManualColumnResize");
                         // new cols
                         var arr=[];
@@ -572,6 +584,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     },
                     afterCreateRow:function(index,amount){
                         onLayoutChanged(prf);
+                        // patch for ManualRowResize
                         var p = this.getPlugin("ManualRowResize");
                         // new row
                         var arr=[];
@@ -671,6 +684,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 if(!xui.isEmpty(colHeights))settings.colHeights = colHeights;
 
                 settings.data = data;
+
+                if(tableData.customBorders)
+                    settings.customBorders = tableData.customBorders;
             }else{
                 settings.manualColumnResize = designMode;
                 var manualRowResize=[];
@@ -751,7 +767,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     cell = prf.getSubNode("ITEM", item._serialId),
                     inputPrf = target.get(0),
                     adjustSize = function(){
-                        target.setPosition('absolute').setLeft(0).setTop(0).setWidth(cell.offsetWidth()-1).setHeight(cell.offsetHeight()-1);
+                        target.setPosition('absolute').setLeft(0).setTop(0);
+                        if(target.setWidth)target.setWidth(cell.offsetWidth()-1);
+                        if(target.setHeight)target.setHeight(cell.offsetHeight()-1);
                     };
                 adjustSize();
                 if(!inputPrf._attached2cell){
