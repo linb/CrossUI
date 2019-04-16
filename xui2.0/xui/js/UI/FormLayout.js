@@ -29,7 +29,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         _ITEMCONTAINER:1,
         _ACTIVEHANDLER:["KEY","HOLDER"],
         _NoProp : {"conLayoutColumns":1},
-        _objectProp:{tableData:1},
+        _objectProp:{layoutData:1},
         Appearances:{
             KEY:{
                 overflow:'hidden'
@@ -82,7 +82,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             ".handsontable.nogridline tr:first-child td": {
                 "border-top": "1px solid transparent"
             },
-            ".handsontable.nogridline th:nth-child(2), .handsontable.nogridline .htNoFrame + th, .handsontable.nogridline .htNoFrame + td": {
+            ".handsontable.nogridline th:nth-child(2), .handsontable.nogridline td:first-of-type, .handsontable.nogridline .htNoFrame + th, .handsontable.nogridline .htNoFrame + td": {
                 "border-left": "1px solid transparent"
             }
         },
@@ -114,6 +114,12 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             selectable:null,
             tips:null,
             autoTips:null,
+            overflow:null,
+            items:{
+                hidden:true
+            },
+            listKey:null,
+            dragSortable:null,
             mode:{
                 ini:'',
                 listbox:['','design','write','read'],
@@ -171,7 +177,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
 
             // don't use handsometable's cell className - buggy (when moving row/column)
             // rows:5, cols:5, rowSetting:{'3':{}}, colSetting:{"B":{}}, cells:{A3:{type:"",value:"",,style:"",border:""}}, merged:[]
-            tableData:{
+            layoutData:{
                 ini:{},
                 action:function(){
                     this.boxing().refresh();
@@ -240,43 +246,43 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             if(force || prf._$tableInited)
                 xui.resetRun(prf.getUid("layoutchanged"),function(){
 //console.log("onLayoutChanged");
-                    var oData = prf.properties.tableData;
-                    prf.properties.tableData = prf.box._getTableData(prf);
-                    if(prf.$onLayoutChanged)prf.$onLayoutChanged(prf, oData, prf.properties.tableData);
+                    var oData = prf.properties.layoutData;
+                    prf.properties.layoutData = prf.box._getLayoutData(prf);
+                    if(prf.$onLayoutChanged)prf.$onLayoutChanged(prf, oData, prf.properties.layoutData);
                 });
         },
-        _getTableData:function(prf){
+        _getLayoutData:function(prf){
             var prop=prf.properties, 
                 cells={}, borders, rowSetting={}, colSetting={}, merged=[],
-                tableData = {},
+                layoutData = {},
                 data, rows, cols, t, p, s, tmp;
 
             // handsontable to xui
              if(prf.box.renderType=="handsontable" && (t = prf.$htable)){
                 // rows:5, cols:5, merged:[]
-                tableData.rows = t.countRows();
-                tableData.cols = t.countCols();
+                layoutData.rows = t.countRows();
+                layoutData.cols = t.countCols();
                 merged = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
-                if(!xui.isEmpty(merged)) tableData.merged=merged;
+                if(!xui.isEmpty(merged)) layoutData.merged=merged;
 
                 s = t.getSettings();
                 // rowSetting:{'3':{}}
                 p = t.getPlugin("ManualRowResize");
-                for(var i=0, l=tableData.rows,h; i<l;i++){
+                for(var i=0, l=layoutData.rows,h; i<l;i++){
                     var row=t.toPhysicalRow(i);
                     if(p.manualRowHeights && p.manualRowHeights[row]) xui.set(rowSetting, [i+1, 'manualHeight'], p.manualRowHeights[row]);
                     if(tmp = xui.isArr(s.rowHeights)?s.rowHeights[row]:s.rowHeights) xui.set(rowSetting, [i+1, 'height'], tmp);
                 }
-                if(!xui.isEmpty(rowSetting)) tableData.rowSetting=rowSetting;
+                if(!xui.isEmpty(rowSetting)) layoutData.rowSetting=rowSetting;
 
                 // colSetting:{"B":{}}
                 p = t.getPlugin("ManualColumnResize");
-                for(var i=0, l=tableData.cols,w; i<l;i++){
+                for(var i=0, l=layoutData.cols,w; i<l;i++){
                     var col=t.toPhysicalColumn(i);
                     if(p.manualColumnWidths && p.manualColumnWidths[col]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[col]);
                     if(tmp = xui.isArr(s.colWidths)?s.colWidths[col]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
                 }
-                if(!xui.isEmpty(colSetting)) tableData.colSetting=colSetting;
+                if(!xui.isEmpty(colSetting)) layoutData.colSetting=colSetting;
 
                 // cells:{A3:{type:"",value:"",style:"",border:""}
                 data = t.getData();
@@ -291,7 +297,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     }
                 }
                 // cells:{A3:{style:{}}
-                for(var i=0,l=tableData.rows;i<l;i++){
+                for(var i=0,l=layoutData.rows;i<l;i++){
                     var row=t.toPhysicalRow(i);
                     var rowMetas = t.getCellMetaAtRow(row);
                     for(var m=0,n=rowMetas.length;m<n;m++){
@@ -305,14 +311,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "style"], xui.copy(rowMetas[col].style));
                     }
                 }
-                if(!xui.isEmpty(cells)) tableData.cells=cells;
+                if(!xui.isEmpty(cells)) layoutData.cells=cells;
 
                 var cbPlugin = t.getPlugin('customBorders');
                 if((borders = cbPlugin.getBorders()).length){
-                    tableData.customBorders = xui.clone(borders,function(h,i){return i!='id' && i!='border'});
+                    layoutData.customBorders = xui.clone(borders,function(h,i){return i!='id' && i!='border'});
                 }
             }
-            return tableData;
+            return layoutData;
         },
         _renderAsHandsontable: function(prf){
             if(!prf || !prf.box)return;
@@ -323,7 +329,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 elem = boxNode.get(0), 
                 htable, 
                 prop = prf.properties,
-                tableData = prop.tableData,
+                layoutData = prop.layoutData,
                 mode = prf.boxing().getMode(),
                 designMode = mode == "design",
                 fixedSet = {
@@ -377,14 +383,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         xui.UI.$addEventsHandler(prf, TD, true);
 
                         // customized styles
-                        // first time, set cellprop.style from prop.tableData
+                        // first time, set cellprop.style from prop.layoutData
                         if(!cellprop.style){
-                            cellprop.style = xui.get(prop.tableData, ["cells", xui.ExcelFormula.toCellId(col,row),"style"]) || {};
+                            cellprop.style = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"style"]) || {};
                         }
                         for(var i in cellprop.style) TD.style[i] = cellprop.style[i];
                         // align class
 //                        if(!cellprop.className){
-//                            cellprop.className = xui.get(prop.tableData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
+//                            cellprop.className = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
 //                        }
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
 
@@ -503,7 +509,7 @@ console.log('afterRender');
                         return true;
                     },
                     afterContextMenuShow: !designMode?null:function(context){
-                         prf.$popmenu = prf.$onPopMenu(prf, prf.$popmenu, context.menu);
+                         if(prf.$onPopMenu)prf.$popmenu = prf.$onPopMenu(prf, prf.$popmenu, context.menu);
                          // don't use dft menu
                          context.menu.container.style.display='none';
                     },
@@ -636,44 +642,44 @@ console.log('afterRender');
 
   
             // merged info
-            if(tableData.merged){
-                settings.mergeCells = tableData.merged;
+            if(layoutData.merged){
+                settings.mergeCells = layoutData.merged;
             }else{
                 settings.mergeCells = designMode;
             }
 
             // data, manualRowResize, minRowHeights, manualColumnResize, colHeights, cellMetas
             // if there's table data
-            if(tableData.cols){
+            if(layoutData.cols){
                 // cell data
                 var minRowHeights=[], colHeights=[], manualRowResize=[],manualColumnResize=[], data = [], row;
                 // manualRowResize (start from "1")
-                xui.each(tableData.rowSetting,function(v,k){
+                xui.each(layoutData.rowSetting,function(v,k){
                     if(xui.isSet(v.manualHeight||v))manualRowResize[parseInt(k,10) - 1]=parseInt(v.manualHeight||v,10);
                     if(xui.isSet(v.height||v))minRowHeights[parseInt(k,10) - 1]=parseInt(v.height||v,10);
                 });
                 // manualColumnResize (start from "A"=>"1")
-                xui.each(tableData.colSetting,function(v,k){
+                xui.each(layoutData.colSetting,function(v,k){
                     k = xui.ExcelFormula.toColumnNum(k);
                     if(xui.isSet(v.manualWidth||v))manualColumnResize[k - 1]=parseInt(v.manualWidth||v,10);
                     if(xui.isSet(v.width||v))colHeights[k - 1]=parseInt(v.width||v,10);
                 });
                 // init data
-                for(var i=0,l=tableData.rows||prop.defaultRowSize;i<l;i++){
+                for(var i=0,l=layoutData.rows||prop.defaultRowSize;i<l;i++){
                     data.push(row=[]);
-                    for(var m=0,n=tableData.cols||prop.defaultColumnSize;m<n;m++){
+                    for(var m=0,n=layoutData.cols||prop.defaultColumnSize;m<n;m++){
                         row.push(null);
                     }
                 }
                 // fill data
-                xui.each(tableData.cells,function(cell, id){
+                xui.each(layoutData.cells,function(cell, id){
                     var coord = xui.ExcelFormula.toCoordinate(id);
                     data[coord.row][coord.col] = xui.isSet(cell.value)?cell.value:null;
                 });
                 
                 // set manualRowResize, manualColumnResize and data
                 if(!xui.isEmpty(manualRowResize)){
-                    for(var i=0;i<tableData.rows;i++){
+                    for(var i=0;i<layoutData.rows;i++){
                         manualRowResize[i] = manualRowResize[i] || prop.defaultRowHeight;
                     }
                 }
@@ -685,8 +691,8 @@ console.log('afterRender');
 
                 settings.data = data;
 
-                if(tableData.customBorders)
-                    settings.customBorders = tableData.customBorders;
+                if(layoutData.customBorders)
+                    settings.customBorders = layoutData.customBorders;
             }else{
                 settings.manualColumnResize = designMode;
                 var manualRowResize=[];
@@ -698,8 +704,8 @@ console.log('afterRender');
                 // set data only
                  settings.data = Handsontable.helper.createSpreadsheetData(prop.defaultRowSize, prop.defaultColumnSize);
 
-                // reset tableData
-                prf.properties.tableData = prf.box._getTableData(prf);
+                // reset layoutData
+                prf.properties.layoutData = prf.box._getLayoutData(prf);
             }
             prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
             
@@ -768,8 +774,9 @@ console.log('afterRender');
                     inputPrf = target.get(0),
                     adjustSize = function(){
                         target.setPosition('absolute').setLeft(0).setTop(0);
-                        if(target.setWidth)target.setWidth(cell.offsetWidth()-1);
-                        if(target.setHeight)target.setHeight(cell.offsetHeight()-1);
+                        // first row/col , 2 pix border
+                        if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
+                        if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
                     };
                 adjustSize();
                 if(!inputPrf._attached2cell){

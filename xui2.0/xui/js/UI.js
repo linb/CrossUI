@@ -4253,7 +4253,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                         if(profile.onMousewheel)
                             return profile.boxing().onMousewheel(profile, xui.Event.getWheelDelta(e), item, e, src);
                     };
-                    t=i=='KEY'?hls:(hls[i]||(hls[i]={}));
                 });
 
                 t=self.prototype;
