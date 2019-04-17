@@ -3,22 +3,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         this.addTemplateKeys(['ITEM','HOLDER','SPREADER']);
     },
     Instance:{
-        selectCell:function (row, col){
-            var prf=this.get(0),prop=prf.properties;
-            if(prf.box.renderType=="handsontable"){
-                if(prf.$htable)
-                    prf.$htable.selectCell(row, col);
-            }
-        },
-        getHTable:function(){
-            return this.get(0) && this.get(0).$htable;
-        },
-        htable_call:function(funName,params){
-            var htable = this.getHTable();
-            if(htable && htable[funName]){
-                return htable[funName].apply(htable,params||[]);
-            }
-        }
     },
     Static:{
         // currently, use handsontable 6.2.2 as html table for form layout
@@ -720,6 +704,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
 
                 if(layoutData.customBorders)
                     settings.customBorders = layoutData.customBorders;
+
+                prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
             }else{
                 settings.manualColumnResize = designMode;
                 var manualRowResize=[];
@@ -731,10 +717,11 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 // set data only
                  settings.data = Handsontable.helper.createSpreadsheetData(prop.defaultRowSize, prop.defaultColumnSize);
 
+                prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
+                
                 // reset layoutData
                 prf.properties.layoutData = prf.box._getLayoutData(prf);
             }
-            prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
             
             // set before destroy function
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){
