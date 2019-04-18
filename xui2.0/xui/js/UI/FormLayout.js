@@ -176,8 +176,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             listKey:null,
             dragSortable:null,
             mode:{
-                ini:'',
-                listbox:['','design','write','read'],
+                ini:'write',
+                listbox:['design','write','read'],
                 get:function(){
                     return this.$inDesign?'design':(this.properties.mode || 'read');
                 },
@@ -1053,7 +1053,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         if(prf.boxing().getMode()!='read'){
                             // if parent is re-rendered
                             if(inputPrf._cellresizeP!=cell){
-                                cell.text("");
                                 var adjustSize = function(){
                                         target.setPosition('absolute').setLeft(0).setTop(0);
                                         // first row/col , 2 pix border
@@ -1070,6 +1069,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     if(!inputPrf._attached2cell){
                         //console.log('afterappend',subId);
                         inputPrf._attached2cell = 1;
+                        cell.text("");
                         // for form field only
                         // prop andd autoexpand
                         if(isFormField){

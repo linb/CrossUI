@@ -515,19 +515,13 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         text:function(content){
             if(content!==undefined){
-                var self=this, arr=[];
+                var self=this, arr=[], txt;
                 self.each(function(o){
-                    var t=o.lastChild;
-                     if(t&&t.nodeType==3)
-                        t.nodeValue = content;
-                     else
-                        arr[arr.length]=o;
-                });
-                if(arr.length){
-                    xui(arr).each(function(o){
+                    for (var i=o.childNodes.length-1,t; i>=0; i--)
+                         if((t=o.childNodes[i])&&t.nodeType==3)
+                            t.nodeValue = "";
                         o.appendChild(document.createTextNode(content));
-                    })
-                }
+                });
                 return self;
             }else{
                return (function(o){

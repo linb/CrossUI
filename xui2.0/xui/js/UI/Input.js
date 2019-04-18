@@ -167,7 +167,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                     tagName : 'div',
                     INPUT:{
                         $order:10,
-                        className:'xui-ui-ellipsis',
+                        className:'xui-ui-ellipsis {_inputcls}',
                         tagName : 'input',
                         type : '{_inputtype}',
                         maxlength:'{maxlength}',
@@ -251,11 +251,14 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                'overflow-x':xui.browser.ie678?'hidden':'hidden',
                resize:'none'
             },
-            "INPUT.autoexpand":{
-                overflow:'hidden'
+            "KEY textarea.autoexpand":{
+                overflow:'hidden',
+                $order:2
             },
             "KEY textarea":{
-                'white-space':'normal'
+                'white-space':'normal',
+                'overflow-x':'hidden',
+                'overflow-y':'auto'
             },
             ERROR:{
                 position:'absolute',
@@ -745,8 +748,8 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             if(prop.height=='auto'){
                 data.height  = '1.83em';
             }
-            if(parseFloat(profile._autoexpand || prop.autoexpand)){
-                data.height  = profil._autoexpand || prop.autoexpand;
+            if(parseFloat(t = profile._autoexpand || prop.autoexpand)){
+                data._inputcls = (profile._autoexpand || prop.autoexpand) ? 'autoexpand': '' ;
             }
 
             var d=arguments.callee.upper.call(this, profile, data);
@@ -784,7 +787,6 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 if(prop.multiLines){
                     t=template.FRAME.BORDER.BOX.WRAP.INPUT;
                     t.tagName='textarea';
-                    t.className==(profile._autoexpand || prop.autoexpand)?'autoexpand':'';
                     delete t.type;
                 }
 
