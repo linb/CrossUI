@@ -421,7 +421,6 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             tpl.push("<div id='"+prf.key+"-HOLDER:"+prf.serialId + ":" +"' class='"+prf.getClass("HOLDER")
                 +"' style='width:"+prop.width+"; height:"+prop.height
                 +"' >");
-            tpl.push("<div id='"+prf.key+"-CBORDER:"+prf.serialId + ":" +"' class='"+prf.getClass("CBORDER") +"' >");
             tpl.push("<table id='"+prf.key + "-TABLE:" + prf.serialId + ":" +"' class='"+prf.getClass("TABLE") +"'"
                 + (prop.stretchH!='none'?(" style='width:"+prop.width+";'"):"")
                 +">");
@@ -472,7 +471,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 tpl.push("</tr>");
             }
             tpl.push("</tbody></table>");
-            tpl.push("</div>");
+            tpl.push("<div id='"+prf.key+"-CBORDER:"+prf.serialId + ":" +"' class='"+prf.getClass("CBORDER") +"' ></div>");
             tpl.push("</div>");
 
             elem.innerHTML = tpl.join("");
@@ -1008,7 +1007,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                      }
                     if(force || prf.properties.stretchH=="all"){
                         var colWidths = this._getColWidths(prf, rw);
-                        tb.querySelectorAll("col").each(function(node,i){
+                        tb.first().children().each(function(node,i){
                             node.style.width = colWidths[i];
                         });
                     }
