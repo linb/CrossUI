@@ -517,14 +517,14 @@ xui.Class('xui.Dom','xui.absBox',{
             if(content!==undefined){
                 var self=this, arr=[];
                 self.each(function(o){
-                    var t=o.firstChild;
-                     if(t&&t.nodeType!=1)
+                    var t=o.lastChild;
+                     if(t&&t.nodeType==3)
                         t.nodeValue = content;
                      else
                         arr[arr.length]=o;
                 });
                 if(arr.length){
-                    xui(arr).empty().each(function(o){
+                    xui(arr).each(function(o){
                         o.appendChild(document.createTextNode(content));
                     })
                 }

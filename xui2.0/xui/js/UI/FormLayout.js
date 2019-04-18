@@ -1,14 +1,21 @@
 xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
     Initialize:function(){
-        this.addTemplateKeys(['ITEM','HOLDER','SPREADER']);
+        this.addTemplateKeys(['ITEM','TABLE','CBORDER','CBT','CBL','HOLDER','SPREADER']);
     },
     Instance:{
+        _isDesignMode:function(){
+            return this.getMode()=="design";
+        },
+        getContainer:function(subId){
+            var prf=this.get(0);
+            if(prf.ItemIdMapSubSerialId && prf.ItemIdMapSubSerialId[subId]){
+                return arguments.callee.upper.apply(this,[subId]);
+            }else{
+                return this.getSubNode("POOL");
+            }
+        },
     },
     Static:{
-        // currently, use handsontable 6.2.2 as html table for form layout
-        // will use simple template for small script size at runtime
-        renderType:"handsontable",
-
         _CONTAINERKEY:"ITEM",
         _ITEMCONTAINER:1,
         _ACTIVEHANDLER:["KEY","HOLDER"],
@@ -24,30 +31,93 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 top:0,
                 'z-index':1
             },
+            CBORDER:{
+                position:'absolute',
+                left:0,
+                top:0
+            },
+            'CBORDER div':{
+                position:'absolute',
+                display:'block'
+            },
             POOL:{
                 position:'absolute',
-                left:'100%',
-                top:'100%',
+                left:'-100%',
+                top:'-100%',
                 width:0,
                 height:0
             },
-            ITEM: {
-              "position": "relative"
+            HOLDER:{
+                overflow:'auto',
+                position: 'relative'
             },
+            TABLE:{
+                'overflow':'hidden',
+                'border-collapse': 'separate',
+                'border-spacing': '0',
+                margin: '0',
+                'border-width': '0',
+                'table-layout': 'fixed',
+                width: '0',
+                'outline-width': '0',
+                cursor: 'default',
+                'max-width': 'none',
+                'max-height': 'none'
+            },
+            ITEM: {
+                position: "relative",
+                height: '22px',
+                'empty-cells': 'show',
+                'line-height': '21px',
+                padding: '0 4px',
+                'vertical-align': 'top',
+                overflow: 'hidden',
+                'outline-width': '0',
+                'white-space': 'pre-line',
+                'background-clip': 'padding-box'
+            },
+             // {{ for read/write mode (layoutcell)
+            "ITEM.layoutcell":{
+              "border-right": "1px solid transparent",
+              "border-bottom": "1px solid transparent",
+              "border-left": "none",
+              "border-top": "none",
+               $order:1
+             },
+            "ITEM.layoutcell.firstrow":{
+              "border-top": "1px solid transparent",
+               $order:2
+             },
+            "ITEM.layoutcell.firstcol":{
+              "border-left": "1px solid transparent",
+               $order:2
+             },
+            "BOX.solidgridline ITEM.layoutcell":{
+              "border-right": "1px solid #444",
+              "border-bottom": "1px solid #444",
+              "border-left": "none",
+              "border-top": "none",
+               $order:3
+             },
+            "BOX.solidgridline ITEM.layoutcell.firstrow":{
+              "border-top": "1px solid #444",
+               $order:4
+             },
+            "BOX.solidgridline ITEM.layoutcell.firstcol":{
+              "border-left": "1px solid #444",
+               $order:4
+             },
+             // }}
+             
+             // {{ for design mode (handsontable)
             // reset bg
             "KEY ITEM": {
               "position": "relative",
                 background:"transparent"
             },
-             "KEY .handsontable tr":{
-                  background:"transparent"
-              },
-
-            "ITEM.xui-children-in-td":{
-                padding:'0',
-                margin:'0',
-                border:'0'
-            },
+            "KEY .handsontable tr":{
+                background:"transparent"
+             },
             // for handsontable solid grid lines
             ".handsontable.solidgridline td": {
               "border-right": "1px solid #444",
@@ -69,6 +139,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             ".handsontable.nogridline th:nth-child(2), .handsontable.nogridline td:first-of-type, .handsontable.nogridline .htNoFrame + th, .handsontable.nogridline .htNoFrame + td": {
                 "border-left": "1px solid transparent"
             }
+             // }}
         },
         Templates:{
             tagName:'div',
@@ -125,7 +196,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             solidGridlines:{
                 ini:true,
                 action:function(value){
-                    var cls = value ? "solidgridline" : this.boxing().getMode()=='design' ? "" : "nogridline",
+                    var cls = value ? "solidgridline" : this.boxing()._isDesignMode() ? "" : "nogridline",
                         node = this.getSubNode('BOX');
                     node.removeClass("solidgridline nogridline");
                     if(cls)node.addClass(cls);
@@ -133,31 +204,39 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             },
             stretchH:{
                 ini:"all",
-                listbox:["","none","last","all"],
+                listbox:["none","last","all"],
                 action:function(){
-                    this.box._updateSetting(this,'stretchH');
+                    if(this.boxing()._isDesignMode())
+                        this.box._updateSetting(this,'stretchH');
+                    else{
+                        this.box._resizeTable(this, this.getSubNode('BOX').cssSize(), true);
+                    }
                 }
             },
             rowHeaderWidth:{
                 ini:25,
                 action:function(){
-                    this.box._updateSetting(this,'rowHeaderWidth');
-                    var size=this.getRoot().cssSize();
-                    xui.UI.$tryResize(this, size.width, size.height);
+                    if(this.boxing()._isDesignMode()){
+                        this.box._updateSetting(this,'rowHeaderWidth');
+                        var size=this.getRoot().cssSize();
+                        xui.UI.$tryResize(this, size.width, size.height);
+                    }
                 }
             },
             columnHeaderHeight:{
                 ini:25,
                 action:function(){
-                    this.box._updateSetting(this,'columnHeaderHeight');
-                    var size=this.getRoot().cssSize();
-                    xui.UI.$tryResize(this, size.width, size.height);
+                    if(this.boxing()._isDesignMode()){
+                        this.box._updateSetting(this,'columnHeaderHeight');
+                        var size=this.getRoot().cssSize();
+                        xui.UI.$tryResize(this, size.width, size.height);
+                    }
                 }
             },
             defaultRowSize: 5,
             defaultColumnSize: 5,
             defaultRowHeight: 50,
-            defaultColumnWidth: 50,
+            _defaultColumnWidth: 50,
 
             // don't use handsometable's cell className - buggy (when moving row/column)
             // rows:5, cols:5, rowSetting:{'3':{}}, colSetting:{"B":{}}, cells:{A3:{type:"",value:"",,style:"",border:""}}, merged:[]
@@ -173,7 +252,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         },
         RenderTrigger:function(){
             var prf=this,prop=prf.properties,cls=prf.box;
-            if(prf.box.renderType=="handsontable"){
+            if(prf.boxing()._isDesignMode()){
                 if(window.Handsontable)cls._renderAsHandsontable(prf);
                 else{
                     // prf.boxing().busy(false, "Loading table ...");
@@ -198,6 +277,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         }
                     },null,false,{cache:true});
                 }
+            }else{
+                cls._renderAsH5Table(prf);
             }
             // will be called in refresh()
             prf.$handleCustomVars=function(d){
@@ -214,23 +295,10 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             onShowTips:null
         },
         _getHeaderOffset:function(prf){
-            var prop=prf.properties,
-                  offset = {left:0,top:0};
-            if(prf.box.renderType=="handsontable"){
-                if(prf.boxing().getMode()=="design"){
-                    offset.left=prop.rowHeaderWidth;
-                    offset.top=prop.columnHeaderHeight + 1;
-                }
-               /*
-                var node = prf.getSubNode("BOX");
-                node.children().each(function(n){
-                    if(xui(n).hasClass("ht_clone_top")){
-                        offset.top = xui(n).first(2).height();
-                    }else if(xui(n).hasClass("ht_clone_left")){
-                        offset.left = xui(n).first(4).width();
-                    }
-                });
-               */
+            var prop=prf.properties, offset = {left:0,top:0};
+            if(prf.boxing()._isDesignMode()){
+                offset.left=prop.rowHeaderWidth;
+                offset.top=prop.columnHeaderHeight + 1;
             }
             return offset;
         },
@@ -250,7 +318,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 data, rows, cols, t, p, s, tmp;
 
             // handsontable to xui
-             if(prf.box.renderType=="handsontable" && (t = prf.$htable)){
+             if(t = prf.$htable){
                 // rows:5, cols:5, merged:[]
                 layoutData.rows = t.countRows();
                 layoutData.cols = t.countCols();
@@ -272,7 +340,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 for(var i=0, l=layoutData.cols,w; i<l;i++){
                     var col=t.toPhysicalColumn(i);
                     if(p.manualColumnWidths && p.manualColumnWidths[col]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[col]);
-                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[col]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
+//                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[col]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
                 }
                 if(!xui.isEmpty(colSetting)) layoutData.colSetting=colSetting;
 
@@ -312,6 +380,111 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             }
             return layoutData;
         },
+        _renderAsH5Table: function(prf){
+            var boxNode = prf.getSubNode("BOX"),
+                elem = boxNode.get(0),
+                prop = prf.properties,
+                layoutData = prop.layoutData,
+                rowSize=layoutData.rows||prop.defaultRowSize,
+                colSize=layoutData.cols||prop.defaultColumnSize,
+                childrenMap={}, t, merged={}, merged2={}, 
+                getShowValue = function(prf){
+                    var ins=prf.boxing();
+                    return  ins.getShowValue?ins.getShowValue():
+                        ins.getValue?ins.getValue():
+                        ins.getCaption?ins.getCaption():
+                        ins.getHtml?ins.getHtml():
+                        ins.getLabel?ins.getLabel():
+                    '';
+                },
+                cellProp,subSerialId,item, itemId, domId, styles,tpl=[];
+
+            xui.arr.each(prf.children,function(v){
+                childrenMap[v[1]]=v[0];
+            });
+            xui.arr.each(layoutData.merged,function(v){
+                merged[v.row+":"+v.col] = (v.rowspan>1?(" rowspan=" + v.rowspan):"") + (v.colspan?(" colspan = " + v.colspan):"") +" ";
+                for(var i=0,l=v.rowspan;i<l;i++){
+                    for(var j=0,k=v.colspan;j<k;j++){
+                        if(i===0&&j===0)continue;
+                         merged2[(v.row+i)+":"+(v.col+j)] = 1;
+                    }
+                }
+            });
+
+            tpl.push("<div id='"+prf.key+"-HOLDER:"+prf.serialId + ":" +"' class='"+prf.getClass("HOLDER")
+                +"' style='width:"+prop.width+"; height:"+prop.height
+                +"' >");
+            tpl.push("<div id='"+prf.key+"-CBORDER:"+prf.serialId + ":" +"' class='"+prf.getClass("CBORDER") +"' >");
+            tpl.push("<table id='"+prf.key + "-TABLE:" + prf.serialId + ":" +"' class='"+prf.getClass("TABLE") +"'"
+                + (prop.stretchH!='none'?(" style='width:"+prop.width+";'"):"")
+                +">");
+            // colgroup
+            var colWidths = prf.box._getColWidths(prf, prf.$px(prop.width));
+            tpl.push("<colgroup>");
+            for(var col=0,n=colSize;col<n;col++){
+                var chr = xui.ExcelFormula.toColumnChr(col+1);
+                tpl.push("<col style='width:" + colWidths[col] + ";'></col>");
+            }
+            tpl.push("</colgroup>");
+            // tbody
+            tpl.push("<tbody>");
+            for(var row=0,l=rowSize;row<l;row++){
+                tpl.push("<tr>");
+                for(var col=0,n=colSize;col<n;col++){
+                    subSerialId = prf.pickSubId('items');
+                    itemId = xui.ExcelFormula.toCellId(col,row);
+                    item={
+                        _serialId:subSerialId,
+                        col:col,
+                        row:row,
+                        id:itemId,
+                        value: childrenMap[itemId] ? getShowValue(childrenMap[itemId]): xui.get(layoutData, ["cells", itemId,"value"]) || "",
+                        style : xui.get(layoutData, ["cells", itemId,"style"]) || {}
+                    };
+                    prf.ItemIdMapSubSerialId[itemId] = subSerialId;
+                    prf.SubSerialIdMapItem[subSerialId] = item;
+                    
+                    domId = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
+                    styles = [];
+                    xui.each(item.style,function(v,k){
+                        styles.push(k.replace(/[A-Z]/g,function(a){return '-'+a.toLowerCase()}) + ":" + v);
+                    });
+                    if(col===0){
+                        if(t = xui.get(layoutData, ['rowSetting', row+1, 'height']) || xui.get(layoutData, ['rowSetting', row+1, 'manualHeight']) || prop.defaultRowHeight){
+                            styles.push("height:"+ (t - (row===0?1/*2*/:1)) + "px");
+                        }
+                    }
+
+                    // layoutData.merged
+                    if(!merged2[row+":"+col]){
+                        tpl.push("<td id='"+domId+"' class='layoutcell "+ (row===0?'firstrow ':'') + (col===0?'firstcol ':'') +prf.getClass("ITEM")+"' style='"+styles.join(";")+"' "+  (merged[row+":"+col]||"") +">");
+                        tpl.push(item.value);
+                        tpl.push("</td>");
+                    }
+                }
+                tpl.push("</tr>");
+            }
+            tpl.push("</tbody></table>");
+            tpl.push("</div>");
+            tpl.push("</div>");
+
+            elem.innerHTML = tpl.join("");
+            xui.UI.$addEventsHandler(prf, elem, false);
+
+            // layoutData.customBorders
+            prf.box._setCustomBorders(prf);
+
+            // lazy append
+            var arr=[];
+            xui.each(prf.children,function(v){
+                arr.push(v);
+            });
+            prf.children=[];
+            xui.arr.each(arr,function(v){
+                prf.boxing().append(v[0], v[1]);
+            });
+        },
         _renderAsHandsontable: function(prf){
             if(!prf || !prf.box)return;
             var onLayoutChanged = function(prf, force){
@@ -322,8 +495,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 htable, 
                 prop = prf.properties,
                 layoutData = prop.layoutData,
-                mode = prf.boxing().getMode(),
-                designMode = mode == "design",
+                designMode = true,
                 fixedSet = {
                     // "fix" some functions for handsontable
                     autoWrapRow: true,
@@ -392,35 +564,17 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     },
                     // cell renderer
                     renderer : function(instance, TD, row, col, vprop, value, cellprop){
-                        delete cellprop.hiddenChild;
                         var cellId=xui.ExcelFormula.toCellId(col,row),
                               children = prf.children.length ? prf.children : prf._pool_children;
                         if(children){
                             for(var i=0,l=children.length;i<l;i++){
                                 if(children[i][1]==cellId){
-                                    if(prf.boxing().getMode()=="read"){
-                                        var c = children[i][0],ins=c.boxing();
-                                        cellprop.hiddenChild = 1;
-                                        if(c.key=='xui.UI.CheckBox'||c.key=='xui.UI.SCheckBox'){
-                                            TD.innerHTML = '<input type="checkbox" disabled tabindex="-1" '
-                                                + (ins.getUIValue()?"checked":"")
-                                                +'>' + ins.getCaption();
-                                            return TD;
-                                        }else{
-                                            value = ins.getShowValue?ins.getShowValue():
-                                                    ins.getUIValue?ins.getUIValue():
-                                                    ins.getCaption?ins.getCaption():
-                                                    ins.getHtml?ins.getHtml():
-                                                    ins.getLabel?ins.getLabel():
-                                            '';
-                                        }
-                                    }else{
-                                        value='';
-                                    }
+                                    value='';
+                                    break;
                                 }
                             }
                         }
-
+                        // force to textrenderer
                         Handsontable.renderers.TextRenderer.apply(this, [instance, TD, row, col, vprop, value, cellprop]);
                         return TD;
                     },
@@ -496,10 +650,10 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         }
                     },
 
-                    afterSelection: mode=='read'?null:function(){
+                    afterSelection: function(){
                         prf.getRoot().css('overflow','visible');
                     },
-                    outsideClickDeselects: mode=='read'?null:function(node){
+                    outsideClickDeselects: function(node){
                         //for lang span, or inner renderer
                         while((
                                 (!node.id)
@@ -586,7 +740,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         var p = this.getPlugin("ManualColumnResize");
                         // new cols
                         var arr=[];
-                        for(var i=0;i<amount;i++) arr.push(prop.defaultColumnWidth);
+                        for(var i=0;i<amount;i++) arr.push(prop._defaultColumnWidth);
                         // ensure length
                         if(!p.manualColumnWidths) p.manualColumnWidths=[];
                         for(var i=0;i<index;i++) p.manualColumnWidths[i] = p.manualColumnWidths[i] || (void 0);
@@ -646,7 +800,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             // dft widht/height
             settings.rowHeaderWidth  = prop.rowHeaderWidth;
             settings.columnHeaderHeight = prop.columnHeaderHeight;
-            settings.defaultColumnWidth = prop.defaultColumnWidth;
+            settings.defaultColumnWidth = prop._defaultColumnWidth;
             // show header?
             settings.rowHeaders = designMode;
             settings.colHeaders =  designMode;
@@ -659,11 +813,11 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 settings.mergeCells = designMode;
             }
 
-            // data, manualRowResize, minRowHeights, manualColumnResize, colHeights, cellMetas
+            // data, manualRowResize, minRowHeights, manualColumnResize, colWidths, cellMetas
             // if there's table data
             if(layoutData.cols){
                 // cell data
-                var minRowHeights=[], colHeights=[], manualRowResize=[],manualColumnResize=[], data = [], row;
+                var minRowHeights=[], colWidths=[], manualRowResize=[],manualColumnResize=[], data = [], row;
                 // manualRowResize (start from "1")
                 xui.each(layoutData.rowSetting,function(v,k){
                     if(xui.isSet(v.manualHeight||v))manualRowResize[parseInt(k,10) - 1]=parseInt(v.manualHeight||v,10);
@@ -673,7 +827,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 xui.each(layoutData.colSetting,function(v,k){
                     k = xui.ExcelFormula.toColumnNum(k);
                     if(xui.isSet(v.manualWidth||v))manualColumnResize[k - 1]=parseInt(v.manualWidth||v,10);
-                    if(xui.isSet(v.width||v))colHeights[k - 1]=parseInt(v.width||v,10);
+                    // if(xui.isSet(v.width||v))colWidths[k - 1]=parseInt(v.width||v,10);
                 });
                 // init data
                 for(var i=0,l=layoutData.rows||prop.defaultRowSize;i<l;i++){
@@ -698,14 +852,13 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 settings.manualColumnResize = !xui.isEmpty(manualColumnResize) ? manualColumnResize : designMode;
                 
                 if(!xui.isEmpty(minRowHeights))settings.rowHeights = minRowHeights;
-                if(!xui.isEmpty(colHeights))settings.colHeights = colHeights;
+                // don't use colWidths
+                //if(!xui.isEmpty(colWidths))settings.colWidths = colWidths;
 
                 settings.data = data;
 
                 if(layoutData.customBorders)
                     settings.customBorders = layoutData.customBorders;
-
-                prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
             }else{
                 settings.manualColumnResize = designMode;
                 var manualRowResize=[];
@@ -716,13 +869,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
 
                 // set data only
                  settings.data = Handsontable.helper.createSpreadsheetData(prop.defaultRowSize, prop.defaultColumnSize);
-
-                prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
-                
+            }
+            prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
+            
+            if(!layoutData.cols){
                 // reset layoutData
                 prf.properties.layoutData = prf.box._getLayoutData(prf);
             }
-            
+
             // set before destroy function
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){
                 var t;
@@ -743,33 +897,133 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 }
             }
         },
-        _resizeHTable: function(prf,size){
-            var t;
-            if(prf.box.renderType=="handsontable" && (t=prf.$htable)){
-                var holder = prf.getSubNode("HOLDER").cssSize();
-                if(holder.width!=size.width || holder.height!=size.height){
-                    // for merged cells
-                    size.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
-                    // ensure by px
-                    t.updateSettings(size);
+        _getColWidths:function(prf, tableWidth){
+            var prop=prf.properties, layoutData = prop.layoutData, t,
+                colSize=layoutData.cols||prop.defaultColumnSize,
+                reCalculated=[], colWidths=[], fix=0, count=0, per, off, rc=0, bW=0;
+            if(prop.stretchH=="all"){
+                for(var col=0,n=colSize;col<n;col++){
+                    var chr = xui.ExcelFormula.toColumnChr(col+1);
+                    if(t = xui.get(layoutData, ['colSetting', chr,'manualWidth'])){
+                        fix += t;
+                        reCalculated.push(t);
+                    }else{
+                        count++;
+                        reCalculated.push(null);
+                    }
                 }
+                per = (tableWidth - fix ) / count;
+                off = per - Math.round(per);
+            }
+            for(var col=0,n=colSize;col<n;col++){
+                var chr = xui.ExcelFormula.toColumnChr(col+1), aW;
+                rc++;
+                t = xui.get(layoutData, ['colSetting', chr,'manualWidth']) || (prop._defaultColumnWidth);
+                switch(prf.properties.stretchH){
+                    case 'all':
+                        aW = reCalculated[col]===null?Math.max(prop._defaultColumnWidth, (Math.round(per) )):reCalculated[col];
+                        bW += aW;
+                        colWidths.push((col==colSize-1?Math.round(tableWidth-bW+aW):aW)+"px");
+                        break;
+                    case 'last':
+                        colWidths.push(col==colSize-1?"100%":(t + "px"));
+                        break;
+                    default:
+                        colWidths.push(t + "px");
+                }
+            }
+            return colWidths;
+        },
+        _setCustomBorders:function(prf){
+            xui.resetRun(prf.getUid()+":cborder",function(){
+                if(!prf.renderId)return;
+                var cborder = prf.getSubNode("CBORDER").get(0);
+                xui.arr.each(prf.properties.layoutData.customBorders,function(conf){
+                    var itemId = xui.ExcelFormula.toCellId(conf.col,conf.row),
+                        subSerialId = prf.ItemIdMapSubSerialId[itemId],
+                        table=prf.getSubNode("TABLE").get(0),
+                        td=prf.getSubNode("ITEM", subSerialId),
+                        pos = td.offset(null, table),
+                        id, div, style;
+                     if(conf.top&&conf.top.width){
+                        id=prf.key + "-CBT:" + prf.serialId + ":" +subSerialId;
+                        div=xui.Dom.byId(id);
+                        style=div&&div.style;
+                        if(!div){
+                            div = document.createElement("div");
+                            div.id=id;
+                            cborder.appendChild(div);
+                        }
+                        style=div.style;
+                        style.backgroundColor=conf.top.color;
+                        style.left=(pos.left-1)+"px";
+                        style.top=(pos.top-1)+"px";
+                        style.width=td.offsetWidth()+"px";
+                        style.height="1px";
+                    }
+                    if(conf.left&&conf.left.width){
+                        id=prf.key + "-CBL:" + prf.serialId + ":" +subSerialId;
+                        div=xui.Dom.byId(id);
+                        if(!div){
+                            div = document.createElement("div");
+                            div.id=id;
+                            cborder.appendChild(div);
+                        }
+                        style=div.style;
+                        style.backgroundColor=conf.left.color;
+                        style.left=(pos.left-1)+"px";
+                        style.top=(pos.top-1)+"px";
+                        style.width="1px";
+                        style.height=td.offsetHeight()+"px";
+                    }
+                });
+            });
+        },
+        _resizeTable: function(prf,size,force){
+            if(prf.boxing()._isDesignMode()){
+                var t;
+                if(t=prf.$htable){
+                    var holder = prf.getSubNode("HOLDER").cssSize();
+                    if(holder.width!=size.width || holder.height!=size.height){
+                        // for merged cells
+                        size.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
+                        // ensure by px
+                        t.updateSettings(size);
+                    }
+                }
+            }else{
+                prf.getSubNode("HOLDER").cssSize(size);
+
+                 var tb = prf.getSubNode("TABLE");
+                 if(tb.get(0)){
+                     if(prf.properties.stretchH!='none'){
+                         var rw = size.width - (tb.offsetHeight() > size.height ? xui.Dom.getScrollBarSize() : 0);
+                         tb.width(rw);
+                     }
+                    if(force || prf.properties.stretchH=="all"){
+                        var colWidths = this._getColWidths(prf, rw);
+                        tb.querySelectorAll("col").each(function(node,i){
+                            node.style.width = colWidths[i];
+                        });
+                    }
+                    // adjust custom borders
+                    prf.box._setCustomBorders(prf);
+                 }
             }
         },
         _updateSetting:function(prf, opt){
-            var t;
-            if(prf.box.renderType=="handsontable" && (t=prf.$htable)){
-                if(typeof opt=="string"){
-                    var h={};
-                    h[opt] = prf.properties[opt];
-                    opt=h;
-                }
-                // for merged cells
-                opt.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
-                t.updateSettings(opt);
+            var t=prf.$htable;
+            if(typeof opt=="string"){
+                var h={};
+                h[opt] = prf.properties[opt];
+                opt=h;
             }
+            // for merged cells
+            opt.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
+            t.updateSettings(opt);
         },
         $beforeAppend:function(prf,target,subId){
-            if(!subId)return;
+            if(!subId)return false;
             // only one allowed
             if(target.size()==1){
                 xui.arr.each(prf.children,function(v){
@@ -783,57 +1037,84 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             if(!subId)return;
             // force dock for the only widget
             if(prf.renderId && target['xui.UI'] && target.size()==1){
-                var item = prf.getItemByItemId(subId), inputPrf = target.get(0);
-                if(!inputPrf._attached2cell){
-                    //console.log('afterappend',subId);
-                    inputPrf._attached2cell = inputPrf.locked = 1;
-                    if(item.hiddenChild){
-                        target.setDisplay('none');
-                    }else{
-                        target.setDisplay('');
-                        var cell = prf.getSubNode("ITEM", item._serialId),
-                            adjustSize = function(){
-                                target.setPosition('absolute').setLeft(0).setTop(0);
-                                // first row/col , 2 pix border
-                                if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
-                                if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
-                            };
-                        adjustSize();
-                        cell.onSize(adjustSize,'cellresize');
-
-                        if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
-                        if(target.setVAlign)  target.setVAlign('middle');
-                        if(target['xui.UI.Input'] 
-                            && target.getMultiLines && target.getMultiLines()
-                            && target.setAutoexpand
-                        ) 
-                        {
-                            // use the hidden one: _autoexpand
-                            // once: set minH from subId
-                            if(!parseFloat(inputPrf._autoexpand)){
-                                // need set autoexpand in afterRowResize too
-                                inputPrf._autoexpand = (cell.offsetHeight()-1)+"px";
-                                inputPrf.$beforeAutoexpand=function(p,h){
-                                    item._child_autoexpandH = target.getAutoexpandHeight();
-                                    // ensure to trigger table render once
-                                    xui.resetRun(prf.getUid("autoex"), function(){
-                                        if(prf.$htable)prf.$htable.render();
-                                    });
-                                    return false;
-                                };
-                                // try to trigger aoutoexpand
-                                inputPrf.box._checkAutoexpand(inputPrf);
+                var item = prf.getItemByItemId(subId), inputPrf = target.get(0)
+                if(item){
+                    var cell = prf.getSubNode("ITEM", item._serialId),        
+                        isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']);
+                    // for form field only
+                    // onsize for dom must here
+                    if(cell && cell.get(0) && isFormField){
+                        if(prf.boxing().getMode()!='read'){
+                            // if parent is re-rendered
+                            if(inputPrf._cellresizeP!=cell){
+                                cell.text("");
+                                var adjustSize = function(){
+                                        target.setPosition('absolute').setLeft(0).setTop(0);
+                                        // first row/col , 2 pix border
+                                        if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
+                                        if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
+                                    };
+                                adjustSize();
+                                cell.onSize(adjustSize,'cellresize');
+                                inputPrf._cellresizeP=cell;
                             }
                         }
                     }
-                    inputPrf.$handleCustomVars=function(d){
-                        if(d){
-                            for(var i in d)if(d[i])this[i]=d[i];
-                        }else{
-                            return {
-                                _attached2cell: this._attached2cell,
-                                _autoexpand: this._autoexpand,
-                                $beforeAutoexpand: this.$beforeAutoexpand
+
+                    if(!inputPrf._attached2cell){
+                        //console.log('afterappend',subId);
+                        inputPrf._attached2cell = 1;
+                        // for form field only
+                        // prop andd autoexpand
+                        if(isFormField){
+                            if(prf.boxing().getMode()!='read'){
+                                inputPrf.locked = 1;
+                                inputPrf.boxing().setDisplay('');
+                                if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
+                                if(target.setVAlign)  target.setVAlign('middle');
+
+                                if(target['xui.UI.Input'] 
+                                    && target.getMultiLines && target.getMultiLines()
+                                    && target.setAutoexpand
+                                ){
+                                    // use the hidden one: _autoexpand
+                                    // once: set minH from subId
+                                    if(!parseFloat(inputPrf._autoexpand)){
+                                        // need set autoexpand in afterRowResize too
+                                        inputPrf._autoexpand = (cell.offsetHeight()-1)+"px";
+                                        inputPrf.$beforeAutoexpand=function(p,h){
+                                            h=target.getAutoexpandHeight();
+                                            item._child_autoexpandH = h;
+                                            if(prf.boxing()._isDesignMode()){
+                                                // ensure to trigger table render once
+                                                xui.resetRun(prf.getUid("autoex"), function(){
+                                                    if(prf.$htable)prf.$htable.render();
+                                                });
+                                            }else{
+                                                cell.height(h);
+                                            }
+                                            // adjust custom borders
+                                            if(!prf.boxing()._isDesignMode())
+                                                prf.box._setCustomBorders(prf);
+                                            return false;
+                                        };
+                                        // try to trigger aoutoexpand
+                                        inputPrf.box._checkAutoexpand(inputPrf);
+                                    }
+                                }
+                            }else{
+                                inputPrf.boxing().setDisplay('none');
+                            }
+                        }
+                        inputPrf.$handleCustomVars=function(d){
+                            if(d){
+                                for(var i in d)if(d[i])this[i]=d[i];
+                            }else{
+                                return {
+                                    _attached2cell: this._attached2cell,
+                                    _autoexpand: this._autoexpand,
+                                    $beforeAutoexpand: this.$beforeAutoexpand
+                                }
                             }
                         }
                     }
@@ -865,7 +1146,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 });
 
                 xui.resetRun(prf.getUid("resize"),function(){
-                   if(prf&&prf.box)prf.box._resizeHTable(prf, prf.getSubNode('BOX').cssSize());
+                   if(prf&&prf.box)prf.box._resizeTable(prf, prf.getSubNode('BOX').cssSize());
                 });
             }
         }

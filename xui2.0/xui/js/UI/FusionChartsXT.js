@@ -521,7 +521,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 }
                 if(prf.renderId && prf._chartId && (t=FusionCharts(prf._chartId))){
                     // ensure by px
-                    t.resizeTo(ww, hh);
+                    t.resizeTo(ww||void 0, hh||void 0);
                 }
             }
         }
