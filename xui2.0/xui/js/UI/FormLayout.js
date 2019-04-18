@@ -390,12 +390,18 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 childrenMap={}, t, merged={}, merged2={}, 
                 getShowValue = function(prf){
                     var ins=prf.boxing();
-                    return  ins.getShowValue?ins.getShowValue():
-                        ins.getValue?ins.getValue():
-                        ins.getCaption?ins.getCaption():
-                        ins.getHtml?ins.getHtml():
-                        ins.getLabel?ins.getLabel():
-                    '';
+                    if(prf.key=='xui.UI.CheckBox'||prf.key=='xui.UI.SCheckBox'){
+                        return '<input type="checkbox" disabled tabindex="-1"  onclick="javascript:return false;"'
+                                  + (ins.getUIValue()?"checked":"")
+                                  +'>' + ins.getCaption();
+                    }else{
+                        return  ins.getShowValue?ins.getShowValue():
+                            ins.getValue?ins.getValue():
+                            ins.getCaption?ins.getCaption():
+                            ins.getHtml?ins.getHtml():
+                            ins.getLabel?ins.getLabel():
+                        '';
+                    }
                 },
                 cellProp,subSerialId,item, itemId, domId, styles,tpl=[];
 
