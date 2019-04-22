@@ -147,7 +147,7 @@ xui.Class=function(key, pkey, obj){
 };
 xui.Namespace=function(key){
     var a=key.split('.'),w=window;
-    return xui.get(w, a) || ((this._all[a[0]]=1) && xui.set(w, a, {}));
+    return xui.get(w, a) || ((xui.Namespace._all[a[0]]=1) && xui.set(w, a, {}));
 };
 xui.Namespace._all={};
 
@@ -10388,19 +10388,13 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         text:function(content){
             if(content!==undefined){
-                var self=this, arr=[];
+                var self=this, arr=[], txt;
                 self.each(function(o){
-                    var t=o.lastChild;
-                     if(t&&t.nodeType==3)
-                        t.nodeValue = content;
-                     else
-                        arr[arr.length]=o;
-                });
-                if(arr.length){
-                    xui(arr).each(function(o){
+                    for (var i=o.childNodes.length-1,t; i>=0; i--)
+                         if((t=o.childNodes[i])&&t.nodeType==3)
+                            t.nodeValue = "";
                         o.appendChild(document.createTextNode(content));
-                    })
-                }
+                });
                 return self;
             }else{
                return (function(o){
@@ -31444,7 +31438,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                     tagName : 'div',
                     INPUT:{
                         $order:10,
-                        className:'xui-ui-ellipsis',
+                        className:'xui-ui-ellipsis {_inputcls}',
                         tagName : 'input',
                         type : '{_inputtype}',
                         maxlength:'{maxlength}',
@@ -31528,11 +31522,14 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                'overflow-x':xui.browser.ie678?'hidden':'hidden',
                resize:'none'
             },
-            "INPUT.autoexpand":{
-                overflow:'hidden'
+            "KEY textarea.autoexpand":{
+                overflow:'hidden',
+                $order:2
             },
             "KEY textarea":{
-                'white-space':'normal'
+                'white-space':'normal',
+                'overflow-x':'hidden',
+                'overflow-y':'auto'
             },
             ERROR:{
                 position:'absolute',
@@ -32022,8 +32019,8 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(prop.height=='auto'){
                 data.height  = '1.83em';
             }
-            if(parseFloat(profile._autoexpand || prop.autoexpand)){
-                data.height  = profil._autoexpand || prop.autoexpand;
+            if(parseFloat(t = profile._autoexpand || prop.autoexpand)){
+                data._inputcls = (profile._autoexpand || prop.autoexpand) ? 'autoexpand': '' ;
             }
 
             var d=arguments.callee.upper.call(this, profile, data);
@@ -32061,7 +32058,6 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 if(prop.multiLines){
                     t=template.FRAME.BORDER.BOX.WRAP.INPUT;
                     t.tagName='textarea';
-                    t.className==(profile._autoexpand || prop.autoexpand)?'autoexpand':'';
                     delete t.type;
                 }
 
@@ -69911,8 +69907,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             listKey:null,
             dragSortable:null,
             mode:{
-                ini:'',
-                listbox:['','design','write','read'],
+                ini:'write',
+                listbox:['design','write','read'],
                 get:function(){
                     return this.$inDesign?'design':(this.properties.mode || 'read');
                 },
@@ -70125,12 +70121,18 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 childrenMap={}, t, merged={}, merged2={}, 
                 getShowValue = function(prf){
                     var ins=prf.boxing();
-                    return  ins.getShowValue?ins.getShowValue():
-                        ins.getValue?ins.getValue():
-                        ins.getCaption?ins.getCaption():
-                        ins.getHtml?ins.getHtml():
-                        ins.getLabel?ins.getLabel():
-                    '';
+                    if(prf.key=='xui.UI.CheckBox'||prf.key=='xui.UI.SCheckBox'){
+                        return '<input type="checkbox" disabled tabindex="-1"  onclick="javascript:return false;"'
+                                  + (ins.getUIValue()?"checked":"")
+                                  +'>' + ins.getCaption();
+                    }else{
+                        return  ins.getShowValue?ins.getShowValue():
+                            ins.getValue?ins.getValue():
+                            ins.getCaption?ins.getCaption():
+                            ins.getHtml?ins.getHtml():
+                            ins.getLabel?ins.getLabel():
+                        '';
+                    }
                 },
                 cellProp,subSerialId,item, itemId, domId, styles,tpl=[];
 
@@ -70150,7 +70152,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             tpl.push("<div id='"+prf.key+"-HOLDER:"+prf.serialId + ":" +"' class='"+prf.getClass("HOLDER")
                 +"' style='width:"+prop.width+"; height:"+prop.height
                 +"' >");
-            tpl.push("<div id='"+prf.key+"-CBORDER:"+prf.serialId + ":" +"' class='"+prf.getClass("CBORDER") +"' >");
             tpl.push("<table id='"+prf.key + "-TABLE:" + prf.serialId + ":" +"' class='"+prf.getClass("TABLE") +"'"
                 + (prop.stretchH!='none'?(" style='width:"+prop.width+";'"):"")
                 +">");
@@ -70201,7 +70202,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 tpl.push("</tr>");
             }
             tpl.push("</tbody></table>");
-            tpl.push("</div>");
+            tpl.push("<div id='"+prf.key+"-CBORDER:"+prf.serialId + ":" +"' class='"+prf.getClass("CBORDER") +"' ></div>");
             tpl.push("</div>");
 
             elem.innerHTML = tpl.join("");
@@ -70737,7 +70738,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                      }
                     if(force || prf.properties.stretchH=="all"){
                         var colWidths = this._getColWidths(prf, rw);
-                        tb.querySelectorAll("col").each(function(node,i){
+                        tb.first().children().each(function(node,i){
                             node.style.width = colWidths[i];
                         });
                     }
@@ -70782,7 +70783,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         if(prf.boxing().getMode()!='read'){
                             // if parent is re-rendered
                             if(inputPrf._cellresizeP!=cell){
-                                cell.text("");
                                 var adjustSize = function(){
                                         target.setPosition('absolute').setLeft(0).setTop(0);
                                         // first row/col , 2 pix border
@@ -70799,6 +70799,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     if(!inputPrf._attached2cell){
                         //console.log('afterappend',subId);
                         inputPrf._attached2cell = 1;
+                        cell.text("");
                         // for form field only
                         // prop andd autoexpand
                         if(isFormField){
