@@ -44160,6 +44160,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         popgrp='$popGrp';
                     //for stop second trigger by focus event
                     if(profile[hl] == src)return;
+                    profile[all] = profile[all] || {};
 
                     var properties = profile.properties,
                         item = profile.getItemByDom(src),
@@ -44189,14 +44190,16 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         // if no sub arrays
                         if(!(xui.isArr(item.sub) && item.sub.length)){
                             if(profile.onShowSubMenu){
-                                var r=profile['$sub:'+item.id];
+                                var r=profile[all][itemId];
                                 if(r && r['xui.UI'] && !r.isEmpty()){}
                                 else
                                     r=profile.boxing().onShowSubMenu(profile, item, src);
 
                                 // return UI control
                                 if(r && r['xui.UI'] && !r.isEmpty()){
-                                    profile[sms] = r;
+                                    // keep it
+                                    profile[all][itemId] = profile[sms] = r;
+
                                     r=r.reBoxing();
                                     r.onMouseout(function(p,e,src){
                                         profile.box._mouseout(profile, e, src);
@@ -44206,7 +44209,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     profile[popgrp].push(r._get(0));
 
                                     r.popToTop(src,2,profile._conainer);
-
+ 
                                     return;
                                 }
                                 // return items array
@@ -44218,8 +44221,6 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
                         // show items
                         if(xui.isArr(item.sub) && item.sub.length){
-                            profile[all] = profile[all] || {};
-
                             //no create
                             if(!(pop = profile[all][itemId])){
                                 var pro=profile.properties;
@@ -44478,7 +44479,21 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             onMenuSelected:function(profile, item, src){}
         },
         RenderTrigger:function(){
-            this.boxing().adjustSize();
+            var prf=this;
+            prf.boxing().adjustSize();
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["sub-pops"]=function(t){
+                xui.each(prf.$allPops,function(pop){
+                    if(pop && !pop.$noDestroyByParentMenu){
+                        if(pop['xui.UI'] && !pop.isEmpty() && !pop.isDestroyed()){
+                            pop.destroy();
+                        }else if(pop['xui.UIProfile'] && !pop.destroyed){
+                            pop.__gc();
+                        }else if(pop['xui.Dom'] && !pop.isEmpty() ){
+                            pop.remove();
+                        }
+                    }
+                });
+            };
         },
         _beforeSerialized:function(profile){
             var o=arguments.callee.upper.call(this, profile),
