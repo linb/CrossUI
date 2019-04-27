@@ -31970,12 +31970,12 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             onAutoexpand:function(profile, height, offset){}
         },
         _checkAutoexpand:function(profile){
-                var prop=profile.properties;
-                if(profile.renderId && parseFloat(profile._autoexpand || prop.autoexpand)){
+                var prop=profile.properties,autoe=profile._autoexpand || prop.autoexpand;
+                if(profile.renderId && parseFloat(autoe)) {
                     xui.resetRun(profile.key+":"+profile.$xid+":autoexpand",function(){
                         if(profile.renderId && !profile.destroyed){
                             var root = profile.getRoot(),
-                                min = profile.$px(profile._autoexpand || prop.autoexpand), 
+                                min = profile.$px(autoe), 
                                 t = profile.getSubNode('INPUT'),
                                 rh = root.height(),
                                 th1, th2, oth, offset;
@@ -32019,9 +32019,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(prop.height=='auto'){
                 data.height  = '1.83em';
             }
-            if(parseFloat(t = profile._autoexpand || prop.autoexpand)){
-                data._inputcls = (profile._autoexpand || prop.autoexpand) ? 'autoexpand': '' ;
-            }
+            data._inputcls = parseFloat(profile._autoexpand || prop.autoexpand) ? 'autoexpand':'';
 
             var d=arguments.callee.upper.call(this, profile, data);
 
@@ -32747,12 +32745,12 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                 ini:'25em'
             },
             frameTemplate:{
-                ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0;">'+
+                ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0.25em;">'+
                         '<head>'+
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.0;cursor:text;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
@@ -69810,17 +69808,24 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 'max-width': 'none',
                 'max-height': 'none'
             },
-            ITEM: {
-                position: "relative",
-                height: '22px',
-                'empty-cells': 'show',
-                'line-height': '21px',
-                padding: '0 4px',
-                'vertical-align': 'top',
-                overflow: 'hidden',
-                'outline-width': '0',
-                'white-space': 'pre-line',
-                'background-clip': 'padding-box'
+            "ITEM:empty:after":{
+                'text-align': 'center',
+                color: '#ccc',
+                content: 'attr(data-coord)',
+                position: 'absolute',
+                top: '0',
+                bottom: '0',
+                left: '0',
+                right: '0',
+                margin: 'auto',
+                height: '1.5em',
+                '-moz-user-select': xui.browser.gek?'-moz-none':null,
+                '-khtml-user-select': xui.browser.kde?'none':null,
+                '-webkit-user-select': xui.browser.kde?'none':null,
+                '-o-user-select':xui.browser.opr?'none':null,
+                '-ms-user-select':(xui.browser.ie||xui.browser.newie)?'none':null,
+                'user-select':'none',
+                'touch-action':'none'
             },
              // {{ for read/write mode (layoutcell)
             "ITEM.layoutcell":{
@@ -69856,10 +69861,23 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
              // }}
              
              // {{ for design mode (handsontable)
-            // reset bg
+            // reset 
             "KEY ITEM": {
               "position": "relative",
-                background:"transparent"
+                background:"transparent",
+                height: '22px',
+                padding: '0 4px',
+                overflow: 'hidden',
+                'outline-width': '0',
+                'white-space': 'pre-line',
+                'empty-cells': 'show',
+                'line-height': '1.22',
+                'text-align':'left',
+                'vertical-align': 'middle',
+                'background-clip': 'padding-box'
+            },
+            "KEY .handsontableInput":{
+                'line-height': '1.22'
             },
             "KEY .handsontable tr":{
                 background:"transparent"
@@ -69979,6 +69997,15 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     }
                 }
             },
+            floatHandler: {
+                ini:true,
+                action:function(){
+                    if(this.boxing()._isDesignMode()){
+                        var size=this.getRoot().cssSize();
+                        xui.UI.$tryResize(this, size.width, size.height, true);
+                    }
+                }
+            },
             defaultRowSize: 5,
             defaultColumnSize: 5,
             defaultRowHeight: 50,
@@ -70038,11 +70065,12 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             prf.boxing().setSolidGridlines(prop.solidGridlines, true);
         },
         EventHandlers:{
-            onShowTips:null
+            onShowTips: null,
+            onGetCellData: function(cellCoord, cellObj, cellChild){}
         },
         _getHeaderOffset:function(prf){
             var prop=prf.properties, offset = {left:0,top:0};
-            if(prf.boxing()._isDesignMode()){
+            if(prop.floatHandler && prf.boxing()._isDesignMode()){
                 offset.left=prop.rowHeaderWidth;
                 offset.top=prop.columnHeaderHeight + 1;
             }
@@ -70134,20 +70162,30 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 rowSize=layoutData.rows||prop.defaultRowSize,
                 colSize=layoutData.cols||prop.defaultColumnSize,
                 childrenMap={}, t, merged={}, merged2={}, 
-                getShowValue = function(prf){
-                    var ins=prf.boxing();
-                    if(prf.key=='xui.UI.CheckBox'||prf.key=='xui.UI.SCheckBox'){
-                        return '<input type="checkbox" disabled tabindex="-1"  onclick="javascript:return false;"'
-                                  + (ins.getUIValue()?"checked":"")
-                                  +'>' + ins.getCaption();
-                    }else{
-                        return  ins.getShowValue?ins.getShowValue():
-                            ins.getValue?ins.getValue():
-                            ins.getCaption?ins.getCaption():
-                            ins.getHtml?ins.getHtml():
-                            ins.getLabel?ins.getLabel():
-                        '';
+                getCellData = function(childrenMap, itemId){
+                    var data = prf.onGetCellData && prf.boxing().onGetCellData(prf, itemId, xui.get(layoutData, ["cells", itemId]), childrenMap[itemId]);
+                    if(!xui.isSet(data)){
+                        if(!childrenMap[itemId]){
+                            data = xui.get(layoutData, ["cells", itemId, "value"]);
+                        }else{
+                            var childPrf = childrenMap[itemId], ins = childPrf && childPrf.boxing();
+                            if(childPrf.key=='xui.UI.RichEditor'){
+                                data = '';
+                            }else if(childPrf.key=='xui.UI.CheckBox'||childPrf.key=='xui.UI.SCheckBox'){
+                                data = '<input type="checkbox" disabled tabindex="-1"  onclick="javascript:return false;"'
+                                          + (ins.getUIValue()?"checked":"")
+                                          +'>' + ins.getCaption();
+                            }else{
+                                data = ins.getShowValue?ins.getShowValue():
+                                    ins.getValue?('$UIvalue' in childPrf.properties?ins.getUIValue():ins.getValue()):
+                                    ins.getCaption?ins.getCaption():
+                                    ins.getHtml?ins.getHtml():
+                                    ins.getLabel?ins.getLabel():
+                                '';
+                            }
+                        }
                     }
+                    return xui.isSet(data)?data:"";
                 },
                 cellProp,subSerialId,item, itemId, domId, styles,tpl=[];
 
@@ -70172,7 +70210,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 +">");
             // colgroup
             var colWidths = prf.box._getColWidths(prf, prf.$px(prop.width));
-            tpl.push("<colgroup>");
+            tpl.push("<colgroup><col style='width:0;border:0;margin:0;padding:0;'></col>");
             for(var col=0,n=colSize;col<n;col++){
                 var chr = xui.ExcelFormula.toColumnChr(col+1);
                 tpl.push("<col style='width:" + colWidths[col] + ";'></col>");
@@ -70181,7 +70219,11 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             // tbody
             tpl.push("<tbody>");
             for(var row=0,l=rowSize;row<l;row++){
-                tpl.push("<tr>");
+                tpl.push("<tr><th style='width:0;border:0;margin:0;padding:0;");
+                if(t = xui.get(layoutData, ['rowSetting', row+1, 'height']) || xui.get(layoutData, ['rowSetting', row+1, 'manualHeight']) || prop.defaultRowHeight){
+                    tpl.push("height:"+ (t - (row===0?1/*2*/:1)) + "px;");
+                }
+                tpl.push("'></th>");
                 for(var col=0,n=colSize;col<n;col++){
                     subSerialId = prf.pickSubId('items');
                     itemId = xui.ExcelFormula.toCellId(col,row);
@@ -70190,7 +70232,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         col:col,
                         row:row,
                         id:itemId,
-                        value: childrenMap[itemId] ? getShowValue(childrenMap[itemId]): xui.get(layoutData, ["cells", itemId,"value"]) || "",
+                        value: getCellData(childrenMap, itemId),
                         style : xui.get(layoutData, ["cells", itemId,"style"]) || {}
                     };
                     prf.ItemIdMapSubSerialId[itemId] = subSerialId;
@@ -70201,12 +70243,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     xui.each(item.style,function(v,k){
                         styles.push(k.replace(/[A-Z]/g,function(a){return '-'+a.toLowerCase()}) + ":" + v);
                     });
-                    if(col===0){
-                        if(t = xui.get(layoutData, ['rowSetting', row+1, 'height']) || xui.get(layoutData, ['rowSetting', row+1, 'manualHeight']) || prop.defaultRowHeight){
-                            styles.push("height:"+ (t - (row===0?1/*2*/:1)) + "px");
-                        }
-                    }
-
                     // layoutData.merged
                     if(!merged2[row+":"+col]){
                         tpl.push("<td id='"+domId+"' class='layoutcell "+ (row===0?'firstrow ':'') + (col===0?'firstcol ':'') +prf.getClass("ITEM")+"' style='"+styles.join(";")+"' "+  (merged[row+":"+col]||"") +">");
@@ -70307,6 +70343,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
 //                            cellprop.className = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
 //                        }
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
+                        if(designMode)
+                            TD.setAttribute('data-coord', itemId); 
                         if(cellprop._child_autoexpandH){
                             TD.style.height=cellprop._child_autoexpandH+"px";
                         }else{
@@ -70402,7 +70440,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     },
 
                     afterSelection: function(){
-                        prf.getRoot().css('overflow','visible');
+                        if(prop.floatHandler)
+                            prf.getRoot().css('overflow','visible');
                     },
                     outsideClickDeselects: function(node){
                         //for lang span, or inner renderer
@@ -70594,12 +70633,10 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 });
                 
                 // set manualRowResize, manualColumnResize and data
-                if(!xui.isEmpty(manualRowResize)){
-                    for(var i=0;i<layoutData.rows;i++){
-                        manualRowResize[i] = manualRowResize[i] || prop.defaultRowHeight;
-                    }
+                for(var i=0;i<layoutData.rows;i++){
+                    manualRowResize[i] = manualRowResize[i] || prop.defaultRowHeight;
                 }
-                settings.manualRowResize = !xui.isEmpty(manualRowResize) ? manualRowResize : designMode;
+                settings.manualRowResize = manualRowResize;
                 settings.manualColumnResize = !xui.isEmpty(manualColumnResize) ? manualColumnResize : designMode;
                 
                 if(!xui.isEmpty(minRowHeights))settings.rowHeights = minRowHeights;
@@ -70617,9 +70654,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     manualRowResize[i] = prop.defaultRowHeight;
                 }
                 settings.manualRowResize = manualRowResize;
-
-                // set data only
-                 settings.data = Handsontable.helper.createSpreadsheetData(prop.defaultRowSize, prop.defaultColumnSize);
             }
             prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
             
@@ -70754,7 +70788,10 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     if(force || prf.properties.stretchH=="all"){
                         var colWidths = this._getColWidths(prf, rw);
                         tb.first().children().each(function(node,i){
-                            node.style.width = colWidths[i];
+                            // ignore the first one for th
+                            if(i!==0){
+                                node.style.width = colWidths[i];
+                            }
                         });
                     }
                     // adjust custom borders
@@ -70791,11 +70828,13 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 var item = prf.getItemByItemId(subId), inputPrf = target.get(0)
                 if(item){
                     var cell = prf.getSubNode("ITEM", item._serialId),        
-                        isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']);
+                        isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']),
+                        mode = prf.boxing().getMode(),
+                        show = mode!='read' || target['xui.UI.RichEditor'];
                     // for form field only
                     // onsize for dom must here
                     if(cell && cell.get(0) && isFormField){
-                        if(prf.boxing().getMode()!='read'){
+                        if(show){
                             // if parent is re-rendered
                             if(inputPrf._cellresizeP!=cell){
                                 var adjustSize = function(){
@@ -70816,9 +70855,9 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         inputPrf._attached2cell = 1;
                         cell.text("");
                         // for form field only
-                        // prop andd autoexpand
+                        // prop and autoexpand
                         if(isFormField){
-                            if(prf.boxing().getMode()!='read'){
+                            if(show){
                                 inputPrf.locked = 1;
                                 inputPrf.boxing().setDisplay('');
                                 if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
@@ -70833,6 +70872,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                                     if(!parseFloat(inputPrf._autoexpand)){
                                         // need set autoexpand in afterRowResize too
                                         inputPrf._autoexpand = (cell.offsetHeight()-1)+"px";
+                                        inputPrf.getSubNode("INPUT").addClass("autoexpand");
                                         inputPrf.$beforeAutoexpand=function(p,h){
                                             h=target.getAutoexpandHeight();
                                             item._child_autoexpandH = h;
@@ -70852,6 +70892,9 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                                         // try to trigger aoutoexpand
                                         inputPrf.box._checkAutoexpand(inputPrf);
                                     }
+                                }
+                                if(mode=='read'){
+                                    if(target.setReadonly)target.setReadonly(true,true);
                                 }
                             }else{
                                 inputPrf.boxing().setDisplay('none');

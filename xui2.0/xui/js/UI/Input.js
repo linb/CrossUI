@@ -699,12 +699,12 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onAutoexpand:function(profile, height, offset){}
         },
         _checkAutoexpand:function(profile){
-                var prop=profile.properties;
-                if(profile.renderId && parseFloat(profile._autoexpand || prop.autoexpand)){
+                var prop=profile.properties,autoe=profile._autoexpand || prop.autoexpand;
+                if(profile.renderId && parseFloat(autoe)) {
                     xui.resetRun(profile.key+":"+profile.$xid+":autoexpand",function(){
                         if(profile.renderId && !profile.destroyed){
                             var root = profile.getRoot(),
-                                min = profile.$px(profile._autoexpand || prop.autoexpand), 
+                                min = profile.$px(autoe), 
                                 t = profile.getSubNode('INPUT'),
                                 rh = root.height(),
                                 th1, th2, oth, offset;
@@ -748,9 +748,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             if(prop.height=='auto'){
                 data.height  = '1.83em';
             }
-            if(parseFloat(t = profile._autoexpand || prop.autoexpand)){
-                data._inputcls = (profile._autoexpand || prop.autoexpand) ? 'autoexpand': '' ;
-            }
+            data._inputcls = parseFloat(profile._autoexpand || prop.autoexpand) ? 'autoexpand':'';
 
             var d=arguments.callee.upper.call(this, profile, data);
 

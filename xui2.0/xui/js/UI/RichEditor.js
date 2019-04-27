@@ -82,12 +82,12 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 ini:'25em'
             },
             frameTemplate:{
-                ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0;">'+
+                ini:'<html style="-webkit-overflow-scrolling: touch;padding:0;margin:0.25em;">'+
                         '<head>'+
                             '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
                             '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">'+
                             '<style type="text/css">'+
-                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.5em;cursor:text;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22em}'+
+                                'body{height: 100%;-webkit-overflow-scrolling: touch;border:0;padding:0;margin:.0;cursor:text;color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;font-size:12px;line-height:1.22}'+
                                 'div, p{margin:0;padding:0;} '+
                                 'body, p, div{word-wrap: break-word;} '+
                                 'img, input, textarea{cursor:default;}'+
