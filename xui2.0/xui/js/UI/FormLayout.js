@@ -16,6 +16,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         },
     },
     Static:{
+        HasHtmlTableNode:1,
         _CONTAINERKEY:"ITEM",
         _ITEMCONTAINER:1,
         _ACTIVEHANDLER:["KEY","HOLDER"],
@@ -1050,6 +1051,13 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             }
                         });
                     }
+                    // to trigger cells onsize
+                    var cells=[];
+                    prf.getSubNodes("ITEM",true).each(function(cell){
+                        if(xui.Dom.$hasEventHandler(cell,'onsize')) cells.push(cell);
+                    });
+                    if(cells.length) xui(cells).onSize(true);
+
                     // adjust custom borders
                     prf.box._setCustomBorders(prf);
                  }
@@ -1081,28 +1089,26 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             if(!subId)return;
             // force dock for the only widget
             if(prf.renderId && target['xui.UI'] && target.size()==1){
-                var item = prf.getItemByItemId(subId), inputPrf = target.get(0)
+                var item = prf.getItemByItemId(subId), inputPrf = target.get(0);
                 if(item){
-                    var cell = prf.getSubNode("ITEM", item._serialId),        
+                    var cell = prf.getSubNode("ITEM", item._serialId), 
                         isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']),
                         mode = prf.boxing().getMode(),
                         show = mode!='read' || target['xui.UI.RichEditor'];
                     // for form field only
                     // onsize for dom must here
-                    if(cell && cell.get(0) && isFormField){
-                        if(show){
-                            // if parent is re-rendered
-                            if(inputPrf._cellresizeP!=cell){
-                                var adjustSize = function(){
-                                        target.setPosition('absolute').setLeft(0).setTop(0);
-                                        // first row/col , 2 pix border
-                                        if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
-                                        if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
-                                    };
-                                adjustSize();
-                                cell.onSize(adjustSize,'cellresize');
-                                inputPrf._cellresizeP=cell;
-                            }
+                    if(cell && cell.get(0)){
+                        // if parent is re-rendered
+                        if(inputPrf._cellresizeP!=cell){
+                            var adjustSize = function(){
+                                    target.setPosition('absolute').setLeft(0).setTop(0);
+                                    // first row/col , 2 pix border
+                                    if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
+                                    if(target.setHeight)target.setHeight(cell.offsetHeight()-(item.row?1:2));
+                                };
+                            adjustSize();
+                            cell.onSize(adjustSize,'cellresize');
+                            inputPrf._cellresizeP=cell;
                         }
                     }
 
@@ -1170,6 +1176,22 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     }
                 }
             }
+        },
+        _IllegalDetect:function(pro, target, throwErr){
+            // detect those with html table node
+            var count=0, detect = function(arr){
+                xui.arr.each(arr, function(c){
+                    c=c[0]||c;
+                    if(c.box && c.box.HasHtmlTableNode)count++;
+                    else detect(c.children);
+                });
+            };
+            detect(target._nodes);
+            if(count){
+                if(throwErr)throw 'Cant append control with HTML TABLE node into '+ pro.key;
+                else return count;
+            }
+            return null;
         },
         _onresize:function(prf,width,height){
             var prop=prf.properties,

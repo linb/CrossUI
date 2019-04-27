@@ -1983,6 +1983,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         p.getColByCell=p.getHeaderByCell;
     },
     Static:{
+        HasHtmlTableNode:1,
         DIRYMARKICON:"DIRTYMARK",
         Templates:{
             tagName : 'div',

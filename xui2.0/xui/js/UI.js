@@ -1587,6 +1587,19 @@ xui.Class("xui.UI",  "xui.absObj", {
                 target=xui.create(target);
             if(target['xui.UIProfile'])target=target.boxing();
 
+            // illegal nesting
+            /* for performance
+            var detect = function(arr){
+                xui.arr.each(arr, function(c){
+                    if((c[0]||c)==pro)throw 'Illegal nesting!';
+                    else detect(c.children);
+                });
+            };
+            detect(target._nodes);
+            */
+            if(pro.box._IllegalDetect)
+                pro.box._IllegalDetect(pro, target, true);
+
             if(pro.box.$beforeAppend && false===pro.box.$beforeAppend(pro,target,subId,pre,base))
                 return;
             if(pro.beforeAppend && false===this.beforeAppend(pro,target,subId,pre,base))
