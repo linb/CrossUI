@@ -161,9 +161,9 @@ xui.Class("xui.MQTT","xui.absObj",{
             autoSub:true,
             subscribers:[],
 
-            server:"iot.eclipse.org",
-            port:"443", 
-            path:"ws",
+            server:"broker.mqttdashboard.com",
+            port:"8000", 
+            path:"mqtt",
             clientId:"xui_mqtt_client",
             
             timeout:30,
@@ -171,7 +171,7 @@ xui.Class("xui.MQTT","xui.absObj",{
             password:"",
             keepAliveInterval:60,
             cleanSession:true,
-            useSSL:true,
+            useSSL:false,
             reconnect:true,
 
             willTopic:"",
