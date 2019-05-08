@@ -28,12 +28,12 @@ xui.Class=function(key, pkey, obj){
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
     for(i=0; t=pkey[i]; i++)
         if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
-            throw 'errNoParent--'+ t;
+            throw new Error('errNoParent--'+ t);
     if(obj.Dependencies){
         if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
         for(i=0; t=obj.Dependencies[i]; i++)
             if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                throw 'errNoDependency--'+ t;
+                throw new Error('errNoDependency--'+ t);
     }
     parent0=_parent[0];
 
@@ -1263,7 +1263,7 @@ xui.merge(xui,{
                         if(count++>20){
                             fun=count=null;
                             if(false!==xui.tryF(onFail))
-                                throw 'errLoadTheme:'+key;
+                                throw new Error('errLoadTheme:'+key);
                             return;
                         }
                         //test

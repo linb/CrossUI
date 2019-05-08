@@ -6121,9 +6121,9 @@ xui.Class("xui.ExcelFormula",null,{
             autoSub:true,
             subscribers:[],
 
-            server:"iot.eclipse.org",
-            port:"443", 
-            path:"ws",
+            server:"broker.mqttdashboard.com",
+            port:"8000", 
+            path:"mqtt",
             clientId:"xui_mqtt_client",
             
             timeout:30,
@@ -6131,7 +6131,7 @@ xui.Class("xui.ExcelFormula",null,{
             password:"",
             keepAliveInterval:60,
             cleanSession:true,
-            useSSL:true,
+            useSSL:false,
             reconnect:true,
 
             willTopic:"",
@@ -13583,7 +13583,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 return key;
         },
         _setUnitStyle:function(node, key, value){
-            if(node.nodeType != 1)return false;
+            if(!node||node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
                 value =xui.CSS.$addu(value);
@@ -43751,7 +43751,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         _setScroll:function(){
             return this.each(function(profile){
-                if(profile.renderId){
+                if(profile.getRootNode()){
                     var o=profile.getSubNode('BOX'),
                         t=o.scrollTop(),
                         h=o.scrollHeight(),
@@ -69897,12 +69897,19 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             "KEY .handsontable tr":{
                 background:"transparent"
              },
+            // reset
+            "BOX.handsontable tr:first-child td, BOX.handsontable tr:first-child th":{
+                "border-top":"none"
+            },
+            "BOX.handsontable tr:first-child > td, BOX.handsontable tr:first-child > th":{
+                "border-top":"1px solid #ccc"
+            },
             // for handsontable solid grid lines
             ".handsontable.solidgridline td": {
               "border-right": "1px solid #444",
               "border-bottom": "1px solid #444"
             },
-            ".handsontable.solidgridline tr:first-child td": {
+            ".handsontable.solidgridline tr:first-child > td": {
                 "border-top": "1px solid #444"
             },
             ".handsontable.solidgridline th:nth-child(2), .handsontable.solidgridline td:first-of-type, .handsontable.solidgridline .htNoFrame + th, .handsontable.solidgridline .htNoFrame + td": {
@@ -69912,7 +69919,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
               "border-right": "1px solid transparent",
               "border-bottom": "1px solid transparent"
             },
-            ".handsontable.nogridline tr:first-child td": {
+            ".handsontable.nogridline tr:first-child > td": {
                 "border-top": "1px solid transparent"
             },
             ".handsontable.nogridline th:nth-child(2), .handsontable.nogridline td:first-of-type, .handsontable.nogridline .htNoFrame + th, .handsontable.nogridline .htNoFrame + td": {
@@ -70227,7 +70234,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             var colWidths = prf.box._getColWidths(prf, prf.$px(prop.width));
             tpl.push("<colgroup><col style='width:0;border:0;margin:0;padding:0;'></col>");
             for(var col=0,n=colSize;col<n;col++){
-                var chr = xui.ExcelFormula.toColumnChr(col+1);
                 tpl.push("<col style='width:" + colWidths[col] + ";'></col>");
             }
             tpl.push("</colgroup>");
@@ -70366,22 +70372,10 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                             TD.style.height="";
                         }
                     },
-                    // cell renderer
+                    /* cell renderer
                     renderer : function(instance, TD, row, col, vprop, value, cellprop){
-                        var cellId=xui.ExcelFormula.toCellId(col,row),
-                              children = prf.children.length ? prf.children : prf._pool_children;
-                        if(children){
-                            for(var i=0,l=children.length;i<l;i++){
-                                if(children[i][1]==cellId){
-                                    value='';
-                                    break;
-                                }
-                            }
-                        }
-                        // force to textrenderer
-                        Handsontable.renderers.TextRenderer.apply(this, [instance, TD, row, col, vprop, value, cellprop]);
-                        return TD;
                     },
+                    */
                     /* table render*/
                     beforeRender: function(flag){
                         // **: updateSetting will re-render all table elements
@@ -70805,7 +70799,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         tb.first().children().each(function(node,i){
                             // ignore the first one for th
                             if(i!==0){
-                                node.style.width = colWidths[i];
+                                node.style.width = colWidths[i-1];
                             }
                         });
                     }
@@ -70847,18 +70841,22 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             if(!subId)return;
             // force dock for the only widget
             if(prf.renderId && target['xui.UI'] && target.size()==1){
-                var item = prf.getItemByItemId(subId), inputPrf = target.get(0);
+                var item = prf.getItemByItemId(subId), inputPrf = target.get(0), iProp=inputPrf.properties;
                 if(item){
                     var cell = prf.getSubNode("ITEM", item._serialId), 
                         isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']),
                         mode = prf.boxing().getMode(),
                         show = mode!='read' || target['xui.UI.RichEditor'];
+                    if(isFormField && (!iProp.name || prf.ItemIdMapSubSerialId[iProp.name])){
+                        iProp.name = item.id;
+                    }
                     // for form field only
                     // onsize for dom must here
                     if(cell && cell.get(0)){
                         // if parent is re-rendered
                         if(inputPrf._cellresizeP!=cell){
                             var adjustSize = function(){
+                                    if(!cell.get(0))return;
                                     target.setPosition('absolute').setLeft(0).setTop(0);
                                     // first row/col , 2 pix border
                                     if(target.setWidth)target.setWidth(cell.offsetWidth()-(item.col?1:2));
@@ -70873,7 +70871,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     if(!inputPrf._attached2cell){
                         //console.log('afterappend',subId);
                         inputPrf._attached2cell = 1;
-                        cell.text("");
                         // for form field only
                         // prop and autoexpand
                         if(isFormField){
@@ -70936,6 +70933,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             }
         },
         _IllegalDetect:function(pro, target, throwErr){
+            return null;
             // detect those with html table node
             var count=0, detect = function(arr){
                 xui.arr.each(arr, function(c){
@@ -70949,7 +70947,6 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 if(throwErr)throw 'Cant append control with HTML TABLE node into '+ pro.key;
                 else return count;
             }
-            return null;
         },
         _onresize:function(prf,width,height){
             var prop=prf.properties,

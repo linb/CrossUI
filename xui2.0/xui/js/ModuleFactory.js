@@ -102,7 +102,7 @@ xui.Class('xui.ModuleFactory',null,{
                     me=this,
                     task=function(cls,config,threadid){
                         if(!xui.isFun(cls))
-                            throw "'"+clsPath+"' is not a constructor";
+                            throw new Error("'"+clsPath+"' is not a constructor");
                         var o = new cls();
 
                         if(config.properties)

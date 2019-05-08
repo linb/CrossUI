@@ -54,7 +54,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         _setScroll:function(){
             return this.each(function(profile){
-                if(profile.renderId){
+                if(profile.getRootNode()){
                     var o=profile.getSubNode('BOX'),
                         t=o.scrollTop(),
                         h=o.scrollHeight(),

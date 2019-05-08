@@ -984,11 +984,11 @@ xui.Class('xui.Event',null,{
         touchEvent=function(target, type , options){
             if (type === 'touchstart' || type === 'touchmove') {
                 if (!options.touches || !options.touches.length) {
-                    throw 'No touch object in touches.';
+                    throw new Error('No touch object in touches.');
                 }
             } else if (type === 'touchend') {
                 if (!options.changedTouches || !options.changedTouches.length) {
-                    throw 'No touch object in changedTouches.';
+                    throw new Error('No touch object in changedTouches.');
                 }
             }
            xui.merge(options,{

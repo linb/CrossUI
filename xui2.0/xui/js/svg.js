@@ -295,7 +295,7 @@ xui.Class("xui.svg", "xui.UI",{
     },
     Instance:{
         initialize:function(){
-            if(typeof(Raphael)!="function")throw "Browser doesn't suppor SVG or VML, all diagram functions were disabled!";
+            if(typeof(Raphael)!="function")throw new Error("Browser doesn't suppor SVG or VML, all diagram functions were disabled!");
         },
         getAttr:function(key){
             var prf=this.get(0);

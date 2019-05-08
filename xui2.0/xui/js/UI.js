@@ -1591,7 +1591,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             /* for performance
             var detect = function(arr){
                 xui.arr.each(arr, function(c){
-                    if((c[0]||c)==pro)throw 'Illegal nesting!';
+                    if((c[0]||c)==pro)throw new Error('Illegal nesting!');
                     else detect(c.children);
                 });
             };
@@ -5527,7 +5527,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
         },
         $tryResize:function(profile,w,h,force,key){
-            var s=profile.box,t=s._onresize;
+            var s=profile.box,t=s&&s._onresize;
             if(t&&(force||w||h)){
                 //adjust width and height
                 //w=parseFloat(w)||null;

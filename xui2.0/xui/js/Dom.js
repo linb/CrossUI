@@ -3710,7 +3710,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 return key;
         },
         _setUnitStyle:function(node, key, value){
-            if(node.nodeType != 1)return false;
+            if(!node||node.nodeType != 1)return false;
             var style=node.style;
             if(value || value===0){
                 value =xui.CSS.$addu(value);
@@ -3881,8 +3881,9 @@ xui.Class('xui.Dom','xui.absBox',{
             if(accept)fileInput.accept = accept;
             if(multiple)fileInput.multiple = "multiple";
 
-            fileInput.onchange=function(){
-                xui.tryF(callback, [this, this.files[0], this.files], this);
+            fileInput.onchange=function(e){
+                var t = e.target || window.event.srcElement;
+                xui.tryF(callback, [this, t.files[0], t.files], this);
             };
             if (!!window.ActiveXObject || "ActiveXObject" in window)  {
               var label=document.createElement( "div" );
@@ -3892,7 +3893,6 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
               fileInput.click();
             }
-            fileInput=null;
         },
         busy:function(id,busyMsg,busyIcon,cursor,bgStyle){
             xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor,bgStyle);
