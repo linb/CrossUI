@@ -3793,7 +3793,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
                 o1.query('style').remove(false);
                 if(bgStyle)
-                    xui.CSS._appendSS(o1.get(0), ".xui-cover-global:before{" + bgStyle + "}", "" ,true);
+                    xui.CSS._appendSS(o1.get(0), ".xui-cover-global{" + bgStyle + "}", "" ,true);
 
                 //show content
                 if(content){
