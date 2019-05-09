@@ -8931,6 +8931,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
                 else
                     ifr.src=_if.url;
+                if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
             }else if(prop.ajaxAutoLoad){
                 var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
                     options={rspType:"text"};
@@ -8941,9 +8942,11 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 var node=ins.getContainer();
                 xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                     node.html(rsp,true,true);
+                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                     ins.free();
                 }, function(err){
                     node.html("<div>"+err+"</div>",true,false);
+                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                     ins.free();
                 }, null, options).start();
             }

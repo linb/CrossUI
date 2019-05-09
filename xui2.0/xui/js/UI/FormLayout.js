@@ -1,6 +1,6 @@
 xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
     Initialize:function(){
-        this.addTemplateKeys(['ITEM','TABLE','CBORDER','CBT','CBL','HOLDER','SPREADER']);
+        this.addTemplateKeys(['ITEM','TABLE','CBORDER','CBT','CBL','HOLDER','HIDER','SPREADER']);
     },
     Instance:{
         _isDesignMode:function(){
@@ -19,7 +19,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         HasHtmlTableNode:1,
         _CONTAINERKEY:"ITEM",
         _ITEMCONTAINER:1,
-        _ACTIVEHANDLER:["KEY","HOLDER"],
+        _getActiveHanders:function(prf){
+            return prf.boxing()._isDesignMode()?['KEY','HOLDER']:null;
+        },
         _NoProp : {"conLayoutColumns":1},
         _objectProp:{layoutData:1},
         Appearances:{
@@ -27,7 +29,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 overflow:'hidden'
             },
             BOX:{
-                position:'absolute',
+                position:'relative',
                 left:0,
                 top:0,
                 'z-index':1
@@ -207,7 +209,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 ini:'write',
                 listbox:['design','write','read'],
                 get:function(){
-                    return this.$inDesign?'design':(this.properties.mode || 'read');
+                    return this.$inDesign&&!this.getModule()?'design':(this.properties.mode || 'read');
                 },
                 action:function(){
                     this.boxing().refresh();
@@ -1016,10 +1018,18 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             });
         },
         _resizeTable: function(prf,size,force){
+            var node = prf.getSubNode("HOLDER"),
+                autoH = prf.properties.height=="auto";
+            if(!node.get(0))return ;
+
             if(prf.boxing()._isDesignMode()){
                 var t;
                 if(t=prf.$htable){
-                    var holder = prf.getSubNode("HOLDER").cssSize();
+                    var holder = node.cssSize();
+                    if(autoH) {
+                        // handsontable must has height
+                        size.height = prf.getSubNode('HIDER').height();
+                    }
                     if(holder.width!=size.width || holder.height!=size.height){
                         // for merged cells
                         size.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
@@ -1028,11 +1038,11 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     }
                 }
             }else{
-                prf.getSubNode("HOLDER").cssSize(size);
-
+                if(autoH)size.height="auto";
+                node.cssSize(size);
                  var tb = prf.getSubNode("TABLE");
                  if(tb.get(0)){
-                     if(prf.properties.stretchH!='none'){
+                     if(!autoH &&prf.properties.stretchH!='none'){
                          var rw = size.width - (tb.offsetHeight() > size.height ? xui.Dom.getScrollBarSize() : 0);
                          tb.width(rw);
                      }
@@ -1192,6 +1202,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
         },
         _onresize:function(prf,width,height){
             var prop=prf.properties,
+                autoh=prop.height=="auto",
                 // compare with px
                 us = xui.$us(prf),
                 adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
@@ -1202,6 +1213,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 ww=width?prf.$px(width):width, 
                 hh=height?prf.$px(height):height,
                 t;
+            if(autoh)height=null;
             if( width ||  height){
                 // reset here
                 if(width)prop.width=adjustunit(ww);
@@ -1211,7 +1223,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     marginLeft:-offset.left+"px",
                     marginTop:-offset.top+"px",
                     width:width?(ww+offset.left+'px'):null,
-                    height:height?(hh+offset.top+'px'):null
+                    height:autoh?"auto":height?(hh+offset.top+'px'):null
                 });
 
                 xui.resetRun(prf.getUid("resize"),function(){

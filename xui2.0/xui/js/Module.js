@@ -339,7 +339,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
                 // the last one
                 if(!innerDataOnly){
-                    self._fireEvent('onModulePropChange');
+                    self._fireEvent('onModulePropChange',[self.properties]);
                 }
             }
             return self;
@@ -1641,7 +1641,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onIniResource:function(module, threadid){},
             beforeIniComponents:function(module, threadid){},
             afterIniComponents:function(module, threadid){},
-            onModulePropChange:function(module, threadid){},
+            onModulePropChange:function(module, threadid, prop){},
             onReady:function(module, threadid){},
             onRender:function(module, threadid){},
             onDestroy:function(module){}

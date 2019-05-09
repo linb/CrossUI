@@ -29,12 +29,12 @@ xui.Class=function(key, pkey, obj){
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
     for(i=0; t=pkey[i]; i++)
         if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
-            throw 'errNoParent--'+ t;
+            throw new Error('errNoParent--'+ t);
     if(obj.Dependencies){
         if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
         for(i=0; t=obj.Dependencies[i]; i++)
             if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                throw 'errNoDependency--'+ t;
+                throw new Error('errNoDependency--'+ t);
     }
     parent0=_parent[0];
 
@@ -1264,7 +1264,7 @@ xui.merge(xui,{
                         if(count++>20){
                             fun=count=null;
                             if(false!==xui.tryF(onFail))
-                                throw 'errLoadTheme:'+key;
+                                throw new Error('errLoadTheme:'+key);
                             return;
                         }
                         //test
@@ -7875,11 +7875,11 @@ xui.Class('xui.Event',null,{
         touchEvent=function(target, type , options){
             if (type === 'touchstart' || type === 'touchmove') {
                 if (!options.touches || !options.touches.length) {
-                    throw 'No touch object in touches.';
+                    throw new Error('No touch object in touches.');
                 }
             } else if (type === 'touchend') {
                 if (!options.changedTouches || !options.changedTouches.length) {
-                    throw 'No touch object in changedTouches.';
+                    throw new Error('No touch object in changedTouches.');
                 }
             }
            xui.merge(options,{
@@ -13754,8 +13754,9 @@ xui.Class('xui.Dom','xui.absBox',{
             if(accept)fileInput.accept = accept;
             if(multiple)fileInput.multiple = "multiple";
 
-            fileInput.onchange=function(){
-                xui.tryF(callback, [this, this.files[0], this.files], this);
+            fileInput.onchange=function(e){
+                var t = e.target || window.event.srcElement;
+                xui.tryF(callback, [this, t.files[0], t.files], this);
             };
             if (!!window.ActiveXObject || "ActiveXObject" in window)  {
               var label=document.createElement( "div" );
@@ -13765,7 +13766,6 @@ xui.Class('xui.Dom','xui.absBox',{
             }else{
               fileInput.click();
             }
-            fileInput=null;
         },
         busy:function(id,busyMsg,busyIcon,cursor,bgStyle){
             xui.Dom.setCover(busyMsg||true,id,busyIcon,cursor,bgStyle);
@@ -14915,7 +14915,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
                 // the last one
                 if(!innerDataOnly){
-                    self._fireEvent('onModulePropChange');
+                    self._fireEvent('onModulePropChange',[self.properties]);
                 }
             }
             return self;
@@ -16217,7 +16217,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onIniResource:function(module, threadid){},
             beforeIniComponents:function(module, threadid){},
             afterIniComponents:function(module, threadid){},
-            onModulePropChange:function(module, threadid){},
+            onModulePropChange:function(module, threadid, prop){},
             onReady:function(module, threadid){},
             onRender:function(module, threadid){},
             onDestroy:function(module){}
@@ -18422,7 +18422,7 @@ xui.Class("xui.Tips", null,{
                     me=this,
                     task=function(cls,config,threadid){
                         if(!xui.isFun(cls))
-                            throw "'"+clsPath+"' is not a constructor";
+                            throw new Error("'"+clsPath+"' is not a constructor");
                         var o = new cls();
 
                         if(config.properties)
@@ -20342,7 +20342,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             /* for performance
             var detect = function(arr){
                 xui.arr.each(arr, function(c){
-                    if((c[0]||c)==pro)throw 'Illegal nesting!';
+                    if((c[0]||c)==pro)throw new Error('Illegal nesting!');
                     else detect(c.children);
                 });
             };
@@ -24278,7 +24278,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
         },
         $tryResize:function(profile,w,h,force,key){
-            var s=profile.box,t=s._onresize;
+            var s=profile.box,t=s&&s._onresize;
             if(t&&(force||w||h)){
                 //adjust width and height
                 //w=parseFloat(w)||null;
@@ -65189,7 +65189,7 @@ return /******/ (function(modules) { // webpackBootstrap
     },
     Instance:{
         initialize:function(){
-            if(typeof(Raphael)!="function")throw "Browser doesn't suppor SVG or VML, all diagram functions were disabled!";
+            if(typeof(Raphael)!="function")throw new Error("Browser doesn't suppor SVG or VML, all diagram functions were disabled!");
         },
         getAttr:function(key){
             var prf=this.get(0);
@@ -69785,7 +69785,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 overflow:'hidden'
             },
             BOX:{
-                position:'absolute',
+                position:'relative',
                 left:0,
                 top:0,
                 'z-index':1
@@ -70774,11 +70774,16 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             });
         },
         _resizeTable: function(prf,size,force){
+            var node = prf.getSubNode("HOLDER"),
+                autoH = prf.properties.height=="auto";
+            if(!node.get(0))return ;
+
             if(prf.boxing()._isDesignMode()){
                 var t;
                 if(t=prf.$htable){
-                    var holder = prf.getSubNode("HOLDER").cssSize();
-                    if(holder.width!=size.width || holder.height!=size.height){
+                    var holder = node.cssSize();
+                    if(autoH)  node.height('auto');
+                    if(holder.width!=size.width || (!autoH && holder.height!=size.height)){
                         // for merged cells
                         size.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
                         // ensure by px
@@ -70786,11 +70791,11 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     }
                 }
             }else{
-                prf.getSubNode("HOLDER").cssSize(size);
-
+                if(autoH)size.height="auto";
+                node.cssSize(size);
                  var tb = prf.getSubNode("TABLE");
                  if(tb.get(0)){
-                     if(prf.properties.stretchH!='none'){
+                     if(!autoH &&prf.properties.stretchH!='none'){
                          var rw = size.width - (tb.offsetHeight() > size.height ? xui.Dom.getScrollBarSize() : 0);
                          tb.width(rw);
                      }
@@ -70944,12 +70949,13 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             };
             detect(target._nodes);
             if(count){
-                if(throwErr)throw 'Cant append control with HTML TABLE node into '+ pro.key;
+                if(throwErr)throw new Error('Cant append control with HTML TABLE node into '+ pro.key);
                 else return count;
             }
         },
         _onresize:function(prf,width,height){
             var prop=prf.properties,
+                autoh=prop.height=="auto",
                 // compare with px
                 us = xui.$us(prf),
                 adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
@@ -70960,6 +70966,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 ww=width?prf.$px(width):width, 
                 hh=height?prf.$px(height):height,
                 t;
+            if(autoh)height=null;
             if( width ||  height){
                 // reset here
                 if(width)prop.width=adjustunit(ww);
@@ -70969,7 +70976,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     marginLeft:-offset.left+"px",
                     marginTop:-offset.top+"px",
                     width:width?(ww+offset.left+'px'):null,
-                    height:height?(hh+offset.top+'px'):null
+                    height:autoh?"auto":height?(hh+offset.top+'px'):null
                 });
 
                 xui.resetRun(prf.getUid("resize"),function(){

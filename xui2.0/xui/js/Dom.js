@@ -1706,7 +1706,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         topZindex:function(flag){
             //set the minimum to 1000
-            var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o, style;
+            var i=1000, j=0, k, node = this.get(0), p = node.offsetParent||node.parentNode, t, o, style;
             if(xui.browser.ie && (!p||(p.nodeName+"").toUpperCase()=="HTML")){
                 p=xui("body").get(0);
             }
