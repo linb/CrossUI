@@ -1206,9 +1206,15 @@ xui.merge(xui,{
         // use special key to invoid other lang setting was loaded first
         xui.include(z+'.inline.$_$', xui.getPath(z, '.js'),m,m);
     },
-    getTheme:function(a){
+    getTheme:function(a,e){
         try{
-            a=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
+            // a=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
+            // for cross domain
+            e = document.createElement("xui"); 
+            e.className="setting-uikey";
+            document.body.appendChild(e);
+            a = xui(e).css('font-family')
+            document.body.removeChild(e);
         }catch(e){}finally{
             return a||"default";
         }
@@ -1225,6 +1231,10 @@ xui.merge(xui,{
                         style.parentNode.removeChild(style);
                         style=null;
                     }
+                    // for cross domain
+                    while((style=document.getElementById("theme:"+okey))&&style.tagName.toLowerCase()=="link"){
+                        style.parentNode.removeChild(style);
+                    }
                 }
                 if(refresh!==false)
                     xui.CSS.adjustFont();
@@ -1233,31 +1243,24 @@ xui.merge(xui,{
             if(key=='default'){
                 onend(onSucess);
             }else{
-                try{
-                    var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
-                }catch(e){}finally{
-                    if(tkey==key){
-                        xui.tryF(onSucess);
-                        return;
-                    }else{
-                        var id='theme:'+key,
-                            path=xui.getPath('xui.appearance.' +key,'');
-                        if(tag){
-                            xui.getFileAsync(path+'theme.css', function(rsp){
-                                rsp = xui.replace(rsp, [
-                                    [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
-                                    [/\{[^}]*\}/,'$0'],
-                                    [/([^\/{},]+)/, function(a){
-                                        // protect '.setting-uikey'
-                                        return xui.str.endWith(a[0],'.setting-uikey')?a[0]:a[0].replace(/([^\s>]+)/,"$1"+tag)
-                                    }]
-                                ]);
-                                rsp=rsp.replace(/url\(([^)]+)\)/g, "url("+path+"$1)");
-                                xui.CSS._appendSS(xui('head'), rsp, id, false);
-                            });
-                        }else
-                            xui.CSS.includeLink(path+'theme.css',id);
-                    }
+                var id='theme:'+key,
+                    path=xui.getPath('xui.appearance.' +key,'');
+                if(tag){
+                    xui.getFileAsync(path+'theme.css', function(rsp){
+                        rsp = xui.replace(rsp, [
+                            [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
+                            [/\{[^}]*\}/,'$0'],
+                            [/([^\/{},]+)/, function(a){
+                                // protect '.setting-uikey'
+                                return xui.str.endWith(a[0],'.setting-uikey')?a[0]:a[0].replace(/([^\s>]+)/,"$1"+tag)
+                            }]
+                        ]);
+                        rsp=rsp.replace(/url\(([^)]+)\)/g, "url("+path+"$1)");
+                        xui.CSS._appendSS(xui('head'), rsp, id, false);
+                    });
+                }else
+                    xui.CSS.includeLink(path+'theme.css',id);
+                    
                     var count=0,fun=function(){
                         // timeout: 21 seconds
                         if(count++>20){
@@ -1267,18 +1270,14 @@ xui.merge(xui,{
                             return;
                         }
                         //test
-                        try{
-                            var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
-                        }catch(e){}finally{
-                            if(tkey==key){
-                                onend(onSucess);
-                                fun=count=null;
-                            }else{
-                                xui.asyRun(fun,100*count);
-                            }
+                        if(xui.getTheme()==key){
+                            onend(onSucess);
+                            fun=count=null;
+                        }else{
+                            xui.asyRun(fun,100*count);
                         }
-                    };fun();
-                }
+                    };
+                    fun();
             }
         }else{
             xui.tryF(onSucess);
@@ -3472,19 +3471,22 @@ xui.Class('xui.Ajax','xui.absIO',{
                     self._header("Accept", Accept ? Accept :
                         (rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
                     );
-                    self._header("Content-type", contentType ? contentType : (
-                        (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
-                    ));
-                    self._header("X-Requested-With", "XMLHttpRequest");
-                    if(optimized){
-                        try {
-                            self._header("User-Agent", null);
-                            self._header("Accept-Language", null);
-                            self._header("Connection", "keep-alive");
-                            self._header("Keep-Alive", null);
-                            self._header("Cookie", null);
-                            self._header("Cookie", "");
-                        } catch(e) {}
+                    // CROS doesn't support Content-type&X-Requested-With header
+                    if(!xui.absIO.isCrossDomain(uri)){
+                        self._header("Content-type", contentType ? contentType : (
+                            (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
+                        ));
+                        self._header("X-Requested-With", "XMLHttpRequest");
+                        if(optimized){
+                            try {
+                                self._header("User-Agent", null);
+                                self._header("Accept-Language", null);
+                                self._header("Connection", "keep-alive");
+                                self._header("Keep-Alive", null);
+                                self._header("Cookie", null);
+                                self._header("Cookie", "");
+                            } catch(e) {}
+                        }
                     }
                     try {
                         if(xui.isHash(header))

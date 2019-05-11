@@ -1207,9 +1207,15 @@ xui.merge(xui,{
         // use special key to invoid other lang setting was loaded first
         xui.include(z+'.inline.$_$', xui.getPath(z, '.js'),m,m);
     },
-    getTheme:function(a){
+    getTheme:function(a,e){
         try{
-            a=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
+            // a=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
+            // for cross domain
+            e = document.createElement("xui"); 
+            e.className="setting-uikey";
+            document.body.appendChild(e);
+            a = xui(e).css('font-family')
+            document.body.removeChild(e);
         }catch(e){}finally{
             return a||"default";
         }
@@ -1226,6 +1232,10 @@ xui.merge(xui,{
                         style.parentNode.removeChild(style);
                         style=null;
                     }
+                    // for cross domain
+                    while((style=document.getElementById("theme:"+okey))&&style.tagName.toLowerCase()=="link"){
+                        style.parentNode.removeChild(style);
+                    }
                 }
                 if(refresh!==false)
                     xui.CSS.adjustFont();
@@ -1234,31 +1244,24 @@ xui.merge(xui,{
             if(key=='default'){
                 onend(onSucess);
             }else{
-                try{
-                    var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
-                }catch(e){}finally{
-                    if(tkey==key){
-                        xui.tryF(onSucess);
-                        return;
-                    }else{
-                        var id='theme:'+key,
-                            path=xui.getPath('xui.appearance.' +key,'');
-                        if(tag){
-                            xui.getFileAsync(path+'theme.css', function(rsp){
-                                rsp = xui.replace(rsp, [
-                                    [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
-                                    [/\{[^}]*\}/,'$0'],
-                                    [/([^\/{},]+)/, function(a){
-                                        // protect '.setting-uikey'
-                                        return xui.str.endWith(a[0],'.setting-uikey')?a[0]:a[0].replace(/([^\s>]+)/,"$1"+tag)
-                                    }]
-                                ]);
-                                rsp=rsp.replace(/url\(([^)]+)\)/g, "url("+path+"$1)");
-                                xui.CSS._appendSS(xui('head'), rsp, id, false);
-                            });
-                        }else
-                            xui.CSS.includeLink(path+'theme.css',id);
-                    }
+                var id='theme:'+key,
+                    path=xui.getPath('xui.appearance.' +key,'');
+                if(tag){
+                    xui.getFileAsync(path+'theme.css', function(rsp){
+                        rsp = xui.replace(rsp, [
+                            [/(\/\*[^*]*\*+([^\/][^*]*\*+)*\/)/,'$0'],
+                            [/\{[^}]*\}/,'$0'],
+                            [/([^\/{},]+)/, function(a){
+                                // protect '.setting-uikey'
+                                return xui.str.endWith(a[0],'.setting-uikey')?a[0]:a[0].replace(/([^\s>]+)/,"$1"+tag)
+                            }]
+                        ]);
+                        rsp=rsp.replace(/url\(([^)]+)\)/g, "url("+path+"$1)");
+                        xui.CSS._appendSS(xui('head'), rsp, id, false);
+                    });
+                }else
+                    xui.CSS.includeLink(path+'theme.css',id);
+                    
                     var count=0,fun=function(){
                         // timeout: 21 seconds
                         if(count++>20){
@@ -1268,18 +1271,14 @@ xui.merge(xui,{
                             return;
                         }
                         //test
-                        try{
-                            var tkey=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
-                        }catch(e){}finally{
-                            if(tkey==key){
-                                onend(onSucess);
-                                fun=count=null;
-                            }else{
-                                xui.asyRun(fun,100*count);
-                            }
+                        if(xui.getTheme()==key){
+                            onend(onSucess);
+                            fun=count=null;
+                        }else{
+                            xui.asyRun(fun,100*count);
                         }
-                    };fun();
-                }
+                    };
+                    fun();
             }
         }else{
             xui.tryF(onSucess);
@@ -3473,19 +3472,22 @@ xui.Class('xui.Ajax','xui.absIO',{
                     self._header("Accept", Accept ? Accept :
                         (rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
                     );
-                    self._header("Content-type", contentType ? contentType : (
-                        (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
-                    ));
-                    self._header("X-Requested-With", "XMLHttpRequest");
-                    if(optimized){
-                        try {
-                            self._header("User-Agent", null);
-                            self._header("Accept-Language", null);
-                            self._header("Connection", "keep-alive");
-                            self._header("Keep-Alive", null);
-                            self._header("Cookie", null);
-                            self._header("Cookie", "");
-                        } catch(e) {}
+                    // CROS doesn't support Content-type&X-Requested-With header
+                    if(!xui.absIO.isCrossDomain(uri)){
+                        self._header("Content-type", contentType ? contentType : (
+                            (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
+                        ));
+                        self._header("X-Requested-With", "XMLHttpRequest");
+                        if(optimized){
+                            try {
+                                self._header("User-Agent", null);
+                                self._header("Accept-Language", null);
+                                self._header("Connection", "keep-alive");
+                                self._header("Keep-Alive", null);
+                                self._header("Cookie", null);
+                                self._header("Cookie", "");
+                            } catch(e) {}
+                        }
                     }
                     try {
                         if(xui.isHash(header))
@@ -11579,7 +11581,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         topZindex:function(flag){
             //set the minimum to 1000
-            var i=1000, j=0, k, node = this.get(0), p = node.offsetParent, t, o, style;
+            var i=1000, j=0, k, node = this.get(0), p = node.offsetParent||node.parentNode, t, o, style;
             if(xui.browser.ie && (!p||(p.nodeName+"").toUpperCase()=="HTML")){
                 p=xui("body").get(0);
             }
@@ -13666,7 +13668,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
                 o1.query('style').remove(false);
                 if(bgStyle)
-                    xui.CSS._appendSS(o1.get(0), ".xui-cover-global:before{" + bgStyle + "}", "" ,true);
+                    xui.CSS._appendSS(o1.get(0), ".xui-cover-global{" + bgStyle + "}", "" ,true);
 
                 //show content
                 if(content){
@@ -27682,6 +27684,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
                 else
                     ifr.src=_if.url;
+                if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
             }else if(prop.ajaxAutoLoad){
                 var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
                     options={rspType:"text"};
@@ -27692,9 +27695,11 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 var node=ins.getContainer();
                 xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                     node.html(rsp,true,true);
+                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                     ins.free();
                 }, function(err){
                     node.html("<div>"+err+"</div>",true,false);
+                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                     ins.free();
                 }, null, options).start();
             }
@@ -48375,11 +48380,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:'tbody',
                         TRHEADER:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDHEADER1:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 HEADER1:{
                                     tagName:'div',
-                                    //className:'{_columnfreezed}',
+                                    className:'xuitgtd', //'{_columnfreezed}',
                                     style:"{showHeader}",
                                     HI1:{
                                         tagName:'div',
@@ -48447,6 +48454,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDHEADER2:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 HEADER2:{
                                     $order:0,
                                     tagName:'div',
@@ -48492,8 +48500,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         TRLOCKED1:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDBODY11:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL11:{
                                     $order:1,
                                     tagName:'div',
@@ -48510,6 +48520,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDBODY12:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL12:{
                                     $order:1,
                                     tagName:'div',
@@ -48527,8 +48538,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         TRBODY:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDBODY21:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL21:{
                                     $order:1,
                                     tagName:'div',
@@ -48545,6 +48558,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDBODY22:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL22:{
                                     $order:1,
                                     tagName:'div',
@@ -48561,11 +48575,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         TRTAIL:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDTAIL1:{
-                                tagName:'td'
+                                tagName:'td',
+                                className:'xuitgtd'
                             },
                             TDTAIL2:{
-                                tagName:'td'
+                                tagName:'td',
+                                className:'xuitgtd'
                             }
                         }
                     }
@@ -49121,6 +49138,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 overflow:'hidden'
+            },
+            'KEY .xuitgtd, KEY .xuitgth, KEY .xuitgtr':{
+                border:'0!important',
+                padding:'0!important',
+                margin:'0!important',
+                height:'auto!important',
+                width:'auto!important'
             },
             'LTAGCMDS, RTAGCMDS':{
                 padding:0,
@@ -69758,7 +69782,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
     }
 });xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
     Initialize:function(){
-        this.addTemplateKeys(['ITEM','TABLE','CBORDER','CBT','CBL','HOLDER','SPREADER']);
+        this.addTemplateKeys(['ITEM','TABLE','CBORDER','CBT','CBL','HOLDER','HIDER','SPREADER']);
     },
     Instance:{
         _isDesignMode:function(){
@@ -69777,7 +69801,9 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
         HasHtmlTableNode:1,
         _CONTAINERKEY:"ITEM",
         _ITEMCONTAINER:1,
-        _ACTIVEHANDLER:["KEY","HOLDER"],
+        _getActiveHanders:function(prf){
+            return prf.boxing()._isDesignMode()?['KEY','HOLDER']:null;
+        },
         _NoProp : {"conLayoutColumns":1},
         _objectProp:{layoutData:1},
         Appearances:{
@@ -69965,7 +69991,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 ini:'write',
                 listbox:['design','write','read'],
                 get:function(){
-                    return this.$inDesign?'design':(this.properties.mode || 'read');
+                    return this.$inDesign&&!this.getModule()?'design':(this.properties.mode || 'read');
                 },
                 action:function(){
                     this.boxing().refresh();
@@ -70418,7 +70444,9 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         node = node.first(); node.id(prf.key + "-HOLDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-HIDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-SPREADER:" + prf.serialId + ":");
-                        
+                        if(prf.properties.height=="auto"){
+                            prf.getSubNodes("BOX").height('auto');
+                        }
                         if(prf._$tableInited){
                             var map = prf.$cellIdChangedMap;
 
@@ -70503,7 +70531,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         if(!auto)
                             onLayoutChanged(prf);
                     },
-
+                    
                     // reset autoexpand
                     afterRowResize:function(row, size, dblclick){
                         onLayoutChanged(prf);
@@ -70516,6 +70544,9 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                                 ) {
                                     target.get(0)._autoexpand = (size-1)+"px";
                                 }
+                        }
+                        if(prf.properties.height=="auto"){
+                            prf.box._resizeTable(prf, {height:'auto'});
                         }
                     },
 
@@ -70570,6 +70601,9 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         xui.asyRun(function(){
                             ns.selectRows(index);
                         });
+                        if(prf.properties.height=="auto"){
+                            prf.box._resizeTable(prf, {height:'auto'});
+                        }
                     },
                     afterRemoveCol:function(index,amount){
                         onLayoutChanged(prf);
@@ -70586,13 +70620,17 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                             p.manualRowHeights.splice(index, amount);
                         }
                         this.deselectCell();
+                        if(prf.properties.height=="auto"){
+                            prf.box._resizeTable(prf, {height:'auto'});
+                        }
                     }
                 },
                 settings={},t;
 
             var offset = prf.box._getHeaderOffset(prf);
             // size
-            settings.height = prf.$px(prop.height) + offset.top;
+            if(prop.height!="auto")
+                settings.height = prf.$px(prop.height) + offset.top;
             settings.width = prf.$px(prop.width) + offset.left;
             // stretch
             settings.stretchH = (t=prop.stretchH)=="last"?"last":t=="all"?"all":"none";
@@ -70782,8 +70820,11 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 var t;
                 if(t=prf.$htable){
                     var holder = node.cssSize();
-                    if(autoH)  node.height('auto');
-                    if(holder.width!=size.width || (!autoH && holder.height!=size.height)){
+                    if(autoH) {
+                        // handsontable must has height
+                        size.height = prf.getSubNode('HIDER').height();
+                    }
+                    if(holder.width!=size.width || holder.height!=size.height){
                         // for merged cells
                         size.mergeCells  = xui.copy(xui.get(t.getPlugin("mergeCells"),["mergedCellsCollection","mergedCells"]));
                         // ensure by px
@@ -70937,6 +70978,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 }
             }
         },
+/*
         _IllegalDetect:function(pro, target, throwErr){
             return null;
             // detect those with html table node
@@ -70953,6 +70995,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 else return count;
             }
         },
+*/
         _onresize:function(prf,width,height){
             var prop=prf.properties,
                 autoh=prop.height=="auto",

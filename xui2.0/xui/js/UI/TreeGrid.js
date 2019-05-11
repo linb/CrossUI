@@ -2000,11 +2000,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tagName:'tbody',
                         TRHEADER:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDHEADER1:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 HEADER1:{
                                     tagName:'div',
-                                    //className:'{_columnfreezed}',
+                                    className:'xuitgtd', //'{_columnfreezed}',
                                     style:"{showHeader}",
                                     HI1:{
                                         tagName:'div',
@@ -2072,6 +2074,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDHEADER2:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 HEADER2:{
                                     $order:0,
                                     tagName:'div',
@@ -2117,8 +2120,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         TRLOCKED1:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDBODY11:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL11:{
                                     $order:1,
                                     tagName:'div',
@@ -2135,6 +2140,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDBODY12:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL12:{
                                     $order:1,
                                     tagName:'div',
@@ -2152,8 +2158,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         TRBODY:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDBODY21:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL21:{
                                     $order:1,
                                     tagName:'div',
@@ -2170,6 +2178,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             TDBODY22:{
                                 tagName:'td',
+                                className:'xuitgtd', 
                                 SCROLL22:{
                                     $order:1,
                                     tagName:'div',
@@ -2186,11 +2195,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         TRTAIL:{
                             tagName:'tr',
+                            className:'xuitgtr',
                             TDTAIL1:{
-                                tagName:'td'
+                                tagName:'td',
+                                className:'xuitgtd'
                             },
                             TDTAIL2:{
-                                tagName:'td'
+                                tagName:'td',
+                                className:'xuitgtd'
                             }
                         }
                     }
@@ -2746,6 +2758,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 overflow:'hidden'
+            },
+            'KEY .xuitgtd, KEY .xuitgth, KEY .xuitgtr':{
+                border:'0!important',
+                padding:'0!important',
+                margin:'0!important',
+                height:'auto!important',
+                width:'auto!important'
             },
             'LTAGCMDS, RTAGCMDS':{
                 padding:0,

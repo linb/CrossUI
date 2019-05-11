@@ -662,7 +662,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         node = node.first(); node.id(prf.key + "-HOLDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-HIDER:" + prf.serialId + ":");
                         node = node.first(); node.id(prf.key + "-SPREADER:" + prf.serialId + ":");
-                        
+                        if(prf.properties.height=="auto"){
+                            prf.getSubNodes("BOX").height('auto');
+                        }
                         if(prf._$tableInited){
                             var map = prf.$cellIdChangedMap;
 
@@ -747,7 +749,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         if(!auto)
                             onLayoutChanged(prf);
                     },
-
+                    
                     // reset autoexpand
                     afterRowResize:function(row, size, dblclick){
                         onLayoutChanged(prf);
@@ -760,6 +762,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                                 ) {
                                     target.get(0)._autoexpand = (size-1)+"px";
                                 }
+                        }
+                        if(prf.properties.height=="auto"){
+                            prf.box._resizeTable(prf, {height:'auto'});
                         }
                     },
 
@@ -814,6 +819,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         xui.asyRun(function(){
                             ns.selectRows(index);
                         });
+                        if(prf.properties.height=="auto"){
+                            prf.box._resizeTable(prf, {height:'auto'});
+                        }
                     },
                     afterRemoveCol:function(index,amount){
                         onLayoutChanged(prf);
@@ -830,13 +838,17 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             p.manualRowHeights.splice(index, amount);
                         }
                         this.deselectCell();
+                        if(prf.properties.height=="auto"){
+                            prf.box._resizeTable(prf, {height:'auto'});
+                        }
                     }
                 },
                 settings={},t;
 
             var offset = prf.box._getHeaderOffset(prf);
             // size
-            settings.height = prf.$px(prop.height) + offset.top;
+            if(prop.height!="auto")
+                settings.height = prf.$px(prop.height) + offset.top;
             settings.width = prf.$px(prop.width) + offset.left;
             // stretch
             settings.stretchH = (t=prop.stretchH)=="last"?"last":t=="all"?"all":"none";
@@ -1184,6 +1196,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 }
             }
         },
+/*
         _IllegalDetect:function(pro, target, throwErr){
             return null;
             // detect those with html table node
@@ -1200,6 +1213,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 else return count;
             }
         },
+*/
         _onresize:function(prf,width,height){
             var prop=prf.properties,
                 autoh=prop.height=="auto",
