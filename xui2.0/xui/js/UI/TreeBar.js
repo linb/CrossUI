@@ -178,7 +178,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         */
         toggleNode:function(id, expand, recursive, stopanim, callback){
             var profile=this.get(0),ns=this,self=arguments.callee;
-            if(id){
+            if(xui.isSet(id)){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub && (!xui.isSet(expand) || !!expand !== !!o._checked))
                     profile.box._setSub(profile, o, xui.isSet(expand) ?!!expand:!o._checked, recursive, stopanim||recursive, callback);

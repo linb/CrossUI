@@ -6,7 +6,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             var ot=profile.tips;
             t = profile.tips = profile.tips||p.tips||'';
             o = xui.getObject(p.tipsBinder)|| ((o=profile.host[p.tipsBinder]) &&o.get(0) );
-            if(o && (o.key=='xui.UI.Span'||o.key=='xui.UI.Div'||o.key=='xui.UI.SLabel')){
+            if(o && (o.key=='xui.UI.Span'||o.key=='xui.UI.Div'||o.key=='xui.UI.Label')){
                 if(o.renderId){
                     //use innerHTML, not setHtml
                     o.getRootNode().innerHTML =  t.charAt(0)=='$'?xui.wrapRes(t):t;
@@ -214,6 +214,9 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 overflow:'hidden',
                 'z-index':10
             },
+            '.xui-required-field BOX':{
+                'border-color':'#ff0000'
+             },
             LABEL:{
                $order:100,
                'z-index':1,

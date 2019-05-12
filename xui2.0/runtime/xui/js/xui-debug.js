@@ -25561,8 +25561,10 @@ xui.Class("xui.UI",  "xui.absObj", {
             //can't input id in properties
             if(prop.id)delete prop.id;
 
-            if('required' in dm)
+            if('required' in dm){
                 prop._required=prop.required?"xui-required":"";
+                prop._requiredfld=prop.required?"xui-required-field":"";
+            }
 
             // cant null
             if('nodeName' in dm && !prop.nodeName)
@@ -26685,6 +26687,8 @@ xui.Class("xui.absValue", "xui.absObj",{
                         if(v)node.addClass('xui-required');
                         else node.removeClass('xui-required');
                     }
+                    if(v) this.getRoot().addClass('xui-required-field');
+                    else this.getRoot().removeClass('xui-required-field');
                 }
             },
             // setValue and getValue
@@ -26793,7 +26797,7 @@ xui.Class("xui.UI.Widget", "xui.UI",{
             }:null
         },
         Templates:{
-            className:'xui-uiw-shell {_className}',
+            className:'xui-uiw-shell {_className} {_requiredfld}',
             style:'{_style}',
 
             IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{}:null,
@@ -31295,7 +31299,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             var ot=profile.tips;
             t = profile.tips = profile.tips||p.tips||'';
             o = xui.getObject(p.tipsBinder)|| ((o=profile.host[p.tipsBinder]) &&o.get(0) );
-            if(o && (o.key=='xui.UI.Span'||o.key=='xui.UI.Div'||o.key=='xui.UI.SLabel')){
+            if(o && (o.key=='xui.UI.Span'||o.key=='xui.UI.Div'||o.key=='xui.UI.Label')){
                 if(o.renderId){
                     //use innerHTML, not setHtml
                     o.getRootNode().innerHTML =  t.charAt(0)=='$'?xui.wrapRes(t):t;
@@ -31503,6 +31507,9 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 overflow:'hidden',
                 'z-index':10
             },
+            '.xui-required-field BOX':{
+                'border-color':'#ff0000'
+             },
             LABEL:{
                $order:100,
                'z-index':1,

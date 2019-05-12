@@ -791,7 +791,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if((t=prf.ItemIdMapSubSerialId) && (t=t[itemId]))
                 return prf.SubSerialIdMapItem[t];
             t=prf.queryItems(prf.properties.items, function(v,k){
-                return v.id==itemId;
+                return v.id===itemId;
             }, 1,1);
             return t&&t[0];
         },
@@ -6808,8 +6808,10 @@ xui.Class("xui.UI",  "xui.absObj", {
             //can't input id in properties
             if(prop.id)delete prop.id;
 
-            if('required' in dm)
+            if('required' in dm){
                 prop._required=prop.required?"xui-required":"";
+                prop._requiredfld=prop.required?"xui-required-field":"";
+            }
 
             // cant null
             if('nodeName' in dm && !prop.nodeName)
@@ -7932,6 +7934,8 @@ xui.Class("xui.absValue", "xui.absObj",{
                         if(v)node.addClass('xui-required');
                         else node.removeClass('xui-required');
                     }
+                    if(v) this.getRoot().addClass('xui-required-field');
+                    else this.getRoot().removeClass('xui-required-field');
                 }
             },
             // setValue and getValue
@@ -8040,7 +8044,7 @@ xui.Class("xui.UI.Widget", "xui.UI",{
             }:null
         },
         Templates:{
-            className:'xui-uiw-shell {_className}',
+            className:'xui-uiw-shell {_className} {_requiredfld}',
             style:'{_style}',
 
             IE67_SHADOW:(xui.browser.ie && xui.browser.ver <=8)?{}:null,

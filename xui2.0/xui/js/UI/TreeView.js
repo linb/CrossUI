@@ -70,7 +70,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 map2=profile.SubSerialIdMapItem,
                 pitem;
 
-            if(pid){
+            if(xui.isSet(pid)){
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){
                     oitem._deep=pitem._deep+1;
