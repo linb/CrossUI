@@ -2,6 +2,8 @@
 
 CrossUI is a free Cross-Browser Javascript framework with cutting-edge functionality for SPA(Single Page Application) web application. Learn more at http://www.linb.net.
 
+Compatible with older browsers, even IE6
+
 ## Features & Resources
 
   1.  Rich client-side API, works with any backend or static HTML pages.
