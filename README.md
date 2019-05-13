@@ -1,6 +1,6 @@
 # CrossUI
 
-CrossUI is a free Cross-Browser Javascript framework with cutting-edge functionality for SPA(Single Page Application) web application. Learn more at https://www.linb.net.
+CrossUI is a free Cross-Browser Javascript framework with cutting-edge functionality for SPA(Single Page Application) web application. Learn more at https://crossui.com/xui/.
 
 <strong>Compatible with older browsers, even IE6</strong>
 
@@ -17,7 +17,7 @@ CrossUI is a free Cross-Browser Javascript framework with cutting-edge functiona
   9.  CrossUI Framework is Open Source under LGPL3 license.
 
 
-Website: https://www.crossui.com
+Website: https://crossui.com
 
 ## Related tools
 
@@ -25,12 +25,12 @@ These tools (commercial license) can reduce development time significantly:
 
 * CrossUI Front-end builder for Github: https://crossui.com/RADGithub
 
-* CrossUI Single Page Builder: https://www.crossui.com/RAD/Builder.html
+* CrossUI Single Page Builder: https://crossui.com/RAD/Builder.html
 
-* CrossUI Embeddable Desginer: https://www.crossui.com/Designer/
+* CrossUI Embeddable Desginer: https://crossui.com/Designer/
 
-* CrossUI Theme Roller: https://www.crossui.com/ThemeRoller
+* CrossUI Theme Roller: https://crossui.com/ThemeRoller
 
-* CrossUI Form Builder https://www.crossui.com/FormBuilder
+* CrossUI Form Builder https://crossui.com/FormBuilder
 
-* CrossUI JSON Editor: https://www.crossui.com/JSONEditor
+* CrossUI JSON Editor: https://crossui.com/JSONEditor
