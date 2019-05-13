@@ -19544,7 +19544,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if((t=prf.ItemIdMapSubSerialId) && (t=t[itemId]))
                 return prf.SubSerialIdMapItem[t];
             t=prf.queryItems(prf.properties.items, function(v,k){
-                return v.id==itemId;
+                return v.id===itemId;
             }, 1,1);
             return t&&t[0];
         },
@@ -42732,7 +42732,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         */
         toggleNode:function(id, expand, recursive, stopanim, callback){
             var profile=this.get(0),ns=this,self=arguments.callee;
-            if(id){
+            if(xui.isSet(id)){
                 var o=profile.getItemByItemId(id);
                 if(o && o.sub && (!xui.isSet(expand) || !!expand !== !!o._checked))
                     profile.box._setSub(profile, o, xui.isSet(expand) ?!!expand:!o._checked, recursive, stopanim||recursive, callback);
@@ -43664,7 +43664,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 map2=profile.SubSerialIdMapItem,
                 pitem;
 
-            if(pid){
+            if(xui.isSet(pid)){
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){
                     oitem._deep=pitem._deep+1;
