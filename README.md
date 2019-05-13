@@ -34,3 +34,7 @@ These tools (commercial license) can reduce development time significantly:
 * CrossUI Form Builder https://crossui.com/FormBuilder
 
 * CrossUI JSON Editor: https://crossui.com/JSONEditor
+
+## CDN
+https://cdn.jsdelivr.net/gh/linb/CrossUI@2.0.0/xui2.0/runtime/xui/js/xui-all.js
+https://crossui.com/libs/2.0/js/xui-all.js
