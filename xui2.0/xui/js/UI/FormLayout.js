@@ -13,7 +13,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             }else{
                 return this.getSubNode("POOL");
             }
-        },
+        }
     },
     Static:{
         HasHtmlTableNode:1,

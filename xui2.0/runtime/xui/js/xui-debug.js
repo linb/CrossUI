@@ -2800,14 +2800,15 @@ new function(){
         if(typeof str !="string")return str;
         if(!str)return false;
         if(!safeW){
-            var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w;
+            var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w,d;
             document.body.appendChild(ifr);
-            w=frames[frames.length-1].window;
+            w=('contentWindow' in ifr) ? ifr.contentWindow : 
+                ('window' in ifr) ? ifr.window : ((d=ifr.contentDocument||ifr.document).defaultView||d.parentWindow);
             safeW={};
             for(var i in w)safeW[i]=null;
             document.body.removeChild(ifr);                
         }
-        str='({_:(function(){with(this){return '+str+'}}).call(safeW)})';
+        str='({ _ : (function(){ with(this){ return ('+str+'); } }).call(safeW) })';
         try{
             str=eval(str);
         }catch(e){
@@ -3383,13 +3384,14 @@ xui.Class('xui.absIO',null,{
                 scr=ie8
                     ? ("<iframe "+(id?("name='"+"xui_xdmi:"+id+"'"):"")+(onLoad?(" onload='xui.XDMI._o(\""+id+"\")'"):"")+">")
                     : "iframe";
-            var n=doc.createElement(scr),w;
-            if(id)n.id=n.name="xui_xdmi:"+id;
-            if(!ie8 && onLoad)n.onload=onLoad;
-            n.style.display = "none";
-            doc.body.appendChild(n);
-            w=frames[frames.length-1].window;
-            return [n,w,w.document];
+            var ifr=doc.createElement(scr),w,d;
+            if(id)ifr.id=ifr.name="xui_xdmi:"+id;
+            if(!ie8 && onLoad)ifr.onload=onLoad;
+            ifr.style.display = "none";
+            doc.body.appendChild(ifr);
+            w=('contentWindow' in ifr) ? ifr.contentWindow : 
+                ('window' in ifr) ? ifr.window : ((d=ifr.contentDocument||ifr.document).defaultView||d.parentWindow);
+            return [ifr,w,w.document];
         },
         isCrossDomain:function(uri){
             var b=xui._localParts;
@@ -69802,7 +69804,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             }else{
                 return this.getSubNode("POOL");
             }
-        },
+        }
     },
     Static:{
         HasHtmlTableNode:1,
