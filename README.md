@@ -24,7 +24,7 @@ Website: https://crossui.com
 These tools (commercial license) can reduce development time significantly:
 
 * CrossUI Front-end builder for Github: https://crossui.com/RADGithub <br>
->>Create fully interactive experiences without writing one line of code integrated with Github repository.
+> Create fully interactive web app without writing one line of code, integrated with Github repository.
 * CrossUI Single Page Builder: https://crossui.com/RAD/Builder.html
 
 * CrossUI Embeddable Desginer: https://crossui.com/Designer/
