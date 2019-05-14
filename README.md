@@ -40,5 +40,6 @@ These tools (commercial license) can reduce development time significantly:
 * https://crossui.com/libs/2.0/js/xui-all.js
 
 ## Others
-* https://www.crossui.com/examples.html
-* https://www.crossui.com/tutorials.html
+* Examples: https://www.crossui.com/examples.html
+* Tutorials: https://www.crossui.com/tutorials.html
+* Builder desktop versions: https://www.crossui.com/download.html
