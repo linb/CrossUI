@@ -1,11 +1,16 @@
 xui.Class('xui.Module.JSONEditor', 'xui.Module',{
     Instance:{ 
         activate:function(){},
-        setValue:function(str){
+        setValue:function(str, keyOptions){
             var ns=this,
                 obj=xui.isStr(str)?str?xui.unserialize(str):false:str,
                 rows=ns._json2rows(obj, ns._rootArr = xui.isArr(obj));
-         
+
+            if(keyOptions){
+                ns.tg.updateHeader("key",{type:'combobox',editorListItems: xui.isHash(keyOptions)?xui.toArr(keyOptions,true):keyOptions});
+            }else{
+                ns.tg.updateHeader("key",{type:'input',editorListItems: null});
+            }
             ns.tg.setRows(rows).free();
         },
         getValue:function(returnObj){
@@ -232,7 +237,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         (/^\[[\s\S]*\]$/.test(v)  ) && xui.isArr(xui.unserialize(v))) ;
         },
         _tg_beforecellapply:function(profile, cc, options, editor, tag){
-            if(tag!=='onchange')return false;
+            if(tag!=='onchange'&&tag!=='pick')return false;
         },
         _tg_beforecellupdated:function (profile, cell, options) {
             var ns=this,
