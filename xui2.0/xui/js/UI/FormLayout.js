@@ -285,9 +285,15 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     this.boxing().refresh();
                 }
             },
-            // if use handsontable 6.22 (MIT license) as renderer
-            rendererCDNJS:"https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.js",
-            rendererCDNCSS:"https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.css"
+            // Use handsontable 6.22 (MIT license) as renderer in design mode
+            rendererCDNJS:{
+                hidden:true,
+                ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.js"
+            },
+            rendererCDNCSS:{
+                hidden:true,
+                ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.css"
+            }
         },
         RenderTrigger:function(){
             var prf=this,prop=prf.properties,cls=prf.box;
@@ -651,6 +657,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         prf._$tableInited=1;
                     },
                     afterRender:function(isForced){
+                        var table=this;
                         //console.log('afterRender');
                         xui.tryF(prf.$onrender,[],prf);
 
@@ -666,7 +673,31 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             prf.getSubNodes("BOX").height('auto');
                         }
                         if(prf._$tableInited){
-                            var map = prf.$cellIdChangedMap;
+                            var map = prf.$cellIdChangedMap, exists=prf.ItemIdMapSubSerialId;
+
+                            //*** adjut formula
+                            var adjustFormula=function(formula){
+                                return xui.replace(formula, [
+                                    // protect all
+                                    [/\/\*[^*]*\*+([^\/][^*]*\*+)*\//,'$0'],
+                                    [/\/\/[^\n]*/,'$0'],
+                                    [/\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*/,'$0'],
+                                    [/"(\\.|[^"\\])*"/,'$0'],
+                                    [/'(\\.|[^'\\])*'/,'$0'],
+                                    [/[\w]+\(/,'$0'],
+                                    // replace cells
+                                    [/\b([A-Z]+[\d]+)\b/,function(a){
+                                        return map[a[0]] || (exists[a[0]] ? a[0] : ("'"+a[0]+"'"));
+                                    }]
+                                ]);
+                            };
+                            xui.each(prf.SubSerialIdMapItem,function(cell){
+                                var ov=table.getDataAtCell(cell.row, cell.col);
+                                if(ov && (ov+"").charAt(0)=="="){
+                                    var nv=adjustFormula(ov);
+                                    if(nv!==ov) table.setDataAtCell(cell.row, cell.col, nv);
+                                }
+                            });
 
                             //*** restore children
                             if(prf._pool_children){
