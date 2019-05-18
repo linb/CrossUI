@@ -163,6 +163,9 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 $order:4,
                 className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uiborder-radius xui-uibase',
                 tagName : 'input',
+                autocorrect:"off",
+                autocomplete:"off",
+                //autocapitalize:"off",                
                 tabindex:'{tabindex}',
                 style:'{_css}'
             },

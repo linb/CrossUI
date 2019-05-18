@@ -1928,6 +1928,9 @@ xui.Class('xui.Dom','xui.absBox',{
             });
             return id;
         },
+        popUp : function(pos, type, parent, trigger, group){
+            return this.pop.apply(this, arguments);
+        },
         // pop to the top layer
         popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
             var region, target=this, t;

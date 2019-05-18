@@ -1505,7 +1505,7 @@ xui.merge(xui,{
                             if(xui.Class._last)obj=c[uri]=xui.Class._last;
                             xui.Class._ignoreNSCache=xui.Class._last=null;
                             if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
-                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
                             var s=xui.getClassName(uri);
                             if(obj&&s&&obj.KEY!=s){
                                 var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
@@ -1535,7 +1535,7 @@ xui.merge(xui,{
                         if(xui.Class._last)obj=c[uri]=xui.Class._last;
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
-                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
                         if(obj&&obj.KEY!=s){
                             var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
                             for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  obj.KEY]);
@@ -1678,6 +1678,7 @@ xui.merge(xui,{
             var a=uri.split(/\/js\//g),
                 b,c,n=a.length;
             if(n>=2){
+                if(a[n-2]+"/"==xui.ini.path)a[n-2]="xui";
                 // get the last one: any/js/any/App/js/index.js
                 b=a[n-2].split(/\//g);
                 b=b[b.length-1];
@@ -2951,16 +2952,15 @@ xui.Class('xui.Thread',null,{
             if(typeof t.task=='function'){
                 t.args=t.args||[];
                 //last arg is threadid
-                t.args.push(p.id);
+                t.args = t.args.concat([p.id, p.tasks, p.index]);
             }
-
             // to next pointer
             p.index++;
             p.time=xui.stamp();
 
             // the real task
             if(typeof t.task=='function'){
-                r = xui.tryF(t.task, t.args || [p.id], t.scope||self, null);
+                r = xui.tryF(t.task, t.args || [p.id, p.tasks, p.index], t.scope||self, null);
             }
 
             // maybe abort called in abover task
@@ -2972,7 +2972,7 @@ xui.Class('xui.Thread',null,{
                 p.cache[t.id] = r;
 
             // if callback return false, stop.
-            if(t.callback && false===xui.tryF(t.callback, [p.id], self, true))
+            if(t.callback && false===xui.tryF(t.callback, [p.id, p.tasks, p.index], self, true))
                 return self.abort('callback');
             // if set suspend at t.task or t.callback , stop continue running
             if(p.status!=="run")

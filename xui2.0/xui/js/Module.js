@@ -691,21 +691,65 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 }
             }
-            //load required class
-            if((t=self.Required) && t.length)
-                funs.push(function(threadid){
-                    xui.require(self.Required,null,function(uri,key){
-                        self._fireEvent('onLoadRequiredClass', [uri,key]);
-                    },function(){
-                        self._fireEvent('onLoadRequiredClassErr',  xui.toArr(arguments));
-                    },function(msg){
-                        self._fireEvent('onLoadRequiredClassErr',  xui.toArr(arguments));
-                    },false, threadid);
-                });
+
+            var required = xui.copy(self.Required);
+            //load required class recursively
+            if((t=required) && t.length){
+                var layer=0;
+                var fetchRequired = function(threadid,funs,index){
+                         if(required && required.length){
+                            xui.require(required,function(tid){
+                                // try to load deeper sub module's required classes
+                                layer++;
+                                // if inner module have classes to load, add a task to the current thread
+                                if(required && required.length){
+                                    xui.arr.insertAny(funs,fetchRequired,index);
+                                }
+                            },function(uri,key){
+                                if(key){
+                                    var o=xui.SC.get(key), arr;
+                                    if(o['xui.Module']){
+                                        // Dependencies
+                                        if(xui.isArr(arr=o.prototype.Dependencies)){
+                                            for(var i=0,l=arr.length;i<l;i++){
+                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
+                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
+                                            }
+                                        }
+                                        // Required
+                                        if(xui.isArr(arr=o.prototype.Required)){
+                                            for(var i=0,l=arr.length;i<l;i++){
+                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
+                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
+                                            }
+                                        }
+                                        // new class in iniComponents
+                                        if(xui.isFun(o.prototype.iniComponents)){
+                                            try{
+                                                (o.prototype.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                                                    if(!xui.SC.get(b))required.push(b);
+                                                });
+                                            }catch(e){}
+                                        }
+                                    }
+                                }
+                                self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
+                            },function(){
+                                var args=xui.toArr(arguments);
+                                args.push(layer);
+                                self._fireEvent('onLoadRequiredClassErr',  args);
+                            },null,false, threadid);
+                            // clear now
+                            required=[];
+                        }
+                };
+                funs.push(fetchRequired);
+            }
+
             //inner components
             if(self.iniComponents)
-                funs.push(function(){
-                    self._createInnerModules();
+                funs.push(function(tid){
+                    self._createInnerModules(tid);
                 });
             //load resource here
             if(self.iniResource)
@@ -744,7 +788,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             return self;
         },
-        _createInnerModules:function(){
+        _createInnerModules:function(tid){
             var self=this;
             if(self._recursived || self._innerModulesCreated)
                 return;            
@@ -778,7 +822,7 @@ xui.Class('xui.Module','xui.absProfile',{
             xui.arr.each(self._nodes,function(o){
                 xui.Module.$attachModuleInfo(self,o);
                 //Recursive call
-                if(o['xui.Module'])o._createInnerModules();
+                if(o['xui.Module'])o._createInnerModules(tid);
             });
             // attach destroy to the first UI control
             var autoDestroy = self.autoDestroy || self.properties.autoDestroy;

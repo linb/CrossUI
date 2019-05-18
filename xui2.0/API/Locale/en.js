@@ -3445,17 +3445,6 @@ xui.set(xui.Locale,["en","app"], {
                     "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
-            popup:{
-                $desc:"Pops it onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
-                $rtn:"String, the blur trigger id",
-                $paras:[
-                    "pos [Reqired] : {left:Number,top:Number} Object(The css left and top value) or xui.Dom Object(for getting position)",
-                    "type [Optional] : String. one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'.Default is 'outer'",
-                    "parent [Optional] : xui.Dom Object. the parent element to hold the pop element. Default is [document.body]",
-                    "trigger [Required] : Function or [null] : the hidden trigger function",
-                    "group [Optional] : xui.Dom Object. this trigger's group Object"
-                ]
-            },
             text:{
                 $desc:"Gets the text contents of the first element, or sets the text contents to the set of elements",
                 $rtn:"String/[self]",
@@ -3673,8 +3662,9 @@ xui.set(xui.Locale,["en","app"], {
                     "hideEffects[Optional] : Object, hide effects config object"
                 ]
             },
-            popup:{
-                $desc:"Pops the first element onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
+            // xui.Dom.prototype
+            popUp:{
+                $desc:"Pops it onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
                 $rtn:"String, the blur trigger id",
                 $paras:[
                     "pos [Reqired] : {left:Number,top:Number} Object(The css left and top value) or xui.Dom Object(for getting position)",
@@ -9178,7 +9168,8 @@ xui.set(xui.Locale,["en","app"], {
                     "var logo=xui.UIProfile.getFromDom('btnLang').boxing(); logo.hide(); xui.asyRun(function(){logo.show();},1000);"
                 ]
             },
-            popup:{
+            // xui.UI.prototype
+            popUp:{
                 $desc:"Pops it onto the top, and sets a trigger function to allow user click out of the first element's region to hide it",
                 $rtn:"String, the blur trigger id",
                 $paras:[
@@ -14982,13 +14973,15 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"To adjust pop menu width automatically",
                 $rtn:"[self]"
             },
-            popup:{
+            // xui.UI.PopMenu.prototype
+            popUp:{
                 $desc:"Pops this menu",
                 $rtn:"[self]",
                 $paras:[
                     "pos [Required] : Object{left:Nubmer,top:Number}/xui.UIProfile/Element/Event",
                     "type [Optional] : String. one of 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom','1','2','3','4','12','21'.Default is 'outer'",
-                    "parent [Optional} : xui.Dom/Element,The popmenu's parent element"
+                    "parent [Optional} : xui.Dom/Element,The popmenu's parent element",
+                    "ignoreEffects [Optional} : determine whether ignore showing effects or not"
                 ],
                 $snippet:[
                     "var id='xui.temp.pm0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">Click blank to pop up menu' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

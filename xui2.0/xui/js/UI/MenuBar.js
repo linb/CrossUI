@@ -73,7 +73,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 }
                 // popmenu
                 if(profile[all][id])
-                    profile[all][id].pop(xui(src), 1, pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : null);
+                    profile[all][id].popUp(xui(src), 1, pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : null);
 
                 return false;
             }

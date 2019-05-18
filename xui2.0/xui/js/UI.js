@@ -1001,7 +1001,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             xui.setData([aysid,'$ui.hover.pop'],{item:item});
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                             if(!beforePop || false!==beforePop(prf, node, e, src, item)){
-                                if(popmenu) popmenu.pop(src, type, parent);
+                                if(popmenu) popmenu.popUp(src, type, parent);
                                 else node.popToTop(src, type, parent);
                                 node.onMouseover(function(){
                                     xui(src).onMouseover(true)
@@ -1376,7 +1376,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         popUp:function(pos, type, parent, trigger, group){
             var prf=this.get(0), t=prf.getRoot();
             if(t=t.get(0)){
-                xui(t).pop(pos, type, parent, trigger, group);
+                xui(t).popUp(pos, type, parent, trigger, group);
             }
         },
         show:function(parent,subId,left,top,ignoreEffects){

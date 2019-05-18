@@ -1506,7 +1506,7 @@ xui.merge(xui,{
                             if(xui.Class._last)obj=c[uri]=xui.Class._last;
                             xui.Class._ignoreNSCache=xui.Class._last=null;
                             if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
-                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
                             var s=xui.getClassName(uri);
                             if(obj&&s&&obj.KEY!=s){
                                 var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
@@ -1536,7 +1536,7 @@ xui.merge(xui,{
                         if(xui.Class._last)obj=c[uri]=xui.Class._last;
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
-                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  xui.toArr(arguments));}
+                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
                         if(obj&&obj.KEY!=s){
                             var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
                             for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  obj.KEY]);
@@ -1679,6 +1679,7 @@ xui.merge(xui,{
             var a=uri.split(/\/js\//g),
                 b,c,n=a.length;
             if(n>=2){
+                if(a[n-2]+"/"==xui.ini.path)a[n-2]="xui";
                 // get the last one: any/js/any/App/js/index.js
                 b=a[n-2].split(/\//g);
                 b=b[b.length-1];
@@ -2952,16 +2953,15 @@ xui.Class('xui.Thread',null,{
             if(typeof t.task=='function'){
                 t.args=t.args||[];
                 //last arg is threadid
-                t.args.push(p.id);
+                t.args = t.args.concat([p.id, p.tasks, p.index]);
             }
-
             // to next pointer
             p.index++;
             p.time=xui.stamp();
 
             // the real task
             if(typeof t.task=='function'){
-                r = xui.tryF(t.task, t.args || [p.id], t.scope||self, null);
+                r = xui.tryF(t.task, t.args || [p.id, p.tasks, p.index], t.scope||self, null);
             }
 
             // maybe abort called in abover task
@@ -2973,7 +2973,7 @@ xui.Class('xui.Thread',null,{
                 p.cache[t.id] = r;
 
             // if callback return false, stop.
-            if(t.callback && false===xui.tryF(t.callback, [p.id], self, true))
+            if(t.callback && false===xui.tryF(t.callback, [p.id, p.tasks, p.index], self, true))
                 return self.abort('callback');
             // if set suspend at t.task or t.callback , stop continue running
             if(p.status!=="run")
@@ -11805,6 +11805,9 @@ xui.Class('xui.Dom','xui.absBox',{
             });
             return id;
         },
+        popUp : function(pos, type, parent, trigger, group){
+            return this.pop.apply(this, arguments);
+        },
         // pop to the top layer
         popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
             var region, target=this, t;
@@ -15271,21 +15274,65 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 }
             }
-            //load required class
-            if((t=self.Required) && t.length)
-                funs.push(function(threadid){
-                    xui.require(self.Required,null,function(uri,key){
-                        self._fireEvent('onLoadRequiredClass', [uri,key]);
-                    },function(){
-                        self._fireEvent('onLoadRequiredClassErr',  xui.toArr(arguments));
-                    },function(msg){
-                        self._fireEvent('onLoadRequiredClassErr',  xui.toArr(arguments));
-                    },false, threadid);
-                });
+
+            var required = xui.copy(self.Required);
+            //load required class recursively
+            if((t=required) && t.length){
+                var layer=0;
+                var fetchRequired = function(threadid,funs,index){
+                         if(required && required.length){
+                            xui.require(required,function(tid){
+                                // try to load deeper sub module's required classes
+                                layer++;
+                                // if inner module have classes to load, add a task to the current thread
+                                if(required && required.length){
+                                    xui.arr.insertAny(funs,fetchRequired,index);
+                                }
+                            },function(uri,key){
+                                if(key){
+                                    var o=xui.SC.get(key), arr;
+                                    if(o['xui.Module']){
+                                        // Dependencies
+                                        if(xui.isArr(arr=o.prototype.Dependencies)){
+                                            for(var i=0,l=arr.length;i<l;i++){
+                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
+                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
+                                            }
+                                        }
+                                        // Required
+                                        if(xui.isArr(arr=o.prototype.Required)){
+                                            for(var i=0,l=arr.length;i<l;i++){
+                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
+                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
+                                            }
+                                        }
+                                        // new class in iniComponents
+                                        if(xui.isFun(o.prototype.iniComponents)){
+                                            try{
+                                                (o.prototype.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                                                    if(!xui.SC.get(b))required.push(b);
+                                                });
+                                            }catch(e){}
+                                        }
+                                    }
+                                }
+                                self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
+                            },function(){
+                                var args=xui.toArr(arguments);
+                                args.push(layer);
+                                self._fireEvent('onLoadRequiredClassErr',  args);
+                            },null,false, threadid);
+                            // clear now
+                            required=[];
+                        }
+                };
+                funs.push(fetchRequired);
+            }
+
             //inner components
             if(self.iniComponents)
-                funs.push(function(){
-                    self._createInnerModules();
+                funs.push(function(tid){
+                    self._createInnerModules(tid);
                 });
             //load resource here
             if(self.iniResource)
@@ -15324,7 +15371,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             return self;
         },
-        _createInnerModules:function(){
+        _createInnerModules:function(tid){
             var self=this;
             if(self._recursived || self._innerModulesCreated)
                 return;            
@@ -15358,7 +15405,7 @@ xui.Class('xui.Module','xui.absProfile',{
             xui.arr.each(self._nodes,function(o){
                 xui.Module.$attachModuleInfo(self,o);
                 //Recursive call
-                if(o['xui.Module'])o._createInnerModules();
+                if(o['xui.Module'])o._createInnerModules(tid);
             });
             // attach destroy to the first UI control
             var autoDestroy = self.autoDestroy || self.properties.autoDestroy;
@@ -18543,6 +18590,9 @@ xui.Class("xui.Tips", null,{
             xui.Debugger.log('>>' + sMsg+' at File: '+ sUrl + ' ( line ' + sLine + ' ).');
             return true;
         },
+        getErrMsg:function(e){
+            return e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString());
+        },
         trace:function(obj){
             var args=xui.toArr(arguments),
                 fun=args[1]||arguments.callee.caller,
@@ -19756,7 +19806,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             xui.setData([aysid,'$ui.hover.pop'],{item:item});
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                             if(!beforePop || false!==beforePop(prf, node, e, src, item)){
-                                if(popmenu) popmenu.pop(src, type, parent);
+                                if(popmenu) popmenu.popUp(src, type, parent);
                                 else node.popToTop(src, type, parent);
                                 node.onMouseover(function(){
                                     xui(src).onMouseover(true)
@@ -20131,7 +20181,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         popUp:function(pos, type, parent, trigger, group){
             var prf=this.get(0), t=prf.getRoot();
             if(t=t.get(0)){
-                xui(t).pop(pos, type, parent, trigger, group);
+                xui(t).popUp(pos, type, parent, trigger, group);
             }
         },
         show:function(parent,subId,left,top,ignoreEffects){
@@ -31464,6 +31514,9 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                         $order:10,
                         className:'xui-ui-ellipsis {_inputcls}',
                         tagName : 'input',
+                        autocorrect:"off",
+                        autocomplete:"off",
+                        //autocapitalize:"off",
                         type : '{_inputtype}',
                         maxlength:'{maxlength}',
                         tabindex:'{tabindex}',
@@ -32616,7 +32669,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
         Templates:{
             className:'xui-display-none',
             style:'display:none',
-            tagName:'input',
+            tagName : 'input',
             type:'hidden'
         },
         DataModel:{
@@ -35298,7 +35351,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         t.FILE={
                             $order:20,
                             className:'xui-ui-unselectable  {_radius_dropr}',
-                            tagName:'input',
+                            tagName : 'input',
+                            autocorrect:"off",
+                            autocomplete:"off",
+                            //autocapitalize:"off",
                             type:'file',
                             accept:fileAccept||null,
                             multiple:fileMultiple?"multiple":null,
@@ -40062,6 +40118,9 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 $order:4,
                 className:'xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uiborder-radius xui-uibase',
                 tagName : 'input',
+                autocorrect:"off",
+                autocomplete:"off",
+                //autocapitalize:"off",                
                 tabindex:'{tabindex}',
                 style:'{_css}'
             },
@@ -41235,7 +41294,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         profile._droppopmenu.destroy(true);
                         delete profile._droppopmenu;
                     }});
-                    menu.pop(src);
+                    menu.popUp(src);
                 },
                 onMouseout:function(profile, e, src){
                     var pop;
@@ -43863,7 +43922,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             // set container
             profile._conainer = pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : parent || null;
 
-            profile.getRoot().popToTop(pos, type, profile._conainer);
+            profile.getRoot().popToTop(pos, type, profile._conainer,null,null,ignoreEffects);
 
             ns._setScroll();
             ns.adjustSize();
@@ -44277,7 +44336,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             popp.$parentPopMenu = profile;
                             profile.$childPopMenu = popp;
 
-                            pop.pop(src, 2, profile._conainer);
+                            pop.popUp(src, 2, profile._conainer);
                             profile[sms] = pop;
                         }
                     }
@@ -44651,7 +44710,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
                 // popmenu
                 if(profile[all][id])
-                    profile[all][id].pop(xui(src), 1, pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : null);
+                    profile[all][id].popUp(xui(src), 1, pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : null);
 
                 return false;
             }
@@ -50272,7 +50331,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                     if(profile.$col_pop)
-                        profile.$col_pop.pop(src);
+                        profile.$col_pop.popUp(src);
                 }
             },
             CELLS2:{
@@ -70076,9 +70135,15 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                     this.boxing().refresh();
                 }
             },
-            // if use handsontable 6.22 (MIT license) as renderer
-            rendererCDNJS:"https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.js",
-            rendererCDNCSS:"https://cdn.jsdelivr.net/npm/handsontable@6.2.2/dist/handsontable.full.min.css"
+            // Use handsontable 6.22 (MIT license) as renderer in design mode
+            rendererCDNJS:{
+                hidden:true,
+                ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.js"
+            },
+            rendererCDNCSS:{
+                hidden:true,
+                ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.css"
+            }
         },
         RenderTrigger:function(){
             var prf=this,prop=prf.properties,cls=prf.box;
@@ -70442,6 +70507,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                         prf._$tableInited=1;
                     },
                     afterRender:function(isForced){
+                        var table=this;
                         //console.log('afterRender');
                         xui.tryF(prf.$onrender,[],prf);
 
@@ -70457,7 +70523,31 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                             prf.getSubNodes("BOX").height('auto');
                         }
                         if(prf._$tableInited){
-                            var map = prf.$cellIdChangedMap;
+                            var map = prf.$cellIdChangedMap, exists=prf.ItemIdMapSubSerialId;
+
+                            //*** adjut formula
+                            var adjustFormula=function(formula){
+                                return xui.replace(formula, [
+                                    // protect all
+                                    [/\/\*[^*]*\*+([^\/][^*]*\*+)*\//,'$0'],
+                                    [/\/\/[^\n]*/,'$0'],
+                                    [/\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*/,'$0'],
+                                    [/"(\\.|[^"\\])*"/,'$0'],
+                                    [/'(\\.|[^'\\])*'/,'$0'],
+                                    [/[\w]+\(/,'$0'],
+                                    // replace cells
+                                    [/\b([A-Z]+[\d]+)\b/,function(a){
+                                        return map[a[0]] || (exists[a[0]] ? a[0] : ("'"+a[0]+"'"));
+                                    }]
+                                ]);
+                            };
+                            xui.each(prf.SubSerialIdMapItem,function(cell){
+                                var ov=table.getDataAtCell(cell.row, cell.col);
+                                if(ov && (ov+"").charAt(0)=="="){
+                                    var nv=adjustFormula(ov);
+                                    if(nv!==ov) table.setDataAtCell(cell.row, cell.col, nv);
+                                }
+                            });
 
                             //*** restore children
                             if(prf._pool_children){

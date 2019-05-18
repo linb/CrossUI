@@ -3883,7 +3883,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                     if(profile.$col_pop)
-                        profile.$col_pop.pop(src);
+                        profile.$col_pop.popUp(src);
                 }
             },
             CELLS2:{

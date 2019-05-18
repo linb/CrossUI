@@ -20,7 +20,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
         Templates:{
             className:'xui-display-none',
             style:'display:none',
-            tagName:'input',
+            tagName : 'input',
             type:'hidden'
         },
         DataModel:{

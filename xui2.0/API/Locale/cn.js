@@ -3454,17 +3454,6 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui('btnLang').hide(); xui.asyRun(function(){xui('btnLang').show();},1000);"
                 ]
             },
-            popUp:{
-                $desc:"显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
-                $rtn:"String, 区域外点击隐藏的唯一标识",
-                $paras:[
-                    "pos [必需参数] : Object/xui.Dom/Element",
-                    "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
-                    "parent [可选参数] : xui.Dom, the parent element to hold the pop element. 默认为[document.body]",
-                    "trigger [必需参数] : Function or [null] :  隐藏触发函数",
-                    "group [可选参数] : xui.Dom, 触发函数的组对象"
-                ]
-            },
             text:{
                 $desc:"获取第一个元素的文本内容,或设置所有元素的文本内容",
                 $rtn:"String/[self]",
@@ -3684,8 +3673,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "hideEffects[Optional] : Object, 隐去动画的配置"
                 ]
             },
-            popup:{
-                $desc:"将第一个元素显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
+            popUp:{
+                $desc:"显示到最顶层，并设置一个隐藏触发函数, 该函数将在鼠标单击元素之外的区域时被调用",
                 $rtn:"String, 区域外点击隐藏的唯一标识",
                 $paras:[
                     "pos [必需参数] : Object/xui.Dom/Element",
@@ -14894,13 +14883,14 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"按照列表的内容自动调整列表的宽度和高度",
                 $rtn:"[self]"
             },
-            popup:{
+            popUp:{
                 $desc:"弹出菜单",
                 $rtn:"[self]",
                 $paras:[
                     "pos [必需参数] : 菜单弹出点.可以是一个坐标参数{left:Nubmer,top:Number},DOM元素,控件或事件对象",
                     "type [可选参数] : String, 以下之一: 'outer','inner','outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop','outerleft-top','left-top','center-top','right-top','outerright-top','outerleft-middle','left-middle','center-middle','right-middle','outerright-middle','outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom','outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom', 向前兼容也可以是1~4,12,21. 默认为outer",
-                    "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象"
+                    "parent [可选参数} : 菜单的父元素.DOM元素或xui.Dom对象",
+                    "ignoreEffects [可选参数} : 是否阻止显示动画"
                 ],
                 $snippet:[
                     "var id='xui.temp.pm0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:200px;width:300px;\">点击这里弹出菜单' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

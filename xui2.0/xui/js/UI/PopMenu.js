@@ -152,7 +152,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             // set container
             profile._conainer = pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : parent || null;
 
-            profile.getRoot().popToTop(pos, type, profile._conainer);
+            profile.getRoot().popToTop(pos, type, profile._conainer,null,null,ignoreEffects);
 
             ns._setScroll();
             ns.adjustSize();
@@ -566,7 +566,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             popp.$parentPopMenu = profile;
                             profile.$childPopMenu = popp;
 
-                            pop.pop(src, 2, profile._conainer);
+                            pop.popUp(src, 2, profile._conainer);
                             profile[sms] = pop;
                         }
                     }

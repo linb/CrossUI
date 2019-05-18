@@ -1506,7 +1506,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         t.FILE={
                             $order:20,
                             className:'xui-ui-unselectable  {_radius_dropr}',
-                            tagName:'input',
+                            tagName : 'input',
+                            autocorrect:"off",
+                            autocomplete:"off",
+                            //autocapitalize:"off",
                             type:'file',
                             accept:fileAccept||null,
                             multiple:fileMultiple?"multiple":null,

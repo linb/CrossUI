@@ -834,7 +834,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         profile._droppopmenu.destroy(true);
                         delete profile._droppopmenu;
                     }});
-                    menu.pop(src);
+                    menu.popUp(src);
                 },
                 onMouseout:function(profile, e, src){
                     var pop;
