@@ -2272,7 +2272,8 @@ new function(){
                 conditions=conf.conditions||[],
                 adjust=adjustparam(conf.adjust)||null,
                 iconditions=[],t1,t2,
-                timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+                timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
+                resetid=conf.resetid||null;
             
             var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf}; 
 
@@ -2400,6 +2401,8 @@ new function(){
                             break;
                         case 'control':
                         case 'module':
+                            if(target.charAt(0)=='{' && (t = xui.adjustVar(target, _ns)) && xui.isFun(t.getAlias))
+                                target = t.getAlias();
                             if(method=="disable"||method=="enable"){
                                 if(xui.isFun(t=xui.get(_ns.page,[target,"setDisabled"])))t.apply(_ns.page[target],[method=="disable",true]);
                             }else{
@@ -2560,17 +2563,20 @@ new function(){
                     }
                 };
                 // asy
-                if(timeout!==null)xui.asyRun(fun,timeout);
-                else fun();
+                if(timeout!==null){
+                    if(resetid) xui.resetRun(resetid, fun, timeout);
+                    else xui.asyRun(fun,timeout);
+                }else fun();
             }
             return conf["return"];
         },
 
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
-            var ns=this, fun, resume=0, t, rtn,
+            var ns=this, fun, resume=0, t, rtn, newbie,
                 funs = pseudo.actions || pseudo || [],
                 rtn = pseudo['return'], funsrtn,
+                newbies = pseudo.newbies,
                 innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
                 _ns=ns.getScope(args, module, temp),
                 recursive=function(data){
@@ -2617,6 +2623,15 @@ new function(){
             if(!innerE){
                 xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo},{scope:_ns}); 
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "{");
+                if(newbies){
+                    temp.newbies={};
+                    for(var k in newbies) {
+                        newbie = xui.create(newbies[k]);
+                        // set a new alias
+                        if(newbie.setHost && _ns.page)newbie.setHost(_ns.page, newbie.getAlias()+"-"+xui.rand());
+                        temp.newbies[k] = newbie;
+                    }
+                }
             }
             funsrtn = recursive();
             if(!innerE){

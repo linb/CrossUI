@@ -596,7 +596,7 @@ xui.set(xui.Locale,["en","app"], {
             ]
         },
         resetRun:{
-            $desc:"This will always run the newer function in asynchronous mode",
+            $desc:"This will always run the latest set function asynchronously",
             $paras:[
                 "key [Required]: String, Key for identify",
                 "fun [Required]: Function, Function to run",

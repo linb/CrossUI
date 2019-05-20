@@ -79,7 +79,6 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
         setPage:function(value, force, type){
             return this.each(function(o){
                 if(!/^[1-9]\d*$/.test(value+""))return;
-
                 var p=o.properties,
                     pc = p.pageCount, 
                     v=(p.$UIvalue||p.value||"")+"",
@@ -106,8 +105,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             return this.getPage(true);
         },
         setTotalCount:function(count){
-            if(!/^[1-9]\d*$/.test(count+""))return this;
-            count=parseInt(count,10);
+            count=parseInt(count,10)||0;
             return this.each(function(o){
                 var p=o.properties,
                     pc=parseInt(p.pageCount,10),

@@ -2273,7 +2273,8 @@ new function(){
                 conditions=conf.conditions||[],
                 adjust=adjustparam(conf.adjust)||null,
                 iconditions=[],t1,t2,
-                timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null;
+                timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
+                resetid=conf.resetid||null;
             
             var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf}; 
 
@@ -2401,6 +2402,8 @@ new function(){
                             break;
                         case 'control':
                         case 'module':
+                            if(target.charAt(0)=='{' && (t = xui.adjustVar(target, _ns)) && xui.isFun(t.getAlias))
+                                target = t.getAlias();
                             if(method=="disable"||method=="enable"){
                                 if(xui.isFun(t=xui.get(_ns.page,[target,"setDisabled"])))t.apply(_ns.page[target],[method=="disable",true]);
                             }else{
@@ -2561,17 +2564,20 @@ new function(){
                     }
                 };
                 // asy
-                if(timeout!==null)xui.asyRun(fun,timeout);
-                else fun();
+                if(timeout!==null){
+                    if(resetid) xui.resetRun(resetid, fun, timeout);
+                    else xui.asyRun(fun,timeout);
+                }else fun();
             }
             return conf["return"];
         },
 
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
-            var ns=this, fun, resume=0, t, rtn,
+            var ns=this, fun, resume=0, t, rtn, newbie,
                 funs = pseudo.actions || pseudo || [],
                 rtn = pseudo['return'], funsrtn,
+                newbies = pseudo.newbies,
                 innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
                 _ns=ns.getScope(args, module, temp),
                 recursive=function(data){
@@ -2618,6 +2624,15 @@ new function(){
             if(!innerE){
                 xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo},{scope:_ns}); 
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "{");
+                if(newbies){
+                    temp.newbies={};
+                    for(var k in newbies) {
+                        newbie = xui.create(newbies[k]);
+                        // set a new alias
+                        if(newbie.setHost && _ns.page)newbie.setHost(_ns.page, newbie.getAlias()+"-"+xui.rand());
+                        temp.newbies[k] = newbie;
+                    }
+                }
             }
             funsrtn = recursive();
             if(!innerE){
@@ -15264,7 +15279,18 @@ xui.Class('xui.Module','xui.absProfile',{
                 try{
                     (self.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                         if(!xui.SC.get(b))arr.push(b);
-                    });
+                       return a;
+                    }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                          b=b.split(/\s*,\s*/);
+                          for(var i=0,l=b.length;i<l;i++){
+                            c = a[i].split(/\s*:s*/);
+                            if(c[1]){
+                               c = c[1].replace(/['"]/g, '');
+                               if(!xui.SC.get(c))required.push(c);
+                            }
+                          }
+                          return a;
+                    })
                 }catch(e){}
                 if(arr.length){
                     if(self.Required&&xui.isArr(self.Required)){
@@ -15311,7 +15337,18 @@ xui.Class('xui.Module','xui.absProfile',{
                                             try{
                                                 (o.prototype.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                                                     if(!xui.SC.get(b))required.push(b);
-                                                });
+                                                    return a;
+                                                }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                                                      b=b.split(/\s*,\s*/);
+                                                      for(var i=0,l=b.length;i<l;i++){
+                                                        c = a[i].split(/\s*:s*/);
+                                                        if(c[1]){
+                                                           c = c[1].replace(/['"]/g, '');
+                                                           if(!xui.SC.get(c))required.push(c);
+                                                        }
+                                                      }
+                                                      return a;
+                                                })
                                             }catch(e){}
                                         }
                                     }
@@ -40034,7 +40071,6 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         setPage:function(value, force, type){
             return this.each(function(o){
                 if(!/^[1-9]\d*$/.test(value+""))return;
-
                 var p=o.properties,
                     pc = p.pageCount, 
                     v=(p.$UIvalue||p.value||"")+"",
@@ -40061,8 +40097,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             return this.getPage(true);
         },
         setTotalCount:function(count){
-            if(!/^[1-9]\d*$/.test(count+""))return this;
-            count=parseInt(count,10);
+            count=parseInt(count,10)||0;
             return this.each(function(o){
                 var p=o.properties,
                     pc=parseInt(p.pageCount,10),
@@ -43447,7 +43482,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(pid)
                 oitem._pid=pid;
-
+            if(item.isFolder){
+                if(!oitem.sub)oitem.sub=true;
+                if(!item.sub)item.sub=true;
+            }
             // set 'visible' will show when parent call .height()
             item._fi_togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-icon-placeholder':'xui-uicmd-none');
 
@@ -43725,6 +43763,10 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
                 map2=profile.SubSerialIdMapItem,
                 pitem;
 
+            if(item.isFolder){
+                if(!oitem.sub)oitem.sub=true;
+                if(!item.sub)item.sub=true;
+            }
             if(xui.isSet(pid)){
                 oitem._pid=pid;
                 if(pitem=map2[map1[pid]]){

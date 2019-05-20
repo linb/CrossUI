@@ -237,9 +237,12 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         (/^\[[\s\S]*\]$/.test(v)  ) && xui.isArr(xui.unserialize(v))) ;
         },
         _tg_beforecellapply:function(profile, cc, options, editor, tag){
-            if(tag!=='onchange'&&tag!=='pick')return false;
+            if(tag=='asycheck')return false;
         },
         _tg_beforecellupdated:function (profile, cell, options) {
+            // stop multi _getCellValue
+            if(options.value===cell.value)return false;
+
             var ns=this,
                 map={'hash':1,'array':2},
                 row=cell._row,

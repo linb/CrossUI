@@ -832,7 +832,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(pid)
                 oitem._pid=pid;
-
+            if(item.isFolder){
+                if(!oitem.sub)oitem.sub=true;
+                if(!item.sub)item.sub=true;
+            }
             // set 'visible' will show when parent call .height()
             item._fi_togglemark = item.sub?('xui-uicmd-toggle'+(item._checked?" xuifont-checked xui-uicmd-toggle-checked":"")):(p.togglePlaceholder?'xui-icon-placeholder':'xui-uicmd-none');
 

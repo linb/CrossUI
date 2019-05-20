@@ -681,7 +681,18 @@ xui.Class('xui.Module','xui.absProfile',{
                 try{
                     (self.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                         if(!xui.SC.get(b))arr.push(b);
-                    });
+                       return a;
+                    }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                          b=b.split(/\s*,\s*/);
+                          for(var i=0,l=b.length;i<l;i++){
+                            c = a[i].split(/\s*:s*/);
+                            if(c[1]){
+                               c = c[1].replace(/['"]/g, '');
+                               if(!xui.SC.get(c))required.push(c);
+                            }
+                          }
+                          return a;
+                    })
                 }catch(e){}
                 if(arr.length){
                     if(self.Required&&xui.isArr(self.Required)){
@@ -728,7 +739,18 @@ xui.Class('xui.Module','xui.absProfile',{
                                             try{
                                                 (o.prototype.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
                                                     if(!xui.SC.get(b))required.push(b);
-                                                });
+                                                    return a;
+                                                }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                                                      b=b.split(/\s*,\s*/);
+                                                      for(var i=0,l=b.length;i<l;i++){
+                                                        c = a[i].split(/\s*:s*/);
+                                                        if(c[1]){
+                                                           c = c[1].replace(/['"]/g, '');
+                                                           if(!xui.SC.get(c))required.push(c);
+                                                        }
+                                                      }
+                                                      return a;
+                                                })
                                             }catch(e){}
                                         }
                                     }
