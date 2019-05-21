@@ -81,7 +81,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     pid=k?k.id:null;
                 }
 
-                if(pid){
+                if(xui.isSet(pid)){
                     k=profile.getItemByItemId(pid);
                     tar = xui.isArr(k.sub)?k.sub:(newsub=true, k.sub= []);
                 }else{
@@ -106,9 +106,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 node.addNext(r);
                         }
                     }else{
-                        if(!pid)
-                            node=profile.getSubNode('ITEMS');
-                        else if(pid){
+                        if(xui.isSet(pid)){
                             if(newsub){
                                 profile.getSubNodeByItemId('TOGGLE', pid)
                                     .removeClass('xui-icon-placeholder xui-uicmd-none')
@@ -118,6 +116,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 node=profile.getSubNodeByItemId('SUB', pid);
                             }
                         }
+                        else
+                            node=profile.getSubNode('ITEMS');
+
                         if(node){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
                             if(before)
@@ -138,7 +139,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //3
                 if(profile.renderId && toggle!==false){
                     // try to open root subs
-                    if(!pid){
+                    if(!xui.isSet(pid)){
                         profile.boxing()._toggleNodes(data, true, true, true);
                     }
                     // try to open parent node
@@ -151,7 +152,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(b && profile.renderId)
                     profile.boxing()._afterInsertItems(profile, data, pid, base, before);
 
-                if(profile.renderId && pid){
+                if(profile.renderId && xui.isSet(pid)){
                     profile.box._tofold(profile,k,pid);
                 }
 

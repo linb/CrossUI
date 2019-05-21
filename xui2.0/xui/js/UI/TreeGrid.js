@@ -5425,8 +5425,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             
             data.tagCmds = xui.clone(prop.colOptions.tagCmds || data.tagCmds);
             if(data.tagCmds){
-                this._prepareCmds(profile, data, function(item){
-                    return !item.tag || !!item.tag.match(/\bheader\b/);
+                this._prepareCmds(profile, data, function(cmd){
+                    return !cmd.tag || !!cmd.tag.match(/\bheader\b/) || !cmd.tag.match(/\brow\b/);
                 });
             }
             data._columnfreezed = prop.freezedColumn?'xui-ui-shadow-r xui-uiborder-r xui-uiborder-dark':'';
@@ -5991,8 +5991,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 t.tagCmds = xui.clone(t.tagCmds || ro.tagCmds || prop.tagCmds);
                 if(t.tagCmds){
-                    this._prepareCmds(profile, t, function(item){
-                        return !item.tag || !!item.tag.match(/\brow\b/);
+                    this._prepareCmds(profile, t, function(cmd){
+                        return !cmd.tag || !!cmd.tag.match(/\brow\b/) || !cmd.tag.match(/\bheader\b/);
                     });
                 }
 
@@ -6304,7 +6304,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 node.addClass('xui-ui-dirty');
                         }
                     }
-                    if(editor)editor.setValue(cell.value,true,'editorini');
+                    if(editor && !profile._setFromEditor){
+                        editor.setValue(cell.value,true,'editorini');
+                    }
                     // formula
                     if(triggerFormula!==false)
                         xui.resetRun(profile.key+":"+profile.$xid+":"+cell.id,function(){
@@ -6921,7 +6923,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             options.tagVar=editorPrf.properties.tagVar;
 
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell'))){
+                            profile._setFromEditor=1;
                             grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+                            delete profile._setFromEditor;
                             if((nc=_getcell(editorPrf)) && nc!==cc){
                                 editorPrf.$cell = nc
                                 nc._editor=editor;

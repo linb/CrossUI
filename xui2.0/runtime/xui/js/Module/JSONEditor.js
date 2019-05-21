@@ -5,7 +5,6 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             var ns=this,
                 obj=xui.isStr(str)?str?xui.unserialize(str):false:str,
                 rows=ns._json2rows(obj, ns._rootArr = xui.isArr(obj));
-
             if(keyOptions){
                 ns.tg.updateHeader("key",{type:'combobox',editorListItems: xui.isHash(keyOptions)?xui.toArr(keyOptions,true):keyOptions});
             }else{
@@ -178,7 +177,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         _rows2json:function(arr,array){
             var me=arguments.callee,
-                a=[], key,value;
+                a=[], exist={},key,value;
             xui.arr.each(arr, function(o){
                 key=((typeof o.cells[0]=='object')?o.cells[0].value:o.cells[0]);
                 if(o._type=='hash')
@@ -189,8 +188,11 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     value=(typeof o.cells[1]=='object')?o.cells[1].value:o.cells[1];
                 if(array)
                     a.push(value);
-                else
-                    a.push('"'+key + '":' + value);
+                else{
+                    if(!exist[key])
+                        a.push('"'+key + '":' + value);
+                    exist[key]=1;
+                }
             });
             return array ? '['+a.join(',')+']' : '{'+a.join(',')+'}';
         },
@@ -286,6 +288,9 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         _tg_beforerowactive:function(){
             return false;
         },
+        getDefaultKey:function(){
+            return this.properties.randomKey?xui.rand():"";
+        },
         _tg_oncmd:function (profile, row, cmdkey, e, src){
             var ns = this, 
                 tg = profile.boxing(),
@@ -304,11 +309,11 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     nid=xui.stamp();
                     if(row){
                         if(type=="array"||type=="hash"){
-                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':xui.rand(),readonly:type=='array'},'null','']}],row.id);
+                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}],row.id);
                         }else{
                             var id=row.id;
                             xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
-                                tg.updateCellByRowCol(id, "value", "{"+xui.rand()+":"+row.cells[1].value+"}", false, true);
+                                tg.updateCellByRowCol(id, "value", "{"+ns.getDefaultKey()+":"+row.cells[1].value+"}", false, true);
                                 xui.asyRun(function(){
                                     tg.editCellbyRowCol(id, "value");
                                 },200);
@@ -323,16 +328,16 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                             return ;
                         }
                     }else{
-                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':xui.rand(),readonly:type=='array'},'null','']}]);
+                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}]);
                     }
                     break;
                 case 'up': 
                      nid=xui.stamp();
-                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':xui.rand(),readonly:ptype=='array'},'null','']}],null,row.id,true);
+                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':ns.getDefaultKey(),readonly:ptype=='array'},'null','']}],null,row.id,true);
                     break;
                 case 'down':
                      nid=xui.stamp();
-                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':xui.rand(),readonly:ptype=='array'},'null','']}],null,row.id,false);
+                    tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':ns.getDefaultKey(),readonly:ptype=='array'},'null','']}],null,row.id,false);
                     break;
                 case 'del': 
                    // xui.confirm('confirm','Do you want to delete this node?',function(){

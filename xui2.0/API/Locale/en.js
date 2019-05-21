@@ -1172,6 +1172,18 @@ xui.set(xui.Locale,["en","app"], {
                 "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event"
             ]
         },
+        broadcast:{
+            $desc:"Broadcast message to specific type MessageService",
+            $rtn:"undefined",
+            $paras:[
+                "id [Required]: String, message id",
+                "msg1 [Optional]: Object, message 1",
+                "msg2 [Optional]: Object, message 2",
+                "msg3 [Optional]: Object, message 3",
+                "msg4 [Optional]: Object, message 4",
+                "msg5 [Optional]: Object, message 5"
+            ]
+        },
         launch:{
             $desc:"To create a xui.Module , and show it",
             $paras:[
@@ -5782,6 +5794,17 @@ xui.set(xui.Locale,["en","app"], {
                     'source: Object, the message source'
                 ]
             },
+            onGlobalMessage:{
+                $desc:'Fired when receive a global message',
+                $paras:[
+                    'id : String, message id',
+                    "msg1: Object, message object 1",
+                    "msg2: Object, message object 2",
+                    "msg3: Object, message object 3",
+                    "msg4: Object, message object 4",
+                    "msg5: Object, message object 5"
+                ]
+            },
             onLoadBaseClassErr:{
                 $desc:'Fired when module failed to load base Classes',
                 $paras:[
@@ -5888,17 +5911,6 @@ xui.set(xui.Locale,["en","app"], {
                 "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
                 "alert(xui.ModuleFactory.getProfile());"+
                 "alert(xui.ModuleFactory.getProfile('test1'));"
-            ]
-        },
-        broadcast:{
-            $desc:"Broadcasts a message(function) to all the Modules",
-            $paras:[
-                "fun [Required] : Function, the function to broadcast"
-            ],
-            $snippet:[
-                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1', (new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
-                "xui.ModuleFactory.broadcast(function(i){alert(i + ' / ' + this.KEY)});"
             ]
         },
         destroyAll:{

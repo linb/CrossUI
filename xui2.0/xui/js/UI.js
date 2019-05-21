@@ -4617,12 +4617,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                     else c = xui.clone(t[i]);
 
                     if(filter && xui.isFun(filter)){
-                        if(!filter(c)){
+                        if(!filter(c,item)){
                             continue;
                         }
                     }else{
                         if(item.tag && item.tag.match((new RegExp("\\b" + "no~" + c.id + "\\b"))) )
                             continue;
+                    }
+                    if(c && c.tag){
+                        if(item.sub){
+                            if(!c.tag.match(/\bbranch\b/) && c.tag.match(/\bleaf\b/))
+                                continue;
+                        }else{
+                            if(!c.tag.match(/\bleaf\b/) && c.tag.match(/\bbranch\b/))
+                                continue;
+                        }
                     }
 
                     if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
@@ -6952,7 +6961,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(!item.hasOwnProperty('caption'))item.caption=item.id;
 
                 dataItem={id: item.id};
-                if(pid)dataItem._pid = pid;
+                if(xui.isSet(pid))dataItem._pid = pid;
                 dataItem.renderer=item.renderer||prop.renderer;
 
                 id=dataItem[SubID]=typeof serialId=='string'?serialId:profile.pickSubId('items');
@@ -7194,7 +7203,7 @@ xui.Class("xui.absList", "xui.absObj",{
             }
             var box=profile.box,
                 items=prop.items,
-                rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===itemId:o==itemId},true,true,true),
+                rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===itemId:o===itemId},true,true,true),
                 nid,item,serialId,arr,node,oldsub,t;
             if(!xui.isHash(options))options={caption:options+''};
 

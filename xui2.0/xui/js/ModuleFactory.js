@@ -1,20 +1,23 @@
 xui.Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.getModule=function(cls, onEnd, threadid, cached, properties, events){
+        xui.getModule=function(cls, onEnd, threadid, cached, properties, events, options){
             return ns.getModule.apply(ns,arguments)
         };
-        xui.newModule=function(cls, onEnd, threadid, properties, events){
+        xui.newModule=function(cls, onEnd, threadid, properties, events, options){
             return ns.newModule.apply(ns,arguments)
         };
-        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top, options){
             return ns.getModule(cls, function(err, module, threadid){
                 if(!err && false!==xui.tryF(beforeShow, [module, threadid], module)){
                     this.show.apply(module, [onEnd,parent,subId,threadid,left,top]);
                 }else{
                     xui.tryF(onEnd, [err, module, threadid], module);
                 }
-            }, threadid, cached, properties, events);
+            }, threadid, cached, properties, events, options);
+        };
+        xui.showAlienModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+            return xui.showModule.apply(this, [cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top, {alien:true}]);
         };
 
         //compitable
@@ -51,14 +54,6 @@ xui.Class('xui.ModuleFactory',null,{
             });
             this._cache={};
         },
-        broadcast:function(fun){
-            if(typeof fun=='function'){
-                var i,c=this._cache;
-                for(i in c)
-                    fun.call(c[i],i);
-            }
-        },
-
         setModule:function(id, obj){
             this._cache[id]=obj;
             if(obj)obj.moduleRefId=id;
@@ -68,7 +63,7 @@ xui.Class('xui.ModuleFactory',null,{
             return this._cache[id]||null;
         },
         //cached:false->don't get it from cache, and don't cache the result.
-        getModule:function(id, onEnd, threadid, cached, properties, events){
+        getModule:function(id, onEnd, threadid, cached, properties, events, options){
             if(!id){
                 var e=new Error("No id");
                 xui.tryF(onEnd,[e,null,threadid]);
@@ -80,7 +75,7 @@ xui.Class('xui.ModuleFactory',null,{
             var c=this._cache,
                 p=this._pro,
                 config,
-                clsPath;
+                cls;
 
             if(cached && c[id] && !c[id].destroyed){
                 xui.tryF(onEnd, [null,c[id],threadid], c[id]);
@@ -94,15 +89,15 @@ xui.Class('xui.ModuleFactory',null,{
                         properties:properties,
                         events:events
                     };
-                    clsPath=id;
+                    cls=id;
                 }else
-                    clsPath=config.cls || config;
+                    cls=config.cls || config;
 
                 var self=arguments.callee, 
                     me=this,
                     task=function(cls,config,threadid){
                         if(!xui.isFun(cls))
-                            throw new Error("'"+clsPath+"' is not a constructor");
+                            throw new Error("'"+cls+"' is not a constructor");
                         var o = new cls();
 
                         if(config.properties)
@@ -144,21 +139,21 @@ xui.Class('xui.ModuleFactory',null,{
                 xui.Thread.observableRun(function(threadid){
                     var f=function(threadid){
                         // this for js path doesn't match Class name space
-                        var cls=this||xui.SC.get(clsPath);
+                        var clsObj=this||xui.SC.get(cls);
                         // it must be a xui Class
-                        if(cls&&cls.$xui$){
+                        if(clsObj&&clsObj.$xui$){
                             xui.Thread.insert(threadid, {
                                 task:task,
-                                args:[cls, config,threadid]
+                                args:[clsObj, config,threadid]
                             });
                         }else{
-                            var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
+                            var e=new Error("Cant find Class '"+cls+"' in the corresponding file (maybe SyntaxError)");
                             xui.tryF(onEnd,[e,null,threadid]);
                             xui.Thread.abort(threadid);
                             throw e;
                         }
-                    };
-                    xui.SC(clsPath, function(path){
+                    },createModule = function(path, clsName){
+                        config.cls=clsName;
                         if(path)
                             f.call(this, threadid);
                         else{
@@ -167,17 +162,29 @@ xui.Class('xui.ModuleFactory',null,{
                             xui.Thread.abort(threadid);
                             throw e;
                         }
-                    }, true,threadid,{
-                        retry:0,
-                        onFail:function(e){
-                            xui.tryF(onEnd,[e,null,threadid]);
-                        }
-                    });
+                    };
+                    cls=cls+"";
+                    if(/\//.test(cls) && !/\.js$/i.test(cls))
+                        cls=cls+".js";
+                    if(/\.js$/i.test(cls)){
+                        xui.fetchClass(cls,createModule,
+                            function(e){
+                                xui.tryF(onEnd,[e,null,threadid]);
+                            },null,null,threadid, options);
+                    }else{
+                        //get app class
+                        xui.SC(cls,createModule,true,threadid,{
+                            retry:0,
+                            onFail:function(e){
+                                xui.tryF(onEnd,[e,null,threadid]);
+                            }
+                        });
+                    }
                 },null,threadid);
             }
         },
-        newModule:function(cls, onEnd, threadid, properties, events){
-            return this.getModule(cls, onEnd, threadid, false, properties, events);
+        newModule:function(cls, onEnd, threadid, properties, events, options){
+            return this.getModule(cls, onEnd, threadid, false, properties, events, options);
         },
         storeModule:function(id){
             var m,t,c=this._cache,domId=this._domId;

@@ -1168,6 +1168,18 @@ xui.set(xui.Locale,["cn","app"], {
                 "//xui.main(function(){alert('first')}); \n//xui.main(function(){alert('second')}); \n ////The above code will bind two functions to DOM ready event"
             ]
         },
+        broadcast:{
+            $desc:"发布消息到所有的模块",
+            $rtn:"undefined",
+            $paras:[
+                "id [必需参数]: String, 消息id",
+                "msg1 [必需参数]: Object, 消息1",
+                "msg2 [可选参数]: Object, 消息2",
+                "msg3 [可选参数]: Object, 消息3",
+                "msg4 [可选参数]: Object, 消息4",
+                "msg5 [可选参数]: Object, 消息5"
+            ]
+        },
        launch:{
             $desc:"加载一个 xui.Module 类, 并显示",
             $paras:[
@@ -1240,8 +1252,8 @@ xui.set(xui.Locale,["cn","app"], {
             $paras:[
                 "title [可选参数] : String, 警告框标题",
                 "content [可选参数] : String, 警告语句",
-                "btnCap  [可选参数] : String, 按钮文字",
                 "onClose [可选参数] : Function, alert窗口关闭的回调函数",
+                "btnCap  [可选参数] : String, 按钮文字",
                 "left [可选参数] : Number, 对话框左边坐标",
                 "top [可选参数] : Number, 对话框上边坐标",
                 "parent [可选参数] : xui.Dom, 或xui.UI对象",
@@ -5841,6 +5853,18 @@ xui.set(xui.Locale,["cn","app"], {
                     'source: Object, 消息源'
                 ]
             },
+            onGlobalMessage:{
+                $desc:'当模块收到全局消息时触发本事件',
+                $paras:[
+                    'id : Sting, 消息id',
+                    "msg1: Object, 消息对象 1",
+                    "msg2: Object, 消息对象 2",
+                    "msg3: Object, 消息对象 3",
+                    "msg4: Object, 消息对象 4",
+                    "msg5: Object, 消息对象 5",
+                    'source: Object, 消息源'
+                ]
+            },
             onLoadBaseClassErr:{
                 $desc:'当Module加载基类出错的时候触发本事件',
                 $paras:[
@@ -5946,17 +5970,6 @@ xui.set(xui.Locale,["cn","app"], {
                 "xui.ModuleFactory.setProfile({test1:'App.Test1',test2:'App.Test2'});"+
                 "alert(xui.ModuleFactory.getProfile());"+
                 "alert(xui.ModuleFactory.getProfile('test1'));"
-            ]
-        },
-        broadcast:{
-            $desc:"广播一个消息(function)到所有的应用模块(xui.Module)中",
-            $paras:[
-                "fun [必需参数] : Function, 要广播的函数"
-            ],
-            $snippet:[
-                "xui.SC('App.Test1',function(){xui.ModuleFactory.setModule('test1', (new this));},false);"+
-                "xui.SC('App.Test2',function(){xui.ModuleFactory.setModule('test2',(new this));},false);"+
-                "xui.ModuleFactory.broadcast(function(i){alert(i + ' / ' + this.KEY)});"
             ]
         },
         destroyAll:{
@@ -15209,8 +15222,8 @@ xui.set(xui.Locale,["cn","app"], {
             $paras:[
                 "title [可选参数] : String, 警告框标题",
                 "content [可选参数] : String, 警告语句",
-                "btnCap  [可选参数] : String, 按钮文字",
                 "onClose [可选参数] : Function, alert窗口关闭的回调函数",
+                "btnCap  [可选参数] : String, 按钮文字",
                 "left [可选参数] : Number, 对话框左边坐标",
                 "top [可选参数] : Number, 对话框上边坐标",
                 "parent [可选参数] : xui.Dom, 或xui.UI对象",

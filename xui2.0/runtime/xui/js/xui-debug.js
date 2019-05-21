@@ -14,10 +14,10 @@ if(!document)throw new Error("CrossUI requires a window with a document");
 // global : xui
 // we have to keep xui for gloable var
 var xui = window.xui = function(nodes,flag){return xui.Dom.pack(nodes, flag)};
-
+xui.window=window;
 // Class & Namespace
 xui.Class=function(key, pkey, obj){
-    var _Static, _parent=[], self=xui.Class, w=window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
+    var _Static, _parent=[], self=xui.Class, w=xui.window, env=self._fun, reg=self._reg, parent0, _this,i,t,_t,_c=self._all,
         _funadj = function(str){return (str+"").replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});}
     obj=obj||{};
     //exists?
@@ -28,7 +28,7 @@ xui.Class=function(key, pkey, obj){
     //multi parents mode
     pkey = ( !pkey?[]:typeof pkey=='string'?[pkey]:pkey);
     for(i=0; t=pkey[i]; i++)
-        if(!(_parent[i]=(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
+        if(!(_parent[i]=(xui.get(w, t.split('.')) || xui.get(window, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
             throw new Error('errNoParent--'+ t);
     if(obj.Dependencies){
         if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
@@ -146,7 +146,7 @@ xui.Class=function(key, pkey, obj){
     return self._last=_this;
 };
 xui.Namespace=function(key){
-    var a=key.split('.'),w=window;
+    var a=key.split('.'),w=xui.window;
     return xui.get(w, a) || ((xui.Namespace._all[a[0]]=1) && xui.set(w, a, {}));
 };
 xui.Namespace._all={};
@@ -230,7 +230,7 @@ new function(){
                 d=document,
                 h=d.getElementsByTagName("head")[0] || d.documentElement,
                 s=d.createElement("script"),n;
-            if(closure)script="!function(){"+script+"}(window)";
+            if(closure)script="!function(){"+script+"}(xui.window)";
             s.type = "text/javascript";
             if(id){
                 if((n=d.getElementById(id))&&n.parentNode==h){
@@ -1471,6 +1471,11 @@ xui.merge(xui,{
             + '&bcc= ' + (bcc||"");
         xui.XDMI(url).start();
     },
+    fetchAlienClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
+        options=options||{};
+        options.alien=true;
+        return this.fetchClass(uri, onSuccess, onFail, onAlert, force, threadid, options);
+    },
     fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
         options=options||{};
         var isPath=options.uri || /\//.test(uri) || /\.js$/i.test(uri), 
@@ -1482,11 +1487,13 @@ xui.merge(xui,{
                 onFetching=null;
             },
             rnd=options.force?xui._rnd():null,
-            cls,obj;
+            cls,obj,ww;
         if(isPath){
-            cls=xui.getClassName(uri);
-            if(cls && xui.SC.get(cls))
-                isPath=false;
+            if(!options.alien){
+                cls=xui.getClassName(uri);
+                if(cls && xui.SC.get(cls))
+                    isPath=false;
+            }
         }else{
              // special path( dont use any dynamic
              if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
@@ -1500,12 +1507,13 @@ xui.merge(xui,{
             if(!onFetching[uri]){
                 onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
                 if(!cls || (options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
-                    if(cls){xui.Class._ignoreNSCache=1;xui.Class._last=null; }
+                    xui.Class._ignoreNSCache=1;xui.Class._last=null;
+                    if(options.alien){ww=xui.window;xui.window={};}
                     xui.JSONP(uri,rnd,function(){
+                        if(xui.Class._last)obj=c[uri]=xui.Class._last;
+                        xui.Class._ignoreNSCache=xui.Class._last=null;
                         if(cls){
-                            if(xui.Class._last)obj=c[uri]=xui.Class._last;
-                            xui.Class._ignoreNSCache=xui.Class._last=null;
-                            if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
+                            if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
                             else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
                             var s=xui.getClassName(uri);
                             if(obj&&s&&obj.KEY!=s){
@@ -1514,12 +1522,14 @@ xui.merge(xui,{
                                 xui.log( msg );
                             }
                         }else{
-                            for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri]);
+                            for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);
                         }
+                        if(options.alien){xui.window=ww;}
                         // for Thread.group in fetchClasses
                         clearFetching();
                     },function(){
-                        if(cls){xui.Class._ignoreNSCache=1;xui.Class._last=null;}
+                        if(options.alien){xui.window=ww;}
+                        xui.Class._ignoreNSCache=xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         clearFetching();
@@ -1527,24 +1537,31 @@ xui.merge(xui,{
                 }else{
                     xui.Ajax(uri,rnd,function(rsp){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
-                        var scriptnode;
-                        var s=xui.getClassName(uri);
+                        var scriptnode,s=xui.getClassName(uri);
+                        if(options.alien){ww=xui.window;xui.window={};}
                         try{scriptnode=xui.exec(rsp, s)}catch(e){
                             for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);
                             xui.Class._last=null;
                         }
                         if(xui.Class._last)obj=c[uri]=xui.Class._last;
                         xui.Class._ignoreNSCache=xui.Class._last=null;
-                        if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj.KEY],obj);}
-                        else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
-                        if(obj&&obj.KEY!=s){
-                            var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
-                            for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s,  obj.KEY]);
-                            xui.log( msg );
+                        if(cls){
+                            if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
+                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
+                            var s=xui.getClassName(uri);
+                            if(obj&&s&&obj.KEY!=s){
+                                var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
+                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, obj.KEY]);
+                                xui.log( msg );
+                            }
+                        }else{
+                            for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);
                         }
+                        if(options.alien){xui.window=ww;}
                         // for Thread.group in fetchClasses
                         clearFetching();
                     },function(){
+                        if(options.alien){xui.window=ww;}
                         xui.Class._ignoreNSCache=xui.Class._last=null;
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
@@ -2244,9 +2261,9 @@ new function(){
                             return false;
                     }
                 },
-                adjustparam=function(o){
+                adjustparam=function(o,_ns){
                     if(typeof(o)=="string"){
-                        var jsondata,oo;
+                        var t=o,m,jsondata,oo;
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
                             jsondata=1;
@@ -2256,12 +2273,40 @@ new function(){
                         // for file
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
+                        // for pseudo function
+                        else if( xui.isStr(t) && ((o.actions && xui.isArr(o.actions) && o.actions.length ) || o['return'])) {
+                            if((t=(''+t).split('.functions')) && t.length==2 && (t=xui.adjustVar(t[0]+"}", _ns))) {
+                                oo=o;
+                                o = function(){
+                                    xui.pseudocode._callFunctions(oo, arguments, t, _ns.temp,null, 'refer:'+(oo.desc||oo.id||""));
+                                    o=oo=t=_ns=null;
+                                };
+                            }
+                        }else if (xui.isStr(t) && xui.isFun(o)){
+                            // args[0] => args.0
+                            t=t.replace(/\[(\d+)\]/,".$1");
+                            t=t.split(/\s*\.\s*/);
+                            if(t.length>1){
+                                m=t.pop().replace(/[()}\s]/g,'');
+                            }else{
+                                m=t[0].replace(/[{()}\s]/g,'');
+                                t=["{window"];
+                            }
+                            t=t.join(".")+"}";
+                            t=xui.adjustVar(tt=t, _ns);
+                            if(!xui.isDefined(t))t=xui.adjustVar(tt);
+                            // need scope for function
+                            o = function(){
+                                return t[m].apply(t,arguments);
+                                t=m=null;
+                            };
+                        }
                     }else if(xui.isHash(o)){
                         // one layer
-                        for(var i in o)o[i]=adjustparam(o[i]);
+                        for(var i in o)o[i]=adjustparam(o[i],_ns);
                     }else if(xui.isArr(o)){
                         // one layer
-                        for(var i=0,l=o.length;i<l;i++)o[i]=adjustparam(o[i]);
+                        for(var i=0,l=o.length;i<l;i++)o[i]=adjustparam(o[i],_ns);
                     }
                     return o;
                 },
@@ -2271,7 +2316,7 @@ new function(){
                 // conf.args > conf.params
                 iparams=xui.clone(conf.args||conf.params)||[],
                 conditions=conf.conditions||[],
-                adjust=adjustparam(conf.adjust)||null,
+                adjust=adjustparam(conf.adjust,_ns)||null,
                 iconditions=[],t1,t2,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
                 resetid=conf.resetid||null;
@@ -2309,8 +2354,8 @@ new function(){
             }
             if(target && method && target!="none"&&method!="none"){   
                 //adjust params
-                for(var i=redirection?3:(type=="other" && target=="callback")?method=="call"?1:method=="set"?2:0:0,l=iparams.length;i<l;i++)
-                    iparams[i]=adjustparam(iparams[i]);
+                for(var i=redirection?3:(type=="other" && target=="callback")?method=="call"?1:method=="set"?1:0:0,l=iparams.length;i<l;i++)
+                    iparams[i]=adjustparam(iparams[i],_ns);
 
                 if(redirection && !(type=="other" && target=="callback"&& method=="call")){
                     iparams=iparams.slice(3);
@@ -2477,7 +2522,7 @@ new function(){
                                                     v=xui.stringify(v);
                                                 break;
                                                 default:
-                                                    if(typeof(adjust=xui.get(adjust))=="function")
+                                                    if(typeof(adjust)=="function")
                                                         v=adjust(v);
                                                 break;
                                             }
@@ -2494,28 +2539,12 @@ new function(){
                                             if(iparams[0]&&!xui.isEmpty(iparams[0]))xui.History.setFI(iparams[0],true,true);
                                             break;
                                         case "set":
-                                            t=iparams[1];
-                                            if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
-                                                // args[0] => args.0
-                                                t=t.replace(/\[(\d+)\]/,".$1");
-                                                t=t.split(/\s*\.\s*/);
-                                                if(t.length>1){
-                                                    m=t.pop().replace(/[()}\s]/g,'');
-                                                }else{
-                                                    m=t[0].replace(/[{()}\s]/g,'');
-                                                    t=["{window"];
-                                                }
-                                                t=t.join(".")+"}";
-                                                t=xui.adjustVar(tt=t, _ns);
-                                                if(!xui.isDefined(t))t=xui.adjustVar(tt);
-                                                if(t && xui.isFun(t[m]))
-                                                    xui.$cache.callback[iparams[0]]=[t,m];
-                                            }
+                                            xui.set(_ns, ('temp.'+xui.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
                                             break;
-                                         case "call":
+                                        case "call":
                                             var args=iparams.slice(3), doit,doit2,y;
                                             t=iparams[0];
-                                            if(xui.isStr(t)&&/[\w\.\s*]+[^\.]\s*(\()?\s*(\))?\s*\}$/.test(t)){
+                                            if(xui.isStr(t)&&/^\{[\w][\w.]+[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,''))) {
                                                 // args[0] => args.0
                                                 t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
@@ -2543,15 +2572,15 @@ new function(){
                                                                     args[i]=y=='String'?(args[i]+''):y=='Number'?(parseFloat(args[i])||0):y=='Boolean'?(!!args[i]):args[i];
                                                     }
                                                 }
-                                            }else if(xui.isStr(t=iparams[0])&&xui.isFun((n=xui.$cache.callback[t])&&(t=n[0])&&t&&(t[m=n[1]]))){
-                                                doit=1;
                                             }
                                             if(doit){
                                                 t=t[m].apply(t,args);
                                             }else if(doit2){
                                                 // nested call
-                                                // arguemsnt of function/event is modified
-                                                t=ns._callFunctions(t, args, _ns.page, _ns.temp,null, 'nested'+(t.desc||t.id||""), (level||1)+1);
+                                                // for {submodulecls.functions.fun}
+                                                if((n=(''+conf.args[0]).split('.functions')) && n.length==2)
+                                                    n=xui.adjustVar(n[0]+"}", _ns);
+                                                t=ns._callFunctions(t, args, n||_ns.page, _ns.temp,null, 'nested:'+(t.desc||t.id||""), (level||1)+1);
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
@@ -3989,7 +4018,7 @@ xui.Class('xui.XDMI','xui.absIO',{
         },
         customQS:function(obj, ex){
             var s=this,c=s.constructor,t=c.callback,w=window;
-            if(window['postMessage'])
+            if(w['postMessage'])
                 obj[t]=obj.parentDomain=w.location.origin || (w.location.protocol + "//" + w.location.hostname + (w.location.port ? ':' + w.location.port: ''));
             else
                 obj[t]='window.name';
@@ -4014,7 +4043,7 @@ xui.Class('xui.SC',null,{
         if(upper)upper.call(this);
         upper=null;
         var p = xui.$cache.SC,r;
-        if(r=p[path]||(p[path]=xui.get(window,path.split('.'))))
+        if(r=p[path]||(p[path]=xui.get(xui.window,path.split('.'))))
             xui.tryF(callback,[path,null,threadid],r);
         else{
             options=options||{};
@@ -4042,7 +4071,7 @@ xui.Class('xui.SC',null,{
             path=(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/);
             if(obj1)v = xui.get(obj1,path);
             if(obj2 && v===undefined)v = xui.get(obj2,path);
-            if(v===undefined)v = xui.get(window,path);
+            if(v===undefined)v = xui.get(xui.window,path);
             return v;
         },
         /* function for "Straight Call"
@@ -14639,6 +14668,12 @@ xui.Class('xui.Module','xui.absProfile',{
         ns['xui.Com']=ns.prototype['xui.Com']=1;
         xui.Com=ns;
         ns.$activeClass$='xui.Module';
+
+        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5){
+            xui.arr.each(xui.Module._cache,function(o){
+                 o.fireEvent('onGlobalMessage',  [id, msg1, msg2, msg3, msg4, msg5]);
+            });
+        };
     },
     After:function(){
         var self=this,k, e, t, b, i;
@@ -15283,10 +15318,10 @@ xui.Class('xui.Module','xui.absProfile',{
                     }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
                           b=b.split(/\s*,\s*/);
                           for(var i=0,l=b.length;i<l;i++){
-                            c = a[i].split(/\s*:s*/);
+                            c = b[i].split(/\s*:s*/);
                             if(c[1]){
-                               c = c[1].replace(/['"]/g, '');
-                               if(!xui.SC.get(c))required.push(c);
+                               c = c[1].replace(/['"\s]/g, '');
+                               if(!xui.SC.get(c))arr.push(c);
                             }
                           }
                           return a;
@@ -15341,9 +15376,9 @@ xui.Class('xui.Module','xui.absProfile',{
                                                 }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
                                                       b=b.split(/\s*,\s*/);
                                                       for(var i=0,l=b.length;i<l;i++){
-                                                        c = a[i].split(/\s*:s*/);
+                                                        c = b[i].split(/\s*:s*/);
                                                         if(c[1]){
-                                                           c = c[1].replace(/['"]/g, '');
+                                                           c = c[1].replace(/['"\s]/g, '');
                                                            if(!xui.SC.get(c))required.push(c);
                                                         }
                                                       }
@@ -16297,6 +16332,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onHookKey:function(module, key, e, keyDown){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
+            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
@@ -18409,20 +18445,23 @@ xui.Class("xui.Tips", null,{
 });xui.Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.getModule=function(cls, onEnd, threadid, cached, properties, events){
+        xui.getModule=function(cls, onEnd, threadid, cached, properties, events, options){
             return ns.getModule.apply(ns,arguments)
         };
-        xui.newModule=function(cls, onEnd, threadid, properties, events){
+        xui.newModule=function(cls, onEnd, threadid, properties, events, options){
             return ns.newModule.apply(ns,arguments)
         };
-        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top, options){
             return ns.getModule(cls, function(err, module, threadid){
                 if(!err && false!==xui.tryF(beforeShow, [module, threadid], module)){
                     this.show.apply(module, [onEnd,parent,subId,threadid,left,top]);
                 }else{
                     xui.tryF(onEnd, [err, module, threadid], module);
                 }
-            }, threadid, cached, properties, events);
+            }, threadid, cached, properties, events, options);
+        };
+        xui.showAlienModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
+            return xui.showModule.apply(this, [cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top, {alien:true}]);
         };
 
         //compitable
@@ -18459,14 +18498,6 @@ xui.Class("xui.Tips", null,{
             });
             this._cache={};
         },
-        broadcast:function(fun){
-            if(typeof fun=='function'){
-                var i,c=this._cache;
-                for(i in c)
-                    fun.call(c[i],i);
-            }
-        },
-
         setModule:function(id, obj){
             this._cache[id]=obj;
             if(obj)obj.moduleRefId=id;
@@ -18476,7 +18507,7 @@ xui.Class("xui.Tips", null,{
             return this._cache[id]||null;
         },
         //cached:false->don't get it from cache, and don't cache the result.
-        getModule:function(id, onEnd, threadid, cached, properties, events){
+        getModule:function(id, onEnd, threadid, cached, properties, events, options){
             if(!id){
                 var e=new Error("No id");
                 xui.tryF(onEnd,[e,null,threadid]);
@@ -18488,7 +18519,7 @@ xui.Class("xui.Tips", null,{
             var c=this._cache,
                 p=this._pro,
                 config,
-                clsPath;
+                cls;
 
             if(cached && c[id] && !c[id].destroyed){
                 xui.tryF(onEnd, [null,c[id],threadid], c[id]);
@@ -18502,15 +18533,15 @@ xui.Class("xui.Tips", null,{
                         properties:properties,
                         events:events
                     };
-                    clsPath=id;
+                    cls=id;
                 }else
-                    clsPath=config.cls || config;
+                    cls=config.cls || config;
 
                 var self=arguments.callee, 
                     me=this,
                     task=function(cls,config,threadid){
                         if(!xui.isFun(cls))
-                            throw new Error("'"+clsPath+"' is not a constructor");
+                            throw new Error("'"+cls+"' is not a constructor");
                         var o = new cls();
 
                         if(config.properties)
@@ -18552,21 +18583,21 @@ xui.Class("xui.Tips", null,{
                 xui.Thread.observableRun(function(threadid){
                     var f=function(threadid){
                         // this for js path doesn't match Class name space
-                        var cls=this||xui.SC.get(clsPath);
+                        var clsObj=this||xui.SC.get(cls);
                         // it must be a xui Class
-                        if(cls&&cls.$xui$){
+                        if(clsObj&&clsObj.$xui$){
                             xui.Thread.insert(threadid, {
                                 task:task,
-                                args:[cls, config,threadid]
+                                args:[clsObj, config,threadid]
                             });
                         }else{
-                            var e=new Error("Cant find Class '"+clsPath+"' in the corresponding file (maybe SyntaxError)");
+                            var e=new Error("Cant find Class '"+cls+"' in the corresponding file (maybe SyntaxError)");
                             xui.tryF(onEnd,[e,null,threadid]);
                             xui.Thread.abort(threadid);
                             throw e;
                         }
-                    };
-                    xui.SC(clsPath, function(path){
+                    },createModule = function(path, clsName){
+                        config.cls=clsName;
                         if(path)
                             f.call(this, threadid);
                         else{
@@ -18575,17 +18606,29 @@ xui.Class("xui.Tips", null,{
                             xui.Thread.abort(threadid);
                             throw e;
                         }
-                    }, true,threadid,{
-                        retry:0,
-                        onFail:function(e){
-                            xui.tryF(onEnd,[e,null,threadid]);
-                        }
-                    });
+                    };
+                    cls=cls+"";
+                    if(/\//.test(cls) && !/\.js$/i.test(cls))
+                        cls=cls+".js";
+                    if(/\.js$/i.test(cls)){
+                        xui.fetchClass(cls,createModule,
+                            function(e){
+                                xui.tryF(onEnd,[e,null,threadid]);
+                            },null,null,threadid, options);
+                    }else{
+                        //get app class
+                        xui.SC(cls,createModule,true,threadid,{
+                            retry:0,
+                            onFail:function(e){
+                                xui.tryF(onEnd,[e,null,threadid]);
+                            }
+                        });
+                    }
                 },null,threadid);
             }
         },
-        newModule:function(cls, onEnd, threadid, properties, events){
-            return this.getModule(cls, onEnd, threadid, false, properties, events);
+        newModule:function(cls, onEnd, threadid, properties, events, options){
+            return this.getModule(cls, onEnd, threadid, false, properties, events, options);
         },
         storeModule:function(id){
             var m,t,c=this._cache,domId=this._domId;
@@ -23459,12 +23502,21 @@ xui.Class("xui.UI",  "xui.absObj", {
                     else c = xui.clone(t[i]);
 
                     if(filter && xui.isFun(filter)){
-                        if(!filter(c)){
+                        if(!filter(c,item)){
                             continue;
                         }
                     }else{
                         if(item.tag && item.tag.match((new RegExp("\\b" + "no~" + c.id + "\\b"))) )
                             continue;
+                    }
+                    if(c && c.tag){
+                        if(item.sub){
+                            if(!c.tag.match(/\bbranch\b/) && c.tag.match(/\bleaf\b/))
+                                continue;
+                        }else{
+                            if(!c.tag.match(/\bleaf\b/) && c.tag.match(/\bbranch\b/))
+                                continue;
+                        }
                     }
 
                     if('id' in c)c.id+='';else c.id='cmds'+profile.$xid+i;
@@ -25794,7 +25846,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(!item.hasOwnProperty('caption'))item.caption=item.id;
 
                 dataItem={id: item.id};
-                if(pid)dataItem._pid = pid;
+                if(xui.isSet(pid))dataItem._pid = pid;
                 dataItem.renderer=item.renderer||prop.renderer;
 
                 id=dataItem[SubID]=typeof serialId=='string'?serialId:profile.pickSubId('items');
@@ -26036,7 +26088,7 @@ xui.Class("xui.absList", "xui.absObj",{
             }
             var box=profile.box,
                 items=prop.items,
-                rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===itemId:o==itemId},true,true,true),
+                rst=profile.queryItems(items,function(o){return typeof o=='object'?o.id===itemId:o===itemId},true,true,true),
                 nid,item,serialId,arr,node,oldsub,t;
             if(!xui.isHash(options))options={caption:options+''};
 
@@ -42731,7 +42783,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     pid=k?k.id:null;
                 }
 
-                if(pid){
+                if(xui.isSet(pid)){
                     k=profile.getItemByItemId(pid);
                     tar = xui.isArr(k.sub)?k.sub:(newsub=true, k.sub= []);
                 }else{
@@ -42756,9 +42808,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 node.addNext(r);
                         }
                     }else{
-                        if(!pid)
-                            node=profile.getSubNode('ITEMS');
-                        else if(pid){
+                        if(xui.isSet(pid)){
                             if(newsub){
                                 profile.getSubNodeByItemId('TOGGLE', pid)
                                     .removeClass('xui-icon-placeholder xui-uicmd-none')
@@ -42768,6 +42818,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 node=profile.getSubNodeByItemId('SUB', pid);
                             }
                         }
+                        else
+                            node=profile.getSubNode('ITEMS');
+
                         if(node){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
                             if(before)
@@ -42788,7 +42841,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 //3
                 if(profile.renderId && toggle!==false){
                     // try to open root subs
-                    if(!pid){
+                    if(!xui.isSet(pid)){
                         profile.boxing()._toggleNodes(data, true, true, true);
                     }
                     // try to open parent node
@@ -42801,7 +42854,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(b && profile.renderId)
                     profile.boxing()._afterInsertItems(profile, data, pid, base, before);
 
-                if(profile.renderId && pid){
+                if(profile.renderId && xui.isSet(pid)){
                     profile.box._tofold(profile,k,pid);
                 }
 
@@ -51915,8 +51968,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             
             data.tagCmds = xui.clone(prop.colOptions.tagCmds || data.tagCmds);
             if(data.tagCmds){
-                this._prepareCmds(profile, data, function(item){
-                    return !item.tag || !!item.tag.match(/\bheader\b/);
+                this._prepareCmds(profile, data, function(cmd){
+                    return !cmd.tag || !!cmd.tag.match(/\bheader\b/) || !cmd.tag.match(/\brow\b/);
                 });
             }
             data._columnfreezed = prop.freezedColumn?'xui-ui-shadow-r xui-uiborder-r xui-uiborder-dark':'';
@@ -52481,8 +52534,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 t.tagCmds = xui.clone(t.tagCmds || ro.tagCmds || prop.tagCmds);
                 if(t.tagCmds){
-                    this._prepareCmds(profile, t, function(item){
-                        return !item.tag || !!item.tag.match(/\brow\b/);
+                    this._prepareCmds(profile, t, function(cmd){
+                        return !cmd.tag || !!cmd.tag.match(/\brow\b/) || !cmd.tag.match(/\bheader\b/);
                     });
                 }
 
@@ -52794,7 +52847,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 node.addClass('xui-ui-dirty');
                         }
                     }
-                    if(editor)editor.setValue(cell.value,true,'editorini');
+                    if(editor && !profile._setFromEditor){
+                        editor.setValue(cell.value,true,'editorini');
+                    }
                     // formula
                     if(triggerFormula!==false)
                         xui.resetRun(profile.key+":"+profile.$xid+":"+cell.id,function(){
@@ -53411,7 +53466,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             options.tagVar=editorPrf.properties.tagVar;
 
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell'))){
+                            profile._setFromEditor=1;
                             grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+                            delete profile._setFromEditor;
                             if((nc=_getcell(editorPrf)) && nc!==cc){
                                 editorPrf.$cell = nc
                                 nc._editor=editor;

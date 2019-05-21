@@ -41,6 +41,12 @@ xui.Class('xui.Module','xui.absProfile',{
         ns['xui.Com']=ns.prototype['xui.Com']=1;
         xui.Com=ns;
         ns.$activeClass$='xui.Module';
+
+        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5){
+            xui.arr.each(xui.Module._cache,function(o){
+                 o.fireEvent('onGlobalMessage',  [id, msg1, msg2, msg3, msg4, msg5]);
+            });
+        };
     },
     After:function(){
         var self=this,k, e, t, b, i;
@@ -685,10 +691,10 @@ xui.Class('xui.Module','xui.absProfile',{
                     }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
                           b=b.split(/\s*,\s*/);
                           for(var i=0,l=b.length;i<l;i++){
-                            c = a[i].split(/\s*:s*/);
+                            c = b[i].split(/\s*:s*/);
                             if(c[1]){
-                               c = c[1].replace(/['"]/g, '');
-                               if(!xui.SC.get(c))required.push(c);
+                               c = c[1].replace(/['"\s]/g, '');
+                               if(!xui.SC.get(c))arr.push(c);
                             }
                           }
                           return a;
@@ -743,9 +749,9 @@ xui.Class('xui.Module','xui.absProfile',{
                                                 }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
                                                       b=b.split(/\s*,\s*/);
                                                       for(var i=0,l=b.length;i<l;i++){
-                                                        c = a[i].split(/\s*:s*/);
+                                                        c = b[i].split(/\s*:s*/);
                                                         if(c[1]){
-                                                           c = c[1].replace(/['"]/g, '');
+                                                           c = c[1].replace(/['"\s]/g, '');
                                                            if(!xui.SC.get(c))required.push(c);
                                                         }
                                                       }
@@ -1699,6 +1705,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onHookKey:function(module, key, e, keyDown){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
+            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
             onLoadBaseClass:function(module, threadid, uri, key){},
             onLoadBaseClassErr:function(module, threadid, key){},
