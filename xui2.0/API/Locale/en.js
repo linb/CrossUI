@@ -14077,7 +14077,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     "value [Required]: Number. page number",
                     "force [Optional]: Boolean. force to set it. Default is false",
-                    "type [Optional]: String. setting type"
+                    "type [Optional]: String. setting type: inited, input, click, code"
                 ],
                 $snippet:[
                     "var id='xui.temp.pb0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14269,7 +14269,7 @@ xui.set(xui.Locale,["en","app"], {
                     "page : Number, the new page number",
                     "start: Number,  the new page record start number",
                     "count: Number, the record count for one page",
-                    "eventType: String, the event type. inited/input/click",
+                    "eventType: String, the event type: inited, input, click, code",
                     "opage : Number, the old page number",
                     "ostart: Number, the old page record start number"
                 ]

@@ -960,12 +960,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             INPUT:{
-                onClick:function(p,e){
+                onClick:function(p,e,src){
                     // for grid cell editor 'enter' bug: trigger list pop again
                     if(p.$cell){
                         e=xui.Event.getPos(e);
                         if(e.left===0&&e.top===0)return false;
                     }
+                    if(p.onInputClick)
+                        p.boxing().onInputClick(p, e, src);
                 },
                 onChange:function(profile, e, src){
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
@@ -1208,6 +1210,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             afterPopShow:function(profile, popCtl){},
             afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, btn, value){},
+            onInputClick:function(profile, e, src){},
             onClickIcon:function(profile, src){},
             beforeUnitUpdated:function(prfole,unit){},
             afterUnitUpdated:function(prfole,unit){}

@@ -342,7 +342,8 @@ new function(){
             f();
         },
         isEmpty:function(hash){
-            if (hash==null) return true;
+            if (!xui.isSet(hash)) return true;
+            if (hash===true)return false;
             if (xui.isNumb(hash)) return false;
             if (xui.isArr(hash) || xui.isStr(hash) || xui.isArguments(hash)) return hash.length === 0;
             for(var i in hash)if(Object.prototype.hasOwnProperty.call(hash, i))return false;
@@ -1589,45 +1590,58 @@ xui.merge(xui,{
         return xui.Thread.group(null, hash, null, function(){
             xui.Thread.suspend(threadid);
         }, function(){
-            xui.tryF(onEnd,arguments,this);
-            xui.Thread.resume(threadid);
+            if(false!==xui.tryF(onEnd,arguments,this))
+                xui.Thread.resume(threadid);
         }).start();
     },
     // Recursive require
     require:function(clsArr, onEnd, onSuccess, onFail, onAlert,force, threadid, options){
         if(xui.isStr(clsArr))clsArr=[clsArr];
-        var fun=function(paths, tid){
+        var results={}, fun=function(paths, tid){
             xui.fetchClasses(paths,function(){ 
-                var a2=[], obj, r;
+                var deepRequired=[], obj, r;
                 for(var i=0,l=paths.length;i<l;i++){
                     obj=xui.SC.get(paths[i]);
-                    //collect  required class
-                    if(obj && (r=obj.Required) && r.length){
+                    // add to results
+                    for(var i=0,l=clsArr.length;i<l;i++){
+                        results[clsArr[i]] = xui.SC.get(clsArr[i]);
+                    }
+                    //collect sub required class
+                    if(obj && (r=obj.prototype.Dependencies) && r.length){
                         for(var j=0,m=r.length;j<m;j++){
-                            if(!xui.SC.get(r[j]))a2.push(r[j]);
+                            if(!xui.SC.get(r[j]))deepRequired.push(r[j]);
                         }
                     }
-                    // if it's module, collect required class in iniComponents
+                    if(obj && (r=obj.prototype.Required) && r.length){
+                        for(var j=0,m=r.length;j<m;j++){
+                            if(!xui.SC.get(r[j]))deepRequired.push(r[j]);
+                        }
+                    }
+                    // if it's module, collect required class in iniComponents and newbies
                     if(obj && obj['xui.Module'] && (obj=obj.prototype&&obj.prototype.iniComponents)){
                         xui.fun.body(obj).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                            if(!(a=xui.SC.get(b))){
-                                a2.push(b);
-                                a=null;
-                            }
-                           // if(force && a && a['xui.Module']){
-                           //     a2.push(b);
-                           // }
+                            if(!xui.SC.get(b)) deepRequired.push(b);
+                        }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                              b=b.split(/\s*,\s*/);
+                              for(var i=0,l=b.length;i<l;i++){
+                                c = b[i].split(/\s*:s*/);
+                                if(c[1]){
+                                   c = c[1].replace(/['"\s]/g, '');
+                                   if(!xui.SC.get(c))deepRequired.push(c);
+                                }
+                              }
+                              return a;
                         });
                     }
                 }
-                if(a2.length){
-                    fun(a2, null);
+                if(deepRequired.length){
+                    fun(deepRequired, tid);
+                    return false;
                 }else{
-                    var arr=[];
-                    for(var i=0,l=clsArr.length;i<l;i++){
-                        arr.push(xui.SC.get(clsArr[i]));
-                    }
-                    if(onEnd)onEnd.apply(null,arr);
+                    fun=null;
+                    if(onEnd) return onEnd.call(null,results);
+                    // will resume thread
+                    else return true;
                 }
             },onSuccess,onFail,onAlert,force,tid,options);
         };
@@ -2274,7 +2288,7 @@ new function(){
                         if(jsondata && typeof(o)=="string")
                             o=xui.unserialize(xui.getFileSync(o));
                         // for pseudo function
-                        else if( xui.isStr(t) && ((o.actions && xui.isArr(o.actions) && o.actions.length ) || o['return'])) {
+                        else if(o && xui.isStr(t) && xui.isHash(o) && ((o.actions && xui.isArr(o.actions) && o.actions.length ) || o['return'])) {
                             if((t=(''+t).split('.functions')) && t.length==2 && (t=xui.adjustVar(t[0]+"}", _ns))) {
                                 oo=o;
                                 o = function(){
@@ -2282,7 +2296,7 @@ new function(){
                                     o=oo=t=_ns=null;
                                 };
                             }
-                        }else if (xui.isStr(t) && xui.isFun(o)){
+                        }else if(o && xui.isStr(t) && xui.isFun(o)){
                             // args[0] => args.0
                             t=t.replace(/\[(\d+)\]/,".$1");
                             t=t.split(/\s*\.\s*/);
@@ -4067,8 +4081,9 @@ xui.Class('xui.SC',null,{
         },
         //get object from obj string
         get:function (path, obj1, obj2, v){
+            if(typeof path!="string")return;
             // a[1][2].b[3] => a,1,2,b,3
-            path=(path||'').replace(/\]$/g,'').split(/[\[\]\.]+/);
+            path=path.replace(/\]$/g,'').split(/[\[\]\.]+/);
             if(obj1)v = xui.get(obj1,path);
             if(obj2 && v===undefined)v = xui.get(obj2,path);
             if(v===undefined)v = xui.get(xui.window,path);
@@ -15342,12 +15357,12 @@ xui.Class('xui.Module','xui.absProfile',{
                 var layer=0;
                 var fetchRequired = function(threadid,funs,index){
                          if(required && required.length){
-                            xui.require(required,function(tid){
+                            xui.require(required,function(results){
                                 // try to load deeper sub module's required classes
                                 layer++;
                                 // if inner module have classes to load, add a task to the current thread
                                 if(required && required.length){
-                                    xui.arr.insertAny(funs,fetchRequired,index);
+                                    xui.Thread(threadid).insert(fetchRequired);
                                 }
                             },function(uri,key){
                                 if(key){
@@ -31921,6 +31936,10 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
 
                     profile.boxing()._setDirtyMark();
                     b._asyCheck(profile,false);
+                },
+                onClick:function(profile, e, src){
+                    if(profile.onInputClick)
+                        profile.boxing().onInputClick(profile, e, src);
                 }
             }
         },
@@ -32124,6 +32143,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},
+            onInputClick:function(profile, e, src){},
             beforeFormatCheck:function(profile, value){},
             beforeFormatMark:function(profile, formatErr){},
             beforeKeypress:function(profile,caret,keyboard,e,src){},
@@ -34894,12 +34914,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             },
             INPUT:{
-                onClick:function(p,e){
+                onClick:function(p,e,src){
                     // for grid cell editor 'enter' bug: trigger list pop again
                     if(p.$cell){
                         e=xui.Event.getPos(e);
                         if(e.left===0&&e.top===0)return false;
                     }
+                    if(p.onInputClick)
+                        p.boxing().onInputClick(p, e, src);
                 },
                 onChange:function(profile, e, src){
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;
@@ -35142,6 +35164,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             afterPopShow:function(profile, popCtl){},
             afterPopHide:function(profile, popCtl, type){},
             onClick:function(profile, e, src, btn, value){},
+            onInputClick:function(profile, e, src){},
             onClickIcon:function(profile, src){},
             beforeUnitUpdated:function(prfole,unit){},
             afterUnitUpdated:function(prfole,unit){}
@@ -42932,6 +42955,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     });
                 }
             });
+        },
+        isSubInited:function(id){
+            var item=this.getItemByItemId(id);
+            return item && item.sub && xui.isArr(item.sub);
         }
     },
     Static:{
@@ -46997,6 +47024,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 xui.arr.each(rows,function(o){
                     if(o.id)self.toggleRow(o.id, expand);
                 });
+        },
+        isSubInited:function(id){
+            var row=this.getRowbyRowId(id);
+            return row && row.sub && xui.isArr(row.sub);
         },
         autoRowHeight:function(rowId){
             return this.each(function(prf){

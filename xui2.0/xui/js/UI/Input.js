@@ -487,6 +487,10 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
                     profile.boxing()._setDirtyMark();
                     b._asyCheck(profile,false);
+                },
+                onClick:function(profile, e, src){
+                    if(profile.onInputClick)
+                        profile.boxing().onInputClick(profile, e, src);
                 }
             }
         },
@@ -690,6 +694,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},
+            onInputClick:function(profile, e, src){},
             beforeFormatCheck:function(profile, value){},
             beforeFormatMark:function(profile, formatErr){},
             beforeKeypress:function(profile,caret,keyboard,e,src){},

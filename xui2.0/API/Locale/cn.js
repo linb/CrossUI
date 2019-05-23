@@ -13987,7 +13987,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "value [必需参数]: Number. 页代码",
                     "force [可选参数]: Boolean. 是否强制设置,默认为false", 
-                    "type [可选参数]: String. 类型"
+                    "type [可选参数]: String. 事件触发类型: inited, input, click, code"
                 ],
                 $snippet:[
                     "var id='xui.temp.pb0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -14179,7 +14179,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "page : Number, 新页码",
                     "start: Number, 记录开始",
                     "count: Number, 记录个数",
-                    "eventType: String, 页码改变的事件类型. inited/input/click",
+                    "eventType: String, 页码改变的事件类型. inited, input, click, code",
                    "opage : Number, 旧页码",
                     "ostart: Number, 旧记录开始"
                 ]

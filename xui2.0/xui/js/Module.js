@@ -715,12 +715,12 @@ xui.Class('xui.Module','xui.absProfile',{
                 var layer=0;
                 var fetchRequired = function(threadid,funs,index){
                          if(required && required.length){
-                            xui.require(required,function(tid){
+                            xui.require(required,function(results){
                                 // try to load deeper sub module's required classes
                                 layer++;
                                 // if inner module have classes to load, add a task to the current thread
                                 if(required && required.length){
-                                    xui.arr.insertAny(funs,fetchRequired,index);
+                                    xui.Thread(threadid).insert(fetchRequired);
                                 }
                             },function(uri,key){
                                 if(key){

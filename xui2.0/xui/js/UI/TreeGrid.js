@@ -455,6 +455,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(o.id)self.toggleRow(o.id, expand);
                 });
         },
+        isSubInited:function(id){
+            var row=this.getRowbyRowId(id);
+            return row && row.sub && xui.isArr(row.sub);
+        },
         autoRowHeight:function(rowId){
             return this.each(function(prf){
                 if(prf.renderId ){

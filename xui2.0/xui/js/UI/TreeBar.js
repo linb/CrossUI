@@ -230,6 +230,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     });
                 }
             });
+        },
+        isSubInited:function(id){
+            var item=this.getItemByItemId(id);
+            return item && item.sub && xui.isArr(item.sub);
         }
     },
     Static:{

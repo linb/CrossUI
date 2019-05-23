@@ -265,24 +265,24 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     }else{
                         if(row.sub)ops.sub=null;
                     }
-                    xui.asyRun(function(){
+                    xui.resetRun("M.JSONE1:"+ns.getUid(),function(){
                         if(tg.isDestroyed())return;
                         tg.updateRow(rowId, ops);
                         // must get
                         row = tg.getRowbyRowId(rowId);
                         if(row)row._type=va[0];
 
-                        ns.fireEvent("onchange", [ns]);
-                    },100);
+                        ns.fireEvent("onchange", [ns, ns.getValue(false)]);
+                    },200);
                 }
             }else{
                 if(!/^"(\\.|[^"\\])*"$/.test('"'+options.value+'"')){
                     alert('Text format is not valid!');
                     return false;
                 }
-                xui.asyRun(function(){
-                    ns.fireEvent("onchange", [ns]);
-                },100);
+                xui.resetRun("M.JSONE1:"+ns.getUid(), function(){
+                    ns.fireEvent("onchange", [ns, ns.getValue(false)]);
+                },200);
             }
         },
         _tg_beforerowactive:function(){
@@ -313,7 +313,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         }else{
                             var id=row.id;
                             xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
-                                tg.updateCellByRowCol(id, "value", "{"+ns.getDefaultKey()+":"+row.cells[1].value+"}", false, true);
+                                tg.updateCellByRowCol(id, "value", "{key:"+row.cells[1].value+"}", false, true);
                                 xui.asyRun(function(){
                                     tg.editCellbyRowCol(id, "value");
                                 },200);
@@ -364,9 +364,9 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     tg.editCellbyRowCol(nid+'', ptype=='array'?"value":"key");
                 });
             }
-            xui.asyRun(function(){
-                ns.fireEvent("onchange", [ns]);
-            },100);
+            xui.resetRun("M.JSONE1:"+ns.getUid(),function(){
+                ns.fireEvent("onchange", [ns, ns.getValue(false)]);
+            },200);
         },
         events:{
             afterIniComponents:function(module){
@@ -395,6 +395,10 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         }
     },
     Static:{
+        $Functions:{
+            setValue:function(json/*String, json string*/, keyOptions/*Object, key/value pairs*/){},
+            getValue:function(returnObj/*Boolean, return object or not(string)*/){}
+        },
         $DataModel:{
             keyCaption:"key",
             valueCaption:"value",
@@ -402,8 +406,8 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             notree:false
         },
         $EventHandlers:{
-            onchange:function(module/*xui.Module, the current module*/){},
-            onEdit:function(column/*String, the column id*/, editor/*the editor*/){}
+            onchange:function(module/*xui.Module, the current module*/, json/*String, json text*/){},
+            onEdit:function(column/*String, key or value*/, editor/*the editor object*/){}
         }
     }
 });
