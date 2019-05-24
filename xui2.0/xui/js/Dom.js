@@ -1096,7 +1096,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         //left,top format: "23px"
         show:function(left,top,callback,showEffects,ignoreEffects){
-            var style,t,v=xui.Dom.HIDE_VALUE,vv;
+            var style,t,vv;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
@@ -1154,7 +1154,6 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(style.position!='absolute')style.position = 'absolute';
                     style.visibility="hidden";
-                    style.top = style.left = xui.Dom.HIDE_VALUE;
 
                     if(callback)callback();
                 };
@@ -1939,15 +1938,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 parent=xui('body');
 
             //prepare
-            target.css({position:'absolute',left:xui.Dom.HIDE_VALUE, top:xui.Dom.HIDE_VALUE,display:'block', zIndex:xui.Dom.TOP_ZINDEX++});
+            target.css({position:'absolute',display:'block', zIndex:xui.Dom.TOP_ZINDEX++, visibility:'hidden'});
 
             //ensure show target on the top of the other elements with the same zindex
-            //parent.get(0).appendChild(target.get(0));
-            target.css({left :0, top :0, visibility:'hidden',display:'block'});
             parent.append(target);
 
             //show
-            target.cssPos(xui.Dom.getPopPos(pos, type, target, parent)).css({visibility:'visible'});
+            if(pos){
+                target.cssPos(xui.Dom.getPopPos(pos, type, target, parent));
+            }
+            target.css({visibility:'visible'});
 
             showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);

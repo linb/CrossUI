@@ -2557,7 +2557,7 @@ new function(){
                                         case "call":
                                             var args=iparams.slice(3), doit,doit2,y;
                                             t=iparams[0];
-                                            if(xui.isStr(t)&&/^\{[\w][\w.]+[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,''))) {
+                                            if(xui.isStr(t)&&/^\{[\w][\w.]*[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,'').replace(/\[(\d+)\]/,".$1"))) {
                                                 // args[0] => args.0
                                                 t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
@@ -5134,7 +5134,7 @@ xui.Class("xui.Timer","xui.absObj",{
             var p = o.properties = xui.clone(profile.properties,true);
             if(profile.box._objectProp){
                 for(var i in profile.box._objectProp)
-                    if((i in p) && p[i] && xui.isHash(p[i]) && xui.isEmpty(p[i]))delete p[i];
+                    if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             }
             return o;
         },

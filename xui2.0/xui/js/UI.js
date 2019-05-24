@@ -2904,7 +2904,8 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                 width:xui.browser.contentBox?'1em':'1.625em',
                 height:xui.browser.contentBox?'1em':'1.625em',
-                padding: '.334em',
+                'line-height':xui.browser.contentBox?'1em':'1.625em',
+                padding: '.1667em',
                 'background-color': '#eb6e1a',
                 color:'#fff !important',
                 overflow:'hidden',

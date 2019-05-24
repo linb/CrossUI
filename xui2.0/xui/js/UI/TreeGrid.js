@@ -876,6 +876,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     tar = xui.isArr(prop.rows)?prop.rows:(prop.rows=[]);
                 else{
                     k=b&&b[pid];
+                    if(!k){
+                        return;
+                    }
                     tar = xui.isArr(k.sub)?k.sub:(k.sub=[]);
                 }
 
@@ -883,7 +886,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var rows;
                 if(profile.renderId){
                     // if insert to root, or the parent node is inited
-                    if(!pid || k._inited){
+                    if(!xui.isSet(pid) || k._inited){
                         //prepareData(add links)
                         temp=[];
                         rows = c._prepareItems(profile, arr, pid,temp);
@@ -896,7 +899,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         });
                     }
                     // normal row to tree row
-                    else if(pid && !k.inited){
+                    else if(xui.isSet(pid) && !k.inited){
                         profile.box._getToggleNode(profile, pid)
                                 .removeClass('xui-icon-placeholder xui-uicmd-none')
                                 .addClass('xui-uicmd-toggle');

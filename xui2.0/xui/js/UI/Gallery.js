@@ -139,13 +139,13 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             },
             COMMENT:{
                 display:'block',
-                margin:'.25em',
+                margin:'.1667em',
                 'text-align':'center',
                 'font-size':'1em'
             },
             FLAG:{
-                top:'-.5em',
-                right:'-.5em',
+                top:'-.1667em',
+                right:'-.1667em',
                 position:'absolute',
                 'z-index':10
             }

@@ -83,6 +83,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                 if(xui.isSet(pid)){
                     k=profile.getItemByItemId(pid);
+                    if(!k){
+                        // no parent
+                        return;
+                    }
                     tar = xui.isArr(k.sub)?k.sub:(newsub=true, k.sub= []);
                 }else{
                     k=prop;

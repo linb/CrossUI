@@ -2558,7 +2558,7 @@ new function(){
                                         case "call":
                                             var args=iparams.slice(3), doit,doit2,y;
                                             t=iparams[0];
-                                            if(xui.isStr(t)&&/^\{[\w][\w.]+[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,''))) {
+                                            if(xui.isStr(t)&&/^\{[\w][\w.]*[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,'').replace(/\[(\d+)\]/,".$1"))) {
                                                 // args[0] => args.0
                                                 t=t.replace(/\[(\d+)\]/,".$1");
                                                 t=t.split(/\s*\.\s*/);
@@ -5135,7 +5135,7 @@ xui.Class("xui.Timer","xui.absObj",{
             var p = o.properties = xui.clone(profile.properties,true);
             if(profile.box._objectProp){
                 for(var i in profile.box._objectProp)
-                    if((i in p) && p[i] && xui.isHash(p[i]) && xui.isEmpty(p[i]))delete p[i];
+                    if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             }
             return o;
         },
@@ -11032,7 +11032,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         //left,top format: "23px"
         show:function(left,top,callback,showEffects,ignoreEffects){
-            var style,t,v=xui.Dom.HIDE_VALUE,vv;
+            var style,t,vv;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
@@ -11090,7 +11090,6 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(style.position!='absolute')style.position = 'absolute';
                     style.visibility="hidden";
-                    style.top = style.left = xui.Dom.HIDE_VALUE;
 
                     if(callback)callback();
                 };
@@ -11875,15 +11874,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 parent=xui('body');
 
             //prepare
-            target.css({position:'absolute',left:xui.Dom.HIDE_VALUE, top:xui.Dom.HIDE_VALUE,display:'block', zIndex:xui.Dom.TOP_ZINDEX++});
+            target.css({position:'absolute',display:'block', zIndex:xui.Dom.TOP_ZINDEX++, visibility:'hidden'});
 
             //ensure show target on the top of the other elements with the same zindex
-            //parent.get(0).appendChild(target.get(0));
-            target.css({left :0, top :0, visibility:'hidden',display:'block'});
             parent.append(target);
 
             //show
-            target.cssPos(xui.Dom.getPopPos(pos, type, target, parent)).css({visibility:'visible'});
+            if(pos){
+                target.cssPos(xui.Dom.getPopPos(pos, type, target, parent));
+            }
+            target.css({visibility:'visible'});
 
             showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
@@ -21804,7 +21804,8 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                 width:xui.browser.contentBox?'1em':'1.625em',
                 height:xui.browser.contentBox?'1em':'1.625em',
-                padding: '.334em',
+                'line-height':xui.browser.contentBox?'1em':'1.625em',
+                padding: '.1667em',
                 'background-color': '#eb6e1a',
                 color:'#fff !important',
                 overflow:'hidden',
@@ -38990,13 +38991,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             COMMENT:{
                 display:'block',
-                margin:'.25em',
+                margin:'.1667em',
                 'text-align':'center',
                 'font-size':'1em'
             },
             FLAG:{
-                top:'-.5em',
-                right:'-.5em',
+                top:'-.1667em',
+                right:'-.1667em',
                 position:'absolute',
                 'z-index':10
             }
@@ -42808,6 +42809,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                 if(xui.isSet(pid)){
                     k=profile.getItemByItemId(pid);
+                    if(!k){
+                        // no parent
+                        return;
+                    }
                     tar = xui.isArr(k.sub)?k.sub:(newsub=true, k.sub= []);
                 }else{
                     k=prop;
@@ -47446,6 +47451,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     tar = xui.isArr(prop.rows)?prop.rows:(prop.rows=[]);
                 else{
                     k=b&&b[pid];
+                    if(!k){
+                        return;
+                    }
                     tar = xui.isArr(k.sub)?k.sub:(k.sub=[]);
                 }
 
@@ -47453,7 +47461,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var rows;
                 if(profile.renderId){
                     // if insert to root, or the parent node is inited
-                    if(!pid || k._inited){
+                    if(!xui.isSet(pid) || k._inited){
                         //prepareData(add links)
                         temp=[];
                         rows = c._prepareItems(profile, arr, pid,temp);
@@ -47466,7 +47474,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         });
                     }
                     // normal row to tree row
-                    else if(pid && !k.inited){
+                    else if(xui.isSet(pid) && !k.inited){
                         profile.box._getToggleNode(profile, pid)
                                 .removeClass('xui-icon-placeholder xui-uicmd-none')
                                 .addClass('xui-uicmd-toggle');
