@@ -30,11 +30,11 @@ xui.Class=function(key, pkey, obj){
     for(i=0; t=pkey[i]; i++)
         if(!(_parent[i]=(xui.get(w, t.split('.')) || xui.get(window, t.split('.')) || (xui&&xui.SC&&xui.SC(t)))))
             throw new Error('errNoParent--'+ t);
-    if(obj.Dependencies){
-        if(typeof obj.Dependencies == "string")obj.Dependencies=[obj.Dependencies];
-        for(i=0; t=obj.Dependencies[i]; i++)
+    if(obj.Required){
+        if(typeof obj.Required == "string")obj.Required=[obj.Required];
+        for(i=0; t=obj.Required[i]; i++)
             if(!(xui.get(w, t.split('.')) || (xui&&xui.SC&&xui.SC(t))))
-                throw new Error('errNoDependency--'+ t);
+                throw new Error('errNoRequiredClass--'+ t);
     }
     parent0=_parent[0];
 
@@ -365,7 +365,7 @@ new function(){
                 cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer);
             else delete cache[k];
         },
-        //Dependencies: xui.Dom xui.Thread
+        //Required: xui.Dom xui.Thread
         observableRun:function(tasks,onEnd,threadid,busyMsg){
             xui.Thread.observableRun(tasks,onEnd,threadid,busyMsg);
         },
@@ -748,7 +748,7 @@ new function(){
                 return s.length+(null===_t?0:_t.length);
             },
             */
-            //Dependencies: xui.Dom
+            //Required: xui.Dom
             toDom:function(str){
                 var p=xui.$getGhostDiv(), r=[];
                 p.innerHTML=str;
@@ -1047,7 +1047,7 @@ xui.merge(xui.Class, {
     destroy:function(key){xui.Class.__gc(key)}
 });
 
-//function Dependencies: xui.Dom xui.Thread
+//function Required: xui.Dom xui.Thread
 xui.merge(xui,{
     version:2.14,
     $DEFAULTHREF:'javascript:;',
@@ -1445,6 +1445,7 @@ xui.merge(xui,{
             options=options||{};
             var rnd=options.force?xui._rnd():null;
             options.rspType='script';
+            options.keepScript=1;
             if(!sync){
                 options.checkKey=id;
                 xui.JSONP(path,rnd,onSuccess,onFail,0,options).start()
@@ -1452,7 +1453,7 @@ xui.merge(xui,{
                 options.asy=!sync;
                 xui.Ajax(path,rnd,function(rsp){
                     try{xui.exec(rsp,id)}
-                    catch(e){xui.tryF(onFail,[e.name + ": " + e.message])}
+                    catch(e){xui.tryF(onFail,[e])}
                     xui.tryF(onSuccess);
                 },onFail,0,options).start();
                 }
@@ -1477,10 +1478,32 @@ xui.merge(xui,{
         options.alien=true;
         return this.fetchClass(uri, onSuccess, onFail, onAlert, force, threadid, options);
     },
+    _getIdUri:function(item, options){
+        var attrs;
+        if(xui.isHash(item)){
+            id = item.id;
+            uri = item.uri;
+            attrs=xui.copy(item);
+            delete attrs.id;delete attrs.uri;
+        }else{
+            // [A.B]//crossui.com/A/js/b.js
+            if(obj=/^\[([\w][\w\.]*[\w])\](.+)/.exec(item)) {
+                id = obj[1];
+                uri = obj[2];
+            }else if(/^[\w][\w\.]*[\w]$/.test(item)) {
+                id = item;
+                uri = xui.getPath(id,'.js','js',options);
+            }else{
+                uri = item;
+                id = xui.getClassName(uri);
+            }
+        }
+        return {id:id,uri:uri,attrs:attrs};
+    },
     fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
         options=options||{};
-        var isPath=options.uri || /\//.test(uri) || /\.js$/i.test(uri), 
-            c=xui.$cache.clsByURI,
+        if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
+        var c=xui.$cache.clsByURI, 
             onFetching=xui.$cache.fetching,
             clearFetching=function(){
                 for(var i in onFetching[uri][3])xui.Thread.abort(onFetching[uri][3][i]);
@@ -1488,26 +1511,19 @@ xui.merge(xui,{
                 onFetching=null;
             },
             rnd=options.force?xui._rnd():null,
-            cls,obj,ww;
-        if(isPath){
-            if(!options.alien){
-                cls=xui.getClassName(uri);
-                if(cls && xui.SC.get(cls))
-                    isPath=false;
-            }
-        }else{
-             // special path( dont use any dynamic
-             if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
-             cls=uri;
-             uri=xui.getPath(uri,'.js','js',options);
-         }
-        if(!force && (isPath?((obj=c[uri]) && obj.$xui$):(obj=xui.SC.get(cls))))
-            xui.tryF(onSuccess,[uri,cls],obj);
+            ww,
+            obj = xui._getIdUri(uri, options),
+            cls = obj.id,
+            attrs = obj.attrs;
+        uri = obj.uri;
+
+        if(!force && xui.isSet( obj = (id && xui.SC.get(id)) || c[uri] ))
+            xui.tryF(onSuccess, [uri,obj&&obj.KEY], obj);
         else{
             // For fetching one class multiple times
             if(!onFetching[uri]){
                 onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-                if(!cls || (options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
+//                if(!cls || (options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
                     if(options.alien){ww=xui.window;xui.window={};}
                     xui.JSONP(uri,rnd,function(){
@@ -1534,14 +1550,15 @@ xui.merge(xui,{
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         clearFetching();
-                    },threadid,{rspType:'script'}).start();
+                    },threadid,{rspType:'script',keepScript:1,attrs:attrs}).start();
+            /*
                 }else{
                     xui.Ajax(uri,rnd,function(rsp){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
                         var scriptnode,s=xui.getClassName(uri);
                         if(options.alien){ww=xui.window;xui.window={};}
                         try{scriptnode=xui.exec(rsp, s)}catch(e){
-                            for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e.name + ": " + e.message]);
+                            for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e]);
                             xui.Class._last=null;
                         }
                         if(xui.Class._last)obj=c[uri]=xui.Class._last;
@@ -1569,6 +1586,7 @@ xui.merge(xui,{
                         clearFetching();
                     },threadid,{rspType:'text',asy:true}).start();
                 }
+            */
             }else{
                 if(onSuccess)onFetching[uri][0].push(onSuccess);
                 if(onFail)onFetching[uri][1].push(onFail);
@@ -1594,48 +1612,107 @@ xui.merge(xui,{
                 xui.Thread.resume(threadid);
         }).start();
     },
+    _collectClassRequired:function(cls, required, required2,options){
+        if(cls.$xuiclass$){
+            var t,id,uri,obj;
+            // Required css
+            if(xui.isArr(t = cls.prototype.Dependencies)){
+                for(var i=0,l=t.length;i<l;i++){
+                    id = xui.isHash(t[i]) && t[i].id;
+                    uri = xui.isHash(t[i])?t[i].uri:t[i];
+                    if(id && !xui.Dom.byId(id))
+                        required2.push(t[i]);
+                    else if(!xui.querySelector('link[href="'+uri+'"]').get(0))
+                        required2.push(t[i]);
+                }
+            }
+            // Required js
+            if(xui.isArr( t = cls.prototype.Required)){
+                for(var i=0,l=t.length;i<l;i++){
+                    if(xui.isArr(t[i])){
+                        required.push(t[i]);
+                    }else{
+                        obj = xui._getIdUri(t[i], options);
+                        id = obj.id;
+                        uri = obj.uri;
+                        if( ( !id || !xui.isSet(xui.SC.get(id))) && !xui.$cache.clsByURI[uri] && !xui.$cache.fetching[uri] ) {
+                            required.push(t[i]);
+                        }
+                    }
+                }
+            }
+            // new class in iniComponents
+            if(cls['xui.Module'] && xui.isFun(t = cls.prototype.iniComponents)){
+                try{
+                    (t+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                        if(!xui.SC.get(b))required.push(b);
+                        return a;
+                    }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                          b=b.split(/\s*,\s*/);
+                          for(var i=0,l=b.length;i<l;i++){
+                            c = b[i].split(/\s*:s*/);
+                            if(c[1]){
+                               c = c[1].replace(/['"\s]/g, '');
+                               if(!xui.SC.get(c))required.push(c);
+                            }
+                          }
+                          return a;
+                    })
+                }catch(e){}
+            }
+        }
+    },
     // Recursive require
     require:function(clsArr, onEnd, onSuccess, onFail, onAlert,force, threadid, options){
         if(xui.isStr(clsArr))clsArr=[clsArr];
         var results={}, fun=function(paths, tid){
+            var required=[], required2=[],id,uri,attrs;
+            xui.filter(paths,function(path){
+                if(xui.isArr(path)){
+                     if(!options.stopRecursive){
+                        Array.prototype.push.apply(required, path);
+                     }
+                    return false;
+                }
+            });
             xui.fetchClasses(paths,function(){ 
-                var deepRequired=[], obj, r;
-                for(var i=0,l=paths.length;i<l;i++){
-                    obj=xui.SC.get(paths[i]);
-                    // add to results
-                    for(var i=0,l=clsArr.length;i<l;i++){
-                        results[clsArr[i]] = xui.SC.get(clsArr[i]);
-                    }
-                    //collect sub required class
-                    if(obj && (r=obj.prototype.Dependencies) && r.length){
-                        for(var j=0,m=r.length;j<m;j++){
-                            if(!xui.SC.get(r[j]))deepRequired.push(r[j]);
+                // add to results
+                for(var i=0,l=clsArr.length;i<l;i++){
+                    obj = xui._getIdUri(clsArr[i], options);
+                    id = obj.id;
+                    uri = obj.uri;
+                    results[id||uri] = id ? xui.SC.get(id) : null;
+                }
+                if(!options.stopRecursive){
+                    for(var i=0,l=paths.length,obj;i<l;i++){
+                        if( (obj=xui.SC.get(paths[i])) && obj.$xuiclass$){
+                            xui._collectClassRequired(obj, required, required2,options);
                         }
                     }
-                    if(obj && (r=obj.prototype.Required) && r.length){
-                        for(var j=0,m=r.length;j<m;j++){
-                            if(!xui.SC.get(r[j]))deepRequired.push(r[j]);
+                    // load css first
+                    if(required2.length){
+                        for(var j=0,m=required2.length;j<m;j++){
+                            id=attrs=null;
+                            if(xui.isHash(required2[j])){
+                                id = required2[j].id||null;
+                                uri = required2[j].uri;
+                                attrs=xui.copy(required2[j]);
+                                delete attrs.id;delete attrs.uri;
+                            }else{
+                                uri= required2[j];
+                            }
+                            if(id && !xui.Dom.byId(id)){
+                                xui.CSS.includeLink(uri,id,false, attrs);
+                            }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
+                                xui.CSS.includeLink(uri,id,false, attrs);
+                            }
                         }
-                    }
-                    // if it's module, collect required class in iniComponents and newbies
-                    if(obj && obj['xui.Module'] && (obj=obj.prototype&&obj.prototype.iniComponents)){
-                        xui.fun.body(obj).replace(/\bxui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                            if(!xui.SC.get(b)) deepRequired.push(b);
-                        }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
-                              b=b.split(/\s*,\s*/);
-                              for(var i=0,l=b.length;i<l;i++){
-                                c = b[i].split(/\s*:s*/);
-                                if(c[1]){
-                                   c = c[1].replace(/['"\s]/g, '');
-                                   if(!xui.SC.get(c))deepRequired.push(c);
-                                }
-                              }
-                              return a;
-                        });
+                        required2=null;
                     }
                 }
-                if(deepRequired.length){
-                    fun(deepRequired, tid);
+                if(required.length){
+                    fun(required, tid);
+                    required=null;
                     return false;
                 }else{
                     fun=null;
@@ -1722,7 +1799,9 @@ xui.merge(xui,{
     log:xui.fun(),
     echo:xui.fun(),
     message:xui.fun(),
-
+    getErrMsg:function(e){
+        return e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString());
+    },
     //profile object cache
     _pool:[],
     getObject:function(id){return xui._pool['$'+id]},
@@ -2923,7 +3002,7 @@ new function(){
 // Some basic Classes
 
 /* xui.Thread
-    Dependencies: xui
+    Required: xui
     parameters:
         id: id of this thread, if input null, thread will create a new id
         tasks: [task,task,task ...] or [{},{},{} ...]
@@ -3200,7 +3279,7 @@ xui.Class('xui.Thread',null,{
         isAlive:function(id){
             return !!xui.$cache.thread[id];
         },
-        //Dependencies: xui.Dom
+        //Required: xui.Dom
         observableRun:function(tasks,onEnd,threadid,busyMsg){
             var thread=xui.Thread, dom=xui.Dom;
             if(!xui.isArr(tasks))tasks=[tasks];
@@ -3267,7 +3346,7 @@ xui.Class('xui.Thread',null,{
 });
 
 /*xui.absIO/ajax
-    Dependencies: xui.Thread
+    Required: xui.Thread
     
             get     post    get(cross domain)   post(corss domain)  post file   return big data(corss domain)
     ajax    +       +       -                   -                   -           -
@@ -3387,7 +3466,7 @@ xui.Class('xui.absIO',null,{
         _onError:function(e){
             var self=this;
             if(false!==xui.tryF(self.beforeFail,[e, self.threadid],self))
-                xui.tryF(self.onFail,[e.name?( e.name + ": " + e.message):e, self.rspType, self.threadid, e], self);
+                xui.tryF(self.onFail,[e, self.rspType, self.threadid, e], self);
             self._onEnd();
         },
         isAlive:function(){
@@ -3684,6 +3763,12 @@ xui.Class('xui.JSONP','xui.absIO',{
             n.src = uri;
             n.type= 'text/javascript';
             n.charset=self.charset||'UTF-8';
+            
+            if(self.attrs)
+                xui.each(self.attrs,function(o,i){
+                    n.setAttribute(i,o);
+                });
+
             n.onload = n.onreadystatechange = function(){
                 if(ok)
                     return;
@@ -3712,7 +3797,7 @@ xui.Class('xui.JSONP','xui.absIO',{
                     return;
                 };
 
-            (w.body||w.getElementsByTagName("head")[0]).appendChild(n);
+            (self.keepScript ? w.getElementsByTagName("head")[0] : w.body).appendChild(n);
 
             n=null;
 
@@ -3734,19 +3819,20 @@ xui.Class('xui.JSONP','xui.absIO',{
 
             if(n){
                 self.node=n.onload=n.onreadystatechange=n.onerror=null;
-
-                var div=document.createElement('div');
-                //in ie + add script with url(remove script immediately) + add the same script(remove script immediately) => crash
-                //so, always clear it later
-                div.appendChild(n.parentNode&&n.parentNode.removeChild(n)||n);
-                if(xui.browser.ie)
-                    xui.asyRun(function(){div.innerHTML=n.outerHTML='';if(xui.isEmpty(_pool))c._id=1;_pool=c=n=div=null;});
-                else{
-                    xui.asyRun(function(){
-                        div.innerHTML='';
-                        n=div=null;
-                        if(xui.isEmpty(_pool))c._id=1;
-                    });
+                if(!self.keepScript){
+                    var div=document.createElement('div');
+                    //in ie + add script with url(remove script immediately) + add the same script(remove script immediately) => crash
+                    //so, always clear it later
+                    div.appendChild(n.parentNode&&n.parentNode.removeChild(n)||n);
+                    if(xui.browser.ie)
+                        xui.asyRun(function(){div.innerHTML=n.outerHTML='';if(xui.isEmpty(_pool))c._id=1;_pool=c=n=div=null;});
+                    else{
+                        xui.asyRun(function(){
+                            div.innerHTML='';
+                            n=div=null;
+                            if(xui.isEmpty(_pool))c._id=1;
+                        });
+                    }
                 }
             }else{
                 if(xui.isEmpty(_pool))c._id=1;
@@ -4049,7 +4135,7 @@ new function(){
 };
 
 /*xui.SC for straight call
-  Dependencies: xui.Thread; xui.absIO/ajax
+  Required: xui.Thread; xui.absIO/ajax
 */
 xui.Class('xui.SC',null,{
     Constructor:function(path, callback, isAsy, threadid, options, force){
@@ -4109,7 +4195,9 @@ xui.Class('xui.SC',null,{
                             (self.$cache || ct)[self.$tag]=text;
                         else
                             //for sy xmlhttp ajax
-                            try{xui.exec(text,s)}catch(e){throw e.name + ": " + e.message+ " " + self.$tag}
+                            try{xui.exec(text,s)}catch(e){
+                                xui.asyRun(function(){throw e});
+                            }
                     }
                 }
                 t=xui.Class._last;
@@ -4206,10 +4294,12 @@ xui.Class('xui.SC',null,{
         execSnips:function(cache){
             var i,h=cache||xui.$cache.snipScript;
             for(i in h)
-                try{xui.exec(h[i],i)}catch(e){throw e}
+                try{xui.exec(h[i],i)}catch(e){
+                    xui.asyRun(function(){throw e});
+                }
             h={};
         },
-        //asy load multi js file, whatever Dependencies
+        //asy load multi js file, whatever Required
         /*
         *1.busy UI
         *3.xui.SC.groupCall some js/class
@@ -9546,7 +9636,7 @@ xui.Class('xui.Event',null,{
         },
         //if front==true, add to the before position of the base styleSheet
         //else add to the last postion
-        includeLink:function(href, id, front, attr){
+        includeLink:function(href, id, front, attrs){
             var e, ns=this, head = ns._getHead();
             if(href && (e=ns.get('href',href))){}else{
                 e = document.createElement('link');
@@ -9556,7 +9646,7 @@ xui.Class('xui.Event',null,{
                 if(id)
                     e.id=id;
                 e.media = 'all';
-                xui.each(attr,function(o,i){
+                xui.each(attrs,function(o,i){
                     e.setAttribute(i,o);
                 });
             }
@@ -14646,7 +14736,6 @@ xui.Class('xui.Dom','xui.absBox',{
     onCreated
     beforeShow
     afterShow
-    onLoadBaseClass
     onLoadRequiredClass
     onLoadRequiredClassErr
     onIniResource
@@ -15313,105 +15402,68 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._fireEvent('onCreated');
             });
 
-            //base classes
-            if((t=self.Dependencies) && t.length)
-                funs.push(function(threadid){
-                    xui.require(self.Dependencies,null,function(uri,key){
-                        self._fireEvent('onLoadBaseClass', [uri,key]);
-                    },function(){
-                        self._fireEvent('onLoadBaseClassErr', xui.toArr(arguments));
-                    },function(){
-                        self._fireEvent('onLoadBaseClassErr',  xui.toArr(arguments));
-                    },false, threadid);
-                });
-            if(self.iniComponents){
-                var arr=[];
-                try{
-                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                        if(!xui.SC.get(b))arr.push(b);
-                       return a;
-                    }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
-                          b=b.split(/\s*,\s*/);
-                          for(var i=0,l=b.length;i<l;i++){
-                            c = b[i].split(/\s*:s*/);
-                            if(c[1]){
-                               c = c[1].replace(/['"\s]/g, '');
-                               if(!xui.SC.get(c))arr.push(c);
-                            }
-                          }
-                          return a;
-                    })
-                }catch(e){}
-                if(arr.length){
-                    if(self.Required&&xui.isArr(self.Required)){
-                        self.Required=self.Required.concat(arr);
-                    }else{
-                        self.Required=arr;
-                    }
-                }
-            }
-
-            var required = xui.copy(self.Required);
+            var required = [], required2 = [];
+            xui._collectClassRequired(self.Class, required,required2);
             //load required class recursively
-            if((t=required) && t.length){
-                var layer=0;
+            if(required.length || required2.length){
+                var layer=0,attrs,id,uri;
                 var fetchRequired = function(threadid,funs,index){
-                         if(required && required.length){
-                            xui.require(required,function(results){
-                                // try to load deeper sub module's required classes
-                                layer++;
-                                // if inner module have classes to load, add a task to the current thread
-                                if(required && required.length){
-                                    xui.Thread(threadid).insert(fetchRequired);
-                                }
-                            },function(uri,key){
-                                if(key){
-                                    var o=xui.SC.get(key), arr;
-                                    if(o['xui.Module']){
-                                        // Dependencies
-                                        if(xui.isArr(arr=o.prototype.Dependencies)){
-                                            for(var i=0,l=arr.length;i<l;i++){
-                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
-                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
-                                            }
-                                        }
-                                        // Required
-                                        if(xui.isArr(arr=o.prototype.Required)){
-                                            for(var i=0,l=arr.length;i<l;i++){
-                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
-                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
-                                            }
-                                        }
-                                        // new class in iniComponents
-                                        if(xui.isFun(o.prototype.iniComponents)){
-                                            try{
-                                                (o.prototype.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                                                    if(!xui.SC.get(b))required.push(b);
-                                                    return a;
-                                                }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
-                                                      b=b.split(/\s*,\s*/);
-                                                      for(var i=0,l=b.length;i<l;i++){
-                                                        c = b[i].split(/\s*:s*/);
-                                                        if(c[1]){
-                                                           c = c[1].replace(/['"\s]/g, '');
-                                                           if(!xui.SC.get(c))required.push(c);
-                                                        }
-                                                      }
-                                                      return a;
-                                                })
-                                            }catch(e){}
-                                        }
-                                    }
-                                }
-                                self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
-                            },function(){
-                                var args=xui.toArr(arguments);
-                                args.push(layer);
-                                self._fireEvent('onLoadRequiredClassErr',  args);
-                            },null,false, threadid);
-                            // clear now
-                            required=[];
+                    // load css first
+                    if(required2.length){
+                        for(var j=0,m=required2.length;j<m;j++){
+                            id=attrs=null;
+                            if(xui.isHash(required2[j])){
+                                id = required2[j].id||null;
+                                uri = required2[j].uri;
+                                attrs=xui.copy(required2[j]);
+                                delete attrs.id;delete attrs.uri;
+                            }else{
+                                uri= required2[j];
+                            }
+                            if(id && !xui.Dom.byId(id)){
+                                xui.CSS.includeLink(uri,id,false, attrs);
+                                self._fireEvent('onLoadRequiredCSS', [uri,j,layer]);
+                            }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
+                                xui.CSS.includeLink(uri,id,false, attrs);
+                                self._fireEvent('onLoadRequiredCSS', [uri,j,layer]);
+                            }
                         }
+                        required2=[];
+                    }
+                    if(required.length){
+                        // next round
+                        var requireDeep=[];
+                        xui.filter(required,function(path){
+                            if(xui.isArr(path)){
+                                Array.prototype.push.apply(requireDeep, path);
+                                return false;
+                            }
+                        });
+
+                        xui.require(required,function(results){
+                            // try to load deeper sub module's required classes
+                            layer++;
+                            // if inner module have classes to load, add a task to the current thread
+                            if(required.length || required2.length){
+                                xui.Thread(threadid).insert(fetchRequired);
+                            }
+                        },function(uri, key){
+                            var obj;
+                            if(key && (obj=xui.SC.get(key)) && obj.$xuiclass$){
+                                xui._collectClassRequired(obj, required,required2);
+                            }
+                            self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
+                        },function(e){
+                            self._fireEvent('onLoadRequiredClassErr',  [e,layer]);
+                        },null,false, threadid, 
+                        // dont use require's recursive
+                        {stopRecursive:1});
+
+                        required=[];
+                        if(requireDeep.length){
+                            Array.prototype.push.apply(required, requireDeep);
+                        }
+                    }
                 };
                 funs.push(fetchRequired);
             }
@@ -16349,10 +16401,9 @@ xui.Class('xui.Module','xui.absProfile',{
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
-            onLoadBaseClass:function(module, threadid, uri, key){},
-            onLoadBaseClassErr:function(module, threadid, key){},
-            onLoadRequiredClass:function(module, threadid, uri, key){},
-            onLoadRequiredClassErr:function(module, threadid, uri){},
+            onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
+            onLoadRequiredClass:function(module, threadid, uri, key, layer){},
+            onLoadRequiredClassErr:function(module, threadid, err, layer){},
             onIniResource:function(module, threadid){},
             beforeIniComponents:function(module, threadid){},
             afterIniComponents:function(module, threadid){},
@@ -18684,9 +18735,6 @@ xui.Class("xui.Tips", null,{
                 return true;
             xui.Debugger.log('>>' + sMsg+' at File: '+ sUrl + ' ( line ' + sLine + ' ).');
             return true;
-        },
-        getErrMsg:function(e){
-            return e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString());
         },
         trace:function(obj){
             var args=xui.toArr(arguments),
@@ -26285,6 +26333,12 @@ xui.Class("xui.absList", "xui.absObj",{
                 });
             }
             return this;
+        },
+        disableItem:function(itemId){
+            return this.updateItem(itemId,{disabled: true});
+        },
+        enableItem:function(itemId){
+            return this.updateItem(itemId,{disabled: false});
         },
         hideItems:function(itemId){
             return this.showItems(itemId, false);
@@ -36807,7 +36861,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         _onresize:function(){}
     }
 });xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
-    Dependencies:['xui.Date'],
+    Required:['xui.Date'],
     Instance:{
         activate:function(){
             this.getSubNode('PRE').focus(true);
@@ -37601,7 +37655,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         _onresize:function(){}
     }
 });xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
-    Dependencies:['xui.Date'],
+    Required : ['xui.Date'],
     Instance:{
         activate:function(){
             this.getSubNode('PRE').focus(true);
@@ -45795,6 +45849,8 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
             return self;
         },
+        disableItem:null,
+        enableItem:null,
         fireCmdClickEvent:function(subId){
             this.getSubNodeByItemId('CMD', subId).onMousedown();
             return this;

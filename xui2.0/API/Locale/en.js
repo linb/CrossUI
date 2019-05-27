@@ -2749,7 +2749,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addBorder();},1000);xui.asyRun(function(){div.removeBorder();},2000);xui.asyRun(function(){div.remove();},3000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);div.addBorder({borderActive:true});xui.asyRun(function(){div.remove();},5000);"
                 ],
-                $memo:"Dependencies: xui.UI.Border"
+                $memo:"Required: xui.UI.Border"
             },
             removeBorder:{
                 $desc:"To remove an existing border from the first element",
@@ -2757,7 +2757,7 @@ xui.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addBorder();},1000);xui.asyRun(function(){div.removeBorder();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependencies: xui.UI.Border"
+                $memo:"Required: xui.UI.Border"
             },
             addResizer:{
                 $desc:"To add a resizer to the first element",
@@ -2772,7 +2772,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer();xui.asyRun(function(){div.remove();},10000);",
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;\\\'>Use mouse to resize me!</div>');xui('body').append(div);div.topZindex(true).addResizer({forceVisible:true,forceMovable:true,singleDir:true,vertical:false,minWidth:50,maxWidth:200,handlerSize:10});xui.asyRun(function(){div.remove();},10000);"
                 ],
-                $memo:"Dependencies: xui.UI.Resizer"
+                $memo:"Required: xui.UI.Resizer"
             },
             removeResizer:{
                 $desc:"To remove an existing resizer from the first element",
@@ -2780,7 +2780,7 @@ xui.set(xui.Locale,["en","app"], {
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addResizer({forceVisible:true})},1000);xui.asyRun(function(){div.removeResizer();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependencies: xui.UI.Resizer"
+                $memo:"Required: xui.UI.Resizer"
             },
             addClass:{
                 $desc:"To add a specified class name to each of the current elements",
@@ -3205,7 +3205,7 @@ xui.set(xui.Locale,["en","app"], {
                     "xui(id).onMousedown(function(p,e,s){xui(s).startDrag(e)})"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop"
+                $memo:"Required: xui.DragDrop"
             },
             draggable:{
                 $desc:"Enables/Disables the draggable functionality on the set of elements",
@@ -3231,7 +3231,7 @@ xui.set(xui.Locale,["en","app"], {
                     "xui(id+'i').draggable(true,{maxLeftOffset:50,maxTopOffset:50,maxRightOffset:50,maxBottomOffset:50,targetReposition:false});"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop"
+                $memo:"Required: xui.DragDrop"
             },
             droppable:{
                 $desc:"Enables/Disables the droppable functionality on the set of elements",
@@ -3245,7 +3245,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.DragDrop.getProfile().dragData);})"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop"
+                $memo:"Required: xui.DragDrop"
             },
             empty:{
                 $desc:"Removes all child nodes from the set of elements",
@@ -5188,16 +5188,14 @@ xui.set(xui.Locale,["en","app"], {
                 "  {"+
                 "    beforeCreated:function(){order.push('beforeCreated'); xui.log('beforeCreated');},"+
                 "    onCreated:function(){order.push('onCreated'); xui.log('onCreated');},"+
-                "    onLoadBaseClass:function(c,t,key){order.push('onLoadBaseClass: '+key); xui.log('onLoadBaseClass: '+key); },"+
                 "    onIniResource:function(){order.push('onIniResource'); xui.log('onIniResource');},"+
                 "    beforeIniComponents:function(){order.push('beforeIniComponents'); xui.log('beforeIniComponents');},"+
                 "    afterIniComponents:function(){order.push('afterIniComponents'); xui.log('afterIniComponents');},"+
-                "    onLoadRequiredClass:function(c,t,key){order.push('onLoadRequiredClass: '+key); xui.log('onLoadRequiredClass: '+key);},"+
+                "    onLoadRequiredClass:function(c,t,uri,key,layer){order.push('onLoadRequiredClass: '+key); xui.log('onLoadRequiredClass: '+key);},"+
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
                 "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
-                "module.Dependencies=['xui.UI','xui.Date'];"+
-                "module.Required=['xui.UI.Dialog','xui.UI.Button'];"+
+                "module.Required=['xui.UI','xui.Date','xui.UI.Dialog','xui.UI.Button'];"+
                 "module.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
                 "module.iniResource=function(){order.push('iniResource'); };"+
                 "module.iniExModules=function(){order.push('iniExModules'); };"+
@@ -5212,8 +5210,7 @@ xui.set(xui.Locale,["en","app"], {
 
                 "xui.Class('App1','xui.Module',{" +
                 "    Instance:{" +
-                "        Dependencies : ['xui.UI', 'xui.Date']," +
-                "        Required : ['xui.UI.Dialog', 'xui.UI.Button']," +
+                "        Required : ['xui.UI', 'xui.Date','xui.UI.Dialog', 'xui.UI.Button']," +
                 "        events:{" +
                 "            beforeCreated : function(module){" +
                 "                module._info=[];" +
@@ -5223,10 +5220,6 @@ xui.set(xui.Locale,["en","app"], {
                 "            onCreated : function(module){" +
                 "                module._info.push('onCreated');" +
                 "                xui.log('onCreated');" +
-                "            }," +
-                "            onLoadBaseClass : function(module, t, key){" +
-                "                module._info.push('onLoadBaseClass: ' + key);" +
-                "                xui.log('onLoadBaseClass: ' + key);" +
                 "            }," +
                 "            onIniResource : function(module){" +
                 "                module._info.push('onIniResource');" +
@@ -5240,7 +5233,7 @@ xui.set(xui.Locale,["en","app"], {
                 "                module._info.push('afterIniComponents');" +
                 "                xui.log('afterIniComponents');" +
                 "            }," +
-                "            onLoadRequiredClass : function(module, t, key){" +
+                "            onLoadRequiredClass : function(module, t, uri, key, layer){" +
                 "                module._info.push('onLoadRequiredClass: ' + key);" +
                 "                xui.log('onLoadRequiredClass: ' + key);" +
                 "            }," +
@@ -5282,12 +5275,10 @@ xui.set(xui.Locale,["en","app"], {
 
                 "xui.Class('App2','xui.Module',{" +
                 "    Instance:{" +
-                "        Dependencies : ['xui.UI']," +
-                "        Required : ['xui.UI.Dialog']," +
+                "        Required : ['xui.UI','xui.UI.Dialog']," +
                 "        events:{" +
                 "            beforeCreated : '_trace'," +
                 "            onCreated : '_trace'," +
-                "            onLoadBaseClass : '_trace'," +
                 "            onIniResource : '_trace'," +
                 "            beforeIniComponents : '_trace'," +
                 "            afterIniComponents : '_trace'," +
@@ -5754,16 +5745,6 @@ xui.set(xui.Locale,["en","app"], {
                     'module : xui.Module'
                 ]
             },
-            onLoadBaseClass:{
-                $desc:'Fired when module loads base classes',
-                $paras:[
-                    'module : xui.Module',
-                    'threadid : String, thread id',
-                    'uri: String, base class uri',
-                    'key: String, base class name'
-                ],
-                $memo:'See constructor'
-            },
             onHookKey:{
                 $desc:'Fired when the hook key down/up',
                 $paras:[
@@ -5805,14 +5786,6 @@ xui.set(xui.Locale,["en","app"], {
                     "msg5: Object, message object 5"
                 ]
             },
-            onLoadBaseClassErr:{
-                $desc:'Fired when module failed to load base Classes',
-                $paras:[
-                    'module : xui.Module',
-                    'threadid : String, thread id',
-                    'key: String, class name'
-                ]
-            },
             onIniResource:{
                 $desc:'Fired when module loads resources',
                 $paras:[
@@ -5844,7 +5817,8 @@ xui.set(xui.Locale,["en","app"], {
                     'module : xui.Module',
                     'threadid : String, thread id',
                     "url: String, class url",
-                    'key: String, class name'
+                    'key: String, class name',
+                    'layer: String, class load deep'
                 ],
                 $memo:'See constructor'
             },
@@ -5853,7 +5827,8 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     'module : xui.Module',
                     'threadid : String, thread id',
-                    'key: String, class name'
+                    'err: Object, error',
+                    'layer: String, class load deep'
                 ]
             },
             onReady:{
@@ -6790,7 +6765,7 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             updateItem:{
-                $desc:"Updates the specified item(key or value) and the corresponding DOM Element",
+                $desc:"Updates the specified item and the corresponding DOM Element",
                 $rtn:"[self]",
                 $paras:[
                     "id [Required] : String, The node id",
@@ -6811,11 +6786,25 @@ xui.set(xui.Locale,["en","app"], {
                      "subId [Required] : String/Array, id array of target items"
                 ]
             },
-            hideItems:{
+            showItems:{
                 $desc:"To  show an or more item",
                 $rtn:"[self]",
                 $paras:[
                      "subId [Required] : String/Array, id array of target items"
+                ]
+            },
+            disableItem:{
+                $desc:"To  disable an item",
+                $rtn:"[self]",
+                $paras:[
+                     "subId [Required] : String,  target item id"
+                ]
+            },
+            enableItem:{
+                $desc:"To  enable an item",
+                $rtn:"[self]",
+                $paras:[
+                     "subId [Required] : String,  target item id"
                 ]
             },
             getItems:{
@@ -14863,7 +14852,7 @@ xui.set(xui.Locale,["en","app"], {
         prototype:{
             KEY:{$desc:"Class Name"},
             updateItem:{
-                $desc:"Updates the specified item(key or value) and the corresponding DOM Element",
+                $desc:"Updates the specified item and the corresponding DOM Element",
                 $rtn:"[self]",
                 $paras:[
                     "id [Required] : String, The node id",
@@ -15204,7 +15193,7 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             updateItem:{
-                $desc:"Updates the specified item(key or value) and the corresponding DOM Element",
+                $desc:"Updates the specified item and the corresponding DOM Element",
                 $rtn:"[self]",
                 $paras:[
                     "id [Required] : String, The node id",

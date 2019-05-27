@@ -7386,6 +7386,12 @@ xui.Class("xui.absList", "xui.absObj",{
             }
             return this;
         },
+        disableItem:function(itemId){
+            return this.updateItem(itemId,{disabled: true});
+        },
+        enableItem:function(itemId){
+            return this.updateItem(itemId,{disabled: false});
+        },
         hideItems:function(itemId){
             return this.showItems(itemId, false);
         },

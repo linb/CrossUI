@@ -2789,7 +2789,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $snippet:[
                     "var div=xui.create('<div style=\\\'background:#fff;position:absolute;border:solid 1px;width:100px;height:100px;left:100px;top:100px;z-index:20000;\\\'></div>');xui('body').append(div);xui.asyRun(function(){div.addResizer({forceVisible:true})},1000);xui.asyRun(function(){div.removeResizer();},2000);xui.asyRun(function(){div.remove();},3000);"
                 ],
-                $memo:"Dependencies: xui.UI.Resizer"
+                $memo:"Required: xui.UI.Resizer"
             },
             addClass:{
                 $desc:"为每一个元素添加CSS类",
@@ -3214,7 +3214,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui(id).onMousedown(function(p,e,s){xui(s).startDrag(e)})"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop"
+                $memo:"Required: xui.DragDrop"
             },
             draggable:{
                 $desc:"启用或禁止元素是否可拖动",
@@ -3240,7 +3240,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui(id+'i').draggable(true,{maxLeftOffset:50,maxTopOffset:50,maxRightOffset:50,maxBottomOffset:50,targetReposition:false});"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop"
+                $memo:"Required: xui.DragDrop"
             },
             droppable:{
                 $desc:"启用或禁止元素是否可丢放",
@@ -3254,7 +3254,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "var n=xui(id); n.first().draggable(true,{dragType:'icon'},'key1','data1').next().droppable(true,'key1').onDrop(function(){alert(xui.DragDrop.getProfile().dragData);})"+
                     "}"
                 ],
-                $memo:"Dependencies: xui.DragDrop"
+                $memo:"Required: xui.DragDrop"
             },
             empty:{
                 $desc:"清空包含的所有DOM元素",
@@ -5248,16 +5248,14 @@ xui.set(xui.Locale,["cn","app"], {
                 "  {"+
                 "    beforeCreated:function(){order.push('beforeCreated'); xui.log('beforeCreated');},"+
                 "    onCreated:function(){order.push('onCreated'); xui.log('onCreated');},"+
-                "    onLoadBaseClass:function(c,t,key){order.push('onLoadBaseClass: '+key); xui.log('onLoadBaseClass: '+key); },"+
                 "    onIniResource:function(){order.push('onIniResource'); xui.log('onIniResource');},"+
                 "    beforeIniComponents:function(){order.push('beforeIniComponents'); xui.log('beforeIniComponents');},"+
                 "    afterIniComponents:function(){order.push('afterIniComponents'); xui.log('afterIniComponents');},"+
-                "    onLoadRequiredClass:function(c,t,key){order.push('onLoadRequiredClass: '+key); xui.log('onLoadRequiredClass: '+key);},"+
+                "    onLoadRequiredClass:function(c,t,uri,key,layer){order.push('onLoadRequiredClass: '+key); xui.log('onLoadRequiredClass: '+key);},"+
                 "    onReady:function(){order.push('onReady'); xui.log('onReady');},"+
                 "    onRender:function(module){order.push('onRender'); xui.log('onRender'); module.dialog1.setHtml(order.join('<br />'));}"+
                 "  });"+
-                "module.Dependencies=['xui.UI','xui.Date'];"+
-                "module.Required=['xui.UI.Dialog','xui.UI.Button'];"+
+                "module.Required=['xui.UI','xui.Date','xui.UI.Dialog','xui.UI.Button'];"+
                 "module.iniComponents=function(){order.push('iniComponents'); return (new xui.UI.Dialog()).setHost(this, 'dialog2').setWidth(150).setHeight(150).get() };"+
                 "module.iniResource=function(){order.push('iniResource'); };"+
                 "module.iniExModules=function(){order.push('iniExModules'); };"+
@@ -5272,8 +5270,7 @@ xui.set(xui.Locale,["cn","app"], {
 
                 "xui.Class('App1','xui.Module',{" +
                 "    Instance:{" +
-                "        Dependencies : ['xui.UI', 'xui.Date']," +
-                "        Required : ['xui.UI.Dialog', 'xui.UI.Button']," +
+                "        Required : ['xui.UI', 'xui.Date', 'xui.UI.Dialog', 'xui.UI.Button']," +
                 "        events:{" +
                 "            beforeCreated : function(module){" +
                 "                module._info=[];" +
@@ -5283,10 +5280,6 @@ xui.set(xui.Locale,["cn","app"], {
                 "            onCreated : function(module){" +
                 "                module._info.push('onCreated');" +
                 "                xui.log('onCreated');" +
-                "            }," +
-                "            onLoadBaseClass : function(module, t, key){" +
-                "                module._info.push('onLoadBaseClass: ' + key);" +
-                "                xui.log('onLoadBaseClass: ' + key);" +
                 "            }," +
                 "            onIniResource : function(module){" +
                 "                module._info.push('onIniResource');" +
@@ -5300,7 +5293,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "                module._info.push('afterIniComponents');" +
                 "                xui.log('afterIniComponents');" +
                 "            }," +
-                "            onLoadRequiredClass : function(module, t, key){" +
+                "            onLoadRequiredClass : function(module, t, url, key, layer){" +
                 "                module._info.push('onLoadRequiredClass: ' + key);" +
                 "                xui.log('onLoadRequiredClass: ' + key);" +
                 "            }," +
@@ -5342,12 +5335,10 @@ xui.set(xui.Locale,["cn","app"], {
 
                 "xui.Class('App2','xui.Module',{" +
                 "    Instance:{" +
-                "        Dependencies : ['xui.UI']," +
-                "        Required : ['xui.UI.Dialog']," +
+                "        Required : ['xui.UI','xui.UI.Dialog']," +
                 "        events:{" +
                 "            beforeCreated : '_trace'," +
                 "            onCreated : '_trace'," +
-                "            onLoadBaseClass : '_trace'," +
                 "            onIniResource : '_trace'," +
                 "            beforeIniComponents : '_trace'," +
                 "            afterIniComponents : '_trace'," +
@@ -5813,16 +5804,6 @@ xui.set(xui.Locale,["cn","app"], {
                     'module : xui.Module 对象'
                 ]
             },
-            onLoadBaseClass:{
-                $desc:'当Module加载基类的时候触发本事件',
-                $paras:[
-                    'module : xui.Module 对象',
-                    'threadid : String, 线程 id',
-                    'uri: String 类的uri',
-                    'key: String, 基类的类名'
-                ],
-                $memo:'See constructor'
-            },
             onHookKey:{
                 $desc:'热键触发本事件',
                 $paras:[
@@ -5865,14 +5846,6 @@ xui.set(xui.Locale,["cn","app"], {
                     'source: Object, 消息源'
                 ]
             },
-            onLoadBaseClassErr:{
-                $desc:'当Module加载基类出错的时候触发本事件',
-                $paras:[
-                    'module : xui.Module 对象',
-                    'threadid : String, 线程 id',
-                    'key: String, 基类的类名'
-                ]
-            },
             onIniResource:{
                 $desc:'当Module加载资源的时候触发本事件',
                 $paras:[
@@ -5903,7 +5876,8 @@ xui.set(xui.Locale,["cn","app"], {
                     'module : xui.Module 对象',
                     'threadid : String, 线程 id',
                     'uri: String 类的uri',
-                    'key: String, 加载的类名'
+                    'key: String, 加载的类名',
+                    'layer: Number, 加载的层'
                 ],
                 $memo:'See constructor'
             },
@@ -5912,7 +5886,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     'module : xui.Module 对象',
                     'threadid : String, 线程 id',
-                    'key: String, 加载的类名'
+                    'err: Object,  错误消息',
+                    'layer: Number, 加载的层'
                 ]
             },
             onReady:{
@@ -6864,11 +6839,25 @@ xui.set(xui.Locale,["cn","app"], {
                     "subId [必需参数] : String/Array, 项的标识号,可以是多个"
                 ]
             },
-            hideItems:{
+            showItems:{
                 $desc:"显示一个或多个项",
                 $rtn:"[self]",
                 $paras:[
                     "subId [必需参数] : String/Array, 项的标识号,可以是多个"
+                ]
+            },
+            disableItem:{
+                $desc:"禁用一个子项",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [必需参数] : String, 项的标识号"
+                ]
+            },
+            enableItem:{
+                $desc:"解禁一个子项",
+                $rtn:"[self]",
+                $paras:[
+                    "subId [必需参数] : String, 项的标识号"
                 ]
             },
             updateItem:{
@@ -6886,7 +6875,6 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
-
             getItems:{
                 $desc:"获取所有项",
                 $rtn:"Array",

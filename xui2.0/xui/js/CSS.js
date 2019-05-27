@@ -137,7 +137,7 @@ xui.Class("xui.CSS", null,{
         },
         //if front==true, add to the before position of the base styleSheet
         //else add to the last postion
-        includeLink:function(href, id, front, attr){
+        includeLink:function(href, id, front, attrs){
             var e, ns=this, head = ns._getHead();
             if(href && (e=ns.get('href',href))){}else{
                 e = document.createElement('link');
@@ -147,7 +147,7 @@ xui.Class("xui.CSS", null,{
                 if(id)
                     e.id=id;
                 e.media = 'all';
-                xui.each(attr,function(o,i){
+                xui.each(attrs,function(o,i){
                     e.setAttribute(i,o);
                 });
             }

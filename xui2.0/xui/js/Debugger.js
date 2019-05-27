@@ -11,9 +11,6 @@ xui.Class('xui.Debugger', null, {
             xui.Debugger.log('>>' + sMsg+' at File: '+ sUrl + ' ( line ' + sLine + ' ).');
             return true;
         },
-        getErrMsg:function(e){
-            return e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString());
-        },
         trace:function(obj){
             var args=xui.toArr(arguments),
                 fun=args[1]||arguments.callee.caller,

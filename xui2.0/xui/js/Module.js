@@ -4,7 +4,6 @@
     onCreated
     beforeShow
     afterShow
-    onLoadBaseClass
     onLoadRequiredClass
     onLoadRequiredClassErr
     onIniResource
@@ -671,105 +670,68 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._fireEvent('onCreated');
             });
 
-            //base classes
-            if((t=self.Dependencies) && t.length)
-                funs.push(function(threadid){
-                    xui.require(self.Dependencies,null,function(uri,key){
-                        self._fireEvent('onLoadBaseClass', [uri,key]);
-                    },function(){
-                        self._fireEvent('onLoadBaseClassErr', xui.toArr(arguments));
-                    },function(){
-                        self._fireEvent('onLoadBaseClassErr',  xui.toArr(arguments));
-                    },false, threadid);
-                });
-            if(self.iniComponents){
-                var arr=[];
-                try{
-                    (self.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                        if(!xui.SC.get(b))arr.push(b);
-                       return a;
-                    }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
-                          b=b.split(/\s*,\s*/);
-                          for(var i=0,l=b.length;i<l;i++){
-                            c = b[i].split(/\s*:s*/);
-                            if(c[1]){
-                               c = c[1].replace(/['"\s]/g, '');
-                               if(!xui.SC.get(c))arr.push(c);
-                            }
-                          }
-                          return a;
-                    })
-                }catch(e){}
-                if(arr.length){
-                    if(self.Required&&xui.isArr(self.Required)){
-                        self.Required=self.Required.concat(arr);
-                    }else{
-                        self.Required=arr;
-                    }
-                }
-            }
-
-            var required = xui.copy(self.Required);
+            var required = [], required2 = [];
+            xui._collectClassRequired(self.Class, required,required2);
             //load required class recursively
-            if((t=required) && t.length){
-                var layer=0;
+            if(required.length || required2.length){
+                var layer=0,attrs,id,uri;
                 var fetchRequired = function(threadid,funs,index){
-                         if(required && required.length){
-                            xui.require(required,function(results){
-                                // try to load deeper sub module's required classes
-                                layer++;
-                                // if inner module have classes to load, add a task to the current thread
-                                if(required && required.length){
-                                    xui.Thread(threadid).insert(fetchRequired);
-                                }
-                            },function(uri,key){
-                                if(key){
-                                    var o=xui.SC.get(key), arr;
-                                    if(o['xui.Module']){
-                                        // Dependencies
-                                        if(xui.isArr(arr=o.prototype.Dependencies)){
-                                            for(var i=0,l=arr.length;i<l;i++){
-                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
-                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
-                                            }
-                                        }
-                                        // Required
-                                        if(xui.isArr(arr=o.prototype.Required)){
-                                            for(var i=0,l=arr.length;i<l;i++){
-                                                var cls = (/\//.test(arr[i]) || /\.js$/i.test(arr[i])) ? xui.getClassName(arr[i]) :arr[i];
-                                                if(!cls || !xui.SC.get(cls))required.push(arr[i]);
-                                            }
-                                        }
-                                        // new class in iniComponents
-                                        if(xui.isFun(o.prototype.iniComponents)){
-                                            try{
-                                                (o.prototype.iniComponents+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                                                    if(!xui.SC.get(b))required.push(b);
-                                                    return a;
-                                                }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
-                                                      b=b.split(/\s*,\s*/);
-                                                      for(var i=0,l=b.length;i<l;i++){
-                                                        c = b[i].split(/\s*:s*/);
-                                                        if(c[1]){
-                                                           c = c[1].replace(/['"\s]/g, '');
-                                                           if(!xui.SC.get(c))required.push(c);
-                                                        }
-                                                      }
-                                                      return a;
-                                                })
-                                            }catch(e){}
-                                        }
-                                    }
-                                }
-                                self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
-                            },function(){
-                                var args=xui.toArr(arguments);
-                                args.push(layer);
-                                self._fireEvent('onLoadRequiredClassErr',  args);
-                            },null,false, threadid);
-                            // clear now
-                            required=[];
+                    // load css first
+                    if(required2.length){
+                        for(var j=0,m=required2.length;j<m;j++){
+                            id=attrs=null;
+                            if(xui.isHash(required2[j])){
+                                id = required2[j].id||null;
+                                uri = required2[j].uri;
+                                attrs=xui.copy(required2[j]);
+                                delete attrs.id;delete attrs.uri;
+                            }else{
+                                uri= required2[j];
+                            }
+                            if(id && !xui.Dom.byId(id)){
+                                xui.CSS.includeLink(uri,id,false, attrs);
+                                self._fireEvent('onLoadRequiredCSS', [uri,j,layer]);
+                            }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
+                                xui.CSS.includeLink(uri,id,false, attrs);
+                                self._fireEvent('onLoadRequiredCSS', [uri,j,layer]);
+                            }
                         }
+                        required2=[];
+                    }
+                    if(required.length){
+                        // next round
+                        var requireDeep=[];
+                        xui.filter(required,function(path){
+                            if(xui.isArr(path)){
+                                Array.prototype.push.apply(requireDeep, path);
+                                return false;
+                            }
+                        });
+
+                        xui.require(required,function(results){
+                            // try to load deeper sub module's required classes
+                            layer++;
+                            // if inner module have classes to load, add a task to the current thread
+                            if(required.length || required2.length){
+                                xui.Thread(threadid).insert(fetchRequired);
+                            }
+                        },function(uri, key){
+                            var obj;
+                            if(key && (obj=xui.SC.get(key)) && obj.$xuiclass$){
+                                xui._collectClassRequired(obj, required,required2);
+                            }
+                            self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
+                        },function(e){
+                            self._fireEvent('onLoadRequiredClassErr',  [e,layer]);
+                        },null,false, threadid, 
+                        // dont use require's recursive
+                        {stopRecursive:1});
+
+                        required=[];
+                        if(requireDeep.length){
+                            Array.prototype.push.apply(required, requireDeep);
+                        }
+                    }
                 };
                 funs.push(fetchRequired);
             }
@@ -1707,10 +1669,9 @@ xui.Class('xui.Module','xui.absProfile',{
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  source){},
             beforeCreated:function(module, threadid){},
-            onLoadBaseClass:function(module, threadid, uri, key){},
-            onLoadBaseClassErr:function(module, threadid, key){},
-            onLoadRequiredClass:function(module, threadid, uri, key){},
-            onLoadRequiredClassErr:function(module, threadid, uri){},
+            onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
+            onLoadRequiredClass:function(module, threadid, uri, key, layer){},
+            onLoadRequiredClassErr:function(module, threadid, err, layer){},
             onIniResource:function(module, threadid){},
             beforeIniComponents:function(module, threadid){},
             afterIniComponents:function(module, threadid){},

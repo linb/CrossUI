@@ -72,7 +72,6 @@ xui.Class('App.tech_UI_event', 'xui.Module',{
         events:{
             "beforeCreated":"_traceEvent",
             "onCreated":"_traceEvent", 
-            "onLoadBaseClass":"_traceEvent", 
             "onLoadReqiredClass":"_traceEvent", 
             "onIniResource":"_traceEvent", 
             "beforeIniComponents":"_traceEvent", 

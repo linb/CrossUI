@@ -1,5 +1,5 @@
 xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
-    Dependencies:['xui.Date'],
+    Required : ['xui.Date'],
     Instance:{
         activate:function(){
             this.getSubNode('PRE').focus(true);

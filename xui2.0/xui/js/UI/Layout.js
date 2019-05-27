@@ -182,6 +182,8 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
             return self;
         },
+        disableItem:null,
+        enableItem:null,
         fireCmdClickEvent:function(subId){
             this.getSubNodeByItemId('CMD', subId).onMousedown();
             return this;
