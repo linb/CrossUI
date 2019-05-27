@@ -36,10 +36,10 @@ These tools (without coding) can reduce development time significantly:
 * CrossUI JSON Editor: https://crossui.com/JSONEditor
 
 * GitHub JSON Editor : https://linb.github.io/GitHub_JSON_Editor
-  A tool to edit any JSON files in Github Repo
+  A tool to edit any JSON file in Github Repo
 
 * GitHub Code Editor : https://linb.github.io/GitHub_Code_Editor
-  A tool to edit any code files in  Github Repo
+  A tool to edit any code file in  Github Repo
 
 ## CDN
 * https://crossui.com/libs/2.0/js/xui-all.js
@@ -47,4 +47,4 @@ These tools (without coding) can reduce development time significantly:
 ## Others
 * Examples: https://www.crossui.com/examples.html
 * Tutorials: https://www.crossui.com/tutorials.html
-* Builder desktop versions: https://www.crossui.com/download.html
+* Desktop versions: https://www.crossui.com/download.html
