@@ -42,6 +42,7 @@ These tools (without coding) can reduce development time significantly:
   A tool to edit any code file in  Github Repo
 
 ## CDN
+* https://cdn.jsdelivr.net/gh/linb/CrossUI@latest/runtime/xui/js/xui-all.js
 * https://crossui.com/libs/2.0/js/xui-all.js
 
 ## Others
