@@ -670,7 +670,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             xui.doc.onMouseup(null,'touchscroll');
                             doSwipe(t);
                         },'touchscroll');
-                        return false;
+                        return true;
                     }
                     return true;
                 }:null,'touchscroll');

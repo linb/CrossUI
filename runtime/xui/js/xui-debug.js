@@ -1445,7 +1445,7 @@ xui.merge(xui,{
             options=options||{};
             var rnd=options.force?xui._rnd():null;
             options.rspType='script';
-            options.keepScript=1;
+            options.keepDomNode=1;
             if(!sync){
                 options.checkKey=id;
                 xui.JSONP(path,rnd,onSuccess,onFail,0,options).start()
@@ -1523,7 +1523,7 @@ xui.merge(xui,{
             // For fetching one class multiple times
             if(!onFetching[uri]){
                 onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-//                if(!cls || (options&&options.crossDomain) || xui.absIO.isCrossDomain(uri)){
+                if(!options.sync && !options.useAjax){
                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
                     if(options.alien){ww=xui.window;xui.window={};}
                     xui.JSONP(uri,rnd,function(){
@@ -1550,8 +1550,11 @@ xui.merge(xui,{
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         clearFetching();
-                    },threadid,{rspType:'script',keepScript:1,attrs:attrs}).start();
-            /*
+                    },threadid,{
+                        rspType : 'script',
+                        keepDomNode : !options.noDomNode,
+                        attrs : attrs
+                    }).start();
                 }else{
                     xui.Ajax(uri,rnd,function(rsp){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
@@ -1584,9 +1587,11 @@ xui.merge(xui,{
                         for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
                         // for Thread.group in fetchClasses
                         clearFetching();
-                    },threadid,{rspType:'text',asy:true}).start();
+                    },threadid,{
+                        rspType : 'text', 
+                        asy : !options.sync 
+                    }).start();
                 }
-            */
             }else{
                 if(onSuccess)onFetching[uri][0].push(onSuccess);
                 if(onFail)onFetching[uri][1].push(onFail);
@@ -3797,7 +3802,7 @@ xui.Class('xui.JSONP','xui.absIO',{
                     return;
                 };
 
-            (self.keepScript ? w.getElementsByTagName("head")[0] : w.body).appendChild(n);
+            (self.keepDomNode ? w.getElementsByTagName("head")[0] : w.body).appendChild(n);
 
             n=null;
 
@@ -3819,7 +3824,7 @@ xui.Class('xui.JSONP','xui.absIO',{
 
             if(n){
                 self.node=n.onload=n.onreadystatechange=n.onerror=null;
-                if(!self.keepScript){
+                if(!self.keepDomNode){
                     var div=document.createElement('div');
                     //in ie + add script with url(remove script immediately) + add the same script(remove script immediately) => crash
                     //so, always clear it later
@@ -10696,7 +10701,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             xui.doc.onMouseup(null,'touchscroll');
                             doSwipe(t);
                         },'touchscroll');
-                        return false;
+                        return true;
                     }
                     return true;
                 }:null,'touchscroll');
