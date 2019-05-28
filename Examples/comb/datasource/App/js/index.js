@@ -25,7 +25,7 @@ xui.Class('App', 'xui.Module',{
             append(
                 (new xui.APICaller)
                 .setHost(host,"apicaller_json")
-                .setQueryURL("http://jsonip.com")
+                .setQueryURL("https://jsonip.com")
                 .setQueryArgs({})
                 .setName("apicaller_json")
                 .setResponseDataTarget([{type:'databinder',name:'db_json'}])
@@ -62,7 +62,7 @@ xui.Class('App', 'xui.Module',{
                 .setTop(40)
                 .setWidth(650)
                 .setHeight(80)
-                .setCaption("apicaller for <strong>http://jsonip.com</strong>")
+                .setCaption("apicaller for <strong>https://jsonip.com</strong>")
                 .setToggleBtn(false)
             );
             
