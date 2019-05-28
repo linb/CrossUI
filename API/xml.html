@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="keywords" content="GUI design,GUI builder,web UI,RAD,RIA,development tool,multi-platform,cross-platform,web app" />
+    <meta name="description" content="Powered by CrossUI Front-End Builder - Create Interactive Front-End Without Coding" />
+    <meta name="copyright" content="copyright@crossui.com" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powered by CrossUI Front-End Builder</title>
+
+</head>
+    <body>
+        <textarea id="out" class="html plain"></textarea>
+
+        <script type="text/javascript" src="../runtime/xui/js/xui-debug.js"></script>
+        <script type="text/javascript" src="../runtime/xui/js/Coder.js"></script>
+        <script type="text/javascript" src="Locale/en.js"></script>
+        <script type="text/javascript">
+xui.main(function(){
+    xui.setAppLangKey("app");
+    
+    var api2xml=function(){
+        var t,
+            doc=xui.Locale[xui.getLang()].doc,
+            map1={_:1,$:1},
+            map2={prototype:1,constructor:1,toString:1,valueOf:1,upper:1,Constructor:1,After:1,Before:1,KEY:1},
+            reg=/\./,
+            ghash={},
+            getAPI=function(o,tag){
+                var tt,hash;
+                ghash[tag]={
+                    completion:{
+                        '@version':'CrossUI-1.3',
+                        '@extends':((function(tag){var a=[],t=xui.SC(tag).$parent; if(t && t.length){xui.arr.each(t,function(o){a.push(o.KEY)}); return a.join(',')}else return 'Object'})(tag)),
+                        '@parent':(tt=tag.split('.')).length>1?tt.slice(0,tt.length-1).join('.'):'window',
+                        '@prefix':tag,
+                        item:[]
+                    }
+                };
+                hash=ghash[tag].completion.item;
+    
+                var k=o.KEY;
+                for(var i in o){
+                    if(!map1[i.charAt(0)] && !map2[i] && !reg.test(i)){
+                        if(typeof o[i]=='function'&& o[i].$xui$)
+                            getAPI(o[i],tag+'.'+i);
+                        else{
+                            if(typeof (t=o[i])!='function' || !(t=t.$original$) || t==k){
+                                var v=xui.get(doc,(tag+'.'+i).split('.')),ss="",s="",r="void",a,aa,h;
+                                if(v){
+                                    if(typeof xui.SC(tag+'.'+i)=='function'){
+                                        aa=[];
+                                        a=v.$paras;
+                                        if(a && a.length){
+                                            xui.arr.each(a,function(o){
+                                                s=o.replace(/\.$/,'').replace(/(\w+)\s*(\[\w+\])?(\s*\:\s*)([\w\./\[\]]+)(.*)/,'$4 $1');
+                                                if(o.indexOf("[Optional]")!=-1)
+                                                    s = "["+s+"]";
+                                                aa.push(s);
+                                            })
+                                        }
+                                    }
+                                    if(aa)
+                                        ss="("+aa.join(" , ")+")";
+                                    r=v.$rtn?v.$rtn:r;
+                                    r=r.replace("[self]",tag);
+                                }
+                                h={
+                                    '@rpel':tag+"."+i,
+                                    '@display':tag+"."+ i + ss + ' : ' + r
+                                };
+                                if(v&&v.$desc)
+                                    h['#cdata']=(v&&v.$desc);
+
+                                hash.push(h);
+                            }
+                        }
+                    }
+                }
+                o=o.prototype;
+                for(var i in o)
+                    if(!map1[i.charAt(0)])
+                        if(typeof (t=o[i])=='function' && (!(t=t.$original$) || t==k)){
+                                var v=xui.get(doc,(tag+'.prototype.'+i).split('.')),ss="",s="",r="void",a,aa,h;
+                                if(v){
+                                    if(typeof xui.SC(tag+'.prototype.'+i)=='function'){
+                                        aa=[];
+                                        a=v.$paras;
+                                        if(a && a.length){
+                                            xui.arr.each(a,function(o){
+                                                s=o.replace(/\.$/,'').replace(/(\w+)\s*(\[\w+\])?(\s*\:\s*)([\w\./\[\]]+)(.*)/,'$4 $1');
+                                                if(o.indexOf("[Optional]")!=-1)
+                                                    s = "["+s+"]";
+                                                aa.push(s);
+                                            })
+                                        }
+                                    }
+                                    if(aa)
+                                        ss="("+aa.join(" , ")+")";
+                                    r=v.$rtn?v.$rtn:r;
+                                    r=r.replace("[self]",tag);
+                                }
+                            h={
+                                '@rpel':i,
+                                '@display':i + ss + ' : ' + r
+                            };
+                            if(v&&v.$desc)
+                                h['#cdata']=(v&&v.$desc);
+                            hash.push(h);
+                        }
+            };
+        xui.arr.each(['_','xui.fun','xui.str','xui.arr','Class','xui'],function(o,i){
+            getAPI(xui.SC(o),o);
+        });
+        var out={};
+        xui.each(ghash,function(o,i){
+            out[i]=xui.XML.json2xml(o);
+        });
+        return out;
+    };
+    
+    var hash=api2xml();
+    var str="";
+    xui.each(hash,function(o,i){
+        str +="<!------------><!------------><!-- save as " + i + ".xml --><!------------><!------------>" + o;
+    });
+    
+    xui("out").text( str );
+    
+    xui.Coder.applyById("out",true);
+});
+        </script>
+
+</body>
+</html>

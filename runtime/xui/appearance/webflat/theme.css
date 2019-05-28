@@ -1,0 +1,271 @@
+/*Font Setting*/
+.xui-ui-ctrl, .xui-ui-reset{
+    color:#666;
+		font-size: 1.3333333333rem;
+    font-family:'PT Sans', Tahoma;
+    font-weight:normal;
+}
+ .xui-title-node{
+    font-size:1.1667em;
+}
+ .xuifont, .xuicon{
+    font-size:1.3333333333333333em;
+}
+ .xuifont-hover, .xuicon-hover{
+    color:#888;
+}
+ .xuifont-active, .xuicon-active{
+    color:#222;
+}
+ .xuifont-checked, .xuicon-checked{
+    color:#777;
+}
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
+    color:#fff;
+}
+/*Background*/
+.xui-uibase{
+    background-color:#FFFFFF;
+}
+ .xui-uibar{
+    background-color:#D2E3EF;
+}
+ .xui-uibar-hover{
+    background-color:#D4D9F1;
+}
+.xui-uibar-active,.xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
+    background-color:#3498DB;
+}
+ .xui-uibar-focus, .xui-uibar-top-focus .xui-uibar-tdl, .xui-uibar-top-focus .xui-uibar-tdm, .xui-uibar-top-focus .xui-uibar-tdr{
+    background-color:#3498DB;
+}
+ .xui-uitembg-checked{
+    color: #FFFFFF;
+}
+ .xui-uicell-checked,
+ .xui-treegrid-cell-checked,
+ .xui-treegrid-cells1-checked,
+ .xui-treegrid-cells2-checked{
+    color: #FFFFFF;
+}
+
+/*Border Setting*/
+.xui-uiborder-box{
+    border-width: 1px;
+}
+ .xui-uiborder-l{
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: #B0CEE3;
+}
+ .xui-uiborder-t{
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: #B0CEE3;
+}
+ .xui-uiborder-r{
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-right-color: #B0CEE3;
+}
+.xui-uiborder-b, .xui-uitem-split{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #B0CEE3;
+}
+ .xui-uiborder-flat{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #B0CEE3;
+}
+ .xui-uiborder-outset{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #B0CEE3 #B0CEE3 #B0CEE3 #B0CEE3;
+}
+ .xui-uiborder-inset,
+ .xui-uiborder-hidden-active,
+ .xui-uiborder-hidden-checked{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #B0CEE3 #B0CEE3 #B0CEE3 #B0CEE3;
+}
+ .xui-uiborder-nob{
+    border-bottom-width:0;
+    border-bottom-style:none;
+}
+ .xui-uiborder-hidden-active,
+ .xui-uiborder-hidden-checked{
+    background-color:#EBEBEB;
+}
+ .xui-uiborder-dark,
+ .xui-uiborder-flat-hover,
+ .xui-tabs-item{
+    border-color:#B0CEE3;
+}
+ .xui-uiborder-light,
+ .xui-uiborder-hidden-hover{
+    border-color:#EBEBEB;
+}
+
+/*Gradient and Button*/
+
+/*Corner Setting*/ 
+.xui-uiborder-radius{
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -khtml-border-radius: 6px;
+}
+ .xui-uiborder-radius-tl{
+    border-top-left-radius: 6px;
+    -moz-border-top-left-radius: 6px;
+    -webkit-border-top-left-radius: 6px;
+    -o-border-top-left-radius: 6px;
+    -ms-border-top-left-radius: 6px;
+    -khtml-border-top-left-radius: 6px;
+}
+ .xui-uiborder-radius-tr{
+    border-top-right-radius: 6px;
+    -moz-border-top-right-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -o-border-top-right-radius: 6px;
+    -ms-border-top-right-radius: 6px;
+    -khtml-border-top-right-radius: 6px;
+}
+ .xui-uiborder-radius-bl{
+    border-bottom-left-radius: 6px;
+    -moz-border-bottom-left-radius: 6px;
+    -webkit-border-bottom-left-radius: 6px;
+    -o-border-bottom-left-radius: 6px;
+    -ms-border-bottom-left-radius: 6px;
+    -khtml-border-bottom-left-radius: 6px;
+}
+ .xui-uiborder-radius-br{
+    border-bottom-right-radius: 6px;
+    -moz-border-bottom-right-radius: 6px;
+    -webkit-border-bottom-right-radius: 6px;
+    -o-border-bottom-right-radius: 6px;
+    -ms-border-bottom-right-radius: 6px;
+    -khtml-border-bottom-right-radius: 6px;
+}
+
+/*List Setting*/
+.xui-uitembg{
+}
+ .xui-uitembg-hover{
+    background-color: #D2E3EF;
+    border-color: transparent;
+}
+ .xui-uitembg-active{
+    background-color: #27AE60;
+    border-color: transparent;
+}
+ .xui-uitembg-checked{
+    background-color: #27AE60;
+    border-color: transparent;
+}
+.xui-block-fold .xui-block-sidebar{
+  background-color:#27AE60;
+}
+/*gradient*/
+.xui-uigradient{
+    color:#666; 
+    background:none;
+    border-color:#B0CEE3;
+    background: #3498db;
+    color:#FFFFFF;
+    text-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    filter: none;
+    -ms-filter: none;
+}
+.xui-uigradient-hover, .xui-uigradient:hover{
+    border-color:#B0CEE3;
+    background: #268FD5;
+}
+.xui-uigradient-active, .xui-uigradient-checked,  .xui-uigradient-expand, 
+.xui-uigradient:active, 
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
+    background: #27ae60;
+}
+.xui-uigradient{
+    color:#FFFFFF;
+}
+.xui-ui-sbtn{
+    border-color:#fff;
+}
+.xui-ui-sbtn:hover, .xui-ui-sbtn-hover{
+    border-color:#fff;
+}
+
+/*Grid Setting*/
+.xui-uicell,
+ .xui-treegrid-cells1, .xui-treegrid-cells2{
+}
+ .xui-uicell-alt,
+ .xui-treegrid-cells1-alt, .xui-treegrid-cells2-alt{
+    background-color: #EFF8FF;
+}
+ .xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
+    background-color: #D2E3EF;
+}
+ .xui-treegrid-cells1-active, .xui-treegrid-cells2-active,
+ .xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
+    background-color: #B0EAFA;
+}
+ .xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
+    background-color: #FFE97F;
+}
+.xui-uicell-checked,
+.xui-treegrid-cell-checked,
+.xui-treegrid-cells1-checked,
+.xui-treegrid-cells2-checked{
+    background-color: #27AE60;
+}
+ .xui-uicell-hover, .xui-treegrid-cell-hover{
+    background-color:#D9E8FB;
+}
+
+/*Shadow*/
+ .xui-ui-shadow-input{ 
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+} 
+
+/*xui.UI.Tabs*/
+.xui-tabs-items{
+     padding:0;
+}
+.xui-tabs-listbg{
+     background:none;
+     border-top:0;
+}
+.xui-buttonviews-items{
+    background-color:#3498db;
+    padding: .33333em;
+}
+.xui-buttonviews-menu2, .xui-buttonviews-itemc{
+	padding-top: .5em;
+	padding-bottom: .5em;
+}
+.xui-treegrid-fhcell, .xui-treegrid-hcell, .xui-treegrid-hscell{
+    border-left-color:transparent;
+    border-top-color:transparent;
+}
+
+/*Focus Outline*/
+.xui-showfocus:focus {
+    outline-width: 1px;
+    outline-style: none;
+}
+
+/** important => the last one: this theme's name */
+.setting-uikey{
+    font-family: webflat;
+}

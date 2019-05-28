@@ -1,2 +1,0 @@
-1. Copy node.exe into this folder (You can download from http://www.nodejs.org/);
-2. In demo.html, correct the lib path in "<script type="text/javascript" src="../../runtime/xui/js/xui-debug.js"></script>".

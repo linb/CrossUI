@@ -1,6 +1,0 @@
-Version 2.0+ is NOT compatible with older versions
-
-1)Remove '_' namespace (merged '_' to 'xui');
-2)Move 'NameSpace' to xui.NameSpace;
-3)Removed some  widgets: Range/Poll/TagEditor/ColLayout/Calendar/TimeLine;
-4)Removed themes 'aqua','blackwhite'; added themes 'classic' and 'webflat'.

@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+
+#panelId, #unchanged {
+    border: solid 1px blue;
+    background:#cccccc;
+}
+
+#buttonId .xui-button-caption{
+    color:blue;
+}

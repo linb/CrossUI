@@ -1,0 +1,10 @@
+@charset "utf-8";
+
+#panelId, #unchanged {
+    border: solid 1px red;
+    background:#eeeeee;
+}
+
+#buttonId .xui-button-caption{
+    color:red;
+}

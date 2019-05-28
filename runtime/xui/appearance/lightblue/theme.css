@@ -1,0 +1,181 @@
+/*font*/
+.xui-ui-ctrl, .xui-ui-reset{
+    color:#444; 
+    font-size: 1rem;
+    font-family:arial, helvetica, clean, sans-serif; 
+    font-weight:normal; 
+}
+.xui-title-node{
+		font-size:1.1667em;
+}
+.xuifont, .xuicon{
+  font-size:1.3333333333333333em;
+}
+.xuifont-hover, .xuicon-hover{
+	color: #686868;
+}
+.xuifont-active, .xuicon-active{
+	color: #3393D2; 
+}
+.xuifont-checked, .xuicon-checked{
+	color: #3393D2; 
+}
+.xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
+		color:#fff;
+}
+
+/*background*/
+.xui-uibase{
+    background-color:#FFFFFF;
+}
+.xui-uibar{
+    background-color:#B8D6E6;
+}
+.xui-uibar-hover{
+    background-color:#E5EFF5;
+}
+.xui-uibar-active,.xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
+    background-color:#85AEC2;
+}
+
+
+/*border*/
+.xui-uiborder-l{
+    border-left-color:#E5EFF5;
+}
+.xui-uiborder-t{
+    border-top-color:#E5EFF5;
+}
+.xui-uiborder-r{
+    border-right-color:#88A6B6;
+}
+.xui-uiborder-b, .xui-uitem-split{
+    border-bottom-color:#88A6B6;
+}
+.xui-uiborder-flat{
+    border-color:#88A6B6;
+}
+.xui-uiborder-outset{
+    border-color:#E5EFF5 #88A6B6 #88A6B6 #E5EFF5;
+}
+.xui-uiborder-inset, .xui-uiborder-hidden-active, .xui-uiborder-hidden-checked{
+    border-color:#88A6B6 #E5EFF5 #E5EFF5 #88A6B6;
+}
+.xui-uiborder-hidden-active, .xui-uiborder-hidden-checked{
+    background: #E5EFF5;
+}
+.xui-uiborder-dark, .xui-uiborder-flat-hover, .xui-tabs-item{
+    border-color:#7290A0;
+}
+.xui-uiborder-light, .xui-uiborder-hidden-hover{
+    border-color:#E5EFF5;
+}
+
+/*item*/
+.xui-uitembg-hover{
+  border-color:#85AEC2;
+  background-color:#B8D6E6;
+}
+.xui-uitembg-active{
+  border-color:#85AEC2;
+  background-color:#97B9C8;
+}
+.xui-uitembg-checked{
+  border-color:#85AEC2;
+  background-color:#85AEC2;
+}
+.xui-block-fold .xui-block-sidebar{
+  background-color:#85AEC2;
+}
+.xui-uitembg-checked{
+	color:#ffffff;
+}
+
+/*gradient*/
+.xui-uigradient{
+    color:#444; 
+    background:none;
+    border-color:#88A6B6;
+    -moz-box-shadow:inset 0 1px 0 0 #E5EFF5;
+    -webkit-box-shadow:inset 0 1px 0 0 #E5EFF5;
+    box-shadow:inset 0 1px 0 0 #E5EFF5;    
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E5EFF5', endColorstr='#88A6B6');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E5EFF5', endColorstr='#88A6B6');
+    background-image: linear-gradient(top,  #E5EFF5 5%,  #88A6B6 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #E5EFF5), to(1, #88A6B6));
+    background-image: -webkit-linear-gradient(top, #E5EFF5 5%, #88A6B6 100%);
+    background-image: -moz-linear-gradient(top,  #E5EFF5 5%,  #88A6B6 100%);
+    background-image: -o-linear-gradient(top,  #E5EFF5 5%,  #88A6B6 100%);  
+}
+.xui-uigradient-hover, .xui-uigradient:hover{
+    border-color: #9CBACA;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E5EFF5', endColorstr='#9CBACA');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E5EFF5', endColorstr='#9CBACA');
+    background-image: linear-gradient(top,  #E5EFF5 5%,  #9CBACA 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #E5EFF5), to(1, #9CBACA));
+    background-image: -webkit-linear-gradient(top, #E5EFF5 5%, #9CBACA 100%);
+    background-image: -moz-linear-gradient(top,  #E5EFF5 5%,  #9CBACA 100%);
+    background-image: -o-linear-gradient(top,  #E5EFF5 5%,  #9CBACA 100%);  
+}
+.xui-uigradient-active, .xui-uigradient-checked,  .xui-uigradient-expand, 
+.xui-uigradient:active, 
+.xui-uigradient-active:hover, .xui-uigradient-checked:hover, .xui-uigradient-expand:hover{
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#88A6B6', endColorstr='#E5EFF5');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#88A6B6', endColorstr='#E5EFF5');
+    background-image: linear-gradient(top,  #88A6B6 5%,  #E5EFF5 100%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(0.05, #88A6B6), to(1, #E5EFF5));
+    background-image: -webkit-linear-gradient(top, #88A6B6 5%, #E5EFF5 100%);
+    background-image: -moz-linear-gradient(top,  #88A6B6 5%,  #E5EFF5 100%);
+    background-image: -o-linear-gradient(top,  #88A6B6 5%,  #E5EFF5 100%);  
+}
+
+/*uicontainer*/
+.xui-uibar-focus, 
+.xui-uibar-top-focus .xui-uibar-tdl,
+.xui-uibar-top-focus .xui-uibar-tdm,
+.xui-uibar-top-focus .xui-uibar-tdr{
+  background-color: #B8D6E6;
+}
+
+/*xui.UI.TreeGrid*/
+.xui-uicell,
+.xui-treegrid-cells1, .xui-treegrid-cells2{
+  background-color: #F9F9FB;
+}
+.xui-uicell-alt,
+.xui-treegrid-cells1-alt, .xui-treegrid-cells2-alt{
+    background-color: #EEEEEE;
+} 
+.xui-treegrid-cells1-hover, .xui-treegrid-cells2-hover{
+    background-color: #DFE8F6;
+}
+.xui-treegrid-cells1-active, .xui-treegrid-cells2-active, 
+.xui-treegrid-cell-active, .xui-treegrid-cell-active .xui-treegrid-cella{
+    background-color: #B8D6E6;
+}
+.xui-treegrid-cells1-hot, .xui-treegrid-cells2-hot{
+    background-color: #FFE97F;
+}
+.xui-uicell-checked,
+.xui-treegrid-cell-checked,
+.xui-treegrid-cells1-checked,
+.xui-treegrid-cells2-checked{
+    background-color: #7290A0;
+    color:#fff;
+}
+.xui-uicell-hover,
+.xui-treegrid-cell-hover{
+    background-color: #B8D6E6 !important;
+}
+/*
+.xui-ui-input{}
+.xui-ui-shadow{}
+.xui-special-icon{}
+.xui-required{}
+.xui-alert{}
+*/
+
+/** important => the last one: this theme's name */
+.setting-uikey{
+    font-family: lightblue;
+}

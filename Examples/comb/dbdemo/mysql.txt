@@ -1,0 +1,13 @@
+
+-- Notice: create an empty db `testDB` in mysql first!!!
+
+CREATE TABLE IF NOT EXISTS `tbl_test` (
+  `key` varchar(128) NOT NULL,
+  `value` varchar(128) NOT NULL,
+  PRIMARY KEY  (`key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `tbl_test` (`key`, `value`) VALUES
+('key1', 'value1'),
+('key2', 'value2'),
+('key3', 'value3');

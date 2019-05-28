@@ -1,0 +1,142 @@
+a, a *{
+    text-decoration:none;
+}
+a:hover, a:hover *{
+    text-decoration:underline;
+}
+#layout{
+    margin:0 auto;
+    text-align:left;
+    width:800px;
+}
+#head{
+    position:relative;
+    height:65px;
+}
+#flag{
+    position:absolute;
+    left:5px;
+    bottom:8px;
+    color:#888;
+    font-size:12px;
+    font-style:italic;
+    font-family:"Verdana","Helvetica","sans-serif";
+}
+#body{
+    font-family:verdana,geneva,lucida,'lucida grande',arial,helvetica,sans-serif;
+    font-size:11px;
+    line-height:18px;
+    color:#333;
+}
+#tail{
+    color: #1155CC;
+    font-size: 9px;
+    text-align: center;
+}
+#list1 div{
+    border-bottom:solid 1px #eee;
+}
+#list td{
+    padding:0;
+    margin:0;
+}
+#list img{
+    padding:3px;
+    border:solid 1px #666;
+}
+#list td h4{
+    padding:0;
+    margin:0;
+    color:#D80808;
+    padding-bottom:2px;
+}
+#list td p{
+    padding:0;
+    margin:0;
+    line-height:14px;
+    color:#5C5C5C;
+}
+.title{
+    padding: 6px 0;
+    color:#716F64;
+    font-family:'Trebuchet MS',Arial,Helvetica,sans-serif;
+    font-weight:bold;
+    font-size:13px;
+}
+.title a{
+    padding:2px;
+    margin-right:3px;
+}
+.content {
+    padding:10px;
+}
+.linklist{
+    margin:5px;
+    font-weight:bold;
+}
+.block{
+    font-size:12px;
+    font-weight:bold;
+    padding-top:4px;
+}
+.text{
+    font-size:12px;
+    font-weight:bold;
+    padding-top:4px;
+    color:#333;
+    font-size:12px;
+    line-height:24px;
+    padding:6px;
+    text-align:left;
+    font-weight:normal;
+}
+.linksblock{
+    font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    font-size:11px;
+    text-align:right;
+}
+.linksblock a{
+    color:#3399FF;
+    text-decoration:underline;
+}
+
+.block .b2, .block .b3, .block .bi{
+    background-color:#F0F0F0;
+}
+.b1, .b2, .b3{
+    font-size:1px;
+    height:1px;
+    line-height:1px;
+    overflow:hidden;
+    display:block;
+}
+.b1{
+    background-color:#D8D8D8;
+    margin:0 4px;
+}
+.b2{
+    margin:0 2px;
+    border-left:2px solid #D8D8D8;
+    border-right:2px solid #D8D8D8;
+}
+.b3{
+    margin:0 1px;
+    border-left:1px solid #D8D8D8;
+    border-right:1px solid #D8D8D8;
+}
+.bi{
+    border-left:1px solid #D8D8D8;
+    border-right:1px solid #D8D8D8;
+    padding:2px 4px;
+    display:block;
+}
+.prductname{
+    font-size:11px;
+    font-weight: bold;
+    padding:4px;
+}
+.price{
+    color: #22529F;
+    font-weight: bold;
+    padding:4px;
+}

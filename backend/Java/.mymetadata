@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="xuiService"
+  id="myeclipse.1248590349671"
+  context-root="/xuiService"
+  j2ee-spec="1.4"
+  archive="xuiService.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
