@@ -207,9 +207,18 @@ xui.Class('xui.Event',null,{
             };
             // W3C model
             if (node.addEventListener) {
-                node.addEventListener(getName(evt), fnc, false);
+                var passiveSupported = false;
+                try {
+                    var options = Object.defineProperty({}, "passive", {
+                        get: function() {
+                            passiveSupported = true;
+                        }
+                    });
+                    window.addEventListener("test", null, options);
+                } catch(e) {}
+                node.addEventListener(getName(evt), fnc, passiveSupported ? { passive: true } : false);
                 return true;
-            } 
+            }
             // Microsoft model (ignore attachEvent)
             // reason: [this] is the window object, not the element; 
             //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
