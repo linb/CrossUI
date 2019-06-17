@@ -1674,7 +1674,7 @@ xui.merge(xui,{
             var required=[], required2=[],id,uri,attrs;
             xui.filter(paths,function(path){
                 if(xui.isArr(path)){
-                     if(!options.stopRecursive){
+                     if(options && !options.stopRecursive){
                         Array.prototype.push.apply(required, path);
                      }
                     return false;
@@ -1688,7 +1688,7 @@ xui.merge(xui,{
                     uri = obj.uri;
                     results[id||uri] = id ? xui.SC.get(id) : null;
                 }
-                if(!options.stopRecursive){
+                if(options && !options.stopRecursive){
                     for(var i=0,l=paths.length,obj;i<l;i++){
                         if( (obj=xui.SC.get(paths[i])) && obj.$xuiclass$){
                             xui._collectClassRequired(obj, required, required2,options);
