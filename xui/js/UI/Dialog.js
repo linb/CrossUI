@@ -1188,6 +1188,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 xui('body').append(n2);
                 n2.css({overflow:'visible',position:'absolute',visibility:'visible',left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE})
                 .id(ID,true);
+                n2.removeClass('xui-ui-hidden');
             }
             var n2 = me._cache;
             n2.width('auto').height('auto');

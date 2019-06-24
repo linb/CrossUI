@@ -853,6 +853,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item._tabindex = p.tabindex;
             item._fi_optClass = p.optBtn;
 
+            if(item.group && !item.sub){
+                item.sub = oitem.sub = [];
+            }
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
                 item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');

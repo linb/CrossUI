@@ -813,7 +813,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     .offset(pos)
                     .width(w)
                     .height(h)
-                    .css('zIndex',xui.Dom.TOP_ZINDEX+20);
+                    .css('zIndex',xui.Dom.TOP_ZINDEX+20)
+                    .removeClass('xui-ui-hidden');
                 if(rotate)
                     profile.proxy.rotate(rotate);
             }else

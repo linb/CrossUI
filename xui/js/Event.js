@@ -216,7 +216,7 @@ xui.Class('xui.Event',null,{
                     });
                     window.addEventListener("test", null, options);
                 } catch(e) {}
-                node.addEventListener(getName(evt), fnc, passiveSupported ? { passive: true } : false);
+                node.addEventListener(getName(evt), fnc, passiveSupported ? { passive: false} : false);
                 return true;
             }
             // Microsoft model (ignore attachEvent)
@@ -261,7 +261,16 @@ xui.Class('xui.Event',null,{
             };
             // W3C model
             if (node.removeEventListener) {
-                node.removeEventListener(getName(evt), fnc, false);
+                var passiveSupported = false;
+                try {
+                    var options = Object.defineProperty({}, "passive", {
+                        get: function() {
+                            passiveSupported = true;
+                        }
+                    });
+                    window.addEventListener("test", null, options);
+                } catch(e) {}
+                node.removeEventListener(getName(evt), fnc, passiveSupported ? { passive: false} : false);
                 return true;
             } 
             // Microsoft model (ignore attachEvent)

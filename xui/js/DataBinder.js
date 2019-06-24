@@ -109,15 +109,15 @@ xui.Class("xui.DataBinder","xui.absObj",{
                             hash[keys[0]]=uv;
                             hash[keys[1]]=ins.getCaption();
                         }else if(withCaption){
-                            hash[key]={
+                            xui.set(hash,key,{
                                 value : uv,
                                 caption : ins.getCaption()
-                            };
+                            },true);
                         }else{
-                            hash[key]=uv;
+                            xui.set(hash,key,uv,true);
                         }
                     }else{
-                        hash[key]=uv;
+                        xui.set(hash,key,uv,true);
                     }
                 }
             });
@@ -136,7 +136,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
             }
 
             var data=prf.properties.data;
-            return xui.isSet(key)?data[key]:data;
+            return xui.isSet(key)?xui.get(data,key,true):data;
         },
         setData:function(key,value, force){
             var prf=this.get(0), prop=prf.properties;
@@ -155,7 +155,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                 prop.data=key;
             // reset one
             else
-                prop.data[key]=value;
+                xui.set(prop.data,key,value,true);
 
             if(prf.$inDesign || force){
                 this.updateDataToUI();
@@ -186,11 +186,11 @@ xui.Class("xui.DataBinder","xui.absObj",{
             if(!ignoreAlert){
                 // check valid first
                 if(!ns.checkValid()){
-                    return;
+                    return false;
                 }
                 // and check required
                 if(!ns.checkRequired()){
-                    return;
+                    return false;
                 }
             }
             xui.merge(map,prop.data,function(v,t){
@@ -211,70 +211,72 @@ xui.Class("xui.DataBinder","xui.absObj",{
                 if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
                     var b = profile.boxing(),capv,
                         // for absValue, maybe return array
-                        uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null;
+                        uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null,
+                        target = xui.get(map, key, true);
                     // v and uv can be object(Date,Number)
-                    if(xui.isHash(map[key])){
-                        var pp=map[key].properties,theme=map[key].theme,cc=map[key].CC,ca=map[key].CA,cs=map[key].CS;
+                    if(xui.isHash(target)){
+                        var pp=target.properties,theme=target.theme,cc=target.CC,ca=target.CA,cs=target.CS;
 
-                        if(pp)delete map[key].properties;
-                        if(theme)delete map[key].theme;
-                        if(ca)delete map[key].CA;
-                        if(cc)delete map[key].CC;
-                        if(cs)delete map[key].CS;
+                        if(pp)delete target.properties;
+                        if(theme)delete target.theme;
+                        if(ca)delete target.CA;
+                        if(cc)delete target.CC;
+                        if(cs)delete target.CS;
                         // remove non-properties
-                        xui.filter(map[key],function(o,i){
+                        xui.filter(target,function(o,i){
                             return !!(i in p);
                         });
                         // reset
-                        if(!xui.isEmpty(map[key])){
-                            xui.each(map[key],function(o,i){
-                                if(i in p)map[key][i]=p[i];
+                        if(!xui.isEmpty(target)){
+                            xui.each(target,function(o,i){
+                                if(i in p)target[i]=p[i];
                             });
                         }
                         // reset pp
                         if(xui.isHash(pp)){
                             xui.filter(pp,function(o,i){
-                                return i in p && !(i in map[key]);
+                                return i in p && !(i in target);
                             });
                             if(!xui.isEmpty(pp)){
                                 xui.each(pp,function(o,i){
                                     if(i in p)pp[i]=p[i];
                                 });                         
-                                map[key].properties=pp
+                                target.properties=pp
                             }
                         }
-                         if(theme)map[key].theme=profile.theme;
-                        if(ca)map[key].CA=xui.clone(profile.CA,true);
-                        if(cc)map[key].CC=xui.clone(profile.CC,true);
-                        if(cs)map[key].CS=xui.clone(profile.CS,true);
+                         if(theme)target.theme=profile.theme;
+                        if(ca)target.CA=xui.clone(profile.CA,true);
+                        if(cc)target.CC=xui.clone(profile.CC,true);
+                        if(cs)target.CS=xui.clone(profile.CS,true);
 
                         if('caption' in p && b.getCaption)
                         if(cap){
                             map[cap]=b.getCaption();
-                        }else if('caption' in map[key] || withCaption)
-                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[key].caption=b.getCaption();
+                        }else if('caption' in target || withCaption)
+                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else target.caption=b.getCaption();
                         if(xui.isDefined(uv) && 'value' in p)
-                            if(pp&&'value' in pp)pp.value=uv;else map[key].value=uv;
+                            if(pp&&'value' in pp)pp.value=uv;else target.value=uv;
                     }else{
                         if(profile.box['xui.UI.ComboInput'] && (p.type=='file')){
-                            map[key]=profile;
+                            target=profile;
                         }else if('caption' in p){
                             capv=typeof(b.getCaption)=="function"?b.getCaption():p.caption;
                             if(cap){
-                                map[key]=uv;
+                                target=uv;
                                 map[cap]=capv;
                             }else if(withCaption){
                                 // igore unnecessary caption
                                 if((!capv && !uv) || capv==uv)
-                                    map[key]=uv;
+                                    target=uv;
                                 else
-                                    map[key]={value:uv, caption:capv};
+                                    target={value:uv, caption:capv};
                             }else{
-                                map[key]=uv;
+                                target=uv;
                             }
                         }else{
-                            map[key]=uv;
+                            target=uv;
                         }
+                        xui.set(map,key,target,true);
                     }
                     // for absValue
                     if(updateUIValue!==false && profile.renderId && profile.box['xui.absValue'])
@@ -331,8 +333,8 @@ xui.Class("xui.DataBinder","xui.absObj",{
 
                 if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
                     // need reset?
-                    if(map && key in map){
-                        v=xui.clone(map[key],null,2);
+                    if(map && xui.isDefined(xui.get(map,key,true))){
+                        v=xui.clone(xui.get(map,key,true),null,2);
                         uv=c=undefined;
                         b=profile.boxing();
                         if(xui.isHash(v)){

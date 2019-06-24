@@ -3140,6 +3140,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 $order:10,
                 border:'none',
                 background:'none'
+             },
+            ".xui-ui-hidden, .xui-ui-hidden *":{
+                $order:11,
+                visibility:'hidden'
              }
         });
     },
@@ -4629,6 +4633,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                         if(item.sub){
                             if(!c.tag.match(/\bbranch\b/) && c.tag.match(/\bleaf\b/))
                                 continue;
+                            if(item.group){
+                                if(!c.tag.match(/\bgroup\b/))
+                                    continue;
+                            }else{
+                                if(c.tag.match(/\bgroup\b/))
+                                    continue;
+                            }
                         }else{
                             if(!c.tag.match(/\bleaf\b/) && c.tag.match(/\bbranch\b/))
                                 continue;
@@ -4895,7 +4906,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 cols=prop.conDockRelative?1:0;
             if(!cols)return;
             // container width
-            containerWidth = profile._containerWidth = container.scrollWidth();
+            containerWidth = profile._containerWidth = container.offsetWidth();
 
             // if it's an adjust action, check first
             if(_adjust && _adjust==containerWidth)return;

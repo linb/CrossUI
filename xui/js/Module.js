@@ -411,12 +411,11 @@ xui.Class('xui.Module','xui.absProfile',{
         notifyHooks:function(key, msg1, msg2, msg3, msg4, msg5){
             var ns=this, hook, hooks=ns.hooks;
             if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
-                xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
+                return xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
             }
-            return ns;
         },
         postMessage:function(msg1, msg2, msg3, msg4, msg5, sender){
-           this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
+           return this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
         },
         serialize:function(rtnString, keepHost, children){
             var t,m,
@@ -1666,8 +1665,8 @@ xui.Class('xui.Module','xui.absProfile',{
         $EventHandlers:{
             onHookKey:function(module, key, e, keyDown){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
-            onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
-            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  source){},
+            onMessage:function(module, msg1, msg2, msg3, msg4, msg5, source){},
+            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5, source){},
             beforeCreated:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},

@@ -17068,7 +17068,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Ojbect",
                 $paras:[
                     "cellId [Required] : String",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ]
             },
             isDirtied:{
@@ -17076,12 +17076,21 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Boolean"
             },
             getCells:{
-                $desc:"Gets all cells",
+                $desc:"Gets cells",
                 $rtn:"Objcet. {cellId:{rowId:, colId:, value:, oValue:}}",
                 $paras:[
                     "rowId : [Optional] : String, return this row's cell only",
                     "colId : [Optional] : String, return this col's cell only",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
+                ]
+            },
+            getCells2:{
+                $desc:"Gets cells data. No rowId + now ColId, returns [[...]]; rowId or colId, returns [...], rowId+colId, return s ...)",
+                $rtn:"Array/Objecct. [[...]], [...], ...; '...': type='data' > {rowId, colId, value, oValue}, type='min' > value, else > [cell object].",
+                $paras:[
+                    "rowId : [Optional] : String, return this row's cell only",
+                    "colId : [Optional] : String, return this col's cell only",
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ]
             },
             isCellDirtied:{
@@ -17112,7 +17121,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     "rowId [Required] : String, row id",
                     "colId [Requried] : String, column id",
-                    "type [Optional] : String, 'data': get rows' data; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17625,7 +17634,7 @@ xui.set(xui.Locale,["en","app"], {
             getActiveRow:{
                 $desc:"Gets the current active row",
                 $paras:[
-                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ],
                 $rtn:"Object",
                 $snippet:[
@@ -17715,7 +17724,7 @@ xui.set(xui.Locale,["en","app"], {
             getRows :{
                 $desc:"Gets the all rows of this grid",
                 $paras:[
-                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17756,6 +17765,10 @@ xui.set(xui.Locale,["en","app"], {
             },
             getRawData :{
                 $desc:"Gets the grid's raw mapped data",
+                $paras:[
+                    "row [Optional] : Object, the row",
+                    "splitMixColumn [Optional] : Boolean, determine to split mix column or not, default is [false]"
+                ],
                 $rtn:"Array"
             },
             setRawData :{
@@ -17769,7 +17782,7 @@ xui.set(xui.Locale,["en","app"], {
             getHeader :{
                 $desc:"Get grid header Object",
                 $paras:[
-                    "type [Optional] : String, 'data': get header's data; 'min': get header's min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17828,7 +17841,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Ojbect",
                 $paras:[
                     "colId [Required] : String, column id",
-                    "type [Optional] : String, 'data': get header's data; 'min': get header's min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17881,7 +17894,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "rowId [Required] : String",
-                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17911,7 +17924,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [Required] : Object",
-                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ]
             },
             getHeaderByCell:{
@@ -17919,7 +17932,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [Required] : Object",
-                    "type [Optional] : String, 'data': get header's data; 'min': get header's min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ]
             },
             getHeaderbyCell:{
@@ -18253,7 +18266,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets the hot row",
                 $rtn:"Object",
                 $paras:[
-                    "type [Optional] : String, 'data': get rows' data; 'map' get key/value map; 'min': get rows' min data; else, return the memory one"
+                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
                 ]
             },
             updateHotRow:{

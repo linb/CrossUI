@@ -258,10 +258,11 @@ new function(){
             xui.get({a:{b:{c:1}}},['a','b','c']) => 1;
             xui.get({a:{b:{c:1}}},['a','b','c','d']) => undefined;
         */
-        get:function(hash,path){
+        get:function(hash,path,deep){
             if(!path) return hash;
             if(!xui.isSet(hash))return undefined;
-            else if(typeof path=='string') return hash[path];
+            if(deep)path=(path+"").split(".");
+            if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
                     if(!(t=path[i++]+''))continue;
@@ -276,8 +277,9 @@ new function(){
             xui.set({a:{b:{c:1}}},['a','b','c'],2) => {a:{b:{c:2}}}
             xui.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
         */
-        set:function(hash,path,value){
+        set:function(hash,path,value,deep){
             if(!hash)return;
+            if(deep)path=(path+"").split(".");
             if(typeof path!='string'){
                 var v,i=0,m,last=path.length-1;
                 for(;i<last;){
@@ -342,11 +344,13 @@ new function(){
         },
         isEmpty:function(hash){
             if (!xui.isSet(hash)) return true;
-            if (hash===true)return false;
-            if (xui.isNumb(hash)) return false;
-            if (xui.isArr(hash) || xui.isStr(hash) || xui.isArguments(hash)) return hash.length === 0;
-            for(var i in hash)if(Object.prototype.hasOwnProperty.call(hash, i))return false;
-            return true;
+            else if (hash===true)return false;
+            else if (xui.isNumb(hash)) return false;
+            else if (xui.isHash(hash)){
+                for(var i in hash)if(Object.prototype.hasOwnProperty.call(hash, i))return false;
+                return true;
+            } else if (xui.isArr(hash) || xui.isStr(hash) || xui.isArguments(hash)) return hash.length === 0;
+            else return false;
         },
 
         /*
@@ -2334,6 +2338,10 @@ new function(){
                             return parseFloat(x)>=parseFloat(y);
                         case '<=':
                             return parseFloat(x)<=parseFloat(y);
+                        case "inlist":
+                            return xui.arr.indexOf(xui.isArr(y)?y:(y+"").split(/[,;\s:|]+/),x)!==-1;
+                        case "exlist":
+                            return xui.arr.indexOf(xui.isArr(y)?y:(y+"").split(/[,;\s:|]+/),x)==-1;
                         case 'include':
                             return (x+"").indexOf(y+"")!=-1;
                         case 'exclude':
@@ -2375,8 +2383,7 @@ new function(){
                             if((t=(''+t).split('.functions')) && t.length==2 && (t=xui.adjustVar(t[0]+"}", _ns))) {
                                 oo=o;
                                 o = function(){
-                                    xui.pseudocode._callFunctions(oo, arguments, t, _ns.temp,null, 'refer:'+(oo.desc||oo.id||""));
-                                    o=oo=t=_ns=null;
+                                    return xui.pseudocode._callFunctions(oo, arguments, t, _ns.temp,null, 'refer:'+(oo.desc||oo.id||""));
                                 };
                             }
                         }else if(o && xui.isStr(t) && xui.isFun(o)){
@@ -2418,7 +2425,7 @@ new function(){
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
                 resetid=conf.resetid||null;
             
-            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf}; 
+            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf,scope:_ns}; 
 
             // cover with inline params
             if(method.indexOf("-")!=-1){
@@ -2740,6 +2747,7 @@ new function(){
                                 break;
                             }else
                                 if(false===(ns.exec(_ns, fun,null, level))){
+                                    xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "The action returns false to stop the follow-up actions!");
                                     resume=j;break;
                                 }
                         }
@@ -2748,7 +2756,7 @@ new function(){
                     return irtn;
                 };
             if(!innerE){
-                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo},{scope:_ns}); 
+                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo}, {scope:_ns}); 
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "{");
                 if(newbies){
                     temp.newbies={};
@@ -2761,16 +2769,18 @@ new function(){
                 }
             }
             funsrtn = recursive();
-            if(!innerE){
-                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "}");
-                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1)); 
-            }
+
             if(rtn){
                 rtn=xui.adjustVar(t=rtn, _ns);
                 if(!xui.isDefined(rtn))rtn=xui.adjustVar(t);
             }else{
                 // for system beforeXXX events
                 rtn=funsrtn;
+            }
+            if(!innerE){
+                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "return", rtn );
+                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "}");
+                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1)); 
             }
             return rtn;
         }/*,
@@ -2870,7 +2880,8 @@ new function(){
                 }
                 a[2]=']';
             }else if(xui.isDate(x)){
-                if(dateformat=='utc')
+                switch(dateformat){
+                case 'utc':
                     return '"'+ PS(x.getUTCFullYear(),4) + '-' +
                          PS(x.getUTCMonth() + 1,2) + '-' +
                          PS(x.getUTCDate(),2) + 'T' +
@@ -2879,7 +2890,7 @@ new function(){
                          PS(x.getUTCSeconds(),2) + '.' +
                          PS(x.getUTCMilliseconds(),3)+
                          'Z"';
-                else if(dateformat=='gmt')
+                case 'gmt':
                     return '"'+ PS(x.getFullYear(),4) + '-' +
                          PS(x.getMonth() + 1,2) + '-' +
                          PS(x.getDate(),2) + 'T' +
@@ -2888,8 +2899,11 @@ new function(){
                          PS(x.getSeconds(),2) + '.' +
                          PS(x.getMilliseconds(),3)+
                          Z+'"';
-                else
+                case 'date':
                     return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
+                default:
+                    return '"' + xui.Date.format(x, dateformat||'yyyy-mm-dd hh:mm:ss') + '"';
+                }
             }else if(xui.isReg(x)){
                 return String(x);
             }else{

@@ -16983,7 +16983,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Ojbect",
                 $paras:[
                     "cellId [必需参数] : String",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ]
             },
             isDirtied:{
@@ -17005,12 +17005,21 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getCells:{
-                $desc:"返回所有单元格的值",
+                $desc:"返回单元格Map数据",
                 $rtn:"Objcet. {cellId:{rowId:, colId:, value:, oValue:}}",
                 $paras:[
                     "rowId : [可选参数] : String, 只返回本行的",
                     "colId : [可选参数] : String, 只返回本列的",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
+                ]
+            },
+            getCells2:{
+                $desc:"返回单元格列表数据(不指定行列返回[[...]],指定行或列返回[...],制定行和列返回...)",
+                $rtn:"Array/Objecct. [[...]], [...], ...; '...'的内容: 当type='data'为{rowId, colId, value, oValue}, 当type='min'为 value, 否则为[cell对象].",
+                $paras:[
+                    "rowId : [可选参数] : String, 只返回本行的",
+                    "colId : [可选参数] : String, 只返回本列的",
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ]
             },
             getDirtied:{
@@ -17027,7 +17036,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "rowId  [必需参数] : String, 行 id",
                     "colId [必需参数] : String, 列 id",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17540,7 +17549,7 @@ xui.set(xui.Locale,["cn","app"], {
             getActiveRow:{
                 $desc:"得到当前的活动行",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ],
                 $rtn:"Object",
                 $snippet:[
@@ -17630,7 +17639,7 @@ xui.set(xui.Locale,["cn","app"], {
             getRows :{
                 $desc:"获取表格的所有行",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17671,6 +17680,10 @@ xui.set(xui.Locale,["cn","app"], {
             },
             getRawData :{
                 $desc:"获取表格的键值对数据",
+                $paras:[
+                    "row [可选参数] : Object, 行对象",
+                    "splitMixColumn [可选参数] : Boolean, 是否拆分合并行, 默认是 [false]"
+                ],
                 $rtn:"Array"
             },
             setRawData :{
@@ -17684,7 +17697,7 @@ xui.set(xui.Locale,["cn","app"], {
             getHeader :{
                 $desc:"获取表头对象",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到列数据; 'min': 得到列的最简化数据; 其他值,得到内存中列的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ],
                 $rtn:"Array",
                 $snippet:[
@@ -17742,7 +17755,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"获取某个列的表头值",
                 $rtn:"Ojbect",
                 $paras:[
-                    "colId [必需参数] : String, 列 id"
+                    "colId [必需参数] : String, 列 id",
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid35-0'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17795,7 +17809,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "rowId [必需参数] : String",
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid36'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17825,7 +17839,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object",
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ]
             },
             getHeaderByCell:{
@@ -17833,7 +17847,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object",
-                    "type [可选参数] : String, 'data': 得到行数据;  'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ]
             },
             getHeaderbyCell:{
@@ -17841,7 +17855,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"Object",
                 $paras:[
                     "cell [必需参数] : Object",
-                    "type [可选参数] : String, 'data': 得到行数据; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ]
             },
             getSubNodeInGrid:{
@@ -18169,7 +18183,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"得到[热行]",
                 $rtn:"Object",
                 $paras:[
-                    "type [可选参数] : String, 'data': 得到行数据; 'map' 得到键值对; 'min': 得到行的最简化数据; 其他值,得到内存中行的原数据"
+                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
                 ]
             },
             updateHotRow:{

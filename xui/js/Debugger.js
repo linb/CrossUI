@@ -159,6 +159,7 @@ xui.Class('xui.Debugger', null, {
 
             div.__hide=0;
 
+            div.removeClass('xui-ui-hidden');
             div.css({left:left+'px', width:width+'px', visibility:'visible'})
             .first().html(head||'').css('display',head?'':'none')
             .next().html(body||'');

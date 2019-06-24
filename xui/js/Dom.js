@@ -1112,6 +1112,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     if('_top' in vv)if(style.top!=(t=vv._top))style.top=t;
                     if('_position' in vv)if(style.position!=(t=vv._position))style.position=t;
                     if(style.visibility!='visible')style.visibility='visible';
+                    xui(o).removeClass('xui-ui-hidden');
                     vv._xuihide=0;
                 }
                 if(xui.isSet(left))style.left=left;
@@ -1154,6 +1155,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(style.position!='absolute')style.position = 'absolute';
                     style.visibility="hidden";
+                    xui(o).addClass('xui-ui-hidden');
 
                     if(callback)callback();
                 };
@@ -1948,6 +1950,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 target.cssPos(xui.Dom.getPopPos(pos, type, target, parent));
             }
             target.css({visibility:'visible'});
+            target.removeClass('xui-ui-hidden');
 
             showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);

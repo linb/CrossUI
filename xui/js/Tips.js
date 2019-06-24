@@ -211,7 +211,8 @@ xui.Class("xui.Tips", null,{
                             styleI.width=(self._w=Math.round(w))+'px';
                             self._h=self.n.height();
                         }
-
+                        
+                        node.removeClass('xui-ui-hidden');
                         if(pos===true){
                             style.visibility='visible';
                         }else{

@@ -259,10 +259,11 @@ new function(){
             xui.get({a:{b:{c:1}}},['a','b','c']) => 1;
             xui.get({a:{b:{c:1}}},['a','b','c','d']) => undefined;
         */
-        get:function(hash,path){
+        get:function(hash,path,deep){
             if(!path) return hash;
             if(!xui.isSet(hash))return undefined;
-            else if(typeof path=='string') return hash[path];
+            if(deep)path=(path+"").split(".");
+            if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
                     if(!(t=path[i++]+''))continue;
@@ -277,8 +278,9 @@ new function(){
             xui.set({a:{b:{c:1}}},['a','b','c'],2) => {a:{b:{c:2}}}
             xui.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
         */
-        set:function(hash,path,value){
+        set:function(hash,path,value,deep){
             if(!hash)return;
+            if(deep)path=(path+"").split(".");
             if(typeof path!='string'){
                 var v,i=0,m,last=path.length-1;
                 for(;i<last;){
@@ -343,11 +345,13 @@ new function(){
         },
         isEmpty:function(hash){
             if (!xui.isSet(hash)) return true;
-            if (hash===true)return false;
-            if (xui.isNumb(hash)) return false;
-            if (xui.isArr(hash) || xui.isStr(hash) || xui.isArguments(hash)) return hash.length === 0;
-            for(var i in hash)if(Object.prototype.hasOwnProperty.call(hash, i))return false;
-            return true;
+            else if (hash===true)return false;
+            else if (xui.isNumb(hash)) return false;
+            else if (xui.isHash(hash)){
+                for(var i in hash)if(Object.prototype.hasOwnProperty.call(hash, i))return false;
+                return true;
+            } else if (xui.isArr(hash) || xui.isStr(hash) || xui.isArguments(hash)) return hash.length === 0;
+            else return false;
         },
 
         /*
@@ -2335,6 +2339,10 @@ new function(){
                             return parseFloat(x)>=parseFloat(y);
                         case '<=':
                             return parseFloat(x)<=parseFloat(y);
+                        case "inlist":
+                            return xui.arr.indexOf(xui.isArr(y)?y:(y+"").split(/[,;\s:|]+/),x)!==-1;
+                        case "exlist":
+                            return xui.arr.indexOf(xui.isArr(y)?y:(y+"").split(/[,;\s:|]+/),x)==-1;
                         case 'include':
                             return (x+"").indexOf(y+"")!=-1;
                         case 'exclude':
@@ -2376,8 +2384,7 @@ new function(){
                             if((t=(''+t).split('.functions')) && t.length==2 && (t=xui.adjustVar(t[0]+"}", _ns))) {
                                 oo=o;
                                 o = function(){
-                                    xui.pseudocode._callFunctions(oo, arguments, t, _ns.temp,null, 'refer:'+(oo.desc||oo.id||""));
-                                    o=oo=t=_ns=null;
+                                    return xui.pseudocode._callFunctions(oo, arguments, t, _ns.temp,null, 'refer:'+(oo.desc||oo.id||""));
                                 };
                             }
                         }else if(o && xui.isStr(t) && xui.isFun(o)){
@@ -2419,7 +2426,7 @@ new function(){
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
                 resetid=conf.resetid||null;
             
-            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf}; 
+            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf,scope:_ns}; 
 
             // cover with inline params
             if(method.indexOf("-")!=-1){
@@ -2741,6 +2748,7 @@ new function(){
                                 break;
                             }else
                                 if(false===(ns.exec(_ns, fun,null, level))){
+                                    xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "The action returns false to stop the follow-up actions!");
                                     resume=j;break;
                                 }
                         }
@@ -2749,7 +2757,7 @@ new function(){
                     return irtn;
                 };
             if(!innerE){
-                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo},{scope:_ns}); 
+                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo}, {scope:_ns}); 
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "{");
                 if(newbies){
                     temp.newbies={};
@@ -2762,16 +2770,18 @@ new function(){
                 }
             }
             funsrtn = recursive();
-            if(!innerE){
-                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "}");
-                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1)); 
-            }
+
             if(rtn){
                 rtn=xui.adjustVar(t=rtn, _ns);
                 if(!xui.isDefined(rtn))rtn=xui.adjustVar(t);
             }else{
                 // for system beforeXXX events
                 rtn=funsrtn;
+            }
+            if(!innerE){
+                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "return", rtn );
+                xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "}");
+                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1)); 
             }
             return rtn;
         }/*,
@@ -2871,7 +2881,8 @@ new function(){
                 }
                 a[2]=']';
             }else if(xui.isDate(x)){
-                if(dateformat=='utc')
+                switch(dateformat){
+                case 'utc':
                     return '"'+ PS(x.getUTCFullYear(),4) + '-' +
                          PS(x.getUTCMonth() + 1,2) + '-' +
                          PS(x.getUTCDate(),2) + 'T' +
@@ -2880,7 +2891,7 @@ new function(){
                          PS(x.getUTCSeconds(),2) + '.' +
                          PS(x.getUTCMilliseconds(),3)+
                          'Z"';
-                else if(dateformat=='gmt')
+                case 'gmt':
                     return '"'+ PS(x.getFullYear(),4) + '-' +
                          PS(x.getMonth() + 1,2) + '-' +
                          PS(x.getDate(),2) + 'T' +
@@ -2889,8 +2900,11 @@ new function(){
                          PS(x.getSeconds(),2) + '.' +
                          PS(x.getMilliseconds(),3)+
                          Z+'"';
-                else
+                case 'date':
                     return 'new Date('+[x.getFullYear(),x.getMonth(),x.getDate(),x.getHours(),x.getMinutes(),x.getSeconds(),x.getMilliseconds()].join(',')+')';
+                default:
+                    return '"' + xui.Date.format(x, dateformat||'yyyy-mm-dd hh:mm:ss') + '"';
+                }
             }else if(xui.isReg(x)){
                 return String(x);
             }else{
@@ -6423,15 +6437,15 @@ xui.Class("xui.ExcelFormula",null,{
                             hash[keys[0]]=uv;
                             hash[keys[1]]=ins.getCaption();
                         }else if(withCaption){
-                            hash[key]={
+                            xui.set(hash,key,{
                                 value : uv,
                                 caption : ins.getCaption()
-                            };
+                            },true);
                         }else{
-                            hash[key]=uv;
+                            xui.set(hash,key,uv,true);
                         }
                     }else{
-                        hash[key]=uv;
+                        xui.set(hash,key,uv,true);
                     }
                 }
             });
@@ -6450,7 +6464,7 @@ xui.Class("xui.ExcelFormula",null,{
             }
 
             var data=prf.properties.data;
-            return xui.isSet(key)?data[key]:data;
+            return xui.isSet(key)?xui.get(data,key,true):data;
         },
         setData:function(key,value, force){
             var prf=this.get(0), prop=prf.properties;
@@ -6469,7 +6483,7 @@ xui.Class("xui.ExcelFormula",null,{
                 prop.data=key;
             // reset one
             else
-                prop.data[key]=value;
+                xui.set(prop.data,key,value,true);
 
             if(prf.$inDesign || force){
                 this.updateDataToUI();
@@ -6500,11 +6514,11 @@ xui.Class("xui.ExcelFormula",null,{
             if(!ignoreAlert){
                 // check valid first
                 if(!ns.checkValid()){
-                    return;
+                    return false;
                 }
                 // and check required
                 if(!ns.checkRequired()){
-                    return;
+                    return false;
                 }
             }
             xui.merge(map,prop.data,function(v,t){
@@ -6525,70 +6539,72 @@ xui.Class("xui.ExcelFormula",null,{
                 if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
                     var b = profile.boxing(),capv,
                         // for absValue, maybe return array
-                        uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null;
+                        uv = profile.box['xui.absValue']?b.getUIValue(xui.isBool(returnArr)?returnArr:profile.__returnArray):null,
+                        target = xui.get(map, key, true);
                     // v and uv can be object(Date,Number)
-                    if(xui.isHash(map[key])){
-                        var pp=map[key].properties,theme=map[key].theme,cc=map[key].CC,ca=map[key].CA,cs=map[key].CS;
+                    if(xui.isHash(target)){
+                        var pp=target.properties,theme=target.theme,cc=target.CC,ca=target.CA,cs=target.CS;
 
-                        if(pp)delete map[key].properties;
-                        if(theme)delete map[key].theme;
-                        if(ca)delete map[key].CA;
-                        if(cc)delete map[key].CC;
-                        if(cs)delete map[key].CS;
+                        if(pp)delete target.properties;
+                        if(theme)delete target.theme;
+                        if(ca)delete target.CA;
+                        if(cc)delete target.CC;
+                        if(cs)delete target.CS;
                         // remove non-properties
-                        xui.filter(map[key],function(o,i){
+                        xui.filter(target,function(o,i){
                             return !!(i in p);
                         });
                         // reset
-                        if(!xui.isEmpty(map[key])){
-                            xui.each(map[key],function(o,i){
-                                if(i in p)map[key][i]=p[i];
+                        if(!xui.isEmpty(target)){
+                            xui.each(target,function(o,i){
+                                if(i in p)target[i]=p[i];
                             });
                         }
                         // reset pp
                         if(xui.isHash(pp)){
                             xui.filter(pp,function(o,i){
-                                return i in p && !(i in map[key]);
+                                return i in p && !(i in target);
                             });
                             if(!xui.isEmpty(pp)){
                                 xui.each(pp,function(o,i){
                                     if(i in p)pp[i]=p[i];
                                 });                         
-                                map[key].properties=pp
+                                target.properties=pp
                             }
                         }
-                         if(theme)map[key].theme=profile.theme;
-                        if(ca)map[key].CA=xui.clone(profile.CA,true);
-                        if(cc)map[key].CC=xui.clone(profile.CC,true);
-                        if(cs)map[key].CS=xui.clone(profile.CS,true);
+                         if(theme)target.theme=profile.theme;
+                        if(ca)target.CA=xui.clone(profile.CA,true);
+                        if(cc)target.CC=xui.clone(profile.CC,true);
+                        if(cs)target.CS=xui.clone(profile.CS,true);
 
                         if('caption' in p && b.getCaption)
                         if(cap){
                             map[cap]=b.getCaption();
-                        }else if('caption' in map[key] || withCaption)
-                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else map[key].caption=b.getCaption();
+                        }else if('caption' in target || withCaption)
+                            if(pp&&'caption' in pp)pp.caption=b.getCaption();else target.caption=b.getCaption();
                         if(xui.isDefined(uv) && 'value' in p)
-                            if(pp&&'value' in pp)pp.value=uv;else map[key].value=uv;
+                            if(pp&&'value' in pp)pp.value=uv;else target.value=uv;
                     }else{
                         if(profile.box['xui.UI.ComboInput'] && (p.type=='file')){
-                            map[key]=profile;
+                            target=profile;
                         }else if('caption' in p){
                             capv=typeof(b.getCaption)=="function"?b.getCaption():p.caption;
                             if(cap){
-                                map[key]=uv;
+                                target=uv;
                                 map[cap]=capv;
                             }else if(withCaption){
                                 // igore unnecessary caption
                                 if((!capv && !uv) || capv==uv)
-                                    map[key]=uv;
+                                    target=uv;
                                 else
-                                    map[key]={value:uv, caption:capv};
+                                    target={value:uv, caption:capv};
                             }else{
-                                map[key]=uv;
+                                target=uv;
                             }
                         }else{
-                            map[key]=uv;
+                            target=uv;
                         }
+                        xui.set(map,key,target,true);
                     }
                     // for absValue
                     if(updateUIValue!==false && profile.renderId && profile.box['xui.absValue'])
@@ -6645,8 +6661,8 @@ xui.Class("xui.ExcelFormula",null,{
 
                 if(!dataKeys || dataKeys===key || (xui.isArr(dataKeys)?xui.arr.indexOf(dataKeys,key)!=-1:false)){
                     // need reset?
-                    if(map && key in map){
-                        v=xui.clone(map[key],null,2);
+                    if(map && xui.isDefined(xui.get(map,key,true))){
+                        v=xui.clone(xui.get(map,key,true),null,2);
                         uv=c=undefined;
                         b=profile.boxing();
                         if(xui.isHash(v)){
@@ -7265,7 +7281,7 @@ xui.Class('xui.Event',null,{
                     });
                     window.addEventListener("test", null, options);
                 } catch(e) {}
-                node.addEventListener(getName(evt), fnc, passiveSupported ? { passive: true } : false);
+                node.addEventListener(getName(evt), fnc, passiveSupported ? { passive: false} : false);
                 return true;
             }
             // Microsoft model (ignore attachEvent)
@@ -7310,7 +7326,16 @@ xui.Class('xui.Event',null,{
             };
             // W3C model
             if (node.removeEventListener) {
-                node.removeEventListener(getName(evt), fnc, false);
+                var passiveSupported = false;
+                try {
+                    var options = Object.defineProperty({}, "passive", {
+                        get: function() {
+                            passiveSupported = true;
+                        }
+                    });
+                    window.addEventListener("test", null, options);
+                } catch(e) {}
+                node.removeEventListener(getName(evt), fnc, passiveSupported ? { passive: false} : false);
                 return true;
             } 
             // Microsoft model (ignore attachEvent)
@@ -11152,6 +11177,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     if('_top' in vv)if(style.top!=(t=vv._top))style.top=t;
                     if('_position' in vv)if(style.position!=(t=vv._position))style.position=t;
                     if(style.visibility!='visible')style.visibility='visible';
+                    xui(o).removeClass('xui-ui-hidden');
                     vv._xuihide=0;
                 }
                 if(xui.isSet(left))style.left=left;
@@ -11194,6 +11220,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     if(style.position!='absolute')style.position = 'absolute';
                     style.visibility="hidden";
+                    xui(o).addClass('xui-ui-hidden');
 
                     if(callback)callback();
                 };
@@ -11988,6 +12015,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 target.cssPos(xui.Dom.getPopPos(pos, type, target, parent));
             }
             target.css({visibility:'visible'});
+            target.removeClass('xui-ui-hidden');
 
             showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
@@ -15157,12 +15185,11 @@ xui.Class('xui.Module','xui.absProfile',{
         notifyHooks:function(key, msg1, msg2, msg3, msg4, msg5){
             var ns=this, hook, hooks=ns.hooks;
             if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
-                xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
+                return xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
             }
-            return ns;
         },
         postMessage:function(msg1, msg2, msg3, msg4, msg5, sender){
-           this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
+           return this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
         },
         serialize:function(rtnString, keepHost, children){
             var t,m,
@@ -16412,8 +16439,8 @@ xui.Class('xui.Module','xui.absProfile',{
         $EventHandlers:{
             onHookKey:function(module, key, e, keyDown){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
-            onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  source){},
-            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  source){},
+            onMessage:function(module, msg1, msg2, msg3, msg4, msg5, source){},
+            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5, source){},
             beforeCreated:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},
@@ -18238,7 +18265,8 @@ xui.Class("xui.Tips", null,{
                             styleI.width=(self._w=Math.round(w))+'px';
                             self._h=self.n.height();
                         }
-
+                        
+                        node.removeClass('xui-ui-hidden');
                         if(pos===true){
                             style.visibility='visible';
                         }else{
@@ -18898,6 +18926,7 @@ xui.Class("xui.Tips", null,{
 
             div.__hide=0;
 
+            div.removeClass('xui-ui-hidden');
             div.css({left:left+'px', width:width+'px', visibility:'visible'})
             .first().html(head||'').css('display',head?'':'none')
             .next().html(body||'');
@@ -22102,6 +22131,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                 $order:10,
                 border:'none',
                 background:'none'
+             },
+            ".xui-ui-hidden, .xui-ui-hidden *":{
+                $order:11,
+                visibility:'hidden'
              }
         });
     },
@@ -23591,6 +23624,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                         if(item.sub){
                             if(!c.tag.match(/\bbranch\b/) && c.tag.match(/\bleaf\b/))
                                 continue;
+                            if(item.group){
+                                if(!c.tag.match(/\bgroup\b/))
+                                    continue;
+                            }else{
+                                if(c.tag.match(/\bgroup\b/))
+                                    continue;
+                            }
                         }else{
                             if(!c.tag.match(/\bleaf\b/) && c.tag.match(/\bbranch\b/))
                                 continue;
@@ -23857,7 +23897,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 cols=prop.conDockRelative?1:0;
             if(!cols)return;
             // container width
-            containerWidth = profile._containerWidth = container.scrollWidth();
+            containerWidth = profile._containerWidth = container.offsetWidth();
 
             // if it's an adjust action, check first
             if(_adjust && _adjust==containerWidth)return;
@@ -29838,7 +29878,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     .offset(pos)
                     .width(w)
                     .height(h)
-                    .css('zIndex',xui.Dom.TOP_ZINDEX+20);
+                    .css('zIndex',xui.Dom.TOP_ZINDEX+20)
+                    .removeClass('xui-ui-hidden');
                 if(rotate)
                     profile.proxy.rotate(rotate);
             }else
@@ -43647,6 +43688,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             item._tabindex = p.tabindex;
             item._fi_optClass = p.optBtn;
 
+            if(item.group && !item.sub){
+                item.sub = oitem.sub = [];
+            }
             //change css class
             if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
                 item.cls_group = "xui-uigradient xui-uibar "  + profile.getClass('BAR','-group');
@@ -46794,7 +46838,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                      t2=xformula.calculate(formula, cellsMap,colMax,rowMax);
                      if(t2!==cellTo.value){
                         needUpdate = [cellTo._serialId,t2,cellTo, formula];
-                        if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, cellTo, t2, formula)){}else{
+                        if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, cellTo, t2, formula, cellTo._row, cellTo._col)){}else{
                             tg._updCell(prf, needUpdate[0], {value:needUpdate[1]}, dirtyMark, triggerEvent, true);
                         }
                         if(prf.afterApplyFormulas)
@@ -46891,7 +46935,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 
                 // update cell by order
                 for(var i=0,l=needUpdate.length;i<l;i++){
-                    if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, needUpdate[i][0], needUpdate[i][1], needUpdate[i][2])){}else{
+                    if(prf.beforeApplyFormula && false===prf.boxing().beforeApplyFormula(prf, needUpdate[i][0], needUpdate[i][1], needUpdate[i][2], needUpdate[i][0]._row, needUpdate[i][0]._col)){}else{
                         tg._updCell(prf, needUpdate[i][3], {value:needUpdate[i][1]}, dirtyMark, triggerEvent, false);
                     }
                 }
@@ -47215,21 +47259,21 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return this._getObjByDom(src, "cell");
         },
         /*rows related*/
-        //type: 'original', 'data', 'map', 'min'
+        //type: 'original', 'data', 'map', 'min', 'value'
         getRows:function(type, splitMixColumn){
             var v=this.get(0).properties.rows,a,b;
             if(!xui.isArr(v))return [];
-            if(type=='data'||type=='min'||type=='map'){
+            if(type=='data'||type=='min'||type=='value'||type=='map'){
                 a=xui.clone(v,true);
 
                 if(a&&a.length&&a[a.length-1]&&a[a.length-1].id==this.constructor._temprowid)
                     a.pop();
 
-                if(type=='min'){
+                if(type=='min'||type=='value'){
                     xui.arr.each(a,function(o,i){
                         if(a[i].cells){
                             xui.each(b=a[i]=a[i].cells,function(v,j){
-                                b[j] = v.value;
+                                b[j] = ('value' in v)?v.value:v;
                             });
                         }
                     });
@@ -48049,10 +48093,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         //resetGridValue
         //resetRow
         //resetCol
-        resetCellValue:function(cell){
+        resetCellValue:function(cell,force){
             var ns=this, profile=ns.get(0), prop=profile.properties;
             if(typeof cell=='string')cell=ns.getCell(cell);
-            if(cell._oValue!==cell.value||(('unit' in cell) && cell._oUnit!==cell.unit)){
+            if(force||cell._oValue!==cell.value||(('unit' in cell) && cell._oUnit!==cell.unit)){
                 cell.value=cell._oValue;
                 if('unit' in cell)cell.unit=cell._oUnit;
                 delete cell._dirty;
@@ -48121,16 +48165,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
         },
         /*column and header related*/
-        //type: 'original', 'data', 'min'
+        //type: 'original', 'data', 'min', 'value'
         getHeader:function(type){
             var v=this.get(0).properties.header;
             if(!xui.isArr(v))return [];
             if(type=='data')
                 return xui.clone(v,true);
-            else if(type=='min'){
+            else if(type=='min'||type=='value'){
                 var a=xui.clone(v,true),b;
                 xui.arr.each(a,function(o,i){
-                    a[i]=o.id;
+                    a[i]='id' in o ?o.id :o;
                 });
                 return a;
             }else
@@ -48142,14 +48186,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             i=xui.arr.subIndexOf(v,"id",colId);
             return i==-1?null:
                 type=='data'?xui.clone(v[i],true):
-                type=='min'?v[i].id:
+                (type=='min'||type=='value')? 'id' in v[i] ? v[i].id: v[i] :
                 v[i];
         },
         getHeaderByCell:function(cell, type){
             var v=cell._col;
             return !v?null:
                 type=='data'?xui.clone(v,true):
-                type=='min'?v.id:
+                (type=='min'||type=='value')?'id' in v?v.id:v :
                 v;
         },
 
@@ -48280,7 +48324,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             v=profile.cellMap[cellId];
             return !v?null:
                     type=='data'? xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(v,true)):
-                    type=='min'? v.value:
+                    (type=='min'||type=='value')? v.value:
                     type=='map'?( (m={})&&((m[v._col.id]=v.value)||1)&&m):
                     v;
         },
@@ -48299,7 +48343,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             return !v?null:
                 type=='data'? xui.merge({rowId:rowId, colId:colId},xui.clone(v,true)):
-                type=='min'? v.value:
+                (type=='min'||type=='value')? 'value' in v?v.value:v :
                 type=='map'?( (m={})&&((m[colId]=v.value)||1)&&m):
                 v;
         },
@@ -48308,14 +48352,64 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             xui.each(this.get(0).cellMap,function(v){
                 if((rowId?(rowId==v._row.id):1) && (colId?(colId==v._col.id):1)){
                     map[v.id]= type=='data'?xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(v,true)):
-                               type=='min' ? v.value:
+                               (type=='min'||type=='value') ? ('value' in v)?v.value:v:
                                v;
                 }
             });
             //dont return inner value
             return map;
         },
+        getCells2:function(rowId, colId, type){
+           var o=this.get(0), prop=o.properties, header=prop.header,
+                tid = o.box._temprowid,
+                row = xui.isSet(rowId)?this.getRowbyRowId(rowId):null,
+                col = xui.isSet(colId)?this.getHeaderByColId(colId):null,
+                oneRow = row&&row.cells&&xui.isArr(row.cells),
+                oneCol = xui.isSet(colId) && col,
+                rows=  oneRow ? [row] : xui.isArr(row)&&row[0]&&row[0].cells&&xui.isArr(row[0].cells) ? row: prop.rows,
+                l=header.length, h=rows.length,
+                columns=[],cell,value,
+                index=oneCol?xui.arr.indexOf(header,col):-1,
+                data=[];
 
+            if(h){
+                if(oneCol){
+                    columns.push(col);
+                }else{
+                    for(var i=0;i<l;i++){
+                        columns.push(header[i].id);
+                    }
+                }
+
+                for(var j=0;j<h;j++){
+                    //ignore temp row for all rows
+                    if(!oneRow && rows[j].id==tid)continue;
+                    if(oneCol){
+                        value=null;
+                        if(!rows[j].group && rows[j].cells){
+                            cell = rows[j].cells[index];
+                            value = type=='data'?xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(cell,true)):
+                               (type=='min'||type=='value') ? ('value' in cell)?cell.value:cell:
+                               cell;
+                        }
+                        data.push(value);
+                    }else{
+                        var arr=[];
+                        if(!rows[j].group && rows[j].cells){
+                            for(var i=0;i<l;i++){
+                                cell = rows[j].cells[i];
+                                value = type=='data'?xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(cell,true)):
+                                   (type=='min'||type=='value') ? ('value' in cell)?cell.value:cell:
+                                   cell;
+                                arr.push(value);
+                            }
+                        }
+                        data.push(arr);
+                    }
+                }
+            }
+            return oneRow?data[0]:data;
+        },
         updateCellByRowCol:function(rowId, colId, options, dirtyMark, triggerEvent, triggerFormula){
             var t,self=this,con=self.constructor;
             if(t=con._getCellId(self.get(0), rowId, colId))
@@ -48382,7 +48476,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var cellNode = profile.getSubNode('FCELLCAPTION',row._serialId);
             if(!cellNode.isEmpty()){
                 if(profile.beforeIniEditor){
-                    editor=profile.boxing().beforeIniEditor(profile, row, cellNode, pp, 'row');
+                    editor=profile.boxing().beforeIniEditor(profile, row, cellNode, pp, 'row', row, null);
                     if(editor===false)
                         return;
                 }
@@ -48406,7 +48500,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     .setHeight(size2.height + borderW)
                     .setValue(row.value||row.value||"");
 
-                if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,row,editor, 'row');
+                if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,row,editor, 'row',row, null);
 
                 editor.undo=function(){
                     var editor=this, row=editor.get(0) && editor.get(0).$row;
@@ -48435,7 +48529,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(row)delete row._editor;
                     profile.$curEditor=null;
                     if(profile.onEndEdit)
-                        profile.boxing().onEndEdit(profile, row, editor, 'row');
+                        profile.boxing().onEndEdit(profile, row, editor, 'row', row, null);
 
                     // don't cache it
                     if(editor.get(0)){
@@ -48448,7 +48542,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var options={value:nv},t;
                     if(prf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(t=prf.properties.tagVar))
                         options.tagVar=t;
-                    if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, row, options, editor, tag, 'row'))){
+                    if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, row, options, editor, tag, 'row', row, null))){
                         profile.boxing().updateRow(row.id, {value:nv, caption:nv+""});
                         xui.tryF(editor.undo,[],editor);
                     }
@@ -48507,7 +48601,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             v=profile.cellMap[profile.getSubId(ar)];
             return !v?null:
                     type=='data'? xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(v,true)):
-                    type=='min'? v.value:
+                    (type=='min'||type=='value')? 'value' in v?v.value:v :
                     type=='map'?( (m={})&&((m[v._col.id]=v.value)||1)&&m):
                     v;
         },
@@ -50644,7 +50738,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editable=getPro(profile, cell, 'editable');
 
                     if(!disabled && (!editable || (type=='button'||type=='label'))){
-                        profile.boxing().onDblclickCell(profile, cell, e, src);
+                        profile.boxing().onDblclickCell(profile, cell, e, src, cell._row, cell._col);
                         // stop to trigger row's onDblclick event
                         if(type=='button')
                             return false;
@@ -50671,7 +50765,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(!disabled && (!editable || (type=='button'||type=='label'))){
                             if(typeof event == 'function' && false===event.call(profile._host||profile, profile, cell, null,null,e,src)){}
                             else if(profile.onClickCell)
-                                profile.boxing().onClickCell(profile, cell, e, src);
+                                profile.boxing().onClickCell(profile, cell, e, src, cell._row, cell._col);
                             if(type=='button')
                                 return false;
                         }
@@ -51323,7 +51417,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     ins.setRows(rows);
                 },
-                get:function(row,  splitMixColumn){
+                get:function(row, splitMixColumn){
                     var o=this, prop=o.properties, header=prop.header,
                         tid=this.box._temprowid,
                         one = row&&row.cells&&xui.isArr(row.cells),
@@ -51510,13 +51604,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeRowActive:function(profile, row){},
             afterRowActive:function(profile, row){},
-            beforeCellActive:function(profile, cell){},
-            afterCellActive:function(profile, cell){},
+            beforeCellActive:function(profile, cell, row, col){},
+            afterCellActive:function(profile, cell, row, col){},
 
-            beforeCellUpdated:function(profile, cell, options, isHotRow){},
-            afterCellUpdated:function(profile, cell, options, isHotRow){},
-            beforeRowUpdated:function(profile, obj, options, isHotRow){},
-            afterRowUpdated:function(profile, obj, options, isHotRow){},
+            beforeCellUpdated:function(profile, cell, options, isHotRow, extOpt, row, col){},
+            afterCellUpdated:function(profile, cell, options, isHotRow, extOpt, row, col){},
+            beforeRowUpdated:function(profile, row, options, isHotRow){},
+            afterRowUpdated:function(profile, row, options, isHotRow){},
 
             onRowDirtied:function(profile, row){},
 
@@ -51525,27 +51619,27 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onClickRow:function(profile, row, e, src){},
             onClickRowHandler:function(profile, row, e, src){},
             onDblclickRow:function(profile, row, e, src){},
-            onClickCell:function(profile, cell, e, src){},
-            onDblclickCell:function(profile, cell, e, src){},
+            onClickCell:function(profile, cell, e, src, row, col){},
+            onDblclickCell:function(profile, cell, e, src, row, col){},
             onClickGridHandler:function(profile, e, src){},
 
-            beforeIniEditor:function(profile, cell, cellNode, pNode, type){},
-            onBeginEdit:function(profile, cell, editor, type){},
-            beforeEditApply:function(profile, cell, options, editor, tag, type){},
-            onEndEdit:function(profile, cell, editor, type){},
+            beforeIniEditor:function(profile, cell, cellNode, pNode, type, row, col){},
+            onBeginEdit:function(profile, cell, editor, type, row, col){},
+            beforeEditApply:function(profile, cell, options, editor, tag, type, row, col){},
+            onEndEdit:function(profile, cell, editor, type, row, col){},
 
            // Editors' default events
-            onFileDlgOpen:function(profile, cell, proEditor, src){},
-            beforeComboPop:function(profile, cell, proEditor, pos, e, src){},
-            beforePopShow:function(profile, cell, proEditor, popCtl, items){},
-            afterPopShow:function(profile, cell, proEditor, popCtl){},
-            onCommand:function(profile, cell, proEditor, src, type){},
-            onEditorClick:function(profile, cell, proEditor, type, src){},
-            beforeUnitUpdated:function(profile, cell, proEditor, type){},
+            onFileDlgOpen:function(profile, cell, proEditor, src,row,col){},
+            beforeComboPop:function(profile, cell, proEditor, pos, e, src,row,col){},
+            beforePopShow:function(profile, cell, proEditor, popCtl, items,row,col){},
+            afterPopShow:function(profile, cell, proEditor, popCtl,row,col){},
+            onCommand:function(profile, cell, proEditor, src, type,row, col){},
+            onEditorClick:function(profile, cell, proEditor, type, src, row ,col){},
+            beforeUnitUpdated:function(profile, cell, proEditor, type, row, col){},
 
             // beforeApplyGridExcelFormula
             // afterApplyGridExcelFormula
-            beforeApplyFormula:function(profile, cell, value, formula){},
+            beforeApplyFormula:function(profile, cell, value, formula, row, col){},
             afterApplyFormulas:function(profile, dataArrs){},
             beforeGridValueCalculated:function(profile){},
             afterGridValueCalculated:function(profile, value){},
@@ -52450,7 +52544,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell,f6),cell));
+                    // don't use capOut in capOut case
+                    caption=xui.adjustRes(unit(/*capOut ||*/ren(profile,cell,uicell,f6),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 case 'dropbox':
@@ -52915,7 +53010,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(!xui.isHash(options))options={value:options};
             options=xui.filter(options,function(o,i,r){r= !sc[i.charAt(0)]; if(!r){ext=ext||{}; ext[i]=o} return r;});
             if(triggerEvent){
-                if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow,ext))
+                if(profile.beforeCellUpdated && false === profile.boxing().beforeCellUpdated(profile, cell, options,ishotrow, ext, cell._row, cell._col))
                     return;
             }
             if(!xui.isEmpty(options)){
@@ -52973,7 +53068,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             if(triggerEvent){
                 if(profile.afterCellUpdated)
-                    profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext);
+                    profile.boxing().afterCellUpdated(profile,cell, options,ishotrow,ext,cell._row,cell._col);
             }
         },
         _ensureValue:function(profile,value){
@@ -53072,10 +53167,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var targetId = profile.getSubId(id),
                     map = profile.cellMap;
                 targetCell=map[targetId];
-                if(profile.beforeCellActive && (false===profile.boxing().beforeCellActive(profile, targetCell)))return;
+                if(profile.beforeCellActive && (false===profile.boxing().beforeCellActive(profile, targetCell, targetCell._row, targetCell._col)))return;
                 xui(profile.$activeCell = id).tagClass('-active');
             }
-            if(profile.afterCellActive)profile.boxing().afterCellActive(profile, targetCell);
+            if(profile.afterCellActive)profile.boxing().afterCellActive(profile, targetCell, targetCell._row, targetCell._col);
         },
         _activeRow:function(profile, id){
             if(profile.properties.activeMode!='row')return;
@@ -53222,13 +53317,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 editor.iniEditor(profile, cell, cellNode);
                 if(!inactive)xui.tryF(editor.activate,[],editor);
                 if(profile.onBeginEdit)
-                    profile.boxing().onBeginEdit(profile, cell, editor, 'cell');
+                    profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
             }else{
                 // 2. beforeIniEditor
                 //      returns an editor(xui.UI object)
                 //      or, sets $editorValue
                 if(profile.beforeIniEditor){
-                    editor=profile.boxing().beforeIniEditor(profile, cell, cellNode, baseNode, 'cell');
+                    editor=profile.boxing().beforeIniEditor(profile, cell, cellNode, baseNode, 'cell', cell._row, cell._col);
                     // if return false, dont set $curEditor
                     if(editor===false)
                         return;
@@ -53339,20 +53434,20 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     if(typeof event == 'function')
                                         return event.call(profile._host||profile, profile, cell, editorprf, pos,e,src);
                                     else
-                                        return profile.boxing().beforeComboPop(profile, cell, editorprf, pos, e, src);
+                                        return profile.boxing().beforeComboPop(profile, cell, editorprf, pos, e, src,cell._row,cell._col);
                                 });
                                 if(profile.beforePopShow)
                                     editor.beforePopShow(function(editorprf, popCtl, items){
-                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items);
+                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell._col);
                                     });
                                 if(profile.afterPopShow)
                                     editor.afterPopShow(function(editorprf, popCtl){
-                                        return profile.boxing().afterPopShow(profile, editorprf.$cell, editorprf, popCtl);
+                                        return profile.boxing().afterPopShow(profile, editorprf.$cell, editorprf, popCtl, editorprf.$cell._row, editorprf.$cell._col);
                                     });
                                 if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='dropbutton'){
                                     if(profile.onEditorClick)
                                         editor.onClick(function(prf, e, src, btn){
-                                            return profile.boxing().onEditorClick(profile, prf.$cell, prf, btn, src);
+                                            return profile.boxing().onEditorClick(profile, prf.$cell, prf, btn, src, prf.$cell._row, prf.$cell._col);
                                         });
                                 }
                             }
@@ -53363,7 +53458,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     if(profile.onCommand)
                         editor.onCommand(function(editorprf, node, type){
-                            return profile.boxing().onCommand(profile, editorprf.$cell, editorprf, node, type);
+                            return profile.boxing().onCommand(profile, editorprf.$cell, editorprf, node, type, editorprf.$cell._row, editorprf.$cell._col);
                         });
 
                    cell._editor = editor;
@@ -53508,7 +53603,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.$curEditor=null;
                         profile.$cellInEditor=null;
                         if(profile.onEndEdit)
-                            profile.boxing().onEndEdit(profile, cell, editor, 'cell');
+                            profile.boxing().onEndEdit(profile, cell, editor, 'cell', cell._row, cell._col);
 
                         // don't cache it
                         if(!editorCacheKey && editor.get(0)){
@@ -53526,7 +53621,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     editor
                     .beforeUnitUpdated(function(editorPrf,v){
                         cc=_getcell(editorPrf);
-                        if(profile.beforeUnitUpdated&&false===g1.beforeUnitUpdated(profile, cc, editorPrf, v))
+                        if(profile.beforeUnitUpdated&&false===g1.beforeUnitUpdated(profile, cc, editorPrf, v, cc._row, cc._col))
                             return false;
                         grid._updCell(profile, cc, {value:cc.value, unit: v},profile.properties.dirtyMark,true,true);
                         if((nc=_getcell(editorPrf)) && nc!==cc){
@@ -53574,7 +53669,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(editorPrf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(editorPrf.properties.tagVar))
                             options.tagVar=editorPrf.properties.tagVar;
 
-                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell'))){
+                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col))){
                             profile._setFromEditor=1;
                             grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
                             delete profile._setFromEditor;
@@ -53602,7 +53697,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         return false;
                     })
                     .onFileDlgOpen(function(editorPrf,src){
-                        if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,cell,editorPrf,src);
+                        if(profile.onFileDlgOpen)profile.boxing().onFileDlgOpen(profile,cell,editorPrf,src,cell._row,cell._col);
                     });
 
                     if(!inline){
@@ -53691,7 +53786,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 editor.onBlur(null);
                                 // for compitable
                                 if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items);
+                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items, editorprf.$cell._row, editorprf.$cell_col);
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);
@@ -53702,7 +53797,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                     if(profile.onBeginEdit)
-                        profile.boxing().onBeginEdit(profile, cell, editor, 'cell');
+                        profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
                 }
             }
             if(!inline){
@@ -54379,7 +54474,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(row){
                 if(type=='data')
                     return xui.clone(row,true);
-                else if(type=='min'){
+                else if(type=='min'||type=='value'){
                     var a=[];
                     xui.each(row.cells||row,function(cell,j){
                         a[j]=('value' in cell)?cell.value:cell;
@@ -55668,6 +55763,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 xui('body').append(n2);
                 n2.css({overflow:'visible',position:'absolute',visibility:'visible',left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE})
                 .id(ID,true);
+                n2.removeClass('xui-ui-hidden');
             }
             var n2 = me._cache;
             n2.width('auto').height('auto');
@@ -56879,7 +56975,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                         if(xui.$us(profile)>0)w=profile.$px2em(w, panel)+'em';
                         xui(panel).width(w);
 
-                        xui.UI._adjustConW(profile, panel, w);
+                        xui.UI._adjustConW(profile, xui(panel), w);
                     }
                 });
             }
