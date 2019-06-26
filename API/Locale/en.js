@@ -6563,7 +6563,8 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "key [Required] : Object/String, key/value pairs or a string key",
-                    "value [Optional] : Object, value, only when the parameter 'key' was specified"
+                    "value [Optional] : Object, value, only when the parameter 'key' was specified",
+                    "force [Optional] : Boolean, force to updateDataToUI. The default is [false]"
                 ]
             },
             updateDataToUI:{
