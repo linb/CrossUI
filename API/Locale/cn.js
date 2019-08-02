@@ -6622,7 +6622,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "key [必需参数] : Object/String, 键/值对或键关键字",
-                    "value [可选参数] : Object, 值关键字,只有在key为String的时候有效"
+                    "value [可选参数] : Object, 值关键字,只有在key为String的时候有效",
+                    "force [可选参数] : Boolean, 强行刷新界面. 默认为 [false]"
                 ]
             },
             updateDataToUI:{
