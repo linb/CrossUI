@@ -4701,6 +4701,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 set:function(value){
                     if(!value || !xui.isArr(value) || !value.length)return;
                     var o=this,cols={},header=[],rows=[],i,j,l=value.length,hash,
+                        ins=o.boxing(),
                         oheader = ins.getHeader();
                     // collect data
                     for(i=0;i<l;i++){
@@ -4713,7 +4714,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     }
                     // if no header
-                    var ins=o.boxing();
                     if(oheader==null || oheader.length==0){
                         for(var k in cols){
                             header.push(k);
