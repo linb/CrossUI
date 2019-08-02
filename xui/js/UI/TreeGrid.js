@@ -4700,7 +4700,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ini:[],
                 set:function(value){
                     if(!value || !xui.isArr(value) || !value.length)return;
-                    var o=this,cols={},header=[],rows=[],i,j,l=value.length,hash;
+                    var o=this,cols={},header=[],rows=[],i,j,l=value.length,hash,
+                        oheader = ins.getHeader();
                     // collect data
                     for(i=0;i<l;i++){
                         if(!xui.isHash(hash=value[i])){
@@ -4711,20 +4712,30 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             cols[k][i] = hash[k];
                         }
                     }
-                    //convert to header / rows
-                    j=0;
-                    for(var k in cols){
-                        header.push(k);
-                        for(i=0;i<l;i++){
-                            if(!rows[i])rows[i]=[];
-                            rows[i][j]=cols[k][i];
-                        }
-                      j++;
-                    }
-
+                    // if no header
                     var ins=o.boxing();
-                    if(ins.getHeader('min').join(';') != header.join(';')){
+                    if(oheader==null || oheader.length==0){
+                        for(var k in cols){
+                            header.push(k);
+                        }
                         ins.setHeader(header)
+                    }
+                    header = ins.getHeader();
+
+                    var map={};
+                    xui.arr.each(header, function(o,i){
+                        map[o.id] = i;
+                    });
+
+                    //convert to header / rows
+                    for(var k in cols){
+                        if(k in map){
+                            j=map[k];
+                            for(i=0;i<l;i++){
+                                if(!rows[i])rows[i]=[];
+                                rows[i][j]=cols[k][i];
+                            }
+                        }
                     }
                     ins.setRows(rows);
                 },
