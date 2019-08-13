@@ -11593,8 +11593,10 @@ xui.Class('xui.Dom','xui.absBox',{
                 else
                     ari(m,label, index);
 
-                if(xui.Event && (c=xui.Event._getProfile(id)) && c.clearCache)
-                    c.clearCache();
+                // clear UI cache, don't use "c.clearCache()" here
+                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (t=t[id+"+"+name])){
+                    t.length = 0;
+                }
             });
 
             return self;
@@ -11631,9 +11633,10 @@ xui.Class('xui.Dom','xui.absBox',{
                     }else
                         delete t[name];
                 }
-
-                if(xui.Event && (c=xui.Event._getProfile(id)) && c.clearCache)
-                    c.clearCache();
+                // clear UI cache, don't use "c.clearCache()" here
+                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (t=t[id+"+"+name])){
+                    t.length = 0;
+                }
             });
 
             return self;
@@ -48436,7 +48439,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         // 0:2 => row:0, col:2
         // A3 => row:0, col:2
         updateCellByRowCol2:function(mixedId, options, dirtyMark, triggerEvent){
-            var arr=mixedId.indexOf(":")!=-1?mixedId.split(":"):xui.ExcelFormula.toCoordinate("A3",true),
+            var arr=mixedId.indexOf(":")!=-1?mixedId.split(":"):xui.ExcelFormula.toCoordinate(mixedId,true),
                 row=parseInt(arr[0],10),
                 col=parseInt(arr[1],10);
             return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
@@ -51389,7 +51392,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ini:[],
                 set:function(value){
                     if(!value || !xui.isArr(value) || !value.length)return;
-                    var o=this,cols={},header=[],rows=[],i,j,l=value.length,hash;
+                    var o=this,cols={},header=[],rows=[],i,j,l=value.length,hash,
+                        ins=o.boxing(),
+                        oheader = ins.getHeader();
                     // collect data
                     for(i=0;i<l;i++){
                         if(!xui.isHash(hash=value[i])){
@@ -51400,20 +51405,29 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             cols[k][i] = hash[k];
                         }
                     }
-                    //convert to header / rows
-                    j=0;
-                    for(var k in cols){
-                        header.push(k);
-                        for(i=0;i<l;i++){
-                            if(!rows[i])rows[i]=[];
-                            rows[i][j]=cols[k][i];
+                    // if no header
+                    if(oheader==null || oheader.length==0){
+                        for(var k in cols){
+                            header.push(k);
                         }
-                      j++;
-                    }
-
-                    var ins=o.boxing();
-                    if(ins.getHeader('min').join(';') != header.join(';')){
                         ins.setHeader(header)
+                    }
+                    header = ins.getHeader();
+
+                    var map={};
+                    xui.arr.each(header, function(o,i){
+                        map[o.id] = i;
+                    });
+
+                    //convert to header / rows
+                    for(var k in cols){
+                        if(k in map){
+                            j=map[k];
+                            for(i=0;i<l;i++){
+                                if(!rows[i])rows[i]=[];
+                                rows[i][j]=cols[k][i];
+                            }
+                        }
                     }
                     ins.setRows(rows);
                 },

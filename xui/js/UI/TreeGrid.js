@@ -1747,7 +1747,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         // 0:2 => row:0, col:2
         // A3 => row:0, col:2
         updateCellByRowCol2:function(mixedId, options, dirtyMark, triggerEvent){
-            var arr=mixedId.indexOf(":")!=-1?mixedId.split(":"):xui.ExcelFormula.toCoordinate("A3",true),
+            var arr=mixedId.indexOf(":")!=-1?mixedId.split(":"):xui.ExcelFormula.toCoordinate(mixedId,true),
                 row=parseInt(arr[0],10),
                 col=parseInt(arr[1],10);
             return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
