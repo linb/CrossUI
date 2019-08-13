@@ -481,7 +481,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
         getDomId:function(){
             return this.domId;
         },
-        clearCache:function(){
+        clearCache:function(eventOnly){
             var ns=this,
                 t=ns.$_egetter;
             for(var i in t){
@@ -489,13 +489,14 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 delete t[i];
             }
 
-            t=ns.$_domid;
-            for(var i in t){
-                 t[i].__gc(true,true);
-                 delete t[i];
+            if(!eventOnly){
+                t=ns.$_domid;
+                for(var i in t){
+                     t[i].__gc(true,true);
+                     delete t[i];
+                }
+                delete ns['*'];
             }
-            delete ns['*'];
-
             return ns;
         },
         //get events function from profile

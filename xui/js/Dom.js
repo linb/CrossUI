@@ -1529,8 +1529,9 @@ xui.Class('xui.Dom','xui.absBox',{
                     ari(m,label, index);
 
                 // clear UI cache, don't use "c.clearCache()" here
-                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (t=t[id+"+"+name])){
-                    t.length = 0;
+                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (k=t[id+"+"+name])){
+                    k.length = 0;
+                    delete t[id+"+"+name];
                 }
             });
 
@@ -1569,8 +1570,9 @@ xui.Class('xui.Dom','xui.absBox',{
                         delete t[name];
                 }
                 // clear UI cache, don't use "c.clearCache()" here
-                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (t=t[id+"+"+name])){
-                    t.length = 0;
+                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (k=t[id+"+"+name])){
+                    k.length = 0;
+                    delete t[id+"+"+name];
                 }
             });
 

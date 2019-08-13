@@ -11594,8 +11594,9 @@ xui.Class('xui.Dom','xui.absBox',{
                     ari(m,label, index);
 
                 // clear UI cache, don't use "c.clearCache()" here
-                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (t=t[id+"+"+name])){
-                    t.length = 0;
+                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (k=t[id+"+"+name])){
+                    k.length = 0;
+                    delete t[id+"+"+name];
                 }
             });
 
@@ -11634,8 +11635,9 @@ xui.Class('xui.Dom','xui.absBox',{
                         delete t[name];
                 }
                 // clear UI cache, don't use "c.clearCache()" here
-                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (t=t[id+"+"+name])){
-                    t.length = 0;
+                if(xui.Event && (c=xui.Event._getProfile(id)) && (t=c.$_egetter) && (k=t[id+"+"+name])){
+                    k.length = 0;
+                    delete t[id+"+"+name];
                 }
             });
 
@@ -19475,7 +19477,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
         getDomId:function(){
             return this.domId;
         },
-        clearCache:function(){
+        clearCache:function(eventOnly){
             var ns=this,
                 t=ns.$_egetter;
             for(var i in t){
@@ -19483,13 +19485,14 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 delete t[i];
             }
 
-            t=ns.$_domid;
-            for(var i in t){
-                 t[i].__gc(true,true);
-                 delete t[i];
+            if(!eventOnly){
+                t=ns.$_domid;
+                for(var i in t){
+                     t[i].__gc(true,true);
+                     delete t[i];
+                }
+                delete ns['*'];
             }
-            delete ns['*'];
-
             return ns;
         },
         //get events function from profile
