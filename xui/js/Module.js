@@ -1489,7 +1489,6 @@ xui.Class('xui.Module','xui.absProfile',{
 
                                 // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
                                 xui.ini.$zoomScale = type;
-                                h[b.cssTag1 + "transform-origin"] = h["transform-origin"] ='0 0 0';
                                 xui.Dom.$setZoom(xui('html').get(0), type);
                                 // 'getBoundingClientRect' will need to adjust too
                                 xui.ini.$transformScale = type;

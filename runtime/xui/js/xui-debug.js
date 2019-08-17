@@ -16268,7 +16268,6 @@ xui.Class('xui.Module','xui.absProfile',{
 
                                 // keep the scale for calculating [window]'s dimension and adjusting event's pageX/pageY
                                 xui.ini.$zoomScale = type;
-                                h[b.cssTag1 + "transform-origin"] = h["transform-origin"] ='0 0 0';
                                 xui.Dom.$setZoom(xui('html').get(0), type);
                                 // 'getBoundingClientRect' will need to adjust too
                                 xui.ini.$transformScale = type;
@@ -18061,23 +18060,29 @@ xui.Class('xui.DragDrop',null,{
 xui.Class("xui.Tips", null,{
     Constructor:function(){return null},
     Initialize:function(){
-        if(xui.ini.disableTips || xui.browser.fakeTouch)return;
-        var dd=xui.DragDrop,
-            tips=this;
-        if(dd)
+        if(xui.ini.disableTips)return;
+        var dd=xui.DragDrop, tips=this;
+        if(dd){
             dd.$reset=function(){
                 tips._pos={left:dd._profile.x,top:dd._profile.y}
             };
-
-        //for: span(display:-moz-inline-box) cant wrap in firefox
-        xui.CSS.addStyleSheet(
-            ".xui-tips{position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
-            ".xui-tips-i{overflow:hidden;position:relative;}"+
-            ".xui-tips-i span{display:inline;}"+
-            ".xui-tips-c{padding:.125em .25em .25em .25em;}"+
-            ".xui-tips-c *{line-height:1.22em;}"+
-            ".xui-tips .xui-tips-c{border-radius:1px;}"
-        , this.KEY);
+        }
+        if(xui.browser.fakeTouch){
+            tips.HTMLTips=false;
+        }
+        if(!tips.HTMLTips){
+            tips.MOVABLE=false;
+        }else{
+            //for: span(display:-moz-inline-box) cant wrap in firefox
+            xui.CSS.addStyleSheet(
+                ".xui-tips{position:absolute;overflow:visible;visibility:hidden;left:-10000px;border-radius:1px;} "+
+                ".xui-tips-i{overflow:hidden;position:relative;}"+
+                ".xui-tips-i span{display:inline;}"+
+                ".xui-tips-c{padding:.125em .25em .25em .25em;}"+
+                ".xui-tips-c *{line-height:1.22em;}"+
+                ".xui-tips .xui-tips-c{border-radius:1px;}"
+            , this.KEY);
+        }
 
         xui.doc
         .afterMousedown(function(){
@@ -18097,13 +18102,15 @@ xui.Class("xui.Tips", null,{
                 tips._showF();
                 xui.resetRun('$Tips3');
             //after show, before hide
-            }else if(tips._showed && tips.MOVABLE){
-                p=event.getPos(e);
-                n=tips._Node.style;
-                n.left = Math.min(tips._tpl._ww-tips._tpl._w, Math.max(0, Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left), 10))) + 'px';
-                n.top = Math.min(tips._tpl._hh-tips._tpl._h, Math.max(0, Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top), 10))) + 'px';
-                
-                tips._pos=p;
+            }else if(tips.MOVABLE && tips._showed){
+                if(tips._Node){
+                    p=event.getPos(e);
+                    n=tips._Node.style;
+                    n.left = Math.min(tips._tpl._ww-tips._tpl._w, Math.max(0, Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left), 10))) + 'px';
+                    n.top = Math.min(tips._tpl._hh-tips._tpl._h, Math.max(0, Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top), 10))) + 'px';
+                    
+                    tips._pos=p;
+                }
             }
         },'$Tips',-1)
         .afterMouseover(function(obj, e){
@@ -18165,21 +18172,30 @@ xui.Class("xui.Tips", null,{
                 //set mark id
                 tips._markId = tempid;
                 tips._pos=event.getPos(e);
+                tips._activeNode=xui(node);
 
                 if(tips._showed){
                     tips._from=_from;
                     tips._enode=id;
                     tips._showF();
-                }else
-                    xui.resetRun('$Tips', function(){
-                        tips._from=_from;
-                        tips._enode=id;
-                        // if mouse stop move
-                        xui.resetRun('$Tips3', function(){
+                }else{
+                    if(!tips.HTMLTips){
+                            tips._from=_from;
+                            tips._enode=id;
                             if(tips._from)
                                 tips._showF();
-                        });
-                    }, tips.DELAYTIME);
+                    }else{
+                        xui.resetRun('$Tips', function(){
+                            tips._from=_from;
+                            tips._enode=id;
+                            // if mouse stop move
+                            xui.resetRun('$Tips3', function(){
+                                if(tips._from)
+                                    tips._showF();
+                            });
+                        }, tips.DELAYTIME);
+                    }
+                }
             }else
                 tips._cancel();
 
@@ -18222,108 +18238,99 @@ xui.Class("xui.Tips", null,{
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
-
-                    var self=this,node,_ruler,s,w,h;
-                    if(!(node=self.node) || !node.get(0)){
-                        node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
-                        _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
-                        self.n = node.first();
-                        self._n = _ruler.first();
-                        xui('body').append(_ruler);
-                    }
-                    _ruler = self._ruler;
-                    //ensure zindex is the top
-                    if(document.body.lastChild!=node.get(0))
-                        xui('body').append(node,false,true);
-
-                    s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item ;
+                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item ;
                     if(typeof s=='function')
                         s=s();
-                    if(s+=""){
-                        var html=/^\s*\</.test(s);
-                        //get string
-                        s=xui.adjustRes(s);
-                        xui.Tips._curTips=s;
-                        if(!item.transTips || !html)
-                            s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xui-cls-wordwrap */xui-custom">'+s+'</div>';
-                        //set to this one
-                        self._n.get(0).innerHTML=s;
-
-                        self._ww=xui.frame.width();
-                        self._hh=xui.frame.height();
-
-                        //get width
-                        w=Math.min(html?self._ww:tips.MAXWIDTH, _ruler.get(0).offsetWidth + 2);
-
-                        //set content, AND dimension
-                        var style=node.get(0).style, t1=self.n.get(0),styleI=t1.style;
-                        //hide first
-                        style.visibility='hidden';
-                        //set content
-                        t1.innerHTML=s;
-                        //set dimension
-                        if(xui.browser.ie){
-                            style.width=styleI.width=(self._w=Math.round(w+(w%2)))+'px';
-                            h=t1.offsetHeight;
-                            style.height=(self._h=Math.round(h-(h%2)))+'px';
-                        }else{
-                            styleI.width=(self._w=Math.round(w))+'px';
-                            self._h=self.n.height();
+                    if(!xui.Tips.HTMLTips){
+                        xui.Tips._curTips=xui.adjustRes(s);
+                        s=s.replace(/<[^>]*>/g,'');
+                        if(xui.Tips._activeNode)
+                            xui.Tips._activeNode.attr('title', s);
+                    }else{
+                        var self=this,node,_ruler,w,h;
+                        if(!(node=self.node) || !node.get(0)){
+                            node = self.node = xui.create('<div class="xui-node xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-wrapper xui-node-div xui-tips-i xui-custom"></div></div>');
+                            _ruler = self._ruler = xui.create('<div class="xui-node xui-wrapper xui-node-div xui-tips  xui-ui-shadow xui-custom"><div class="xui-node xui-node-div xui-tips-i xui-custom"></div></div>');
+                            self.n = node.first();
+                            self._n = _ruler.first();
+                            xui('body').append(_ruler);
                         }
-                        
-                        node.removeClass('xui-ui-hidden');
-                        if(pos===true){
-                            style.visibility='visible';
-                        }else{
-                            //pop(visible too)
-                            node.popToTop((pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
-                                left:pos.left,
-                                top:pos.top-12,
-                                width:24,
-                                height:32
-                            }},1);
-                        }
-                        
-                        style=styleI=t1=null;
-                    }else
-                        node.css('zIndex',0).hide();
-                };
-                this.hide = function(){
-                    this.node.css('zIndex',0).hide();
-                };
-            }/*,
-            'animate' : new function(){
-                this.threadid='$tips:1$';
-                this.show=function(item, pos){
-                    if(!this.node){
-                        this.node = xui.create('<div class="xui-node xui-node-div xui-custom" style="position:absolute;border:solid gray 1px;background-color:#FFF1A0;padding:.5em;overflow:hidden;"></div>');
-                        xui('body').append(this.node);
+                        _ruler = self._ruler;
+                        //ensure zindex is the top
+                        if(document.body.lastChild!=node.get(0))
+                            xui('body').append(node,false,true);
+                        if(s+=""){
+                            var html=/^\s*\</.test(s);
+                            //get string
+                            s=xui.adjustRes(s);
+                            xui.Tips._curTips=s;
+                            if(!item.transTips || !html)
+                                s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xui-cls-wordwrap */xui-custom">'+s+'</div>';
+                            //set to this one
+                            self._n.get(0).innerHTML=s;
+
+                            self._ww=xui.frame.width();
+                            self._hh=xui.frame.height();
+
+                            //get width
+                            w=Math.min(html?self._ww:tips.MAXWIDTH, _ruler.get(0).offsetWidth + 2);
+
+                            //set content, AND dimension
+                            var style=node.get(0).style, t1=self.n.get(0),styleI=t1.style;
+                            //hide first
+                            style.visibility='hidden';
+                            //set content
+                            t1.innerHTML=s;
+                            //set dimension
+                            if(xui.browser.ie){
+                                style.width=styleI.width=(self._w=Math.round(w+(w%2)))+'px';
+                                h=t1.offsetHeight;
+                                style.height=(self._h=Math.round(h-(h%2)))+'px';
+                            }else{
+                                styleI.width=(self._w=Math.round(w))+'px';
+                                self._h=self.n.height();
+                            }
+                            
+                            node.removeClass('xui-ui-hidden');
+                            if(pos===true){
+                                style.visibility='visible';
+                            }else{
+                                //pop(visible too)
+                                node.popToTop((pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
+                                    left:pos.left,
+                                    top:pos.top-12,
+                                    width:24,
+                                    height:32
+                                }},1);
+                            }
+                            
+                            style=styleI=t1=null;
+                        }else
+                            node.css('zIndex',0).hide();
                     }
-                    pos.left+=12;
-                    pos.top+=12;
-                    var s=item.tips;
-                    s = s.charAt(0)=='$'?xui.wrapRes(s.slice(1)):s;
-                    this.node.html(s).css('zIndex',xui.Dom.TOP_ZINDEX).cssPos(pos);
-                    var w=this.node.width(),h=this.node.height();
-                    this.node.cssSize({ width :0, height :0}).css('display','block').animate({width:[0,w],height:[0,h]},0,0,300,0,'expoOut',this.threadid).start();
                 };
                 this.hide = function(){
-                    xui.Thread.abort(this.threadid);
-                    this.node.height('auto').width('auto').css('display','none').css('zIndex',0);
+                    if(!xui.Tips.HTMLTips){
+                        if(xui.Tips._activeNode)
+                            xui.Tips._activeNode.attr('title', null);
+                    }else{
+                        this.node.css('zIndex',0).hide();
+                    }
                 };
-            }*/
+            }
         };
     },
     Static:{
         _reg:/-([\w]+):/,
         TIPSKEY:'tips',
         MAXWIDTH:600,
+        HTMLTips:true,
         MOVABLE:true,
         DELAYTIME:400,
         AUTOHIDETIME:5000,
 
         _showF:function(){
-            if(xui.ini.disableTips || xui.browser.fakeTouch)return;
+            if(xui.ini.disableTips)return;
             var self=this,
                 _from=self._from,
                 node=xui.Dom.byId(self._enode),
@@ -18365,7 +18372,7 @@ xui.Class("xui.Tips", null,{
             if(b!==false){
                 self.hide();
             }else {
-                if(!self.MOVABLE)
+                if(self.HTMLTips && !self.MOVABLE)
                     xui.resetRun('$Tips2', self.hide,self.AUTOHIDETIME,null,self);
             }
             node=pos=_from=null;
@@ -18374,13 +18381,13 @@ xui.Class("xui.Tips", null,{
             return this._curTips;
         },
         setTips:function(s){
-            if(this._curTips && this._tpl&& this._Node){
+            if(this._curTips && this._tpl){
                 this._tpl.show(s, true);
             }
         },
         setPos:function(left,top){
             var n=this;
-            if((n=n._Node)&&(n=n.style)){
+            if(n.HTMLTips && (n=n._Node) && (n=n.style)){
                 if(left||left===0)n.left=Math.round(parseFloat(left))+'px';
                 if(top||top===0)n.top=Math.round(parseFloat(top))+'px';
             }
@@ -18400,7 +18407,7 @@ xui.Class("xui.Tips", null,{
                 //get template
                 t = self._tpl = self._Types[item.tipsTemplate] || self._Types['default'];
                 t.show(item,pos,key);
-                self._Node=t.node.get(0);
+                self._Node=t.node&&t.node.get(0);
                 self._item=item;
                 self._showed = true;
             }else
@@ -18427,7 +18434,7 @@ xui.Class("xui.Tips", null,{
         },
         _clear:function(){
             var self=this;
-            self._Node=self._curTips=self._markId = self._from=self._tpl = self._item = self._showed = null;
+            self._Node=self._curTips=self._markId = self._activeNode = self._from=self._tpl = self._item = self._showed = null;
         }
     }
 });xui.Class("xui.History",null,{
