@@ -115,6 +115,7 @@ xui.Class("xui.Tips", null,{
                 tips._markId = tempid;
                 tips._pos=event.getPos(e);
                 tips._activeNode=xui(node);
+                tips._activePrf=_from;
 
                 if(tips._showed){
                     tips._from=_from;
@@ -180,14 +181,16 @@ xui.Class("xui.Tips", null,{
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
-                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item ;
+                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item,t ;
                     if(typeof s=='function')
                         s=s();
                     if(!xui.Tips.HTMLTips){
                         xui.Tips._curTips=xui.adjustRes(s);
                         s=s.replace(/<[^>]*>/g,'');
-                        if(xui.Tips._activeNode)
-                            xui.Tips._activeNode.attr('title', s);
+                        if(t=xui.Tips._activePrf){
+                            if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
+                            else  xui.Tips._activeNode.attr('title', s);
+                        }
                     }else{
                         var self=this,node,_ruler,w,h;
                         if(!(node=self.node) || !node.get(0)){
@@ -253,8 +256,11 @@ xui.Class("xui.Tips", null,{
                 };
                 this.hide = function(){
                     if(!xui.Tips.HTMLTips){
-                        if(xui.Tips._activeNode)
-                            xui.Tips._activeNode.attr('title', null);
+                        var t=xui.Tips._activePrf;
+                        if(t){
+                            if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:null},false);
+                            else  xui.Tips._activeNode.attr('title', null);
+                        }
                     }else{
                         this.node.css('zIndex',0).hide();
                     }
@@ -376,7 +382,7 @@ xui.Class("xui.Tips", null,{
         },
         _clear:function(){
             var self=this;
-            self._Node=self._curTips=self._markId = self._activeNode = self._from=self._tpl = self._item = self._showed = null;
+            self._Node=self._curTips=self._markId = self._activeNode = self._activePrf = self._from=self._tpl = self._item = self._showed = null;
         }
     }
 });

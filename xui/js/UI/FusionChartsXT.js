@@ -19,6 +19,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 prf.boxing().busy(false,'');
                 if(prf.renderId){
                     var fun=function(){
+                        if(!prf || !prf.box)return;
                         var prop=prf.properties,t;
                         if(prf._chartId && (t=FusionCharts(prf._chartId))){
                             // dispose

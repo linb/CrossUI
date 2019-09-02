@@ -250,6 +250,7 @@ new function(){
             }
             return s;
         },
+        _s2a:function(s){return (s+"").replace(/^\[/,'').replace(/\]$/,'').split(/\s*[\[\]\.]\s*[\[\]\.]?\s*/)},
         /*
         get something from deep hash
         hash:target hash
@@ -262,7 +263,7 @@ new function(){
         get:function(hash,path,deep){
             if(!path) return hash;
             if(!xui.isSet(hash))return undefined;
-            if(deep)path=(path+"").split(".");
+            if(deep)path=xui._s2a(path);
             if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
@@ -280,7 +281,7 @@ new function(){
         */
         set:function(hash,path,value,deep){
             if(!hash)return;
-            if(deep)path=(path+"").split(".");
+            if(deep)path=xui._s2a(path);
             if(typeof path!='string'){
                 var v,i=0,m,last=path.length-1;
                 for(;i<last;){
@@ -2390,7 +2391,7 @@ new function(){
                         }else if(o && xui.isStr(t) && xui.isFun(o)){
                             // args[0] => args.0
                             t=t.replace(/\[(\d+)\]/,".$1");
-                            t=t.split(/\s*\.\s*/);
+                            t=xui._s2a(t);
                             if(t.length>1){
                                 m=t.pop().replace(/[()}\s]/g,'');
                             }else{
@@ -2610,11 +2611,11 @@ new function(){
                                     }else if(method=="console" && xui.isDefined(window.console) && (typeof console.log=="function"))console.log.apply(console,iparams);
                                      else if(xui.isFun(t=xui.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
-                                case "var":
+                                case "var": 
                                     if(iparams[0].length){
                                         var v = iparams[1];
                                         if(iparams[2])
-                                            v=xui.get(v, iparams[2].split(/\s*\.\s*/));
+                                            v=xui.get(v, xui._s2a(iparams[2]));
                                         if(adjust){
                                             switch(adjust){
                                                 case "serialize":
@@ -2632,7 +2633,7 @@ new function(){
                                                 break;
                                             }
                                         }
-                                        xui.set(_ns, (method+"."+xui.str.trim(iparams[0])).split(/\s*\.\s*/), v);
+                                        xui.set(_ns, xui._s2a(method+"."+xui.str.trim(iparams[0])), v);
                                     }
                                 break;
                                 case "callback":
@@ -2644,7 +2645,7 @@ new function(){
                                             if(iparams[0]&&!xui.isEmpty(iparams[0]))xui.History.setFI(iparams[0],true,true);
                                             break;
                                         case "set":
-                                            xui.set(_ns, ('temp.'+xui.str.trim(iparams[0])).split(/\s*\.\s*/), iparams[1]);
+                                            xui.set(_ns, xui._s2a('temp.'+xui.str.trim(iparams[0])), iparams[1]);
                                             break;
                                         case "call":
                                             var args=iparams.slice(3), doit,doit2,y;
@@ -2652,7 +2653,7 @@ new function(){
                                             if(xui.isStr(t)&&/^\{[\w][\w.]*[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,'').replace(/\[(\d+)\]/,".$1"))) {
                                                 // args[0] => args.0
                                                 t=t.replace(/\[(\d+)\]/,".$1");
-                                                t=t.split(/\s*\.\s*/);
+                                                t=xui._s2a(t);
                                                 if(t.length>1){
                                                     m=t.pop().replace(/[()}\s]/g,'');
                                                 }else{
@@ -2688,7 +2689,7 @@ new function(){
                                                 t=ns._callFunctions(t, args, n||_ns.page, _ns.temp,null, 'nested:'+(t.desc||t.id||""), (level||1)+1);
                                             }
                                             if(doit||doit2){
-                                                if(iparams[1]&&iparams[2]&&xui.get(_ns,iparams[1].split(/\s*\.\s*/)))xui.set(_ns, (iparams[1]+"."+iparams[2]).split(/\s*\.\s*/), t);
+                                                if(iparams[1]&&iparams[2]&&xui.get(_ns,xui._s2a(iparams[1])))xui.set(_ns, xui._s2a(iparams[1]+"."+iparams[2]), t);
                                             }
                                            break;
                                      }
@@ -4188,7 +4189,7 @@ xui.Class('xui.SC',null,{
         get:function (path, obj1, obj2, v){
             if(typeof path!="string")return;
             // a[1][2].b[3] => a,1,2,b,3
-            path=path.replace(/\]$/g,'').split(/[\[\]\.]+/);
+            path=xui._s2a(path);
             if(obj1)v = xui.get(obj1,path);
             if(obj2 && v===undefined)v = xui.get(obj2,path);
             if(v===undefined)v = xui.get(xui.window,path);
@@ -18173,6 +18174,7 @@ xui.Class("xui.Tips", null,{
                 tips._markId = tempid;
                 tips._pos=event.getPos(e);
                 tips._activeNode=xui(node);
+                tips._activePrf=_from;
 
                 if(tips._showed){
                     tips._from=_from;
@@ -18238,14 +18240,16 @@ xui.Class("xui.Tips", null,{
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
-                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item ;
+                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item,t ;
                     if(typeof s=='function')
                         s=s();
                     if(!xui.Tips.HTMLTips){
                         xui.Tips._curTips=xui.adjustRes(s);
                         s=s.replace(/<[^>]*>/g,'');
-                        if(xui.Tips._activeNode)
-                            xui.Tips._activeNode.attr('title', s);
+                        if(t=xui.Tips._activePrf){
+                            if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
+                            else  xui.Tips._activeNode.attr('title', s);
+                        }
                     }else{
                         var self=this,node,_ruler,w,h;
                         if(!(node=self.node) || !node.get(0)){
@@ -18311,8 +18315,11 @@ xui.Class("xui.Tips", null,{
                 };
                 this.hide = function(){
                     if(!xui.Tips.HTMLTips){
-                        if(xui.Tips._activeNode)
-                            xui.Tips._activeNode.attr('title', null);
+                        var t=xui.Tips._activePrf;
+                        if(t){
+                            if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:null},false);
+                            else  xui.Tips._activeNode.attr('title', null);
+                        }
                     }else{
                         this.node.css('zIndex',0).hide();
                     }
@@ -18434,7 +18441,7 @@ xui.Class("xui.Tips", null,{
         },
         _clear:function(){
             var self=this;
-            self._Node=self._curTips=self._markId = self._activeNode = self._from=self._tpl = self._item = self._showed = null;
+            self._Node=self._curTips=self._markId = self._activeNode = self._activePrf = self._from=self._tpl = self._item = self._showed = null;
         }
     }
 });xui.Class("xui.History",null,{
@@ -19723,13 +19730,13 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return self._cacheH1[hash] || (self._cacheH1[hash]=key.replace(self._cacheR3,'-').toLowerCase().replace('xui-ui','xui') + (tag||''));
         },
         _getSubNodeId:function(key, subId, tag){
-            var arr = this.$domId.split(':');
+            var arr = this.$domId.split(':'),t;
             arr[0]=key;
             arr[2]=xui.isSet(subId)?(subId+""):'';
             if(tag)arr[2]+='_'+tag;
             key=arr.join(':');
             return key==this.$domId
-                ? xui.$cache.profileMap[key].domId
+                ? ((t=xui.$cache.profileMap[key])&&t.domId)
                 : key;
         },
         //flag : remove from cache
@@ -69230,6 +69237,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 prf.boxing().busy(false,'');
                 if(prf.renderId){
                     var fun=function(){
+                        if(!prf || !prf.box)return;
                         var prop=prf.properties,t;
                         if(prf._chartId && (t=FusionCharts(prf._chartId))){
                             // dispose

@@ -720,13 +720,13 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return self._cacheH1[hash] || (self._cacheH1[hash]=key.replace(self._cacheR3,'-').toLowerCase().replace('xui-ui','xui') + (tag||''));
         },
         _getSubNodeId:function(key, subId, tag){
-            var arr = this.$domId.split(':');
+            var arr = this.$domId.split(':'),t;
             arr[0]=key;
             arr[2]=xui.isSet(subId)?(subId+""):'';
             if(tag)arr[2]+='_'+tag;
             key=arr.join(':');
             return key==this.$domId
-                ? xui.$cache.profileMap[key].domId
+                ? ((t=xui.$cache.profileMap[key])&&t.domId)
                 : key;
         },
         //flag : remove from cache
