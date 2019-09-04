@@ -1063,8 +1063,8 @@ xui.merge(xui,{
     $localeDomId:'xlid',
     $dateFormat:'',
     $rand:"_rnd_",
-    _rnd:function(){
-        return xui.debugMode?xui.$rand+"="+xui.rand():null;
+    _rnd:function(force){
+        return xui.debugMode||force?xui.$rand+"="+xui.rand():null;
     },
     _debugPre:function(arr){
         arr=xui.toArr(arr);
@@ -1437,17 +1437,17 @@ xui.merge(xui,{
         return xui.Ajax(uri, query, onSuccess, onFail, threadid, options).start();
     },
     getFileSync:function(uri, onSuccess, onFail, options){
-        return xui.Ajax(uri, options&&options.force?xui._rnd():null,onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
+        return xui.Ajax(uri, xui._rnd(options&&options.force),onSuccess,onFail, null, xui.merge({asy:false, rspType:options&&options.rspType||"text"},options,'without')).start()||null;
     },
     getFileAsync:function(uri, onSuccess, onFail, threadid, options){
-        xui.Ajax(uri,options&&options.force?xui._rnd():null,onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
+        xui.Ajax(uri,xui._rnd(options&&options.force),onSuccess, onFail,threadid, xui.merge({asy:true, rspType: options&&options.rspType||"text"},options,'without')).start();
     },
     include:function(id,path,onSuccess,onFail,sync,options){
         if(id&&xui.SC.get(id))
             xui.tryF(onSuccess);
         else{
             options=options||{};
-            var rnd=options.force?xui._rnd():null;
+            var rnd=xui._rnd(options.force);
             options.rspType='script';
             options.keepDomNode=1;
             if(!sync){
@@ -1514,7 +1514,7 @@ xui.merge(xui,{
                 if(onFetching[uri]){onFetching[uri][0].length=0;onFetching[uri][1].length=0;onFetching[uri][2].length=0;onFetching[uri][3].length=0;onFetching[uri].length=0;delete onFetching[uri];}
                 onFetching=null;
             },
-            rnd=options.force?xui._rnd():null,
+            rnd=xui._rnd(options.force),
             ww,
             obj = xui._getIdUri(uri, options),
             cls = obj.id,
@@ -4258,7 +4258,7 @@ xui.Class('xui.SC',null,{
                     }
                     //get text from sy ajax
                     if(xui.SC.beforeGetScript(o, f, fe)!==false){
-                        ajax(o, xui._rnd(), f, fe, null, options).start();
+                        ajax(o, xui._rnd(options.force), f, fe, null, options).start();
                     }
                     //for asy once only
                     if(!isAsy)
