@@ -16109,6 +16109,11 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             //set again
         	self.destroyed=true;
+        },
+        applyPseudo:function(funConf, args, scope){
+            var ns=this;
+            if(xui.isStr(funConf))funConf=ns.functions&&ns.functions[funConf];
+            return xui.isObj(funConf) ? xui.pseudocode._callFunctions(funConf, args||[], scope||this) : null;
         }
     },
     Static:{

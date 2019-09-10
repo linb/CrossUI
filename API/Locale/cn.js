@@ -5646,6 +5646,15 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg5 [可选参数]: Object, 钩子函数的回调参数5"
                 ]
             },
+            applyPseudo: {
+                $desc:"调用伪代码函数",
+                $rtn:"Object",
+                $paras:[
+                    "funConf[必需参数] : Function, 伪代码函数",
+                    "args [可选参数]: Array, 函数的参数. 默认为 [](空数组)",
+                    "scope [可选参数]: Object, [fun]的this指针(哪个对象的函数) . 默认为当前模块"
+                ]
+            },
             applyExcelFormula:{
                 $desc:"重算模拟Excel单元格的公式",
                 $rtn:"[self]",
