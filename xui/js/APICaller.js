@@ -341,15 +341,15 @@ xui.Class("xui.APICaller","xui.absObj",{
                 xui.tryF(onFail,arguments,this);
             }, threadid, options]);
 
-            if(mode=="quiet")
-                ajax.start();
-            else if(mode=="return")
-                return ajax;
-            else
+            if(mode=="busy")
                 xui.observableRun(function(threadid){
                     ajax.threadid=threadid;
                     ajax.start();
                 });                
+            else if(mode=="return")
+                return ajax;
+            else
+                ajax.start();
         }
     },
     Static:{
