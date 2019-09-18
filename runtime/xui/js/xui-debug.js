@@ -23456,6 +23456,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                     for(var i in t)
                         for(var j in t[i])
                             me.call(self, t[i], j);
+                
+                t = self.$tplWordMap||(self.$tplWordMap={});
+                (xui.serialize(self.$Templates)||"").replace(/\{(\w+)\}/g, function(a,b){t[b]=1;})
             }
             return this;
         },
@@ -24035,12 +24038,12 @@ xui.Class("xui.UI",  "xui.absObj", {
         adjustData:function(profile, hashIn, hashOut, type){
             if(!hashOut)hashOut={};
 
-            var box=profile.box, dm = box.$DataModel,i,o;
+            var box=profile.box, map=box.$tplWordMap||{},dm = box.$DataModel,i,o;
 
             for(i in hashIn){
                 if(i.charAt(0)=='$'||i=='renderer')continue;
                 if(hashIn.hasOwnProperty(i) &&  !hashOut.hasOwnProperty(i)){
-                    hashOut[i] = typeof (o=hashIn[i])=='string' ? i=='html' ? xui.adjustRes(o,0,1,false,null,null,type=='sub'&&hashIn) : xui.adjustRes(o,true,false,null,null,type=='sub'&&hashIn) : o;
+                    hashOut[i] = typeof (o=hashIn[i])=='string' && map[i] ? i=='html' ? xui.adjustRes(o,0,1,false,null,null,type=='sub'&&hashIn) : xui.adjustRes(o,true,false,null,null,type=='sub'&&hashIn) : o;
                 }
             }
             if('hidden' in hashIn)
