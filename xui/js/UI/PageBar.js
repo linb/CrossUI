@@ -85,7 +85,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                     a=v.split(':'),
                     b=parseInt(a[1],10);
 
-                if(value > parseInt(a[2],10))return;
+                if(parseInt(value,10) > parseInt(a[2],10))return;
                 a[1]=parseInt(value,10) || b;
 
                 if(force || a[1]!==b){

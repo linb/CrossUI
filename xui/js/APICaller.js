@@ -137,6 +137,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             switch(responseType){
                 case "TEXT":
                     rMap.rspType="text";
+                break;
                 case "JSON":
                     rMap.rspType="json";
                 break;

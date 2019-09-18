@@ -52,13 +52,12 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 ])
                 .setTagCmds([
                     {
-                    "id" : "add",
+                    "id" : "down",
                     "type" : "text",
-                    "caption" : "",
                     "location": "right",
-                    "itemClass":"xuicon xui-uicmd-getter",
-                    "tag" : "header row",
-                    "tips" : "Append a child"
+                    "itemClass":"xuicon xui-icon-arrowbottom",
+                    "tag" : "row",
+                    "tips" : "Add a node at the back of this node"
                     },
                     {
                     "id" : "up",
@@ -69,12 +68,13 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     "tips" : "Add a node to the front of the node" 
                     },
                     {
-                    "id" : "down",
+                    "id" : "add",
                     "type" : "text",
+                    "caption" : "",
                     "location": "right",
-                    "itemClass":"xuicon xui-icon-arrowbottom",
-                    "tag" : "row",
-                    "tips" : "Add a node at the back of this node"
+                    "itemClass":"xuicon xui-uicmd-getter",
+                    "tag" : "header row",
+                    "tips" : "Append a child"
                     },
                     {
                     "id" : "del",

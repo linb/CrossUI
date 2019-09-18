@@ -213,8 +213,8 @@ new function(){
     var _to = Object.prototype.toString;
     xui.merge(xui,{
         stamp:function(){return +new Date()},
-        rand:function(){
-            return parseInt(xui.stamp()*Math.random(),10).toString(36);
+        rand:function(head,tail){
+            return (head||"")+parseInt(xui.stamp()*Math.random(),10).toString(36)+(tail||"");
         },
         setTimeout:function(callback,delay){
             return (delay===false||(delay||0)>1000/60)?(setTimeout(callback,delay||0)*-1):requestAnimationFrame(callback);
@@ -1385,6 +1385,9 @@ xui.merge(xui,{
                     obj=="{null}"?null:
                     obj=="{undefined}"?undefined:
                     obj=="{now}"?new Date():
+                    // "{ print(any) }" >" any "
+                    (t=/^\s*\{\s*eval\s*\((.*)\)\s*\}\s*$/.exec(obj))  ? xui.unserialize(t[2]) :
+                    // {2.3}
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
                     // {a.b(3,"a")} 
                     // scope allows hash only
