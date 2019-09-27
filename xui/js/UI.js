@@ -694,7 +694,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
         getSubId:function(id){
             var t;
             if(id.charAt(0)=='!')id=xui.use(id).id();
-            if(id.indexOf(':')==-1)id=(t=xui.$cache.profileMap[id])&&(t.$domId);
+            if(id&&id.indexOf(':')==-1)id=(t=xui.$cache.profileMap[id])&&(t.$domId);
             return id?id.split(":")[2]:"";
         },
         pickSubId:function(key){
@@ -5641,7 +5641,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     var f,t,c,x,y;
                     if(isWin){
                         // $frame.type has high priority
-                        if(xui.ini.$frame && !xui.isNumb(xui.ini.$frame.zoom))return;
+                        if(xui.ini.$frame && xui.ini.$frame.zoom && !xui.isNumb(xui.ini.$frame.zoom))return;
 
                         f=xui.win.$getEvent('onSize','dock');
                     }else if(p && p.get(0)){
@@ -6781,7 +6781,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
             // special for tagVar
             var i='tagVar';
-            if((i in p) && p[i] && (xui.isHash(p[i])||xui.isArr(p[i])) && xui.isEmpty(p[i]))delete p[i];
+            if((i in p) && p[i] && xui.isHash(p[i]) && xui.isEmpty(p[i]))delete p[i];
 
             xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"],function(key){
                 if(t=p[key]){
@@ -7849,7 +7849,7 @@ xui.Class("xui.absValue", "xui.absObj",{
             });
             return self;
         },
-        setUIValue:function(value, force, triggerEventOnly, tag){
+        setUIValue:function(value, force, triggerEventOnly, tag, tagVar){
             var self=this;
             this.each(function(profile){
                 var prop=profile.properties, r,
@@ -7858,7 +7858,7 @@ xui.Class("xui.absValue", "xui.absObj",{
                 if(force || (ovalue !== value)){
                     if(
                         (profile.box._checkValid && false===profile.box._checkValid(profile, value)) ||
-                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag)))
+                        (profile.beforeUIValueSet && false===(r=box.beforeUIValueSet(profile, ovalue, value, force, tag, tagVar)))
                       )
                         return;
 
@@ -7884,9 +7884,9 @@ xui.Class("xui.absValue", "xui.absObj",{
 
                     if(profile.renderId && !triggerEventOnly)box._setDirtyMark();
 
-                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag);
-                    if(profile._onChange)box._onChange(profile, ovalue, value, force, tag);
-                    if(profile.onChange)box.onChange(profile, ovalue, value, force, tag);
+                    if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag, tagVar);
+                    if(profile._onChange)box._onChange(profile, ovalue, value, force, tag, tagVar);
+                    if(profile.onChange)box.onChange(profile, ovalue, value, force, tag, tagVar);
 
                     if(!prop.dirtyMark)
                         box.setValue(value,false,'uiv',cv || triggerEventOnly);
@@ -8030,10 +8030,10 @@ xui.Class("xui.absValue", "xui.absObj",{
             onValueChange:function(profile, oldValue, newValue, force, tag){},
 
             //ui value set
-            beforeUIValueSet:function(profile, oldValue, newValue, force, tag){},
-            afterUIValueSet:function(profile, oldValue, newValue, force, tag){},
-            onChange:function(profile, oldValue, newValue, force, tag){},
-            _onChange:function(profile, oldValue, newValue, force, tag){},
+            beforeUIValueSet:function(profile, oldValue, newValue, force, tag, tagVar){},
+            afterUIValueSet:function(profile, oldValue, newValue, force, tag, tagVar){},
+            onChange:function(profile, oldValue, newValue, force, tag, tagVar){},
+            _onChange:function(profile, oldValue, newValue, force, tag, tagVar){},
 
             beforeDirtyMark:function(profile, dirty){}
         },

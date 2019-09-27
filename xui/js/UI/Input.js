@@ -746,10 +746,10 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         },
         _handleInput:function(prf,cls, v){
             var i=prf.getSubNode('INPUT');                        
+            if(!v && (prf.properties.disabled||prf.properties.readonly))
+                v=true;
+            prf.getRoot()[v?'addClass':'removeClass'](cls);
             if((""+i.get(0).type).toLowerCase()!='button'){
-                if(!v && (prf.properties.disabled||prf.properties.readonly))
-                    v=true;
-                prf.getRoot()[v?'addClass':'removeClass'](cls);
                 i.attr('readonly',v);
             }
         },

@@ -1181,7 +1181,11 @@ xui.set(xui.Locale,["en","app"], {
                 "msg2 [Optional]: Object, message 2",
                 "msg3 [Optional]: Object, message 3",
                 "msg4 [Optional]: Object, message 4",
-                "msg5 [Optional]: Object, message 5"
+                "msg5 [Optional]: Object, message 5",
+                "msg6 [Optional]: Object, message 6",
+                "msg7 [Optional]: Object, message 7",
+                "msg8 [Optional]: Object, message 8",
+                "msg9 [Optional]: Object, message 9"
             ]
         },
         launch:{
@@ -1771,6 +1775,10 @@ xui.set(xui.Locale,["en","app"], {
                     "msg3 [Optional]: Object, message 3",
                     "msg4 [Optional]: Object, message 4",
                     "msg5 [Optional]: Object, message 5",
+                    "msg6 [Optional]: Object, message 6",
+                    "msg7 [Optional]: Object, message 7",
+                    "msg8 [Optional]: Object, message 8",
+                    "msg9 [Optional]: Object, message 9",
                     "readReceipt [Optional]: Function, read receipt"
                 ]
             },
@@ -1811,6 +1819,10 @@ xui.set(xui.Locale,["en","app"], {
                     "msg3: Object, message object 3",
                     "msg4: Object, message object 4",
                     "msg5: Object, message object 5",
+                    "msg6: Object, message object 6",
+                    "msg7: Object, message object 7",
+                    "msg8: Object, message object 8",
+                    "msg9: Object, message object 9",
                     "readReceipt: Function, read receipt"
                 ]
             },
@@ -5358,8 +5370,12 @@ xui.set(xui.Locale,["en","app"], {
                 "msg1 [Required]: Object, message 1",
                 "msg2 [Optional]: Object, message 2",
                 "msg3 [Optional]: Object, message 3",
-                "msg4 [Optional]: Object, message object 4",
-                "msg5 [Optional]: Object, message object 5",
+                "msg4 [Optional]: Object, message 4",
+                "msg5 [Optional]: Object, message 5",
+                "msg6 [Optional]: Object, message 6",
+                "msg7 [Optional]: Object, message 7",
+                "msg8 [Optional]: Object, message 8",
+                "msg9 [Optional]: Object, message 9",
                 "sender [Optional] : Object, the message sender"
             ]
         },
@@ -5371,8 +5387,12 @@ xui.set(xui.Locale,["en","app"], {
                     "msg1 [Required]: Object, message 1",
                     "msg2 [Optional]: Object, message 2",
                     "msg3 [Optional]: Object, message 3",
-                    "msg4 [Optional]: Object, message object 4",
-                    "msg5 [Optional]: Object, message object 5",
+                    "msg4 [Optional]: Object, message 4",
+                    "msg5 [Optional]: Object, message 5",
+                    "msg6 [Optional]: Object, message 6",
+                    "msg7 [Optional]: Object, message 7",
+                    "msg8 [Optional]: Object, message 8",
+                    "msg9 [Optional]: Object, message 9",
                     "sender [Optional] : Object, the message sender"
                 ]
             },
@@ -5583,8 +5603,12 @@ xui.set(xui.Locale,["en","app"], {
                     "msg1 [Optional]: Object,  argument 1 for callback function",
                     "msg2 [Optional]: Object,  argument 2 for callback function",
                     "msg3 [Optional]: Object,  argument 3 for callback function",
-                    "msg4 [Optional]: Object,  argument 2 for callback function",
-                    "msg5 [Optional]: Object,  argument 3 for callback function"
+                    "msg4 [Optional]: Object,  argument 4 for callback function",
+                    "msg5 [Optional]: Object,  argument 5 for callback function",
+                    "msg6 [Optional]: Object,  argument 6 for callback function",
+                    "msg7 [Optional]: Object,  argument 7 for callback function",
+                    "msg8 [Optional]: Object,  argument 8 for callback function",
+                    "msg9 [Optional]: Object,  argument 9 for callback function"
                 ]
             },
             applyExcelFormula:{
@@ -5772,6 +5796,10 @@ xui.set(xui.Locale,["en","app"], {
                     "msg3: Object, message object 3",
                     "msg4: Object, message object 4",
                     "msg5: Object, message object 5",
+                    "msg6: Object, message object 6",
+                    "msg7: Object, message object 7",
+                    "msg8: Object, message object 8",
+                    "msg9: Object, message object 9",
                     'source: Object, the message source'
                 ]
             },
@@ -5783,7 +5811,11 @@ xui.set(xui.Locale,["en","app"], {
                     "msg2: Object, message object 2",
                     "msg3: Object, message object 3",
                     "msg4: Object, message object 4",
-                    "msg5: Object, message object 5"
+                    "msg5: Object, message object 5",
+                    "msg6: Object, message object 6",
+                    "msg7: Object, message object 7",
+                    "msg8: Object, message object 8",
+                    "msg9: Object, message object 9"
                 ]
             },
             onIniResource:{
@@ -7209,7 +7241,8 @@ xui.set(xui.Locale,["en","app"], {
                     "oldValue : String, old UIValue",
                     "newValue : String, new UIValue",
                     "force : Boolean, force to call or not",
-                    "tag : call extra info"
+                    "tag : call extra info",
+                    "tagVar: Ojbect, value's corresponding object, if exists"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7229,7 +7262,8 @@ xui.set(xui.Locale,["en","app"], {
                     "oldValue :String, old UIValue",
                     "newValue : String, new UIValue",
                     "force : Boolean, force to call or not",
-                    "tag : call extra info"
+                    "tag : call extra info",
+                    "tagVar: Ojbect, value's corresponding object, if exists"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7249,7 +7283,8 @@ xui.set(xui.Locale,["en","app"], {
                     "oldValue :String, old UIValue",
                     "newValue : String, new UIValue",
                     "force : Boolean, force to call or not",
-                    "tag : call extra info"
+                    "tag : call extra info",
+                    "tagVar: Ojbect, value's corresponding object, if exists"
                 ]
             },
             onValueChange:{
@@ -17068,8 +17103,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets the cell Object according to its id",
                 $rtn:"Ojbect",
                 $paras:[
-                    "cellId [Required] : String",
-                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
+                    "cellId [Required] : String/Object, the cell object or cell id",
+                    "type [Optional] : String, 'data': get full key/value' data; 'map':get min key/value pair, 'min/value': get value only; else, return the original object"
                 ]
             },
             isDirtied:{
@@ -17122,7 +17157,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     "rowId [Required] : String, row id",
                     "colId [Requried] : String, column id",
-                    "type [Optional] : String, 'data': get key/value' data; 'min/value': get value only; else, return the original object"
+                    "type [Optional] : String, 'data': get full key/value' data; 'map':get min key/value pair, 'min/value': get value only; else, return the original object"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

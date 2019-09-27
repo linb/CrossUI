@@ -1373,6 +1373,11 @@ xui.merge(xui,{
             }): str;
             return str.replace(/([\x01\x02\x03\x04])/g,function(a){return xui._unescapeMap[a];});
     },
+    _feval:function(body,scope){
+        try{
+             return (new Function("", "with(this){return "+body+"}")).apply(scope||{});
+        }catch(e){return ""}
+    },
     adjustVar:function(obj,scope1,scope2){
         var t;
         return typeof(obj)=="string" ?
@@ -1386,7 +1391,7 @@ xui.merge(xui,{
                     obj=="{undefined}"?undefined:
                     obj=="{now}"?new Date():
                     // "{ print(any) }" >" any "
-                    (t=/^\s*\{\s*eval\s*\((.*)\)\s*\}\s*$/.exec(obj))  ? xui.unserialize(t[2]) :
+                    (t=/^\s*\{\s*eval\s*\((.*)\)\s*\}\s*$/.exec(obj))  ? this._feval(t[1],scope1||scope2) :
                     // {2.3}
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
                     // {a.b(3,"a")} 
@@ -5287,14 +5292,16 @@ xui.Class("xui.MessageService","xui.absObj",{
                 profile.__gc();
             });
         },
-        broadcast:function(recipientType, msg1, msg2, msg3, msg4, msg5, readReceipt){
+        broadcast:function(recipientType, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, readReceipt){
             return this.each(function(profile){
-                var ins=profile.boxing();
-                xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
-                    xui.publish(t, [msg1, msg2, msg3, msg4, msg5, function(){
+                var ins=profile.boxing(),arr=xui.toArr(arguments);
+                arr.shift();arr.pop();
+                arr.push(function(){
                         xui.tryF(readReceipt);
                         if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
-                    }], null, ins);
+                    });
+                xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
+                    xui.publish(t, arr, null, ins);
                 });
             });
         },
@@ -5330,7 +5337,7 @@ xui.Class("xui.MessageService","xui.absObj",{
             asynReceive:false
         },
         EventHandlers:{
-            onMessageReceived:function(profile, msg1, msg2, msg3, msg4, msg5, readReceipt){},
+            onMessageReceived:function(profile, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, readReceipt){},
             onReceipt:function(profile, recipientType, args){}
         }
     }

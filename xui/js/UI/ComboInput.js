@@ -184,7 +184,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //a special node, must delete if from cache here:
                     delete profile.$_domid[profile.keys['FILE']];
                     xui([o]).addPrev(c).remove(false);
-                    this.setUIValue(c.value||"",null,null,'setfile');
+                    this.setUIValue(c.value||"",null,null,'setfile',c);
                 }
             }
             return this;
@@ -219,7 +219,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 xui([o]).addPrev(c).remove(false);
                 c=null;
 
-                this.setUIValue(this.getValue(),null,null,'getfile');
+                this.setUIValue(this.getValue(),null,null,'getfile',o);
 
                 return o;
             }
@@ -333,14 +333,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                                     return false;
                                 });
                                 o.beforeUIValueSet(function(p, ovalue, value){
-                                    var b2=this.boxing();
-                                    if(type=='combobox'){
-                                        var item=p.queryItems(p.properties.items,function(o){return o.id==value},false,true);
-                                        if(item.length)
+                                    var b2=this.boxing(),item;
+                                    if(type=='combobox'||type=='listbox'){
+                                        item=p.queryItems(p.properties.items,function(o){return o.id==value},false,true);
+                                        if(type=='combobox' && item.length)
                                             value = item[0].caption;
                                     }
                                     //update value
-                                    b2.setUIValue(value,null,null,'pick');
+                                    b2.setUIValue(value,null,null,'pick',item&&item[0]);
 
                                     //cache pop
                                     return b2._cache('',true);
@@ -379,7 +379,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                                 o.beforeUIValueSet(function(p, o, v){
                                     var b2=this.boxing();
                                     //update value
-                                    b2.setUIValue(String(v.getTime()),null,null,'pick');
+                                    b2.setUIValue(String(v.getTime()),null,null,'pick',v);
                                     return b2._cache('',true);
                                 });
 
@@ -886,7 +886,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         for(var i=0,f=input.files,l=f.length;i<l;i++)arr.push(f[i].name);
                         value=arr.length ? '"'+arr.join('", "')+'"' : '';
                     }
-                    profile.boxing().setUIValue(value,null,null,'onchange');
+                    profile.boxing().setUIValue(value,null,null,'onchange',input);
                 }
             },
             LBTN:{
@@ -1565,11 +1565,12 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             profile.template = template;
         },
         _handleInput:function(prf,cls, v){
-            var i=prf.getSubNode('INPUT');                        
-            if((""+i.get(0).type).toLowerCase()!='button'){
-                if(!v && (prf.properties.disabled||prf.properties.readonly||prf.$inputReadonly))
-                    v=true;
-                prf.getRoot()[v?'addClass':'removeClass'](cls);
+            var i=prf.getSubNode('INPUT'), btn=(""+i.get(0).type).toLowerCase()=='button';
+            if(!v && (prf.properties.disabled||prf.properties.readonly||(!btn&&prf.$inputReadonly)))
+                v=true;
+            prf.getRoot()[v?'addClass':'removeClass'](cls);
+
+            if(!btn){
                 i.attr('readonly',v);
             }
         },

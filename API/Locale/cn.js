@@ -1177,7 +1177,11 @@ xui.set(xui.Locale,["cn","app"], {
                 "msg2 [可选参数]: Object, 消息2",
                 "msg3 [可选参数]: Object, 消息3",
                 "msg4 [可选参数]: Object, 消息4",
-                "msg5 [可选参数]: Object, 消息5"
+                "msg5 [可选参数]: Object, 消息5",
+                "msg6 [可选参数]: Object, 消息6",
+                "msg7 [可选参数]: Object, 消息7",
+                "msg8 [可选参数]: Object, 消息8",
+                "msg9 [可选参数]: Object, 消息9"
             ]
         },
        launch:{
@@ -1783,6 +1787,10 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg3 [可选参数]: Object, 消息3",
                     "msg4 [可选参数]: Object, 消息4",
                     "msg5 [可选参数]: Object, 消息5",
+                    "msg6 [可选参数]: Object, 消息6",
+                    "msg7 [可选参数]: Object, 消息7",
+                    "msg8 [可选参数]: Object, 消息8",
+                    "msg9 [可选参数]: Object, 消息9",
                     "readReceipt [可选参数]: Function, 已读收据"
                 ]
             },
@@ -1823,6 +1831,10 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg3 : Object, 消息 3",
                     "msg4 : Object, 消息 4",
                     "msg5 : Object, 消息 5",
+                    "msg6 : Object, 消息 6",
+                    "msg7 : Object, 消息 7",
+                    "msg8 : Object, 消息 8",
+                    "msg9 : Object, 消息 9",
                     "readReceipt : Function,  回调"
                 ]
             },
@@ -5415,11 +5427,15 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"向模块发送消息",
             $paras:[
                 "cls [必需参数] : String, 模块的类名",
-                "msg1 [必需参数]: Object, 消息对象 1",
-                "msg2 [可选参数]: Object, 消息对象 2",
-                "msg3 [可选参数]: Object, 消息对象 3",
-                "msg4 [可选参数]: Object, 消息对象 4",
-                "msg5 [可选参数]: Object, 消息对象 5",
+                "msg1 [必需参数]: Object, 消息 1",
+                "msg2 [可选参数]: Object, 消息 2",
+                "msg3 [可选参数]: Object, 消息 3",
+                "msg4 [可选参数]: Object, 消息 4",
+                "msg5 [可选参数]: Object, 消息 5",
+                "msg6 [可选参数]: Object, 消息 6",
+                "msg7 [可选参数]: Object, 消息 7",
+                "msg8 [可选参数]: Object, 消息 8",
+                "msg9 [可选参数]: Object, 消息 9",
                 "sender [可选参数] : Object, 发送消息方"
             ]
         },
@@ -5428,11 +5444,15 @@ xui.set(xui.Locale,["cn","app"], {
             postMessage:{
                 $desc:"向模块发送消息",
                 $paras:[
-                    "msg1 [必需参数]: Object, 消息对象 1",
-                    "msg2 [可选参数]: Object, 消息对象 2",
-                    "msg3 [可选参数]: Object, 消息对象 3",
-                    "msg4 [可选参数]: Object, 消息对象 4",
-                    "msg5 [可选参数]: Object, 消息对象 5",
+                    "msg1 [必需参数]: Object, 消息 1",
+                    "msg2 [可选参数]: Object, 消息 2",
+                    "msg3 [可选参数]: Object, 消息 3",
+                    "msg4 [可选参数]: Object, 消息 4",
+                    "msg5 [可选参数]: Object, 消息 5",
+                    "msg6 [可选参数]: Object, 消息 6",
+                    "msg7 [可选参数]: Object, 消息 7",
+                    "msg8 [可选参数]: Object, 消息 8",
+                    "msg9 [可选参数]: Object, 消息 9",
                     "sender [可选参数] : Object, 发送消息方"
                 ]
             },
@@ -5643,7 +5663,11 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg2 [可选参数]: Object, 钩子函数的回调参数2",
                     "msg3 [可选参数]: Object, 钩子函数的回调参数3",
                     "msg4 [可选参数]: Object, 钩子函数的回调参数4",
-                    "msg5 [可选参数]: Object, 钩子函数的回调参数5"
+                    "msg5 [可选参数]: Object, 钩子函数的回调参数5",
+                    "msg6 [可选参数]: Object, 钩子函数的回调参数6",
+                    "msg7 [可选参数]: Object, 钩子函数的回调参数7",
+                    "msg8 [可选参数]: Object, 钩子函数的回调参数8",
+                    "msg9 [可选参数]: Object, 钩子函数的回调参数9"
                 ]
             },
             applyPseudo: {
@@ -5840,6 +5864,10 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg3: Object, 消息对象 3",
                     "msg4: Object, 消息对象 4",
                     "msg5: Object, 消息对象 5",
+                    "msg6: Object, 消息对象 6",
+                    "msg7: Object, 消息对象 7",
+                    "msg8: Object, 消息对象 8",
+                    "msg9: Object, 消息对象 9",
                     'source: Object, 消息源'
                 ]
             },
@@ -5852,6 +5880,10 @@ xui.set(xui.Locale,["cn","app"], {
                     "msg3: Object, 消息对象 3",
                     "msg4: Object, 消息对象 4",
                     "msg5: Object, 消息对象 5",
+                    "msg6: Object, 消息对象 6",
+                    "msg7: Object, 消息对象 7",
+                    "msg8: Object, 消息对象 8",
+                    "msg9: Object, 消息对象 9",
                     'source: Object, 消息源'
                 ]
             },
@@ -7237,7 +7269,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "oldValue : String, 旧的界面值",
                     "newValue : String, 新的界面值",
                     "force : Boolean, 是否为强制调用",
-                    "tag : String, 调用时的附加值"
+                    "tag : String, 调用时的附加值",
+                    "tagVar: Ojbect, 新值的对应对象，如果存在"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv15'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7257,7 +7290,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "oldValue : String, 旧的界面值",
                     "newValue : String, 新的界面值",
                     "force : Boolean, 是否为强制调用",
-                    "tag : String, 调用时的附加值"
+                    "tag : String, 调用时的附加值",
+                    "tagVar: Ojbect, 新值的对应对象，如果存在"
                 ],
                 $snippet:[
                     "var id='xui.temp.absv16'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;height:100px;width:300px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -7277,7 +7311,8 @@ xui.set(xui.Locale,["cn","app"], {
                     "oldValue : String, 旧的界面值",
                     "newValue : String, 新的界面值",
                     "force : Boolean, 是否为强制调用",
-                    "tag : String, 调用时的附加值"
+                    "tag : String, 调用时的附加值",
+                    "tagVar: Ojbect, 新值的对应对象，如果存在"
                 ]
             },
             onValueChange:{
@@ -16992,8 +17027,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"由单元格id获取单元格对象",
                 $rtn:"Ojbect",
                 $paras:[
-                    "cellId [必需参数] : String",
-                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
+                    "cellId [必需参数] : String/Object, 单元格对象或单元格id",
+                    "type [可选参数] : String, 'map': 得到必要键值对数据; 'data':得到充分键值对数据;'min/value': 仅仅得到值;  其他值,得到原对象"
                 ]
             },
             isDirtied:{
@@ -17046,7 +17081,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     "rowId  [必需参数] : String, 行 id",
                     "colId [必需参数] : String, 列 id",
-                    "type [可选参数] : String, 'data': 得到必要键值对数据; 'min/value': 仅仅得到值; 其他值,得到原对象"
+                    "type [可选参数] : String, 'map': 得到必要键值对数据; 'data':得到充分键值对数据;'min/value': 仅仅得到值;  其他值,得到原对象"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid7.1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

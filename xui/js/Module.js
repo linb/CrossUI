@@ -41,9 +41,10 @@ xui.Class('xui.Module','xui.absProfile',{
         xui.Com=ns;
         ns.$activeClass$='xui.Module';
 
-        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5){
+        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9){
+            var arr=xui.toArr(arguments);
             xui.arr.each(xui.Module._cache,function(o){
-                 o.fireEvent('onGlobalMessage',  [id, msg1, msg2, msg3, msg4, msg5]);
+                 o.fireEvent('onGlobalMessage',  arr);
             });
         };
     },
@@ -408,14 +409,16 @@ xui.Class('xui.Module','xui.absProfile',{
         getHooks:function(key){
             return key?this.hooks[key]:this.hooks;
         },
-        notifyHooks:function(key, msg1, msg2, msg3, msg4, msg5){
+        notifyHooks:function(key, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9){
             var ns=this, hook, hooks=ns.hooks;
             if(key  && hooks  && (hook=hooks[key]) && xui.isFun(hook)){
                 return xui.tryF(hook, xui.toArr(arguments).slice(1), ns);
             }
         },
-        postMessage:function(msg1, msg2, msg3, msg4, msg5, sender){
-           return this.fireEvent('onMessage',  [this, msg1, msg2, msg3, msg4, msg5, sender]);
+        postMessage:function(msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
+            var arr=xui.toArr(arguments);
+            arr.unshift(this);
+            return this.fireEvent('onMessage',  arr);
         },
         serialize:function(rtnString, keepHost, children){
             var t,m,
@@ -1419,12 +1422,15 @@ xui.Class('xui.Module','xui.absProfile',{
                 return c[0];
             }
         },
-        postMessage:function(cls, msg1, msg2, msg3, msg4, msg5,  sender){
-           var m = xui.SC.get(cls),hash;
-            if(m && m['xui.Module'])
+        postMessage:function(cls, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
+           var m = xui.SC.get(cls), arr;
+            if(m && m['xui.Module']){
+                arr=xui.toArr(arguments);
+                arr[0]=m;
                 xui.arr.each(m._cache,function(o){
-                     m.fireEvent('onMessage',  [m, msg1, msg2, msg3, msg4, msg5, sender]);
+                     m.fireEvent('onMessage',  arr);
                 });
+            }
         },
         destroyAll:function(ignoreEffects, purgeNow){
             xui.arr.each(this._cache,function(o){
@@ -1669,8 +1675,8 @@ xui.Class('xui.Module','xui.absProfile',{
         $EventHandlers:{
             onHookKey:function(module, key, e, keyDown){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
-            onMessage:function(module, msg1, msg2, msg3, msg4, msg5, source){},
-            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5, source){},
+            onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
+            onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             beforeCreated:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},

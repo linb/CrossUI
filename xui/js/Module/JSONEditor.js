@@ -211,6 +211,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             if(type=='hash'||type=='array'){
                 var str=this._rows2json(obj._row.sub, type=='array');
                 if(xui.Coder)str = xui.Coder.formatText(str);
+                else if(window.JSON) str = JSON.stringify(JSON.parse(str),null,4);
                 obj.$editorValue = str;
             }else if(type=='string'){
                 var v=xui.unserialize(obj.value);
