@@ -123,7 +123,7 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
                     grid.removeAllRows().setRows(rows);
                     xui.Dom.free();
                 };
-            xui.Dom.busy("Getting Data ...");
+            xui.Dom.busy(null, "Getting Data ...");
             ns.fireEvent("onListRecords", [page, size, cb]);
             ns.xui_msgs1.broadcast(ns.properties.outMsgType, "list",  page, size, cb);
         },
@@ -197,7 +197,7 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
             var ns=this, grid=ns.grid, cb=function(){
                 ns.deleteRows(ids);
             };
-            xui.Dom.busy("Deleting Data ...");
+            xui.Dom.busy(null, "Deleting Data ...");
             ns.fireEvent("onDeleteRecords", [ ids, cb]);
             ns.xui_msgs1.broadcast(ns.properties.outMsgType, "delete",  ids, '', cb);
         },
