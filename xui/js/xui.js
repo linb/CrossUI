@@ -5293,13 +5293,14 @@ xui.Class("xui.MessageService","xui.absObj",{
             });
         },
         broadcast:function(recipientType, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, readReceipt){
+            var arr=xui.toArr(arguments);
+            arr.shift();arr.pop();
+            arr.push(function(){
+                    xui.tryF(readReceipt);
+                    if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
+                });
             return this.each(function(profile){
-                var ins=profile.boxing(),arr=xui.toArr(arguments);
-                arr.shift();arr.pop();
-                arr.push(function(){
-                        xui.tryF(readReceipt);
-                        if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
-                    });
+                var ins=profile.boxing()
                 xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
                     xui.publish(t, arr, null, ins);
                 });

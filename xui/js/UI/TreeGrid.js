@@ -5218,7 +5218,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             row.rowNumber=prop.hotRowNumber;
             row.rowClass=profile.getClass('CELLS2', '-hot');
 
-            ins.insertRows([row],pid||null,baseRow||null,prop.hotRowMode=="before",false,false);
+            ins.insertRows([row],pid||null,baseRow||null,prop.hotRowMode=="before",true,false);
 
             profile.__hastmpRow=true;
 
