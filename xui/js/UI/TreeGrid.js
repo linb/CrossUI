@@ -1484,7 +1484,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             return this;
         },
-        getRowMap:function(rowId){
+        getRowMap:function(rowId, withRowVars){
             var prf=this.get(0),ins=prf.boxing(),p=prf.properties,t,hash;
             if(xui.isHash(rowId))rowId=rowId.id;
             if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
@@ -1494,7 +1494,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(t=ins.getActiveCell())rowId=t._row.id;
                 }
             }
-            return ins.getRowbyRowId(rowId, "map");
+            var map = ins.getRowbyRowId(rowId, "map");
+            if(withRowVars===false){
+                map = xui.filter(map, function(v,k){
+                    return k.indexOf("__row__")!==0;
+                });
+            }
+            return map;
         },
         setRowMap:function(rowId, hash, dirtyMark, triggerEvent){
             if(xui.isHash(rowId))rowId=rowId.id;

@@ -17950,7 +17950,8 @@ xui.set(xui.Locale,["cn","app"], {
             getRowMap:{
                 $desc:"得到当前活动行或指定行的键值对",
                 $paras:[
-                    "rowId [可选参数] : String, 输入null表示当前选中行"
+                    "rowId [可选参数] : String, 输入null表示当前选中行",
+                    "withRowVars[可选参数] : Boolean, 是否带有特殊行变量（__row__开头），默认true"
                 ],
                 $rtn:"Object"
             },

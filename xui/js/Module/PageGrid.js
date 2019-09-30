@@ -163,19 +163,21 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
         },
         // output
         addRow:function(recordId, fields){
-            ns=this;
+            var ns=this;
+            delete fields.__row__id;
             //console.log(recordId, fields);
             ns.grid.insertRows(fields,null,null,true);
         },
         updateRow:function(recordId, fields){
-            ns=this;
+            var ns=this;
+            delete fields.__row__id;
             //console.log(recordId, fields);
             xui.each(fields,function(v, k){
                 ns.grid.updateCellByRowCol(recordId, k, v, false, false);
             });
         },
         deleteRows:function(ids){
-            ns=this;
+            var ns=this;
             ns.grid.removeRows(ids);
             ns.toolbar.updateItem("delete",{disabled:true});
             ns.toolbar.updateItem("open",{disabled:true});
@@ -184,13 +186,17 @@ xui.Class('xui.Module.PageGrid', 'xui.Module',{
         },
         _openForm:function(recordId, fields){
             var ns = this;
-            var prop={};
+            var prop={},updateRow=function(){
+                ns.updateRow.apply(ns,arguments);
+            },addRow=function(){
+                ns.addRow.apply(ns,arguments);
+            };
             if(xui.isSet(recordId)){
-                ns.fireEvent("onOpenRecord",[recordId,fields,ns.updateRow]);
-                ns.xui_msgs1.broadcast(ns.properties.outMsgType, "open",  recordId, fields, ns.updateRow);
+                ns.fireEvent("onOpenRecord",[recordId,fields,updateRow]);
+                ns.xui_msgs1.broadcast(ns.properties.outMsgType, "open",  recordId, fields, updateRow);
             }else{
-                ns.fireEvent("onCreateRecords",[ns.addRow, ns.updateRow]);
-                ns.xui_msgs1.broadcast(ns.properties.outMsgType, "create",  '', ns.updateRow, ns.addRow);
+                ns.fireEvent("onCreateRecords",[addRow, updateRow]);
+                ns.xui_msgs1.broadcast(ns.properties.outMsgType, "create",  '', updateRow, addRow);
             }
         },
         _delRecords:function(ids){

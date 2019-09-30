@@ -18026,7 +18026,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Gets the active or specified  row's map",
                 $rtn:"Object",
                 $paras:[
-                    "rowId [Optional] : String, [null] represents the current actived row"
+                    "rowId [Optional] : String, [null] represents the current actived row",
+                    "withRowVars[Optional] : Boolean, whether return the specific mark keys of row(  begin with '__row__'), defautl is [true]"
                 ]
             },
             setRowMap :{

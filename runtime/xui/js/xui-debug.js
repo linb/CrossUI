@@ -5294,12 +5294,10 @@ xui.Class("xui.MessageService","xui.absObj",{
             });
         },
         broadcast:function(recipientType, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, readReceipt){
-            var arr=xui.toArr(arguments);
-            arr.shift();arr.pop();
-            arr.push(function(){
-                    xui.tryF(readReceipt);
-                    if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
-                });
+            var arr=[msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9,function(){
+                xui.tryF(readReceipt);
+                if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
+            }];
             return this.each(function(profile){
                 var ins=profile.boxing()
                 xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
@@ -48220,7 +48218,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
             return this;
         },
-        getRowMap:function(rowId){
+        getRowMap:function(rowId, withRowVars){
             var prf=this.get(0),ins=prf.boxing(),p=prf.properties,t,hash;
             if(xui.isHash(rowId))rowId=rowId.id;
             if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
@@ -48230,7 +48228,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(t=ins.getActiveCell())rowId=t._row.id;
                 }
             }
-            return ins.getRowbyRowId(rowId, "map");
+            var map = ins.getRowbyRowId(rowId, "map");
+            if(withRowVars===false){
+                map = xui.filter(map, function(v,k){
+                    return k.indexOf("__row__")!==0;
+                });
+            }
+            return map;
         },
         setRowMap:function(rowId, hash, dirtyMark, triggerEvent){
             if(xui.isHash(rowId))rowId=rowId.id;
