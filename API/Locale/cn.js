@@ -17533,7 +17533,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"更新指定行",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必需参数] : String, 行id",
+                    "rowId [可选参数] : String, 行id, default is the current",
                     "options [必需参数] : key/value Object, 需要更新的键值对"
                 ],
                 $snippet:[
@@ -17611,7 +17611,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置当前的活动行",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [必须参数] : String, 行id"
+                    "rowId [必须参数] : String/Number, 行id或序号，-1为最后一行"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid1312'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18200,10 +18200,10 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             removeRows:{
-                $desc:"去除指定行",
+                $desc:"去除指定行，或当前活动行",
                 $rtn:"[self]",
                 $paras:[
-                    "ids [必需参数] : String 或 Array, 行id, 或多个行id的数组"
+                    "ids [可选参数] : String 或 Array, 行id, 或多个行id的数组"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid44'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+

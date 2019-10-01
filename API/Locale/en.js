@@ -17609,8 +17609,8 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Updates a specifed row",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [Required] : String, \u00D1\u0090id",
-                    "options [Required] : key/value Object, \u00D1\u00A8\u00D2\u00AA\u00C2\u00B8\u00EF\u00BF\u00BD\u00EF\u00BF\u00BD"
+                    "rowId [Optional] : String, row id, default is the current",
+                    "options [Required] : key/value Object, the keys/values to be updated"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid130-1'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -17687,7 +17687,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the current active row",
                 $rtn:"[self]",
                 $paras:[
-                    "rowId [Required] : String, row id"
+                    "rowId [Required] : String/Number, row id string, or the order number, -1 for the last row"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid1312'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -18274,10 +18274,10 @@ xui.set(xui.Locale,["en","app"], {
                 ]
             },
             removeRows:{
-                $desc:"Removes the specified rows",
+                $desc:"Removes the specified rows, or the current actived row",
                 $rtn:"[self]",
                 $paras:[
-                    "ids [Required] : Array or String, row id string, or a set of row id strings"
+                    "ids [Optional] : Array or String, row id string, or a set of row id strings"
                 ],
                 $snippet:[
                     "var id='xui.temp.grid44'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:20px;position:relative;width:300px;height:200px;\">' + '<button style=\"position:absolute; bottom:0px; z-index:2;\" onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
