@@ -3952,7 +3952,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 }
                             }
                             // update UI
-                            ns.getFormElements(dirtiedOnly, subId, penetrate).updateValue();
+                            ns.getFormElements(false, subId, penetrate).updateValue();
 
                             if(prf.afterFormSubmit)prf.boxing().afterFormSubmit(prf, data, subId, penetrate, withCaption, withCaptionField);
                         },
