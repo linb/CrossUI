@@ -514,7 +514,8 @@ xui.Class("xui.CSS", null,{
             ".xui-ui-reset{font-size: inherit;}"+
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:1rem;}"+
-            ".xui-title-node{font-size:1.1667em  !important;}"
+            ".xui-title-node{font-size:1.1667em  !important;}"+
+            ".setting-uikey{font-family:'default'}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');

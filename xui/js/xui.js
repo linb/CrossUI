@@ -3414,7 +3414,8 @@ xui.Class('xui.absIO',null,{
             contentType : options.contentType||'',
             Accept : options.Accept||'',
             header : options.header||null,
-            asy : options.asy!==false
+            asy : options.asy!==false,
+            scriptType: options.scriptType
         },'all');
         var m=(options.method||con.method).toUpperCase();
         options.method = 'POST'==m ? 'POST' : 'PUT'==m ? 'PUT' : 'DELETE'==m ? 'DELETE' : 'PATCH'==m ? 'PATCH' : 'GET';
@@ -3788,7 +3789,7 @@ xui.Class('xui.JSONP','xui.absIO',{
                 uri = uri.split("?")[0]  + "?" + self.query;
 
             n.src = uri;
-            n.type= 'text/javascript';
+            n.type= self.scriptType||'text/javascript';
             n.charset=self.charset||'UTF-8';
             
             if(self.attrs)

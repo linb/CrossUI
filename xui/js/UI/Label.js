@@ -28,10 +28,10 @@ xui.Class("xui.UI.Label", "xui.UI",{
         Templates:{
             tagName:"label",
             className:'{_className}',
-            style:'{_hAlign};{_style}',
+            style:'{_hAlign};{_vAlign};{_style}',
             VALIGN:{
                 $order:0,
-                style:'{_vAlign}'
+                style:'{_vAlign2}'
             },
             ICON:{
                 $order:1,
@@ -116,6 +116,9 @@ xui.Class("xui.UI.Label", "xui.UI",{
                 ini:'right',
                 listbox:['left','center','right'],
                 action: function(v){
+                  if(xui.Dom.css3Support("flex"))
+                    this.getRoot().css({'justify-content':v=='left'?'flex-start':v=='right'?'flex-end':'center'});
+                  else
                     this.getRoot().css('textAlign', v||'');
                 }
             },
@@ -123,6 +126,9 @@ xui.Class("xui.UI.Label", "xui.UI",{
                 ini:'top',
                 listbox:['top','middle','bottom'],
                 action: function(v){
+                  if(xui.Dom.css3Support("flex"))
+                    this.getRoot().css({'align-items':v=='top'?'flex-start':v=='bottom'?'flex-end':'center'});
+                  else
                     this.getSubNode('VALIGN').css('verticalAlign', v||'');
                 }
             },
@@ -177,8 +183,13 @@ xui.Class("xui.UI.Label", "xui.UI",{
             if(v=data.fontWeight)data._fw = 'font-weight:' + v + ';';
             if(v=data.fontColor)data._fc = 'color:' + v + ';';
             if(v=data.fontFamily)data._ff = 'font-family:' + v + ';';
-            data._hAlign = 'text-align:'+(data.hAlign||'');
-            data._vAlign = 'vertical-align:'+(data.vAlign||'');
+            if(xui.Dom.css3Support("flex")){
+              data._hAlign = 'display:inline-flex;justify-content:'+(data.hAlign=='left'?'flex-start':data.hAlign=='right'?'flex-end':'center' );
+              data._vAlign = 'align-items:'+(data.vAlign=='top'?'flex-start':data.vAlign=='bottom'?'flex-end':'center');
+            }else{
+              data._hAlign = 'text-align:'+(data.hAlign||'');
+              data._vAlign2 = 'vertical-align:'+(data.vAlign||'');
+            }
             return data;
         }        
     }
