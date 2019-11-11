@@ -1816,8 +1816,8 @@ xui.merge(xui,{
     log:xui.fun(),
     echo:xui.fun(),
     message:xui.fun(),
-    getErrMsg:function(e){
-        return e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString());
+    getErrMsg:function(e,split){
+        return (e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString())).replace(/\n/g, split||"<br />");
     },
     //profile object cache
     _pool:[],
