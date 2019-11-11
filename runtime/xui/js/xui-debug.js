@@ -35386,8 +35386,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             onClick:function(profile, e, src, btn, value){},
             onInputClick:function(profile, e, src){},
             onClickIcon:function(profile, src){},
-            beforeUnitUpdated:function(prfole,unit){},
-            afterUnitUpdated:function(prfole,unit){}
+            beforeUnitUpdated:function(profile,unit){},
+            afterUnitUpdated:function(profile,unit){}
         },
         DataModel:{
             cachePopWnd:true,
