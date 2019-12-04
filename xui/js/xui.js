@@ -1268,8 +1268,8 @@ xui.merge(xui,{
                     xui.CSS.includeLink(path+'theme.css',id);
                     
                     var count=0,fun=function(){
-                        // timeout: 21 seconds
-                        if(count++>20){
+                        // timeout: 5 seconds
+                        if(count++>4){
                             fun=count=null;
                             if(false!==xui.tryF(onFail))
                                 throw new Error('errLoadTheme:'+key);

@@ -1269,8 +1269,8 @@ xui.merge(xui,{
                     xui.CSS.includeLink(path+'theme.css',id);
                     
                     var count=0,fun=function(){
-                        // timeout: 21 seconds
-                        if(count++>20){
+                        // timeout: 5 seconds
+                        if(count++>4){
                             fun=count=null;
                             if(false!==xui.tryF(onFail))
                                 throw new Error('errLoadTheme:'+key);
@@ -39139,7 +39139,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             IMAGE:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
-                visibility:'hidden',
             	'vertical-align': 'middle'
             },
             CAPTION:{
@@ -39196,10 +39195,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             item._status='loaded';
                             // don't show img_blank
                             if(xui.ini.img_blank==path){
-                                node.style.visibility="hidden";
                                 node.style.display="none";
                             }else{
-                                node.style.visibility="visible";
                                 node.style.display="";
                             }
                     }
@@ -39215,7 +39212,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                    node.style.visibility="hidden";
                     node.style.display="none";
                     item._status='error';
                 }

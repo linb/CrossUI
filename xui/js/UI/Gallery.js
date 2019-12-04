@@ -120,7 +120,6 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             IMAGE:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
-                visibility:'hidden',
             	'vertical-align': 'middle'
             },
             CAPTION:{
@@ -177,10 +176,8 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                             item._status='loaded';
                             // don't show img_blank
                             if(xui.ini.img_blank==path){
-                                node.style.visibility="hidden";
                                 node.style.display="none";
                             }else{
-                                node.style.visibility="visible";
                                 node.style.display="";
                             }
                     }
@@ -196,7 +193,6 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
 
                     icon.removeClass('xui-icon-loading xui-display-none').addClass('xui-load-error');
                     nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
-                    node.style.visibility="hidden";
                     node.style.display="none";
                     item._status='error';
                 }
