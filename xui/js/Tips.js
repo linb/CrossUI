@@ -241,7 +241,7 @@ xui.Class("xui.Tips", null,{
                                 style.visibility='visible';
                             }else{
                                 //pop(visible too)
-                                node.popToTop((pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
+                                node.popToTop(((pos instanceof window.Event) || pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
                                     left:pos.left,
                                     top:pos.top-12,
                                     width:24,

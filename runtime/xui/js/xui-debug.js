@@ -1817,8 +1817,8 @@ xui.merge(xui,{
     log:xui.fun(),
     echo:xui.fun(),
     message:xui.fun(),
-    getErrMsg:function(e){
-        return e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString());
+    getErrMsg:function(e,split){
+        return (e && (e.stack || /*old opera*/ e.stacktrace || ( /*IE11*/ console && console.trace ? console.trace() : null) ||e.description||e.message||e.toString())).replace(/\n/g, split||"<br />");
     },
     //profile object cache
     _pool:[],
@@ -18323,7 +18323,7 @@ xui.Class("xui.Tips", null,{
                                 style.visibility='visible';
                             }else{
                                 //pop(visible too)
-                                node.popToTop((pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
+                                node.popToTop(((pos instanceof window.Event) || pos['xui.UI'] || pos['xui.UIProfile'] || pos['xui.Dom'] || pos.nodeType==1 || typeof pos=='string')?pos:{left:pos.left,top:pos.top,region:{
                                     left:pos.left,
                                     top:pos.top-12,
                                     width:24,
@@ -29312,11 +29312,12 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 opacity: 1,
                 display:'block'
             },
-            MOVE:{
+            MOVE:{ 
                 position:'absolute',
                 display:'block',
                 'z-index':100,
-                visibility: 'visible'
+                visibility: 'visible',
+                cursor:'alias'
             },
             'CONF1, CONF2, ROTATE':{
                 position:'absolute',
@@ -29441,6 +29442,21 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         return profile.boxing().onConfig(profile,e,src,'right','click');
                     return false;
                 }
+            },
+            MOVE:{
+                beforeMousedown:function(profile, e, src){
+                    profile.box._onMousedown(profile, e, src, "exmove");
+                    return false;
+                },
+                onDragbegin:function(profile, e, src){
+                    profile.box._onDragbegin(profile, e, src, "exmove");
+                },
+                onDrag:function(profile, e, src){
+                    profile.box._onDrag(profile, e, src, "exmove");
+                },
+                onDragstop:function(profile, e, src){
+                    profile.box._onDragstop(profile, e, src, "exmove");
+                } 
             },
             ROTATE:{
                 beforeMousedown:function(profile, e, src){
@@ -29645,7 +29661,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             height: 100,
             width: 100,
             position:'absolute',
-            display:'block'
+            display:'block',
+            cover:false
         },
         EventHandlers:{
             onDblclick:function(profile, e, src){},
@@ -29667,10 +29684,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
 
             var map= arguments.callee.map || (arguments.callee.map={
                 //move icon size 13*13
-                MOVE: {tagName:'div', className:'xuifont',$fonticon:'xui-icon-dragmove', style:'font-size: 1.5em;top:50%;left:50%;margin-left:-0.5em;margin-top:-0.5em;'},
-                CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'font-size: 1.5em;top:-1.125em;left:-1.125em;{_leftCofigBtn};'},
-                CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-uicmd-opt', style:'font-size: 1.5em;top:-1.125em;left:auto;right:-1.125em;{_rightCofigBtn};'},
-                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'font-size: 1.5em;top:-1.25em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
+                MOVE: {tagName:'div', className:'xuifont',$fonticon:'xui-icon-dragmove', style:'color:#fff;border-radius:50%;background-color:#079bfa;padding: 0.125em;opacity:0.85;font-size: 1.5em;top:50%;left:50%;margin-left: -.625em;margin-top: -.625em;'},
+                CONF1:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-star', style:'color:#079bfa;font-size: 1.5em;top:-1.125em;left:-1.125em;{_leftCofigBtn};'},
+                CONF2:{tagName:'div', className:'xuifont',$fonticon:'xui-uicmd-opt', style:'color:#079bfa;font-size: 1.5em;top:-1.125em;left:auto;right:-1.125em;{_rightCofigBtn};'},
+                ROTATE:{tagName:'div', className:'xuifont',$fonticon:'xui-icon-circle', style:'color:#079bfa;font-size: 2em;top:-1.25em;left:50%;margin-left:-0.5em;{_rotateBtn};'},
                 T:{tagName:'div', style:'top:-{_extend};margin-left:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 RT:{tagName:'div', style:'top:-{_extend};right:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
                 R:{tagName:'div', style:'right:-{_extend};margin-top:-{_extend};width:{_handlerSize};height:{_handlerSize};'},
@@ -29702,7 +29719,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 template = xui.clone(profile.box.getTemplate());
 
                 // cover or not?
-                t = pro._cover?map.cover:map;
+                t = pro._cover||pro.cover?map.cover:map;
                 // can move?
                 if(pro._move)template.MOVE = map.MOVE;
 
@@ -29775,7 +29792,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 t.position = 'static';
                 if(xui.browser.ie67)t.display = 'inline';
                 t.left = t.top = t.width = t.height = 0;
+            }else if(t.cover){
+                t._visible=false;
             }
+
             if(t.forceVisible){
                 t._visible=true;
                 t._cover=false;
@@ -29849,6 +29869,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             switch(axis){
             case "move":
                 return {move:true};
+            case "exmove":
+                return {exmove:true};
             case "rotate":
                 return {rotate:true};
             case "nw":
@@ -29948,6 +29970,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             }
 
             profile.$onDrag = true;
+            xui.Tips.hide();
         },
         _onDrag:function(profile, e, src, axis){
             var args=this._getDDParas(profile.o_rotate, axis);
@@ -30046,7 +30069,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     offH =  (newBboxH-oldBboxH)/2,
                     //two original points offset
                     offCX =  newBboxCX - oldBBoxCX,
-                    offCY =  newBboxCY - oldBBoxCY;
+                    offCY =  newBboxCY - oldBBoxCY,
+                    transform = {};
 
                 //Alignment by origin point
                 data.left =  sp.left - offCX;
@@ -30132,20 +30156,46 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 y = sp.top + dy;
                 xui.merge(data,{top:y,left:x});
             }
+
+            data.transform = "";
+            if(!xui.isEmpty(data)){
+                var t1=0;
+                
+                if('left' in data){
+                  t1 = Math.floor(parseFloat(data.left));
+                  if(data.left !== t1){
+                    data.transform += " translateX("+ (data.left-t1) +"px)";
+                    data.left = t1;
+                  }
+                }
+                if('top' in data){
+                  t1 = Math.floor(parseFloat(data.top));
+                  if(data.top !== t1){
+                    data.transform += " translateY("+ (data.top-t1) +"px)";
+                    data.top = t1;
+                  }
+                }
+                xui.each(data,function(o,i){
+                  if(i!=="transform")
+                    data[i]=Math.floor(parseFloat(o))+'px';
+                });
+            }
             if(args.rotate){
                 rotate =  (180 - Math.atan2( dd.x - profile.o_center.x, dd.y - profile.o_center.y ) * 180 / Math.PI );
                 if(rotate<0)rotate+=360;
-                xui.merge(data,{rotate:rotate});
+                rotate = parseInt(rotate,10);
+                data.transform += " rotate("+rotate+"deg)";
+            }else if(elemAngle){
+                data.transform += " rotate("+elemAngle+"deg)";
             }
-            
-            if(!xui.isEmpty(data)){
-                xui.each(data,function(o,i){
-                    data[i]=Math.round(parseFloat(o))+'px';
-                });
-                profile.proxy.css(data);
 
+            if(!data.transform)delete data.transform;
+            if(!xui.isEmpty(data)){
+                profile.proxy.css(data);
                 if(profile.onChange)
                     profile.boxing().onChange(profile,profile.proxy);
+                s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? (parseInt(data.left,10) + " : " + parseInt(data.top,10)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10)); 
+                xui.Tips.show(e,{tips:s});
             }
         },
         _onDragstop:function(profile, e, src, axis){
@@ -30156,40 +30206,43 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 sp = profile.o_pos,    
                 o = profile.proxy,
                 args = this._getDDParas(profile.o_rotate, axis);
+            if(axis!="exmove"){
 
-            if(!args.move && !args.rotate){
-                cssSize = o.cssSize();
-                offsize = {
-                    width : cssSize.width - cs.width, 
-                    height : cssSize.height - cs.height
-                };
-               if(offsize.width===0 && offsize.height===0)offsize=null;
-            }
-            
-            cssPos = o.cssPos();
-            offpos = {
-                left : cssPos.left - sp.left,  
-                top : cssPos.top - sp.top
-            };
-           if(offpos.left===0 && offpos.top===0)offpos=null;
-            
-            if(args.rotate)
-                rotate=o.rotate();
+              if(!args.move && !args.rotate){
+                  cssSize = o.cssSize();
+                  offsize = {
+                      width : cssSize.width - cs.width, 
+                      height : cssSize.height - cs.height
+                  };
+                 if(offsize.width===0 && offsize.height===0)offsize=null;
+              }
+              
+              cssPos = o.cssPos();
+              offpos = {
+                  left : cssPos.left - sp.left,  
+                  top : cssPos.top - sp.top
+              };
+             if(offpos.left===0 && offpos.top===0)offpos=null;
+              
+              if(args.rotate)
+                  rotate=o.rotate();
 
-            if(profile.onUpdate && false===profile.boxing().onUpdate(profile, profile._target, offsize, offpos, rotate)){}
-            else{
-                profile.box._onUpdate(profile, profile._target, offsize, offpos, rotate);
-            }
+              if(profile.onUpdate && false===profile.boxing().onUpdate(profile, profile._target, offsize, offpos, rotate)){}
+              else{
+                  profile.box._onUpdate(profile, profile._target, offsize, offpos, rotate);
+              }
 
-            if(profile.properties._attached){
-                if(xui.browser.ie6)profile._target.ieRemedy();
-                profile.proxy.html('',false).css({visibility:'hidden',border:'none',zIndex:'0',width:'0',height:'0',rotate:0});
+              if(profile.properties._attached){
+                  if(xui.browser.ie6)profile._target.ieRemedy();
+                  profile.proxy.html('',false).css({visibility:'hidden',border:'none',zIndex:'0',width:'0',height:'0',rotate:0});
+              }
             }
             //profile.boxing().active();
             profile.$onDrag = false;
             delete profile.o_rotate;
             
             profile.box._tryCursors(profile);
+            xui.Tips.hide();
         }
     }
 });xui.Class("xui.UI.Block", "xui.UI.Widget",{
