@@ -1585,14 +1585,13 @@ xui.Class('xui.Module','xui.absProfile',{
                     // If theme is not 'default', apply theme frist
                     if(theme&&theme!="default"){
                         xui.setTheme(theme,true,function(){
-                            if(lang&&lang!='en') xui.setLang(lang, showModule); else showModule();
+                            xui.setLang(lang||'en', showModule);
                         },function(){
                             xui.alert("Can't load theme - " + theme);
-                            if(lang&&lang!='en') xui.setLang(lang, showModule); else showModule();
+                            xui.setLang(lang||'en', showModule);
                         });
                     }else{
-                        // If lang is not 'en', apply lang frist
-                        if(lang&&lang!='en') xui.setLang(lang, showModule);else showModule();
+                        xui.setLang(lang||'en', showModule);
                     }
                 }else{
                     var e=new Error("No class name");

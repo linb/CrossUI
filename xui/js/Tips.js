@@ -185,7 +185,8 @@ xui.Class("xui.Tips", null,{
                     if(typeof s=='function')
                         s=s();
                     if(!xui.Tips.HTMLTips){
-                        xui.Tips._curTips=xui.adjustRes(s);
+                        s+='';
+                         xui.Tips._curTips=xui.adjustRes(s);
                         s=s.replace(/<[^>]*>/g,'');
                         if(t=xui.Tips._activePrf){
                             if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
