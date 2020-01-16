@@ -1177,7 +1177,10 @@ xui.merge(xui,{
     },
 
     setDateFormat:function(format){xui.$dateFormat=format},
-    getDateFormat:function(format){return format||xui.$dateFormat||xui.$cache.data.$DATE_FORMAT},
+    getDateFormat:function(format,t){return xui.isStr(t=format&&format.dateFormat)&&t?t:xui.isStr(t=format)&&t?t:xui.isStr(t=xui.$dateFormat)&&t?t:xui.isStr(t=xui.$cache.data.$DATE_FORMAT)&&t?t:'yyyy-mm-dd hh:mm:ss'},
+
+    setFirstDayOfWeek:function(day){xui.$firstDayOfWeek=day},
+    getFirstDayOfWeek:function(day,t){return xui.isNumb(t=day&&day.firstDayOfWeek)?t:xui.isNumb(t=day)?t:xui.isNumb(t=xui.$firstDayOfWeek)?t:xui.isNumb(t=xui.$cache.data.$DATE_WEEKFROM)?t:0},
 
     setAppLangKey:function(key){xui.$appLangKey=key},
     getAppLangKey:function(key){return xui.$appLangKey},
@@ -4926,10 +4929,10 @@ xui.Class('xui.absObj',"xui.absBox",{
                     var $get = o.get;
                     m = ps[n];
                     ps[n] = (typeof $get!='function' && typeof m=='function') ? m : xui.Class._fun(function(){
-                        if(typeof $get=='function')
-                            return $get.apply(this.get(0),arguments);
-                        else
-                            return this.get(0).properties[i];
+                        var t=this.get(0),args=xui.toArr(arguments), _get=function(){
+                            return typeof $get=='function' ? $get.apply(t, args) : t.properties[i];
+                        };
+                        return typeof t.$beforePropGet =='function' ? t.$beforePropGet(i, _get) : _get();
                     },n,self.KEY,null,'instance');
                     //delete o.get;
                     if(ps[n]!==m)ps[n].$auto$=1;

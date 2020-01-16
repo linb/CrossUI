@@ -12,7 +12,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     p = profile.properties;
                 cls._to(profile,value,true);
                 if(profile.keys.CAPTION)
-                    profile.getSubNode('CAPTION').html(xui.Date.getText(value,'ymd',p.firstDayOfWeek),false);
+                    profile.getSubNode('CAPTION').html(xui.Date.getText(value,'ymd',xui.getFirstDayOfWeek(p)),false);
             });
         },
         getDateFrom:function(){
@@ -348,7 +348,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
 
                     xui.use(src).onMouseout(true,{$force:true});
 
-                    v = xui.Date.add(profile.$tempValue, 'd', xui.Date.diff(profile.$tempValue, v, 'd', p.firstDayOfWeek));
+                    v = xui.Date.add(profile.$tempValue, 'd', xui.Date.diff(profile.$tempValue, v, 'd', xui.getFirstDayOfWeek(p)));
                     profile.box._to(profile,v);
                     
                     // set dir
@@ -608,6 +608,8 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     d=value;
                 else if(xui.isFinite(value))
                     d=new Date(parseInt(value,10));
+                else
+                    d=xui.Date.parse(value+"");
             }
             d = d||new Date;
             if(!profile.properties.timeInput)
@@ -644,7 +646,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             var p=profile.properties;
 
             // for week
-            var fw=p.firstDayOfWeek,
+            var fw=xui.getFirstDayOfWeek(p),
                 f=function(id){
                 id=profile.getSubId(id); 
 
@@ -697,12 +699,12 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
 
             if(!p.hideWeekLabels)
                 profile.box._getWeekNodes(profile).each(function(node,i){
-                    node.innerHTML=date.get(date.add(v,'ww',i),'ww',p.firstDayOfWeek);
+                    node.innerHTML=date.get(date.add(v,'ww',i),'ww',xui.getFirstDayOfWeek(p));
                 });
         },
         _to:function(profile, time, force){
             var p = profile.properties,
-                fw = p.firstDayOfWeek,
+                fw = xui.getFirstDayOfWeek(p),
                 date=xui.Date,
                 keys=profile.keys,
                 uiv=p.$UIvalue,

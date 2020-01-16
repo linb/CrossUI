@@ -1178,7 +1178,10 @@ xui.merge(xui,{
     },
 
     setDateFormat:function(format){xui.$dateFormat=format},
-    getDateFormat:function(format){return format||xui.$dateFormat||xui.$cache.data.$DATE_FORMAT},
+    getDateFormat:function(format,t){return xui.isStr(t=format&&format.dateFormat)&&t?t:xui.isStr(t=format)&&t?t:xui.isStr(t=xui.$dateFormat)&&t?t:xui.isStr(t=xui.$cache.data.$DATE_FORMAT)&&t?t:'yyyy-mm-dd hh:mm:ss'},
+
+    setFirstDayOfWeek:function(day){xui.$firstDayOfWeek=day},
+    getFirstDayOfWeek:function(day,t){return xui.isNumb(t=day&&day.firstDayOfWeek)?t:xui.isNumb(t=day)?t:xui.isNumb(t=xui.$firstDayOfWeek)?t:xui.isNumb(t=xui.$cache.data.$DATE_WEEKFROM)?t:0},
 
     setAppLangKey:function(key){xui.$appLangKey=key},
     getAppLangKey:function(key){return xui.$appLangKey},
@@ -4927,10 +4930,10 @@ xui.Class('xui.absObj',"xui.absBox",{
                     var $get = o.get;
                     m = ps[n];
                     ps[n] = (typeof $get!='function' && typeof m=='function') ? m : xui.Class._fun(function(){
-                        if(typeof $get=='function')
-                            return $get.apply(this.get(0),arguments);
-                        else
-                            return this.get(0).properties[i];
+                        var t=this.get(0),args=xui.toArr(arguments), _get=function(){
+                            return typeof $get=='function' ? $get.apply(t, args) : t.properties[i];
+                        };
+                        return typeof t.$beforePropGet =='function' ? t.$beforePropGet(i, _get) : _get();
                     },n,self.KEY,null,'instance');
                     //delete o.get;
                     if(ps[n]!==m)ps[n].$auto$=1;
@@ -21346,14 +21349,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                  $order:1,
                 "background-color": "#d9e8fb"
             },
-            ".xui-uicell-checked":{
+            ".xui-uicell-alt":{
                  $order:2,
+                "background-color":"#FDF8D2"
+            },
+            ".xui-uicell-checked":{
+                 $order:3,
                 "background-color":"#ABABAB",
                 color:"#fff"
-            },
-            ".xui-uicell-alt":{
-                 $order:3,
-                "background-color":"#FDF8D2"
             },
             '.xui-special-icon':{
                 color:'#3393D2',
@@ -37040,7 +37043,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     p = profile.properties;
                 cls._to(profile,value,true);
                 if(profile.keys.CAPTION)
-                    profile.getSubNode('CAPTION').html(xui.Date.getText(value,'ymd',p.firstDayOfWeek),false);
+                    profile.getSubNode('CAPTION').html(xui.Date.getText(value,'ymd',xui.getFirstDayOfWeek(p)),false);
             });
         },
         getDateFrom:function(){
@@ -37376,7 +37379,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     xui.use(src).onMouseout(true,{$force:true});
 
-                    v = xui.Date.add(profile.$tempValue, 'd', xui.Date.diff(profile.$tempValue, v, 'd', p.firstDayOfWeek));
+                    v = xui.Date.add(profile.$tempValue, 'd', xui.Date.diff(profile.$tempValue, v, 'd', xui.getFirstDayOfWeek(p)));
                     profile.box._to(profile,v);
                     
                     // set dir
@@ -37636,6 +37639,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     d=value;
                 else if(xui.isFinite(value))
                     d=new Date(parseInt(value,10));
+                else
+                    d=xui.Date.parse(value+"");
             }
             d = d||new Date;
             if(!profile.properties.timeInput)
@@ -37672,7 +37677,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             var p=profile.properties;
 
             // for week
-            var fw=p.firstDayOfWeek,
+            var fw=xui.getFirstDayOfWeek(p),
                 f=function(id){
                 id=profile.getSubId(id); 
 
@@ -37725,12 +37730,12 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             if(!p.hideWeekLabels)
                 profile.box._getWeekNodes(profile).each(function(node,i){
-                    node.innerHTML=date.get(date.add(v,'ww',i),'ww',p.firstDayOfWeek);
+                    node.innerHTML=date.get(date.add(v,'ww',i),'ww',xui.getFirstDayOfWeek(p));
                 });
         },
         _to:function(profile, time, force){
             var p = profile.properties,
-                fw = p.firstDayOfWeek,
+                fw = xui.getFirstDayOfWeek(p),
                 date=xui.Date,
                 keys=profile.keys,
                 uiv=p.$UIvalue,

@@ -2313,14 +2313,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                  $order:1,
                 "background-color": "#d9e8fb"
             },
-            ".xui-uicell-checked":{
+            ".xui-uicell-alt":{
                  $order:2,
+                "background-color":"#FDF8D2"
+            },
+            ".xui-uicell-checked":{
+                 $order:3,
                 "background-color":"#ABABAB",
                 color:"#fff"
-            },
-            ".xui-uicell-alt":{
-                 $order:3,
-                "background-color":"#FDF8D2"
             },
             '.xui-special-icon':{
                 color:'#3393D2',
