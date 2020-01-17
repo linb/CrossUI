@@ -648,14 +648,14 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             // for week
             var fw=xui.getFirstDayOfWeek(p),
                 f=function(id){
-                id=profile.getSubId(id); 
+                    id=profile.getSubId(id); 
 
-                // The special one
-                if(id=='7')return id;
-                
-                id=(parseInt(id,10)+fw);
-                return id<7?id:(id-7);
-            };
+                    // The special one
+                    if(id=='7')return id;
+                    
+                    id=(parseInt(id,10)+fw);
+                    return id<7?id:(id-7);
+                };
 
             profile.box._getHeaderNodes(profile).each(function(node,i){
                 node.innerHTML=xui.wrapRes('date.WEEKS.'+f(node.id))
@@ -706,14 +706,19 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             var p = profile.properties,
                 fw = xui.getFirstDayOfWeek(p),
                 date=xui.Date,
+                tz=xui.Date._timeZone,
                 keys=profile.keys,
                 uiv=p.$UIvalue,
                 index=-1,
                 node,
                 temp,
                 _realstart = date.getTimSpanStart(date.getTimSpanStart(time,'m'),'ww',1,fw),
-                m=date.get(time,'m',fw);
-
+                tz1 = -_realstart.getTimezoneOffset()/60,
+                m;
+            // for DayLight case
+            if(tz1!=tz)_realstart=date.add(_realstart,'ww', tz1==tz?0:tz1>tz?1:-1);
+    
+            m=date.get(time,'m',fw);
             profile.$tempValue=time;
             this._setBGV(profile, profile._realstart=_realstart, m);
 

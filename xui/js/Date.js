@@ -1248,19 +1248,22 @@ xui.Class('xui.Date',null,{
         *
         */
         getWeek:function(date, firstDayOfWeek){
-            var self=this, date2, y;
+            var self=this, date2, y,
+                 tz=xui.Date._timeZone, tz1, tz2;
             date=self._date(date);
             firstDayOfWeek = self._numb(firstDayOfWeek),
             y=date.getFullYear();
 
+            tz1 = -date.getTimezoneOffset()/60;
             date = self.add(self.getTimSpanStart(date, 'ww', 1, firstDayOfWeek),'d',6);
 
             if(date.getFullYear()!=y)return 1;
 
             date2 = self.getTimSpanStart(date, 'y', 1);
+            tz2 = -date2.getTimezoneOffset()/60;
             date2 = self.add(self.getTimSpanStart(date2, 'ww', 1, firstDayOfWeek),'d',6);
-
-            return self.diff(date2, date, 'ww')+1;
+            // for DayLight case
+            return self.diff(date2, date, 'ww') + 1 + (tz1==tz?0:tz1>tz?1:-1) - (tz2==tz?0:tz2>tz?1:-1);
         },
         parse:function(str, format){
             var rtn;

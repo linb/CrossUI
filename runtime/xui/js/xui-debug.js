@@ -9455,19 +9455,22 @@ xui.Class('xui.Event',null,{
         *
         */
         getWeek:function(date, firstDayOfWeek){
-            var self=this, date2, y;
+            var self=this, date2, y,
+                 tz=xui.Date._timeZone, tz1, tz2;
             date=self._date(date);
             firstDayOfWeek = self._numb(firstDayOfWeek),
             y=date.getFullYear();
 
+            tz1 = -date.getTimezoneOffset()/60;
             date = self.add(self.getTimSpanStart(date, 'ww', 1, firstDayOfWeek),'d',6);
 
             if(date.getFullYear()!=y)return 1;
 
             date2 = self.getTimSpanStart(date, 'y', 1);
+            tz2 = -date2.getTimezoneOffset()/60;
             date2 = self.add(self.getTimSpanStart(date2, 'ww', 1, firstDayOfWeek),'d',6);
-
-            return self.diff(date2, date, 'ww')+1;
+            // for DayLight case
+            return self.diff(date2, date, 'ww') + 1 + (tz1==tz?0:tz1>tz?1:-1) - (tz2==tz?0:tz2>tz?1:-1);
         },
         parse:function(str, format){
             var rtn;
@@ -37679,14 +37682,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             // for week
             var fw=xui.getFirstDayOfWeek(p),
                 f=function(id){
-                id=profile.getSubId(id); 
+                    id=profile.getSubId(id); 
 
-                // The special one
-                if(id=='7')return id;
-                
-                id=(parseInt(id,10)+fw);
-                return id<7?id:(id-7);
-            };
+                    // The special one
+                    if(id=='7')return id;
+                    
+                    id=(parseInt(id,10)+fw);
+                    return id<7?id:(id-7);
+                };
 
             profile.box._getHeaderNodes(profile).each(function(node,i){
                 node.innerHTML=xui.wrapRes('date.WEEKS.'+f(node.id))
@@ -37737,14 +37740,19 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             var p = profile.properties,
                 fw = xui.getFirstDayOfWeek(p),
                 date=xui.Date,
+                tz=xui.Date._timeZone,
                 keys=profile.keys,
                 uiv=p.$UIvalue,
                 index=-1,
                 node,
                 temp,
                 _realstart = date.getTimSpanStart(date.getTimSpanStart(time,'m'),'ww',1,fw),
-                m=date.get(time,'m',fw);
-
+                tz1 = -_realstart.getTimezoneOffset()/60,
+                m;
+            // for DayLight case
+            if(tz1!=tz)_realstart=date.add(_realstart,'ww', tz1==tz?0:tz1>tz?1:-1);
+    
+            m=date.get(time,'m',fw);
             profile.$tempValue=time;
             this._setBGV(profile, profile._realstart=_realstart, m);
 
