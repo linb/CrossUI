@@ -981,7 +981,14 @@ xui.Class('xui.Date',null,{
         _numb:function(value,df){return this._isNumb(value)?value:this._isNumb(df)?df:0},
         //time Zone like: -8
         _timeZone:-((new Date).getTimezoneOffset()/60),
-
+        isDayLightTime:function(date){
+            var start = this. getTimSpanStart(date, 'y'),            
+                middle = new Date(start.getTime());
+            middle.setMonth(6);
+            if ((middle.getTimezoneOffset() - start.getTimezoneOffset()) == 0) 
+                return false;
+            return date.getTimezoneOffset() == (date.getTimezoneOffset()<0 ? start : middle).getTimezoneOffset();
+        },
         /*get specific date datepart
         *
         */
@@ -1037,8 +1044,8 @@ xui.Class('xui.Date',null,{
                     SECOND:function(date,count){date.setTime(date.getTime() + count*tu.s)},
                     MINUTE:function(date,count){date.setTime(date.getTime() + count*tu.n)},
                     HOUR:function(date,count){date.setTime(date.getTime() + count*tu.h)},
-                    DAY:function(date,count){date.setTime(date.getTime() + count*tu.d)},
-                    WEEK:function(date,count){date.setTime(date.getTime() + count*tu.ww)},
+                    DAY:function(date,count){date.setDate(date.getDate() + count)},
+                    WEEK:function(date,count){date.setDate(date.getDate() + count*7)},
                     MONTH:function(date,count){
                         var a=date.getDate(),b;
                         count = date.getMonth() + count;
@@ -1100,13 +1107,15 @@ xui.Class('xui.Date',null,{
                         var startdate = self.getTimSpanStart(startdate,'d',1),
                             enddate = self.getTimSpanStart(enddate,'d',1),
                             t=enddate.getTime()-startdate.getTime();
-                        return t/tu.d;
+                        // for DayLight case, only keep whole day
+                        return Math.floor(t/tu.d);
                     },
                     WEEK:function(startdate,enddate,firstDayOfWeek){
                         var startdate = self.getTimSpanStart(startdate,'ww',1,firstDayOfWeek),
                             enddate = self.getTimSpanStart(enddate,'ww',1,firstDayOfWeek),
                             t=enddate.getTime()-startdate.getTime();
-                        return t/tu.ww;
+                        // for DayLight case, only keep whole week
+                        return Math.floor(t/tu.ww);
                     },
                     MONTH:function(startdate,enddate){return (enddate.getFullYear()-startdate.getFullYear())*12 + (enddate.getMonth()-startdate.getMonth())},
                     QUARTER:function(startdate,enddate){return (enddate.getFullYear()-startdate.getFullYear())*4 + parseInt((enddate.getMonth()-startdate.getMonth())/3,10)},
@@ -1174,16 +1183,8 @@ xui.Class('xui.Date',null,{
                     WEEK:function(date,count,firstDayOfWeek){
                         clearInDay(date);
 
-                        var d = (date.getDay() + 7 - firstDayOfWeek) % 7,date2,x, a=new Date();
-                        date.setTime(date.getTime() - d * tu.d);
-                        clearInYear(a);
-                        a.setFullYear(date.getFullYear());
-                        date2 = (a.getDay() + 7 - firstDayOfWeek) % 7;
-                        a.setTime(a.getTime() - date2 * tu.d);
-
-                        x= (date.getTime()-a.getTime())/tu.d/7;
-
-                        date.setTime(date.getTime() - (x % count) * tu.ww);
+                        var d = (date.getDay() + 7 - firstDayOfWeek) % 7;
+                        date.setDate(date.getDate() - d - 7*(count-1));
                     },
                     MONTH:function(date,count){
                         clearInDay(date);
@@ -1263,7 +1264,7 @@ xui.Class('xui.Date',null,{
             tz2 = -date2.getTimezoneOffset()/60;
             date2 = self.add(self.getTimSpanStart(date2, 'ww', 1, firstDayOfWeek),'d',6);
             // for DayLight case
-            return self.diff(date2, date, 'ww') + 1 + (tz1==tz?0:tz1>tz?1:-1) - (tz2==tz?0:tz2>tz?1:-1);
+            return self.diff(date2, date, 'ww') + 1 + (tz1>tz?1:0) - (tz2>tz?1:0);
         },
         parse:function(str, format){
             var rtn;
