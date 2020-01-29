@@ -12491,9 +12491,8 @@ xui.Class('xui.Dom','xui.absBox',{
                                 result.left=region.left+region.width;
                         }
                     }else{
-                        if(type=="outer")type="12";
-                        else if(type=="inner")type="4";
-
+                        // dft is  "outer" > "12"
+                        type = type=="inner"?"4":type=="outer_tb"?"1":type=="outer_lr"?"2":"12";
                         var adjust=function(type){
                             var hi,wi;
                             switch(type){
@@ -24345,7 +24344,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             hoverPopType:{
                 ini:'outer',
                 dftWidth:180,
-                listbox:['outer','inner',
+                listbox:['outer','outer_tb','outer_lr','inner',
                 'outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop',
                 'outerleft-top','left-top','center-top','right-top','outerright-top',
                 'outerleft-middle','left-middle','center-middle','right-middle','outerright-middle',
