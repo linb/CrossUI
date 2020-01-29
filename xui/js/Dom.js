@@ -2406,8 +2406,7 @@ xui.Class('xui.Dom','xui.absBox',{
                                 result.left=region.left+region.width;
                         }
                     }else{
-                        // dft is  "outer" > "12"
-                        type = type=="inner"?"4":type=="outer_tb"?"1":type=="outer_lr"?"2":"12";
+                        type = type=="inner"?"4":type=="outer_tb"?"1":type=="outer_lr"?"2":type=="outer"?"12":type;
                         var adjust=function(type){
                             var hi,wi;
                             switch(type){
