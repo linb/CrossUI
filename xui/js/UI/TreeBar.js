@@ -883,7 +883,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 barNode = profile.getSubNode('BAR', itemId),
                 icon = profile.getSubNode('ITEMICON', itemId);
 
-            if(xui.Thread.isAlive(profile.key+profile.id)) return;
+            if(xui.Thread.isAlive(profile.key+":"+profile.$xid)) return;
             //close
             if(!flag){
                 if(item._checked){
@@ -912,7 +912,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     };
                     if(!stopanim){
                          if(prop.animCollapse){
-                            subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                            subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+":"+profile.$xid).start();
                         }else onend();
                     }else onend();
                 }
@@ -1009,7 +1009,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 });
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
-                                }, 200, null, 'expoIn', profile.key+profile.id).start();
+                                }, 200, null, 'expoIn', profile.key+":"+profile.$xid).start();
                             }else onend(empty);
                         }else onend(empty);
                     },

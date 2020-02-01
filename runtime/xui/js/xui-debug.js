@@ -12491,8 +12491,7 @@ xui.Class('xui.Dom','xui.absBox',{
                                 result.left=region.left+region.width;
                         }
                     }else{
-                        // dft is  "outer" > "12"
-                        type = type=="inner"?"4":type=="outer_tb"?"1":type=="outer_lr"?"2":"12";
+                        type = type=="inner"?"4":type=="outer_tb"?"1":type=="outer_lr"?"2":type=="outer"?"12":type;
                         var adjust=function(type){
                             var hi,wi;
                             switch(type){
@@ -20031,7 +20030,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(!xui.isDefined(type))type='outer';
             var aysid=groupid||(source.getRoot().xid()+":"+node.xid());
             source.each(function(o){
-                o.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
+                o.$onHover=type===null?null:function(prf, item, e, src, mtype){
                     if(e.$force)return;
                     if(mtype=='mouseover'){
                         xui.resetRun(aysid,null);
@@ -22695,41 +22694,35 @@ xui.Class("xui.UI",  "xui.absObj", {
                             box=profile.boxing();
                             if(mode==1){
                                 if(/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
-                                    if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
-                                        return;
-                                    if(prop.disableHoverEffect===true)return;
+                                    if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
-                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))
-                                        return;
+
+                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))return;
+                                    if(profile.$onHover && false == profile.$onHover(profile, item, e, src, 'mouseover'))return;
                                 }
                                 if(type=='mousedown'){
-                                    if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mousedown'))
-                                        return;
-                                    if(prop.disableClickEffect)
-                                        return;
-                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mousedown'))
-                                        return;
+                                    if(prop.disableClickEffect||(item&&item.disableClickEffect))return;
+
+                                    if(profile.$onClick&& false==profile.$onClick(profile, item, e, src, 'mousedown'))return;
+                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mousedown'))return;
                                 }
 
                                 //default action
                                 nodes.tagClass('-'+((/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
-                                    if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
-                                        return;
-                                    if(prop.disableClickEffect)
-                                        return;
-                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mouseup'))
-                                        return;
+                                    if(prop.disableClickEffect||(item&&item.disableClickEffect))return;
+                                    
+                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mouseup'))return;
+                                    if(profile.$onClick&& false==profile.$onClick(profile, item, e, src, 'mouseup'))return;
                                     nodes.tagClass('-active', false);
                                 }else{
-                                    if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseout'))
-                                        return;
-                                    if(prop.disableHoverEffect===true)return;
+                                    if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
 
-                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))
-                                        return;
+                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))return;
+                                    if(profile.$onHover && false == profile.$onHover(profile, item, e, src, 'mouseout'))return;
+
                                     nodes.tagClass('(-hover|-active)', false);
                                 }
                             }
@@ -43833,7 +43826,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 barNode = profile.getSubNode('BAR', itemId),
                 icon = profile.getSubNode('ITEMICON', itemId);
 
-            if(xui.Thread.isAlive(profile.key+profile.id)) return;
+            if(xui.Thread.isAlive(profile.key+":"+profile.$xid)) return;
             //close
             if(!flag){
                 if(item._checked){
@@ -43862,7 +43855,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     };
                     if(!stopanim){
                          if(prop.animCollapse){
-                            subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                            subNs.animate({'height':[subNs.height(),0]},null,onend, 200, null, 'expoOut', profile.key+":"+profile.$xid).start();
                         }else onend();
                     }else onend();
                 }
@@ -43959,7 +43952,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 });
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
-                                }, 200, null, 'expoIn', profile.key+profile.id).start();
+                                }, 200, null, 'expoIn', profile.key+":"+profile.$xid).start();
                             }else onend(empty);
                         }else onend(empty);
                     },
@@ -53065,7 +53058,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 subNs1 = xui(subNs.get(0)),
                 subNs2 = xui(subNs.get(1));
 
-            if(xui.Thread.isAlive(profile.key+profile.id)) return;
+            if(xui.Thread.isAlive(profile.key+":"+profile.$xid)) return;
             //close
             if(!flag){
                 if(item._checked){
@@ -53100,7 +53093,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!stopanim){
                         if(prop.animCollapse) {
                             subNs.css('overflow','hidden');
-                            subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                            subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, null, 'expoOut', profile.key+":"+profile.$xid).start();
                         }else onend();
                     }else onend();
                 }
@@ -53203,7 +53196,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 subNs.css('overflow','hidden');
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
-                                }, 200, null, 'expoIn', profile.key+profile.id).start();
+                                }, 200, null, 'expoIn', profile.key+":"+profile.$xid).start();
                             }else onend(empty);
                         }else onend(empty);
                     },

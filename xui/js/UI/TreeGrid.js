@@ -6261,7 +6261,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 subNs1 = xui(subNs.get(0)),
                 subNs2 = xui(subNs.get(1));
 
-            if(xui.Thread.isAlive(profile.key+profile.id)) return;
+            if(xui.Thread.isAlive(profile.key+":"+profile.$xid)) return;
             //close
             if(!flag){
                 if(item._checked){
@@ -6296,7 +6296,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!stopanim){
                         if(prop.animCollapse) {
                             subNs.css('overflow','hidden');
-                            subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, null, 'expoOut', profile.key+profile.id).start();
+                            subNs.animate({'height':[subNs2.height(),0]},null,onend, 200, null, 'expoOut', profile.key+":"+profile.$xid).start();
                         }else onend();
                     }else onend();
                 }
@@ -6399,7 +6399,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 subNs.css('overflow','hidden');
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);
-                                }, 200, null, 'expoIn', profile.key+profile.id).start();
+                                }, 200, null, 'expoIn', profile.key+":"+profile.$xid).start();
                             }else onend(empty);
                         }else onend(empty);
                     },

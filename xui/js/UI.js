@@ -992,7 +992,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(!xui.isDefined(type))type='outer';
             var aysid=groupid||(source.getRoot().xid()+":"+node.xid());
             source.each(function(o){
-                o.$beforeHover=type===null?null:function(prf, item, e, src, mtype){
+                o.$onHover=type===null?null:function(prf, item, e, src, mtype){
                     if(e.$force)return;
                     if(mtype=='mouseover'){
                         xui.resetRun(aysid,null);
@@ -3656,41 +3656,35 @@ xui.Class("xui.UI",  "xui.absObj", {
                             box=profile.boxing();
                             if(mode==1){
                                 if(/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
-                                    if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseover'))
-                                        return;
-                                    if(prop.disableHoverEffect===true)return;
+                                    if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
-                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))
-                                        return;
+
+                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))return;
+                                    if(profile.$onHover && false == profile.$onHover(profile, item, e, src, 'mouseover'))return;
                                 }
                                 if(type=='mousedown'){
-                                    if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mousedown'))
-                                        return;
-                                    if(prop.disableClickEffect)
-                                        return;
-                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mousedown'))
-                                        return;
+                                    if(prop.disableClickEffect||(item&&item.disableClickEffect))return;
+
+                                    if(profile.$onClick&& false==profile.$onClick(profile, item, e, src, 'mousedown'))return;
+                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mousedown'))return;
                                 }
 
                                 //default action
                                 nodes.tagClass('-'+((/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
-                                    if(profile.$beforeClick&& false==profile.$beforeClick(profile, item, e, src, 'mouseup'))
-                                        return;
-                                    if(prop.disableClickEffect)
-                                        return;
-                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mouseup'))
-                                        return;
+                                    if(prop.disableClickEffect||(item&&item.disableClickEffect))return;
+                                    
+                                    if(profile.beforeClickEffect && false === box.beforeClickEffect(profile, item, e, src, 'mouseup'))return;
+                                    if(profile.$onClick&& false==profile.$onClick(profile, item, e, src, 'mouseup'))return;
                                     nodes.tagClass('-active', false);
                                 }else{
-                                    if(profile.$beforeHover && false == profile.$beforeHover(profile, item, e, src, 'mouseout'))
-                                        return;
-                                    if(prop.disableHoverEffect===true)return;
+                                    if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
 
-                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))
-                                        return;
+                                    if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))return;
+                                    if(profile.$onHover && false == profile.$onHover(profile, item, e, src, 'mouseout'))return;
+
                                     nodes.tagClass('(-hover|-active)', false);
                                 }
                             }
