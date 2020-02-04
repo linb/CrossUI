@@ -3659,8 +3659,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
 
+                                    if(item && item._$justout){
+                                      xui.clearTimeout(item._$justout);
+                                      delete item._$justout;
+                                    }else{
                                     if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))return;
                                     if(profile.$onHover && false == profile.$onHover(profile, item, e, src, 'mouseover'))return;
+                                }
                                 }
                                 if(type=='mousedown'){
                                     if(prop.disableClickEffect||(item&&item.disableClickEffect))return;
@@ -3682,8 +3687,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
 
+                                    if(item){
+                                      item._$justout = xui.asyRun(function(){
+                                        if(profile && item){
+                                          delete item._$justout;
                                     if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))return;
                                     if(profile.$onHover && false == profile.$onHover(profile, item, e, src, 'mouseout'))return;
+                                        }
+                                      });
+                                    }
 
                                     nodes.tagClass('(-hover|-active)', false);
                                 }
