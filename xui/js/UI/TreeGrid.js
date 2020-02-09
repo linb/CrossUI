@@ -5531,14 +5531,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     h[i] = profile.$forceu(o,unit);
                     return false;
                 }else 
-                return o!=undefined
+                return !map[(i+'').charAt(0)]  && o!=undefined
             });
             op.grpCols = xui.clone(pp.grpCols, function(o,i,d){
                 if(d===2&&i==='width'&& o && o!='auto'){
                     h[i] = profile.$forceu(o,unit);
                     return false;
                 }else 
-                return o!=undefined
+                return !map[(i+'').charAt(0)]  && o!=undefined
             });
             op.rows = xui.clone(pp.rows, function(o,i,d){
                 if(d===2&&i==='height'&& o && o!='auto'){

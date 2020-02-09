@@ -1557,7 +1557,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
             });
         },
-        append:function(target, subId, pre, base){
+        append:function(target, subId, pre, base, ignoreDom){
             var pro=this.get(0),prop=pro.properties;
             // default is append to last
             var index,baseN,
@@ -1613,18 +1613,20 @@ xui.Class("xui.UI",  "xui.absObj", {
                         profile.linkParent(pro,subId,base?(i++):i);
                     });
                 }
-                if(pro.renderId){
-                    parentNode=inParent?parentNode:pro.getContainer(subId);
-                    if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
-                        if(!base){
-                            parentNode[pre?'prepend':'append'](target);
-                        }else if(baseN){
-                            baseN[pre?'addPrev':'addNext'](target);
+                if(!ignoreDom){
+                    if(pro.renderId){
+                        parentNode=inParent?parentNode:pro.getContainer(subId);
+                        if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
+                            if(!base){
+                                parentNode[pre?'prepend':'append'](target);
+                            }else if(baseN){
+                                baseN[pre?'addPrev':'addNext'](target);
+                            }
                         }
                     }
-                }
-                else{
-                    xui.arr.insertAny(pro.exmodules||(pro.exmodules=[]),[target,subId],index,true);
+                    else{
+                        xui.arr.insertAny(pro.exmodules||(pro.exmodules=[]),[target,subId],index,true);
+                    }
                 }
             }else{
                 if(subId!==false){
@@ -1635,26 +1637,28 @@ xui.Class("xui.UI",  "xui.absObj", {
                         });
                     }
                 }
-                if(pro.renderId){
-                    var oldp;
-                    parentNode=inParent?parentNode:pro.getContainer(subId);
-                    if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
-                        if(pro.parent && xui.get(pro,["properties","dock"])!='none' && 'absolute'==xui.get(pro,["properties","position"]) && !xui.get(pro,["properties","dockIgnore"]) && !xui.get(pro,["properties","dockFloat"])){
-                            if(target['xui.absBox'])
-                                oldp=target.reBoxing().parent();
+                if(!ignoreDom){
+                    if(pro.renderId){
+                        var oldp;
+                        parentNode=inParent?parentNode:pro.getContainer(subId);
+                        if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
+                            if(pro.parent && xui.get(pro,["properties","dock"])!='none' && 'absolute'==xui.get(pro,["properties","position"]) && !xui.get(pro,["properties","dockIgnore"]) && !xui.get(pro,["properties","dockFloat"])){
+                                if(target['xui.absBox'])
+                                    oldp=target.reBoxing().parent();
+                            }
+                            if(!base){
+                                parentNode[pre?'prepend':'append'](target);
+                            }else if(baseN){
+                                baseN[pre?'addPrev':'addNext'](target);
+                            }
+                            //adjust old parent
+                            if(oldp&&oldp.get(0))
+                                oldp.onSize();
+                            }
+                    }else{
+                        if(!target['xui.UI']){
+                            xui.arr.insertAny(pro.exchildren||(pro.exchildren=[]),[target,subId],index,true);
                         }
-                        if(!base){
-                            parentNode[pre?'prepend':'append'](target);
-                        }else if(baseN){
-                            baseN[pre?'addPrev':'addNext'](target);
-                        }
-                        //adjust old parent
-                        if(oldp&&oldp.get(0))
-                            oldp.onSize();
-                        }
-                }else{
-                    if(!target['xui.UI']){
-                        xui.arr.insertAny(pro.exchildren||(pro.exchildren=[]),[target,subId],index,true);
                     }
                 }
             }

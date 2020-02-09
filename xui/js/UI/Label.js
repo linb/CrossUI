@@ -68,7 +68,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
             },
             clock:{
                 ini:'',
-                combobox:['hh : mm : ss','hh - mm : ss'],
+                combobox:['hh : nn : ss','hh - nn : ss'],
                 action:function(v){
                     var prf=this,timer;
                     if(v && !prf._timer){
