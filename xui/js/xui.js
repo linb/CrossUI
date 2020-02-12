@@ -363,11 +363,17 @@ new function(){
         scope: 'this' for fun
         */
         resetRun:function(key, fun, defer ,args, scope){
-            var me=xui.resetRun, k=key, cache = me.$cache || ( (me.exists=function(k){return this.$cache[k]})&& (me.$cache = {}));
-            if(cache[k]){xui.clearTimeout(cache[k])}
-            if(typeof fun=='function')
-                cache[k] = xui.setTimeout(function(){delete cache[k];fun.apply(scope||null,args||[])},defer);
-            else delete cache[k];
+            var me=xui.resetRun, key, task, cache = me.$cache || ( 
+              (me.get=me.exists=function(k){return this.$cache[k]}) && 
+              (me.run=function(k,c){if(c=this.$cache[k]){xui.clearTimeout(c.id);c.task();delete this.$cache[k]}}) && 
+              (me.cancel=function(k){xui.resetRun(k)}) && 
+              (me.$cache = {})
+            );
+            if(cache[key]) xui.clearTimeout(cache[key].id);
+            if(typeof fun=='function'){
+                task = function(){delete cache[key];fun.apply(scope||null,args||[])};
+                cache[key] = {id: xui.setTimeout(task, defer), task: task};
+            } else delete cache[key];
         },
         //Required: xui.Dom xui.Thread
         observableRun:function(tasks,onEnd,threadid,busyMsg){

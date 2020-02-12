@@ -2153,6 +2153,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         $order:2,
                                                         tagName:'span',
                                                         className:'xui-ltag-cmds',
+                                                        style:'{_ltagDisplay}',
                                                         text:"{ltagCmds}"
                                                     },
                                                     GRIDCAPTION:{
@@ -2213,6 +2214,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     $order:1,
                                                     tagName:'span',
                                                     className:'xui-rtag-cmds',
+                                                    style:'{_rtagDisplay}',
                                                     text:"{rtagCmds}"
                                                 }
                                             }

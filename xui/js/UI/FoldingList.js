@@ -85,6 +85,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             LTAGCMDS:{
                                 $order:2,
                                 tagName:'span',
+                                style:'{_rtagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             CAP1:{
@@ -104,6 +105,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                             TAGCMDS:{
                                 $order:60,
                                 tagName:'span',
+                                style:'{_ltagDisplay}',
                                 text:"{rtagCmds}"
                             } 
                         }/*,

@@ -2374,9 +2374,12 @@ xui.Class('xui.Dom','xui.absBox',{
                     result=type(region, box, target, t);
                 }else{
                     //target size
-                    var w = target?target.offsetWidth():0,
+                    var a = type.split(":"),
+                        w = target?target.offsetWidth():0,
                         h = target?target.offsetHeight():0,
-                        arr=type.split(/-/g);
+                        arr = a[0].split(/-/g),
+                        border = parseInt(a[1])||0;
+                    type = a[0];
                     if(arr.length==2){
                         var hp=arr[0],vp=arr[1];
                         switch(vp){
@@ -2466,6 +2469,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             adjust(type);
                         }
                     }
+                    if(border){result.left += border;result.top += border; result.width -= border*2; result.height -= border*2;}
                 }
                 return result;
             }
