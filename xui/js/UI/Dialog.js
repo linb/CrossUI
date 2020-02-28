@@ -820,8 +820,8 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             onShow:function(profile){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},
-            beforeStatusChanged:function(profile, oldStatus, newStatus){},
-            afterStatusChanged:function(profile, oldStatus, newStatus){},
+            beforeStatusChanged:function(profile, newStatus, oldStatus){},
+            afterStatusChanged:function(profile, newStatus, oldStatus){},
             onClickPanel:function(profile, e, src){},
 
             onLand:function(profile, e, src){},

@@ -52409,14 +52409,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }else 
                 return !map[(i+'').charAt(0)]  && o!=undefined
             });
-            op.grpCols = xui.clone(pp.grpCols, function(o,i,d){
+            op.grpCols = xui.clone(pp.grpCols, function(o,i,d,h){
                 if(d===2&&i==='width'&& o && o!='auto'){
                     h[i] = profile.$forceu(o,unit);
                     return false;
                 }else 
                 return !map[(i+'').charAt(0)]  && o!=undefined
             });
-            op.rows = xui.clone(pp.rows, function(o,i,d){
+            op.rows = xui.clone(pp.rows, function(o,i,d,h){
                 if(d===2&&i==='height'&& o && o!='auto'){
                     h[i] = profile.$forceu(o,unit);
                     return false;
@@ -55721,8 +55721,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onShow:function(profile){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},
-            beforeStatusChanged:function(profile, oldStatus, newStatus){},
-            afterStatusChanged:function(profile, oldStatus, newStatus){},
+            beforeStatusChanged:function(profile, newStatus, oldStatus){},
+            afterStatusChanged:function(profile, newStatus, oldStatus){},
             onClickPanel:function(profile, e, src){},
 
             onLand:function(profile, e, src){},
