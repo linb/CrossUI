@@ -151,14 +151,14 @@ xui.Class("xui.Coder", null,{
         str: source code
         key: js/php/css
         */
-        formatText:function(code, type, reverse){
+        formatText:function(code, type, reverse, indent){
             var reg, pre_arr, add_arr, arr=[];
-            var deep=0,i,l=20,
+            var deep=0,i,l=100,
                 sf=function(i){var r=''; while(i--){r+=' ';} return r;},
                 space=[''];
 
             for(i=1;i<l;i++)
-                space.push(sf(i*4));
+                space.push(sf(i*(indent||4)));
             code=code.replace(/(\r\n|\r)/g, "\n");
             if(type == 'html'){
                 //for clear space before/after tag

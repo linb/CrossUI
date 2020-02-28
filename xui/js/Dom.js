@@ -4332,7 +4332,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     delete w[k];
             };
             
-            if(xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
+            if(xui.History && xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
             e._removeEventListener(d.body, "selectstart", _ieselectstart);
             e._removeEventListener(w, "resize", e.$eventhandler);
 
@@ -4382,6 +4382,5 @@ xui.Class('xui.Dom','xui.absBox',{
             
             w=d=null;
         },"window",-1);
-
     }
 });

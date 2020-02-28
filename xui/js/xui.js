@@ -306,6 +306,26 @@ new function(){
                 }
             }
         },
+        clonePath:function(obj, path){
+          var p2=[], i, l1, l2=path.length;
+          return xui.clone(obj, function(v, k, deep, h){
+            i=0;
+            p2[deep-1] = k;
+            p2.splice(deep);
+            l1 = p2.length;
+            if(l1 > l2){
+              h[k]=v; 
+              return false;
+            }
+            while(i <= l1-1){
+              if(path[i] !== p2[i]){
+                h[k]=v; 
+                return false;
+              }
+              i++;
+            }
+          });
+        },
         /* try to excute a function
         fun:target function
         args:arguments for fun

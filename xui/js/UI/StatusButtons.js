@@ -4,35 +4,43 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         var t = this.getTemplate();
         t.className='{_className}';
         t.ITEMS.className='{_bordertype}';
-        t.$submap={
-            items:{
-                ITEM:{
-                    className:'{_itemClass} {itemClass} {disabled} {readonly}',
-                    style:'{itemPadding};{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
-                    tabindex: '{_tabindex}',
-                    ICON:{
-                        $order:10,
-                        className:'xuicon {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
-                        text:'{iconFontCode}'
-                    },
-                    CAPTION:{
-                        $order:11,
-                        text:'{caption}'
-                    },
-                    DROP:{
-                        $order:12,
-                        className:'xuifont',
-                        $fonticon:'xui-uicmd-arrowdrop',
-                        style:'{_dropDisplay}'
-                    },
-                    FLAG:{
-                        $order:13,
-                        className:'xui-display-none {flagClass}',
-                        style:'{_flagStyle};{flagStyle}',
-                        text:'{flagText}'
-                    }
-                }
+        t.$submap.items.ITEM = {
+            className:'{_itemClass} {itemClass} {disabled} {readonly}',
+            style:'{itemPadding};{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
+            tabindex: '{_tabindex}',
+            LTAGCMDS:{
+                $order:2,
+                tagName:'span',
+                style:'{_ltagDisplay}',
+                text:"{ltagCmds}"
+            },
+            ICON:{
+                $order:10,
+                className:'xuicon {imageClass}  {picClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                text:'{iconFontCode}'
+            },
+            CAPTION:{
+                $order:11,
+                text:'{caption}'
+            },
+            DROP:{
+                $order:12,
+                className:'xuifont',
+                $fonticon:'xui-uicmd-arrowdrop',
+                style:'{_dropDisplay}'
+            },
+            RTAGCMDS:{
+                $order:40,
+                tagName:'span',
+                style:'{_rtagDisplay}',
+                text:"{rtagCmds}"
+            },
+            FLAG:{
+                $order:13,
+                className:'xui-display-none {flagClass}',
+                style:'{_flagStyle};{flagStyle}',
+                text:'{flagText}'
             }
         };
         this.setTemplate(t);
@@ -77,7 +85,6 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         },
         DataModel:({
             maxHeight:null,
-            tagCmds:null,
             height:'auto',
 
             itemMargin:{
@@ -123,9 +130,6 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         Behaviors:{
             DroppableKeys:["ITEMS"]
         },
-        EventHandlers:{
-            onCmd:null
-        },
         _prepareItem:function(profile, item, a, b, i, l){
             var p = profile.properties, t,
                 type=item.type||p.itemType;
@@ -149,6 +153,8 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 : "xui-uiborder-radius"));
 
             item._dropDisplay=type=="dropButton"?'':'display:none';
+
+            this._prepareCmds(profile, item);
         }
     }
 });

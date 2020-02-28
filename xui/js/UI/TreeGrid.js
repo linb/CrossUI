@@ -4983,7 +4983,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 listbox:['hidden'/*none*/,'before','after'/*auto, show*/],
                 action:function(value){
                     if(this.renderId){
-                        if(value=='none')
+                        if(value=='hidden')
                             this.boxing().removeHotRow();
                         else
                             this.box.__ensurehotrow(this,null);
@@ -5849,7 +5849,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 },
-                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ')/*.replace(/ /g,' ')*/.replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""},
                 f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""},
                 f4=function(v,profile,cell){
                     if(v||v===0){
@@ -6715,7 +6715,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
         },
         _editCell:function(profile, cellId, byhover, inactive){
-            var cell = typeof cellId=='string'?(profile.cellMap[cellId]||profile.cellMap[profile.cellMap2[cellId]]):cellId;
+            var cell = typeof cellId=='string' ? profile.cellMap[cellId] : cellId;
             if(!cell)return;
             // real cellId
             cellId=cell._serialId;

@@ -40,7 +40,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     ? ns._toEditor(value)
                     : ns.getShowValue(value);
 
-                if(type!=='none'&& type!=='input'&& type!=='password' && !profile.properties.multiLines && typeof value=='string' && r1.test(value))value=value.replace(r2,'');
+                if(typeof value=='string' && o.get(0).tagName.toLowerCase()!='input' && o.get(0).tagName.toLowerCase()!='textarea' && r1.test(value))value=value.replace(r2,'');
                 
                 if(profile.$Mask && !value){
                     value=profile.$Mask;

@@ -307,6 +307,26 @@ new function(){
                 }
             }
         },
+        clonePath:function(obj, path){
+          var p2=[], i, l1, l2=path.length;
+          return xui.clone(obj, function(v, k, deep, h){
+            i=0;
+            p2[deep-1] = k;
+            p2.splice(deep);
+            l1 = p2.length;
+            if(l1 > l2){
+              h[k]=v; 
+              return false;
+            }
+            while(i <= l1-1){
+              if(path[i] !== p2[i]){
+                h[k]=v; 
+                return false;
+              }
+              i++;
+            }
+          });
+        },
         /* try to excute a function
         fun:target function
         args:arguments for fun
@@ -14423,7 +14443,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     delete w[k];
             };
             
-            if(xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
+            if(xui.History && xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
             e._removeEventListener(d.body, "selectstart", _ieselectstart);
             e._removeEventListener(w, "resize", e.$eventhandler);
 
@@ -14473,7 +14493,6 @@ xui.Class('xui.Dom','xui.absBox',{
             
             w=d=null;
         },"window",-1);
-
     }
 });xui.Class('xui.Template','xui.absProfile',{
     Constructor:function(template,properties,events,domId){
@@ -34265,7 +34284,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     ? ns._toEditor(value)
                     : ns.getShowValue(value);
 
-                if(type!=='none'&& type!=='input'&& type!=='password' && !profile.properties.multiLines && typeof value=='string' && r1.test(value))value=value.replace(r2,'');
+                if(typeof value=='string' && o.get(0).tagName.toLowerCase()!='input' && o.get(0).tagName.toLowerCase()!='textarea' && r1.test(value))value=value.replace(r2,'');
                 
                 if(profile.$Mask && !value){
                     value=profile.$Mask;
@@ -42844,35 +42863,43 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         var t = this.getTemplate();
         t.className='{_className}';
         t.ITEMS.className='{_bordertype}';
-        t.$submap={
-            items:{
-                ITEM:{
-                    className:'{_itemClass} {itemClass} {disabled} {readonly}',
-                    style:'{itemPadding};{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
-                    tabindex: '{_tabindex}',
-                    ICON:{
-                        $order:10,
-                        className:'xuicon {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
-                        text:'{iconFontCode}'
-                    },
-                    CAPTION:{
-                        $order:11,
-                        text:'{caption}'
-                    },
-                    DROP:{
-                        $order:12,
-                        className:'xuifont',
-                        $fonticon:'xui-uicmd-arrowdrop',
-                        style:'{_dropDisplay}'
-                    },
-                    FLAG:{
-                        $order:13,
-                        className:'xui-display-none {flagClass}',
-                        style:'{_flagStyle};{flagStyle}',
-                        text:'{flagText}'
-                    }
-                }
+        t.$submap.items.ITEM = {
+            className:'{_itemClass} {itemClass} {disabled} {readonly}',
+            style:'{itemPadding};{itemMargin};{itemWidth};{itemAlign};{itemStyle}',
+            tabindex: '{_tabindex}',
+            LTAGCMDS:{
+                $order:2,
+                tagName:'span',
+                style:'{_ltagDisplay}',
+                text:"{ltagCmds}"
+            },
+            ICON:{
+                $order:10,
+                className:'xuicon {imageClass}  {picClass}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                text:'{iconFontCode}'
+            },
+            CAPTION:{
+                $order:11,
+                text:'{caption}'
+            },
+            DROP:{
+                $order:12,
+                className:'xuifont',
+                $fonticon:'xui-uicmd-arrowdrop',
+                style:'{_dropDisplay}'
+            },
+            RTAGCMDS:{
+                $order:40,
+                tagName:'span',
+                style:'{_rtagDisplay}',
+                text:"{rtagCmds}"
+            },
+            FLAG:{
+                $order:13,
+                className:'xui-display-none {flagClass}',
+                style:'{_flagStyle};{flagStyle}',
+                text:'{flagText}'
             }
         };
         this.setTemplate(t);
@@ -42917,7 +42944,6 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         },
         DataModel:({
             maxHeight:null,
-            tagCmds:null,
             height:'auto',
 
             itemMargin:{
@@ -42963,9 +42989,6 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         Behaviors:{
             DroppableKeys:["ITEMS"]
         },
-        EventHandlers:{
-            onCmd:null
-        },
         _prepareItem:function(profile, item, a, b, i, l){
             var p = profile.properties, t,
                 type=item.type||p.itemType;
@@ -42989,6 +43012,8 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
                 : "xui-uiborder-radius"));
 
             item._dropDisplay=type=="dropButton"?'':'display:none';
+
+            this._prepareCmds(profile, item);
         }
     }
 });
@@ -51832,7 +51857,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 listbox:['hidden'/*none*/,'before','after'/*auto, show*/],
                 action:function(value){
                     if(this.renderId){
-                        if(value=='none')
+                        if(value=='hidden')
                             this.boxing().removeHotRow();
                         else
                             this.box.__ensurehotrow(this,null);
@@ -52698,7 +52723,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 },
-                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ')/*.replace(/ /g,' ')*/.replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""},
                 f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""},
                 f4=function(v,profile,cell){
                     if(v||v===0){
@@ -53564,7 +53589,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
         },
         _editCell:function(profile, cellId, byhover, inactive){
-            var cell = typeof cellId=='string'?(profile.cellMap[cellId]||profile.cellMap[profile.cellMap2[cellId]]):cellId;
+            var cell = typeof cellId=='string' ? profile.cellMap[cellId] : cellId;
             if(!cell)return;
             // real cellId
             cellId=cell._serialId;
