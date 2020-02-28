@@ -15927,16 +15927,16 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired before user change the dialog's status.  If returns false, the status will not be changed",
                 $paras:[
                     $profile,
-                    "oldStatus: String, the old status, min/max/normal",
-                    "newStatus: String, the new status, min/max/normal"
+                    "newStatus: String, the new status, min/max/normal",
+                    "oldStatus: String, the old status, min/max/normal"
                 ]
             },
             afterStatusChanged:{
                 $desc:"Fired after the dialog status was changed",
                 $paras:[
                     $profile,
-                    "oldStatus: String, the old status, min/max/normal",
-                    "newStatus: String, the new status, min/max/normal"
+                    "newStatus: String, the new status, min/max/normal",
+                    "oldStatus: String, the old status, min/max/normal"
                 ]
             },
             beforePin:{

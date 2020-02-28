@@ -15850,16 +15850,16 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"当对话框状态在最大、最小或普通状态之间改变前调用. 返回false可以阻止状态该变",
                 $paras:[
                     $profile,
-                    "oldStatus: String, 改变之前的状态, min/max/normal",
-                    "newStatus: String, 改变之后的状态, min/max/normal"
+                    "newStatus: String, 改变之后的状态, min/max/normal",
+                    "oldStatus: String, 改变之前的状态, min/max/normal"
                 ]
             },
             afterStatusChanged:{
                 $desc:"当对话框状态在最大、最小或普通状态之间改变后调用",
                 $paras:[
                     $profile,
-                    "oldStatus: String, 改变之前的状态, min/max/normal",
-                    "newStatus: String, 改变之后的状态, min/max/normal"
+                    "newStatus: String, 改变之后的状态, min/max/normal",
+                    "oldStatus: String, 改变之前的状态, min/max/normal"
                 ]
             },
             beforePin:{
