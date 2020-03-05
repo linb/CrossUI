@@ -142,8 +142,8 @@ xui.Class('xui.Debugger', null, {
            if(!div){
                div =
                '<div class="xui-ui-reset xui-node xui-node-div xui-wrapper xui-uibar xui-uiborder-outset xui-custom" style="border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.25em;overflow:hidden;font-weight:bold;padding:.25em;"></div>'+
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.5em;overflow:hidden;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;overflow:hidden;font-weight:bold;padding:.25em;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:.75em;padding:.5em;overflow:hidden;"></div>'+
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();

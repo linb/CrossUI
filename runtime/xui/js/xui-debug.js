@@ -10096,7 +10096,7 @@ xui.Class('xui.Event',null,{
             //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
-            ".xui-ui-ctrl{cursor:default;font-size:1rem;}"+
+            ".xui-ui-ctrl{cursor:default;font-size:.75rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
             ".setting-uikey{font-family:'default'}"
            ;
@@ -10708,7 +10708,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(name=="selected"&&xui.browser.kde) return o.parentNode.selectedIndex;
                 r=((name in o) && normal)?o[name]:o.getAttribute(name, xui.browser.ie && !normal ? 2 : undefined );
                 o=null;
-                return name=='style'?r.replace(/[;]+/g,';').replace(/^;/,''):r;
+                return name=='style'?(r||"").replace(/[;]+/g,';').replace(/^;/,''):r;
             }
         },
         $touchscroll:function(type){
@@ -18985,8 +18985,8 @@ xui.Class("xui.Tips", null,{
            if(!div){
                div =
                '<div class="xui-ui-reset xui-node xui-node-div xui-wrapper xui-uibar xui-uiborder-outset xui-custom" style="border:solid 1px #cdcdcd;position:absolute;overflow:visible;top:-50px;">' +
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1.25em;overflow:hidden;font-weight:bold;padding:.25em;"></div>'+
-                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;padding:.5em;overflow:hidden;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:1em;overflow:hidden;font-weight:bold;padding:.25em;"></div>'+
+                   '<div class="xui-node xui-node-div xui-custom" style="font-size:.75em;padding:.5em;overflow:hidden;"></div>'+
                '</div>';
                div = xui.create(div);
                if(div.addBorder)div.addBorder();
@@ -21300,8 +21300,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-webkit-text-size-adjust': '100%',
                 '-ms-text-size-adjust': '100%',
                 '-ms-overflow-style': 'scrollbar',
-                '-webkit-tap-highlight-color': 'transparent',
-                'font-size':'75%'
+                '-webkit-tap-highlight-color': 'transparent'
             },
             '.xui-css-viewport, .xui-css-viewport body':{
                 height:'100%',
@@ -29366,13 +29365,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 cursor:'move'
             },
             "KEY.readonly, KEY.disabled":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#bbbbbb' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")",
-                'background-repeat':'no-repeat',
-                'background-position':'center center',
-                'background-size':'100% 100%, auto'
+                'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.6'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
             },
             "KEY.readonly.active, KEY.disabled.active":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#eeeeee' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")"
+                'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
             },
             "KEY.readonly div, KEY.disabled div":{
                 display:'none'
@@ -48660,7 +48656,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     col=xui.arr.indexOf(header,colId);
                     if(col!=-1){
                         if(!xui.isHash(row.cells[col]))row.cells[col]={value:row.cells[col]};
-                        xui.merge(row.cells[col],options);
+                        xui.merge(row.cells[col],options,'all');
                     }
                 }
             }
@@ -51029,7 +51025,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // checkbox is special for editor
                         if(!disabled && !readonly && type=='checkbox')
                             if(editable){
-                                box._updCell(profile, cell, !cell.value, p.dirtyMark, true, true);
+								var v = cell.value;
+
+								box._updCell(profile, cell, !v, p.dirtyMark, true, true);
+                                var e = xui.get(cell,['editorEvents','onChange']);
+                                if(e)e(null, v, !v);
 
                                 profile.box._trycheckrowdirty(profile,cell);
 

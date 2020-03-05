@@ -1786,7 +1786,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     col=xui.arr.indexOf(header,colId);
                     if(col!=-1){
                         if(!xui.isHash(row.cells[col]))row.cells[col]={value:row.cells[col]};
-                        xui.merge(row.cells[col],options);
+                        xui.merge(row.cells[col],options,'all');
                     }
                 }
             }
@@ -4155,7 +4155,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // checkbox is special for editor
                         if(!disabled && !readonly && type=='checkbox')
                             if(editable){
-                                box._updCell(profile, cell, !cell.value, p.dirtyMark, true, true);
+								var v = cell.value;
+
+								box._updCell(profile, cell, !v, p.dirtyMark, true, true);
+                                var e = xui.get(cell,['editorEvents','onChange']);
+                                if(e)e(null, v, !v);
 
                                 profile.box._trycheckrowdirty(profile,cell);
 

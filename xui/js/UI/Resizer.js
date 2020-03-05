@@ -185,13 +185,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 cursor:'move'
             },
             "KEY.readonly, KEY.disabled":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#bbbbbb' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")",
-                'background-repeat':'no-repeat',
-                'background-position':'center center',
-                'background-size':'100% 100%, auto'
+                'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.6'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
             },
             "KEY.readonly.active, KEY.disabled.active":{
-                background: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 400 400'><rect x='0' y='0' width='400' height='400' stroke='#666666' fill='#eeeeee' opacity='0.3' stroke-width='1'></rect><path d='M400 0 L0 400 ' stroke='#666666' stroke-width='1'/><path d='M0 0 L400 400 ' stroke='#666666' stroke-width='1'/></svg>\")"
+                'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
             },
             "KEY.readonly div, KEY.disabled div":{
                 display:'none'

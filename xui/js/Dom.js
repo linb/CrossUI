@@ -597,7 +597,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(name=="selected"&&xui.browser.kde) return o.parentNode.selectedIndex;
                 r=((name in o) && normal)?o[name]:o.getAttribute(name, xui.browser.ie && !normal ? 2 : undefined );
                 o=null;
-                return name=='style'?r.replace(/[;]+/g,';').replace(/^;/,''):r;
+                return name=='style'?(r||"").replace(/[;]+/g,';').replace(/^;/,''):r;
             }
         },
         $touchscroll:function(type){
