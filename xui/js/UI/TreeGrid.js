@@ -6507,7 +6507,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 node.addClass('xui-ui-dirty');
                         }
                     }
-                    if(editor && !profile._setFromEditor){
+                    if(editor && triggerEvent && !(options.ignoreEditor) && !profile._setFromEditor){
                         editor.setValue(cell.value,true,'editorini');
                     }
                     // formula
@@ -6741,6 +6741,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rowId = row.id,
                 ishotrow=rowId==profile.box._temprowid,
                 editMode= getPro('editMode'),
+				adjustEditorInput= getPro('adjustEditorInput'),
                 inline=editMode=="inline"||(getPro('type')=='dropbutton'),
                 baseNode = profile.getSubNode('SCROLL' + row._region + col._region),
                 //baseNode = profile.getSubNode('BORDER'),
@@ -6772,8 +6773,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if((editor = getPro('customEditor')) && typeof editor.iniEditor=='function'){
                 editor.iniEditor(profile, cell, cellNode);
                 if(!inactive)xui.tryF(editor.activate,[],editor);
-                if(profile.onBeginEdit)
-                    profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
+                if(profile.onBeginEdit) profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
             }else{
                 // 2. beforeIniEditor
                 //      returns an editor(xui.UI object)
@@ -6806,6 +6806,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editorDropListWidth = getPro('editorDropListWidth'),
                         editorDropListHeight = getPro('editorDropListHeight'),
                         editorCommandBtn=getPro('editorCommandBtn'),
+                        beforeEditApply=getPro('beforeEditApply'),
                         t,oldProp;
 
 
@@ -7126,20 +7127,22 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             options.tagVar=editorPrf.properties.tagVar;
 
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col))){
-                            profile._setFromEditor=1;
-                            grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
-                            delete profile._setFromEditor;
-                            if((nc=_getcell(editorPrf)) && nc!==cc){
-                                editorPrf.$cell = nc
-                                nc._editor=editor;
-                                if(!inline){
-                                    profile.$cellInEditor=nc;
-                                }
-                            }
+							if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
+								profile._setFromEditor=1;
+								grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+								delete profile._setFromEditor;
+							}
+							if((nc=_getcell(editorPrf)) && nc!==cc){
+								editorPrf.$cell = nc
+								nc._editor=editor;
+								if(!inline){
+									profile.$cellInEditor=nc;
+								}
+							}
 
-                            if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
-                                xui.tryF(editor.undo,[true],editor);
-                            }
+							if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
+								xui.tryF(editor.undo,[true],editor);
+							}
                         }
                     })
                     .beforeNextFocus(function(editorPrf, e){
@@ -7252,8 +7255,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 xui.tryF(editor&&editor.activate,[],editor);
                         }
                     }
-                    if(profile.onBeginEdit)
-                        profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
+					if(adjustEditorInput)adjustEditorInput(cell, editor, profile);
+                    if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
                 }
             }
             if(!inline){

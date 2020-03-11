@@ -4310,11 +4310,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui.each(hash.PanelKeys,function(i){
                     t=map[i]?hash:(hash[i]||(hash[i]={}));
                     t.onMousewheel = function(profile,e,src){
-                        var id=xui.use(src).id(),
-                            cid = profile.getSubId(id),
-                            item = profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid];
-                        if(profile.onMousewheel)
-                            return profile.boxing().onMousewheel(profile, xui.Event.getWheelDelta(e), item, e, src);
+                        var id=xui.use(src).id();
+						if(id){
+							var cid = profile.getSubId(id),
+								item = profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid];
+							if(profile.onMousewheel)
+								return profile.boxing().onMousewheel(profile, xui.Event.getWheelDelta(e), item, e, src);
+						}
                     };
                 });
 
