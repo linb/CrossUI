@@ -5914,7 +5914,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'counter':
                     var v=parseFloat(cell.value);
                     cell.value=(v||v===0)?v:null;
-                    caption=unit(capOut ||ren(profile,cell,uicell,f4), cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f4), cell);
                     var tpl = getPro(profile, cell, 'numberTpl');
                     if(tpl && caption)
                         caption = tpl.replace("*", caption);
@@ -5925,7 +5925,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var v=parseFloat((cell.value+"").replace(/[^\d.-]/g,''));
                     cell.value=(v||v===0)?v:null;
                     //  Note that cell value has true numeric value, while caption has currency format with commas.
-                    caption=unit(capOut ||ren(profile,cell,uicell,f5),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f5),cell);
                     var tpl = getPro(profile, cell, 'currencyTpl');
                     if(tpl && caption!=="")
                         caption = tpl.replace("*", caption);
@@ -5934,30 +5934,30 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 break;
                 case 'date':
                     cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):xui.Date.parse(cell.value);
-                    caption=unit(capOut || ren(profile,cell,uicell,f1),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f1),cell);
                     if(node)
                         node.html(caption, false);
                 break;
                 case 'datetime':
                     cell.value= xui.isDate(cell.value)?cell.value:xui.isFinite(cell.value)?new Date(parseInt(cell.value,10)):xui.Date.parse(cell.value);
-                    caption=unit(capOut || ren(profile,cell,uicell,f0),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f0),cell);
                     if(node)
                         node.html(caption, false);
                 break;
                 case 'input':
                     cell.value=cell.value||"";
-                    caption=unit(capOut ||ren(profile,cell,uicell),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell),cell);
                     if(node)node.html(caption,false);
                 break;
                 case 'textarea':
                     cell.value=cell.value||"";
-                    caption=unit(capOut ||ren(profile,cell,uicell,f2),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f2),cell);
                     if(node)node.html(caption,false);
                 break;
                 case 'color':
                     var c=xui.UI.ColorPicker._ensureValue(0,cell.value);
                     cell.value=cell.value?((c!=="transparent"?'#':'')+c):"";
-                    caption=unit(capOut ||ren(profile,cell,uicell),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell),cell);
                     if(cell.value){
                         t1=xui.UI.ColorPicker.getTextColor(cell.value);
                         if(node){
@@ -5991,7 +5991,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'progress':
                     cell.value=parseFloat(cell.value)||0;
                     cell.value=Math.min(Math.max(cell.value,0),1);
-                    caption=unit(capOut ||ren(profile,cell,uicell,f3),cell);
+                    caption=unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f3),cell);
                     if(node){
                         node.first().html(caption, false);
                         node.width(caption);
@@ -6001,18 +6001,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 case 'listbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
                     // don't use capOut in capOut case
-                    caption=xui.adjustRes(unit(/*capOut ||*/ren(profile,cell,uicell,f6),cell));
+                    caption=xui.adjustRes(unit(/*xui.isSet(capOut)?capOut:*/ren(profile,cell,uicell,f6),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 case 'dropbox':
                 case 'cmdbox':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell,f7),cell));
+                    caption=xui.adjustRes(unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f7),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
                 default:
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
-                    caption=xui.adjustRes(unit(capOut ||ren(profile,cell,uicell),cell));
+                    caption=xui.adjustRes(unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
             }
 
@@ -6517,7 +6517,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         });
                 }
                 if(('caption' in options) && editor && editor.setCaption){
-                    editor.setCaption(options.caption||null,true);
+                    editor.setCaption(xui.isSet(options.caption)?options.caption:null,true);
                 }
 
                 cell._dirty=1;
