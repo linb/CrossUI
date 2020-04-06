@@ -4141,12 +4141,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         var type=getPro(profile, cell, 'type'),
                             disabled=getPro(profile, cell, 'disabled'),
                             readonly=getPro(profile, cell, 'readonly'),
-                            event=getPro(profile, cell, 'event'),
+                            onClickCell=getPro(profile, cell, 'onClickCell')||getPro(profile, cell, 'event'),
                             mode = p.activeMode,
                             editable=getPro(profile, cell, 'editable');
 
                         if(!disabled && (!editable || (type=='button'||type=='label'))){
-                            if(typeof event == 'function' && false===event.call(profile._host||profile, profile, cell, null,null,e,src)){}
+                            if(typeof onClickCell == 'function' && false===onClickCell.call(profile._host||profile, profile, cell, e, src, cell._row, cell._col)){}
                             else if(profile.onClickCell)
                                 profile.boxing().onClickCell(profile, cell, e, src, cell._row, cell._col);
                             if(type=='button')
@@ -4155,9 +4155,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // checkbox is special for editor
                         if(!disabled && !readonly && type=='checkbox')
                             if(editable){
-								var v = cell.value;
+                                var v = cell.value;
 
-								box._updCell(profile, cell, !v, p.dirtyMark, true, true);
+                                box._updCell(profile, cell, !v, p.dirtyMark, true, true);
                                 var e = xui.get(cell,['editorEvents','onChange']);
                                 if(e)e(null, v, !v);
 
@@ -6741,7 +6741,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 rowId = row.id,
                 ishotrow=rowId==profile.box._temprowid,
                 editMode= getPro('editMode'),
-				adjustEditorInput= getPro('adjustEditorInput'),
+                adjustEditorInput= getPro('adjustEditorInput'),
                 inline=editMode=="inline"||(getPro('type')=='dropbutton'),
                 baseNode = profile.getSubNode('SCROLL' + row._region + col._region),
                 //baseNode = profile.getSubNode('BORDER'),
@@ -7127,22 +7127,22 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             options.tagVar=editorPrf.properties.tagVar;
 
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col))){
-							if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
-								profile._setFromEditor=1;
-								grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
-								delete profile._setFromEditor;
-							}
-							if((nc=_getcell(editorPrf)) && nc!==cc){
-								editorPrf.$cell = nc
-								nc._editor=editor;
-								if(!inline){
-									profile.$cellInEditor=nc;
-								}
-							}
+			              if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
+			                profile._setFromEditor=1;
+			                grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+			                delete profile._setFromEditor;
+			              }
+			              if((nc=_getcell(editorPrf)) && nc!==cc){
+			                editorPrf.$cell = nc
+			                nc._editor=editor;
+			                if(!inline){
+			                  profile.$cellInEditor=nc;
+			                }
+			              }
 
-							if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
-								xui.tryF(editor.undo,[true],editor);
-							}
+			              if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
+			                xui.tryF(editor.undo,[true],editor);
+			              }
                         }
                     })
                     .beforeNextFocus(function(editorPrf, e){
@@ -7178,21 +7178,35 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         var absPos=cellNode.offset(null, baseNode),
                             size = cellNode.cssSize(),
                             absPos2 = toggleNode?toggleNode.offset(null, cellNode):null,
-                            w2 = toggleNode?toggleNode.width():null;
+                            w2 = toggleNode?toggleNode.width():null,
+                            mw=-1,mh=-1,w1=-1,h2=-1,t;
                         if(absPos2)absPos2.left+=w2;
                         // too small
                         if(  toggleNode && (absPos2.left > size.width - 8))return;
  
                         //show editor
                         if(type=='textarea'){
-                            editor.setWidth(Math.max(200,size.width  - (toggleNode?absPos2.left:0)  +(cb?3:0))).setHeight(Math.max(100,size.height +(cb?2:0)))
-                            .reLayout(true,true)
-                            .reBoxing()
-                            .popToTop(cellNode, 4, baseNode);
+                            mw=200;
+                            mh=100;
+                        }
+                        if(t = editorProperties && editorProperties.width){
+                          w2= xui.CSS.$px(t)||0;
+                        }
+                        if(t == "fill"){
+                          mw = Math.max(mw, baseNode.get(0).clientWidth);
+                        }
+                        if(t = editorProperties && editorProperties.height){
+                          h2= xui.CSS.$px(t)||0;
+                        }
+                        editor
+                        .setWidth(Math.max(mw, w2, size.width  - (toggleNode?absPos2.left:0)  +(cb?3:0)))
+                        .setHeight(Math.max(mh, h2, size.height +(cb?2:0)))
+                        .reLayout(true,true)
+                            
+                        if(mw!=-1||mh!=-1){
+                          editor.reBoxing().popToTop(cellNode, 4, baseNode);
                         }else{
-                            //**toggleNode
-                            editor.setWidth(size.width  - (toggleNode?absPos2.left:0)  +(cb?3:0)).setHeight(size.height +(cb?2:0)).reLayout(true);
-                            editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0)  -(cb?1:0))+'px',(absPos.top -(cb?1:0))+'px');
+                          editor.reBoxing().show((absPos.left + (toggleNode?absPos2.left:0)  -(cb?1:0))+'px',(absPos.top -(cb?1:0))+'px');
                         }
 
                         var expand,
@@ -7255,7 +7269,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 xui.tryF(editor&&editor.activate,[],editor);
                         }
                     }
-					if(adjustEditorInput)adjustEditorInput(cell, editor, profile);
+          			if(adjustEditorInput)adjustEditorInput(cell, editor, profile);
                     if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile, cell, editor, 'cell', cell._row, cell._col);
                 }
             }

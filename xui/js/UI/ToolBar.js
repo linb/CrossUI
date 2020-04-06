@@ -236,6 +236,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             GROUP:{
                 // crack for: The IE 'non-disappearing content' bug
                 position:'static',
+				display:'inline',
                 padding:'.125em .25em 0 .125em',
                 'vertical-align':'middle'
             },
