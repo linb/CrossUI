@@ -7,7 +7,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
         iniComponents : function(){
             // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
-            
+
             append(
                 xui.create("xui.UI.Dialog")
                 .setHost(host,"dialog")
@@ -22,7 +22,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setOverflow("visible")
                 .beforeClose("_dialog_beforeclose")
             );
-            
+
             host.dialog.append(
                 xui.create("xui.UI.Group")
                 .setHost(host,"grpNodes")
@@ -34,7 +34,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setCaption("$(RAD.custom_dlg.Gradient Patterns)")
                 .setToggleBtn(false)
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton6")
@@ -46,7 +46,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton19")
@@ -58,7 +58,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton20")
@@ -70,7 +70,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton21")
@@ -82,7 +82,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton22")
@@ -94,7 +94,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton23")
@@ -106,7 +106,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton24")
@@ -118,7 +118,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton25")
@@ -130,7 +130,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton26")
@@ -142,7 +142,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton27")
@@ -154,7 +154,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton28")
@@ -166,7 +166,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton29")
@@ -178,7 +178,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton30")
@@ -190,7 +190,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton31")
@@ -202,7 +202,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton32")
@@ -214,7 +214,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton33")
@@ -226,7 +226,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton34")
@@ -238,7 +238,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton35")
@@ -250,7 +250,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton36")
@@ -262,7 +262,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton37")
@@ -274,7 +274,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton38")
@@ -286,7 +286,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton39")
@@ -298,7 +298,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton40")
@@ -310,7 +310,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton41")
@@ -322,7 +322,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.grpNodes.append(
                 xui.create("xui.UI.HTMLButton")
                 .setHost(host,"ctl_htmlbutton42")
@@ -334,7 +334,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHtml("$RAD.custom_dlg.Text")
                 .onClick("_btnclick")
                 );
-            
+
             host.dialog.append(
                 xui.create("xui.UI.Group")
                 .setHost(host,"ctl_group11")
@@ -350,7 +350,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr1")
@@ -389,7 +389,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr2")
@@ -428,7 +428,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr3")
@@ -467,7 +467,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr4")
@@ -506,7 +506,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr5")
@@ -545,7 +545,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr6")
@@ -584,7 +584,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr7")
@@ -623,7 +623,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"clr8")
@@ -662,7 +662,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span500")
@@ -701,7 +701,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span501")
@@ -740,7 +740,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span502")
@@ -779,7 +779,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span503")
@@ -818,7 +818,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span504")
@@ -857,7 +857,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span505")
@@ -896,7 +896,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span506")
@@ -935,7 +935,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span507")
@@ -974,7 +974,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span508")
@@ -1013,7 +1013,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span509")
@@ -1052,7 +1052,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span510")
@@ -1091,7 +1091,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span511")
@@ -1130,7 +1130,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span512")
@@ -1169,7 +1169,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span513")
@@ -1208,7 +1208,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span514")
@@ -1247,7 +1247,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span515")
@@ -1286,7 +1286,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span516")
@@ -1325,7 +1325,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span517")
@@ -1364,7 +1364,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span518")
@@ -1403,7 +1403,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span519")
@@ -1442,7 +1442,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span520")
@@ -1481,7 +1481,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span521")
@@ -1520,7 +1520,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span522")
@@ -1559,7 +1559,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span523")
@@ -1598,7 +1598,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span524")
@@ -1637,7 +1637,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span525")
@@ -1676,7 +1676,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.ctl_group11.append(
                 xui.create("xui.UI.Span")
                 .setHost(host,"ctl_span760")
@@ -1715,7 +1715,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.dialog.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"ctl_block3")
@@ -1726,7 +1726,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setBorderType("inset")
                 .setBackground("#ffffff")
                 );
-            
+
             host.ctl_block3.append(
                 xui.create("xui.UI.TreeGrid")
                 .setHost(host,"tg")
@@ -1782,7 +1782,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }
                 )
                 );
-            
+
             host.dialog.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"xui_ui_block6")
@@ -1792,7 +1792,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setHeight("0em")
                 .setZIndex(0)
                 );
-            
+
             host.dialog.append(
                 xui.create("xui.UI.StatusButtons")
                 .setHost(host,"xui_ui_statusbuttons3")
@@ -1826,157 +1826,157 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 .setValue("active;focus;hover;normal")
                 .onChange("_xui_ui_statusbuttons3_onchange")
                 );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-25")
                 .setClassName("xui-predifined-css-25")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-12")
                 .setClassName("xui-predifined-css-12")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-24")
                 .setClassName("xui-predifined-css-24")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-7")
                 .setClassName("xui-predifined-css-7")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-5")
                 .setClassName("xui-predifined-css-5")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-3")
                 .setClassName("xui-predifined-css-3")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-10")
                 .setClassName("xui-predifined-css-10")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-13")
                 .setClassName("xui-predifined-css-13")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-1")
                 .setClassName("xui-predifined-css-1")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-8")
                 .setClassName("xui-predifined-css-8")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-2")
                 .setClassName("xui-predifined-css-2")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-15")
                 .setClassName("xui-predifined-css-15")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-22")
                 .setClassName("xui-predifined-css-22")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-11")
                 .setClassName("xui-predifined-css-11")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-18")
                 .setClassName("xui-predifined-css-18")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-20")
                 .setClassName("xui-predifined-css-20")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-14")
                 .setClassName("xui-predifined-css-14")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-16")
                 .setClassName("xui-predifined-css-16")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-21")
                 .setClassName("xui-predifined-css-21")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-19")
                 .setClassName("xui-predifined-css-19")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-4")
                 .setClassName("xui-predifined-css-4")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-6")
                 .setClassName("xui-predifined-css-6")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-23")
                 .setClassName("xui-predifined-css-23")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-9")
                 .setClassName("xui-predifined-css-9")
             );
-            
+
             append(
                 xui.create("xui.UI.CSSBox")
                 .setHost(host,"xui-predifined-css-17")
                 .setClassName("xui-predifined-css-17")
             );
-            
+
             return children;
             // ]]Code created by CrossUI RAD Studio
         },
@@ -1992,9 +1992,9 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
             .setBlurTrigger("RAD.CustomDecoration2",function(){
                 ns.dialog.close();
             });
-            
+
             ns.clr1.getRoot().onClick(true);
-            
+
             ns.dialog.activate();
 
             return true;
@@ -2048,7 +2048,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
 
             cell={
                 type:CONF.isPureClientMode()?"input":"popbox",
-                event : CONF.isPureClientMode()?null:
+                onClickCell : CONF.isPureClientMode()?null:
                 function(profile, cell,editorprf){
                     if(CONF.isPureClientMode())return;
                     var node = profile.getSubNode('CELL', cell._serialId);
@@ -2130,7 +2130,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 type:"combobox", editorListItems:CONF.designer_data_textalign
             };
             rows.push({id:'text-align',cells:[{id:'text-align',caption:"$(RAD.custom_dlg.text$-align)"},cell,cell,cell,cell]});
-            
+
             cell={
                 type:"combobox", editorListItems:CONF.designer_data_textdecoration
             };
@@ -2200,12 +2200,12 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 ns.tg.updateCellByRowCol('opacity','hover',{value:1},false,false);
                 ns.tg.updateCellByRowCol('opacity','active',{value:1},false,false);
                 ns.tg.updateCellByRowCol('opacity','focus',{value:1},false,false);
-    
+
                 ns.fireEvent('onFinished');
                 if(ns._targetPrf['xui.UIProfile'])
                     ns._targetPrf.getRoot().css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE,visibility:'hidden',display:'none','z-index':0});
                 ns._targetPrf=null;
-    
+
                 profile.boxing().hide();
             }
 
@@ -2228,7 +2228,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 case "border-radius":
                 case "padding":
                 case "margin":
-                    attr.border = { 
+                    attr.border = {
                         top: getV('border-top') || getV('border'),
                         right: getV('border-right') || getV('border'),
                         bottom: getV('border-bottom') || getV('border'),
@@ -2401,7 +2401,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 {}
             ];
 
- 
+
             var patternArray=[simplePattern,mattePattern,shinyPattern,classPattern,flatPattern];
             var textColorSetting=["#eeeeee","#eeeeee","#eeeeee","#222222","#222222"];
             var textshadowSetting=["none","0 -1px 0 {boxshadow2}","0 1px 0 {boxshadow2}","0 1px 0 {boxshadow1}","0 -1px 0 {boxshadow1}"];
@@ -2436,7 +2436,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                 }else{
                     if(!o['background-image'])o['background-image']='none';
                 }
-        
+
                 if(o=pattern[1]){
                     if(o.color)o.color=rep(textColorSetting[j-1]);
                     if(o["text-shadow"])o["text-shadow"]=rep(textshadowSetting[j-1]);
@@ -2459,7 +2459,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
                         if(!o['background-image'])o['background-image']='none';
                     }
                 }
-        
+
                 if(o=pattern[2]){
                     if(o.color)o.color=rep(textColorSetting[j-1]);
                     if(o["text-shadow"])o["text-shadow"]=rep(textshadowSetting[j-1]);
@@ -2501,7 +2501,7 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
             }
         },
         _btnclick:function (profile, e, value){
-            var ns = this, 
+            var ns = this,
                 target=ns._targetPrf,
                 ins=target.boxing(),
                 cls=profile.properties.className,
@@ -2519,8 +2519,8 @@ xui.Class('RAD.CustomDecoration2', 'xui.Module',{
             ns.fireEvent('onDirty');
         },
         _xui_ui_statusbuttons3_onchange:function (profile, oldValue, newValue, force, tag){
-            var ns = this, 
-                tg = ns.tg, 
+            var ns = this,
+                tg = ns.tg,
                 arr = newValue.split(';'),
                 target = ns._targetPrf,
                 ins=target.boxing && target.boxing();

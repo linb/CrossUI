@@ -113,7 +113,7 @@
             "id" : "col16",
             "caption" : "button",
             "type" : "button",
-            "event" : function(prorile,cell){alert('Event in column!');return false;},
+            "onClickCell" : function(prorile,cell){alert('Event in column!');return false;},
             "width" : 50
         }
     ],
@@ -163,7 +163,7 @@
             {
                 "value":'disabled',
                 disabled:true,
-                "event":function(){alert('Event is cell!')}
+                "onClickCell":function(){alert('Event in cell!')}
             }
             ]
         },
