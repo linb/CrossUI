@@ -12,7 +12,7 @@
     * __autoload class
     * @author rambolee <linb.net@gmail.com>
     **/
-    function __autoload($class){
+    spl_autoload_register(function($class){
        try{
            $path = LINB::$DIR_LINB.LINB::$DIR_CLASS.str_replace('_', DIRECTORY_SEPARATOR, str_replace('.', DIRECTORY_SEPARATOR, $class)).'.php';
            if(!file_exists($path)){
@@ -32,7 +32,7 @@
        }catch (LINB_E $e){
            throw new LINB_E($e->getMessage(), $e->getCode());
        }
-    }
+    });
 
     /**
     * Exception class for LINB

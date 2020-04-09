@@ -183,7 +183,7 @@ class IO{
 	 */
 	private $last_dir;
 
-	function IO() {
+	function __construct() {
 		$this->last_dir = "";
 		return $this;
 	}
