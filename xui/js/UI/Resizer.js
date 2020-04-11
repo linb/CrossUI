@@ -117,7 +117,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     o.$resizer = target.addResizer(args, update);
 
                     o.$resizer.get(0).$parentUIProfile=o;
-                    
+
                     // hide resizer
                     if(d.visibility=='hidden'){
                         o.$resizer.hide();
@@ -146,7 +146,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         xui.each('minHeight,minWidth,maxHeight,maxWidth'.split(','),function(i){
                             if(i in t)arg[i]=t[i];
                         });
-                        
+
                         if(t.resizerProp && !xui.isEmpty(t.resizerProp)){
                             xui.merge(arg,t.resizerProp,'all');
                         }
@@ -198,7 +198,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 opacity: 1,
                 display:'block'
             },
-            MOVE:{ 
+            MOVE:{
                 position:'absolute',
                 display:'block',
                 'z-index':100,
@@ -342,7 +342,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 },
                 onDragstop:function(profile, e, src){
                     profile.box._onDragstop(profile, e, src, "exmove");
-                } 
+                }
             },
             ROTATE:{
                 beforeMousedown:function(profile, e, src){
@@ -357,7 +357,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 },
                 onDragstop:function(profile, e, src){
                     profile.box._onDragstop(profile, e, src, "rotate");
-                } 
+                }
             },
             LT:{
                 beforeMousedown:function(profile, e, src){
@@ -693,9 +693,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             t._handlerSize =  profile.$em(t.handlerSize)+'em';
             t._extend =  profile.$em(t.extend)+'em';
 
-            t._leftCofigBtn = t.leftConfigBtn?'':'display:none';       
+            t._leftCofigBtn = t.leftConfigBtn?'':'display:none';
             t._rightCofigBtn = t.rightConfigBtn?'':'display:none';
-            
+
             var r=t.rotatable;
             if(r && xui.browser.ie&&xui.browser.ver<=8)
                 r=false;
@@ -865,9 +865,11 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             profile.oos = profile.oos ||{};
             var dd = xui.DragDrop.getProfile(),
                 t=profile.properties,
+                xOff=t.xOff||0,
+                yOff=t.yOff||0,
                 elemAngle = profile.o_rotate,
-                cs = profile.o_size, 
-                sp = profile.o_pos,    
+                cs = profile.o_size,
+                sp = profile.o_pos,
                 os = dd.offset,
                 dx = os.x,
                 dy = os.y,
@@ -887,7 +889,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
 
                 dx = distance * Math.abs(Math.cos(offAngle * Math.PI/180)) * flagX;
                 dy = distance * Math.abs(Math.sin(offAngle* Math.PI/180)) * flagY;
-            } 
+            }
             // no data
             if(dx == profile.oos.width && dy == profile.oos.height)return;
             profile.oos={width:dx, height:dy};
@@ -943,7 +945,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     oldBboxH = cs.width * yRate + cs.height * xRate,
                     oldBboxL = oldBBoxCX - oldBboxW/2,
                     oldBboxT = oldBBoxCY - oldBboxH/2,
-                    
+
                     // new bbox
                     newBboxCX = (data.left||sp.left) +  (data.width||cs.width)/2,
                     newBboxCY = (data.top||sp.top) +  (data.height||cs.height)/2,
@@ -1046,7 +1048,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             data.transform = "";
             if(!xui.isEmpty(data)){
                 var t1=0;
-                
+
                 if('left' in data){
                   t1 = Math.floor(parseFloat(data.left));
                   if(data.left !== t1){
@@ -1061,6 +1063,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     data.top = t1;
                   }
                 }
+
                 xui.each(data,function(o,i){
                   if(i!=="transform")
                     data[i]=Math.floor(parseFloat(o))+'px';
@@ -1080,7 +1083,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 profile.proxy.css(data);
                 if(profile.onChange)
                     profile.boxing().onChange(profile,profile.proxy);
-                s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? (parseInt(data.left,10) + " : " + parseInt(data.top,10)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10)); 
+                s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? ((parseInt(data.left,10)-xOff) + " : " + (parseInt(data.top,10)-yOff)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10));
                 xui.Tips.show(e,{tips:s});
             }
         },
@@ -1088,8 +1091,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             var cssSize, cssPos,
                 offsize, offpos,
                 rotate,
-                cs = profile.o_size, 
-                sp = profile.o_pos,    
+                cs = profile.o_size,
+                sp = profile.o_pos,
                 o = profile.proxy,
                 args = this._getDDParas(profile.o_rotate, axis);
             if(axis!="exmove"){
@@ -1097,19 +1100,19 @@ xui.Class("xui.UI.Resizer","xui.UI",{
               if(!args.move && !args.rotate){
                   cssSize = o.cssSize();
                   offsize = {
-                      width : cssSize.width - cs.width, 
+                      width : cssSize.width - cs.width,
                       height : cssSize.height - cs.height
                   };
                  if(offsize.width===0 && offsize.height===0)offsize=null;
               }
-              
+
               cssPos = o.cssPos();
               offpos = {
-                  left : cssPos.left - sp.left,  
+                  left : cssPos.left - sp.left,
                   top : cssPos.top - sp.top
               };
              if(offpos.left===0 && offpos.top===0)offpos=null;
-              
+
               if(args.rotate)
                   rotate=o.rotate();
 
@@ -1126,7 +1129,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             //profile.boxing().active();
             profile.$onDrag = false;
             delete profile.o_rotate;
-            
+
             profile.box._tryCursors(profile);
             xui.Tips.hide();
         }
