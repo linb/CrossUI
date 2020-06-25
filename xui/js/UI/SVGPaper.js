@@ -62,7 +62,7 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
             var profile=this,
                 root=profile.getRootNode(),
                 prop=profile.properties,
-            // force to px    
+            // force to px
             w=xui.CSS.$px(prop.width,root,true),h=xui.CSS.$px(prop.height,root,true);
             (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["svgClear"]=function(){
                 if(profile._paper){
@@ -98,12 +98,13 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
             }
             if(profile._paper){
             	  xui.setTimeout(function(){
-            	        if(profile && !profile.destroyed){
+            	      if(profile && !profile.destroyed){
+                      var size = profile._paper.getSize();
             	  	    // ensure right position
             	  	    if(profile.$designerRoot)
                                  profile._frame=profile._paper.rect(0,0,1,1,0).attr({"stroke-width":"0px"});
             	  	    else if(profile.$inDesign)
-                                profile._frame=profile._paper.rect(0,0,w,h,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
+                                profile._frame=profile._paper.rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
                         if(profile._frame)profile._frame._decoration=1;
                     }
                 });
@@ -128,36 +129,36 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                 if( (width && pw!=width) || (height && ph!=height) ){
                     var args={},node=profile.getSubNode("SVG");
                     paper.setSize(width,height);
-                    
+
                     if(profile.$inDesign && profile._frame){
                         if(width||width===0)
                             profile._frame.attr('width',width);
                         if(height||height===0)
                             profile._frame.attr('height',height);
                     }
-                    
+
                     if(!(width||width===0)){
-                       width=pw; 
+                       width=pw;
                     }
                     args.width=width;
                     if((height||height===0)){
-                       height=ph; 
+                       height=ph;
                     }
                     args.height=height;
-                    
+
                     if((!xui.isEmpty(args)) && xui.Dom.$hasEventHandler(node.get(0),'onsize'))
                         node.onSize(true, args);
 
                     if(scaleChildren){
                         paper.forEach(function(elem){
-                            var wr=width/ow,hr=height/oh,xuiElem, 
+                            var wr=width/ow,hr=height/oh,xuiElem,
                                 fun=function(elem, key) {
                                     var xuiElem=xui.UIProfile.getFromDom(elem.node.id);
                                     if(!xuiElem)return;
 
                                     var attr=elem.attr(),
                                         hash;
-                                        
+
                                     switch(elem.type){
                                         // circle is xuiElem, so dont use cirle in this case
                                         case 'circle':
@@ -203,10 +204,10 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                                     }
                                 };
                             // find root node
-                            if(profile._frame!==elem 
-                                && elem.node.$xid 
-                                && elem.node.id 
-                                && !/^[^:]+-/.test(elem.node.id) 
+                            if(profile._frame!==elem
+                                && elem.node.$xid
+                                && elem.node.id
+                                && !/^[^:]+-/.test(elem.node.id)
                                 ){
 
                                 if(elem._isGroupFirst){

@@ -7877,8 +7877,10 @@ xui.Class("xui.absValue", "xui.absObj",{
                         if(xui.isSet(r))v=r;
                     }
 
-                    // _setCtrlValue maybe use $UIvalue
-                    profile.boxing()._setCtrlValue(prop.value = v);
+                    // must set value here, because '_setCtrlValue' maybe use $UIvalue
+                    prop.value = v;
+                    if(profile.renderId)
+                      profile.boxing()._setCtrlValue(v);
                     // So, maintain $UIvalue during _setCtrlValue call
                     prop.$UIvalue = v;
                 }
