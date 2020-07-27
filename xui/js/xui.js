@@ -1,7 +1,7 @@
 /*!
 * CrossUI(xui) JavaScript Library v2.1
 * http://crossui.com
-* 
+*
 * Copyright ( 2004 ~ present) CrossUI.com
 * Released under the MIT license
 *
@@ -48,7 +48,7 @@ xui.Class=function(key, pkey, obj){
         if(reg[i])t[i]=1;
     for(i in t)
         delete _Static[i];
-    
+
     //before and after will pass to children
     _Static.Before = obj.Before || (parent0&&parent0.Before);
     _Static.After = obj.After || (parent0&&parent0.After);
@@ -135,7 +135,7 @@ xui.Class=function(key, pkey, obj){
     xui.tryF(_this.$End, [], _this);
 
     xui.breakO([obj.Static, obj.Instance, obj],2);
-    
+
     if(!(key in _c)){
         _c[key]=_c.length;
         _c.push(key);
@@ -198,7 +198,7 @@ new function(){
     w.requestIdleCallback = w.requestIdleCallback || function (cb) {
         return setTimeout(function () {
           var start = Date.now();
-          cb({ 
+          cb({
             didTimeout: false,
             timeRemaining: function () {
               return Math.max(0, 50 - (Date.now() - start));
@@ -206,7 +206,7 @@ new function(){
           });
         }, 1);
     };
-    w.cancelIdleCallback = w.cancelIdleCallback || function (id) {clearTimeout(id)}; 
+    w.cancelIdleCallback = w.cancelIdleCallback || function (id) {clearTimeout(id)};
 };
 
 new function(){
@@ -314,12 +314,12 @@ new function(){
             p2.splice(deep);
             l1 = p2.length;
             if(l1 > l2){
-              h[k]=v; 
+              h[k]=v;
               return false;
             }
             while(i <= l1-1){
               if(path[i] !== p2[i]){
-                h[k]=v; 
+                h[k]=v;
                 return false;
               }
               i++;
@@ -383,10 +383,10 @@ new function(){
         scope: 'this' for fun
         */
         resetRun:function(key, fun, defer ,args, scope){
-            var me=xui.resetRun, key, task, cache = me.$cache || ( 
-              (me.get=me.exists=function(k){return this.$cache[k]}) && 
-              (me.run=function(k,c){if(c=this.$cache[k]){xui.clearTimeout(c.id);c.task();delete this.$cache[k]}}) && 
-              (me.cancel=function(k){xui.resetRun(k)}) && 
+            var me=xui.resetRun, key, task, cache = me.$cache || (
+              (me.get=me.exists=function(k){return this.$cache[k]}) &&
+              (me.run=function(k,c){if(c=this.$cache[k]){xui.clearTimeout(c.id);c.task();delete this.$cache[k]}}) &&
+              (me.cancel=function(k){xui.resetRun(k)}) &&
               (me.$cache = {})
             );
             if(cache[key]) xui.clearTimeout(cache[key].id);
@@ -567,7 +567,7 @@ new function(){
                         switch(p[2]) {
                             case 'function':
                                 //arguments:
-                                //1: array, all arguments; 
+                                //1: array, all arguments;
                                 //2: the data position index,  args[i] is $0;
                                 //3: the regexp index
                                 return p[0](args, i, j-1);
@@ -598,7 +598,7 @@ new function(){
                         isArr=xui.isArr(hash),
                         h=isArr?[]:{},
                         i=0,v,l;
-                    
+
                     if(!xui.isSet(deep)) deep=100; else if(deep<=0)return hash;
 
                     if(isArr){
@@ -959,24 +959,29 @@ new function(){
         }
     });
 };
-
-xui.merge(xui.fun,{
-    body:function(fun){
-        var s=""+fun;
-        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});        
-        return s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
-    },
-    args:function(fun){
-        var s=""+fun;
-        s=s.replace(/(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,function(a){return a.charAt(0)!=")"?"":a});
-        s=s.slice(s.indexOf("(") + 1, s.indexOf(")")).split(/\s*,\s*/);
-        return s[0]?s:[];
-    },
-    clone:function(fun){
-        return new Function(xui.fun.args(fun),xui.fun.body(fun));
-    }
-});
-
+new function(){
+  var reg1 = /(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,
+    reg2 = /^\s*(\([\w,\s]+\)|[\w]+)\s*=>\s*([^{\s*][\s\S]*)/;
+  xui.merge(xui.fun,{
+      body:function(fun){
+          var s=""+fun;
+          s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+          r=reg2.exec(s);
+          return r?r[2]:s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
+      },
+      args:function(fun){
+          var s=""+fun;
+          s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+          r=reg2.exec(s);
+          s=r?r[1]:s;
+          s=xui.str.trim(s.indexOf("(")!=-1?s.slice(s.indexOf("(") + 1, s.indexOf(")")):s).split(/\s*,\s*/);
+          return s[0]?s:[];
+      },
+      clone:function(fun){
+          return new Function(xui.fun.args(fun),xui.fun.body(fun));
+      }
+  });
+};
 xui.merge(xui.Class, {
     _reg:{$key:1,$parent:1,$children:1,KEY:1,Static:1,Instance:1,Constructor:1,Initialize:1},
     // give nodeType to avoid breakO
@@ -1117,7 +1122,7 @@ xui.merge(xui,{
     $us:function(p){
         // ie67 always px
         return (xui.browser.ie6||xui.browser.ie7) ? p ? -2 : -1:
-            ( p = p ? (p._spaceUnit || (p.properties && p.properties.spaceUnit)) :'') == 'px' ? -2 :  p=='em'? 2 : 
+            ( p = p ? (p._spaceUnit || (p.properties && p.properties.spaceUnit)) :'') == 'px' ? -2 :  p=='em'? 2 :
                 xui.SpaceUnit == 'px' ? -1 : xui.SpaceUnit == 'em' ? 1 : 0;
         },
     // for show xui.echo
@@ -1245,7 +1250,7 @@ xui.merge(xui,{
         try{
             // a=xui.CSS.$getCSSValue('.setting-uikey','fontFamily');
             // for cross domain
-            e = document.createElement("xui"); 
+            e = document.createElement("xui");
             e.className="setting-uikey";
             document.body.appendChild(e);
             a = xui(e).css('font-family')
@@ -1295,7 +1300,7 @@ xui.merge(xui,{
                     });
                 }else
                     xui.CSS.includeLink(path+'theme.css',id);
-                    
+
                     var count=0,fun=function(){
                         // timeout: 5 seconds
                         if(count++>4){
@@ -1392,8 +1397,8 @@ xui.merge(xui,{
             return c=='$' ? onlyVars?a:d :
                     // $a.b.c-1-3
                     f=='$' ? onlyVars?a:wrap(g,params) :
-                    // $(a.b.c-d) 
-                    i=='$' ? onlyVars?a:wrap(j,params) : 
+                    // $(a.b.c-d)
+                    i=='$' ? onlyVars?a:wrap(j,params) :
                     // $a
                     l=='$' ? onlyVars?a:wrap(m,params) :
                     // variable: @a@ @a.b.c@ {a.b.c}
@@ -1423,7 +1428,7 @@ xui.merge(xui,{
                     (t=/^\s*\{\s*eval\s*\((.*)\)\s*\}\s*$/.exec(obj))  ? this._feval(t[1],scope1||scope2) :
                     // {2.3}
                     (t=/^\s*\{((-?\d\d*\.\d*)|(-?\d\d*)|(-?\.\d\d*))\}\s*$/.exec(obj))  ? parseFloat(t[1]):
-                    // {a.b(3,"a")} 
+                    // {a.b(3,"a")}
                     // scope allows hash only
                     (t=/^\s*\{([\w\.]+\([^)]*\))\s*\}\s*$/.exec(obj)) && (scope1||scope2) && xui.isHash(scope1||scope2) ? (new Function("try{return this." + t[1] + "}catch(e){}")).call(scope1||scope2)  :
                     //{a.b.c} or {prf.boxing().getValue()}
@@ -1435,8 +1440,8 @@ xui.merge(xui,{
     _getrpc:function(uri,query,options){
         var t = (options&&options.proxyType) ? options.proxyType.toLowerCase() : "";
 
-        return (t=="sajax"||t=="jsonp") ? xui.JSONP 
-        : (t=="iajax"||t=="xdmi") ? xui.XDMI 
+        return (t=="sajax"||t=="jsonp") ? xui.JSONP
+        : (t=="iajax"||t=="xdmi") ? xui.XDMI
         : (t=="ajax") ? xui.Ajax
         // include a file => XDMI
         : (typeof query=='object' && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
@@ -1544,7 +1549,7 @@ xui.merge(xui,{
     fetchClass:function(uri, onSuccess, onFail, onAlert, force, threadid, options){
         options=options||{};
         if(!options.hasOwnProperty('appPath') && window["/"])options.appPath=window["/"];
-        var c=xui.$cache.clsByURI, 
+        var c=xui.$cache.clsByURI,
             onFetching=xui.$cache.fetching,
             clearFetching=function(){
                 for(var i in onFetching[uri][3])xui.Thread.abort(onFetching[uri][3][i]);
@@ -1629,8 +1634,8 @@ xui.merge(xui,{
                         // for Thread.group in fetchClasses
                         clearFetching();
                     },threadid,{
-                        rspType : 'text', 
-                        asy : !options.sync 
+                        rspType : 'text',
+                        asy : !options.sync
                     }).start();
                 }
             }else{
@@ -1721,7 +1726,7 @@ xui.merge(xui,{
                     return false;
                 }
             });
-            xui.fetchClasses(paths,function(){ 
+            xui.fetchClasses(paths,function(){
                 // add to results
                 for(var i=0,l=clsArr.length;i<l;i++){
                     obj = xui._getIdUri(clsArr[i], options);
@@ -1813,7 +1818,7 @@ xui.merge(xui,{
         if(key[0]=='xui'){
             key.shift();
             if(key.length==(folder?1:0))key.push('xui');
-            
+
             pre=ensureTag((options&&options.xuiPath)||ini.path);
         }else{
             if(key.length==((folder?1:0)+1) && tag=='.js')key.push('index');
@@ -2016,7 +2021,7 @@ xui.merge(xui,{
                                 }
                             }
                          }
-                     }); 
+                     });
                 }
             //from HTML element tagName
             }else if(/^[\w-]+$/.test(tag)){
@@ -2110,9 +2115,9 @@ new function(){
         isSecure:location.href.toLowerCase().indexOf("https")==0,
         // detect touch for browser
         isTouch: !!(navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
-            || (("ontouchend" in d) && !(/hp-tablet/).test(u) ) 
-            || (w.DocumentTouch && d instanceof DocumentTouch) 
-            || w.PointerEvent 
+            || (("ontouchend" in d) && !(/hp-tablet/).test(u) )
+            || (w.DocumentTouch && d instanceof DocumentTouch)
+            || w.PointerEvent
             || w.MSPointerEvent),
         isIOS:/iphone|ipad|ipod/.test(u),
         isAndroid:/android/.test(u),
@@ -2125,12 +2130,12 @@ new function(){
     if(w.matchMedia && typeof w.matchMedia=='function'){
         // detect touch for device
         b.isTouch = w.matchMedia('(any-pointer: coarse)').matches;
-        b.deviceType = b.isTouch 
-            ? ( 
-                (w.matchMedia('(any-hover: hover)').matches || w.matchMedia('(any-pointer: fine)').matches) 
+        b.deviceType = b.isTouch
+            ? (
+                (w.matchMedia('(any-hover: hover)').matches || w.matchMedia('(any-pointer: fine)').matches)
                     ? 'hybrid'
                     : 'touchOnly'
-            ) 
+            )
             : 'mouseOnly';
     }else{
         b.deviceType = b.isTouch ? 'touchOnly' : 'mouseOnly';
@@ -2397,9 +2402,9 @@ new function(){
                         case "arrnovalue":
                             return xui.isArr(x)?xui.arr.indexOf(x,y)==-1:false;
                         case "objarrhaskey":
-                            return xui.isArr(x)?xui.arr.subIndexOf(x,'id',y)!==-1:false;                        
+                            return xui.isArr(x)?xui.arr.subIndexOf(x,'id',y)!==-1:false;
                         case "objarrnokey":
-                            return xui.isArr(x)?xui.arr.subIndexOf(x,'id',y)==-1:false;                        
+                            return xui.isArr(x)?xui.arr.subIndexOf(x,'id',y)==-1:false;
                         default:
                             return false;
                     }
@@ -2462,8 +2467,8 @@ new function(){
                 iconditions=[],t1,t2,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
                 resetid=conf.resetid||null;
-            
-            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf,scope:_ns}; 
+
+            var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf,scope:_ns};
 
             // cover with inline params
             if(method.indexOf("-")!=-1){
@@ -2494,7 +2499,7 @@ new function(){
                 if(arr[1])target = arr[1];
                 if(arr[2])method = arr[2];
             }
-            if(target && method && target!="none"&&method!="none"){   
+            if(target && method && target!="none"&&method!="none"){
                 //adjust params
                 for(var i=redirection?3:(type=="other" && target=="callback")?method=="call"?1:method=="set"?1:0:0,l=iparams.length;i<l;i++)
                     iparams[i]=adjustparam(iparams[i],_ns);
@@ -2524,7 +2529,7 @@ new function(){
                                             if(module && module._showed){
                                                 if(ar.cache)module.hide();else module.destroy();
                                             }
-                                        });   
+                                        });
                                         xui.showModule(ar.cls);
                                         return false;
                                     };
@@ -2552,7 +2557,7 @@ new function(){
                            var cls=xui.get(window,target.split(".")),ins;
                             // TODO: now, only valid for the first one
                             if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
-                            
+
                             if(method=="destroy"){
                                 if(ins)if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                                 return;
@@ -2647,7 +2652,7 @@ new function(){
                                     }else if(method=="console" && xui.isDefined(window.console) && (typeof console.log=="function"))console.log.apply(console,iparams);
                                      else if(xui.isFun(t=xui.get(xui,[method]))) t.apply(xui,iparams);
                                 break;
-                                case "var": 
+                                case "var":
                                     if(iparams[0].length){
                                         var v = iparams[1];
                                         if(iparams[2])
@@ -2762,7 +2767,7 @@ new function(){
                         if(module && typeof fun=='string')fun=module[fun];
                         if(holder && typeof fun=='string')fun=holder[fun];
                         if(typeof fun=='function'){
-                            // only function action can affect return 
+                            // only function action can affect return
                             if(false===(irtn=xui.tryF(fun, _ns.args, _ns.page))){
                                 resume=j;break;
                             }
@@ -2794,7 +2799,7 @@ new function(){
                     return irtn;
                 };
             if(!innerE){
-                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo}, {scope:_ns}); 
+                xui._debugGroup("pseudo", xui.str.repeat('  ',(level||1)-1) , '"'+fromtag+'"', {pseudo:pseudo}, {scope:_ns});
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "{");
                 if(newbies){
                     temp.newbies={};
@@ -2818,7 +2823,7 @@ new function(){
             if(!innerE){
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "return", rtn );
                 xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)-1) , "}");
-                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1)); 
+                xui._debugGroupEnd("pseudo", xui.str.repeat('  ',(level||1)-1));
             }
             return rtn;
         }/*,
@@ -2907,7 +2912,7 @@ new function(){
                 l = x.length;
                 for(i=0;i<l;++i){
                     if(typeof filter=='function' && false==filter.call(x,x[i],i,b))continue;
-                    
+
                     if(xui.isNaN(v=x[i]))b[b.length]="NaN";
                     else if(xui.isNull(v))b[b.length]="null";
                     else if(!xui.isDefined(v))b[b.length]="undefined";
@@ -2979,8 +2984,8 @@ new function(){
 
     //serialize object to string (bool/string/number/array/hash/simple function)
     xui.serialize = function (obj,filter,dateformat,MAXL,MAXS){
-        return xui.isNaN(obj) ? "NaN" : 
-                    xui.isNull(obj) ? "null" : 
+        return xui.isNaN(obj) ? "NaN" :
+                    xui.isNull(obj) ? "null" :
                     !xui.isDefined(obj) ? "undefined" :
                     T[typeof obj](obj,filter,xui.getDateFormat(dateformat),0,0,MAXL,MAXS)||'';
     };
@@ -2996,11 +3001,11 @@ new function(){
         if(!safeW){
             var ifr = document.createElement( xui.browser.ie && xui.browser.ver<9?"<iframe>":"iframe"),w,d;
             document.body.appendChild(ifr);
-            w=('contentWindow' in ifr) ? ifr.contentWindow : 
+            w=('contentWindow' in ifr) ? ifr.contentWindow :
                 ('window' in ifr) ? ifr.window : ((d=ifr.contentDocument||ifr.document).defaultView||d.parentWindow);
             safeW={};
             for(var i in w)safeW[i]=null;
-            document.body.removeChild(ifr);                
+            document.body.removeChild(ifr);
         }
         str='({ _ : (function(){ with(this){ return ('+str+'); } }).call(safeW) })';
         try{
@@ -3200,7 +3205,7 @@ xui.Class('xui.Thread',null,{
                     }
                 }
             }
-           
+
             p.status="run";
 
             if(!p.tasks.length)
@@ -3403,7 +3408,7 @@ xui.Class('xui.Thread',null,{
 
 /*xui.absIO/ajax
     Required: xui.Thread
-    
+
             get     post    get(cross domain)   post(corss domain)  post file   return big data(corss domain)
     ajax    +       +       -                   -                   -           -
     sajax   +       -       +                   -                   -           * JSONP
@@ -3583,7 +3588,7 @@ xui.Class('xui.absIO',null,{
             if(!ie8 && onLoad)ifr.onload=onLoad;
             ifr.style.display = "none";
             doc.body.appendChild(ifr);
-            w=('contentWindow' in ifr) ? ifr.contentWindow : 
+            w=('contentWindow' in ifr) ? ifr.contentWindow :
                 ('window' in ifr) ? ifr.window : ((d=ifr.contentDocument||ifr.document).defaultView||d.parentWindow);
             return [ifr,w,w.document];
         },
@@ -3734,8 +3739,8 @@ xui.Class('xui.Ajax','xui.absIO',{
                 _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
                 // try to get js object, or the original
                 _response = rspType=="json" ?
-                    /^\s*\</.test(_txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(_txtresponse))) && obj.data ? obj.data    
-                    : ((obj=xui.unserialize(_txtresponse))===false?_txtresponse:obj) 
+                    /^\s*\</.test(_txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(_txtresponse))) && obj.data ? obj.data
+                    : ((obj=xui.unserialize(_txtresponse))===false?_txtresponse:obj)
                     : _txtresponse;
 
                 // crack for some local case ( OK but status is 0 in no-IE browser)
@@ -3820,7 +3825,7 @@ xui.Class('xui.JSONP','xui.absIO',{
             n.src = uri;
             n.type= self.scriptType||'text/javascript';
             n.charset=self.charset||'UTF-8';
-            
+
             if(self.attrs)
                 xui.each(self.attrs,function(o,i){
                     n.setAttribute(i,o);
@@ -3981,7 +3986,7 @@ xui.Class('xui.XDMI','xui.absIO',{
                     }else{
                         //clear first
                         self._clear();
-                        self._onError(new Error("XDMI return value formatting error"));                        
+                        self._onError(new Error("XDMI return value formatting error"));
                     }
                 };
                  if (w.addEventListener) w.addEventListener('message', self._msgcb, false);
@@ -4078,7 +4083,7 @@ xui.Class('xui.XDMI','xui.absIO',{
             document.body.appendChild(form);
             //submit
             form.submit();
-            
+
             if(files.length){
                 xui.arr.each(files,function(o,i){
                     if(i=xui.getObject(o.id)){
@@ -4088,7 +4093,7 @@ xui.Class('xui.XDMI','xui.absIO',{
                     }
                 });
             }
-            
+
             t=form=null;
             //set timeout
             if(self.timeout > 0)
@@ -4215,7 +4220,7 @@ xui.Class('xui.SC',null,{
         __gc:function(k){
             xui.$cache.SC={};
         },
-        // default, SC will get script from url: 
+        // default, SC will get script from url:
         //        App.Name => ./App/Name.js
         //onSucess(text,rspType,threadid)
         //onFail(text,rspType,threadid)
@@ -4575,8 +4580,8 @@ xui.Class('xui.absProfile',null,{
                     if(module.moduleClass && module.moduleXid){
                         var pm = xui.SC.get(module.moduleClass);
                         if(pm && (pm = pm.getInstance(module.moduleXid))){
-                            return getUpperModule(pm);    
-                        }         
+                            return getUpperModule(pm);
+                        }
                     }
                     return module;
                 },t;
@@ -4793,7 +4798,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }
             if(self[v])
                 temp.push(self[v]);
-            
+
             // sort sub node
             xui.arr.stableSort(temp,function(x,y){
                 x=x.$order||0;y=y.$order||0;
@@ -5119,7 +5124,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             var self=this,
                   prf=this.get(0),
                   oldAlias=prf.alias;
-            
+
             alias=alias||prf.alias;
 
             if(oldAlias){
@@ -5154,7 +5159,7 @@ xui.Class('xui.absObj',"xui.absBox",{
         reBindProp:function(dataMap, scope_set, scope_clear, _scope_handled){
             if(!_scope_handled){
                 scope_set=scope_set || xui._scope_set;
-                scope_clear=scope_clear || xui._scope_clear; 
+                scope_clear=scope_clear || xui._scope_clear;
             }
 
             var ns=this,prop,ins,fn,r;
@@ -5225,7 +5230,7 @@ xui.Class("xui.Timer","xui.absObj",{
             self._nodes.push(profile);
             profile.Instace=self;
             self.n0=profile;
-            
+
             if(self._after_ini)self._after_ini(profile,alias);
             return self;
         },
@@ -5384,7 +5389,7 @@ xui.Class("xui.MessageService","xui.absObj",{
 xui.Class("xui.ExcelFormula",null,{
     Static:{
         MAXCOUNT:256,
-        // support functions: +,-,*,/,%,SUM, AVERAGE, MIN, MAX, ROUND, FIXED, CHOOSE 
+        // support functions: +,-,*,/,%,SUM, AVERAGE, MIN, MAX, ROUND, FIXED, CHOOSE
         Supported : (function(){
                 var flatten = function(args){
                     var arr=[], t, args = xui.toArr(args), i=0,l=args.length;
@@ -5395,7 +5400,7 @@ xui.Class("xui.ExcelFormula",null,{
                     return arr;
                 };
                 return {
-                    SUM:function(){ 
+                    SUM:function(){
                         var result = 0, arr = flatten(arguments), i = 0, l=arr.length, v, parsed;
                         for (; i < l; ++i) {
                             v = arr[i];
@@ -5545,7 +5550,7 @@ xui.Class("xui.ExcelFormula",null,{
                     return false;
                 }
             }else{
-                var fake = function(){return 1;}, 
+                var fake = function(){return 1;},
                     reg = new RegExp(xui.toArr(this.Supported,true).join('|'), 'g');
                 str = xui.replace(str, [
                     // protect "" and ''
@@ -5560,7 +5565,7 @@ xui.Class("xui.ExcelFormula",null,{
                 ]);
                 if(/[A-Z_$]/.test(str.replace(reg,'')))
                     return false;
-                str = str.replace(reg,'fake');                
+                str = str.replace(reg,'fake');
                 try{
                     eval(str);
                 }catch(e){
@@ -5575,7 +5580,7 @@ xui.Class("xui.ExcelFormula",null,{
         },
         parse : function(formula){
             return this._parse (formula, null);
-        },        
+        },
         calculate : function(formula, cellsMap, colLimited, rowLimited){
             return this._parse (formula, cellsMap||true, colLimited, rowLimited);
         },
