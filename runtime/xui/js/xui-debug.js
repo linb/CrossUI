@@ -1696,7 +1696,10 @@ xui.merge(xui,{
             // new class in iniComponents
             if(cls['xui.Module'] && xui.isFun(t = cls.prototype.iniComponents)){
                 try{
-                    (t+"").replace(/append\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                    (t+"").replace(/\bappend\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                        if(!xui.SC.get(b))required.push(b);
+                        return a;
+                    }).replace(/\.setRenderer\s*\(\s*['"]([a-zA-Z]+([\w]+\.?)+[\w]+)['"]\s*\)/g,function(a,b){
                         if(!xui.SC.get(b))required.push(b);
                         return a;
                     }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
