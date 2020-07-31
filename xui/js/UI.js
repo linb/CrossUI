@@ -5155,6 +5155,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                             if(xui.isHash(hash.ModuleProp))prop = xui.merge(prop, hash.ModuleProp, 'all');
                             // 'ModuleEvents' in item
                             if(xui.isHash(hash.ModuleEvents))events = xui.merge(events, hash.ModuleEvents, 'all');
+                            // add ref here
+                            prop.parentProp = hash;
                         }
                     };
 

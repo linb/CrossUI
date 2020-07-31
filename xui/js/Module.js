@@ -101,8 +101,8 @@ xui.Class('xui.Module','xui.absProfile',{
 
         // If it's a older module object, refresh itself
         if(properties && properties.constructor==self.constructor){
-        	 var oldm = properties; 
-             
+        	 var oldm = properties;
+
              events = oldm.events || {};
              alias = oldm.alias;
              host = oldm.host;
@@ -127,7 +127,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 events = events || (self.events?xui.clone(self.events):{});
 	        }
 	    }
-        
+
 
         self.Class=self.constructor;
         self.box=self.constructor;
@@ -142,10 +142,10 @@ xui.Class('xui.Module','xui.absProfile',{
         self.link(self.constructor._cache, "self");
         self.link(xui.Module._cache, "xui.module");
         self.link(xui._pool,'xui');
-        
+
         self.host=host||self;
         self.alias=alias;
-        
+
         self.$UIvalue="";
 
         self._nodes=[];
@@ -202,21 +202,21 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(module.moduleClass && module.moduleXid){
                     var pm = xui.SC.get(module.moduleClass);
                     if(pm && (pm = pm.getInstance(module.moduleXid))){
-                        return getUpperModule(pm);    
-                    }         
+                        return getUpperModule(pm);
+                    }
                 }
                 return module;
             };
             return top?getUpperModule(this):this;
         },
-        // ]]] 
+        // ]]]
         /*
          // [[[ fake UIProfile
         linkParent:function(parentProfile, linkId, index){
             var profile=this;
             //unlink first
             profile.unlinkParent();
-            if(!profile.destroyed){ 
+            if(!profile.destroyed){
             //link
                 profile.parent = parentProfile;
                 profile.childrenId = linkId;
@@ -231,7 +231,7 @@ xui.Class('xui.Module','xui.absProfile',{
             profile.unLink('$parent');
             return profile;
         },
-        // ]]] 
+        // ]]]
         */
         _toDomElems:function(){
             var ns=this, innerUI=ns.getUIComponents();
@@ -381,7 +381,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self.events[key]=value;
             else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.events = xui.clone(key);            
+                    self.events = xui.clone(key);
                 }else{
                     xui.merge(self.events, key, 'all');
                 }
@@ -399,7 +399,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self.hooks[key]=value;
             else if(xui.isHash(key)){
                 if(value/*force*/){
-                    self.hooks = xui.clone(key);            
+                    self.hooks = xui.clone(key);
                 }else{
                     xui.merge(self.hooks, key, 'all');
                 }
@@ -482,7 +482,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 applyEvents=function(prf, events, host, args){
                     var j;
                     args=args||[];
- 
+
                     if(xui.isStr(events)||xui.isFun(events))events=[events];
                     if(xui.isNumb(j=(events.actions||events)[0].event)  && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
                     return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder,((host&&host.alias)||(prf.$holder&&prf.$holder.alias)) + "."+ prf.alias + "."+ name);
@@ -519,7 +519,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             if(false===this._fireEvent('beforeShow'))return false;
             parent=parent||xui('body');
-            
+
             if(parent['xui.UIProfile'])parent=parent.boxing();
 
             var self=this,f=function(){
@@ -558,7 +558,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._showed=1;
                 self._fireEvent('afterShow');
             };
-            
+
             self.threadid=threadid;
             if(self.created) f();
             else self.create(f,threadid);
@@ -569,16 +569,25 @@ xui.Class('xui.Module','xui.absProfile',{
             this._showed=0;
         },
         render:function(triggerLayout){
-            var self=this;
+            var self=this, checkSubMdls=function(m){
+                xui.arr.each(m._nodes,function(o){
+                    //Recursive call
+                    if(o['xui.Module']){
+                      o._fireEvent('onRender');
+                      checkSubMdls(o);
+                    }
+                });
+            };
             if(self.renderId!='ok'){
                 self.renderId='ok';
                 self.getUIComponents().render(triggerLayout);
                 self._fireEvent('onRender');
+                checkSubMdls(self);
             }
             return self;
         },
         refresh:function(callback,ignoreEffects, purgeNow){
-            var paras, b, p, s, fun, 
+            var paras, b, p, s, fun,
                 o=this,
                 inm, firstUI,
                 // for builder project module updating
@@ -725,7 +734,7 @@ xui.Class('xui.Module','xui.absProfile',{
                             self._fireEvent('onLoadRequiredClass', [uri,key,layer]);
                         },function(e){
                             self._fireEvent('onLoadRequiredClassErr',  [e,layer]);
-                        },null,false, threadid, 
+                        },null,false, threadid,
                         // dont use require's recursive
                         {stopRecursive:1});
 
@@ -783,7 +792,7 @@ xui.Class('xui.Module','xui.absProfile',{
         _createInnerModules:function(tid){
             var self=this;
             if(self._recursived || self._innerModulesCreated)
-                return;            
+                return;
             var stop, checkCycle=function(h){
                 if(h && h["xui.Module"] && h.moduleClass && h.moduleXid){
                     if(self.KEY == h.moduleClass){
@@ -814,7 +823,10 @@ xui.Class('xui.Module','xui.absProfile',{
             xui.arr.each(self._nodes,function(o){
                 xui.Module.$attachModuleInfo(self,o);
                 //Recursive call
-                if(o['xui.Module'])o._createInnerModules(tid);
+                if(o['xui.Module']){
+                  // o._createInnerModules(tid);
+                  o.create(function(){}, tid);
+                }
             });
             // attach destroy to the first UI control
             var autoDestroy = self.autoDestroy || self.properties.autoDestroy;
@@ -830,7 +842,7 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 });
             self._fireEvent('afterIniComponents');
-            
+
             self._innerModulesCreated=true;
             // must be here
             self.setProperties({});
@@ -993,7 +1005,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             scope_set=scope_set || xui._scope_set;
-            scope_clear=scope_clear || xui._scope_clear; 
+            scope_clear=scope_clear || xui._scope_clear;
 
             // collect keys
             var hash={};
@@ -1020,8 +1032,8 @@ xui.Class('xui.Module','xui.absProfile',{
         reBindProp:function(dataMap, scope_set, scope_clear){
             if(!this._innerModulesCreated)this._createInnerModules();
             scope_set=scope_set || xui._scope_set;
-            scope_clear=scope_clear || xui._scope_clear; 
-            
+            scope_clear=scope_clear || xui._scope_clear;
+
             try{
                 scope_set.call(this, dataMap);
                  xui.each(this._ctrlpool, function(prf){
@@ -1156,7 +1168,7 @@ xui.Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
-                this.$UIvalue=this.properties.value; 
+                this.$UIvalue=this.properties.value;
             }
             return this;
         },
@@ -1167,7 +1179,7 @@ xui.Class('xui.Module','xui.absProfile',{
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
-                this.properties.value=this.$UIvalue; 
+                this.properties.value=this.$UIvalue;
                 return this;
             }
             return this;
@@ -1207,7 +1219,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
         getDataBinders:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
-            
+
             var nodes = xui.copy(this._nodes),t,k='xui.DataBinder';
             xui.filter(nodes,function(o){
                 return !!(o.box[k]);
@@ -1216,7 +1228,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         getForms:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
-            
+
             var nodes = xui.copy(this._ctrlpool),t,k='xui.absContainer';
             xui.filter(nodes,function(o){
                 return !!(o.box[k]);
@@ -1295,7 +1307,7 @@ xui.Class('xui.Module','xui.absProfile',{
         destroy:function(ignoreEffects, purgeNow,keepStructure){
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
-            
+
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
                 try{delete self.host[self.alias]}catch(e){self.host[self.alias]=null}
@@ -1312,7 +1324,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(ns && ns.length)
                 self._nodes.length=0;
         	self._ctrlpool=null;
-            
+
             self.unLinkAll();
 
             if(!keepStructure){
