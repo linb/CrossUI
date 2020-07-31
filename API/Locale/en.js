@@ -7612,7 +7612,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:0.5}));"+
                     "}"
                 ]
-            }, 
+            },
 
             getFormValues:{
                 $desc:"Gets the form field-value map",
@@ -9023,7 +9023,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var btn;xui(id).prepend(btn=new xui.UI.Button({dock:'top',caption:'100%',dockStretch:'stretch'}));"+
                     "}"
                 ]
-            }, 
+            },
             getDockIgnoreFlexFill:{
                 $desc:"To determine whether to ignore the conDockFlexFill property of the parent's container",
                 $rtn:"String"
@@ -9043,7 +9043,7 @@ xui.set(xui.Locale,["en","app"], {
                     "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
                     "}"
                 ]
-            }, 
+            },
             getDockMinH:{
                 $desc:"Gets dock minimal height on the first UIProfile",
                 $rtn:"Number",
@@ -10402,7 +10402,7 @@ xui.set(xui.Locale,["en","app"], {
                     "xui.asyRun(function(){btn.setImage('img/img.gif').setImagePos('left -16px'); alert(btn.getImagePos())},1000)"+
                     "}"
                 ]
-            },           
+            },
             getImageBgSize :{
                 $desc:"Gets the image background size property value on the first UIProfile",
                 $rtn:"String"
@@ -10414,7 +10414,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String, corresponding CSS value",
                     $force
                 ]
-            },                          
+            },
             getFontColor :{
                 $desc:"Gets the font-color property",
                 $rtn:"String"
@@ -10426,7 +10426,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : color",
                     $force
                 ]
-            },                        
+            },
             getFontSize :{
                 $desc:"Gets the font-size property",
                 $rtn:"String"
@@ -10450,7 +10450,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String",
                     $force
                 ]
-            },            
+            },
             getFontFamily :{
                 $desc:"Gets the font-family property",
                 $rtn:"String"
@@ -10744,7 +10744,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String, corresponding CSS value",
                     $force
                 ]
-            },             
+            },
             onChecked:{
                 $desc:"Fired when CheckBox is checked",
                 $paras:[
@@ -10829,7 +10829,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : color",
                     $force
                 ]
-            },                        
+            },
             getFontSize :{
                 $desc:"Gets the font-size property",
                 $rtn:"String"
@@ -10853,7 +10853,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String",
                     $force
                 ]
-            },            
+            },
             getFontFamily :{
                 $desc:"Gets the font-family property",
                 $rtn:"String"
@@ -10997,7 +10997,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String, corresponding CSS value",
                     $force
                 ]
-            },             
+            },
             onClick:{
                 $desc:"Fired when user click it",
                 $paras:[
@@ -11650,7 +11650,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String, corresponding CSS value",
                     $force
                 ]
-            },             
+            },
             getToggle:{
                 $desc:"To determine whether group collapses or not",
                 $rtn:"Boolean",
@@ -13136,6 +13136,18 @@ xui.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getLite:{
+                $desc:"To determine whether it's a lite version or not",
+                $rtn:"Boolean"
+            },
+            setLite:{
+                $desc:"Specifies rendering as lite version or not",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : Boolean",
+                    $force
+                ]
+            },
             getBorderType:{
                 $desc:"Gets border type from the current UI Object",
                 $rtn:"String"
@@ -13934,7 +13946,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String, corresponding CSS value",
                     $force
                 ]
-            },             
+            },
             getToggle:{
                 $desc:"Gets the toggle property value on the first UIProfile",
                 $rtn:"Boolean",
@@ -16035,7 +16047,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : color",
                     $force
                 ]
-            },                        
+            },
             getFontSize :{
                 $desc:"Gets the font-size property",
                 $rtn:"String"
@@ -16059,7 +16071,7 @@ xui.set(xui.Locale,["en","app"], {
                     "value [Required] : String",
                     $force
                 ]
-            },            
+            },
             getFontFamily :{
                 $desc:"Gets the font-family property",
                 $rtn:"String"
@@ -18949,9 +18961,9 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Triggers chart actions",
                 $rtn:"null",
                 $paras:[
-                    "payload [Required] : Object, parameter can trigger multiple actions through batch attribute." 
+                    "payload [Required] : Object, parameter can trigger multiple actions through batch attribute."
                 ]
-            }, 
+            },
             echarts_showLoading:{
                 $desc:"Shows loading animation.",
                 $rtn:"null",
@@ -18967,7 +18979,7 @@ xui.set(xui.Locale,["en","app"], {
             echarts_getOption:{
                 $desc:"Gets option object maintained in current instance, which contains configuration item and data merged from previous setOption operations by users, along with user interaction states",
                 $rtn:"Object"
-            },  
+            },
             echarts_setOption:{
                 $desc:"Configuration item, data, universal interface, all parameters and data can all be modified through setOption",
                 $rtn:"null",
@@ -19119,7 +19131,7 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "eventName: String, event name",
                     "eventParams : Object, event parameters"
-                ] 
+                ]
             },
             onChartEvent:{
                 $desc:"Triggerred when any ECharts non-mouse event is raised",

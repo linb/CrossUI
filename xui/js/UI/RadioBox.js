@@ -66,6 +66,7 @@ xui.Class("xui.UI.RadioBox", "xui.UI.List",{
             }
         },
         DataModel:{
+            lite: null,
             tagCmds:null,
             borderType:{
                 ini:'none'

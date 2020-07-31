@@ -16,7 +16,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     var itemId = getI(uiv);
                     if(uiv!==null && itemId){
                         getN(item,itemId).tagClass('-checked',false).tagClass('-hover',false);
-                        getN(mk, itemId).tagClass('-checked',false); 
+                        getN(mk, itemId).tagClass('-checked',false);
                     }
 
                     itemId = getI(value);
@@ -47,7 +47,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     //check all
                     xui.arr.each(uiv,function(o){
                         getN(item, getI(o)).tagClass('-checked',false).tagClass('-hover',false);
-                        getN(mk, getI(o)).tagClass('-checked',false); 
+                        getN(mk, getI(o)).tagClass('-checked',false);
                     });
                     xui.arr.each(value,function(o){
                         getN(item, getI(o)).tagClass('-checked');
@@ -78,7 +78,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 }
                 items.height('auto');
                 if(profile.properties.height!='auto'){
-                    h=Math.min(mh, items.offsetHeight());                    
+                    h=Math.min(mh, items.offsetHeight());
                     if(h_em)h=profile.$px2em(h, items)+'em';
                     items.height(pp.height=h);
                 }else{
@@ -134,7 +134,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {_split} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemCls} {_split} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
@@ -447,6 +447,13 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             }
         },
         DataModel:{
+            lite:{
+                'private':1,
+                ini:false,
+                action: function(value){
+                    this.boxing().refresh();
+                }
+            },
             selMode:{
                 ini:'single',
                 listbox:['single','none','multi','multibycheckbox'],
@@ -526,7 +533,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
-                }                
+                }
             },
             labelGap:{
                 $spaceunit:2,
@@ -613,7 +620,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
             if(oitem.id==uiv)
                 profile.boxing().setUIValue(oitem.id,true,null,'drop');
-            
+
             data._new = oitem;
             return false;
         },
@@ -633,19 +640,44 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
         _prepareItem:function(profile, item){
             var p=profile.properties,m=p.selMode,t;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
-            item._itemRow = (t=profile.properties.itemRow)?('xui-item-'+t):'';
-
+            item._itemCls = (t=profile.properties.itemRow)?('xui-item-'+t):'';
+            if(p.lite) item._itemCls += " xui-ui-clear-size ";
             if(xui.browser.fakeTouch || xui.browser.deviceType !== 'mouseOnly'){
                 item._optDisplay = p.optBtn?'display:block;':'';
             }
 
             item._fi_optClass = p.optBtn;
-            
+
             if(item.type=='split'){
                 item._split='xui-uitem-split';
                 item._ltagDisplay=item._rtagDisplay=item.imageDisplay=item._cbDisplay=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
             }
             this._prepareCmds(profile, item);
+        },
+        _dynamicTemplate:function(profile){
+            var prop = profile.properties,t,
+                hash = profile._exhash = "$" +'lite:'+prop.lite,
+                template = profile.box.getTemplate(hash);
+
+            prop.$UIvalue = prop.value;
+
+            // set template dynamic
+            if(!template){
+                template = xui.clone(profile.box.getTemplate());
+                if(prop.lite){
+                    delete template.LABEL;
+                    t= template.$submap.items;
+                    t.ITEM = {
+                        className:t.ITEM.className,
+                        style:t.ITEM.style,
+                        tabindex:t.ITEM.tabindex,
+                        text : '{caption}'
+                    };
+                }
+                // set template
+                profile.box.setTemplate(template, hash);
+            }
+            profile.template = template;
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;
@@ -703,7 +735,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 if(height=='auto')hh=items.offsetHeight();
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz), 
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz),
                     width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width))),labelfz),
                     height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))),labelfz)
                 });

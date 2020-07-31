@@ -22235,13 +22235,19 @@ xui.Class("xui.UI",  "xui.absObj", {
                 $order:7,
                 visibility:(xui.browser.ie&&xui.browser.ver<=8)?'hidden':null
             },
-            ".xui-ui-clear":{
+            ".xui-ui-clear-bg":{
                 $order:10,
                 border:'none',
                 background:'none'
              },
-            ".xui-ui-hidden, .xui-ui-hidden *":{
+             ".xui-ui-clear-size":{
                 $order:11,
+                border:'0',
+                padding:'0',
+                margin:'0'
+             },
+            ".xui-ui-hidden, .xui-ui-hidden *":{
+                $order:12,
                 visibility:'hidden'
              }
         });
@@ -34794,7 +34800,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         box.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uibase {_radius_input} ';
         box.ICONB={
             tagName:'button',
-            className:'xui-ui-unselectable xui-nofocus xui-ui-clear',
+            className:'xui-ui-unselectable xui-nofocus xui-ui-clear-bg',
             tabindex: '-1',
             ICON:{
                 className:'xuifont {imageClass}  {picClass}',
@@ -35713,7 +35719,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     'mode:'+showMode+';',
                 template = profile.box.getTemplate(hash),
                 adj = function(s){
-                    return (!showMode || showMode=='normal') ? s : 'xui-ui-clear ' + s.replace(/\b(xui-ui-btn|xui-uibar|xui-uigradient|xui-uibase)\b/g,'') ;
+                    return (!showMode || showMode=='normal') ? s : 'xui-ui-clear-bg ' + s.replace(/\b(xui-ui-btn|xui-uibar|xui-uigradient|xui-uibase)\b/g,'') ;
                 }
 
             properties.$UIvalue = properties.value;
@@ -38479,7 +38485,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var itemId = getI(uiv);
                     if(uiv!==null && itemId){
                         getN(item,itemId).tagClass('-checked',false).tagClass('-hover',false);
-                        getN(mk, itemId).tagClass('-checked',false); 
+                        getN(mk, itemId).tagClass('-checked',false);
                     }
 
                     itemId = getI(value);
@@ -38510,7 +38516,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     //check all
                     xui.arr.each(uiv,function(o){
                         getN(item, getI(o)).tagClass('-checked',false).tagClass('-hover',false);
-                        getN(mk, getI(o)).tagClass('-checked',false); 
+                        getN(mk, getI(o)).tagClass('-checked',false);
                     });
                     xui.arr.each(value,function(o){
                         getN(item, getI(o)).tagClass('-checked');
@@ -38541,7 +38547,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
                 items.height('auto');
                 if(profile.properties.height!='auto'){
-                    h=Math.min(mh, items.offsetHeight());                    
+                    h=Math.min(mh, items.offsetHeight());
                     if(h_em)h=profile.$px2em(h, items)+'em';
                     items.height(pp.height=h);
                 }else{
@@ -38597,7 +38603,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             $submap:{
                 items:{
                     ITEM:{
-                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {_split} {itemClass} {disabled} {readonly}',
+                        className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemCls} {_split} {itemClass} {disabled} {readonly}',
                         style:'{itemStyle}{_itemDisplay}',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
@@ -38910,6 +38916,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
         DataModel:{
+            lite:{
+                'private':1,
+                ini:false,
+                action: function(value){
+                    this.boxing().refresh();
+                }
+            },
             selMode:{
                 ini:'single',
                 listbox:['single','none','multi','multibycheckbox'],
@@ -38989,7 +39002,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
-                }                
+                }
             },
             labelGap:{
                 $spaceunit:2,
@@ -39076,7 +39089,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             if(oitem.id==uiv)
                 profile.boxing().setUIValue(oitem.id,true,null,'drop');
-            
+
             data._new = oitem;
             return false;
         },
@@ -39096,19 +39109,44 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         _prepareItem:function(profile, item){
             var p=profile.properties,m=p.selMode,t;
             item._cbDisplay = (m=='multi'||m=='multibycheckbox')?'':'display:none;';
-            item._itemRow = (t=profile.properties.itemRow)?('xui-item-'+t):'';
-
+            item._itemCls = (t=profile.properties.itemRow)?('xui-item-'+t):'';
+            if(p.lite) item._itemCls += " xui-ui-clear-size ";
             if(xui.browser.fakeTouch || xui.browser.deviceType !== 'mouseOnly'){
                 item._optDisplay = p.optBtn?'display:block;':'';
             }
 
             item._fi_optClass = p.optBtn;
-            
+
             if(item.type=='split'){
                 item._split='xui-uitem-split';
                 item._ltagDisplay=item._rtagDisplay=item.imageDisplay=item._cbDisplay=item._capDisplay=item._extraDisplay=item._optDisplay='display:none;';
             }
             this._prepareCmds(profile, item);
+        },
+        _dynamicTemplate:function(profile){
+            var prop = profile.properties,t,
+                hash = profile._exhash = "$" +'lite:'+prop.lite,
+                template = profile.box.getTemplate(hash);
+
+            prop.$UIvalue = prop.value;
+
+            // set template dynamic
+            if(!template){
+                template = xui.clone(profile.box.getTemplate());
+                if(prop.lite){
+                    delete template.LABEL;
+                    t= template.$submap.items;
+                    t.ITEM = {
+                        className:t.ITEM.className,
+                        style:t.ITEM.style,
+                        tabindex:t.ITEM.tabindex,
+                        text : '{caption}'
+                    };
+                }
+                // set template
+                profile.box.setTemplate(template, hash);
+            }
+            profile.template = template;
         },
         RenderTrigger:function(){
             if(this.key!="xui.UI.List")return;
@@ -39166,7 +39204,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(height=='auto')hh=items.offsetHeight();
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?((width=='auto'?ww:(width-labelSize))+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz), 
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?((height=='auto'?hh:(height-labelSize))+labelGap):0),labelfz),
                     width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):(width=='auto'?ww:width))),labelfz),
                     height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):(height=='auto'?hh:height))),labelfz)
                 });
@@ -39344,7 +39382,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             icon.removeClass('xui-icon-loading');
                             // hide
                             if(!item.iconFontCode && !item.imageClass){
-                                icon.addClass("xui-display-none"); 
+                                icon.addClass("xui-display-none");
                             }
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
 
@@ -39385,6 +39423,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
         DataModel:{
+            lite: null,
             tagCmds:null,
             tagCmdsAlign:null,
             autoImgSize:{
@@ -39519,7 +39558,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(rows)
                 item._itemSize+='height:'+(100/rows+'%')+';border:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;';
 
-            if(!auto1) item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
+            if(!auto1) item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') +
                     (!rows&&item.itemHeight?('height:'+item.itemHeight):'');
             if(!auto2)
                 item._innerimgSize=(item.imgWidth?('width:'+item.imgWidth+';'):'') + (!rows&&item.imgHeight?('height:'+item.imgHeight):'');
@@ -40904,7 +40943,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             item = profile.getItemByItemId(itemId);
                         if(subId){
                             arr.push(subId);
-                            
+
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // hide pane
                                 //box.getPanel(itemId).hide();
@@ -41021,7 +41060,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             if(id) ns.insertItems([i], id, true);
             else ns.insertItems([i]);
-            
+
             xui.arr.each(children,function(o){
                 arr.push(o[0]);
             });
@@ -41082,7 +41121,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             });
         },
-        
+
         ////
         fireItemClickEvent:function(subId){
             var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
@@ -41172,7 +41211,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         node.html(item.caption);
                     }else
                         node.html(item.caption = mark ? tag+caption : caption.replace(new RegExp("^"+tag),''));
-                }else 
+                }else
                     node.html(item.caption = mark ? '*'+caption : caption.replace(/^\*/,''));
                 if(cls){
                     if(mark)node.addCalss(cls);
@@ -41338,7 +41377,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 left:0,
                 bottom:0,
                 height:'3px',
-                width:'100%'                
+                width:'100%'
             },
             MENU:{
                 display:'none',
@@ -41352,7 +41391,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             MENUCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
-                'font-size':'1em' 
+                'font-size':'1em'
             },
             ITEMS:{
                 padding:xui.browser.contentBox?'0 0 4px 0':'0 0 2px 0',
@@ -41644,7 +41683,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         size=profile.getRoot().cssSize(),
                         pro = xui.copy(xui.UI.Dialog.$DataStruct),
                         events={};
-                    
+
                     xui.merge(pro, item, 'with');
                     xui.merge(pro,{
                         dragKey: item.dragkey || properties.dragKey ,
@@ -41658,7 +41697,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     },'all');
                     if(options.properties)
                         xui.merge(pro, options.properties, 'with');
-                    
+
                     if(options.events)
                         xui.merge(events, options.events, 'all');
 
@@ -41666,7 +41705,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     if(xui.isFun(options.init) && false===options.init(dialog,profile,options)){
                     }else{
-                        dialog.show(options.parent||xui('body'));    
+                        dialog.show(options.parent||xui('body'));
                         var arr=[];
                         xui.arr.each(profile.children,function(o){
                             if(o[1]==id){
@@ -41878,7 +41917,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._bginfo+="background-repeat:"+t+";";
             if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
                 item._bginfo+="background-attachment:"+t+";";
-                
+
             if(xui.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
             else if(xui.isStr(p.overflow))
@@ -41888,7 +41927,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         getDropKeys:function(profile,node){
             var prop=profile.properties, item=profile.getItemByDom(node);
-            return profile.getKey(xui.use(node).id())==profile.keys.PANEL 
+            return profile.getKey(xui.use(node).id())==profile.keys.PANEL
                 ? ((item&&item.dropKeysPanel) || prop.dropKeysPanel)
                 : ((item&&item.dropKeys) || prop.dropKeys);
         },
@@ -41900,7 +41939,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];
                 xui.arr.each(arr,function(o){
-                    if(o[1]==value && 
+                    if(o[1]==value &&
                         // not rendered, or node not in
                         (!o[0].renderId || xui.UIProfile.getFromDom(xui(o[0].renderId).parent().id())!=profile )
                     ){
@@ -41997,7 +42036,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     ifr.width='100%';
                     ifr.height='100%';
                     box.getPanel(item.id).html("").append(ifr);
-    
+
                     if((_if.method||"").toLowerCase()=="post")
                         xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
                     else
@@ -42058,11 +42097,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
-                
+
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 panelfz=panel._getEmSize(fzrate),
                 listfz=list._getEmSize(fzrate),
-                
+
                 wc=null,
                 hc=null,
                 listH;
@@ -42072,7 +42111,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(height && height!='auto')height=profile.$px(height, null, true);
 
             if(!panel || panel.isEmpty())return;
-            
+
             if(!prop.noHandler){
                 //force to get offsetHeight
                 listH = list.offsetHeight(true);
@@ -42143,7 +42182,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items.tagClass('-menu',false);
                 menu.css('display','none');
                 caps.css('width','');
-                
+
                 profile._mode='normal';
                 // try 1: minus caption width
                 itemsW = getItemsW();
@@ -42864,6 +42903,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             }
         },
         DataModel:{
+            lite: null,
             tagCmds:null,
             borderType:{
                 ini:'none'
@@ -42974,6 +43014,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             }
         },
         DataModel:({
+            lite: null,
             maxHeight:null,
             height:'auto',
 
@@ -43027,7 +43068,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             if(p.connected)item.itemMargin = "margin:" + (i===0?"0":"0 0 0 -1px");
             else if(t = item.itemMargin || p.itemMargin)item.itemMargin = "margin:" + t;
-            
+
             if(t = item.itemPadding || p.itemPadding)item.itemPadding = "padding:" + t;
 
             if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ profile.$forceu(t||'auto');
@@ -43036,10 +43077,10 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             if(item.flagText||item.flagClass)item._flagStyle='display:block';
             if(!item.flagClass)item.flagClass='xui-uiflag-1';
 
-            item._itemClass = type == "text" ? "xui-node-a" 
-                : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 
+            item._itemClass = type == "text" ? "xui-node-a"
+                : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r"
                     : i===l-1 ? "xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l"
-                    :"xui-uiborder-noradius") 
+                    :"xui-uiborder-noradius")
                 : "xui-uiborder-radius"));
 
             item._dropDisplay=type=="dropButton"?'':'display:none';
@@ -56530,7 +56571,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
         fillContent:function(id, obj){
             var profile=this.get(0),t,item;
             if(profile.renderId){
-                if(item=profile.getItemByItemId(id)){                    
+                if(item=profile.getItemByItemId(id)){
                     t=profile.getSubNodeByItemId('BODYI',id).html('');
                     if(obj){
                         item._obj = obj;
@@ -56558,7 +56599,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                     if(properties.activeLast && items.length)
                         if(items[items.length-1].id==item.id)
                             return false;
-    
+
                     node.tagClass('-checked',false);
                     toggle.tagClass('-checked',false);
                     if(nodenext)
@@ -56634,7 +56675,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                                 tagName:'span',
                                 style:'{_ltagDisplay}',
                                 text:"{rtagCmds}"
-                            } 
+                            }
                         }/*,
                         TCLEAR:{
                             $order:2,
@@ -56817,6 +56858,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }
         },
         DataModel:({
+            lite: null,
             value: null,
             borderType: null,
             activeLast: true
@@ -56863,7 +56905,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }else{
                 item._fi_tlg = 'xui-uicmd-toggle';
             }
-            
+
             this._prepareCmds(profile, item);
         },
         _buildBody:function(profile,item){

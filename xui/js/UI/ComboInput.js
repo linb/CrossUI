@@ -519,7 +519,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         box.className='xui-ui-input xui-ui-shadow-input xui-uiborder-flat xui-uibase {_radius_input} ';
         box.ICONB={
             tagName:'button',
-            className:'xui-ui-unselectable xui-nofocus xui-ui-clear',
+            className:'xui-ui-unselectable xui-nofocus xui-ui-clear-bg',
             tabindex: '-1',
             ICON:{
                 className:'xuifont {imageClass}  {picClass}',
@@ -1438,7 +1438,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     'mode:'+showMode+';',
                 template = profile.box.getTemplate(hash),
                 adj = function(s){
-                    return (!showMode || showMode=='normal') ? s : 'xui-ui-clear ' + s.replace(/\b(xui-ui-btn|xui-uibar|xui-uigradient|xui-uibase)\b/g,'') ;
+                    return (!showMode || showMode=='normal') ? s : 'xui-ui-clear-bg ' + s.replace(/\b(xui-ui-btn|xui-uibar|xui-uigradient|xui-uibase)\b/g,'') ;
                 }
 
             properties.$UIvalue = properties.value;

@@ -3143,13 +3143,19 @@ xui.Class("xui.UI",  "xui.absObj", {
                 $order:7,
                 visibility:(xui.browser.ie&&xui.browser.ver<=8)?'hidden':null
             },
-            ".xui-ui-clear":{
+            ".xui-ui-clear-bg":{
                 $order:10,
                 border:'none',
                 background:'none'
              },
-            ".xui-ui-hidden, .xui-ui-hidden *":{
+             ".xui-ui-clear-size":{
                 $order:11,
+                border:'0',
+                padding:'0',
+                margin:'0'
+             },
+            ".xui-ui-hidden, .xui-ui-hidden *":{
+                $order:12,
                 visibility:'hidden'
              }
         });

@@ -1732,7 +1732,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
                 "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
                 "threadid [可选参数]: String,  绑定的线程ID",
-                "options [可选参数]: Object, 用来配置这个request的一组键值对" 
+                "options [可选参数]: Object, 用来配置这个request的一组键值对"
             ]
         },
         "post":{
@@ -1744,7 +1744,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
                 "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
                 "threadid [可选参数]: String,  绑定的线程ID",
-                "options [可选参数]: Object, 用来配置这个request的一组键值对" 
+                "options [可选参数]: Object, 用来配置这个request的一组键值对"
             ]
         },
         prototype:{
@@ -6079,7 +6079,7 @@ xui.set(xui.Locale,["cn","app"], {
     xui.set(xui.Locale,["cn","doc","xui","DomProfile"], {
         KEY:{$desc:"本类名"}
     });
-    
+
     xui.set(xui.Locale,["cn","doc","xui","Timer"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.Timer 类",
@@ -6146,7 +6146,7 @@ xui.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    
+
     xui.set(xui.Locale,["cn","doc","xui","AnimBinder"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.AnimBinder 类",
@@ -6223,7 +6223,7 @@ xui.set(xui.Locale,["cn","app"], {
             }
         }
     });
-    
+
     xui.set(xui.Locale,["cn","doc","xui","APICaller"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.APICaller 类",
@@ -7640,7 +7640,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:0.5}));"+
                     "}"
                 ]
-            }, 
+            },
 
             getFormValues:{
                 $desc:"得到表单的值",
@@ -9030,7 +9030,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){btn.setDockIgnore(false);xui(id).width(400);},3000);"+
                     "}"
                 ]
-            }, 
+            },
             getDockStretch:{
                 $desc:"得到停靠延展（主轴方向）参数",
                 $rtn:"String"
@@ -9050,7 +9050,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'50%',dockStretch:0.5}));"+
                     "}"
                 ]
-            }, 
+            },
             getDockIgnoreFlexFill:{
                 $desc:"得到停靠次轴方向的柔性忽略",
                 $rtn:"String"
@@ -9070,7 +9070,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "var btn;block.append(btn=new xui.UI.Button({dock:'top',caption:'dockIgnoreFlexFill:false'}));"+
                     "}"
                 ]
-            }, 
+            },
             getDockMinH:{
                 $desc:"获取停靠的最小高度",
                 $rtn:"Number",
@@ -10255,7 +10255,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "xui.asyRun(function(){btn.setCaption ('tag'); alert(btn.getCaption ())},1000)"+
                     "}"
                 ]
-            }, 
+            },
             getClock :{
                 $desc:"获取时钟格式",
                 $rtn:"String"
@@ -10267,7 +10267,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String",
                     $force
                 ]
-            }, 
+            },
             getHAlign :{
                 $desc:"获取水平对齐方式",
                 $rtn:"String",
@@ -10303,7 +10303,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 字体颜色",
                     $force
                 ]
-            },            
+            },
             getFontSize :{
                 $desc:"获取按钮字体大小",
                 $rtn:"String"
@@ -10399,7 +10399,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 背景图尺寸",
                     $force
                 ]
-            },           
+            },
             onClick:{
                 $desc:"当鼠标单击时调用",
                 $paras:[
@@ -10682,7 +10682,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 背景图尺寸",
                     $force
                 ]
-            },           
+            },
             onChecked:{
                 $desc:"Fired when CheckBox is checked",
                 $paras:[
@@ -10769,7 +10769,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 字体颜色",
                     $force
                 ]
-            },            
+            },
             getFontSize :{
                 $desc:"获取按钮字体大小",
                 $rtn:"String"
@@ -10937,7 +10937,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 背景图尺寸",
                     $force
                 ]
-            },           
+            },
             onClick:{
                 $desc:"当鼠标单击时调用",
                 $paras:[
@@ -11563,7 +11563,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 背景图尺寸",
                     $force
                 ]
-            },           
+            },
             getToggle:{
                 $desc:"判断编组框是打开还是收缩的",
                 $rtn:"Boolean",
@@ -12158,7 +12158,7 @@ xui.set(xui.Locale,["cn","app"], {
             }
         }
     });
- 
+
     xui.set(xui.Locale,["cn","doc","xui","UI","Stacks"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Stacks 类",
@@ -13055,6 +13055,18 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getLite:{
+                $desc:"获取是否用简版渲染",
+                $rtn:"Boolean"
+            },
+            setLite:{
+                $desc:"设置是否用简版渲染",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : Boolean",
+                    $force
+                ]
+            },
             getBorderType:{
                 $desc:"获取块控件的边框种类",
                 $rtn:"String"
@@ -13853,7 +13865,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 背景图尺寸",
                     $force
                 ]
-            },           
+            },
             getToggle:{
                 $desc:"判断面板处于打开还是收缩状态",
                 $rtn:"Boolean",
@@ -14019,7 +14031,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数]: Number. 页代码",
-                    "force [可选参数]: Boolean. 是否强制设置,默认为false", 
+                    "force [可选参数]: Boolean. 是否强制设置,默认为false",
                     "type [可选参数]: String. 事件触发类型: inited, input, click, code"
                 ],
                 $snippet:[
@@ -15679,7 +15691,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 背景图尺寸",
                     $force
                 ]
-            },           
+            },
             getHtml:{
                 $desc:"获取对话框的内部内容HTML",
                 $rtn:"String",
@@ -15958,7 +15970,7 @@ xui.set(xui.Locale,["cn","app"], {
                     "value [必需参数] : String, 字体颜色",
                     $force
                 ]
-            },            
+            },
             getFontSize :{
                 $desc:"获取标签字体大小",
                 $rtn:"String"
@@ -18873,9 +18885,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"触发图表行为",
                 $rtn:"null",
                 $paras:[
-                    "payload [必需参数] : Object, 参数可以通过batch属性同时触发多个行为" 
+                    "payload [必需参数] : Object, 参数可以通过batch属性同时触发多个行为"
                 ]
-            }, 
+            },
             echarts_showLoading:{
                 $desc:"显示加载动画效果",
                 $rtn:"null",
@@ -18891,7 +18903,7 @@ xui.set(xui.Locale,["cn","app"], {
             echarts_getOption:{
                 $desc:"获取当前实例中维护的option对象",
                 $rtn:"Object"
-            },  
+            },
             echarts_setOption:{
                 $desc:"设置图表实例的配置项以及数据",
                 $rtn:"null",

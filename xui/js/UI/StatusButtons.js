@@ -84,6 +84,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             }
         },
         DataModel:({
+            lite: null,
             maxHeight:null,
             height:'auto',
 
@@ -137,7 +138,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             if(p.connected)item.itemMargin = "margin:" + (i===0?"0":"0 0 0 -1px");
             else if(t = item.itemMargin || p.itemMargin)item.itemMargin = "margin:" + t;
-            
+
             if(t = item.itemPadding || p.itemPadding)item.itemPadding = "padding:" + t;
 
             if(t = item.itemWidth || p.itemWidth)item.itemWidth = "width:"+ profile.$forceu(t||'auto');
@@ -146,10 +147,10 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             if(item.flagText||item.flagClass)item._flagStyle='display:block';
             if(!item.flagClass)item.flagClass='xui-uiflag-1';
 
-            item._itemClass = type == "text" ? "xui-node-a" 
-                : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r" 
+            item._itemClass = type == "text" ? "xui-node-a"
+                : ("xui-ui-btn xui-uibar xui-uigradient " + ( p.connected ? ( i==0 ? "xui-uiborder-radius-tl xui-uiborder-radius-bl xui-uiborder-noradius-r"
                     : i===l-1 ? "xui-uiborder-radius-tr xui-uiborder-radius-br xui-uiborder-noradius-l"
-                    :"xui-uiborder-noradius") 
+                    :"xui-uiborder-noradius")
                 : "xui-uiborder-radius"));
 
             item._dropDisplay=type=="dropButton"?'':'display:none';

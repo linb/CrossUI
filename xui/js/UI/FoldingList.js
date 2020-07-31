@@ -3,7 +3,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
         fillContent:function(id, obj){
             var profile=this.get(0),t,item;
             if(profile.renderId){
-                if(item=profile.getItemByItemId(id)){                    
+                if(item=profile.getItemByItemId(id)){
                     t=profile.getSubNodeByItemId('BODYI',id).html('');
                     if(obj){
                         item._obj = obj;
@@ -31,7 +31,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                     if(properties.activeLast && items.length)
                         if(items[items.length-1].id==item.id)
                             return false;
-    
+
                     node.tagClass('-checked',false);
                     toggle.tagClass('-checked',false);
                     if(nodenext)
@@ -107,7 +107,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                                 tagName:'span',
                                 style:'{_ltagDisplay}',
                                 text:"{rtagCmds}"
-                            } 
+                            }
                         }/*,
                         TCLEAR:{
                             $order:2,
@@ -290,6 +290,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }
         },
         DataModel:({
+            lite: null,
             value: null,
             borderType: null,
             activeLast: true
@@ -336,7 +337,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             }else{
                 item._fi_tlg = 'xui-uicmd-toggle';
             }
-            
+
             this._prepareCmds(profile, item);
         },
         _buildBody:function(profile,item){

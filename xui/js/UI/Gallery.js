@@ -169,7 +169,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                             icon.removeClass('xui-icon-loading');
                             // hide
                             if(!item.iconFontCode && !item.imageClass){
-                                icon.addClass("xui-display-none"); 
+                                icon.addClass("xui-display-none");
                             }
                             nn.onLoad(null).onError(null).$removeEventHandler('load').$removeEventHandler('error');
 
@@ -210,6 +210,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             }
         },
         DataModel:{
+            lite: null,
             tagCmds:null,
             tagCmdsAlign:null,
             autoImgSize:{
@@ -344,7 +345,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             if(rows)
                 item._itemSize+='height:'+(100/rows+'%')+';border:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;';
 
-            if(!auto1) item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') + 
+            if(!auto1) item._inneritemSize=(!cols&&item.itemWidth?('width:'+item.itemWidth+';'):'') +
                     (!rows&&item.itemHeight?('height:'+item.itemHeight):'');
             if(!auto2)
                 item._innerimgSize=(item.imgWidth?('width:'+item.imgWidth+';'):'') + (!rows&&item.imgHeight?('height:'+item.imgHeight):'');

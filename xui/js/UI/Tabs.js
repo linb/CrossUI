@@ -14,7 +14,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             item = profile.getItemByItemId(itemId);
                         if(subId){
                             arr.push(subId);
-                            
+
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // hide pane
                                 //box.getPanel(itemId).hide();
@@ -131,7 +131,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
             if(id) ns.insertItems([i], id, true);
             else ns.insertItems([i]);
-            
+
             xui.arr.each(children,function(o){
                 arr.push(o[0]);
             });
@@ -192,7 +192,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             });
         },
-        
+
         ////
         fireItemClickEvent:function(subId){
             var node=this.getSubNodeByItemId('ITEM', subId+''),ev=xui.Event;
@@ -282,7 +282,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         node.html(item.caption);
                     }else
                         node.html(item.caption = mark ? tag+caption : caption.replace(new RegExp("^"+tag),''));
-                }else 
+                }else
                     node.html(item.caption = mark ? '*'+caption : caption.replace(/^\*/,''));
                 if(cls){
                     if(mark)node.addCalss(cls);
@@ -448,7 +448,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 left:0,
                 bottom:0,
                 height:'3px',
-                width:'100%'                
+                width:'100%'
             },
             MENU:{
                 display:'none',
@@ -462,7 +462,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             MENUCAPTION:{
                 'vertical-align':xui.browser.ie6?'baseline':'middle',
                 margin:'0 4px',
-                'font-size':'1em' 
+                'font-size':'1em'
             },
             ITEMS:{
                 padding:xui.browser.contentBox?'0 0 4px 0':'0 0 2px 0',
@@ -754,7 +754,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         size=profile.getRoot().cssSize(),
                         pro = xui.copy(xui.UI.Dialog.$DataStruct),
                         events={};
-                    
+
                     xui.merge(pro, item, 'with');
                     xui.merge(pro,{
                         dragKey: item.dragkey || properties.dragKey ,
@@ -768,7 +768,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     },'all');
                     if(options.properties)
                         xui.merge(pro, options.properties, 'with');
-                    
+
                     if(options.events)
                         xui.merge(events, options.events, 'all');
 
@@ -776,7 +776,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     if(xui.isFun(options.init) && false===options.init(dialog,profile,options)){
                     }else{
-                        dialog.show(options.parent||xui('body'));    
+                        dialog.show(options.parent||xui('body'));
                         var arr=[];
                         xui.arr.each(profile.children,function(o){
                             if(o[1]==id){
@@ -988,7 +988,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._bginfo+="background-repeat:"+t+";";
             if(t=item.panelBgImgAttachment||p.panelBgImgAttachment)
                 item._bginfo+="background-attachment:"+t+";";
-                
+
             if(xui.isStr(item.overflow))
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
             else if(xui.isStr(p.overflow))
@@ -998,7 +998,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         getDropKeys:function(profile,node){
             var prop=profile.properties, item=profile.getItemByDom(node);
-            return profile.getKey(xui.use(node).id())==profile.keys.PANEL 
+            return profile.getKey(xui.use(node).id())==profile.keys.PANEL
                 ? ((item&&item.dropKeysPanel) || prop.dropKeysPanel)
                 : ((item&&item.dropKeys) || prop.dropKeys);
         },
@@ -1010,7 +1010,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(prop.lazyAppend){
                 var arr=profile.children,a=[];
                 xui.arr.each(arr,function(o){
-                    if(o[1]==value && 
+                    if(o[1]==value &&
                         // not rendered, or node not in
                         (!o[0].renderId || xui.UIProfile.getFromDom(xui(o[0].renderId).parent().id())!=profile )
                     ){
@@ -1107,7 +1107,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     ifr.width='100%';
                     ifr.height='100%';
                     box.getPanel(item.id).html("").append(ifr);
-    
+
                     if((_if.method||"").toLowerCase()=="post")
                         xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
                     else
@@ -1168,11 +1168,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 root = profile.getRoot(),
                 list=profile.getSubNode('LIST'),
-                
+
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 panelfz=panel._getEmSize(fzrate),
                 listfz=list._getEmSize(fzrate),
-                
+
                 wc=null,
                 hc=null,
                 listH;
@@ -1182,7 +1182,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(height && height!='auto')height=profile.$px(height, null, true);
 
             if(!panel || panel.isEmpty())return;
-            
+
             if(!prop.noHandler){
                 //force to get offsetHeight
                 listH = list.offsetHeight(true);
@@ -1253,7 +1253,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items.tagClass('-menu',false);
                 menu.css('display','none');
                 caps.css('width','');
-                
+
                 profile._mode='normal';
                 // try 1: minus caption width
                 itemsW = getItemsW();
