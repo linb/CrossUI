@@ -1650,6 +1650,7 @@ xui.merge(xui,{
         }
     },
     fetchClasses:function(uris, onEnd, onSuccess, onFail, onAlert, force, threadid, options){
+        xui.arr.removeDuplicate(uris);
         var hash={}, f=function(uri,i,hash){
             hash[i]=xui.Thread(null,[function(tid){
                 xui.fetchClass(uri, onSuccess, onFail, onAlert, force, tid, options);
@@ -1701,7 +1702,11 @@ xui.merge(xui,{
                     }).replace(/\.setRenderer\s*\(\s*['"]([a-zA-Z]+([\w]+\.?)+[\w]+)['"]\s*\)/g,function(a,b){
                         if(!xui.SC.get(b))required.push(b);
                         return a;
-                    }).replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
+                    }).replace(/['"](renderer|cellRenderer)['"]\s*:\s*['"]([a-zA-Z]+([\w]+\.?)+[\w]+)['"]\s*/g,function(a,b,c){
+                        if(!xui.SC.get(c))required.push(c);
+                        return a;
+                    })
+                      .replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
                           b=b.split(/\s*,\s*/);
                           for(var i=0,l=b.length;i<l;i++){
                             c = b[i].split(/\s*:s*/);
