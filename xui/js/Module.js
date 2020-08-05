@@ -1273,7 +1273,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var nodes = this.getComponents().get(),
                 k='xui.UI', n='$initRootHidden';
             xui.filter(nodes,function(o){
-                return !!(o && o.box &&o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
+                return !!((o && o.box &&o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true));
             });
             return xui.UI.pack(nodes, false);
         },

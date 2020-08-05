@@ -1,5 +1,5 @@
 xui.Class('xui.Module.JSONEditor', 'xui.Module',{
-    Instance:{ 
+    Instance:{
         activate:function(){},
         setValue:function(str, keyOptions){
             var ns=this,
@@ -23,77 +23,92 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
-            
+
             append(
                 xui.create("xui.UI.TreeGrid")
                 .setHost(host,"tg")
+                .setZIndex(0)
                 .setTogglePlaceholder(true)
                 .setEditable(true)
                 .setIniFold(false)
-                .setRowHandler(false)
+                .setRowHandlerWidth("2em")
                 .setColSortable(false)
                 .setHeader([
                     {
-                    "id" : "key",
-                    "width" : 100,
-                    "type" : "input",
-                    "caption" : "key",
-                    "editorCacheKey" : "input",
-                    "colResizer":true,
-                    "flexSize" : true
-                },{
-                    "id" : "value",
-                    "width" : 200,
-                    "type" : "textarea",
-                    "caption" : "value",
-                    "editorCacheKey" : "textarea",
-                    "flexSize" : true
+                        "id":"key",
+                        "width":"7.619047619047619em",
+                        "type":"input",
+                        "caption":"key",
+                        "editorCacheKey":"input",
+                        "colResizer":true,
+                        "flexSize":true
+                    },
+                    {
+                        "id":"value",
+                        "width":"15.238095238095237em",
+                        "type":"textarea",
+                        "caption":"value",
+                        "editorCacheKey":"textarea",
+                        "flexSize":true
                     }
                 ])
                 .setTagCmds([
                     {
-                    "id" : "down",
-                    "type" : "text",
-                    "location": "right",
-                    "itemClass":"xuicon xui-icon-arrowbottom",
-                    "tag" : "row",
-                    "tips" : "Add a node at the back of this node"
+                        "id":"down",
+                        "type":"text",
+                        "location":"right",
+                        "itemClass":"xuicon xui-icon-singledown",
+                        "tag":"row",
+                        "tips":"Add a node at the back of this node"
                     },
                     {
-                    "id" : "up",
-                    "type" : "text",
-                    "location": "right",
-                    "itemClass":"xuicon xui-icon-arrowtop",
-                    "tag" : "row",
-                    "tips" : "Add a node to the front of the node" 
+                        "id":"up",
+                        "type":"text",
+                        "location":"right",
+                        "itemClass":"xuicon xui-icon-singleup",
+                        "tag":"row",
+                        "tips":"Add a node to the front of the node"
                     },
                     {
-                    "id" : "add",
-                    "type" : "text",
-                    "caption" : "",
-                    "location": "right",
-                    "itemClass":"xuicon xui-uicmd-getter",
-                    "tag" : "header row",
-                    "tips" : "Append a child"
+                        "id":"add",
+                        "type":"text",
+                        "caption":"",
+                        "location":"right",
+                        "itemClass":"xuicon xui-uicmd-getter",
+                        "tag":"header row",
+                        "tips":"Append a child"
                     },
                     {
-                    "id" : "del",
-                    "type" : "text",
-                    "location": "right",
-                    "itemClass":"xuicon xui-uicmd-close",
-                    "tag" : "row",
-                    "tips" : "Delete this node"
+                        "id":"del",
+                        "type":"text",
+                        "location":"right",
+                        "itemClass":"xuicon xui-uicmd-close",
+                        "tag":"row",
+                        "tips":"Delete this node"
                     }
                 ])
+                .setRowOptions({
+                    "rowRenderer":function(prf, row){
+                        var fc = prf.getSubNode("FCELL",row._serialId);
+                        fc.attr('title','Click here to select this row');
+                        fc.first().html('<span class="xui-node xui-node-span xui-icon-icon xuicon xui-uicmd-select"></span>');
+                    }
+                })
                 .setTreeMode("infirstcell")
                 .onCmd("_tg_oncmd")
                 .beforeRowActive("_tg_beforerowactive")
                 .beforeCellUpdated("_tg_beforecellupdated")
+                .onClickRowHandler("_tg_onclickrowhandler")
                 .beforeIniEditor("_tg_beforeIniEditor")
                 .onBeginEdit("_tg_onEdit")
                 .beforeEditApply("_tg_beforecellapply")
+                .setCustomStyle({
+                    "FCELL":{
+                        "cursor":"pointer"
+                    }
+                })
             );
-            
+
             return children;
             // ]]Code created by CrossUI RAD Studio
         },
@@ -201,7 +216,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 editor.getSubNode("INPUT").scrollTop(0);
             this.fireEvent("onEdit", [obj._col.id, editor]);
         },
-        // for value 
+        // for value
         _tg_beforeIniEditor:function(profile, obj, cellNode, pNode, type){
             var ns=this;
             if(type!='cell')return;
@@ -259,7 +274,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 }else{
                     var ops={};
                     options.value=va[1];
-                    
+
                     if(map[va[0]]){
                         ops.sub=this._json2rows(xui.unserialize(va[1]),va[0]=='array');
                         options.caption=va[0]=='hash'?'{...}':'[...]';
@@ -293,7 +308,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             return this.properties.randomKey?xui.rand():"";
         },
         _tg_oncmd:function (profile, row, cmdkey, e, src){
-            var ns = this, 
+            var ns = this,
                 tg = profile.boxing(),
                 type = row ? row._type : ns._rootArr ? 'array': 'hash',
                 ptype, prow, nid;
@@ -306,7 +321,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 ptype = ns._rootArr ? 'array': 'hash';
             }
             switch(cmdkey){
-                case 'add': 
+                case 'add':
                     nid=xui.stamp();
                     if(row){
                         if(type=="array"||type=="hash"){
@@ -332,7 +347,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}]);
                     }
                     break;
-                case 'up': 
+                case 'up':
                      nid=xui.stamp();
                     tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':ns.getDefaultKey(),readonly:ptype=='array'},'null','']}],null,row.id,true);
                     break;
@@ -340,7 +355,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                      nid=xui.stamp();
                     tg.insertRows([{id:nid, cells:[{value:ptype=='array'?'[index]':ns.getDefaultKey(),readonly:ptype=='array'},'null','']}],null,row.id,false);
                     break;
-                case 'del': 
+                case 'del':
                    // xui.confirm('confirm','Do you want to delete this node?',function(){
                           tg.removeRows([row.id]);
                   //  });
@@ -377,10 +392,14 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 module.tg.updateHeader("value", {type:prop.multiLineValue?'textarea':'input'});
 
                 if('value' in prop) module.setValue(prop.value);
-                if(('tg' in module) && ('notree' in prop) && prop.notree){
-                    module.tg.setTreeMode('none');
-                    var cmds = module.tg.getTagCmds();
-                    cmds[0].tag="header";
+                if(('tg' in module)){
+                    if(('notree' in prop) && prop.notree){
+                        module.tg.setTreeMode('none');
+                        var cmds = module.tg.getTagCmds();
+                        cmds[0].tag="header";
+                    }
+
+                    module.tg.setRowHandler(!!prop.selector);
                 }
             }
         },
@@ -393,6 +412,10 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
 
                 if('value' in prop) module.setValue(prop.value);
             }
+        },
+        _tg_onclickrowhandler:function(profile, row, e, src){
+            if(this.properties.selector)
+                this.fireEvent("onSelect", [row.id, row.cells[0].value, row.cells[1].value, row]);
         }
     },
     Static:{
@@ -404,11 +427,14 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             keyCaption:"key",
             valueCaption:"value",
             multiLineValue:true,
-            notree:false
+            notree:false,
+            selector:false
         },
         $EventHandlers:{
             onchange:function(module/*xui.Module, the current module*/, json/*String, json text*/){},
-            onEdit:function(column/*String, key or value*/, editor/*the editor object*/){}
-        }
+            onEdit:function(column/*String, key or value*/, editor/*the editor object*/){},
+            onSelect:function(key/*String, key*/, value/*String, value*/, row/*Object, row data*/){}
+        },
+        viewStyles:{ }
     }
 });

@@ -1279,7 +1279,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // have to refresh this
                 delete o._nodeEmSize;
 
-                var p=o.properties;
+                var p=o.properties,t;
 
                 if((!o.$noB) && p.border && o.boxing()._border)
                     o.boxing()._border(null,false);
@@ -1293,6 +1293,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                     xui.UI.$tryResize(o,p.width,p.height,force);
                 }
                 delete o.$forceRelayout;
+
+                if(t=o.LayoutTrigger){
+                    for(var i=0,l=t.length;i<l;i++)
+                        t[i].call(o);
+                    if(o.onLayout)
+                        o.boxing().onLayout(o);
+                }
             });
         },
         toHtml:function(force){
@@ -3642,7 +3649,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             cid = profile.getSubId(id),
                             prop = profile.properties,nodes,funs,box;
                         if(prop.disabled || prop.readonly)return;
-                        item = profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid];
+                        item = cid && ((profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid]) || (profile.rowMap && profile.rowMap[cid]));
                         if(item && item.disabled)return;
                         if(item && item.readonly)return;
                         switch(typeof arr){

@@ -16112,7 +16112,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var nodes = this.getComponents().get(),
                 k='xui.UI', n='$initRootHidden';
             xui.filter(nodes,function(o){
-                return !!(o && o.box &&o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true);
+                return !!((o && o.box &&o.box[k]) && (flag===true?!o.box[n]:flag===false?o.box[n]:true));
             });
             return xui.UI.pack(nodes, false);
         },
@@ -20371,7 +20371,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // have to refresh this
                 delete o._nodeEmSize;
 
-                var p=o.properties;
+                var p=o.properties,t;
 
                 if((!o.$noB) && p.border && o.boxing()._border)
                     o.boxing()._border(null,false);
@@ -20385,6 +20385,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                     xui.UI.$tryResize(o,p.width,p.height,force);
                 }
                 delete o.$forceRelayout;
+
+                if(t=o.LayoutTrigger){
+                    for(var i=0,l=t.length;i<l;i++)
+                        t[i].call(o);
+                    if(o.onLayout)
+                        o.boxing().onLayout(o);
+                }
             });
         },
         toHtml:function(force){
@@ -22734,7 +22741,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             cid = profile.getSubId(id),
                             prop = profile.properties,nodes,funs,box;
                         if(prop.disabled || prop.readonly)return;
-                        item = profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid];
+                        item = cid && ((profile.SubSerialIdMapItem && profile.SubSerialIdMapItem[cid]) || (profile.rowMap && profile.rowMap[cid]));
                         if(item && item.disabled)return;
                         if(item && item.readonly)return;
                         switch(typeof arr){
@@ -52793,7 +52800,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // 5 empty
                         "")
                     // default value
-                    ) || ""},
+                    ).replace(/</g,'&lt;') || ""},
                 f0=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymdhn') : "";
                 },
