@@ -6887,7 +6887,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(profile.box.getCellOption(profile, cell,'disabled')){
                             }else{
                                 editor.beforeComboPop(function(editorprf, pos, e, src){
-                                    var cell=editorprf.$cell,event=profile.box.getCellOption(profile, cell, 'event');
+                                    var cell=editorprf.$cell,event=profile.box.getCellOption(profile, cell, 'onClickCell');
                                     if(typeof event == 'function')
                                         return event.call(profile._host||profile, profile, cell, editorprf, pos,e,src);
                                     else
