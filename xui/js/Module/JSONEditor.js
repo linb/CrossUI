@@ -32,6 +32,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 .setEditable(true)
                 .setIniFold(false)
                 .setRowHandlerWidth("2em")
+                .setRowHandler(false)
                 .setColSortable(false)
                 .setHeader([
                     {
@@ -58,38 +59,46 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                         "type":"text",
                         "location":"right",
                         "itemClass":"xuicon xui-icon-singledown",
-                        "tag":"row",
-                        "tips":"Add a node at the back of this node"
+                        "tips":"Add a node at the back of this node",
+                        "tag":"row"
                     },
                     {
                         "id":"up",
                         "type":"text",
                         "location":"right",
                         "itemClass":"xuicon xui-icon-singleup",
-                        "tag":"row",
-                        "tips":"Add a node to the front of the node"
+                        "tips":"Add a node to the front of the node",
+                        "tag":"row"
                     },
                     {
                         "id":"add",
                         "type":"text",
-                        "caption":"",
                         "location":"right",
+                        "caption":"",
                         "itemClass":"xuicon xui-uicmd-getter",
-                        "tag":"header row",
-                        "tips":"Append a child"
+                        "tips":"Append a child",
+                        "tag":"row"
                     },
                     {
                         "id":"del",
                         "type":"text",
                         "location":"right",
                         "itemClass":"xuicon xui-uicmd-close",
-                        "tag":"row",
-                        "tips":"Delete this node"
+                        "tips":"Delete this node",
+                        "tag":"row"
+                    },
+                    {
+                        "id":"add2",
+                        "type":"text",
+                        "location":"right",
+                        "itemClass":"xuicon xui-uicmd-add",
+                        "tips":"Append a child",
+                        "tag":"header"
                     }
                 ])
                 .setRowOptions({
                     "rowRenderer":function(prf, row){
-                        var fc = prf.getSubNode("FCELL",row._serialId);
+                        var fc=prf.getSubNode("FCELL",row._serialId);
                         fc.attr('title','Click here to select this row');
                         fc.first().html('<span class="xui-node xui-node-span xui-icon-icon xuicon xui-uicmd-select"></span>');
                     }
@@ -323,29 +332,29 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             switch(cmdkey){
                 case 'add':
                     nid=xui.stamp();
-                    if(row){
-                        if(type=="array"||type=="hash"){
-                            tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}],row.id);
-                        }else{
-                            var id=row.id;
-                            xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
-                                tg.updateCellByRowCol(id, "value", "{key:"+row.cells[1].value+"}", false, true);
-                                xui.asyRun(function(){
-                                    tg.editCellbyRowCol(id, "value");
-                                },200);
-                            },function(type){
-                                if(type=='close')return;
-                                var id=row.id;
-                                tg.updateCellByRowCol(id, "value", "["+row.cells[1].value+"]", false, true);
-                                xui.asyRun(function(){
-                                    tg.editCellbyRowCol(id,"value");
-                                },200);
-                            },'As a Hash','As an Array');
-                            return ;
-                        }
+                    if(type=="array"||type=="hash"){
+                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}],row.id);
                     }else{
-                        tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}]);
+                        var id=row.id;
+                        xui.confirm("Hash or Array", "Modify this node as an Hash or Array?",function(){
+                            tg.updateCellByRowCol(id, "value", "{key:"+row.cells[1].value+"}", false, true);
+                            xui.asyRun(function(){
+                                tg.editCellbyRowCol(id, "value");
+                            },200);
+                        },function(type){
+                            if(type=='close')return;
+                            var id=row.id;
+                            tg.updateCellByRowCol(id, "value", "["+row.cells[1].value+"]", false, true);
+                            xui.asyRun(function(){
+                                tg.editCellbyRowCol(id,"value");
+                            },200);
+                        },'As a Hash','As an Array');
+                        return ;
                     }
+                    break;
+                case "add2":
+                    nid=xui.stamp();
+                    tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}]);
                     break;
                 case 'up':
                      nid=xui.stamp();
@@ -396,10 +405,15 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     if(('notree' in prop) && prop.notree){
                         module.tg.setTreeMode('none');
                         var cmds = module.tg.getTagCmds();
-                        cmds[0].tag="header";
+                        cmds[2].itemStyle = "display:none;";
                     }
 
                     module.tg.setRowHandler(!!prop.selector);
+
+                    if(prop.readonly){
+                      module.tg.setEditable(false);
+                      module.tg.setTagCmds(null)
+                    }
                 }
             }
         },
@@ -414,8 +428,20 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             }
         },
         _tg_onclickrowhandler:function(profile, row, e, src){
-            if(this.properties.selector)
-                this.fireEvent("onSelect", [row.id, row.cells[0].value, row.cells[1].value, row]);
+            var getPath = function(row, path){
+              path = path || (path=[]);
+              var v = row.cells[0].value;
+              if(row.cells[0].readonly)v=parseInt(v.slice(1,-1), 10);
+              path.push(v);
+              if(row._pid){
+                getPath(profile.rowMap[row._pid], path);
+              }
+              return path;
+            };
+            if(this.properties.selector){
+                row._pid
+                this.fireEvent("onSelect", [getPath(row).reverse(), row.cells[0].value, row.cells[1].value, row]);
+            }
         }
     },
     Static:{
@@ -428,12 +454,13 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
             valueCaption:"value",
             multiLineValue:true,
             notree:false,
-            selector:false
+            selector:false,
+            readonly:false
         },
         $EventHandlers:{
             onchange:function(module/*xui.Module, the current module*/, json/*String, json text*/){},
             onEdit:function(column/*String, key or value*/, editor/*the editor object*/){},
-            onSelect:function(key/*String, key*/, value/*String, value*/, row/*Object, row data*/){}
+            onSelect:function(path/*Array, key path*/, key/*String, key*/, value/*String, value*/, row/*Object, row data*/){}
         },
         viewStyles:{ }
     }

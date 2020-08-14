@@ -962,20 +962,21 @@ new function(){
 };
 new function(){
   var reg1 = /(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,
-    reg2 = /^\s*(\([\w,\s]+\)|[\w]+)\s*=>\s*([^{\s*][\s\S]*)/;
+    reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/;
   xui.merge(xui.fun,{
       body:function(fun){
           var s=""+fun;
           s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
           r=reg2.exec(s);
-          return r?r[2]:s.slice(s.indexOf("{") + 1, s.lastIndexOf("}"));
+          s=r?r[2]:s;
+          return s[0]=="{" ? s.slice(1, -1) : s;
       },
       args:function(fun){
           var s=""+fun;
           s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
           r=reg2.exec(s);
           s=r?r[1]:s;
-          s=xui.str.trim(s.indexOf("(")!=-1?s.slice(s.indexOf("(") + 1, s.indexOf(")")):s).split(/\s*,\s*/);
+          s=xui.str.trim(s[0]=="(" ? s.slice(1, -1) : s ).split(/\s*,\s*/);
           return s[0]?s:[];
       },
       clone:function(fun){
@@ -52800,7 +52801,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // 5 empty
                         "")
                     // default value
-                    ).replace(/</g,'&lt;') || ""},
+                    ) || ""},
                 f0=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymdhn') : "";
                 },
@@ -53841,7 +53842,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(profile.box.getCellOption(profile, cell,'disabled')){
                             }else{
                                 editor.beforeComboPop(function(editorprf, pos, e, src){
-                                    var cell=editorprf.$cell,event=profile.box.getCellOption(profile, cell, 'event');
+                                    var cell=editorprf.$cell,event=profile.box.getCellOption(profile, cell, 'onClickCell');
                                     if(typeof event == 'function')
                                         return event.call(profile._host||profile, profile, cell, editorprf, pos,e,src);
                                     else
@@ -55000,7 +55001,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             this._adjustBody(profile,'resize');
         }
     }
-});xui.Class("xui.UI.Dialog","xui.UI.Widget",{
+});
+xui.Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
         showModal:function(parent, left, top, callback, ignoreEffects){
             this.show(parent, true, left, top, callback, ignoreEffects);
