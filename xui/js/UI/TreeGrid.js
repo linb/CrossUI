@@ -5700,6 +5700,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             if(!col.type)col.type=prop.colOptions.type || 'input';
             if(!(('caption' in col) && xui.isDefined(col.caption)))col.caption = oid;
+            col._for = "col";
             xui.UI.adjustData(profile, col, uicol, 'sub');
 
             // id to dom item id
@@ -5723,6 +5724,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             cell[SubID]='-c_'+profile.pickSubId('cell');
             // give id
             cell.id=cell.id||cell[SubID];
+            cell._for = "cell";
             // adjust
             ns._adjustCell(profile, cell, uicell);
             // cell only link its' dom item id to properties item
@@ -6130,6 +6132,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b[temp]=row;
 
                 //#
+                row._for = "row";
                 row._pid = pid;
                 row._cells={};
                 row._layer=_layer;

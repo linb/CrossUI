@@ -960,6 +960,8 @@ new function(){
         }
     });
 };
+
+// not for complicated one, like:  (([a, b] = [1, (e=>e)(2)], {x: c} = {x: a + b}) => a + b + c)
 new function(){
   var reg1 = /(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,
     reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/;
@@ -968,15 +970,14 @@ new function(){
           var s=""+fun;
           s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
           r=reg2.exec(s);
-          s=r?r[2]:s;
-          return s[0]=="{" ? s.slice(1, -1) : s;
+          return r ? (r[2][0]=="{" ? r[2].slice(1, -1) : r[2]) : (s.slice(s.indexOf("{") + 1, s.lastIndexOf("}")));
+          return ;
       },
       args:function(fun){
           var s=""+fun;
           s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
           r=reg2.exec(s);
-          s=r?r[1]:s;
-          s=xui.str.trim(s[0]=="(" ? s.slice(1, -1) : s ).split(/\s*,\s*/);
+          s=xui.str.trim( r ? (r[1][0]=="(" ? r[1].slice(1, -1) : r[1] ) : s.slice(s.indexOf("(") + 1, s.indexOf(")")) ).split(/\s*,\s*/);
           return s[0]?s:[];
       },
       clone:function(fun){
@@ -24167,7 +24168,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 hashOut.hidden=hashIn.hidden;
             // filter: hidden
             var itemFilter=hashIn.itemFilter||profile.$itemFilter;
-            if(itemFilter)hashOut.hidden = !!itemFilter(hashIn,'prepareItem',profile);
+            if(itemFilter)hashOut.hidden = !!itemFilter(hashIn,'adjustData',profile);
 
             hashOut._itemDisplay=hashIn.hidden?'display:none;':'';
 
@@ -26488,6 +26489,7 @@ xui.Class("xui.absList", "xui.absObj",{
             var ns=this,
                 profile=ns.get(0);
             if(profile){
+               helper = helper || 'doFilter';
                 if(!itemFilter){
                     if(profile.$itemFilter){
                         delete profile.$itemFilter;
@@ -26499,7 +26501,7 @@ xui.Class("xui.absList", "xui.absObj",{
                     itemFilter=profile.$itemFilter;
                 }
                 xui.resetRun(profile.$xid+':itemFilter',function(){
-                    itemFilter('begin','doFilter',profile)
+                    itemFilter('begin',helper,profile)
 
                     var prop=profile.properties,
                         items=prop['rows']||prop['items'],
@@ -26537,7 +26539,7 @@ xui.Class("xui.absList", "xui.absObj",{
                             return count;
                         };
                     f1(items, showItems, hideItems);
-                    itemFilter('end','doFilter',profile)
+                    itemFilter('end',helper,profile)
 
                     // reflect to dom
                     if(showItems.length)(ns['showRows']||ns['showItems']).call(ns,showItems);
@@ -52655,6 +52657,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             if(!col.type)col.type=prop.colOptions.type || 'input';
             if(!(('caption' in col) && xui.isDefined(col.caption)))col.caption = oid;
+            col._for = "col";
             xui.UI.adjustData(profile, col, uicol, 'sub');
 
             // id to dom item id
@@ -52678,6 +52681,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             cell[SubID]='-c_'+profile.pickSubId('cell');
             // give id
             cell.id=cell.id||cell[SubID];
+            cell._for = "cell";
             // adjust
             ns._adjustCell(profile, cell, uicell);
             // cell only link its' dom item id to properties item
@@ -53085,6 +53089,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 b[temp]=row;
 
                 //#
+                row._for = "row";
                 row._pid = pid;
                 row._cells={};
                 row._layer=_layer;

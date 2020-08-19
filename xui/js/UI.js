@@ -5074,7 +5074,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 hashOut.hidden=hashIn.hidden;
             // filter: hidden
             var itemFilter=hashIn.itemFilter||profile.$itemFilter;
-            if(itemFilter)hashOut.hidden = !!itemFilter(hashIn,'prepareItem',profile);
+            if(itemFilter)hashOut.hidden = !!itemFilter(hashIn,'adjustData',profile);
 
             hashOut._itemDisplay=hashIn.hidden?'display:none;':'';
 
@@ -7395,6 +7395,7 @@ xui.Class("xui.absList", "xui.absObj",{
             var ns=this,
                 profile=ns.get(0);
             if(profile){
+               helper = helper || 'doFilter';
                 if(!itemFilter){
                     if(profile.$itemFilter){
                         delete profile.$itemFilter;
@@ -7406,7 +7407,7 @@ xui.Class("xui.absList", "xui.absObj",{
                     itemFilter=profile.$itemFilter;
                 }
                 xui.resetRun(profile.$xid+':itemFilter',function(){
-                    itemFilter('begin','doFilter',profile)
+                    itemFilter('begin',helper,profile)
 
                     var prop=profile.properties,
                         items=prop['rows']||prop['items'],
@@ -7444,7 +7445,7 @@ xui.Class("xui.absList", "xui.absObj",{
                             return count;
                         };
                     f1(items, showItems, hideItems);
-                    itemFilter('end','doFilter',profile)
+                    itemFilter('end',helper,profile)
 
                     // reflect to dom
                     if(showItems.length)(ns['showRows']||ns['showItems']).call(ns,showItems);

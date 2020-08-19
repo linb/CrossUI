@@ -959,6 +959,8 @@ new function(){
         }
     });
 };
+
+// not for complicated one, like:  (([a, b] = [1, (e=>e)(2)], {x: c} = {x: a + b}) => a + b + c)
 new function(){
   var reg1 = /(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,
     reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/;
@@ -967,15 +969,14 @@ new function(){
           var s=""+fun;
           s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
           r=reg2.exec(s);
-          s=r?r[2]:s;
-          return s[0]=="{" ? s.slice(1, -1) : s;
+          return r ? (r[2][0]=="{" ? r[2].slice(1, -1) : r[2]) : (s.slice(s.indexOf("{") + 1, s.lastIndexOf("}")));
+          return ;
       },
       args:function(fun){
           var s=""+fun;
           s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
           r=reg2.exec(s);
-          s=r?r[1]:s;
-          s=xui.str.trim(s[0]=="(" ? s.slice(1, -1) : s ).split(/\s*,\s*/);
+          s=xui.str.trim( r ? (r[1][0]=="(" ? r[1].slice(1, -1) : r[1] ) : s.slice(s.indexOf("(") + 1, s.indexOf(")")) ).split(/\s*,\s*/);
           return s[0]?s:[];
       },
       clone:function(fun){
