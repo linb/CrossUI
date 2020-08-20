@@ -9865,6 +9865,29 @@ xui.set(xui.Locale,["cn","app"], {
         }
     });
 
+    xui.set(xui.Locale,["cn","doc","xui","UI","Icon"], {
+        KEY:{$desc:"本类名"},
+        $desc:"xui.UI.Icon 类",
+        constructor:{
+            $desc:"生成一个xui.UI.Icon"
+        },
+        prototype:{
+            KEY:{$desc:"本类名"},
+            fireClickEvent:{
+                $desc:"模拟鼠标点击",
+                $rtn:"[self]"
+            },
+            onClick:{
+                $desc:"当鼠标单击Icon时调用",
+                $paras:[
+                    $profile,
+                    "e : Event, DOM事件元素",
+                    "src: String, 事件所属DOM元素的xid"
+                ]
+            }
+        }
+    });
+
     xui.set(xui.Locale,["cn","doc","xui","UI","Link"], {
         KEY:{$desc:"本类名"},
         $desc:"xui.UI.Link 类",
@@ -9955,7 +9978,8 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"当用户单击超链接时调用",
                 $paras:[
                     $profile,
-                    "e : Event, DOM事件元素"            ],
+                    "e : Event, DOM事件元素"
+                ],
                 $snippet:[
                     "var id='xui.temp.link7'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
                     "xui(id).prepend((new xui.UI.Link()).setCaption('cap').onClick(function(profile){alert(profile.properties.caption)}));"+

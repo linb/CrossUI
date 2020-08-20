@@ -21260,7 +21260,10 @@ xui.Class("xui.UI",  "xui.absObj", {
         });
         xui.merge(hash,{
             renderer:{
-                ini:null
+                ini:null,
+                action:function(){
+                  this.boxing().refresh();
+                }
             },
             //invalid after dom dom Node
             zIndex:{
@@ -24243,12 +24246,14 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
             return hashOut;
         },
+        // Module.xxx / App.xxx
+        // {obj.key.xxx} <= hashOut
         _applyRenderer:function(profile, renderer, hashIn, hashOut){
             if(xui.isFun(renderer)){
                 return xui.adjustRes(renderer.call(profile,hashIn,hashOut));
             }else if(xui.isStr(renderer)){
                 var obj,prf,alias,prop={},events={},t,
-                    clsReg=/^\s*[a-zA-Z]+([\w]+\.?)+[\w]+\s*$/,
+                    clsReg=/^\s*[\w]+\.[\w.]+\s*$/,
                     adjustRenderer = function(hash, prop, events){
                         if(hash){
                             var mapReg=/^\s*([^>\s]+)?\s*>\s*([^>\s]+)\s*$/;
@@ -27558,7 +27563,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, value){}
+            onClick:function(profile, e, src){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);

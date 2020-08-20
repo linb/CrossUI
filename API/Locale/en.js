@@ -9845,6 +9845,29 @@ xui.set(xui.Locale,["en","app"], {
         }
     });
 
+    xui.set(xui.Locale,["en","doc","xui","UI","Icon"], {
+        KEY:{$desc:"Class Name"},
+        $desc:"xui.UI.Icon Class",
+        constructor:{
+            $desc:"Creates a xui.UI.Icon Object"
+        },
+        prototype:{
+            KEY:{$desc:"Class Name"},
+            fireClickEvent:{
+                $desc:"Fires the click event",
+                $rtn:"[self]"
+            },
+            onClick:{
+                $desc:"Fired when user click it",
+                $paras:[
+                    $profile,
+                    "e : Event, Dom event object",
+                    "src : String, Element.xui id or Dom Element"
+                ]
+            }
+        }
+    });
+
     xui.set(xui.Locale,["en","doc","xui","UI","Link"], {
         KEY:{$desc:"Class Name"},
         $desc:"xui.UI.Link Class",
