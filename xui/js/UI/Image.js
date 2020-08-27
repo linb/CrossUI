@@ -91,7 +91,7 @@ xui.Class("xui.UI.Image", "xui.UI",{
 
             src.style.width=src.style.height='';
             if(width>0 && height>0){
-                var r1=prop.maxWidth/width, 
+                var r1=prop.maxWidth/width,
                     r2=prop.maxHeight/height,
                     r= r1<r2?r1:r2;
                 if(r>=1)r=1;
@@ -144,7 +144,7 @@ xui.Class("xui.UI.Image", "xui.UI",{
                     var self=this;
                     if(false!==self.boxing().beforeLoad(this))
                         xui.asyRun(function(){
-                            var p=self.properties, r=self.getRoot(), src=xui.adjustRes(v); 
+                            var p=self.properties, r=self.getRoot(), src=xui.adjustRes(v);
                             if(r.attr('src')!==src)r.attr('src',src);
                         });
                     if(!self.$inner)

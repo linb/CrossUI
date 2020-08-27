@@ -1378,7 +1378,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
                     o.getRoot().hide(function(){
                         t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE)||0);
-                        t.dockIgnore=true;
+                        o._dockIgnore=true;
                     },a);
                 }
             });
@@ -1386,6 +1386,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         popUp:function(pos, type, parent, trigger, group){
             var prf=this.get(0), t=prf.getRoot();
             if(t=t.get(0)){
+                prf._dockIgnore=false;
                 xui(t).popUp(pos, type, parent, trigger, group);
             }
         },
@@ -1401,7 +1402,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(top!==null)t.top=top;
                 if(xui.getNodeData(o.renderId,'_xuihide')){
                     b=1;
-                    t.dockIgnore=false;
+                    o._dockIgnore=false;
                     root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.position=='absolute' && t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
@@ -1651,7 +1652,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         var oldp;
                         parentNode=inParent?parentNode:prf.getContainer(subId);
                         if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
-                            if(prf.parent && xui.get(prf,["properties","dock"])!='none' && 'absolute'==xui.get(prf,["properties","position"]) && !xui.get(prf,["properties","dockIgnore"]) && !xui.get(prf,["properties","dockFloat"])){
+                            if(prf.parent && xui.get(prf,["properties","dock"])!='none' && 'absolute'==xui.get(prf,["properties","position"]) && !xui.get(prf,["properties","dockIgnore"]) && !prf._dockIgnore && !xui.get(prf,["properties","dockFloat"])){
                                 if(target['xui.absBox'])
                                     oldp=target.reBoxing().parent();
                             }
@@ -2194,7 +2195,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 action:function(value){
                     var prf=this, prop=prf.properties;
                     prf.getRoot().css('position',value);
-                    if(('dock' in prf.box.$DataModel) && prop.dock!='none' && !prop.dockIgnore){
+                    if(('dock' in prf.box.$DataModel) && prop.dock!='none' && !prop.dockIgnore && !prf._dockIgnore){
                         value = prop.dock;
                         prop.dock='none';
                         prf.boxing().adjustDock(true);
@@ -6064,7 +6065,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         target = me[key];
                                         if(target.length){
                                             for(i=0;o=target[i++];){
-                                                if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
+                                                if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o._dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                     var node = o.getRoot();
                                                     if(perW && (key=='left'||key=='right'||key=='width')){
                                                         wCount++;
@@ -6092,7 +6093,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                             target = me[key];
                                             if(target.length){
                                                 for(i=0;o=target[i++];){
-                                                    if(o.properties.position=='absolute' && !o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
+                                                    if(o.properties.position=='absolute' && !o.properties.dockIgnore && !prf._dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
                                                             innerW -= adjustMM(o,"W", originalSize(o,'width'));
@@ -6101,7 +6102,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     }
                                                 }
                                                 for(i=0;o=target[i++];){
-                                                    if(!(o.properties.position!='absolute'|| o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
+                                                    if(!(o.properties.position!='absolute'|| o.properties.dockIgnore || o._dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='left'||key=='right'||key=='width'){
                                                             node.width(adjustunit( adjustMM(o,"W",Math.min(1, originalSize(o,'width') / wSum) * innerW)) );
@@ -6118,7 +6119,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                             target = me[key];
                                             if(target.length){
                                                 for(i=0;o=target[i++];){
-                                                    if(o.properties.position=='absolute' && !o.properties.dockIgnore && o.properties.dockIgnoreFlexFill){
+                                                    if(o.properties.position=='absolute' && !o.properties.dockIgnore && !o._dockIgnore && o.properties.dockIgnoreFlexFill){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
                                                             innerH -= adjustMM(o,"H", originalSize(o,'height'));
@@ -6127,7 +6128,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                     }
                                                 }
                                                 for(i=0;o=target[i++];){
-                                                    if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
+                                                    if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o._dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
                                                             node.height(adjustunit( adjustMM(o,"H",Math.min(1, originalSize(o,'height')/ hSum) * innerH)) );
@@ -6145,7 +6146,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         target = me[key];
                                         if(target.length){
                                             for(i=0;o=target[i++];){
-                                                if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o.properties.dockIgnoreFlexFill)){
+                                                if(!(o.properties.position!='absolute' || o.properties.dockIgnore || o._dockIgnore || o.properties.dockIgnoreFlexFill)){
                                                     var node = o.getRoot();
                                                     if(pprf&&pprf._conDockFlexFillW && !perW && (key=='left'||key=='right'||key=='width')){
                                                         node.width(adjustunit(o.properties.width)) ;
@@ -6171,7 +6172,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(ll=target.length){
                                         if(!map[key])arg.width=arg.height=1;
                                         for(i=0;o=target[i++];){
-                                            if(o.properties.position=='absolute' && !o.properties.dockIgnore){
+                                            if(o.properties.position=='absolute' && !o.properties.dockIgnore && !o._dockIgnore){
                                                 rePos(o, ii++, ll, obj, key, arg.$dockid, isWin||arg.width, isWin||arg.height, conDockSpacing.width, conDockSpacing.height, conDockStretch);
                                             }
                                         }
@@ -6230,7 +6231,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     target = me[key];
                                     if(target.length){
                                         for(i=0;o=target[i++];){
-                                            if(o.properties.position=='absolute' && !o.properties.dockIgnore){
+                                            if(o.properties.position=='absolute' && !o.properties.dockIgnore && !o._dockIgnore){
                                                 if(!obj.later || !obj.later[o.$xid]){
                                                     if(o.onDock)o.boxing().onDock(o);
                                                     if(o.$onDock)o.$onDock(o);
