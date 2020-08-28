@@ -1,12 +1,12 @@
 /*font*/
 .xui-ui-ctrl, .xui-ui-reset{
     color:#444; 
-		font-size: 1.3333333333rem;
+	font-size: 1rem;
     font-family:arial, helvetica, clean, sans-serif; 
     font-weight:normal; 
 }
 .xui-title-node{
-		font-size:1.1667em;
+	font-size:1.1667em;
 }
 .xuifont, .xuicon{
   font-size:1.3333333333333333em;

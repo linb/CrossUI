@@ -15,7 +15,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 if(rst.length){
                         rst=rst[0];
                         if(item=rst[0]){
-                            
+
                         // [[modify id
                         if(xui.isSet(options.id))options.id+="";
                         if(options.id && subId!==options.id){
@@ -36,7 +36,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         if(xui.isEmpty(options))
                             return self;
                         //]]
-                    
+
                         //in dom already?
                         n1=profile.getSubNodeByItemId('ICON',nid||subId);
                         n2=profile.getSubNodeByItemId('CAPTION',nid||subId);
@@ -46,7 +46,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
 
                         if('value' in options && options.value!==item.value)
                             profile.getSubNodeByItemId('BTN',nid||subId).tagClass('-checked', !!options.value);
-                            
+
                         if('caption' in options&& options.caption!==item.caption){
                             n2.html(options.caption);
                             if(options.caption && !item.caption)
@@ -66,7 +66,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                 n3.addClass('xui-ui-itemdisabled');
                             else
                                 n3.removeClass('xui-ui-itemdisabled');
-  
+
                             n5.onMouseout(true,{$force:true})
                         }
                         if('image' in options&& options.image!==item.image)
@@ -117,8 +117,8 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                     }
                 });
                 var n=profile.getSubNodeByItemId('GROUP', grpId);
-                n.css('display',value===false?'none':'');    
-                
+                n.css('display',value===false?'none':'');
+
                 xui.resetRun(profile.$xid+':showgrp',function(){
                     if(profile.renderId && profile.getRootNode().offsetWidth){
                         xui.UI.$dock(profile,true,true);
@@ -224,6 +224,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             },
             ITEMS:{
                 display:'block',
+                overflow:'hidden',
                 'padding-bottom':'.125em'
             },
             HANDLER:{
@@ -382,7 +383,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 profile.boxing().insertItems([oitem], item.id, true);
             else
                 profile.boxing().insertItems([oitem]);
-            
+
             data._new = oitem;
             return false;
         },

@@ -1,15 +1,15 @@
 /*font*/
 .xui-ui-ctrl, .xui-ui-reset{
     color:#fff; 
-    font-size: 1rem;
+    font-size: .875rem;
     font-family:arial, helvetica, clean, sans-serif; 
     font-weight:normal; 
 }
 .xui-title-node{
-		font-size:1.1667em;
+	font-size:1.1667em;
 }
 .xuifont, .xuicon{
-  font-size:1.3333333333333333em;
+    font-size:1.3333333333333333em;
 }
 .xuifont-hover, .xuicon-hover{
 	color: #fff;
@@ -21,7 +21,7 @@
 	color: #eee; 
 }
 .xui-ui-ctrl-highlight, .xui-node-highlight, .xui-uibar-checked, .xui-uibar-expand,  .xui-uimenu-hover,.xui-uimenu-active{
-		color:#fff;
+	color:#fff;
 }
 
 

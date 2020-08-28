@@ -1018,7 +1018,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         xui.resetRun(aysid,function(){
                             xui.setData([aysid,'$ui.hover.pop']);
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',0);
-                            if(!beforeHide || false!==beforeHide(prf, node,e, src ,'host',item)){
+                            if(!beforeHide || false!==beforeHide(prf, node,e,src,item)){
                                 if(popmenu) popmenu.hide();
                                 else node.hide();
                                 node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');

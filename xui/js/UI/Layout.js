@@ -240,6 +240,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             MOVE:{
                 $order:0,
                 position:'absolute',
+                cursor:'pointer',
                 'z-index':'10'
             },
             CMD:{
@@ -445,7 +446,6 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                             profile._limited=0;
                         }
                     }
-
                 },
                 onDragstop:function(profile, e, src){
                     var t=profile.properties,
@@ -480,6 +480,15 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     // use px here,  _onresize handle em things
                     xui.UI.$tryResize(profile,  innerW, innerH, true);
                     profile._limited=0;
+                },
+                onMousedown:function(profile, e, src){
+                    if(xui.Event.getBtn(e)!="left")return;
+                    var t=profile.properties,
+                        itemId = profile.getSubId(src),
+                        item = profile.getItemByDom(src);
+                    if(item.folded){
+                      profile.getSubNode('CMD',itemId).onMousedown(true);
+                    }
                 }
             },
             CMD:{
@@ -528,7 +537,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                                 xui.use(src).replaceClass(/bottom/g,'top');
 
                             if(!item.locked)
-                                move.css('cursor','default');
+                                move.css('cursor','pointer');
                             profile.getSubNode('MOVE').tagClass('-checked');
                         }
                         xui.UI.$tryResize(profile,null,r.height(),true);
@@ -558,7 +567,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
 
 
                             if(!item.locked)
-                                move.css('cursor','default');
+                                move.css('cursor','pointer');
                             profile.getSubNode('MOVE').tagClass('-checked');
                         }
                         xui.UI.$tryResize(profile,r.width(),null,true);
@@ -640,7 +649,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                }
             },
             items:{
-                ini:[] 
+                ini:[]
             }
         },
         EventHandlers:{
@@ -727,7 +736,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             return data;
         },
         _prepareItem:function(profile, data,item){
-            var p=profile.properties, 
+            var p=profile.properties,
                 width=p.width, height=p.height,t;
             if(data.id=='main'){
                 data.cls1=profile.getClass('ITEM', '-main');
@@ -792,7 +801,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 panel=profile.keys.PANEL,
                 main=profile.getItemByItemId('main'),
                 mainmin=main.min||10,
-                pct = t.flexSize, 
+                pct = t.flexSize,
                 sum=0,
 
                 move, _handlerSize,
@@ -944,7 +953,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             xui.each(obj2, function(o, id){
                 var p=profile.getSubNode('PANEL', id),
                     i=profile.getSubNode('ITEM', id);
-                
+
                 if(us>0){
                     var pfz=us>0?p._getEmSize(fzrate):null,
                         ifz=us>0?i._getEmSize(fzrate):null;
