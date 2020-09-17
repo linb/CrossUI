@@ -474,6 +474,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             'ITEMS-icon CAPTION, ITEMS-icon OPT, ITEMS-icon POP, ITEMS-icon2 CAPTION, ITEMS-icon2 OPT, ITEMS-icon2 POP':{
                 display:'none'
             },
+            'ITEMS-icon ITEM-hover CAPTION, ITEMS-icon ITEM-hover OPT, ITEMS-icon ITEM-hover POP, ITEMS-icon ITEM-checked CAPTION, ITEMS-icon ITEM-checked OPT, ITEMS-icon ITEM-checked POP':{
+                $order:1,
+                display:xui.$inlineBlock
+            },
             'ITEMS-menu ITEM':{
                 display:'none'
             },
@@ -1259,7 +1263,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 itemsW = getItemsW();
                 if(itemsW>innerW){
                     var capw=getCapsW();
-                    if((itemsW - innerW) < capw * .75){
+                    if((itemsW - innerW) < capw * .5){
                         var percent = 1- (itemsW - innerW) / capw;
                         caps.each(function(cap){
                             xui(cap).width(Math.floor(cap.clientWidth * percent) +'px');
@@ -1271,6 +1275,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
 
                     // try 2: icon mode
                     if(ignoreCap || getItemsW()>innerW){
+                        caps.css('width','');
                         items.tagClass('-icon',true);
                         profile._mode='icon';
                         // try 3: menu mode

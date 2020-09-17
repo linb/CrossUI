@@ -337,7 +337,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
                         break;
                     }
-                    if(profile.afterClick)box.afterClick(profile,item,e,src);
+                    if(profile.afterClick)return box.afterClick(profile,item,e,src);
                 },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys[0], shift=keys[2],

@@ -397,7 +397,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         },
         _prepareItem:function(profile, oitem, sitem, pid, index,len, mapCache, serialId){
             var ns=this,
-                dn='display:none',
+                dn='display:none;',
                 tabindex = profile.properties.tabindex,
                 fun=function(profile, dataItem, item, pid, index,len, mapCache,serialId){
                     var id=dataItem[xui.UI.$tag_subId]=typeof serialId=='string'?serialId:('a_'+profile.pickSubId('aitem')), t;

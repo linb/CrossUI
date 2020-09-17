@@ -8566,10 +8566,19 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
         },
         RenderTrigger:function(){
             var self=this, p=self.properties, o=self.boxing();
+            if(p.disabled)o.setDisabled(true);
             if((!self.$noS) && p.shadow && o.setShadow)o.setShadow(true,true);
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY'}
+        },
+        _prepareData:function(profile){
+            var data=arguments.callee.upper.call(this, profile);
+            data._style = data._style + (data.fontColor?(";color:"+data.fontColor):'')
+              + (data.fontSize?(";font-size:"+data.fontSize):'')
+              + (data.fontWeight?(";font-weight:"+data.fontWeight):'')
+              + (data.fontFamily?(";font-family:"+data.fontFamily):'');
+            return data;
         }
     }
 });
@@ -8637,6 +8646,7 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             CAPTION:{
                 $order:2,
                 className:'',
+                style:'{_capStyle}',
                 text:'{caption}'
             },
             DROP:{
@@ -8799,6 +8809,10 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             var data=arguments.callee.upper.call(this, profile);
             data._align = 'text-align:'+data.hAlign+';';
             data._showDrop = data.type=='drop'?'':'display:none';
+            data._capStyle = (data.fontColor?("color:"+data.fontColor+";"):'')
+              + (data.fontSize?("font-size:"+data.fontSize+";"):'')
+              + (data.fontWeight?("font-weight:"+data.fontWeight+";"):'')
+              + (data.fontFamily?("font-family:"+data.fontFamily+";"):'');
             return data;
         },
         RenderTrigger:function(){

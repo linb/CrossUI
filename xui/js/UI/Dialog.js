@@ -48,16 +48,16 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     var box=profile.box,
                         root=profile.getRoot(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
-                    
+
                     if(p.iframeAutoLoad||p.ajaxAutoLoad)
                         xui.UI.Div._applyAutoLoad(profile);
 
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
-                        
+
                     ins.activate();
                     var tt=profile._$rs_args,fun=function(){
-                        if(profile.onShow)profile.boxing().onShow(profile);                            
+                        if(profile.onShow)profile.boxing().onShow(profile);
                         delete profile.inShowing;
                         delete profile.$inThread;
                         xui.tryF(callback);
@@ -72,9 +72,9 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
 
                     };
                     if(p.status=='min')
-                        box._min(profile,'normal', fun, true);
+                        box._min(profile,'min', fun, true);
                     else if(p.status=='max')
-                        box._max(profile,'normal', fun, ignoreEffects);
+                        box._max(profile,'max', fun, ignoreEffects);
                     else{
                         // resize immidiately here, maybe max here
                         xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
@@ -113,7 +113,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                         box._restore(profile);
                         pro.status=os;
                     }
-    
+
                     var t=pro.fromRegion, f1=function(){
                         delete profile.inHiding;
                         delete profile.$inThread;
@@ -173,7 +173,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(flag!==false && !ifocus){
                     try{profile.getSubNode('CAPTION').focus(true);}catch(e){}
                 }
-                if(self.onActivated)self.onActivated(profile);                        
+                if(self.onActivated)self.onActivated(profile);
             });
         },
         isPinned:function(){
@@ -891,7 +891,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             if(status=='max')
                 box._unMax(profile);
             // keep restore values
-            else
+            else if(status=='normal')
                 box._refreshRegion(profile);
 
             // hide those
@@ -918,7 +918,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             // resize
             o.cssSize({ width :t.minWidth, height :h+h1-h2},true);
             if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'min', status);
-            
+
             if(a&&xui.browser.ie678)
                 xui.filter(a.params,function(o,i){
                     return !!xui.Dom._cssfake[i];
@@ -934,15 +934,15 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 a=xui.Dom._getEffects(t.showEffects,1);
             if(!status)status=t.status;
             if(profile.$inThread)profile.$inThread.abort();
-            
+
             if(profile.beforeStatusChanged && false===profile.boxing().beforeStatusChanged(profile, 'max', status))
                 return;
-            
+
             // if from normal status
             if(status=='min')
                 //unset min
                 box._unMin(profile);
-            else
+            else if(status=='normal')
                 box._refreshRegion(profile);
 
             // hide pin button
@@ -957,7 +957,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             }
 
             if(t.resizer && profile.$resizer)
-                ins._unResizer(); 
+                ins._unResizer();
 
             t.status='max';
 
@@ -996,14 +996,15 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 profile.getSubNode('PIN').setInlineBlock();
 
             if(t.resizer && !t.pinned){
-                    ins._resizer();
+                ins._resizer();
             }
 
             ins.setDock('none');
 
+            profile.getRoot().cssSize({width:t.width, height:t.height});
             // resize
             profile.adjustSize(true);
-            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'normal', status);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'normal', 'max');
         },
         _unMin:function(profile){
             var t=profile.properties,
@@ -1012,12 +1013,13 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             profile.getSubNode('MIN').setInlineBlock();
 
             if(t.resizer && !t.pinned){
-                    ins._resizer();
+                ins._resizer();
             }
 
             profile.getRoot().cssSize({width:t.width, height:t.height});
             // resize
             profile.adjustSize(true);
+            if(profile.afterStatusChanged)profile.boxing().afterStatusChanged (profile, 'normal', 'min');
         },
         _active:function(profile,flag){
             var self=this;
@@ -1075,7 +1077,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                             cover.css({width:w,height:h});
                         });
                     },"dialog:"+profile.serialId);
-                    
+
                     var i=(parseInt(cover.css('zIndex'),10)||0)+1;
                     s.css('zIndex',i);
 
@@ -1135,7 +1137,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 p.onSize(null, "dialog:"+profile.serialId);
 
                 profile.getRoot().css('zIndex',0);
-                
+
                 profile.$modalDiv.css('display','none');
                 var node=profile.getSubNode('BORDER');
                 if(!node.isEmpty())
@@ -1157,7 +1159,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         },
         _refreshRegion:function(profile){
             if(!profile.renderId) return;
-            var prop=profile.properties, 
+            var prop=profile.properties,
                 root=profile.getRoot(),
                 us=xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
@@ -1269,12 +1271,12 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     top:10
                 });
                 dialog.append(cmd).append(div).render();
-                
+
                 if(!noCache)
                     me.dialog = dialog;
             }
             dialog._$onClose=onClose;
-            
+
             dialog.$btn.setCaption("&nbsp;&nbsp;"+(btnCap || xui.wrapRes('$inline.ok'))+"&nbsp;&nbsp;");
 
             var size=xui.UI.Dialog._adjust(dialog,title, content, "Alert");
@@ -1453,7 +1455,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                         dialog._$onYes=dialog._$onNo=null;
                         if(!noCache){
                             dialog.hide();
-                            return false;                        
+                            return false;
                         }
                     }
                 });
@@ -1516,8 +1518,8 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         },
         //
         _onresize:function(profile,width,height,force){
-    		if(width && profile.properties.status=='min')
-    			width=profile.properties.minWidth;
+            if(width && profile.properties.status=='min')
+              width=profile.properties.minWidth;
 
             var prop=profile.properties,
                 us=xui.$us(profile),
@@ -1560,7 +1562,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
                     - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
                     - (cb1?0:v0._borderW()) -  (cb2?0:v2._borderW())
-            
+
             if(width&&us>0)isize.width=adjustunit(isize.width);
             if(height&&us>0)isize.height=adjustunit(isize.height);
 

@@ -41,6 +41,7 @@ xui.Class("xui.Coder", null,{
                 reg: this.$COM_REG.REG,
                 string1: this.$COM_REG.DQ_STRING,
                 string2: this.$COM_REG.SQ_STRING,
+                string3: this.$COM_REG.T_STRING,
                 number: this.$COM_REG.NUMBER,
                 keyword: "try|throw|catch|finally|arguments|break|case|continue|default|delete|do|else|false|" +
                          "for|function|if|in|instanceof|new|null|return|switch|this|true|typeof|var|void|while|with|" +
@@ -130,6 +131,7 @@ xui.Class("xui.Coder", null,{
             REG : /\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*/,
             DQ_STRING : /"(\\.|[^"\\])*"/,
             SQ_STRING : /'(\\.|[^'\\])*'/,
+            T_STRING : /`(\\.|[^`\\])*`/,
             NUMBER : /-?(\d*\.?\d+|\d+\.?\d*)([eE][+-]?\d+|%)?\b/
         },
         isSafeJSON:function(s){
@@ -139,6 +141,7 @@ xui.Class("xui.Coder", null,{
                 [this.$COM_REG.LINE_COMMENT,''],
                 [this.$COM_REG.DQ_STRING,''],
                 [this.$COM_REG.SQ_STRING,''],
+                [this.$COM_REG.T_STRING,''],
                 [this.$COM_REG.REG,''],
                 [this.$COM_REG.NUMBER,''],
                 [/true|false|null|undefined/,''],
@@ -190,7 +193,7 @@ xui.Class("xui.Coder", null,{
                 var arr=[],
                     index1=1,index2=1,index3=1,index4=1,index5=1,index6=1,index7=1,
                     cache={a:{},b:{},c:{},d:{},e:{},f:{},g:{}};
-                
+
                 reg = this.$COM_REG;
                 code=code.replace(/\\\r?\n/g,"");
                 //special chars
@@ -203,6 +206,8 @@ xui.Class("xui.Coder", null,{
                     [reg.LINE_COMMENT.source,reverse?'':function(s,i){var ret="\x01e" + index5++ +"\x02"; cache.e[ret]=s[i]; return ret;}],
                     // /*@
                     [/\/\*@|@\*\/|\/\/@[^\n]*\n/.source,function(s,i){var ret="\x01c" + index3++ +"\x02"; cache.c[ret]=s[i]; return ret;}],
+                    // ``
+                    [reg.T_STRING.source,function(s,i){var ret="\x03a" + index1++ +"\x04"; cache.a[ret]=s[i]; return ret;}],
                     // ''
                     [reg.SQ_STRING.source,function(s,i){var ret="\x03a" + index1++ +"\x04"; cache.a[ret]=s[i]; return ret;}],
                     // ""
@@ -231,7 +236,7 @@ xui.Class("xui.Coder", null,{
                     arr=[
                         // a[b[6]]
                         [/\[[^,;\n{}\x01\x03]+\]/.source, "$0"],
-                        // [{ 
+                        // [{
                         [/(\[)\s*(\{)/.source, function(a,i){Brackets[deep+1]=1; return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
                         // [   or  {
                         [/[\[\{]/.source, function(a,i){Brackets[deep+1]=a[i]=='['; return a[i]+'\n'+space[++deep]}],
@@ -240,7 +245,7 @@ xui.Class("xui.Coder", null,{
                         [/(\,)([\x03\x04\w_\-]+\:)/.source, function(a,i){return a[i+1]+'\n'+space[deep]+a[i+2]}],
                         [/,/.source, function(a,i){return Brackets[deep]? ',\n'+space[deep] : ','}],
                         [/\x01/.source, function(a,i){return '\n'+space[deep]+a[i]}],
-                        
+
                         // ]}   or   ]},    or   ]};
                         [/(\])\s*(\})\s*([\,\;]*)/.source, function(a,i){Brackets[deep-1]=0; return '\n'+space[--deep]+a[i+1]+'\n'+space[--deep]+a[i+2]+a[i+3]+'\n'+space[deep] }],
                         // }    or   },   or   };
@@ -287,7 +292,7 @@ xui.Class("xui.Coder", null,{
                     [/[\x01\x03]([\w])\d+[\x02\x04]/.source, function(s,i){return cache[s[i+1]][s[i]]}],
                     [/([\]\}])\s*([\)])/.source,'$1$2']
                 ]);
- 
+
                 //return special chars
                 code=code.replace(/([\x01\x02\x03\x04])-/g,"$1");
             }
@@ -368,7 +373,7 @@ xui.Class("xui.Coder", null,{
                 delete a['reg'];
             }
 
-            xui.arr.each(["string1", "string2", "number"],function(s){
+            xui.arr.each(["string1", "string2", "string3", "number"],function(s){
                 if(a[s]){
                     f(a[s],s);
                     delete a[s];

@@ -951,7 +951,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var prop=profile.properties;
                     if(prop.type=='cmdbox'||prop.type=='button'||prop.type=='dropbutton'){
                         if(profile.onClick)
-                            profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
+                            return profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
                     //DOM node's readOnly
                     }else if(prop.inputReadonly || profile.$inputReadonly){
                         if(prop.disabled || prop.readonly)return;
@@ -967,7 +967,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         if(e.left===0&&e.top===0)return false;
                     }
                     if(p.onInputClick)
-                        p.boxing().onInputClick(p, e, src);
+                        return p.boxing().onInputClick(p, e, src);
                 },
                 onChange:function(profile, e, src){
                     if(profile.$_onedit||profile.$_inner||profile.destroyed||!profile.box)return;

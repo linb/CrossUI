@@ -578,6 +578,9 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 });
             };
+            if(!self.created)
+                // create synchronously
+                self.create(null,false)
             if(self.renderId!='ok'){
                 self.renderId='ok';
                 self.getUIComponents().render(triggerLayout);
