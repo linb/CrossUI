@@ -565,7 +565,9 @@ xui.Class('xui.Module','xui.absProfile',{
             return self;
         },
         hide:function(){
-            this.getUIComponents(true).hide();
+            this.getUIComponents(true).each(function(prf){
+              prf.boxing().hide();
+            });
             this._showed=0;
         },
         render:function(triggerLayout){

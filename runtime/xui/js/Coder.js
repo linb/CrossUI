@@ -214,6 +214,9 @@ xui.Class("xui.Coder", null,{
                     [reg.DQ_STRING.source,function(s,i){var ret="\x03b" + index2++ +"\x04"; cache.b[ret]=s[i]; return ret;}],
                     // regexp
                     [reg.REG.source,function(s,i){var ret="\x03f" + index6++ +"\x04"; cache.f[ret]=s[i]; return ret;}],
+                    // {a} or [b]
+                    [/\{[\w,\s]+\}/.source,function(s,i){var ret="\x03f" + index6++ +"\x04"; cache.f[ret]=s[i]; return ret;}],
+                    [/\[[\w,\s]+\]/.source,function(s,i){var ret="\x03f" + index6++ +"\x04"; cache.f[ret]=s[i]; return ret;}],
                     // function(a,b,c)
                     [/function\s*\([^)]*\)/.source,function(s,i){var ret="\x03g" + index7++ +"\x04"; cache.g[ret]=s[i]; return ret;}]
                 ]);

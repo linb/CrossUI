@@ -408,7 +408,7 @@ xui.Class('xui.Dom','xui.absBox',{
                                 c=null;
                             };
                             // for performance
-                            if(purgeNow)f();else xui.asyRun(f);                            
+                            if(purgeNow)f();else xui.asyRun(f);
                          }
 
                          var scripts;
@@ -1284,7 +1284,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
                         add(pos, -(t=xui.Dom.$getBoundingClientRect(boundary,original)).left+boundary.scrollLeft, -t.top+boundary.scrollTop);
-                    else{ 
+                    else{
                         // old:
                         // add(pos, (dd.scrollLeft||db.scrollLeft||0)-dd.clientLeft, (dd.scrollTop||db.scrollTop||0)-dd.clientTop);
 
@@ -1349,7 +1349,7 @@ xui.Class('xui.Dom','xui.absBox',{
         addClass:function(name){
             if(!name)return this;
             var arr, i,l,me=arguments.callee,reg=(me.reg||(me.reg=/\s+/)),t,ok,
-                  arr2 = (name+"").split(reg);                
+                  arr2 = (name+"").split(reg);
             if(!arr2.length)return this;
 
             return this.each(function(o){
@@ -1475,7 +1475,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(type=event._eventHandler[name]){
                     event._removeEventListener(o, type, handler);
                     event._removeEventListener(o, type, handler3);
-                    
+
                     if(xui.browser.isTouch && type=='onmousedown'){
                         event._removeEventListener(o, 'xuitouchdown', handler);
                     }
@@ -1831,7 +1831,7 @@ xui.Class('xui.Dom','xui.absBox',{
             var parmsBak=endpoints;
             // clone it now
             endpoints=xui.clone(endpoints);
-            
+
             // Estimate duration by steps
             if((step||0)>0)
                 duration=step*16;
@@ -1902,7 +1902,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 xui.setNodeData(node,'_inthread',null);
             }
             var reset=xui.getNodeData(node,'_animationreset');
-            if(typeof reset=="function"){                
+            if(typeof reset=="function"){
                 reset();
                 xui.setNodeData(node,'_animationreset',null);
             }
@@ -2141,7 +2141,7 @@ xui.Class('xui.Dom','xui.absBox',{
         ieRemedy:function(){
             if(xui.browser.ie&&xui.browser.ver<=6){
                 var a1=this.get(),a2=[],a3=[],l=a1.length,style;
-                //xui.asyRun(function(){                    
+                //xui.asyRun(function(){
                     for(var i=0;i<l;i++){
                         style=a1[i].style;
                         // allow once
@@ -2167,7 +2167,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             //a1[i].style.WordWrap=a3[i];
                         }
                         a1.length=a2.length=a3.length=0;
-                    });                    
+                    });
                // });
             }
             return this;
@@ -2316,7 +2316,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         height:t*2
                     };
                 }
-                
+
 
                 //window edge
                 t=(parent.get(0)===document.body || parent.get(0)===document || parent.get(0)===window)?xui.win:parent;
@@ -2738,12 +2738,12 @@ xui.Class('xui.Dom','xui.absBox',{
 
                 // for fake case
                 if(node.getBoundingClientRect){
-                    var transX=matrix.getX(), 
+                    var transX=matrix.getX(),
                         transY=matrix.getY(),
                         rect = xui.Dom.$getBoundingClientRect(node),
-                        w=rect.right - rect.left, 
+                        w=rect.right - rect.left,
                         h=rect.bottom-rect.top;
-     
+
                     style.marginLeft =Math.round(parseFloat((ow-w)/2  + 10 + transX))+'px';
                     style.marginTop = Math.round(parseFloat((oh-h)/2 + 10 + transY))+ 'px';
                 }
@@ -2836,7 +2836,7 @@ xui.Class('xui.Dom','xui.absBox',{
             var iecracker1=function(node, orient, stops, shape, size, rate){
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType != 1 || !node.style)return;
-                var style=node.style, 
+                var style=node.style,
                     tmp1=ns.getStyle(node,'overflow'),
                     tmp2=ns.getStyle(node,'display');
                 if(tmp1!='hidden' || (tmp2!='block' && tmp2!='relative'))return;
@@ -2937,7 +2937,7 @@ xui.Class('xui.Dom','xui.absBox',{
             iecracker21=function(node, orient, stops){
                 var id="xui.s-ie8gdfix";
                 if(!node || node.nodeType != 1 || !node.style)return;
-                var style=node.style, 
+                var style=node.style,
                     tmp1=ns.getStyle(node,'overflow'),
                     tmp2=ns.getStyle(node,'display');
                 if(tmp1!='hidden'){
@@ -3617,6 +3617,22 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             return _c[key]=rt;
         },
+        supportPromise:function(){
+          var dom=xui.Dom;
+          if('$supportPromise' in dom)
+             return dom.$supportPromise;
+          try {
+              new Promise(function(x,y){});
+              return dom.$supportPromise = true;
+          } catch (e) {}
+          return dom.$supportPromise = false;
+        },
+        supportDropzone: function() {
+          if('$supportDropzone' in xui.Dom)
+             return xui.Dom.$supportDropzone;
+          var div = document.createElement('div');
+          return xui.Dom.$supportDropzone = (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FileReader' in window;
+        },
         $AnimateEffects:{
             linear:function(s,c) {return (1/s)*c;},
             sineIn:function(s,c) {return -1*Math.cos(c/s*(Math.PI/2))+1;},
@@ -3652,50 +3668,50 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         $preDefinedAnims:{
             blinkAlert:{
-                endpoints:{opacity:[1,0]}, 
-                duration:200, 
-                restore: true, 
+                endpoints:{opacity:[1,0]},
+                duration:200,
+                restore: true,
                 times:3
             },
             blinkAlertLoop:{
-                endpoints:{opacity:[1,0]}, 
-                duration:500, 
-                restore: true, 
+                endpoints:{opacity:[1,0]},
+                duration:500,
+                restore: true,
                 times:-1
             },
             rotateAlert:{
-                endpoints:{rotate:[0,360]}, 
-                duration:400, 
+                endpoints:{rotate:[0,360]},
+                duration:400,
                 restore: false
             },
             rotateAlertLoop1:{
-                endpoints:{rotate:[0,360]}, 
-                duration:2000, 
+                endpoints:{rotate:[0,360]},
+                duration:2000,
                 restore: false,
                 times:-1
             },
             rotateAlertLoop2:{
-                endpoints:{rotate:[0,-360]}, 
-                duration:2000, 
+                endpoints:{rotate:[0,-360]},
+                duration:2000,
                 returned: false,
                 times:-1
             },
             zoomAlert:{
-                endpoints:{scaleX:[1,1.1],scaleY:[1,1.1]}, 
-                duration:100, 
-                restore: true, 
+                endpoints:{scaleX:[1,1.1],scaleY:[1,1.1]},
+                duration:100,
+                restore: true,
                 times:3
             },
             translateXAlert:{
-                endpoints:{translateX:[0,5]}, 
-                duration:100, 
-                restore: true, 
+                endpoints:{translateX:[0,5]},
+                duration:100,
+                restore: true,
                 times:3
             },
             translateYAlert:{
-                endpoints:{translateY:[0,5]}, 
-                duration:100, 
-                restore: true, 
+                endpoints:{translateY:[0,5]},
+                duration:100,
+                restore: true,
                 times:3
             }
         },
@@ -3982,7 +3998,7 @@ xui.Class('xui.Dom','xui.absBox',{
             self.plugIn(o[0],function(type){
                 type=type||'both';
                 node = this.get(0);
-                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1]),node):0) 
+                return ((type=='both'||type=='left'||type=='top')?xui.CSS.$px(fun(node, o[1]),node):0)
                      + ((type=='both'||type=='right'||type=='bottom')?xui.CSS.$px(fun(node, o[2]),node):0) || 0;
             })
         });
@@ -4167,7 +4183,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     style=node.style;
                     // give shortcut
-                    // we force to get px number of width/height 
+                    // we force to get px number of width/height
                     if(o=='width')value=(xui.CSS.$isPx(style.width)&&parseFloat(style.width))||self._W(node,1,value);
                     else if(o=='height')value=(xui.CSS.$isPx(style.height)&&parseFloat(style.height))||self._H(node,1,value);
                     else
@@ -4260,7 +4276,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
                 if(xui.Module){
                     xui.arr.each(xui.Module._cache,function(m){
-                       // by created order    
+                       // by created order
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
@@ -4323,7 +4339,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
         //free memory
         xui.win.afterUnload(xui._destroy = function(){
-            var t, 
+            var t,
             lowie=xui.browser.ie && xui.browser.ver<=8,
             e=xui.Event,
             _cw=function(w,k){
@@ -4331,7 +4347,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(!lowie)
                     delete w[k];
             };
-            
+
             if(xui.History && xui.History._checker)e._removeEventListener(w, "hashchange", xui.History._checker);
             e._removeEventListener(d.body, "selectstart", _ieselectstart);
             e._removeEventListener(w, "resize", e.$eventhandler);
@@ -4342,11 +4358,11 @@ xui.Class('xui.Dom','xui.absBox',{
             e._removeEventListener(w, "DOMMouseScroll", e.$eventhandler3);
             // for simulation mouse event in touable device
             if(xui.browser.isTouch){
-                e._removeEventListener(d, 
+                e._removeEventListener(d,
                     (xui.browser.ie&&w.PointerEvent)?"pointerdown":
                     (xui.browser.ie&&w.MSPointerEvent)?"MSPointerDown":
                     "touchstart", e._simulateMousedown);
-                e._removeEventListener(d, 
+                e._removeEventListener(d,
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
                     "touchend", e._simulateMouseup);
@@ -4379,7 +4395,7 @@ xui.Class('xui.Dom','xui.absBox',{
             xui.breakO([xui.Class, xui],3);
             _cw(w,'xui_ini');
             _cw(w,'xui');
-            
+
             w=d=null;
         },"window",-1);
     }

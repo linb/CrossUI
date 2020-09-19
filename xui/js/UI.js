@@ -1377,7 +1377,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(o.renderId){
                     var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
                     o.getRoot().hide(function(){
-                        t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE)||0);
+                        t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE)||0)+"px";
                         o._dockIgnore=true;
                     },a);
                 }
@@ -3784,6 +3784,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     b,id,arr,con;
                                 if(!hasitems){
                                     if(con=profile.boxing().getContainer())con.html("",true,false,purgeNow);
+                                    if('html' in p)p.html="";
                                 }else{
                                     xui.arr.each(p.items, function(item){
                                         id = item.id;
@@ -3795,6 +3796,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         }
                                         if(b){
                                             if(con=profile.boxing().getContainer(id))con.html("",true,false,purgeNow);
+                                            if('html' in item)item.html="";
                                         }
                                     });
                                 }
@@ -3902,10 +3904,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'invalid')){
                                             xui.alert('$inline.invalid',xui.getRes('$inline.invalid2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
-                                                if(prf&&prf.renderId)
-                                                       ins.activate();
+                                              if(prf&&prf.renderId)
+                                                  ins.activate();
                                             });
-                                        }
+                                        }else xui.asyRun(function(){ins.activate()});
                                         return result=false;
                                     }
                                      result=false;
@@ -3921,10 +3923,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(!ignoreAlert){
                                         if(!profile.beforeInputAlert || false!==profile.boxing().beforeInputAlert(profile, prf, 'required')){
                                             xui.alert('$inline.required',xui.getRes('$inline.required2') + (prop.labelCaption?(" : " +prop.labelCaption):"")  , function(){
-                                                if(prf&&prf.renderId)
-                                                       ins.activate();
+                                              if(prf&&prf.renderId)
+                                                  ins.activate();
                                             });
-                                        }
+                                        }else xui.asyRun(function(){ins.activate()});
                                         return result=false;
                                     }
                                     result=false;
@@ -9121,6 +9123,7 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
                     this.box._refreshCSS(this);
                 }
             },
+            childSelector:"",
             spaceUnit:null,
             showEffects:null,
             hideEffects:null,
@@ -9189,26 +9192,28 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
                 var css="", prevId="", t,
                     prop=prf.properties,
                     cls=prop.className,
+                    cs=prop.childSelector,
                     hash1=prop.normalStatus,
                     hash2=prop.hoverStatus,
                     hash3=prop.activeStatus,
                     hash4=prop.focusStatus;
+                cs = (prf.$inDesign?'[class~="xui-designer-inner-control"]':'') + (cs?(" "+cs):"");
                 if(hash1&&!xui.isEmpty(hash1)){
-                    css+="."+cls+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
+                    css+="."+cls+cs+"{"+xui.Dom.$adjustCss(hash1,true)+"}\n";
                     if(hash1.color)css+="."+cls+" .xui-node{color:"+hash1.color+"}";
                 }
                 if(hash2&&!xui.isEmpty(hash2)){
-                    css+="."+cls+":hover, ."+cls+"-hover{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
-                    if(hash2.color)css+="."+cls+" .xui-node{color:"+hash2.color+"}";
+                    css+="."+cls+":hover"+cs+", ."+cls+"-hover"+cs+"{"+xui.Dom.$adjustCss(hash2,true)+"}\n";
+                    if(hash2.color)css+="."+cls+":hover .xui-node, ."+cls+"-hover .xui-node{color:"+hash2.color+"}";
                 }
                 // cover :hover effect for -chekced / -active
                 if(hash3&&!xui.isEmpty(hash3)){
-                    css+="."+cls+":active, ."+cls+":checked, ."+cls+"-active, ."+cls+"-checked, ."+cls+"-checked:hover, ."+cls+"-active:hover{"+xui.Dom.$adjustCss(hash3,true)+"}";
-                    if(hash3.color)css+="."+cls+" .xui-node{color:"+hash3.color+"}";
+                    css+="."+cls+":active"+cs+", ."+cls+":checked"+cs+", ."+cls+"-active"+cs+", ."+cls+"-checked"+cs+", ."+cls+"-checked:hover"+cs+", ."+cls+"-active:hover"+cs+"{"+xui.Dom.$adjustCss(hash3,true)+"}";
+                    if(hash3.color)css+="."+cls+":active .xui-node, ."+cls+":checked .xui-node, ."+cls+"-active .xui-node, ."+cls+"-checked .xui-node, ."+cls+"-checked:hover .xui-node, ."+cls+"-active:hover .xui-node{color:"+hash3.color+"}";
                 }
                 if(hash4&&!xui.isEmpty(hash4)){
-                    css+="."+cls+":focus, ."+cls+"-focus{"+xui.Dom.$adjustCss(hash4,true)+"}";
-                    if(hash4.color)css+="."+cls+" .xui-node{color:"+hash4.color+"}";
+                    css+="."+cls+":focus"+cs+", ."+cls+"-focus"+cs+"{"+xui.Dom.$adjustCss(hash4,true)+"}";
+                    if(hash4.color)css+="."+cls+":focus .xui-node, ."+cls+"-focus .xui-node{color:"+hash4.color+"}";
                 }
 
                 if(t=prop.sandbox){

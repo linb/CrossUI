@@ -10173,6 +10173,42 @@ xui.set(xui.Locale,["en","app"], {
                     $force
                 ]
             },
+            getDropFileTypes:{
+                $desc:"Gets allowed file types",
+                $rtn:"String"
+            },
+            setDropFileTypes:{
+                $desc:"Sets allowed file types",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, file types",
+                    $force
+                ]
+            },
+            getBackdrop:{
+                $desc:"Gets backdrop background or css",
+                $rtn:"String"
+            },
+            setBackdrop:{
+                $desc:"Sets backdrop background or css",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, like 'transparent','#FFFFFF','background:#000;opacity:0.7;' ",
+                    $force
+                ]
+            },
+            getBackdropClick:{
+                $desc:"Gets backdrop type",
+                $rtn:"String"
+            },
+            setBackdropClick:{
+                $desc:"Sets  backdrop type",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'none','hide' or 'destroy'",
+                    $force
+                ]
+            },
             getSideBarSize:{
                 $desc:"Gets side bar size",
                 $rtn:"String"
@@ -10182,6 +10218,18 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[Number/String]",
                 $paras:[
                     "value [Required] : String, em or px ",
+                    $force
+                ]
+            },
+            getMaxFileSize:{
+                $desc:"Gets the max file size allowed",
+                $rtn:"Number"
+            },
+            setSideBarSize:{
+                $desc:"Sets the max file size allowed",
+                $rtn:"Number",
+                $paras:[
+                    "value [Required] : Number, bits",
                     $force
                 ]
             },
@@ -10215,6 +10263,36 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "e : Event, Dom event object",
                     "src : String, Element.xui id or Dom Element"
+                ]
+            },
+            onClickBackdrop:{
+                $desc:"Fired when user click the backdrop",
+                $paras:[
+                    $profile,
+                    "e : Event, Dom event object",
+                    "src : String, Element.xui id or Dom Element"
+                ]
+            },
+            beforeGetFiles:{
+                $desc:"Fired before getting the files, if returns false, the default files getting function will be ignored",
+                $paras:[
+                    $profile,
+                     "e : Event, Dom event object"
+                ]
+            },
+            onFiles:{
+                $desc:"Fired when files are added",
+                $paras:[
+                    $profile,
+                    "files : Array, files"
+                ]
+            },
+            onFileError:{
+                $desc:"Fired when getting file error",
+                $paras:[
+                    $profile,
+                    "message : String, error message",
+                    "file : Object, file or error object"
                 ]
             }
         }

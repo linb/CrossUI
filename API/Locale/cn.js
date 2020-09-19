@@ -10111,6 +10111,42 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getDropFileTypes:{
+                $desc:"得到允许拖放的文件类型",
+                $rtn:"String"
+            },
+            setDropFileTypes:{
+                $desc:"设置允许拖放的文件类型",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 文件类型",
+                    $force
+                ]
+            },
+            getBackdrop:{
+                $desc:"Gets backdrop background or css",
+                $rtn:"String"
+            },
+            setBackdrop:{
+                $desc:"Sets backdrop background or css",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, like 'transparent','#FFFFFF','background:#000;opacity:0.7;' ",
+                    $force
+                ]
+            },
+            getBackdropClick:{
+                $desc:"得到背景遮罩类型",
+                $rtn:"String"
+            },
+            setBackdropClick:{
+                $desc:"设置背景遮罩类型",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'none','hide' or 'destroy'",
+                    $force
+                ]
+            },
             getSideBarSize:{
                 $desc:"得到侧栏大小",
                 $rtn:"String"
@@ -10135,6 +10171,18 @@ xui.set(xui.Locale,["cn","app"], {
                     $force
                 ]
             },
+            getMaxFileSize:{
+                $desc:"得到允许最大文件大小",
+                $rtn:"Number"
+            },
+            setSideBarSize:{
+                $desc:"设置允许最大文件大小",
+                $rtn:"Number",
+                $paras:[
+                    "value [Required] : Number, bits",
+                    $force
+                ]
+            },
             getSideBarCaption:{
                 $desc:"得到侧栏标签",
                 $rtn:"String"
@@ -10153,6 +10201,36 @@ xui.set(xui.Locale,["cn","app"], {
                     $profile,
                     "e : Event, DOM事件元素",
                     "src: String, 事件所属DOM元素的xid"
+                ]
+            },
+            onClickBackdrop:{
+                $desc:"当用户单击背景遮罩时候调用",
+                $paras:[
+                    $profile,
+                    "e : Event, DOM事件元素",
+                    "src : String, 事件所属DOM元素的xid"
+                ]
+            },
+            beforeGetFiles:{
+                $desc:"在获取文件前调用，如果返回false,默认文件获取将失效",
+                $paras:[
+                    $profile,
+                     "e : Event, DOM事件元素"
+                ]
+            },
+            onFiles:{
+                $desc:"当文件加入时调用",
+                $paras:[
+                    $profile,
+                    "files : Array, 文件对象数组"
+                ]
+            },
+            onFileError:{
+                $desc:"当加入文件错误的时候调用",
+                $paras:[
+                    $profile,
+                    "message : String, 错误消息",
+                    "file : Object, 文件或错误对象"
                 ]
             }
         }

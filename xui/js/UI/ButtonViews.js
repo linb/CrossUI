@@ -1,5 +1,5 @@
 xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
-    Initialize:function(){        
+    Initialize:function(){
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';
         this.setTemplate(t);
@@ -92,7 +92,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 //keep this same with ITEM
                 'vertical-align':'top',
                 'text-align': 'center'
-            },             
+            },
             HANDLE:{
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie6?1:null,
@@ -202,21 +202,25 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             sideBarStatus:{
                 ini:'expand',
-                listbox:['expand','fold'],
+                listbox:['expand','fold', 'none'],
                 action:function(v){
                    var self = this,
                         t = self.properties,
                         us = xui.$us(self),
                         adjustunit = function(v,emRate){return self.$forceu(v, us>0?'em':'px', emRate)},
                         hl = self.getSubNode('ITEMS'),
-                        menu2 =  self.getSubNode('MENUICON2');
-
-                    if(t.sideBarStatus=='fold'){
+                        menu2 =  self.getSubNode('MENU2');
+                        menuicn2 =  self.getSubNode('MENUICON2');
+                    if(t.sideBarStatus=='none'){
+                        menu2.css('display','none');
+                    }else if(t.sideBarStatus=='fold'){
                         hl.tagClass('-icon2',true);
-                        menu2.tagClass('-checked',true);
+                        menu2.css('display','block');
+                        menuicn2.tagClass('-checked',true);
                     }else{
                         hl.tagClass('-icon2',false);
-                        menu2.tagClass('-checked',false);
+                        menu2.css('display','block');
+                        menuicn2.tagClass('-checked',false);
                     }
 
                     this.adjustSize();
@@ -267,13 +271,13 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                 // caculate by px
-                ww=width?profile.$px(width, null, true):width, 
+                ww=width?profile.$px(width, null, true):width,
                 hh=(height&&height!='auto')?profile.$px(height, null, true):height,
                 root = profile.getRootNode(),
                 hs = profile.getSubNode('LIST'),
                 hl = profile.getSubNode('ITEMS'),
                 menu2 =  profile.getSubNode('MENU2'),
- 
+
                 fzrate=profile.getEmSize()/profile.getRoot()._getEmSize(),
                 panelfz=panel._getEmSize(fzrate),
                 hsfz=hs._getEmSize(fzrate),
@@ -303,7 +307,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     if(width){
                         hs.width(adjustunit(ww-bw, hsfz));
                         hl.width(adjustunit(ww-bw, hlfz));
-                        
+
                         // for nopanel:
                         if(noPanel && height!='auto'){
                             hs.height(adjustunit(hh-bw, hsfz));
@@ -344,7 +348,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hl.css('overflow-y','scroll');
                     }
                     // side bar
-                    menu2.css('display',prop.sideBarSize?'block':'none');
+                    menu2.css('display', prop.sideBarStatus!=='none' && prop.sideBarSize ? 'block' : 'none');
 
                     if(!noHandler)
                         profile.getSubNode('CAPTION',true).css('width','');

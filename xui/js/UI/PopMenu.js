@@ -14,9 +14,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         cb = border.contentBox(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
-                       
+
                        items.cssSize({width:'auto',height:'auto'});
- 
+
                         hh = items.height() + (cb?0:border._borderH());
                         if(xui.browser.ie67 && hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
@@ -350,7 +350,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             }
         };
         this.setTemplate(t);
-        
+
         this.prototype.popUp = this.prototype.pop;
     },
     Static:{
@@ -523,7 +523,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     profile[popgrp].push(r._get(0));
 
                                     r.popToTop(src,2,profile._conainer);
- 
+
                                     return;
                                 }
                                 // return items array
@@ -621,6 +621,8 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             xui.asyRun(function(){
                                 var p=profile,q;
                                 if(!p.renderId)return;
+                                if(p.$childPopMenu)p.$childPopMenu.boxing().hide();
+                                p.$childPopMenu=null;
                                 while(p){
                                     p.boxing().hide();
                                     p=(q=p).$parentPopMenu;
