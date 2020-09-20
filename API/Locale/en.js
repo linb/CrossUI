@@ -4090,12 +4090,49 @@ xui.set(xui.Locale,["en","app"], {
             $desc:"Sets the Fragement Identifier string",
             $paras:[
                 "fi [Required] : String, the Fragement Identifier string",
-                "triggerCallback [Optional] : Boolean, trigger callback function or not. Default is [true]"
+                "triggerCallback [Optional] : Boolean, trigger callback function or not. Default is [true]",
+                "mergeParams [Optional] : Boolean, to determine merge the existing parameters or not Default is [false]"
             ],
             $snippet:[
                 "//xui.History.setCallback(function(str){alert('Fragement Identifier is: '+str)});\n"+
                 "//xui.History.setFI('#test');\n"+
                 "//xui.History.setCallback(null)"
+            ]
+        },
+        getRouter:{
+            $desc:"Gets router path in current Fragement Identifier string",
+            $rtn:"String/Array",
+            $paras:[
+                "returnArr [Optional] : Boolean, to determine whether return path array or path string. Default is [false]"
+            ]
+        },
+        getRouterArray:{
+            $desc:"Gets router path array in current Fragement Identifier string",
+            $rtn:"Array"
+        },
+        getParams:{
+            $desc:"Gets the parameters in current Fragement Identifier string",
+            $rtn:"String/Object",
+            $paras:[
+                "key [Optional] : String, key for the specific parameter"
+            ]
+        },
+        setRouter:{
+            $desc:"Sets router path to current Fragement Identifier string",
+            $paras:[
+                "path [Required] : String/Array, like '/a/b' or ['a','b']",
+                "replace [Optional] : Boolean,  to determine replace the current location with a new one or not. Default is [false]",
+                "triggerCallback [Optional] : Boolean, trigger callback function or not. Default is [true]",
+                "mergeParams [Optional] : Boolean, to determine merge the existing parameters or not. Default is [true]"
+            ]
+        },
+        setParams:{
+            $desc:"Sets the parameters to current Fragement Identifier string",
+            $paras:[
+                "key [Required] : Object/String, A set of prop or key",
+                "value [Optional] : Object, a property value",
+                "triggerCallback [Optional] : Boolean, trigger callback function or not. Default is [true]",
+                "mergeParams [Optional] : Boolean, to determine merge the existing parameters or not. Default is [true]"
             ]
         }
     });

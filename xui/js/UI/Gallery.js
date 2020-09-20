@@ -59,7 +59,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-display-none {flagClass}',
+                        className:'xui-display-none xui-uiflag {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     },
@@ -143,8 +143,6 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                 'font-size':'1em'
             },
             FLAG:{
-                top:'-.1667em',
-                right:'-.1667em',
                 position:'absolute',
                 'z-index':10
             }
@@ -253,26 +251,26 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).width(v||'');
+                    if(!this.properties.autoItemSize)this.getSubNode('ITEMFRAME',true).width(v||'');
                 }
             },
             itemHeight:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).height(v||'');
+                    if(!this.properties.autoItemSize)this.getSubNode('ITEMFRAME',true).height(v||'');
                 }
             },
             imgWidth:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).width(v||'');
+                    if(!this.properties.autoImgSize)this.getSubNode('IMAGE',true).width(v||'');
                 }
             },
             imgHeight:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).height(v||'');
+                    if(!this.properties.autoImgSize)this.getSubNode('IMAGE',true).height(v||'');
                 }
             },
             width:{

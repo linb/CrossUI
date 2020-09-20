@@ -38,7 +38,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             },
             FLAG:{
                 $order:13,
-                className:'xui-display-none {flagClass}',
+                className:'xui-display-none xui-uiflag {flagClass}',
                 style:'{_flagStyle};{flagStyle}',
                 text:'{flagText}'
             }

@@ -705,7 +705,16 @@ new function(){
             return key?hash[key]:hash;
         },
         getUrlParams:function(url){
-            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,''));
+            var hash = (url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,'');
+            if(hash.indexOf("?")!=-1)hash=hash.split("?")[1];
+            return hash.indexOf("=")!=-1?xui.urlDecode(hash):{};
+        },
+        getUrlPath:function(url){
+            var hash = (url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,'');
+            if(hash.indexOf("?")!=-1)hash=hash.split("?")[0];
+            else if(hash.indexOf("=")==-1)hash=hash;
+            else hash="";
+            return "/" + decodeURIComponent(hash).replace(/^\//,'').replace(/\/$/,'');
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
@@ -2221,7 +2230,7 @@ new function(){
         }
     }
     xui.merge(ini,{
-        appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
+        appPath:location.href.split("#")[0].split("?")[0].replace(/[^\\\/]+$/,''),
         dummy_tag:'$_dummy_$'
     },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
@@ -2302,6 +2311,7 @@ new function(){
             for(var i=0,l=xui._m.length;i<l;i++)
                 xui.tryF(xui._m[i])
             xui._m.length=0;
+            if(xui.History)xui.History.activate();
             xui.isDomReady=true;
         }catch(e){
             xui.asyRun(function(){throw e})
@@ -3673,7 +3683,7 @@ xui.Class('xui.Ajax','xui.absIO',{
 
                     if (!_retryNo && method != "POST"){
                         if(query)
-                            uri = uri.split("?")[0] + "?" + query;
+                            uri = uri.split("#")[0].split("?")[0] + "?" + query;
                         query=null;
                     }
                     if(username&&password)
@@ -3831,7 +3841,7 @@ xui.Class('xui.JSONP','xui.absIO',{
 
             var uri = self.uri;
             if(self.query)
-                uri = uri.split("?")[0]  + "?" + self.query;
+                uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
 
             n.src = uri;
             n.type= self.scriptType||'text/javascript';
@@ -4057,7 +4067,7 @@ xui.Class('xui.XDMI','xui.absIO',{
 
             var uri=self.uri;
             if(self.method!='POST')
-                uri = uri.split("?")[0];
+                uri = uri.split("#")[0].split("?")[0];
 
             form.action=self.uri;
             form.method=self.method;
@@ -15403,10 +15413,11 @@ xui.Class('xui.Module','xui.absProfile',{
                         parent.append(self.getUIComponents(false),subId);
                         // append and show
                         self.getUIComponents(true).each(function(o){
-                            o.boxing().show(parent, subId);
-                            if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                               try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                            }
+                            o.boxing().show(parent, subId, null, null, null, function(){
+                              if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                                 try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                              }
+                            });
                         });
                     }
                     self.renderId='ok';
@@ -18555,6 +18566,8 @@ xui.Class("xui.Tips", null,{
             var self=this;
             if(self._activited)return;
             self._activited=1;
+
+            self._lastFI = decodeURIComponent(location.hash);
             switch(self._type){
                 case 'event':
                     xui.Event._addEventListener(window, "hashchange",self._checker);
@@ -18580,7 +18593,7 @@ xui.Class("xui.Tips", null,{
         _callback:function(fragment, init, newAdd){
             var ns=this, arr, f;
             xui.arr.each(xui.Module._cache,function(m){
-              // by created order    
+              // by created order
                if(m._evsClsBuildIn && ('onFragmentChanged' in m._evsClsBuildIn)){
                    // function or pseudocode
                    if(xui.isFun(f = m._evsClsBuildIn.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
@@ -18608,18 +18621,18 @@ xui.Class("xui.Tips", null,{
             if(xui.isFun(ns._inner_callback))ns._inner_callback(fragment, init, newAdd);
         },
         /* set callback function
-        callback: function(hashStr<"string after #!">)
+        callback: function(hashStr<"string after #">)
         */
         setCallback: function(callback){
             var self=this,
                 hash = location.hash;
-            if(hash)hash='#!' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!/,''));
-            else hash="#!";
+            if(hash)hash='#' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!?/,''));
+            else hash="#";
             self._inner_callback = callback;
 
             self._lastFI = decodeURIComponent(hash);
 
-            self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true, callback);
+            self._callback(decodeURIComponent(self._lastFI.replace(/^#!?/, '')), true, callback);
 
             return self;
         },
@@ -18641,20 +18654,23 @@ xui.Class("xui.Tips", null,{
         getFI:function(){
             return this._lastFI;
         },
-        /*change Fragement Identifier(string after '#!')
+        /*change Fragement Identifier(string after '#')
         */
-        setFI:function(fi,triggerCallback,merge){
-            var self=this;
-            
+        setFI:function(fi,triggerCallback,mergeParams,replace){
+            var self=this, params, path=xui.getUrlPath(self.getFI());
             self.activate();
-
             // ensure encode once
             if(fi){
-                if(!xui.isHash(fi))fi=xui.urlDecode((fi+'').replace(/^#!/,'')); //encodeURIComponent((''+decodeURIComponent(fi)).replace(/^#!/,''));
-                if(merge)fi = xui.merge(fi, xui.getUrlParams(), 'without');
-                fi='#!' + xui.urlEncode(fi);
+                if(!xui.isHash(fi)){
+                  path = xui.getUrlPath(fi+'');
+                  params = xui.getUrlParams(fi+'');
+                }else{
+                  params = fi;
+                }
+                if(mergeParams)params = xui.merge(params||{}, xui.getUrlParams(), 'without');
+                fi='#' + path + (xui.isEmpty(params)?"":("?"+xui.urlEncode(params)));
             }else{
-                fi="#!";
+                fi="#";
             }
             if(self._lastFI == decodeURIComponent(fi))return false;
 
@@ -18667,11 +18683,33 @@ xui.Class("xui.Tips", null,{
                 break;
                 case 'event':
                 case 'timer':
-                    location.hash = self._lastFI = decodeURIComponent(fi);
+                  if(replace)location.replace(location.href.split("#")[0] + (self._lastFI = decodeURIComponent(fi)));
+                  else location.hash = self._lastFI = decodeURIComponent(fi);
                 if(triggerCallback!==false)
-                    self._callback(decodeURIComponent(fi.replace(/^#!/,'')));
+                    self._callback(decodeURIComponent(fi.replace(/^#!?/,'')));
                 break;
             }
+        },
+        getParams:function(key){
+          var hash=xui.getUrlParams(this.getFI());
+          return key?hash[key]:hash;
+        },
+        setParams:function(key, value, triggerCallback, mergeParams){
+          var params;
+          if(xui.isHash(key)) params=key;
+          else { params={}; params[key]=(xui.isHash(value)||xui.isArr(value))?xui.stringify(value):value;}
+          // set hash for params
+          this.setFI(params, triggerCallback, mergeParams!==false);
+        },
+        getRouter:function(returnArr){
+          var path = xui.getUrlPath(this.getFI());
+          return returnArr?path.replace(/^\//,'').split("/"):path;
+        },
+        getRouterArray:function(){
+          return this.getRouter(true);
+        },
+        setRouter:function(path, replace, triggerCallback, mergeParams){
+          this.setFI("#/" + (xui.isArr(path)?path.join("/"):path.replace(/^\//,'').replace(/\/$/,'')), triggerCallback, mergeParams!==false, !!replace);
         }
     }
 });xui.Class('xui.ModuleFactory',null,{
@@ -20505,7 +20543,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui(t).popUp(pos, type, parent, trigger, group);
             }
         },
-        show:function(parent,subId,left,top,ignoreEffects){
+        show:function(parent,subId,left,top,ignoreEffects,callback){
             return this.each(function(o){
                 var t=o.properties,
                     ins=o.boxing(),
@@ -20536,7 +20574,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top));
+                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), callback);
+                        else xui.tryF(callback);
                     }
                 }
             });
@@ -22026,7 +22065,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%'
             },
-            '.xui-uiflag-1':{
+            '.xui-uiflag':{
                 $order:16,
                 'border-radius':'50%',
                 '-moz-border-radius': '50%',
@@ -22034,6 +22073,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '50%',
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%',
+                top:'-.5em',
+                right:'-.5em',
 
                 width:xui.browser.contentBox?'1em':'1.625em',
                 height:xui.browser.contentBox?'1em':'1.625em',
@@ -22043,6 +22084,35 @@ xui.Class("xui.UI",  "xui.absObj", {
                 color:'#fff !important',
                 overflow:'hidden',
                 'text-align': 'center'
+            },
+            '.xui-uiflag-1':{
+            },
+            '.xui-uiflag-2':{
+                $order:17,
+                top:'-1.5em',
+                right:'-1.5em',
+                width:xui.browser.contentBox?'2em':'2.625em',
+                height:xui.browser.contentBox?'2em':'2.625em',
+                'line-height':xui.browser.contentBox?'2em':'2.625em',
+                padding: '.5em'
+            },
+            '.xui-uiflag-3':{
+                $order:18,
+                top:'-2em',
+                right:'-2em',
+                width:xui.browser.contentBox?'3em':'3.625em',
+                height:xui.browser.contentBox?'3em':'3.625em',
+                'line-height':xui.browser.contentBox?'3em':'3.625em',
+                padding: '.5em'
+            },
+            '.xui-uiflag-4':{
+                $order:18,
+                top:'-2.5em',
+                right:'-2.5em',
+                width:xui.browser.contentBox?'4em':'4.625em',
+                height:xui.browser.contentBox?'4em':'4.625em',
+                'line-height':xui.browser.contentBox?'4em':'4.625em',
+                padding: '.5em'
             },
             '.xui-uiborder-none':{
                 $order:20,
@@ -27518,6 +27588,13 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 className:'xuicon {imageClass}',
                 style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}{iconStyle}',
                 text:'{iconFontCode}'
+            },
+            FLAG:{
+                $order:1,
+                className:'xui-display-none xui-uiflag {flagClass}',
+                style:'{_flagStyle};{flagStyle}',
+                text:'{flagText}',
+                $order:1
             }
         },
         DataModel:{
@@ -27564,6 +27641,19 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 action:function(v){
                     this.getSubNode('ICON').css('color', v||'');
                 }
+            },
+            flagText:{
+              ini:'',
+              action:function(){
+                this.getSubNode('FLAG').text(v);
+              }
+            },
+            flagClass:{
+              ini:'',
+              combobox:["","xui-uiflag-2","xui-uiflag-3","xui-uiflag-4"],
+              action:function(){
+                this.getSubNode('FLAG').removeClass(ov).addClass(v);
+              }
             }
         },
         Appearances:{
@@ -27574,6 +27664,10 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 'position':'relative',
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
+            },
+            FLAG:{
+                position:'absolute',
+                'z-index':10
             }
         },
         Behaviors:{
@@ -27593,6 +27687,8 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             var data=arguments.callee.upper.call(this, profile);
             if(data.iconFontSize)data._fontsize = data.iconFontSize+';';
             if(data.iconColor)data._fontclr = 'color:'+data.iconColor+';';
+            data._flagStyle='display:'+(data.flagText||data.flagClass?'block':'none');
+            if(!data.flagClass)data.flagClass='xui-uiflag-1';
             return data;
         }
     }
@@ -28044,6 +28140,10 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
                 background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
                 'line-height':'normal'
+            },
+            FLAG:{
+                position:'absolute',
+                'z-index':10
             }
         },
         Templates:{
@@ -28052,7 +28152,14 @@ xui.Class("xui.UI.Div", "xui.UI",{
             style:'{_style};{_panelstyle};{_overflow};',
             //for firefox div focus bug: outline:none; tabindex:'-1'
             tabindex: '{tabindex}',
-            text:'{html}'+xui.UI.$childTag
+            text:'{html}'+xui.UI.$childTag,
+            FLAG:{
+                $order:1,
+                className:'xui-display-none xui-uiflag {flagClass}',
+                style:'{_flagStyle};{flagStyle}',
+                text:'{flagText}',
+                $order:1
+            }
         },
         DataModel:{
             iframeAutoLoad:{
@@ -28099,7 +28206,20 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     node.css('overflow',v||'');
                 }
             },
-            tabindex:-1
+            tabindex:-1,
+            flagText:{
+              ini:'',
+              action:function(v){
+                this.getSubNode('FLAG').text(v);
+              }
+            },
+            flagClass:{
+              ini:'',
+              combobox:["","xui-uiflag-2","xui-uiflag-3","xui-uiflag-4"],
+              action:function(v,ov){
+                this.getSubNode('FLAG').removeClass(ov).addClass(v);
+              }
+            }
         },
         RenderTrigger:function(){
             // only div
@@ -28123,6 +28243,8 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
+            data._flagStyle='display:'+(data.flagText||data.flagClass?'block':'none');
+            if(!data.flagClass)data.flagClass='xui-uiflag-1';
             if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;
@@ -39636,7 +39758,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     },
                     FLAG:{
                         $order:20,
-                        className:'xui-display-none {flagClass}',
+                        className:'xui-display-none xui-uiflag {flagClass}',
                         style:'{_flagStyle};{flagStyle}',
                         text:'{flagText}'
                     },
@@ -39720,8 +39842,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'font-size':'1em'
             },
             FLAG:{
-                top:'-.1667em',
-                right:'-.1667em',
                 position:'absolute',
                 'z-index':10
             }
@@ -39830,26 +39950,26 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).width(v||'');
+                    if(!this.properties.autoItemSize)this.getSubNode('ITEMFRAME',true).width(v||'');
                 }
             },
             itemHeight:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    this.getSubNode('ITEMFRAME',true).height(v||'');
+                    if(!this.properties.autoItemSize)this.getSubNode('ITEMFRAME',true).height(v||'');
                 }
             },
             imgWidth:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).width(v||'');
+                    if(!this.properties.autoImgSize)this.getSubNode('IMAGE',true).width(v||'');
                 }
             },
             imgHeight:{
                 ini:16,
                 action:function(v){
-                    this.getSubNode('IMAGE',true).height(v||'');
+                    if(!this.properties.autoImgSize)this.getSubNode('IMAGE',true).height(v||'');
                 }
             },
             width:{
@@ -43341,7 +43461,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             },
             FLAG:{
                 $order:13,
-                className:'xui-display-none {flagClass}',
+                className:'xui-display-none xui-uiflag {flagClass}',
                 style:'{_flagStyle};{flagStyle}',
                 text:'{flagText}'
             }
@@ -44653,9 +44773,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         cb = border.contentBox(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
                         ww=0,hh=0;
-                       
+
                        items.cssSize({width:'auto',height:'auto'});
- 
+
                         hh = items.height() + (cb?0:border._borderH());
                         if(xui.browser.ie67 && hh%2==1)hh+=1;
                         items.addClass(profile.getClass('ITEMS','-inline'));
@@ -44989,7 +45109,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             }
         };
         this.setTemplate(t);
-        
+
         this.prototype.popUp = this.prototype.pop;
     },
     Static:{
@@ -45162,7 +45282,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     profile[popgrp].push(r._get(0));
 
                                     r.popToTop(src,2,profile._conainer);
- 
+
                                     return;
                                 }
                                 // return items array
@@ -45260,6 +45380,8 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             xui.asyRun(function(){
                                 var p=profile,q;
                                 if(!p.renderId)return;
+                                if(p.$childPopMenu)p.$childPopMenu.boxing().hide();
+                                p.$childPopMenu=null;
                                 while(p){
                                     p.boxing().hide();
                                     p=(q=p).$parentPopMenu;

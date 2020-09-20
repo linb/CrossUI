@@ -1390,7 +1390,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 xui(t).popUp(pos, type, parent, trigger, group);
             }
         },
-        show:function(parent,subId,left,top,ignoreEffects){
+        show:function(parent,subId,left,top,ignoreEffects,callback){
             return this.each(function(o){
                 var t=o.properties,
                     ins=o.boxing(),
@@ -1421,7 +1421,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
 //                        if(t.visibility=="hidden")ins.setVisibility("",true);
 //                        if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top));
+                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), callback);
+                        else xui.tryF(callback);
                     }
                 }
             });
@@ -2911,7 +2912,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%'
             },
-            '.xui-uiflag-1':{
+            '.xui-uiflag':{
                 $order:16,
                 'border-radius':'50%',
                 '-moz-border-radius': '50%',
@@ -2919,6 +2920,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 '-o-border-radius': '50%',
                 '-ms-border-radius': '50%',
                 '-khtml-border-radius': '50%',
+                top:'-.5em',
+                right:'-.5em',
 
                 width:xui.browser.contentBox?'1em':'1.625em',
                 height:xui.browser.contentBox?'1em':'1.625em',
@@ -2928,6 +2931,35 @@ xui.Class("xui.UI",  "xui.absObj", {
                 color:'#fff !important',
                 overflow:'hidden',
                 'text-align': 'center'
+            },
+            '.xui-uiflag-1':{
+            },
+            '.xui-uiflag-2':{
+                $order:17,
+                top:'-1.5em',
+                right:'-1.5em',
+                width:xui.browser.contentBox?'2em':'2.625em',
+                height:xui.browser.contentBox?'2em':'2.625em',
+                'line-height':xui.browser.contentBox?'2em':'2.625em',
+                padding: '.5em'
+            },
+            '.xui-uiflag-3':{
+                $order:18,
+                top:'-2em',
+                right:'-2em',
+                width:xui.browser.contentBox?'3em':'3.625em',
+                height:xui.browser.contentBox?'3em':'3.625em',
+                'line-height':xui.browser.contentBox?'3em':'3.625em',
+                padding: '.5em'
+            },
+            '.xui-uiflag-4':{
+                $order:18,
+                top:'-2.5em',
+                right:'-2.5em',
+                width:xui.browser.contentBox?'4em':'4.625em',
+                height:xui.browser.contentBox?'4em':'4.625em',
+                'line-height':xui.browser.contentBox?'4em':'4.625em',
+                padding: '.5em'
             },
             '.xui-uiborder-none':{
                 $order:20,
@@ -8403,6 +8435,13 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 className:'xuicon {imageClass}',
                 style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}{iconStyle}',
                 text:'{iconFontCode}'
+            },
+            FLAG:{
+                $order:1,
+                className:'xui-display-none xui-uiflag {flagClass}',
+                style:'{_flagStyle};{flagStyle}',
+                text:'{flagText}',
+                $order:1
             }
         },
         DataModel:{
@@ -8449,6 +8488,19 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 action:function(v){
                     this.getSubNode('ICON').css('color', v||'');
                 }
+            },
+            flagText:{
+              ini:'',
+              action:function(){
+                this.getSubNode('FLAG').text(v);
+              }
+            },
+            flagClass:{
+              ini:'',
+              combobox:["","xui-uiflag-2","xui-uiflag-3","xui-uiflag-4"],
+              action:function(){
+                this.getSubNode('FLAG').removeClass(ov).addClass(v);
+              }
             }
         },
         Appearances:{
@@ -8459,6 +8511,10 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 'position':'relative',
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie?1:null
+            },
+            FLAG:{
+                position:'absolute',
+                'z-index':10
             }
         },
         Behaviors:{
@@ -8478,6 +8534,8 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             var data=arguments.callee.upper.call(this, profile);
             if(data.iconFontSize)data._fontsize = data.iconFontSize+';';
             if(data.iconColor)data._fontclr = 'color:'+data.iconColor+';';
+            data._flagStyle='display:'+(data.flagText||data.flagClass?'block':'none');
+            if(!data.flagClass)data.flagClass='xui-uiflag-1';
             return data;
         }
     }
@@ -8929,6 +8987,10 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 zoom:(xui.browser.ie && xui.browser.ver<9)?'1':null,
                 background:xui.browser.ie?'url('+xui.ini.img_bg+') no-repeat left top':null,
                 'line-height':'normal'
+            },
+            FLAG:{
+                position:'absolute',
+                'z-index':10
             }
         },
         Templates:{
@@ -8937,7 +8999,14 @@ xui.Class("xui.UI.Div", "xui.UI",{
             style:'{_style};{_panelstyle};{_overflow};',
             //for firefox div focus bug: outline:none; tabindex:'-1'
             tabindex: '{tabindex}',
-            text:'{html}'+xui.UI.$childTag
+            text:'{html}'+xui.UI.$childTag,
+            FLAG:{
+                $order:1,
+                className:'xui-display-none xui-uiflag {flagClass}',
+                style:'{_flagStyle};{flagStyle}',
+                text:'{flagText}',
+                $order:1
+            }
         },
         DataModel:{
             iframeAutoLoad:{
@@ -8984,7 +9053,20 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     node.css('overflow',v||'');
                 }
             },
-            tabindex:-1
+            tabindex:-1,
+            flagText:{
+              ini:'',
+              action:function(v){
+                this.getSubNode('FLAG').text(v);
+              }
+            },
+            flagClass:{
+              ini:'',
+              combobox:["","xui-uiflag-2","xui-uiflag-3","xui-uiflag-4"],
+              action:function(v,ov){
+                this.getSubNode('FLAG').removeClass(ov).addClass(v);
+              }
+            }
         },
         RenderTrigger:function(){
             // only div
@@ -9008,6 +9090,8 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
+            data._flagStyle='display:'+(data.flagText||data.flagClass?'block':'none');
+            if(!data.flagClass)data.flagClass='xui-uiflag-1';
             if(xui.isStr(data.overflow))
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;

@@ -4,6 +4,8 @@ xui.Class("xui.History",null,{
             var self=this;
             if(self._activited)return;
             self._activited=1;
+
+            self._lastFI = decodeURIComponent(location.hash);
             switch(self._type){
                 case 'event':
                     xui.Event._addEventListener(window, "hashchange",self._checker);
@@ -29,7 +31,7 @@ xui.Class("xui.History",null,{
         _callback:function(fragment, init, newAdd){
             var ns=this, arr, f;
             xui.arr.each(xui.Module._cache,function(m){
-              // by created order    
+              // by created order
                if(m._evsClsBuildIn && ('onFragmentChanged' in m._evsClsBuildIn)){
                    // function or pseudocode
                    if(xui.isFun(f = m._evsClsBuildIn.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
@@ -57,18 +59,18 @@ xui.Class("xui.History",null,{
             if(xui.isFun(ns._inner_callback))ns._inner_callback(fragment, init, newAdd);
         },
         /* set callback function
-        callback: function(hashStr<"string after #!">)
+        callback: function(hashStr<"string after #">)
         */
         setCallback: function(callback){
             var self=this,
                 hash = location.hash;
-            if(hash)hash='#!' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!/,''));
-            else hash="#!";
+            if(hash)hash='#' + encodeURIComponent((''+decodeURIComponent(hash)).replace(/^#!?/,''));
+            else hash="#";
             self._inner_callback = callback;
 
             self._lastFI = decodeURIComponent(hash);
 
-            self._callback(decodeURIComponent(self._lastFI.replace(/^#!/, '')), true, callback);
+            self._callback(decodeURIComponent(self._lastFI.replace(/^#!?/, '')), true, callback);
 
             return self;
         },
@@ -90,20 +92,23 @@ xui.Class("xui.History",null,{
         getFI:function(){
             return this._lastFI;
         },
-        /*change Fragement Identifier(string after '#!')
+        /*change Fragement Identifier(string after '#')
         */
-        setFI:function(fi,triggerCallback,merge){
-            var self=this;
-            
+        setFI:function(fi,triggerCallback,mergeParams,replace){
+            var self=this, params, path=xui.getUrlPath(self.getFI());
             self.activate();
-
             // ensure encode once
             if(fi){
-                if(!xui.isHash(fi))fi=xui.urlDecode((fi+'').replace(/^#!/,'')); //encodeURIComponent((''+decodeURIComponent(fi)).replace(/^#!/,''));
-                if(merge)fi = xui.merge(fi, xui.getUrlParams(), 'without');
-                fi='#!' + xui.urlEncode(fi);
+                if(!xui.isHash(fi)){
+                  path = xui.getUrlPath(fi+'');
+                  params = xui.getUrlParams(fi+'');
+                }else{
+                  params = fi;
+                }
+                if(mergeParams)params = xui.merge(params||{}, xui.getUrlParams(), 'without');
+                fi='#' + path + (xui.isEmpty(params)?"":("?"+xui.urlEncode(params)));
             }else{
-                fi="#!";
+                fi="#";
             }
             if(self._lastFI == decodeURIComponent(fi))return false;
 
@@ -116,11 +121,33 @@ xui.Class("xui.History",null,{
                 break;
                 case 'event':
                 case 'timer':
-                    location.hash = self._lastFI = decodeURIComponent(fi);
+                  if(replace)location.replace(location.href.split("#")[0] + (self._lastFI = decodeURIComponent(fi)));
+                  else location.hash = self._lastFI = decodeURIComponent(fi);
                 if(triggerCallback!==false)
-                    self._callback(decodeURIComponent(fi.replace(/^#!/,'')));
+                    self._callback(decodeURIComponent(fi.replace(/^#!?/,'')));
                 break;
             }
+        },
+        getParams:function(key){
+          var hash=xui.getUrlParams(this.getFI());
+          return key?hash[key]:hash;
+        },
+        setParams:function(key, value, triggerCallback, mergeParams){
+          var params;
+          if(xui.isHash(key)) params=key;
+          else { params={}; params[key]=(xui.isHash(value)||xui.isArr(value))?xui.stringify(value):value;}
+          // set hash for params
+          this.setFI(params, triggerCallback, mergeParams!==false);
+        },
+        getRouter:function(returnArr){
+          var path = xui.getUrlPath(this.getFI());
+          return returnArr?path.replace(/^\//,'').split("/"):path;
+        },
+        getRouterArray:function(){
+          return this.getRouter(true);
+        },
+        setRouter:function(path, replace, triggerCallback, mergeParams){
+          this.setFI("#/" + (xui.isArr(path)?path.join("/"):path.replace(/^\//,'').replace(/\/$/,'')), triggerCallback, mergeParams!==false, !!replace);
         }
     }
 });

@@ -546,10 +546,11 @@ xui.Class('xui.Module','xui.absProfile',{
                         parent.append(self.getUIComponents(false),subId);
                         // append and show
                         self.getUIComponents(true).each(function(o){
-                            o.boxing().show(parent, subId);
-                            if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                               try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                            }
+                            o.boxing().show(parent, subId, null, null, null, function(){
+                              if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                                 try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                              }
+                            });
                         });
                     }
                     self.renderId='ok';

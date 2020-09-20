@@ -704,7 +704,16 @@ new function(){
             return key?hash[key]:hash;
         },
         getUrlParams:function(url){
-            return xui.urlDecode((url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,''));
+            var hash = (url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,'');
+            if(hash.indexOf("?")!=-1)hash=hash.split("?")[1];
+            return hash.indexOf("=")!=-1?xui.urlDecode(hash):{};
+        },
+        getUrlPath:function(url){
+            var hash = (url||location.href).replace(/^[^#]*[#!]+|^[^#]*$/,'');
+            if(hash.indexOf("?")!=-1)hash=hash.split("?")[0];
+            else if(hash.indexOf("=")==-1)hash=hash;
+            else hash="";
+            return "/" + decodeURIComponent(hash).replace(/^\//,'').replace(/\/$/,'');
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
@@ -2220,7 +2229,7 @@ new function(){
         }
     }
     xui.merge(ini,{
-        appPath:location.href.split('?')[0].replace(/[^\\\/]+$/,''),
+        appPath:location.href.split("#")[0].split("?")[0].replace(/[^\\\/]+$/,''),
         dummy_tag:'$_dummy_$'
     },'without');
     if(!ini.path) ini.path=ini.appPath+'/xui/';
@@ -2301,6 +2310,7 @@ new function(){
             for(var i=0,l=xui._m.length;i<l;i++)
                 xui.tryF(xui._m[i])
             xui._m.length=0;
+            if(xui.History)xui.History.activate();
             xui.isDomReady=true;
         }catch(e){
             xui.asyRun(function(){throw e})
@@ -3672,7 +3682,7 @@ xui.Class('xui.Ajax','xui.absIO',{
 
                     if (!_retryNo && method != "POST"){
                         if(query)
-                            uri = uri.split("?")[0] + "?" + query;
+                            uri = uri.split("#")[0].split("?")[0] + "?" + query;
                         query=null;
                     }
                     if(username&&password)
@@ -3830,7 +3840,7 @@ xui.Class('xui.JSONP','xui.absIO',{
 
             var uri = self.uri;
             if(self.query)
-                uri = uri.split("?")[0]  + "?" + self.query;
+                uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
 
             n.src = uri;
             n.type= self.scriptType||'text/javascript';
@@ -4056,7 +4066,7 @@ xui.Class('xui.XDMI','xui.absIO',{
 
             var uri=self.uri;
             if(self.method!='POST')
-                uri = uri.split("?")[0];
+                uri = uri.split("#")[0].split("?")[0];
 
             form.action=self.uri;
             form.method=self.method;

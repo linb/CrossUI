@@ -4101,12 +4101,49 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"设置当前的片段标志符(Fragement Identifier)",
             $paras:[
                 "fi [必需参数] : String, 片段标志符",
-                "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]"
+                "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]",
+                "mergeParams [可选参数] : Boolean, 指示是否合并已存在的参数. 默认为 [false]"
             ],
             $snippet:[
                 "//xui.History.setCallback(function(str){alert('Fragement Identifier is: '+str)});\n"+
                 "//xui.History.setFI('#test');\n"+
                 "//xui.History.setCallback(null)"
+            ]
+        },
+        getRouter:{
+            $desc:"从片段标志符中得到路由路径",
+            $rtn:"String",
+            $paras:[
+                "returnArr [可选参数] : Boolean, 指示是否返回路径数组，否者返回路径字符串. 默认为 [false]"
+            ]
+        },
+        getRouterArray:{
+            $desc:"从片段标志符中得到路由路径数组",
+            $rtn:"Array"
+        },
+        getParams:{
+            $desc:"从片段标志符中得到查询参数",
+            $rtn:"String/Object",
+            $paras:[
+                "key [可选参数] : String, 查询参数的关键字"
+            ]
+        },
+        setRouter:{
+            $desc:"设置路由路径到片段标志符中",
+            $paras:[
+                "path [必需参数] : String/Array, like '/a/b' or ['a','b']",
+                "replace [可选参数] : Boolean, 指示是否替换当前location. 默认为 [false]",
+                "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]",
+                "mergeParams [可选参数] : Boolean, 指示是否合并已存在的参数. 默认为 [true]"
+            ]
+        },
+        setParams:{
+            $desc:"设置查询参数到片段标志符",
+            $paras:[
+                "key [必需参数] : Object/String, 属性键/值对或属性关键字",
+                "value [可选参数] : Object, 属性值",
+                "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]",
+                "mergeParams [可选参数] : Boolean, 指示是否合并已存在的参数. 默认为 [false]"
             ]
         }
     });
