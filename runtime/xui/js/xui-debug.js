@@ -18672,6 +18672,7 @@ xui.Class("xui.Tips", null,{
             }else{
                 fi="#";
             }
+
             if(self._lastFI == decodeURIComponent(fi))return false;
 
             switch(self._type){
@@ -18708,8 +18709,11 @@ xui.Class("xui.Tips", null,{
         getRouterArray:function(){
           return this.getRouter(true);
         },
-        setRouter:function(path, replace, triggerCallback, mergeParams){
-          this.setFI("#/" + (xui.isArr(path)?path.join("/"):path.replace(/^\//,'').replace(/\/$/,'')), triggerCallback, mergeParams!==false, !!replace);
+        setRouter:function(path, force, replace, triggerCallback, mergeParams){
+          path = xui.isArr(path)?path.join("/"):path.replace(/^\//,'').replace(/\/$/,'');
+          var arr = this.getRouterArray();
+          if(force || !xui.str.startWith(arr.join("/")+"/", path+"/"))
+            this.setFI("#/" + path, triggerCallback, mergeParams!==false, !!replace);
         }
     }
 });xui.Class('xui.ModuleFactory',null,{

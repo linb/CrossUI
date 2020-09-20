@@ -4132,6 +4132,7 @@ xui.set(xui.Locale,["cn","app"], {
             $desc:"设置路由路径到片段标志符中",
             $paras:[
                 "path [必需参数] : String/Array, like '/a/b' or ['a','b']",
+                "force[可选参数] : Boolean, 指示是否强制设置路由路. 默认为 [false]，意味着当path已经在当前路径下，不会再强制设置",
                 "replace [可选参数] : Boolean, 指示是否替换当前location. 默认为 [false]",
                 "triggerCallback [可选参数] : Boolean, 指示是否调用回调函数. 默认为 [true]",
                 "mergeParams [可选参数] : Boolean, 指示是否合并已存在的参数. 默认为 [true]"
