@@ -18713,7 +18713,7 @@ xui.Class("xui.Tips", null,{
           path = xui.isArr(path)?path.join("/"):path.replace(/^\//,'').replace(/\/$/,'');
           var arr = this.getRouterArray();
           if(force || !xui.str.startWith(arr.join("/")+"/", path+"/"))
-            this.setFI("#/" + path, triggerCallback, mergeParams!==false, !!replace);
+            this.setFI("#/" + path, triggerCallback, mergeParams, !!replace);
         }
     }
 });xui.Class('xui.ModuleFactory',null,{
@@ -55711,27 +55711,27 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         var ns=this, t=ns.getTemplate();
         xui.merge(t.FRAME.BORDER,{
             tabindex: '{tabindex}',
-            className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big',
+            className: 'xui-uiborder-outset xui-uiborder-box xui-uiborder-radius-big xui-uibar',
             TABSTOP1:{$order:-1},
             TBAR:{
                 tagName:'div',
                 className:'xui-uibar-top',
                 TBARTDL:{
-                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-big-tl',
+                    className:'xui-uibar-tdl xui-uiborder-radius-big-tl',
                     TBARTDLT:{
                         className:'xui-uibar-tdlt'
                     }
                 },
                 TBARTDM:{
                     $order:1,
-                    className:'xui-uibar-tdm xui-uibar',
+                    className:'xui-uibar-tdm',
                     TBARTDMT:{
                         className:'xui-uibar-tdmt'
                     }
                 },
                 TBARTDR:{
                     $order:2,
-                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-tr',
+                    className:'xui-uibar-tdr xui-uiborder-radius-big-tr',
                     TBARTDRT:{
                         className:'xui-uibar-tdrt'
                     }
@@ -55838,14 +55838,14 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             MAIN:{
                 $order:2,
                 tagName:'div',
-                className:'xui-uicon-main xui-uibar',
+                className:'xui-uicon-main',
                 MAINI:{
                     tagName:'div',
-                    className:'xui-uicon-maini xui-uibar',
+                    className:'xui-uicon-maini',
                     PANEL:{
                         tagName:'div',
                         style:"{_panelstyle};{_overflow};",
-                        className:'xui-uibar xui-uicontainer',
+                        className:'xui-uicontainer',
                         text:'{html}'+xui.UI.$childTag
                     }
                 }
@@ -55853,18 +55853,18 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             BBAR:{
                 $order:3,
                 tagName:'div',
-                className:'xui-uibar-bottom',
+                className:'xui-uibar-bottom xui-uibar',
                 BBARTDL:{
                     $order:1,
-                    className:'xui-uibar-tdl xui-uibar xui-uiborder-radius-big-bl'
+                    className:'xui-uibar-tdl xui-uiborder-radius-big-bl'
                 },
                 BBARTDM:{
                     $order:2,
-                    className:'xui-uibar-tdm xui-uibar'
+                    className:'xui-uibar-tdm'
                 },
                 BBARTDR:{
                     $order:3,
-                    className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-br'
+                    className:'xui-uibar-tdr xui-uiborder-radius-big-br'
                 }
             },
             TABSTOP2:{$order:9}
@@ -56032,18 +56032,19 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                         var root=profile.getRoot(),
                             region=root.cssRegion(),
                             pregion=root.parent().cssRegion(),
-                            dist=profile.getEmSize();
-                        root.startDrag(e, {
-                            dragDefer:2,
-                            maxLeftOffset:region.left,
-                            maxRightOffset:pregion.width-region.left-dist,
-                            maxTopOffset:region.top,
-                            maxBottomOffset:pregion.height-region.top-dist,
-                            magneticDistance:dist,
-                            xMagneticLines:[0,pregion.width-region.width],
-                            yMagneticLines:[0,pregion.height-region.height],
-                            targetOffsetParent:root.parent()
-                        });
+                            dist=profile.getEmSize(),
+                            options=!profile.properties.movingRegion?{dragDefer:2}:{
+                              dragDefer:2,
+                              maxLeftOffset:region.left,
+                              maxRightOffset:pregion.width-region.left-dist,
+                              maxTopOffset:region.top,
+                              maxBottomOffset:pregion.height-region.top-dist,
+                              magneticDistance:dist,
+                              xMagneticLines:[0,pregion.width-region.width],
+                              yMagneticLines:[0,pregion.height-region.height],
+                              targetOffsetParent:root.parent()
+                            };
+                        root.startDrag(e, options);
                     }
                 },
                 onDblclick:function(profile, e, src){
@@ -56211,6 +56212,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             shadow: true,
             resizer:true,
             movable: true ,
+            movingRegion: true,
 
             minBtn:{
                 ini:true,
@@ -57082,7 +57084,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 }
             }
             if(height)
-                isize.height = isize.height - v6._paddingH() - (cb1?0:v0._borderH())- (cb2?0:v2._borderH());
+                isize.height = isize.height - xui.toFixedNumber(v6._paddingH(),2) - (cb1?0:v0._borderH())- (cb2?0:v2._borderH());
 
             if(width)
                 isize.width = size.width

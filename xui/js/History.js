@@ -151,7 +151,7 @@ xui.Class("xui.History",null,{
           path = xui.isArr(path)?path.join("/"):path.replace(/^\//,'').replace(/\/$/,'');
           var arr = this.getRouterArray();
           if(force || !xui.str.startWith(arr.join("/")+"/", path+"/"))
-            this.setFI("#/" + path, triggerCallback, mergeParams!==false, !!replace);
+            this.setFI("#/" + path, triggerCallback, mergeParams, !!replace);
         }
     }
 });

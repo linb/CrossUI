@@ -4124,7 +4124,7 @@ xui.set(xui.Locale,["en","app"], {
                 "force[Optional] : Boolean, to determine whether force to set path or not. Default is [false], which means it will be ignored when the target path is in the current path already.",
                 "replace [Optional] : Boolean,  to determine replace the current location with a new one or not. Default is [false]",
                 "triggerCallback [Optional] : Boolean, trigger callback function or not. Default is [true]",
-                "mergeParams [Optional] : Boolean, to determine merge the existing parameters or not. Default is [true]"
+                "mergeParams [Optional] : Boolean, to determine merge the existing parameters or not. Default is [false]"
             ]
         },
         setParams:{
