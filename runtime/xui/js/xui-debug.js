@@ -50608,6 +50608,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 // depends on parent
                 'line-height':'inherit'
             },
+            'FCELL.editing CELLA, CELL.editing CELLA':{
+              'text-overflow':'unset!important'
+            },
             'FCELL.editing CELLCAPTION, CELL.editing CELLCAPTION':{
               'visibility':'hidden!important'
             },
@@ -54484,7 +54487,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         };
 
                     //undo function is a must
-                    editor.undo=inline?null:function(refocus, inactive){
+                    editor[inline?'remove':'undo']=function(refocus, inactive){
                         var editor=this;
                         // execute once
                         editor.undo=null;
