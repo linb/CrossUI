@@ -750,6 +750,7 @@ new function(){
         isFinite:function(target)  {return (target||target===0) && isFinite(target) && !isNaN(parseFloat(target))},
         isDate:function(target)  {return _to.call(target)==='[object Date]' && isFinite(+target)},
         isFun:function(target)   {return _to.call(target)==='[object Function]'},
+        isAsyncFun:function(target) {return _to.call(target)==='[object AsyncFunction]'},
         isArr:function(target)   {return _to.call(target)==='[object Array]'},
         isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
         isStr:function(target)   {return _to.call(target)==='[object String]'},

@@ -262,8 +262,7 @@ xui.Class("xui.Coder", null,{
                         [/(?!\n\s*)\belse\b/.source, function(a, i){return "\n"+ space[deep] + a[i]}]
                     ];
                     if(type!='css'){
-                        arr.push([/for\s*\([\w ]+\sin\s/.source, "$0"],
-                             [/for\s*\(([^;]*);([^;]*);([^)]*)\)/.source, "for($1; $2; $3)"],
+                        arr.push(
                              // '=>' is for php
                              [/(,)(("[^"\n\r]*"|'[^'\n\r]*'|\w+)?(:|=>))/.source, function(a,i){return a[i+1]+"\n"+space[deep]+a[i+2]}],
                              [/\b(case|default)\b[^:]+:/.source, function(a,i){return a[i]+"\n"+space[deep]}]
@@ -273,12 +272,21 @@ xui.Class("xui.Coder", null,{
                     code=xui.replace(code,arr);
 
                     // if(1)b() else if(2)d() else c()
-                    code=xui.replace(code,[[/\s*\belse\b(?!\s*(if|\n|\{))/.source, function(a, i){return a[i] + "\n"+ space[deep+1]}]]);
+                    code=xui.replace(code,[
+                          [/for\s*\(\s*[\w ]+\sin\s/.source, "$0"],
+                          [/for\s*\(\s*([^;]*)\s*;\s*([^;]*)\s*;\s*([^\)]*)\s*\)/.source, "for( $1; $2; $3 )"],
+                          [/\s*\belse\b(?!\s*(if|\n|\{))/.source, function(a, i){return a[i] + "\n"+ space[deep+1]}]
+                      ]);
 
                     // add detail
                     code=xui.replace(code,[
+                        // ( , ;
+                        [/([\(\,;]+)[ \t]*/.source,"$1 "],
+                        // )
+                        [/\s*([\)]+)/.source," $1"],
                         [/ *[\n\r]/.source,'\n'],
                         [/\[\s+\]/.source,'[ ]'],
+                        [/\(\s+\)/.source,'( )'],
                         [/\}\n *(else|catch|finnally)/.source, '}$1'],
                         //protect number
                         [reg.NUMBER, '$0'],
@@ -288,7 +296,9 @@ xui.Class("xui.Coder", null,{
                     if(type!='css'){
                         // + - * / and so on
                         //[/->|=>/.source,' $0 '],
-                        [/\s*((\+\+|\-\-|\&\&|\|\||!!)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:]))\s*/.source,' $1 ']
+                         code=xui.replace(code,[
+                             [/\s*((\+\+|\-\-|\&\&|\|\||!!|\=\>)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:]))\s*/.source,' $1 ']
+                         ]);
                     }
                 }
 
