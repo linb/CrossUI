@@ -11152,7 +11152,7 @@ xui.set(xui.Locale,["cn","app"], {
                 ]
             },
             getAutocomplete:{
-                $desc:""获得HTML5自动完成属性",
+                $desc:"获得HTML5自动完成属性",
                 $rtn:"String"
             },
             setAutocomplete:{
