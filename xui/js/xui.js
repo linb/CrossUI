@@ -2338,7 +2338,7 @@ new function(){
 
     // to ensure
     var fe=function(){
-        ((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(fe,9):f()
+        ((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(fe,9):xui.setTimeout(f,9)
    };
    fe();
 };

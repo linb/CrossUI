@@ -2346,7 +2346,7 @@ new function(){
 
     // to ensure
     var fe=function(){
-        ((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(fe,9):f()
+        ((!xui.isDomReady)&&((!d.readyState)||/in/.test(d.readyState)))?xui.setTimeout(fe,9):xui.setTimeout(f,9)
    };
    fe();
 };
@@ -32427,7 +32427,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                         className:'xui-ui-ellipsis {_inputcls}',
                         tagName : 'input',
                         autocorrect:"off",
-                        autocomplete:"off",
+                        autocomplete:"{autocomplete}",
                         //autocapitalize:"off",
                         type : '{_inputtype}',
                         "name" : '{_name}',
@@ -32760,6 +32760,13 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
 
             dynCheck:false,
             selectOnFocus:true,
+            autocomplete: {
+                ini:"off",
+                listbox:['on','off'],
+                action: function (value) {
+                    this.getSubNode('INPUT').attr('autocomplete', value);
+                }
+            },
             placeholder: {
                 ini: '',
                 action: function (value) {
