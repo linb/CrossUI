@@ -154,33 +154,29 @@ xui.Class('xui.DragDrop',null,{
 
         //get left for cssPos
         _left:function(value){
-            var proxySize=this.$proxySize;
-            with(this._profile){
-                if(magneticDistance>0 && xMagneticLines.length){
-                    var l=xMagneticLines.length;
-                    while(l--)
-                        if(Math.abs(value + proxySize - xMagneticLines[l])<=magneticDistance)
-                            return xMagneticLines[l] - proxySize;
-                }
-                if(widthIncrement>1)
-                   return Math.floor((value + proxySize)/widthIncrement)*widthIncrement - proxySize;
-                return value;
+            var proxySize=this.$proxySize, prf=this._profile;
+            if(prf.magneticDistance>0 && prf.xMagneticLines.length){
+                var l=prf.xMagneticLines.length;
+                while(l--)
+                    if(Math.abs(value + proxySize - prf.xMagneticLines[l])<=prf.magneticDistance)
+                        return prf.xMagneticLines[l] - proxySize;
             }
+            if(prf.widthIncrement>1)
+               return Math.floor((value + proxySize)/prf.widthIncrement)*prf.widthIncrement - proxySize;
+            return value;
         },
         //get top for cssPos
         _top:function(value){
-            var proxySize=this.$proxySize;
-            with(this._profile){
-                if(magneticDistance>0 && yMagneticLines.length){
-                    var l=yMagneticLines.length;
-                    while(l--)
-                        if(Math.abs(value + proxySize - yMagneticLines[l])<=magneticDistance)
-                            return yMagneticLines[l] - proxySize;
-                }
-                if(heightIncrement>1)
-                    return Math.floor((value + proxySize)/heightIncrement)*heightIncrement - proxySize;
-                return value;
+            var proxySize=this.$proxySize, prf=this._profile;
+            if(prf.magneticDistance>0 && prf.yMagneticLines.length){
+                var l=prf.yMagneticLines.length;
+                while(l--)
+                    if(Math.abs(value + proxySize - prf.yMagneticLines[l])<=prf.magneticDistance)
+                        return prf.yMagneticLines[l] - proxySize;
             }
+            if(prf.heightIncrement>1)
+                return Math.floor((value + proxySize)/prf.heightIncrement)*prf.heightIncrement - proxySize;
+            return value;
         },
 
         _ini:function(o){
@@ -307,7 +303,7 @@ xui.Class('xui.DragDrop',null,{
                 mm2=(xui.browser.ie&&win.PointerEvent)?"onpointermove":(xui.browser.ie&&win.MSPointerEvent)?"onmspointermove":"ontouchmove";
                 mu2=(xui.browser.ie&&win.PointerEvent)?"onpointerup":(xui.browser.ie&&win.MSPointerEvent)?"onmspointerup":"ontouchend";
             }
-            
+
             if(d._proxy) d._unpack();
 
             //must here
@@ -319,7 +315,7 @@ xui.Class('xui.DragDrop',null,{
             if(d.$mouseup!='*')doc[mu]=d.$mouseup;
             if(xui.browser.isTouch){
                 if(d.$touchmove!='*')doc[mm2]=d.$touchmove;
-                if(d.$touchend!='*')doc[mu2]=d.$touchend;                
+                if(d.$touchend!='*')doc[mu2]=d.$touchend;
             }
 
             return  d;
@@ -415,12 +411,12 @@ xui.Class('xui.DragDrop',null,{
                     doc[mm2] = d.$onDrag;
                     doc[mu2] = d.$onDrop;
                 }
-                
+
                 //for events
                 d._source.afterDragbegin();
                 //for delay, call ondrag now
                 if(p.dragDefer>0)d.$onDrag.call(d, e);
-                
+
                 // For touch-only platform
                 // In ipad or other touch-only platform, you have to decide the droppable order by youself
                 // The later added to DOM the higher the priority
@@ -496,7 +492,7 @@ xui.Class('xui.DragDrop',null,{
             var d=xui.DragDrop,p=d._profile;
 
             if(d.$SimulateMousemoveInMobileDevice)return false;
-            
+
            //try{
                 e = e || window.event;
                 //set _stop or (in IE, show alert)
@@ -542,7 +538,7 @@ xui.Class('xui.DragDrop',null,{
                     //fireEvent
                     //d._source.onDrag(true); //shortcut for mousemove
                 }
-      
+
                 if(d._onDrag!=1){
                     if(d._onDrag)d._onDrag(e,d._source._get(0));
                     else{
@@ -552,7 +548,7 @@ xui.Class('xui.DragDrop',null,{
                         d._source.onDrag(true,xui.Event.getEventPara(e, _pos));
                     }
                 }
-                
+
                 // For touch-only platform
                 // In ipad or other touch-only platform, you have to decide the droppable order by youself
                 // The later joined the higher the priority
@@ -595,7 +591,7 @@ xui.Class('xui.DragDrop',null,{
                         }
                     }
                 }
-                    
+
             //}catch(e){xui.DragDrop._end()._reset();}finally{
                return false;
             //}
@@ -643,7 +639,7 @@ xui.Class('xui.DragDrop',null,{
             var d=this,
                 s1='<div style="position:absolute;z-index:'+xui.Dom.TOP_ZINDEX+';font-size:0;line-height:0;border-',
                 s2=":dashed 1px #ff6600;",
-                region=d._Region,rh=d._rh, st, sl, 
+                region=d._Region,rh=d._rh, st, sl,
                 bg='backgroundColor';
             if(region && region.parent())
                 region.remove(false);
@@ -727,7 +723,7 @@ xui.Class('xui.DragDrop',null,{
                 id1=d._id,
                 id2=d._idi;
             if(dom.byId(id1)){
-                var t,k,o=xui(id2),t=xui(id1);
+                var k,o=xui(id2),t=xui(id1);
                 //&nbsp; for IE6
                 if(xui.browser.ie6)
                     o.html('&nbsp;');
@@ -758,7 +754,6 @@ xui.Class('xui.DragDrop',null,{
             switch(p.dragType){
                 case 'deep_copy':
                 case 'copy':
-                   var t;
                     size.width =  xui.isNumb(p.targetWidth)? p.targetWidth:(targetNode.cssSize().width||0);
                     size.height = xui.isNumb(p.targetHeight)?p.targetHeight:(targetNode.cssSize().height||0);
                     var n=targetNode.clone(p.dragType=='deep_copy')
@@ -833,7 +828,7 @@ xui.Class('xui.DragDrop',null,{
                 .$removeEvent('beforeMouseout', eh)
                 .$removeEvent('beforeMousemove', eh);
 
-            var o=xui.getNodeData(node.$xid, ['_dropKeys']),c=xui.$cache.droppable;            
+            var o=xui.getNodeData(node.$xid, ['_dropKeys']),c=xui.$cache.droppable;
             if(o)
                 for(var i in o)
                     if(c[i])
@@ -845,7 +840,8 @@ xui.Class('xui.DragDrop',null,{
             var eh=this._eh;
             xui(node)
                 .beforeMouseover(function(p,e,i){
-                    var t=xui.DragDrop, p=t._profile;
+                    var t=xui.DragDrop;
+                    p=t._profile;
                     if(p.dragKey && xui.getNodeData(i,['_dropKeys', p.dragKey])){
                         t.setDropElement(i);
                         t._onDragover=null;
@@ -855,7 +851,8 @@ xui.Class('xui.DragDrop',null,{
                     }
                 }, eh)
                 .beforeMouseout(function(p,e,i){
-                    var t=xui.DragDrop,p=t._profile;
+                    var t=xui.DragDrop;
+                    p=t._profile;
                      if(p.dragKey && xui.getNodeData(i,['_dropKeys', p.dragKey])){
                         xui.use(i).onDragleave(true);
                         if(t._dropElement==i){
@@ -879,7 +876,7 @@ xui.Class('xui.DragDrop',null,{
                     }
                 }, eh);
 
-            var o=xui.getNodeData(node.$xid, ['_dropKeys']),c=xui.$cache.droppable;            
+            var o=xui.getNodeData(node.$xid, ['_dropKeys']),c=xui.$cache.droppable;
             if(o)
                 for(var i in o)
                     if(c[i])
@@ -892,7 +889,7 @@ xui.Class('xui.DragDrop',null,{
                 c[a[i]].push(node.$xid);
             }
             xui.setNodeData(node.$xid, ['_dropKeys'], h);
-            
+
         }
     },
     After:function(){
@@ -904,9 +901,8 @@ xui.Class('xui.DragDrop',null,{
                 return this;
             },
             draggable:function(flag, profile, dragKey, dragData, target){
-                var self=this,
-                    target=target?typeof(target)=="function"?xui.tryF(getTarget,[],this):xui(target):null, 
-                    dd=xui.DragDrop;
+                var self=this, dd=xui.DragDrop;
+                target=target?typeof(target)=="function"?xui.tryF(self.getTarget,[],this):xui(target):null;
                 if(!target || !target.get(0)){
                     target=self;
                 }

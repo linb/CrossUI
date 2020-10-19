@@ -209,7 +209,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         us = xui.$us(self),
                         adjustunit = function(v,emRate){return self.$forceu(v, us>0?'em':'px', emRate)},
                         hl = self.getSubNode('ITEMS'),
-                        menu2 =  self.getSubNode('MENU2');
+                        menu2 =  self.getSubNode('MENU2'),
                         menuicn2 =  self.getSubNode('MENUICON2');
                     if(t.sideBarStatus=='none'){
                         menu2.css('display','none');

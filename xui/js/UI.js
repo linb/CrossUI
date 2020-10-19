@@ -738,8 +738,9 @@ xui.Class('xui.UIProfile','xui.Profile', {
             // destroyed already
             if(!ns.renderId)return xui();
 
-            var key=ns.keys[key] || key, r,
-                h=ns.$_domid||(ns.$_domid={});
+            key=ns.keys[key] || key;
+
+            var r, h=ns.$_domid||(ns.$_domid={});
 
             // by key only
             if(subId===true){
@@ -756,7 +757,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return r;
         },
         getSubNodes:function(arr,subId,tag){
-            var ns=this, a=[],s1=!xui.isArr(arr),s2=!xui.isArr(subId),a,o,v,push=Array.prototype.push;
+            var ns=this, a=[],s1=!xui.isArr(arr),s2=!xui.isArr(subId),o,v,push=Array.prototype.push;
             if(subId===true||xui.isNull(subId)){
                 if(!s1){
                     a=[];
@@ -801,7 +802,9 @@ xui.Class('xui.UIProfile','xui.Profile', {
         getSubIdByItemId:function(itemId){
             var prf=this,t;
             if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
-            return (t=this.ItemIdMapSubSerialId) && t[itemId];
+            // to ignore null/undefined
+            // 0=>"0", false=>"false"
+            return (t=this.ItemIdMapSubSerialId) && xui.isSet(itemId)?t[itemId]:null;
         },
 
         getItemByDom:function(src){
@@ -945,7 +948,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var prf=this.get(0),t,
                 node=prf.getRootNode(),
                 tid=xui.getNodeData(node,'_inthread'),
-                reset=xui.getNodeData(node,'_animationreset'),t;
+                reset=xui.getNodeData(node,'_animationreset');
             if(tid && xui.Thread.isAlive(tid)){
                 xui.Thread.abort(tid,'force');
                 xui.setNodeData(node,'_inthread',null);
@@ -1253,6 +1256,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         free:function(){
             xui.Dom.free();
             return this.each(function(profile){
+                var node;
                 xui.resetRun(profile.$xid+':busy');
                 if(node=profile.$busy){
                     var pn=xui(node._busyP).get(0);
@@ -1811,7 +1815,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     if(xui.Event.getBtn(e)!="left")return;
                     if(prf.properties.disabled)return;
 
-                    var target=target?typeof(target)=="function"?xui.tryF(getTarget,[],o):xui(target):null;
+                    target = target?typeof(target)=="function"?xui.tryF(target,[],o):xui(target):null;
                     if(!target || !target.get(0)){
                         target=xui(src);
                     }
@@ -3385,8 +3389,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 isA = xui.isArr(properties),
                 // this one maybe a fake tamplate tag, for switch function
                 temp = template[tplTag||''],
-                r = !result,
-                result= result || [];
+                r = !result;
+            result= result || [];
             // get the real tag
             tplTag = realTag||tplTag;
             if(isA){
@@ -3654,7 +3658,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(t=profile.template.$submap)
                     for(var i in t){
                         if(typeof (m=t[i])!='function'){
-                            var temp=[[],[]];
+                            temp=[[],[]];
                             for(var j in m)
                                 if(typeof m[j] == 'object')
                                     u.$buildTemplate(profile, m[j], j, temp);
@@ -3713,7 +3717,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 hideId = showId + "_";
 
                             if(mode==1){
-                                if(/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
+                                if(xui.browser.deviceType != 'touchOnly'&& type=='mouseover'){
                                     if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
                                         if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))return;
@@ -3741,7 +3745,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 }
 
                                 //default action
-                                nodes.tagClass('-'+((/*!xui.browser.fakeTouch &&*/ xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
+                                nodes.tagClass('-'+((xui.browser.deviceType != 'touchOnly') && type=='mouseover'?'hover':type=='mousedown'?'active':type));
                             }else{
                                 if(type=='mouseup'){
                                     if(prop.disableClickEffect||(item&&item.disableClickEffect))return;
@@ -4250,11 +4254,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                     var map=arguments.callee, k, m1=map.m1||(map.m1={KEY:1,$key:1});
                     if(m1[i])return;
                     var m2=map.m2||(map.m2={input:1,textarea:1}),
-                    m3=map.m3||(map.m3={tab:1,enter:1,up:1,down:1,left:1,right:1}),
-                    m4=map.m4||(map.m4={tab:1,up:1,down:1,left:1,right:1}),
-                    t=hash[i]||(hash[i]={});
-
-                    var t=hash[i]||(hash[i]={});
+                      m3=map.m3||(map.m3={tab:1,enter:1,up:1,down:1,left:1,right:1}),
+                      m4=map.m4||(map.m4={tab:1,up:1,down:1,left:1,right:1}),
+                      t=hash[i]||(hash[i]={});
 
                     if(null===o)
                         t.afterKeydown = null;
@@ -4736,8 +4738,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         c['object'] = ns._prepareInlineObj(profile, c, p.tabindex);
                         c.type='profile';
                     }else{
-                        if(!'caption' in c)c.caption=c.id;
-                        if(!('tips' in c))c.tips=c.caption;
+                        if(!('tips' in c))c.tips=c.caption||c.id;
 
                         c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
                         if(!c.type)c.type="text";
@@ -4779,9 +4780,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                         tagName:"span",
                         title:"{tips}",
                         style:'{_style}{itemStyle}{_exstyle}',
-                        className:'xui-node xui-tag-cmd {itemClass}',
+                        className:'xui-node xui-tag-cmd',
                         tabindex: '{_tabindex}',
-                        text:"{caption}"
+                        CMDICON:{
+                          className:'{itemClass}',
+                        },
+                        CMDTXT:{
+                          text:"{caption}"
+                        }
                     }
                 },
                 'tagCmds.button':{
@@ -4789,9 +4795,14 @@ xui.Class("xui.UI",  "xui.absObj", {
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style}{itemStyle}{_exstyle}',
-                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd xui-tag-cmd {itemClass}',
+                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd xui-tag-cmd',
                         tabindex: '{_tabindex}',
-                        text:"{caption}"
+                        CMDICON:{
+                          className:'{itemClass}',
+                        },
+                        CMDTXT:{
+                          text:"{caption}"
+                        }
                     }
                 },
                 'tagCmds.image':{
@@ -4873,7 +4884,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     var dd = xui.DragDrop,
                         pp = dd.getProfile(),
                         key = pp.dragKey,
-                        data = pp.dragData,
+                        data = pp.dragData, t,
                         item, box, args;
 
                     //not include the dragkey
@@ -5566,7 +5577,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(prf.box._onresize){
                 //avoid UI blazzing
                 if(!prf._syncResize && !prf.box._syncResize){
-                    var style=prf.getRootNode().style,t
+                    style=prf.getRootNode().style;
                     if((t=style.visibility)!='hidden'){
                        prf._$visibility=t;
                        style.visibility='hidden';
@@ -5814,7 +5825,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 },
                 applyPrevLine=function(obj, space/*spaceW*/, all/*obj.ww*/, p2/*width*/, p3/*dockMaxW*/, p4/*left*/, p5/*right*/){
                     if(!obj.prevLine.length)return;
-                    var pct=[], size, t, l, region, node, prop, margin, style,
+                    var pct=[], size, t, l, region, nodefz, prop, margin, style,
                         ll=obj.prevLine.length-1, preAll = 0,
                         start=obj[p4],
                         css=xui.CSS;
@@ -6022,7 +6033,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             // 1. set overflow for size
                             if(style)style.overflow=style.overflowX=style.overflowY="hidden";
                             var hasCover;
-                            for(var i in me.dockall){
+                            for(i in me.dockall){
                                 if(me.dockall[i].$dockType=="cover"){
                                     hasCover=1;
                                     break;
@@ -6120,35 +6131,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(hSum&&hMax){
                                         hSum += hMax;
                                     }
-                                    // for w percent
-                                    if(wCount>=1 && wSum && obj.width){
-                                        var innerW = obj.width - conDockPadding.left - conDockPadding.right - (wCount-1)*conDockSpacing.width;
-                                        for(k=0;key=arr[k++];){
-                                            target = me[key];
-                                            if(target.length){
-                                                for(i=0;o=target[i++];){
-                                                    if(o.properties.position=='absolute' && !o.properties.dockIgnore && !prf._dockIgnore && o.properties.dockIgnoreFlexFill){
-                                                        var node = o.getRoot();
-                                                        if(key=='left'||key=='right'||key=='width'){
-                                                            innerW -= adjustMM(o,"W", originalSize(o,'width'));
-                                                            innerH -= conDockSpacing.width;
-                                                        }
-                                                    }
-                                                }
-                                                for(i=0;o=target[i++];){
-                                                    if(!(o.properties.position!='absolute'|| o.properties.dockIgnore || o._dockIgnore || o.properties.dockIgnoreFlexFill)){
-                                                        var node = o.getRoot();
-                                                        if(key=='left'||key=='right'||key=='width'){
-                                                            node.width(adjustunit( adjustMM(o,"W",Math.min(1, originalSize(o,'width') / wSum) * innerW)) );
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    var innerH, innerW;
                                     // for h percent
                                     if(hCount>=1  && hSum && obj.height){
-                                        var innerH = obj.height - conDockPadding.top - conDockPadding.bottom - (hCount-1)*conDockSpacing.height;
+                                        innerH = obj.height - conDockPadding.top - conDockPadding.bottom - (hCount-1)*conDockSpacing.height;
                                         for(k=0;key=arr[k++];){
                                             target = me[key];
                                             if(target.length){
@@ -6166,6 +6152,32 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                         var node = o.getRoot();
                                                         if(key=='top'||key=='bottom'||key=='height'){
                                                             node.height(adjustunit( adjustMM(o,"H",Math.min(1, originalSize(o,'height')/ hSum) * innerH)) );
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // for w percent
+                                    if(wCount>=1 && wSum && obj.width){
+                                        innerW = obj.width - conDockPadding.left - conDockPadding.right - (wCount-1)*conDockSpacing.width;
+                                        for(k=0;key=arr[k++];){
+                                            target = me[key];
+                                            if(target.length){
+                                                for(i=0;o=target[i++];){
+                                                    if(o.properties.position=='absolute' && !o.properties.dockIgnore && !o._dockIgnore && o.properties.dockIgnoreFlexFill){
+                                                        var node = o.getRoot();
+                                                        if(key=='left'||key=='right'||key=='width'){
+                                                            innerW -= adjustMM(o,"W", originalSize(o,'width'));
+                                                            innerH -= conDockSpacing.width;
+                                                        }
+                                                    }
+                                                }
+                                                for(i=0;o=target[i++];){
+                                                    if(!(o.properties.position!='absolute'|| o.properties.dockIgnore || o._dockIgnore || o.properties.dockIgnoreFlexFill)){
+                                                        var node = o.getRoot();
+                                                        if(key=='left'||key=='right'||key=='width'){
+                                                            node.width(adjustunit( adjustMM(o,"W",Math.min(1, originalSize(o,'width') / wSum) * innerW)) );
                                                         }
                                                     }
                                                 }
@@ -6821,7 +6833,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var b,t,r,o={};
             xui.merge(o, profile, 'all');
             var p = o.properties = xui.clone(profile.properties,true),
-                ds = o.box.$DataStruct, t,
+                ds = o.box.$DataStruct,
                 dm = o.box.$DataModel;
 
             for(var i in xui.UI.$ps){
@@ -6845,7 +6857,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 switch(p.dock){
                     case 'top':
                     case 'bottom':
-                        delete delete p.top;delete p.bottom;delete p.right;
+                        delete p.top;delete p.bottom;delete p.right;
                         break;
                     case 'left':
                     case 'right':
@@ -7025,7 +7037,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(obj['xui.UIProfile']){
                 obj.properties.position='relative';
                 if('tabindex' in obj.properties)obj.properties.tabindex=tabindex;
-                var addcls='xui-inline-object', cck = obj.CC.KEY || (cck=obj.CC.KEY='');
+                var addcls='xui-inline-object', cck = obj.CC.KEY || (obj.CC.KEY='');
                 if(cck.indexOf(addcls)===-1) obj.CC.KEY = cck + " " + addcls;
             }
 
@@ -7121,7 +7133,7 @@ xui.Class("xui.absList", "xui.absObj",{
         */
         insertItems:function(arr, base/*true: the current item*/, before, all){
             var node,arr2,
-                items, index, r, v, prop,
+                items, index, r, t, v, k, prop,
                 data,box,
                 ns=this,
                 b=ns._afterInsertItems;
@@ -7213,7 +7225,7 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         removeItems:function(arr/*default is the current*/, key, purgeNow){
             var obj,v,
-                b=this._afterRemoveItems;
+                b=this._afterRemoveItems,
                 remove=function(profile, arr, target, data, ns, force){
                     var self=arguments.callee;
                     if(!ns)ns=xui();
@@ -7327,7 +7339,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 if(xui.isSet(options.id))options.id+="";
                 if(options.id && itemId!==options.id){
                     nid=options.id;
-                    var m2=profile.ItemIdMapSubSerialId, v;
+                    var m2=profile.ItemIdMapSubSerialId;
                     if(!m2[nid]){
                         if(v=m2[itemId]){
                             m2[nid]=v;
@@ -7399,7 +7411,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 }
 
                 if(box.$Behaviors.PanelKeys){
-                    var hash={};
+                    var hash={},panel;
                     if(options.hasOwnProperty('panelBgClr'))hash["background-color"]=options.panelBgClr;
                     if(options.hasOwnProperty('panelBgImg')){
                         hash["background-image"]=options.panelBgImg?("url("+xui.adjustRes(options.panelBgImg)+")"):"";
@@ -8440,8 +8452,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
                 $order:1,
                 className:'xui-display-none xui-uiflag {flagClass}',
                 style:'{_flagStyle};{flagStyle}',
-                text:'{flagText}',
-                $order:1
+                text:'{flagText}'
             }
         },
         DataModel:{
@@ -8491,14 +8502,14 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             },
             flagText:{
               ini:'',
-              action:function(){
+              action:function(v){
                 this.getSubNode('FLAG').text(v);
               }
             },
             flagClass:{
               ini:'',
               combobox:["","xui-uiflag-2","xui-uiflag-3","xui-uiflag-4"],
-              action:function(){
+              action:function(v,ov){
                 this.getSubNode('FLAG').removeClass(ov).addClass(v);
               }
             }
@@ -9004,8 +9015,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 $order:1,
                 className:'xui-display-none xui-uiflag {flagClass}',
                 style:'{_flagStyle};{flagStyle}',
-                text:'{flagText}',
-                $order:1
+                text:'{flagText}'
             }
         },
         DataModel:{
@@ -9229,7 +9239,6 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             dockStretch:null,
             dockIgnoreFlexFill:null,
             renderer:null,
-            display:null,
             html:null,
             selectable:null,
             overflow:null,
@@ -9240,7 +9249,6 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             disableTips:null,
             disabled:null,
             defaultFocus:null,
-            dockStretch:null,
             dockIgnore:null,
             dockOrder:null,
             dockMargin:null,
@@ -9479,7 +9487,6 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             disableTips:null,
             disabled:null,
             defaultFocus:null,
-            dockStretch:null,
             dockIgnore:null,
             dockOrder:null,
             dockMargin:null,

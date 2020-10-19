@@ -197,7 +197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        appendChild = "appendChild",
 	        apply = "apply",
 	        concat = "concat",
-	        supportsTouch = ('ontouchstart' in g.win) || g.win.DocumentTouch && g.doc instanceof DocumentTouch, //taken from Modernizr touch test
+	        supportsTouch = ('ontouchstart' in g.win) || g.win.DocumentTouch && g.doc instanceof g.win.DocumentTouch, //taken from Modernizr touch test
 	        E = "",
 	        S = " ",
 	        Str = String,
@@ -606,7 +606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                docum.close();
 	                bod = docum.body;
 	            } catch(e) {
-	                bod = createPopup().document.body;
+	                bod = window.createPopup()['document'].body;
 	            }
 	            var range = bod.createTextRange();
 	            toHex = cacher(function (color) {
@@ -4462,7 +4462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            to = {},
 	            diff = {};
 	        if (status) {
-	            for (i = 0, ii = animationElements.length; i < ii; i++) {
+	            for (var i = 0, ii = animationElements.length; i < ii; i++) {
 	                var e = animationElements[i];
 	                if (e.el.id == element.id && e.anim == anim) {
 	                    if (e.percent != percent) {
@@ -5273,7 +5273,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var bb = font.face.bbox[split](separator),
 	                top = +bb[0],
 	                lineHeight = bb[3] - bb[1],
-	                shifty = 0,
+	                shifty = 0, curr,
 	                height = +bb[1] + (origin == "baseline" ? lineHeight + (+font.face.descent) : lineHeight / 2);
 	            for (var i = 0, ii = letters.length; i < ii; i++) {
 	                if (letters[i] == "\n") {
@@ -5488,13 +5488,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-	// 
+	//
 	// Licensed under the Apache License, Version 2.0 (the "License");
 	// you may not use this file except in compliance with the License.
 	// You may obtain a copy of the License at
-	// 
+	//
 	// http://www.apache.org/licenses/LICENSE-2.0
-	// 
+	//
 	// Unless required by applicable law or agreed to in writing, software
 	// distributed under the License is distributed on an "AS IS" BASIS,
 	// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -5638,7 +5638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return out;
 	    };
-	    
+
 	    /*\
 	     * eve.on
 	     [ method ]
@@ -5653,7 +5653,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
 	     - f (function) event handler function
 	     **
-	     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
+	     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
 	     > Example:
 	     | eve.on("mouse", eatIt)(2);
 	     | eve.on("mouse", scream);
@@ -6171,7 +6171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    addDashes = function (o, value, params) {
             value =Str(value).replace(/\s+/,'');
-	        value = dasharray[value] || (Raphael.svg && !/[^\d,]/.test(value) && value.split(/,/) );
+	        value = dasharray[value] || (R.svg && !/[^\d,]/.test(value) && value.split(/,/) );
 	        if (value) {
 	            var width = o.attrs["stroke-width"] || "1",
 	                butt = {round: width, square: width, butt: 0}[o.attrs["stroke-linecap"] || params["stroke-linecap"]] || 0,
@@ -6355,7 +6355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        break;
                         // not for vml
 	                    case "stroke-dashoffset":
-                            if(Raphael.svg)node.setAttribute(att, value);
+                            if(R.svg)node.setAttribute(att, value);
 	                        break;
 	                    case "fill":
 	                        var isURL = Str(value).match(R._ISURL);

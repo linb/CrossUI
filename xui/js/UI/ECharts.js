@@ -99,22 +99,22 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                         if(index>=updater.series.length){
                             for(var m=updater.series.length-1;m<=index;m++)updater.series[m] = {type:updater.series[0]&&updater.series[0].type||'line',data:[]};
                         }
-                        
+
                         s=updater.series[index];
                 		if(!s.data)s.data=[];
                 		d=s.data;
-                    	
+
                     	d.push(v);
                     	if(d.length>=columnSize)d.shift();
                     	while(d.length<columnSize)d.unshift(0);
-                    	
+
                         //console.log(index, v, d, updater);
                 		this.boxing().setOptionUpdater(updater, true);
                     }
                 })(i)
             };
         }
-        
+
         xui.UI.ECharts.setDataModel(dataModals);
     },
     Instance:{
@@ -151,7 +151,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
         echarts_getOption:function(){
             return this.echarts_call("getOption",[]);
         },
-        echarts_setOption:function(option){
+        echarts_setOption:function(option,notMerge,lazyUpdate,silent){
             return this.echarts_call("setOption",[option, notMerge,lazyUpdate,silent]);
         },
         echarts_getDataURL:function(opts){
@@ -344,7 +344,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 if(prop.chartRenderer!="canvas")opts.chartRenderer=prop.chartRenderer;
                 if(prop.chartDevicePixelRatio!=window.devicePixelRatio)opts.chartDevicePixelRatio=prop.chartDevicePixelRatio;
 
-                var chart = echarts.init(prf.getSubNode("BOX").get(0), prop.chartTheme, opts);
+                var chart = window.echarts.init(prf.getSubNode("BOX").get(0), prop.chartTheme, opts);
                 prf.$echarts = chart;
                 prf.boxing().setChartOption(prop.chartOption, true);
                 var evts1="click,dblclick,mousedown,mouseup,mouseover,mouseout,globalout,contextmenu".split(",");
@@ -354,7 +354,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                             if(prf && prf.onMouseEvent)prf.onMouseEvent(prf, name, params);
                         });
                     });
-                
+
                 var evts2="legendselectchanged,legendunselected,legendscroll,datazoom,datarangeselected,timelinechanged,timelineplaychanged,restore,dataviewchanged,magictypechanged,geoselectchanged,geoselected,geounselected,pieselectchanged,pieselected,pieunselected,mapselectchanged,mapselected,mapunselected,axisareaselected,focusnodeadjacency,unfocusnodeadjacency,brush,brushselected,rendered,finished".split(",");
                 if(prf.onChartEvent)
                     xui.arr.each(evts2,function(name){
@@ -411,9 +411,9 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 us = xui.$us(prf),
                 adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
                 root = prf.getRoot(),
-                
+
                 // caculate by px
-                ww=width?prf.$px(width):width, 
+                ww=width?prf.$px(width):width,
                 hh=height?prf.$px(height):height,
                 t;
 

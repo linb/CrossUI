@@ -90,7 +90,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
 
             itemMargin:{
                 ini:"",
-                action:function(value){
+                action:function(v){
                     this.getSubNode('ITEM',true).css('margin',v);
                 }
             },

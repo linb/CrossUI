@@ -9,7 +9,7 @@ xui.Class('xui.XMLRPC',null,{
             }
 
             if(!methodName)return null;
-            if(params && !params instanceof Array)return null;
+            if(params && !(params instanceof Array))return null;
 
             var ns=this,
                 xml = ['<?xml version="1.0"?><methodCall><methodName>'+ methodName+'</methodName>'];
@@ -29,7 +29,7 @@ xui.Class('xui.XMLRPC',null,{
             var ns=this,
                 json={},
                 err,elem;
-       
+
             elem = doc.getElementsByTagName('value')[0];
             if(elem.parentNode.nodeName=='param'&&elem.parentNode.parentNode.nodeName=='params'){
                 json.result=ns._parseElem(elem);
@@ -49,7 +49,7 @@ xui.Class('xui.XMLRPC',null,{
         },
         _dateMatcher:/^(?:(\d\d\d\d)-(\d\d)(?:-(\d\d)(?:T(\d\d)(?::(\d\d)(?::(\d\d)(?:\.(\d+))?)?)?)?)?)$/,
         _parseElem:function(elem){
-            var ns=this, 
+            var ns=this,
                 nodes=elem.childNodes,
                 typeElem, dateElem, name, value, tmp;
             if(nodes.length==1&&nodes.item(0).nodeType==3)

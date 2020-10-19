@@ -21,8 +21,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                             $order:1,
                             className: 'xuifont',
                             $fonticon:'{_fi_toggleCls2}',
-                            style:'{toggleDisplay}',
-                            $order:0
+                            style:'{toggleDisplay}'
                         },
                         ICON:{
                             $order:2,
@@ -142,7 +141,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
             borderType:null,
             toggleBtn:{
                 ini:true
-            } 
+            }
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -170,7 +169,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                 //chang toggle button
                 if(p.toggleBtn)
                     profile.getSubNode('TOGGLE').tagClass('-checked', !!value);
-                
+
                 var border=profile.getSubNode('BORDER')
                 if(value)
                     border.removeClass('xui-uiborder-t').addClass('xui-uiborder-flat xui-uiborder-radius');
@@ -197,18 +196,18 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
-                
+
                 // compare with px
                 us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 border = profile.getSubNode('BORDER'),
-                panel =profile.getSubNode('PANEL'), 
+                panel =profile.getSubNode('PANEL'),
                 root = profile.getRoot(),
                 cb = border.contentBox(),
                 h0=border._borderH(),
                 // caculate by px
-                ww=width?profile.$px(width):null, 
+                ww=width?profile.$px(width):null,
                 hh=height?profile.$px(height):null;
             if(height){
                 if(profile._toggle){

@@ -25,7 +25,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             tag=xui.UI.$tag_special,
             cls=xui.UI.$CLS,
             key=self.KEY;
-            
+
         self.addTemplateKeys(['H', 'COL', 'W','TBODY', 'THEADER','TD']);
         var colgroup = '<colgroup id="'+key+'-COL:'+id+':"  class="'+tag+'COL_CS'+tag+' xui-custom {comcls}"  style="'+tag+'COL_CS'+tag+'"><col width="1px"/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/><col width=""/></colgroup>',
             thead1='<thead ID="'+key+'-THEADER:'+id+':" class="'+tag+'THEADER_CS'+tag+' xui-custom {comcls}"  style="'+tag+'THEADER_CS'+tag+'" ><tr height="1px"><th id="'+key+'-H:'+id+':7" class="xui-node  xui-node-th xui-uiborder-b xui-uiborder-r '+cls+'-h '+cls+'-w '+tag+'H_CC'+tag+' xui-custom {comcls}" style="'+tag+'H_CS'+tag+'"></th>',
@@ -127,7 +127,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                         }
                     },
                     BARCMDR:{
-                        $order:4,                        
+                        $order:4,
                         tagName: 'div',
                         className:'xui-uibar-cmdr',
                         CLOSE:{
@@ -255,7 +255,8 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             BORDER:{
             },
             BODY:{
-                position:'relative'
+                position:'relative',
+                overflow: 'visible'
             },
             BARCMDL:{
                 top:'.125em'
@@ -308,9 +309,6 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             MAINI:{
                  'padding':'.5em .3333em .3333em 0'
             },
-            BODY:{
-                overflow: 'visible'
-            },
             TD:{
                 $order:1,
                 'text-align':'center'
@@ -350,7 +348,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
 
                     v = xui.Date.add(profile.$tempValue, 'd', xui.Date.diff(profile.$tempValue, v, 'd', xui.getFirstDayOfWeek(p)));
                     profile.box._to(profile,v);
-                    
+
                     // set dir
                     if(!p.timeInput)
                         //onClick event
@@ -588,7 +586,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             var data=arguments.callee.upper.call(this, profile);
             var nodisplay='display:none';
             data.closeDisplay = data.closeBtn?'':nodisplay;
-            
+
             var none="display:none;";
             if(profile.properties.timeInput){
                 data._todaytitle=xui.getRes("inline.now");
@@ -619,14 +617,14 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
         RenderTrigger:function(){
             var self=this, p=self.properties, o=self.boxing(), b=self.box;
             b._setWeekLabel(self);
-            
+
             var hash={yyyy:'YEAR',mm:'MONTH',dd:'DAY'},arr=p.dateInputFormat.split('-');
             if(hash[arr[0]] && hash[arr[1]] && hash[arr[2]]){
                 self.getSubNode('YTXT').addPrev(self.getSubNode(hash[arr[0]]));
                 self.getSubNode('MTXT').addPrev(self.getSubNode(hash[arr[1]]));
                 self.getSubNode('MTXT').addNext(self.getSubNode(hash[arr[2]]));
             }
-            
+
 //            self.getSubNode('YTXT').html(xui.wrapRes('date.Y'),false);
 //            self.getSubNode('MTXT').html(xui.wrapRes('date.M'),false);
         },
@@ -648,11 +646,11 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             // for week
             var fw=xui.getFirstDayOfWeek(p),
                 f=function(id){
-                id=profile.getSubId(id); 
+                id=profile.getSubId(id);
 
                 // The special one
                 if(id=='7')return id;
-                
+
                 id=(parseInt(id,10)+fw);
                 return id<7?id:(id-7);
             };
@@ -660,14 +658,14 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             profile.box._getHeaderNodes(profile).each(function(node,i){
                 node.innerHTML=xui.wrapRes('date.WEEKS.'+f(node.id))
             });
-            
+
             // for weeklable
             if(p.hideWeekLabels){
                 profile.getSubNode('BODY').query('TR').first().remove();
                 profile.getSubNode('COL').first().remove();
             }
 
-            // for free days            
+            // for free days
             var cls2="xui-uicell-alt",
                 fdmap={};
             if(p.offDays){
@@ -682,7 +680,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                     else node.className=node.className.replace(cls2,"");
                 });
             }
-            
+
         },
         _setBGV:function(profile, v, m){
             var date=xui.Date,
@@ -730,7 +728,7 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
             node=this._getTDNodes(profile).get()[index];
             (profile.$selnode=xui([node]).tagClass('-checked'));
             //]]
-            
+
             //[[ show dirty
             profile.getSubNode('SET').css('display',(force||uiv.getTime()==time.getTime())?'none':'block');
             profile.getSubNode('CAPTION').css('color',(force||uiv.getTime()==time.getTime())?'':'#ff0000');

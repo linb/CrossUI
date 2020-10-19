@@ -14,7 +14,7 @@ xui.Class("xui.History",null,{
                     document.body.appendChild(document.createElement('<iframe id="'+self._fid+'" src="about:blank" style="display: none;"></iframe>'));
                     var doc=document.getElementById(self._fid).contentWindow.document;
                     doc.open("javascript:'<html></html>'");
-                    doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('"+hash+"');</scri" + "pt></head><body></body></html>");
+                    doc.write("<html><head><scri" + "pt type=\"text/javascript\">parent.xui.History._checker('"+location.hash+"');</scri" + "pt></head><body></body></html>");
                     doc.close();
                 case 'timer':
                     if(self._itimer)

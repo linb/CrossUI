@@ -121,7 +121,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                            doc.body.contentEditable = disabled?"false":"true";
                         else
                            doc.designMode=disabled?"off":"on";
-                        
+
                         this.box._iniToolBar(this, !disabled);
                     }
                 }
@@ -146,7 +146,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
                     xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
-                }                
+                }
             },
             labelGap:{
                 $spaceunit:2,
@@ -246,7 +246,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             onInnerEvent : function(profile, type, node, e){},
             onUpdateToolbar : function(profile, etype, doc){},
             onReady : function(profile){},
-            
+
             onLabelClick:function(profile, e, src){},
             onLabelDblClick:function(profile, e, src){},
             onLabelActive:function(profile, e, src){}
@@ -370,7 +370,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         },
                         event=self._event=function(e){
                             if(kprf && (kprf.properties.disabled||kprf.properties.readonly))return;
-                            var etype = e.type; 
+                            var etype = e.type;
                             if(etype !== "mouseover" && etype !== "mouseout"){
                                 xui.resetRun('RichEditor:'+domId, function(){
                                     // destroyed
@@ -387,7 +387,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
 
                                     //for BlurTrigger
                                     xui.doc.onMousedown(true);
-                                 }  
+                                 }
                             }
                             if(kprf.onInnerEvent)
                                 return kprf.boxing().onInnerEvent(kprf, etype, xui.Event.getSrc(e), e);
@@ -410,7 +410,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         _blur=function(e){
                             if(!kprf)return;
                             if(kprf.properties.disabled||kprf.properties.readonly)return;
-                            
+
                             xui.resetRun('RichEditor:'+domId, function(){
                                 // destroyed
                                 if(!kprf.box)return;
@@ -424,7 +424,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                 if(kprf && kprf.box)
                                     kprf.box._checkc(kprf);
                             }
-                            
+
                             var v=kprf.boxing()._getCtrlValue();
                             // here: dont trigger setCtrlValue
                             kprf.boxing().setUIValue(v,null,true,'blur');
@@ -436,7 +436,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                 xui.asyRun(function(){
                                     // destroyed
                                     if(!kprf.box)return;
-                                    ins.refresh(); 
+                                    ins.refresh();
                                 });
                             }
                         },
@@ -444,44 +444,44 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         checkF = function(){
                             xui.setTimeout(function(){
                                 // removed from DOM already
-                                if(!frames[id])return;
+                                if(!window.frames[id])return;
                                 // not ready
-                                if(!frames[id].document)return;
-                                
-                                if(self.$win!=frames[id].window){
-                                    win=self.$win=frames[id].window;
-    
+                                if(!window.frames[id].document)return;
+
+                                if(self.$win!=window.frames[id].window){
+                                    win=self.$win=window.frames[id].window;
+
                                     doc=self.$doc=win.document;
-                                    
+
                                     doc.open();
                                     doc.write(htmlTpl);
                                     doc.close();
-                                    
+
                                     //if(xui.browser.isTouch && (xui.browser.isAndroid||||xui.browser.isBB)){
                                     //    xui(doc.body).$touchscroll('xy');
                                     //}
-        
+
                                     try{doc.execCommand("styleWithCSS", 0, false)}catch(e){
                                         try {doc.execCommand("useCSS", 0, true)}catch(e){}
                                     }
-        
+
                                     var disabled=self.properties.disabled||self.properties.readonly;
-        
+
                                     if (doc.body.contentEditable != undefined && xui.browser.ie)
                                        doc.body.contentEditable = disabled?"false":"true";
                                     else
                                        doc.designMode=disabled?"off":"on";
-                                    
+
                                     // ensure toolbar disable
                                     if(disabled){
                                         self.box._iniToolBar(self, false);
                                     }
-        
+
                                     win._gekfix=gekfix;
-        
+
                                     if(xui.browser.ie && doc.attachEvent){
                                         doc.attachEvent("unload",gekfix);
-        
+
                                         if(!disabled){
                                             doc.attachEvent("onmousedown",event);
                                             doc.attachEvent("ondblclick",event);
@@ -489,11 +489,11 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                             doc.attachEvent("oncontextmenu",eventOutput);
                                             doc.attachEvent("onkeyup",event);
                                             doc.attachEvent("onkeydown",event);
-                                            
+
                                             doc.attachEvent("onmouseover",event);
                                             doc.attachEvent("onmouseout",event);
                                             doc.attachEvent("onmousemove",event2);
-                                            
+
                                             win.attachEvent("onfocus",_focus);
                                             win.attachEvent("onblur",_blur);
                                             (self.$beforeDestroy=(self.$beforeDestroy||{}))["ifmClearMem"]=function(){
@@ -505,7 +505,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                     clearInterval(this._onchangethread);
                                                     this._onchangethread=null;
                                                 }
-    
+
                                                 // crack for ie7/8 eat focus
                                                 // error raise in ie6
                                                 try{
@@ -514,11 +514,11 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                     doc.designMode="on";
                                                     doc.designMode=status;
                                                 }catch(e){}
-    
+
                                                 win._gekfix=undefined;
-    
+
                                                 try{doc.detachEvent("unload",win._gekfix);}catch(e){}
-    
+
                                                 if(!this.properties.disabled && !this.properties.readonly){
                                                     doc.detachEvent("onmousedown",event);
                                                     doc.detachEvent("ondblclick",event);
@@ -542,16 +542,16 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                         // for opera
                                         if(xui.browser.opr || !win.addEventListener){
                                             prf.$repeatT=xui.Thread.repeat(function(){
-                                                if(!frames[id])
+                                                if(!window.frames[id])
                                                     return false;
                                                 else{
                                                     if(!prf.$win.document || !prf.$win.document.defaultView)
-                                                        prf.boxing().refresh(); 
+                                                        prf.boxing().refresh();
                                                 }
                                             }, 99);
                                         }else
                                             win.addEventListener("unload",gekfix,false);
-    
+
                                         if(!disabled){
                                             doc.addEventListener("mousedown",event,false);
                                             doc.addEventListener("dblclick",event,false);
@@ -573,7 +573,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                                 doc.addEventListener("keydown",event,false);
                                             }
                                         }
-        
+
                                         //don't ues $ondestory, opera will set doc to null
                                         (self.$beforeDestroy=(self.$beforeDestroy||{}))["ifmClearMem"]=function(){
                                             var win=this.$win,
@@ -584,20 +584,20 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                             // for opera
                                             if(xui.browser.opr)
                                                 if(prf.$repeatT)prf.$repeatT.abort();
-                                            
+
                                             if(ifr.detachEvent){
                                                 ifr.detachEvent('onload',checkF);
                                             }else{
                                                 ifr.onload=null;
                                             }
-    
+
                                             try{win.removeEventListener("unload",win._gekfix,false);}catch(e){}
-    
+
                                             win._gekfix=undefined;
-        
+
                                             //for firefox
-                                            delete frames[this.$frameId];
-        
+                                            delete window.frames[this.$frameId];
+
                                             if(!this.properties.disabled && !this.properties.readonly && doc.removeEventListener){
                                                 doc.removeEventListener("mousedown",event,false);
                                                 doc.removeEventListener("dblclick",event,false);
@@ -622,9 +622,9 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                                             prf=gekfix=event=event2=win=doc=null;
                                         };
                                     }
-                                    
+
                                     self.boxing()._setCtrlValue(self.properties.$UIvalue||"");
-                                    
+
                                     iframe.style.visibility='';
                                     iframe.style.overflow='auto';
 
@@ -644,7 +644,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     iframe.tabIndex=-1;
                     iframe.allowTransparency="allowtransparency";
                     iframe.style.visibility='hidden';
-                    
+
                     //replace the original one
                     xui.$cache.domPurgeData[iframe.$xid=div.$xid].element=iframe;
                     div.parentNode.replaceChild(iframe,div);
@@ -716,7 +716,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                         items.push({id:i,sub:o});
                     }
                 });
-    
+
                 //compose
                 t=new xui.UI.ToolBar({selectable:false,handler:false,items:items,disabled:pro.disabled||pro.readonly});
                 t.setCustomStyle('ITEMS','border:none');
@@ -728,7 +728,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     t.getSubNode('BOX').query('*').attr('unselectable','on');
 
                 t = self._$tb = t.get(0);
-    
+
                 t.onClick=self.box._toolbarclick;
                 v=self._$composed={};
                 v[t.$xid]=t;
@@ -854,14 +854,14 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
 
                     if(first && xui.browser.ie)
                         o.getSubNode('BOX').query('*').attr('unselectable','on');
-                    
+
                     xui.tryF(o.activate,[],o);
 
                     //for on blur disappear
                     node.setBlurTrigger(sid, function(){
                         //force to trigger beforeUIValueSet event
                         if(o==editor.$htmlEditor)
-                            var v=o._getCtrlValue(); 
+                            var v=o._getCtrlValue();
                             // here: dont trigger setCtrlValue
                             o.setUIValue(v,null,true,'blur');
                          _clear();
@@ -1054,7 +1054,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 if(labelSize){
                     label.cssRegion({
                         left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelfz),
-                        top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz), 
+                        top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz),
                         width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelfz),
                         height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                     });
@@ -1077,7 +1077,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                             tbh=profile.$_tbH;
                     }
                     _top=(itb?(tbh-1):0);
-                    
+
                     size.height=hh - _top -2;
                     if(ww) size.width = ww - 2;
 

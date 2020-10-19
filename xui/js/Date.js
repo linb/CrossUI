@@ -982,10 +982,10 @@ xui.Class('xui.Date',null,{
         //time Zone like: -8
         _timeZone:-((new Date).getTimezoneOffset()/60),
         isDayLightTime:function(date){
-            var start = this. getTimSpanStart(date, 'y'),            
+            var start = this. getTimSpanStart(date, 'y'),
                 middle = new Date(start.getTime());
             middle.setMonth(6);
-            if ((middle.getTimezoneOffset() - start.getTimezoneOffset()) == 0) 
+            if ((middle.getTimezoneOffset() - start.getTimezoneOffset()) == 0)
                 return false;
             return date.getTimezoneOffset() == (date.getTimezoneOffset()<0 ? start : middle).getTimezoneOffset();
         },
@@ -1086,36 +1086,31 @@ xui.Class('xui.Date',null,{
                 map = arguments.callee.map = {
                     MILLISECOND:function(startdate,enddate){return enddate.getTime()-startdate.getTime()},
                     SECOND:function(startdate,enddate){
-                        var startdate = self.getTimSpanStart(startdate,'s'),
-                            enddate = self.getTimSpanStart(enddate,'s'),
-                            t=enddate.getTime()-startdate.getTime();
-                        return t/tu.s;
+                        startdate = self.getTimSpanStart(startdate,'s');
+                        enddate = self.getTimSpanStart(enddate,'s');
+                        return (enddate.getTime()-startdate.getTime())/tu.s;
                     },
                     MINUTE:function(startdate,enddate){
-                        var startdate = self.getTimSpanStart(startdate,'n'),
-                            enddate = self.getTimSpanStart(enddate,'n'),
-                            t=enddate.getTime()-startdate.getTime();
-                        return t/tu.n;
+                        startdate = self.getTimSpanStart(startdate,'n');
+                        enddate = self.getTimSpanStart(enddate,'n');
+                        return (enddate.getTime()-startdate.getTime())/tu.n;
                     },
                     HOUR:function(startdate,enddate){
-                        var startdate = self.getTimSpanStart(startdate,'h'),
-                            enddate = self.getTimSpanStart(enddate,'h'),
-                            t=enddate.getTime()-startdate.getTime();
-                        return t/tu.h;
+                        startdate = self.getTimSpanStart(startdate,'h');
+                        enddate = self.getTimSpanStart(enddate,'h');
+                        return (enddate.getTime()-startdate.getTime())/tu.h;
                     },
                     DAY:function(startdate,enddate){
-                        var startdate = self.getTimSpanStart(startdate,'d',1),
-                            enddate = self.getTimSpanStart(enddate,'d',1),
-                            t=enddate.getTime()-startdate.getTime();
+                        startdate = self.getTimSpanStart(startdate,'d',1);
+                        enddate = self.getTimSpanStart(enddate,'d',1);
                         // for DayLight case, only keep whole day
-                        return Math.floor(t/tu.d);
+                        return Math.floor((enddate.getTime()-startdate.getTime())/tu.d);
                     },
                     WEEK:function(startdate,enddate,firstDayOfWeek){
-                        var startdate = self.getTimSpanStart(startdate,'ww',1,firstDayOfWeek),
-                            enddate = self.getTimSpanStart(enddate,'ww',1,firstDayOfWeek),
-                            t=enddate.getTime()-startdate.getTime();
+                        startdate = self.getTimSpanStart(startdate,'ww',1,firstDayOfWeek);
+                        enddate = self.getTimSpanStart(enddate,'ww',1,firstDayOfWeek);
                         // for DayLight case, only keep whole week
-                        return Math.floor(t/tu.ww);
+                        return Math.floor((enddate.getTime()-startdate.getTime())/tu.ww);
                     },
                     MONTH:function(startdate,enddate){return (enddate.getFullYear()-startdate.getFullYear())*12 + (enddate.getMonth()-startdate.getMonth())},
                     QUARTER:function(startdate,enddate){return (enddate.getFullYear()-startdate.getFullYear())*4 + parseInt((enddate.getMonth()-startdate.getMonth())/3,10)},

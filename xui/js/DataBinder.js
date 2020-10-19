@@ -33,12 +33,12 @@ xui.Class("xui.DataBinder","xui.absObj",{
             return false;
         },
         checkValid:function(ignoreAlert){
-            var result=true;
+            var result=true,profile=this.get(0);
             // check required first
             if(!this.checkRequired(ignoreAlert)){
                 return false;
             }
-            xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).each(function(prf){
+            xui.absValue.pack(this.constructor._getBoundElems(profile),false).each(function(prf){
                 if(!prf.boxing().checkValid()){
                     if(!ignoreAlert){
                         if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'invalid')){
@@ -55,8 +55,8 @@ xui.Class("xui.DataBinder","xui.absObj",{
             return result;
         },
         checkRequired:function(ignoreAlert){
-            var result = true;
-            xui.absValue.pack(this.constructor._getBoundElems(this.get(0)),false).each(function(prf){
+            var result = true, i,profile=this.get(0);
+            xui.absValue.pack(this.constructor._getBoundElems(profile),false).each(function(prf){
                 if(prf.properties.required && (!(i=prf.boxing().getUIValue())) && i!==0){
                     if(!ignoreAlert){
                         if(!prf.beforeInputAlert || false!==prf.boxing().prf.beforeInputAlert(profile, prf, 'required')){
@@ -240,7 +240,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                             if(!xui.isEmpty(pp)){
                                 xui.each(pp,function(o,i){
                                     if(i in p)pp[i]=p[i];
-                                });                         
+                                });
                                 target.properties=pp
                             }
                         }
@@ -365,7 +365,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                                     c=xui.isSet(c)?c:((cap&&pp[cap]) || xui.isSet(v.caption)?v.caption:null);
                                     uv=xui.isSet(uv)?uv:xui.isSet(v.value)?v.value:null;
                                     delete v.caption;delete v.value;
-                                    
+
                                     if(!xui.isEmpty(v))
                                         b.setProperties(v);
                                 }
@@ -419,7 +419,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
         },
         _bind:function(name, profile){
             if(!name)return;
-            var o=this._pool[name];
+            var o=this._pool[name],b;
             if(!o){
                 b=new xui.DataBinder();
                 b.setName(name);
@@ -438,7 +438,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
         },
         DataModel:{
             dataBinder:null,
-            dataField:null,            
+            dataField:null,
             "name":{
                 set:function(value){
                     var o=this,
@@ -464,7 +464,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                     //delete the old name from pool
                     if(_old)delete _p[ovalue];
                 }
-            },            
+            },
             "data":{
                 ini:{}
             }

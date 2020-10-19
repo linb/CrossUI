@@ -3,7 +3,7 @@ xui.Class('xui.Template','xui.absProfile',{
         var upper=arguments.callee.upper, args=xui.toArr(arguments);
         upper.apply(this,args);
         upper=null;
-        
+
         var self=this;
         self.$domId = self.KEY + ':' + (self.serialId=self._pickSerialId()) + ':';
         self.domId = typeof domId == 'string'?domId:self.$domId;
@@ -27,9 +27,9 @@ xui.Class('xui.Template','xui.absProfile',{
         __gc:function(){
             var self=this,
                 t=xui.$cache.reclaimId;
-            if(!self.$noReclaim) 
+            if(!self.$noReclaim)
                 (t[self.KEY] || (t[self.KEY]=[])).push(self.serialId);
-            else 
+            else
                 delete self.$noReclaim
 
             delete xui.$cache.profileMap[self.domId];
@@ -76,7 +76,7 @@ xui.Class('xui.Template','xui.absProfile',{
                 if(rn.parentNode)
                     rn.parentNode.removeChild(rn);
                 rn=null;
-            }else this.__gc();          
+            }else this.__gc();
         },
         setEvents:function(key,value){
             var self=this;
@@ -185,18 +185,18 @@ xui.Class('xui.Template','xui.absProfile',{
         refresh:function(){
             var ns=this;
             if(ns.renderId){
-                var proxy = document.createElement('span'), 
+                var proxy = document.createElement('span'),
                     rn = ns.getRootNode(),
                     cache=xui.$cache.profileMap;
-                
-                //avoid of being destroyed                
+
+                //avoid of being destroyed
                 delete cache[ns.domId];
                 delete cache[ns.$domId];
-                
+
                 if(rn.parentNode)
                     rn.parentNode.replaceChild(proxy,rn);
                 ns.destroy();
-                
+
                 delete ns.renderId;
 
                 ns.render();
@@ -212,16 +212,16 @@ xui.Class('xui.Template','xui.absProfile',{
             var self=this,id,domNode,style='style',t;
             if(typeof node=='string')node=document.getElementById(node);
             id=node.id||self.domId;
-            
+
             //ensure renderId
             if(!self.renderId)
                 self.render();
-            
+
             domNode=self.getRootNode();
             node.parentNode.replaceChild(domNode,node);
 
-            if(domNode.tabIndex!=node.tabIndex)
-                domNode.tabIndex!=node.tabIndex;
+            if(domNode.tabIndex!==node.tabIndex)
+                domNode.tabIndex=node.tabIndex;
             if(node.className)
                 domNode.className += node.className;
             if(xui.browser.ie && (t=node.style.cssText))
@@ -311,12 +311,12 @@ xui.Class('xui.Template','xui.absProfile',{
             var self=this,
                 s=xui.serialize,
                 t=xui.absObj.$specialChars,
-                properties = xui.isEmpty(self.properties)?null:xui.clone(self.properties,function(o,i){return !t[(i+'').charAt(0)]});            
-            return 'new xui.Template(' + 
-            s(self.template||null) + "," + 
-            s(properties) + "," + 
-            s(xui.isEmpty(self.events)?null:self.events) + "," + 
-            s(self.$domId!=self.domId?self.domId:null) + 
+                properties = xui.isEmpty(self.properties)?null:xui.clone(self.properties,function(o,i){return !t[(i+'').charAt(0)]});
+            return 'new xui.Template(' +
+            s(self.template||null) + "," +
+            s(properties) + "," +
+            s(xui.isEmpty(self.events)?null:self.events) + "," +
+            s(self.$domId!=self.domId?self.domId:null) +
             ')';
         }
     },

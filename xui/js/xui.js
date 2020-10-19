@@ -12,7 +12,7 @@ if(!document)throw new Error("CrossUI requires a window with a document");
 
 // global : xui
 // we have to keep xui for gloable var
-var xui = window.xui = function(nodes,flag){return xui.Dom.pack(nodes, flag)};
+var xui = window["xui"] = function(nodes,flag){return xui.Dom.pack(nodes, flag)};
 xui.window=window;
 // Class & Namespace
 xui.Class=function(key, pkey, obj){
@@ -383,7 +383,7 @@ new function(){
         scope: 'this' for fun
         */
         resetRun:function(key, fun, defer ,args, scope){
-            var me=xui.resetRun, key, task, cache = me.$cache || (
+            var me=xui.resetRun, task, cache = me.$cache || (
               (me.get=me.exists=function(k){return this.$cache[k]}) &&
               (me.run=function(k,c){if(c=this.$cache[k]){xui.clearTimeout(c.id);c.task();delete this.$cache[k]}}) &&
               (me.cancel=function(k){xui.resetRun(k)}) &&
@@ -717,7 +717,7 @@ new function(){
         },
         preLoadImage:function(src, onSuccess, onFail) {
             if(xui.isArr(src)){
-                for(var i=0, l=arr.length; i<l; i++)
+                for(var i=0, l=src.length; i<l; i++)
                     xui.preLoadImage(src[i], onSuccess, onFail);
                 return l;
             }
@@ -951,7 +951,7 @@ new function(){
             }
         },
         _scope_set: function(dataMap){
-            if(window.get)xui._scope_bak=get;
+            if(window.get)xui._scope_bak=window.get;
             xui._scope_datamap=dataMap;
             window.get=function(key){
                 if(key){
@@ -976,16 +976,13 @@ new function(){
     reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/;
   xui.merge(xui.fun,{
       body:function(fun){
-          var s=""+fun;
-          s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
-          r=reg2.exec(s);
+          var s=(""+fun).replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+            r=reg2.exec(s);
           return r ? (r[2][0]=="{" ? r[2].slice(1, -1) : r[2]) : (s.slice(s.indexOf("{") + 1, s.lastIndexOf("}")));
-          return ;
       },
       args:function(fun){
-          var s=""+fun;
-          s=s.replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
-          r=reg2.exec(s);
+          var s=(""+fun).replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+            r=reg2.exec(s);
           s=xui.str.trim( r ? (r[1][0]=="(" ? r[1].slice(1, -1) : r[1] ) : s.slice(s.indexOf("(") + 1, s.indexOf(")")) ).split(/\s*,\s*/);
           return s[0]?s:[];
       },
@@ -1048,7 +1045,7 @@ xui.merge(xui.Class, {
             return;
         }
         if(typeof key=='object')key=key.KEY||"";
-        var t = xui.get(window, key.split('.')),s,i,j;
+        var t = xui.get(window, key.split('.')),s,i,j,o;
         if(t){
             //remove from SC cache
             if(s=xui.get(window,['xui','$cache','SC']))delete s[key];
@@ -1061,7 +1058,7 @@ xui.merge(xui.Class, {
             //gc children
             if(s=t.$children){
                 //destroy children
-                for(var i=0,o; o=s[i];i++)
+                for(i=0; o=s[i];i++)
                     if(o=xui.get(window,o.split('.')))
                         if(o.__gc)
                             o.__gc();
@@ -1194,8 +1191,8 @@ xui.merge(xui,{
     publish:function(topic, args, subscribers, scope){
         var c=xui.$cache.subscribes;
         if(topic===null||topic===undefined){
-            for(var topic in c){
-                xui.arr.each(c[topic],function(o){
+            for(var t in c){
+                xui.arr.each(c[t],function(o){
                     if(!subscribers || subscribers===o.id || (xui.isArr(subscribers)&&xui.arr.indexOf(subscribers,o.id)!=-1)){
                         if(o.asy)
                             xui.asyRun(o.receiver, 0, args, scope);
@@ -1537,7 +1534,7 @@ xui.merge(xui,{
         return this.fetchClass(uri, onSuccess, onFail, onAlert, force, threadid, options);
     },
     _getIdUri:function(item, options){
-        var attrs;
+        var attrs,id,uri,attr,obj;
         if(xui.isHash(item)){
             id = item.id;
             uri = item.uri;
@@ -1575,7 +1572,7 @@ xui.merge(xui,{
             attrs = obj.attrs;
         uri = obj.uri;
 
-        if(!force && xui.isSet( obj = (id && xui.SC.get(id)) || c[uri] ))
+        if(!force && xui.isSet( obj = (cls && xui.SC.get(cls)) || c[uri] ))
             xui.tryF(onSuccess, [uri,obj&&obj.KEY], obj);
         else{
             // For fetching one class multiple times
@@ -1590,10 +1587,10 @@ xui.merge(xui,{
                         if(cls){
                             if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
                             else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
-                            var s=xui.getClassName(uri);
-                            if(obj&&s&&obj.KEY!=s){
-                                var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
-                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, obj.KEY]);
+                            var clsName=xui.getClassName(uri);
+                            if(obj&&clsName&&obj.KEY!=clsName){
+                                var msg="[xui] > The last class name in '"+uri+"' should be '"+clsName+"', but it's '"+obj.KEY+"'!";
+                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, clsName, obj.KEY]);
                                 xui.log( msg );
                             }
                         }else{
@@ -1627,10 +1624,10 @@ xui.merge(xui,{
                         if(cls){
                             if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
                             else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
-                            var s=xui.getClassName(uri);
-                            if(obj&&s&&obj.KEY!=s){
-                                var msg="[xui] > The last class name in '"+uri+"' should be '"+s+"', but it's '"+obj.KEY+"'!";
-                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, s, obj.KEY]);
+                            var clsName=xui.getClassName(uri);
+                            if(obj&&clsName&&obj.KEY!=clsName){
+                                var msg="[xui] > The last class name in '"+uri+"' should be '"+clsName+"', but it's '"+obj.KEY+"'!";
+                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, clsName, obj.KEY]);
                                 xui.log( msg );
                             }
                         }else{
@@ -1737,7 +1734,7 @@ xui.merge(xui,{
     require:function(clsArr, onEnd, onSuccess, onFail, onAlert,force, threadid, options){
         if(xui.isStr(clsArr))clsArr=[clsArr];
         var results={}, fun=function(paths, tid){
-            var required=[], required2=[],id,uri,attrs;
+            var required=[], required2=[];
             xui.filter(paths,function(path){
                 if(xui.isArr(path)){
                      if(options && !options.stopRecursive){
@@ -1747,6 +1744,7 @@ xui.merge(xui,{
                 }
             });
             xui.fetchClasses(paths,function(){
+                var obj,id,uri,attrs;
                 // add to results
                 for(var i=0,l=clsArr.length;i<l;i++){
                     obj = xui._getIdUri(clsArr[i], options);
@@ -1755,7 +1753,7 @@ xui.merge(xui,{
                     results[id||uri] = id ? xui.SC.get(id) : null;
                 }
                 if(options && !options.stopRecursive){
-                    for(var i=0,l=paths.length,obj;i<l;i++){
+                    for(var i=0,l=paths.length;i<l;i++){
                         if( (obj=xui.SC.get(paths[i])) && obj.$xuiclass$){
                             xui._collectClassRequired(obj, required, required2,options);
                         }
@@ -2136,7 +2134,7 @@ new function(){
         // detect touch for browser
         isTouch: !!(navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
             || (("ontouchend" in d) && !(/hp-tablet/).test(u) )
-            || (w.DocumentTouch && d instanceof DocumentTouch)
+            || (w.DocumentTouch && d instanceof w.DocumentTouch)
             || w.PointerEvent
             || w.MSPointerEvent),
         isIOS:/iphone|ipad|ipod/.test(u),
@@ -2215,7 +2213,7 @@ new function(){
     // BB 6/7 is AppleWebKit
     if(b.isBB && !b.ver){
         // BB 4.2 to 5.0
-        b.ver=parseFloat(ua.split("/")[1].substring(0, 3));
+        b.ver=parseFloat(u.split("/")[1].substring(0, 3));
         b["bb"+b.ver]=true;
     }
 
@@ -2466,7 +2464,6 @@ new function(){
                             // need scope for function
                             o = function(){
                                 return t[m].apply(t,arguments);
-                                t=m=null;
                             };
                         }
                     }else if(xui.isHash(o)){
@@ -2771,7 +2768,7 @@ new function(){
 
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
-            var ns=this, fun, resume=0, t, rtn, newbie,
+            var ns=this, fun, resume=0, t, newbie,
                 funs = pseudo.actions || pseudo || [],
                 rtn = pseudo['return'], funsrtn,
                 newbies = pseudo.newbies,
@@ -3055,27 +3052,26 @@ new function(){
         constructor:xui.id,
         _chars  :"abcdefghijklmnopqrstuvwxyz".split(''),
         next : function(i){
-            with(this){
-                i = (i||i===0)?i:b.length-1;
-                var m,k,l;
-                if((m=a[i]) >= 25){
-                    m=0;
-                    if(i===0){
-                        a.splice(0,0,1);
-                        b.splice(0,0,'a');
-                        l=a.length;
-                        for(k=1;k<l;++k){
-                            a[k]=0;
-                            b[k]='0';
-                        }
-                        ++i;
-                    }else
-                      next(i-1);
-                }else ++m;
-                a[i]=m;
-                b[i]=_chars[m];
-                return value = b.join('');
-            }
+            var self=this;
+            i = (i||i===0)?i:self.b.length-1;
+            var m,k,l;
+            if((m=self.a[i]) >= 25){
+                m=0;
+                if(i===0){
+                    self.a.splice(0,0,1);
+                    self.b.splice(0,0,'a');
+                    l=self.a.length;
+                    for(k=1;k<l;++k){
+                        self.a[k]=0;
+                        self.b[k]='0';
+                    }
+                    ++i;
+                }else
+                  self.next(i-1);
+            }else ++m;
+            self.a[i]=m;
+            self.b[i]=self._chars[m];
+            return self.value = self.b.join('');
         }
     };
 };
@@ -3665,73 +3661,72 @@ xui.Class('xui.Ajax','xui.absIO',{
             if (!self._retryNo)
                 self._onStart();
             try {
-                with(self){
-                    //must use "self._XML", else opera will not set the new one
-                   self._XML = new window.XMLHttpRequest();
-                   if(asy)
-                       self._XML.onreadystatechange = function(){
-                           if(self && self._XML && self._XML.readyState==4) {
-                               /*//Checking responseXML for Terminated unexpectedly in firfox
-                               if(xui.browser.gek && !self._XML.responseXML)
-                                    self._onError(new Error('errXMLHTTP:Terminated unexpectedly!'));
-                               else*/
-                                   self._complete.apply(self);
-                               //must clear here, else memory leak
-                               self._clear();
-                           }
-                       };
+                //must use "self._XML", else opera will not set the new one
+               self._XML = new window.XMLHttpRequest();
+               if(self.asy)
+                   self._XML.onreadystatechange = function(){
+                       if(self && self._XML && self._XML.readyState==4) {
+                           /*//Checking responseXML for Terminated unexpectedly in firfox
+                           if(xui.browser.gek && !self._XML.responseXML)
+                                self._onError(new Error('errXMLHTTP:Terminated unexpectedly!'));
+                           else*/
+                               self._complete.apply(self);
+                           //must clear here, else memory leak
+                           self._clear();
+                       }
+                   };
 
-                    if (!_retryNo && method != "POST"){
-                        if(query)
-                            uri = uri.split("#")[0].split("?")[0] + "?" + query;
-                        query=null;
-                    }
-                    if(username&&password)
-                        self._XML.open(method, uri, asy, username, password);
-                    else
-                        self._XML.open(method, uri, asy);
-
-                    self._header("Accept", Accept ? Accept :
-                        (rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
-                    );
-                    // CROS doesn't support Content-type&X-Requested-With header
-                    if(!xui.absIO.isCrossDomain(uri)){
-                        self._header("Content-type", contentType ? contentType : (
-                            (reqType=='xml' ? "text/xml; " : reqType=='json' ? "application/json; " : method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
-                        ));
-                        self._header("X-Requested-With", "XMLHttpRequest");
-                        if(optimized){
-                            try {
-                                self._header("User-Agent", null);
-                                self._header("Accept-Language", null);
-                                self._header("Connection", "keep-alive");
-                                self._header("Keep-Alive", null);
-                                self._header("Cookie", null);
-                                self._header("Cookie", "");
-                            } catch(e) {}
-                        }
-                    }
-                    try {
-                        if(xui.isHash(header))
-                            xui.each(header,function(o,i){
-                                self._header(i, o);
-                            });
-                    } catch(e) {}
-
-                    if(false===xui.tryF(self.beforeSend,[self._XML],self)){
-                        self._onEnd();
-                        return;
-                    }
-
-                    //for firefox syc GET bug
-                    try{self._XML.send(query);}catch(e){}
-
-                    if(asy){
-                      if(self._XML&&timeout > 0)
-                        _flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
-                    }else
-                        return _complete();
+                if (!self._retryNo && self.method != "POST"){
+                    if(self.query)
+                        self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
+                    self.query=null;
                 }
+                if(self.username && self.password)
+                    self._XML.open(self.method, self.uri, self.asy, self.username, self.password);
+                else
+                    self._XML.open(self.method, self.uri, self.asy);
+
+                self._header("Accept", self.Accept ? self.Accept :
+                    (self.rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : self.rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
+                );
+                // CROS doesn't support Content-type&X-Requested-With header
+                if(!xui.absIO.isCrossDomain(self.uri)){
+                    self._header("Content-type", self.contentType ? self.contentType : (
+                        (self.reqType=='xml' ? "text/xml; " : self.reqType=='json' ? "application/json; " : self.method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
+                    ));
+                    self._header("X-Requested-With", "XMLHttpRequest");
+                    if(self.optimized){
+                        try {
+                            self._header("User-Agent", null);
+                            self._header("Accept-Language", null);
+                            self._header("Connection", "keep-alive");
+                            self._header("Keep-Alive", null);
+                            self._header("Cookie", null);
+                            self._header("Cookie", "");
+                        } catch(e) {}
+                    }
+                }
+                try {
+                    if(xui.isHash(self.header))
+                        xui.each(self.header,function(o,i){
+                            self._header(i, o);
+                        });
+                } catch(e) {}
+
+                if(false===xui.tryF(self.beforeSend,[self._XML],self)){
+                    self._onEnd();
+                    return;
+                }
+
+                //for firefox syc GET bug
+                try{self._XML.send(self.query);}catch(e){}
+
+                if(self.asy){
+                  if(self._XML && self.timeout > 0)
+                    self._flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+                }else
+                    return self._complete();
+
             }catch(e){
                 self._onError(e);
             }
@@ -3754,33 +3749,31 @@ xui.Class('xui.Ajax','xui.absIO',{
             }
         },
         _complete:function() {
-            with(this){
-                //this is for opera
-                var ns=this,obj,status = ns._XML.status;
-                _txtresponse = rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
-                // try to get js object, or the original
-                _response = rspType=="json" ?
-                    /^\s*\</.test(_txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(_txtresponse))) && obj.data ? obj.data
-                    : ((obj=xui.unserialize(_txtresponse))===false?_txtresponse:obj)
-                    : _txtresponse;
+              //this is for opera
+              var ns=this,obj,status = ns._XML.status;
+              ns._txtresponse = ns.rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
+              // try to get js object, or the original
+              ns._response = ns.rspType=="json" ?
+                  /^\s*\</.test(ns._txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(ns._txtresponse))) && obj.data ? obj.data
+                  : ((obj=xui.unserialize(ns._txtresponse))===false?ns._txtresponse:obj)
+                  : ns._txtresponse;
 
-                // crack for some local case ( OK but status is 0 in no-IE browser)
-                if(!status && xui._localReg.test(xui._localParts[1])){
-                    status=ns._XML.responseText?200:404;
-                }
+              // crack for some local case ( OK but status is 0 in no-IE browser)
+              if(!status && xui._localReg.test(xui._localParts[1])){
+                  status=ns._XML.responseText?200:404;
+              }
 
-                // for IE7
-                if(status==1223)status=204;
+              // for IE7
+              if(status==1223)status=204;
 
-                if(status >= 200 && status < 300 || status==304)
-                    _onResponse();
-                // offline or other Network problems
-                else if(status===undefined || status<10 )
-                    _onError(new Error('Network problems--' +status));
-                else
-                    _onError(new Error('XMLHTTP returns--' +status));
-            }
-            return this._response;
+              if(status >= 200 && status < 300 || status==304)
+                  ns._onResponse();
+              // offline or other Network problems
+              else if(status===undefined || status<10 )
+                  ns._onError(new Error('Network problems--' +status));
+              else
+                  ns._onError(new Error('XMLHTTP returns--' +status));
+            return ns._response;
         }
     },
     Static:{
@@ -4342,7 +4335,8 @@ xui.Class('xui.SC',null,{
                 xui.tryF(onEnd,[threadid]);
                 return;
             }
-            var bak={}, options=xui.merge(options||{}, {$p:1,$cache:cache||xui.$cache.snipScript});
+            var bak={};
+            options=xui.merge(options||{}, {$p:1,$cache:cache||xui.$cache.snipScript});
             for(var i=0,l=pathArr.length;i<l;i++)
                 bak[pathArr[i]]=1;
 
@@ -4470,7 +4464,8 @@ xui.Class('xui.absBox',null, {
         },
         merge:function(obj){
             if(this==xui.win||this==xui.doc||this==xui('body')||this==xui('html'))return this;
-            var self=this, c=self.constructor, obj=obj._nodes, i=0, t, n=self._nodes;
+            var self=this, c=self.constructor, i=0, t, n=self._nodes;
+            obj=obj._nodes
             if(obj.length){
                 for(;t=obj[i++];)n[n.length]=t;
                 self._nodes=c._unique(n);
@@ -5290,7 +5285,7 @@ xui.Class("xui.Timer","xui.absObj",{
         suspend:function(){
             return this.each(function(profile){
                 if(profile._threadid)xui.Thread.suspend(profile._threadid);
-                profile.onSuspend && box.onSuspend(profile,threadId);
+                profile.onSuspend && profile.boxing().onSuspend(profile, profile._threadid);
             });
         },
         getParent:function(){
@@ -5349,14 +5344,13 @@ xui.Class("xui.MessageService","xui.absObj",{
             });
         },
         broadcast:function(recipientType, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, readReceipt){
-            var arr=[msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9,function(){
-                xui.tryF(readReceipt);
-                if(profile.onReceipt) ins.onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
-            }];
             return this.each(function(profile){
                 var ins=profile.boxing()
                 xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
-                    xui.publish(t, arr, null, ins);
+                    xui.publish(t, [msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9,function(){
+                        xui.tryF(readReceipt);
+                        if(profile.onReceipt) profile.boxing().onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
+                    }], null, ins);
                 });
             });
         },
@@ -5413,7 +5407,8 @@ xui.Class("xui.ExcelFormula",null,{
         // support functions: +,-,*,/,%,SUM, AVERAGE, MIN, MAX, ROUND, FIXED, CHOOSE
         Supported : (function(){
                 var flatten = function(args){
-                    var arr=[], t, args = xui.toArr(args), i=0,l=args.length;
+                    args = xui.toArr(args);
+                    var arr=[], t, i=0,l=args.length;
                     for(;i<l;i++){
                         if(xui.isArr(t=args[i])) arr=arr.concat(t);
                         else arr.push(t);

@@ -30,26 +30,34 @@ xui.Class("xui.APICaller","xui.absObj",{
             var ns=this,
                 con=ns.constructor,
                 prf=ns.get(0),
-                prop=prf.properties;
-            
+                prop=prf.properties,
+                funs=xui.$cache.functions,
+                t1=funs['$APICaller:beforeInvoke'],
+                t2=funs['$APICaller:beforeData'],
+                t3=funs['$APICaller:onError'];
+            // the global handler
+            if(xui.isFun(t1) && false===t1(requestId, prf))
+                return;
+            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
+                return;
+            // Normally, Gives a change to modify "queryArgs" for XML
+            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
+                return;
+
             var responseType=prop.responseType,
                 requestType=prop.requestType,
                 requestId=prop.requestId,
                 queryURL=prop.queryURL,
                 proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
-                queryPasswrod=prop.queryPasswrod,
+                queryPassword=prop.queryPassword,
                 queryArgs=xui.clone(prop.queryArgs),
                 oAuth2Token=prop.oAuth2Token,
                 queryOptions=xui.clone(prop.queryOptions),
                 queryHeader=xui.clone(prop.queryHeader),
                 requestDataSource=prop.requestDataSource,
                 responseDataTarget=prop.responseDataTarget,
-                responseCallback=prop.responseCallback,
-                funs=xui.$cache.functions,
-                t1=funs['$APICaller:beforeInvoke'],
-                t2=funs['$APICaller:beforeData'],
-                t3=funs['$APICaller:onError'];
+                responseCallback=prop.responseCallback;
 
             queryURL = xui.adjustVar(queryURL);
 
@@ -69,7 +77,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                     switch(o.type){
                         case "databinder":
                             if(t = xui.DataBinder.getFromName(o.name)){
-                                if(!t.updateDataFromUI()){
+                                if(mode!=="force" && !t.updateDataFromUI()){
                                     return;
                                 }else{
                                     path=(o.path||"").split('.');
@@ -80,7 +88,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                             break;
                         case "form":
                             if((t = xui.get(prf,["host",o.name])) && t.Class['xui.absContainer'] && t.getRootNode()){
-                                if(!t.checkValid() || !t.checkRequired()){
+                                if(mode!=="force" && (!t.checkValid() || !t.checkRequired())){
                                     return;
                                 }else{
                                     path=(o.path||"").split('.');
@@ -92,16 +100,6 @@ xui.Class("xui.APICaller","xui.absObj",{
                     }
                 }
             }
-            // the global handler
-            if(xui.isFun(t1) && false===t1(requestId, prf))
-                return;
-            else if( xui.isHash(t1) && xui.isArr(t1.actions)
-                        && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'$APICaller:beforeInvoke')
-                    )
-                    return;
-            // Normally, Gives a change to modify "queryArgs" for XML
-            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
-                return;
 
             // for auto adjusting options
             var rMap={header:{}};
@@ -199,7 +197,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 rMap.asy=true;
             if(proxyType=="jsonp")
                 rMap.method="GET";
-  
+
             options=options||{};
             if(!("asy" in options))
                 options.asy=!!prop.queryAsync;
@@ -255,7 +253,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                     if(xui.isSet(mapb))rspData=mapb;
                     mapb=null;
                 }
-                
+
                 // the global handler
                 if(xui.isFun(t2) && false===t2(rspData, requestId, prf)){
                     return false;
@@ -329,11 +327,11 @@ xui.Class("xui.APICaller","xui.absObj",{
                             break;
                             case "log":
                                 xui.log(rspData);
-                            break;                            
+                            break;
                         }
                     });
                 }
-               
+
                 // the global handler
                 if(xui.isFun(t3))t3(rspData, requestId, prf);
                 else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'$APICaller:onError');
@@ -346,7 +344,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 xui.observableRun(function(threadid){
                     ajax.threadid=threadid;
                     ajax.start();
-                });                
+                });
             else if(mode=="return")
                 return ajax;
             else

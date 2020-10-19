@@ -344,7 +344,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         tagName : 'div',
                         style:'{displayAdd}',
                         text : '{add}',
-                        $order:2
+                        $order:3
                     }
                 }
             }
@@ -366,7 +366,6 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             BOX:{
                 overflow:'hidden',
                 position:'relative',
-                overflow:'hidden',
                 'overflow-y':'auto',
                 'z-index':'3'
             },

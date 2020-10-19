@@ -67,7 +67,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             getN(k, o).tagClass('-checked',false);
                         }
                     });
-                    xui.arr.each(value,function(o){
+                    xui.arr.each(value,function(o,i){
                         if(o=getI(o)){
                             if(i=rowMap[o])i._selected=1;
                             getN(k, o).tagClass('-checked');
@@ -131,7 +131,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         // only for first level
         applyCellFormula:function(cellTo, dirtyMark, triggerEvent){
             return this.each(function(prf){
-                var tg=prf.box,  formula, j ,i, needUpdate,t2,cellsMap={},coo,
+                var tg=prf.box,  formula, j ,i, needUpdate,t2,cellsMap={},coo,tcell,
                     prop = prf.properties,
                     rows=prop.rows,
                     // only for first level
@@ -549,10 +549,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             return cell._dirty || cell._oValue!==cell.value || (('unit' in cell) && cell._oUnit!==cell.unit);
         },
         isRowDirtied:function(row){
-            var ns=this, dirty = row._dirty || row._oValue!==row.value;
+            var ns=this, prf=ns.get(0), dirty = row._dirty || row._oValue!==row.value;
             if(prf._dirty)return true;
             for(var i=0,l=row.cells.length;i<l;i++){
-                if(ns.isCellDirtied(cell))
+                if(ns.isCellDirtied(row.cells[i]))
                     return true;
             }
             return false;
@@ -665,7 +665,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile = ns.get(0),
                 box = profile.box,
                 prop = profile.properties,
-                prforow;
+                orow;
 
             if(!rowId&&rowId!==0)rowId=xui.get(ns.getActiveRow(),"id") || ((prop.$UIvalue||prop.value)+"").split(prop.valueSeparator)[0];
             orow = ns.getRowbyRowId(rowId);
@@ -898,7 +898,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         //pid,base are id
         insertRows:function(arr, pid/*true: the current item*/, base/*true: the current item*/, before, ignoreMixColumn,ensureHotRow){
             var ns=this,
-                rows,
+                rows, v,
                 c=ns.constructor,
                 profile=ns.get(0);
             if(xui.isHash(arr))arr=[arr];
@@ -1336,7 +1336,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var profile=this.get(0),
                 box=profile.box,
                 prop=profile.properties;
-            if(!prop.rows || prop.rows.length<00)
+            if(!prop.rows || prop.rows.length<=0)
                 return this;
 
             for(var i in profile.cellMap)
@@ -1488,9 +1488,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var prf=this.get(0),ins=prf.boxing(),p=prf.properties,t,hash;
             if(xui.isHash(rowId))rowId=rowId.id;
             if(!xui.isSet(rowId)&&prf.renderId&&!prf.destroyed){
-                if(p.activeMode="row"){
+                if(p.activeMode==="row"){
                     if(t=ins.getActiveRow())rowId=t.id;
-                }else if(p.activeMode="cell"){
+                }else if(p.activeMode==="cell"){
                     if(t=ins.getActiveCell())rowId=t._row.id;
                 }
             }
@@ -1544,7 +1544,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 return v;
         },
         getHeaderByColId:function(colId, type){
-            var v=this.get(0).properties.header,i;
+            var profile = this.get(0), v=profile.properties.header,i;
             if(xui.isNumb(colId))colId=xui.get(profile.properties.header,[colId,"id"]);
             i=xui.arr.subIndexOf(v,"id",colId);
             return i==-1?null:
@@ -1754,7 +1754,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         value=null;
                         if(!rows[j].group && rows[j].cells){
                             cell = rows[j].cells[index];
-                            value = type=='data'?xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(cell,true)):
+                            value = type=='data'?xui.merge({rowId:cell._row.id, colId:cell._col.id},xui.clone(cell,true)):
                                (type=='min'||type=='value') ? ('value' in cell)?cell.value:cell:
                                cell;
                         }
@@ -1764,7 +1764,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(!rows[j].group && rows[j].cells){
                             for(var i=0;i<l;i++){
                                 cell = rows[j].cells[i];
-                                value = type=='data'?xui.merge({rowId:v._row.id, colId:v._col.id},xui.clone(cell,true)):
+                                value = type=='data'?xui.merge({rowId:cell._row.id, colId:cell._col.id},xui.clone(cell,true)):
                                    (type=='min'||type=='value') ? ('value' in cell)?cell.value:cell:
                                    cell;
                                 arr.push(value);
@@ -1841,14 +1841,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             var cellNode = profile.getSubNode('FCELLCAPTION',row._serialId);
             if(!cellNode.isEmpty()){
+                var pp=cellNode.parent();
                 if(profile.beforeIniEditor){
                     editor=profile.boxing().beforeIniEditor(profile, row, cellNode, pp, 'row', row, null);
                     if(editor===false)
                         return;
                 }
 
-                var pp=cellNode.parent(),
-                    size2 = pp.cssSize(),
+                var size2 = pp.cssSize(),
                     baseNode = profile.getSubNode('BORDER'),
                     borderW=baseNode.contentBox()?2:0,
                     absPos = cellNode.offset(null, pp),
@@ -2403,27 +2403,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         tag="grpCols";
                         xui.UI.$doTemplate(profile,template,v,tag, result);
                         return tag;
-                    }
-                },
-                grpCols:{
-                    HCELL:{
-                        style:"position:absolute;width:{_cellWidth};height:{_hcellheight};top:{_hcelltop};left:{_hcellleft};",
-                        className:'xui-uiborder-noradius xui-uibar xui-uiborder-outset {cellCls}',
-                        HCELLA:{
-                            className:'xui-v-wrapper xui-showfocus {headerClass}',
-                            style:"{headerStyle};{colStyle}",
-                            tabindex: '{_tabindex}',
-                            HCELLCAPTION:{
-                                $order:5,
-                                className:"xui-v-node",
-                                text:"{caption}"
-                            },
-                            HHANDLER : {
-                                $order:2,
-                                tagName:'div',
-                                style:'{colDDDisplay}'
-                            }
-                        }
                     }
                 },
                 grpColsShadow:{
@@ -3193,7 +3172,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _objectProp:{rowOptions:1,colOptions:1},
         Behaviors:{
             //don't add cell in HoverEffected, for 'hover' editMode
-            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELLA', CELL:'CELLA', HCELL:['HCELLA','HSCELLA'],HSCELL:['HCELLA','HSCELLA'], FHCELL:'HCELLA',FCELL:'CELLA',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY11:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
+            HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELLA', CELL:'CELLA', HCELL:['HCELLA','HSCELLA'],HSCELL:['HCELLA','HSCELLA'], FHCELL:'HCELLA',FCELL:'CELLA',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY22:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
             ClickEffected:  {ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELLA', CELL:'CELLA', HCELL:['HCELLA','HSCELLA'],HSCELL:['HCELLA','HSCELLA'], CMD:'CMD'},
             DraggableKeys:['FCELL'],
             DroppableKeys:['SCROLL21','SCROLL22','CELLS1','CELLS2','FCELL'],
@@ -3238,12 +3217,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             TRHEADER:{
                 onMouseover:function(profile, e, src){
                     profile.box.$cancelHoverEditor(profile);
-                }
-            },
-            SCROLL12:{
-                onMousedown:function(profile, e, src){
-                    if(xui.Event.getSrc(e)==xui(src).get(0) && profile.__hastmpRow && profile.__needchecktmprow)
-                        profile.box._checkNewLine(profile,'oninner');
                 }
             },
             SCROLL22:{
@@ -3409,7 +3382,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onDblclick:function(profile, e, src){
                     var p = profile.properties,
                         o = xui.use(src).parent(2),
-                        id = profile.getSubId(src)
+                        id = profile.getSubId(src),
                         col = profile.colMap[id];
 
                     if(col&&col._isgroup){
@@ -4602,7 +4575,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var altCls = ns.getClass('CELLS1', '-alt'),
                         nodes21 = ns.getSubNode('CELLS1',true),
                         nodes22 = ns.getSubNode('CELLS2',true),
-                        j,o1,o2;
+                        j,o1,o2,alt;
                     nodes21.removeClass(altCls);
                     nodes22.removeClass(altCls);
                     if(value){
@@ -5788,7 +5761,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     grp=arr[j];
                     xui.UI.adjustData(profile, grp, _grp, 'sub');
-                    for(var k=0,o;k<=grp['to'];k++){
+                    for(var k=0,o,p;k<=grp['to'];k++){
                         o=header[k];p=_header[k];_ww=profile.$px(p._colWidth);
                         if(k===grp.from){
                             flag=true;
@@ -6836,7 +6809,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(editorCacheKey && profile.$cache_editor[editorCacheKey])
                             editor=profile.$cache_editor[editorCacheKey];
                         if(editor && (!editor.get(0) || editor.isDestroyed()))
-                            editor=nulll;
+                            editor=null;
                     }
                     // 5. else, create a ComboInput Editor, and cache it
                     if(!editor){
@@ -6866,7 +6839,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         case 'currency':
                             editor.setType(type);
                             xui.each(xui.toArr('precision,increment,min,max,maxlength,currencyTpl,numberTpl,groupingSeparator,decimalSeparator,forceFillZero,trimTailZero,unit,units'),function(key,u){
-                                v=getPro(key);
+                                var v=getPro(key);
                                 if(type=='currency'){
                                     if(key=='precision'&&!v)v=2;
                                 }else{
@@ -7284,7 +7257,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 editor.onBlur(null);
                                 // for compitable
                                 if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items, editorprf.$cell._row, editorprf.$cell_col);
+                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items, editorPrf.$cell._row, editorPrf.$cell_col);
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);

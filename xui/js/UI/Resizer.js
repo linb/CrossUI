@@ -1083,7 +1083,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 profile.proxy.css(data);
                 if(profile.onChange)
                     profile.boxing().onChange(profile,profile.proxy);
-                s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? ((parseInt(data.left,10)-xOff) + " : " + (parseInt(data.top,10)-yOff)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10));
+                var s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? ((parseInt(data.left,10)-xOff) + " : " + (parseInt(data.top,10)-yOff)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10));
                 xui.Tips.show(e,{tips:s});
             }
         },

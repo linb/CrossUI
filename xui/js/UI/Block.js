@@ -112,7 +112,6 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
         EventHandlers:{
             onClickPanel:function(profile, e, src){},
             onClickBackdrop:function(profile, e, src){},
-            beforeGetFiles:function(profile, e){},
             onFiles:function(profile, files){},
             onFileError:function(profile, message, file){}
         },
@@ -264,7 +263,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             };
             var dropFileTypes = ns.properties.dropFileTypes, maxFileSize = ns.properties.maxFileSize;
             if(!ns.$inDesign && xui.Dom.supportDropzone() && dropFileTypes){
-              var panel = panel=ns.getSubNode("PANEL").get(0),
+              var panel=ns.getSubNode("PANEL").get(0),
                 input = ns.$input = document.createElement('input'),
                 prevent = function(e){e.preventDefault(); e.stopPropagation();},
                 validFiles = function(files) {
@@ -277,7 +276,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                     }
                     if(!files[i].type){
                       try {
-                          new FileReader().readAsBinaryString( file.slice( 0, 5 ) );
+                          new FileReader().readAsBinaryString( files[i].slice( 0, 5 ) );
                       } catch( e ) {
                         if(ns.onFileError)ns.boxing().onFileError(ns, "It's a dir", files[i]);
                         continue;
@@ -328,11 +327,6 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                     }
                     return;
                   }else{
-                    if(ns.beforeGetFiles && false===ns.boxing().beforeGetFiles(ns, e)){
-                        return;
-                    }
-                    /*
-                    beforeGetFiles(function(prf, e){
                       if(xui.Dom.supportPromise() && e.dataTransfer.items && e.dataTransfer.items[0] && e.dataTransfer.items[0].webkitGetAsEntry){
                         var getFilesFromDataTransferItems = async function(dataTransferItems){
                           var readFile = function(entry, path){
@@ -347,7 +341,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                             return new Promise(function(resolve, reject){
                               dirReader.readEntries(async function(entries){
                                 var files = []
-                                for (varentry of entries) {
+                                for (var entry of entries) {
                                   const itemFiles = await getFilesFromEntry(entry, path)
                                   files = files.concat(itemFiles)
                                 }
@@ -365,7 +359,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                             } while (newFiles.length > 0)
                             return files;
                           },
-                          getFilesFromEntry = async function(entry){
+                          getFilesFromEntry = async function(entry, path){
                             return entry.isDirectory ? (await readDir(entry, path||'')) : [await readFile(entry, path||'')];
                           },
                           files = [], entries = [];
@@ -376,15 +370,13 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                         (async function(){
                           try{
                             var files = await getFilesFromDataTransferItems(e.dataTransfer.items)
-                            if(prf.onFiles)prf.boxing().onFiles(ns, prf.$files = validFiles(files));
+                            if(ns.onFiles)ns.boxing().onFiles(ns, ns.$files = validFiles(files));
                           }catch(e){
-                            if(prf.onFileError)prf.boxing().onFileError(ns, 'Error at: '+xui.getErrMsg(e), e);
+                            if(ns.onFileError)ns.boxing().onFileError(ns, 'Error at: '+xui.getErrMsg(e), e);
                           }
                         })();
                         return;
                       }
-                    });
-                    */
                   }
                 } else if(e.target) {
                   files = e.target.files;
@@ -532,7 +524,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                     }else cover.css('background-color',bd);
 
                     cover
-                    .onClick(function(){
+                    .onClick(function(p,e,src){
                       if(bdc){
                           if(bdc=="hide")profile.boxing().hide();
                           else if(bdc=="destroy")profile.boxing().destroy();

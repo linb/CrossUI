@@ -1185,7 +1185,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             var node = dialog.$div.reBoxing(),
             ID='xui:temp:dialog',
             me=arguments.callee,
-            w,h;
+            w,h,n2;
 
             if(!xui.Dom.byId(ID)){
                 n2 = me._cache=node.clone(false);
@@ -1194,7 +1194,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 .id(ID,true);
                 n2.removeClass('xui-ui-hidden');
             }
-            var n2 = me._cache;
+            n2 = me._cache;
             n2.width('auto').height('auto');
             n2.html(content,false);
             var size = n2.cssSize();
@@ -1562,7 +1562,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             if(width)
                 isize.width = size.width
                     - (parseFloat(v6.css('paddingRight'))||0)  - (parseFloat(v6.css('borderRightWidth'))||0)
-                    - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0);
+                    - (parseFloat(v5.css('paddingLeft'))||0) - (parseFloat(v5.css('borderLeftWidth'))||0)
                     - (cb1?0:v0._borderW()) -  (cb2?0:v2._borderW())
 
             if(width&&us>0)isize.width=adjustunit(isize.width);

@@ -12,7 +12,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                             item=profile.getItemByItemId(itemId);
                         if(subId){
                             arr.push(subId);
-                            
+
                             var itemnode=profile.getSubNode('BODY',subId);
                             if(itemnode.css('display')!='none'){
                                 item._scrollTop=itemnode.get(0).scrollTop||0;
@@ -27,7 +27,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                             item=profile.getItemByItemId(itemId);
                         if(subId){
                             arr.push(subId);
-                            
+
                             var itemnode=profile.getSubNode('BODY',subId);
                             if(itemnode.css('display')=='none'){
                                  // show pane
@@ -35,7 +35,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                 itemnode.css('display','block');
                                 if(item._scrollTop)
                                     itemnode.get(0).scrollTop=item._scrollTop;
-    
+
                                 profile.box._forLazyAppend(profile, item, itemId);
                                 profile.box._forIniPanelView(profile, item, itemId);
                             }
@@ -204,7 +204,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
             KEY:{
             },
             BOX:{
-                    
+
             },
             'LTAGCMDS, RTAGCMDS':{
                 padding:0,
@@ -461,7 +461,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 item._bginfo+="background-attachment:"+t+";";
 
             if(xui.isStr(item.overflow))
-                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
+                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(item.overflow?("overflow:"+item.overflow):"");
             else if(xui.isStr(p.overflow))
                 item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
 

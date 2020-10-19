@@ -79,8 +79,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                             $order:1,
                             className: 'xuifont',
                             $fonticon:'{_fi_toggleCls2}',
-                            style:'{toggleDisplay}',
-                            $order:0
+                            style:'{toggleDisplay}'
                         },
                         ICON:{
                             $order:2,

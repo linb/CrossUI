@@ -92,7 +92,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         getCurPanel:function(){
             var profile = this.get(0),
                 dm=profile.box.$DataModel,
-                v=profile.properties.$UIvalue;
+                prop=profile.properties,
+                v=prop.$UIvalue;
             if(dm.hasOwnProperty("noPanel") && dm.hasOwnProperty("selMode") && profile.properties.selMode=='multi'){
                 v=v.split(prop.valueSeparator);
                 v=v[0]||null;
@@ -994,7 +995,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._bginfo+="background-attachment:"+t+";";
 
             if(xui.isStr(item.overflow))
-                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(data.overflow?("overflow:"+data.overflow):"");
+                item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(item.overflow?("overflow:"+item.overflow):"");
             else if(xui.isStr(p.overflow))
                 item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
 
@@ -1050,7 +1051,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         }
                     });
                     if(a.length)
-                        xui.arr.each(a,function(o){
+                        xui.arr.each(a,function(o,y,z){
                             if(o.moduleClass && o.moduleXid && (y=xui.SC.get(o.moduleClass)) && (y=y.getInstance(o.moduleXid)) && y["xui.Module"]){
                                 z=o.moduleClass+"["+o.moduleXid+"]";
                                 if(zz!=z && !moduleHash[z]){

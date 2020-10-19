@@ -34,7 +34,7 @@ xui.Class('App', 'xui.Module',{
 
         //dont want to show original function code
         xui.id.$auto$=1;
-    }, 
+    },
     Instance:{
        _deprecatedFuns:{
            //shortcuts
@@ -75,14 +75,14 @@ xui.Class('App', 'xui.Module',{
             'xui.UI.Pane':'xui.UI.Div',
             'xui.UI.IconList':'xui.UI.Gallery'
         },
-        events:{onRender:'_onrender'}, 
+        events:{onRender:'_onrender'},
 
         _onrender:function(){
             SPA=this;
             SPA.btnLang.setCaption(xui.getRes('app.'+xui.getLang()));
             xui.UI.Resizer.$abstract=true;
             xui.History.setCallback(function(str){
-                var str2 = str.replace('#!','');
+                var str2 = str.replace('/','');
                 // handle deprecated functions
                 str2 = SPA._deprecatedFuns[str2] || str2;
                 // handle deprecated classes
@@ -190,7 +190,7 @@ xui.Class('App', 'xui.Module',{
                         });
                 }
             });
-        }, 
+        },
         showCode:function(e, key){
             var txt = xui.getRes('app.oCodeDesc') +
                       key + ' = ' +
@@ -209,11 +209,11 @@ xui.Class('App', 'xui.Module',{
             });
 
             return false;
-        }, 
+        },
         iniComponents:function(){
             // [[Code created by CrossUI RAD Studio
             var host=this, children=[], append=function(child){children.push(child.get(0));};
-            
+
             append(
                 xui.create("xui.UI.PopMenu")
                 .setHost(host,"popLang")
@@ -229,7 +229,7 @@ xui.Class('App', 'xui.Module',{
                 ])
                 .onMenuSelected("_pop_onmenuselected")
             );
-            
+
             append(
                 xui.create("xui.UI.Dialog")
                 .setHost(host,"dialog2")
@@ -244,7 +244,7 @@ xui.Class('App', 'xui.Module',{
                 .setCloseBtn(false)
                 .setOverflow("hidden")
             );
-            
+
             host.dialog2.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"blockQ")
@@ -252,7 +252,7 @@ xui.Class('App', 'xui.Module',{
                 .setZIndex(100)
                 .setBorderType("inset")
                 );
-            
+
             host.blockQ.append(
                 xui.create("xui.UI.Div")
                 .setHost(host,"divQ")
@@ -260,7 +260,7 @@ xui.Class('App', 'xui.Module',{
                 .setHeight("auto")
                 .setPosition("relative")
                 );
-            
+
             host.blockQ.append(
                 xui.create("xui.UI.List")
                 .setHost(host,"listQ")
@@ -276,7 +276,7 @@ xui.Class('App', 'xui.Module',{
                 .setValue("")
                 .onItemSelected("_listq_onitemselected")
                 );
-            
+
             host.blockQ.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"block20")
@@ -284,7 +284,7 @@ xui.Class('App', 'xui.Module',{
                 .setHeight("2.6666666666666665em")
                 .setBorderType("none")
                 );
-            
+
             host.block20.append(
                 xui.create("xui.UI.PageBar")
                 .setHost(host,"pbQ")
@@ -293,7 +293,7 @@ xui.Class('App', 'xui.Module',{
                 .setCaption("")
                 .onClick("_pbq_onclick")
                 );
-            
+
             host.blockQ.append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"block6")
@@ -302,7 +302,7 @@ xui.Class('App', 'xui.Module',{
                 .setBorderType("none")
                 .setOverflow("hidden")
                 );
-            
+
             host.block6.append(
                 xui.create("xui.UI.Label")
                 .setHost(host,"lQ1")
@@ -311,7 +311,7 @@ xui.Class('App', 'xui.Module',{
                 .setWidth("5.5em")
                 .setCaption("$app.lQ1")
                 );
-            
+
             host.block6.append(
                 xui.create("xui.UI.Input")
                 .setHost(host,"iQ1")
@@ -322,7 +322,7 @@ xui.Class('App', 'xui.Module',{
                 .setDynCheck(true)
                 .onChange("_iq1_afteruivalueset")
                 );
-            
+
             host.block6.append(
                 xui.create("xui.UI.Label")
                 .setHost(host,"lQ2")
@@ -331,7 +331,7 @@ xui.Class('App', 'xui.Module',{
                 .setWidth("9.166666666666666em")
                 .setCaption("$app.lQ2")
                 );
-            
+
             host.block6.append(
                 xui.create("xui.UI.Input")
                 .setHost(host,"iQ2")
@@ -342,14 +342,14 @@ xui.Class('App', 'xui.Module',{
                 .setDynCheck(true)
                 .onChange("_iq2_afteruivalueset")
                 );
-            
+
             append(
                 xui.create("xui.UI.Block")
                 .setHost(host,"paneTop")
                 .setDock("top")
                 .setHeight("3.3333333333333335em")
             );
-            
+
             host.paneTop.append(
                 xui.create("xui.UI.Label")
                 .setHost(host,"labelName")
@@ -361,7 +361,7 @@ xui.Class('App', 'xui.Module',{
                 .setFontSize("16px")
                 .setFontWeight("bold")
                 );
-            
+
             host.paneTop.append(
                 xui.create("xui.UI.Button")
                 .setHost(host,"btnLang")
@@ -373,7 +373,7 @@ xui.Class('App', 'xui.Module',{
                 .onClick("_butlang_onclickdrop")
                 .onClickDrop("_butlang_onclickdrop")
                 );
-            
+
             append(
                 xui.create("xui.UI.Layout")
                 .setHost(host,"mainLayout")
@@ -397,7 +397,7 @@ xui.Class('App', 'xui.Module',{
                 ])
                 .setType("horizontal")
             );
-            
+
             host.mainLayout.append(
                 xui.create("xui.UI.Div")
                 .setHost(host,"divHead")
@@ -406,17 +406,17 @@ xui.Class('App', 'xui.Module',{
                     "KEY":"overflow:auto;"
                 })
                 , "main");
-            
+
             host.mainLayout.append(
                 xui.create("xui.UI.TreeBar")
                 .setHost(host,"objTree")
                 .onRender("_objtree_aftercreated")
                 .onItemSelected("__itemsel")
                 , "before");
-            
+
             return children;
             // ]]Code created by CrossUI RAD Studio
-        }, 
+        },
         _pop_onmenuselected:function (profile, item) {
             if(xui.getLang()==item.id)return;
 
@@ -429,11 +429,11 @@ xui.Class('App', 'xui.Module',{
                     xui.History._callback(s);
                 }
             });
-        }, 
+        },
         _butlang_onclickdrop:function(profile, e, src) {
             SPA.popLang.refresh();
             SPA.popLang.pop(src);
-        }, 
+        },
         _objtree_aftercreated:function (profile) {
             var items=[
                 {id:'xui', href:'#!xui', caption:'xui',image:'img/img.gif', imagePos:'left top',iniFold:false, sub:[]}
@@ -477,17 +477,17 @@ xui.Class('App', 'xui.Module',{
             items[0].sub.unshift({id:'Class', href:'#!xui.Class', caption:'Class', image:'img/img.gif', imagePos:'left -48px'});
 
             profile.boxing().setItems(items);
-        }, 
+        },
         _getFunArgs:function(f,i){
             with (''+(i?f[i]:f)) return (i||'') + ' ( ' + slice(indexOf("(") + 1, indexOf(")")) + ' )';
-        }, 
+        },
         _getItem:function(pos, head, key, okey, flag){
             var con = this.getDoc(key),t,
                 desc = con ? con[0] : "";
             okey=okey||key;
             //for IE :  getElementById, name property has priority over id property.
             return '<a name="'+okey+'"></a> <div class="p">' +
-             (desc?"  <div class=desc>&#10148;&nbsp;&nbsp;" +desc+"</div>  ":"") +     
+             (desc?"  <div class=desc>&#10148;&nbsp;&nbsp;" +desc+"</div>  ":"") +
             ' <h4 id="'+okey+'_">' +
                     (con?'<span class="xui-custom-icon" style="background-position:' +pos+';"></span>':'') +
                     head +
@@ -498,7 +498,7 @@ xui.Class('App', 'xui.Module',{
                     (flag!==false?'<a class="totop" href="#!'+okey+'._list"> ^ </a>':'')+
                     '</div>'
                     ;
-        }, 
+        },
         _format:function(obj){
             var key=obj.key,
                 dot=".",
@@ -661,7 +661,7 @@ xui.Class('App', 'xui.Module',{
               arr.push('<h3 id="'+xui.id()+'"> ==== Abstract Virtual Class or Inner Class ==== </h3>');
 
             return arr.join('');
-        }, 
+        },
         _iconPosMap:{
             cls:'left -16px',
             con:'left -145px',
@@ -672,14 +672,14 @@ xui.Class('App', 'xui.Module',{
             event:'left -32px',
             close:'left -160px',
             open: 'left -176px'
-        }, 
+        },
         _parse:function(id){
             var o = xui.SC.get(id), cls, key, obj={},
                 // deprecated
                 deprecated={getCom:1,newCom:1,showCom:1,getComFromCache:1,setCom:1,storeCom:1,prepareComs:1},
 
             filter=function(s,o){
-                var me=arguments.callee, 
+                var me=arguments.callee,
                     h=me.h||(me.h={upper:1,Constructor:1,Before:1,After:1,prototype:1}),
                     c=s.charAt(0);
 
@@ -791,7 +791,7 @@ xui.Class('App', 'xui.Module',{
                 }
             }
             return  obj ;
-        }, 
+        },
         _clickForToggle:function(p,e,s,n){
             var f=SPA._clickForToggle,ff=SPA._clickForLoca, ics=SPA._iconPosMap, ths=xui(s);
             if(xui.Event.getSrc(e).nodeName=='A')return;
@@ -815,7 +815,7 @@ xui.Class('App', 'xui.Module',{
             }
             a.css('display', (b=a.css('display')=='none')?'block':'none' );
             ths.first().css('backgroundPosition', b?ics.open:ics.close);
-        }, 
+        },
         _clickForLoca:function(){
             var a=this,
                 id = a.href.split(/#[!]?/)[1],
@@ -824,21 +824,21 @@ xui.Class('App', 'xui.Module',{
                 node.animate({opacity:[0,1]}, 0,0, 500).start();
                 if(node.next().css('display')=='none')node.onClick();
             }
-        }, 
+        },
         _iq1_afteruivalueset:function (profile,ov,v) {
             if(SPA.$v==v)return;
             xui.resetRun('__a__',function(){
                 SPA.$v=v;
                 SPA.RefreshQ(1,v);
             },500);
-        }, 
+        },
         _iq2_afteruivalueset:function (profile,ov,v) {
             if(SPA.$v==v)return;
             xui.resetRun('__a__',function(){
                 SPA.$v=v;
                 SPA.RefreshQ(2,v);
             },500);
-        }, 
+        },
 
         RefreshQ:function(type1,v,type2){
             var pool;
@@ -852,7 +852,7 @@ xui.Class('App', 'xui.Module',{
                     SPA.iQ2.setValue('',true);
 
                 SPA.listQ.setItems([]);
- 
+
                 SPA.pbQ.setValue('1:1:1');
             }else{
                 var arr=[],s,hash={};
@@ -879,7 +879,7 @@ xui.Class('App', 'xui.Module',{
                         s=(o&&o.$desc)||'';
                         if(s && s.toLowerCase().indexOf(v.toLowerCase())!=-1){
                             hash[i]=1;
-                            
+
                             if(s.indexOf('<')!=-1) s=s.split('<')[0];
                             if(s.length>50)s=s.slice(0,50)+'...';
                             arr.push({id:i,caption:'<font style="color:#134275">'+i.replace(/(.*)(\.prototype\.)(.*)/,'$3&nbsp;&nbsp;$1').replace(/^([\w\.]*)/,'<b>$1</b>') +'</font><br />&nbsp;&nbsp;'+s})
@@ -907,22 +907,22 @@ xui.Class('App', 'xui.Module',{
                 SPA.pbQ.setValue('1:1:'+page);
                 SPA.listQ.setItems(arr.slice(0,20));
             }
-        }, 
+        },
         getDoc:function(key){
             if(!key)return ['',''];
-            
+
             // handle deprecated functions
             key = SPA._deprecatedFuns[key]||key;
             // handle deprecated classes
             xui.each(SPA._deprecatedClasses,function(o,i){
                 key = key.replace(i, o);
             });
-            
+
             var o = xui.getRes("doc."+key);
             if(typeof o == 'string')
                 return [o,o];
             return this.buildDoc(o);
-        }, 
+        },
         buildDoc:function(o){
             var arr=[];
             if(o){
@@ -956,20 +956,20 @@ xui.Class('App', 'xui.Module',{
                 }
             }
             return [o.$desc, arr.join('')];
-        }, 
+        },
         __itemsel:function(profile, item, e, src, type){
             xui.History.setFI(item.href);
         },
         _listq_onitemselected:function (profile, item) {
             xui.History.setFI(item.id);
-        }, 
+        },
         _pbq_onclick:function (profile, page) {
             var arr=SPA.$Qresult;
             if(!arr)return;
             SPA.listQ.setItems(arr.slice((page-1)*20, page*20));
             profile.boxing().setPage(page);
             return false;
-        }, 
+        },
         indexing:function(){
             var t,
                 doc=xui.Locale[xui.getLang()].doc,
@@ -1005,7 +1005,7 @@ xui.Class('App', 'xui.Module',{
                 o=xui.get(doc,(i+'.').split('.'));
                 hash[i]=o;
             });
-            
+
             /*
             var no={},l=0;
             xui.each(hash,function(o,i){
@@ -1013,10 +1013,10 @@ xui.Class('App', 'xui.Module',{
                 if(!o)no[i]=1;
             });
             */
-        
+
             return SPA.$api_pool=hash;
-        }, 
-        $S_CLS:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.arr':1,'xui.str':1}, 
+        },
+        $S_CLS:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.arr':1,'xui.str':1},
         $CLS_FUN:{'xui':1,'xui.Class':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1},
         $CLS_STATIC:{'xui':1,'xui.fun':1,'xui.Thread':1,'xui.Ajax':1,'xui.SAjax':1,'xui.IAjax':1,'xui.SC':1,'xui.Event':1,'xui.DragDrop':1,'xui.CSS':1,'xui.History':1,'xui.Cookies':1,'xui.ModuleFactory':1,'xui.Debugger':1,'xui.Date':1,'xui.Tips':1,'xui.Coder':1,'xui.XML':1}
     }

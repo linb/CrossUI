@@ -259,7 +259,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     ns=target.get(),
                     dom=xui.Dom,
                     cache=xui.$cache.profileMap,
-                    fragment,uiObj,p,i,o,j,v,uiObj,arr=[];
+                    fragment,p,i,o,j,v,uiObj,arr=[];
                 target.each(function(o){
                     uiObj=(p=o.id)&&(p=cache[p])&&p.LayoutTrigger&&(one===xui('body').get(0)||dom.getStyle(one,'display')!='none')&&p.LayoutTrigger;
                     if(uiObj)arr.push([uiObj,p]);
@@ -802,7 +802,7 @@ xui.Class('xui.Dom','xui.absBox',{
                                 else o=o.join();
                             }else{
                                 if(!o)o="";
-                                else o=Raphael.parseTransformString(o).join();
+                                else o=window.Raphael.parseTransformString(o).join();
                             }
                             var arr=/r,([-\d.]+)/i.exec(o);
                             v=arr?parseFloat(arr[1]||0):0;
@@ -825,7 +825,7 @@ xui.Class('xui.Dom','xui.absBox',{
                          v=v||0;
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
                                 t[0][1]=v;
@@ -850,7 +850,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     v=1;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[1];
                         });
                     }
@@ -873,7 +873,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         v=v||0;
                         var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
                                 t[0][2]=v;
@@ -898,7 +898,7 @@ xui.Class('xui.Dom','xui.absBox',{
                    v=1;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[2];
                         });
                     }
@@ -921,7 +921,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         var prf=xui.Event._getProfile(o.id),t;
                         // modify the last 't'
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][1]=v;
                             }else{
@@ -944,7 +944,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[1];
                         });
                     }
@@ -960,9 +960,9 @@ xui.Class('xui.Dom','xui.absBox',{
                 return this.each(function(o){
                      if(o.raphael&&o.id){
                         v=parseFloat(v)||0;
-                        var prf=xui.Event._getProfile(o.id);
+                        var prf=xui.Event._getProfile(o.id),t;
                         if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                            t=xui.clone(Raphael.parseTransformString(o.transform()),true);
+                            t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             // modify the last 't'
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][2]=v;
@@ -986,7 +986,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
                     if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
-                         xui.arr.each(Raphael.parseTransformString(o.transform()),function(t){
+                         xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[2];
                         });
                     }
@@ -1167,11 +1167,11 @@ xui.Class('xui.Dom','xui.absBox',{
         cssRegion:function(region,triggerEvent) {
             var self=this;
             if(typeof region=='object'){
-                var i,t,m,  node=self.get(0), dom=xui.Dom, f=dom._setUnitStyle,m={};
+                var i,t,node=self.get(0), dom=xui.Dom, f=dom._setUnitStyle,m={};
                 for(var j=0,c=dom._boxArr;i=c[j++];)
                     m[i] = ((i in region) && region[i]!==null)?f(node,i,region[i]):false;
                 if(triggerEvent){
-                    var f=dom.$hasEventHandler;
+                    f=dom.$hasEventHandler;
                     if(f(node,'onsize') && (m.width||m.height))self.onSize(true, {width:m.width,height:m.height});
                     if(f(node,'onmove') && (m.left||m.top))self.onMove(true, {left:m.left,top:m.top});
                 }
@@ -1495,7 +1495,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 event=xui.Event,
                 arv=xui.arr.removeValue,
                 ari=xui.arr.insertAny,
-                id,c,t,m;
+                id,c,t,k,m;
 
             if(!index && index!==0)index=-1;
 
@@ -1545,7 +1545,7 @@ xui.Class('xui.Dom','xui.absBox',{
             will remove all onClick/beforeClick/afterClick in xui.$cache.profileMap.id.events.
         */
         $removeEvent:function(name, label, bAll){
-            var self=this,c,t,k,id,i,type,
+            var self=this,c,t,k,id,i,
                 event=xui.Event,
                 dom=xui.$cache.profileMap,
                 type=event._eventMap[name];
@@ -2022,7 +2022,7 @@ xui.Class('xui.Dom','xui.absBox',{
             var ns=this,
                 doc=document,
                 sid='$blur_triggers$',
-                fun=xui.Dom._blurTrigger||(xui.Dom._blurTrigger=function(p,e){
+                fun=xui.Dom._blurTrigger||(xui.Dom._blurTrigger=function(prf,e){
                     var p=xui.Event.getPos(e),
                         arr=arguments.callee.arr,
                         srcN=xui.Event.getSrc(e),
@@ -2516,39 +2516,39 @@ xui.Class('xui.Dom','xui.absBox',{
                 c1 = me._c1 || (me._c1={}),
                 c2 = me._c2 || (me._c2={}),
                 c3 = me._c3 || (me._c3={}),
-                name = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()})),
-                name2 = c2[name] || (c2[name] = name.replace(/([A-Z])/g, "-$1" ).toLowerCase()),
+                name1 = c1[name] || (c1[name] = name.replace(/\-(\w)/g, function(a,b){return b.toUpperCase()})),
+                name2 = c2[name1] || (c2[name1] = name1.replace(/([A-Z])/g, "-$1" ).toLowerCase()),
                 name3,name4;
 
-                var n1=name;
+                var n1=name1;
                 if(n1.indexOf("border")===0){
                     n1=n1.replace(/[-]?(left|top|right|bottom)/ig,'');
                 }
                 if(xui.arr.indexOf(css3prop,n1)!=-1){
-                    if(!ns.css3Support(name)){
+                    if(!ns.css3Support(name1)){
                         return '';
                     }else{
-                        if(name!="textShadow"){
+                        if(name1!="textShadow"){
                             name3 = brs.cssTag2+name2.charAt(0).toUpperCase()+name2.substr(1);
                             name4 = brs.cssTag1+name2;
                         }
                     }
                 }
 
-                if(map[name])
-                    name = xui.browser.ie?"styleFloat":"cssFloat";
+                if(map[name1])
+                    name1 = xui.browser.ie?"styleFloat":"cssFloat";
                 //document.defaultView first, for opera 9.0
                 value = ((t=document.defaultView) && t.getComputedStyle)?
                     (t=t.getComputedStyle(node,null))?
                         (t.getPropertyValue(name2) || (name4 && t.getPropertyValue(name4)))
                         :''
                     :node.currentStyle?
-                        (node.currentStyle[name] || node.currentStyle[name2] || (name3 && (node.currentStyle[name3] || node.currentStyle[name4])))
-                :((style && (style[name]||(name3 && style[name3])))||'');
+                        (node.currentStyle[name1] || node.currentStyle[name2] || (name3 && (node.currentStyle[name3] || node.currentStyle[name4])))
+                :((style && (style[name1]||(name3 && style[name3])))||'');
             /*
                             if(xui.browser.opr){
                                 var map2 = me.map2 || (me.map2={left:1,top:1,right:1,bottom:1});
-                                if(map2[name] && (xui.Dom.getStyle(node,'position')=='static'))
+                                if(map2[name1] && (xui.Dom.getStyle(node,'position')=='static'))
                                     value = 'auto';
                             }
             */
@@ -2727,11 +2727,11 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                     return m;
                 };
-                var matrix=computeMatrix(value);
-                var ow=node.offsetWidth,oh=node.offsetHeight;
-                var filter=matrix.getFilter();
+                var matrix=computeMatrix(value),
+                  ow=node.offsetWidth,oh=node.offsetHeight,
+                  filter=matrix.getFilter();
 //xui.echo(filter);
-                var t=((style.filter?(style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                t=((style.filter?(style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                 if(xui.browser.ie8)style.msfilter = t;
                 style.filter=t;
 //xui.echo(t);
@@ -2834,7 +2834,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 return result.join("");
             }
             var iecracker1=function(node, orient, stops, shape, size, rate){
-                var id="xui.s-ie8gdfix";
+                var t,id="xui.s-ie8gdfix";
                 if(!node || node.nodeType != 1 || !node.style)return;
                 var style=node.style,
                     tmp1=ns.getStyle(node,'overflow'),
@@ -2850,7 +2850,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         }
                     }
                     style.backgroundColor='';
-                    var t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)style.msfilter = t;
                     style.filter=t;
                 }else{
@@ -2867,7 +2867,8 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(shape=='circle')
                         aw=ah=Math.min(aw,ah);
 
-                    var l=-aw/2,t=-ah/2,w=aw,h=ah;
+                    var l=-aw/2,w=aw,h=ah;
+                    t=-ah/2
                     if(xui.isObj(orient)){
                         l=orient.left||(Math.round(parseFloat(l)||0)+'px');
                         t=orient.top||(Math.round(parseFloat(t)||0)+'px');
@@ -2917,7 +2918,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                    var t = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t = ((s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(opacity='+starto+', finishopacity=0, style=2)').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)s.msfilter = t;
                     s.filter=t;
 
@@ -2928,14 +2929,14 @@ xui.Class('xui.Dom','xui.absBox',{
                         node.appendChild(at);
                     style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                         if(xui.browser.ie8)style.msfilter = t;
                         style.filter=t;
                     }
                 }
             },
             iecracker21=function(node, orient, stops){
-                var id="xui.s-ie8gdfix";
+                var t,id="xui.s-ie8gdfix";
                 if(!node || node.nodeType != 1 || !node.style)return;
                 var style=node.style,
                     tmp1=ns.getStyle(node,'overflow'),
@@ -2956,7 +2957,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         }
                     }
                     style.backgroundColor='';
-                    var t = (style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t = (style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)style.msfilter = t;
                     style.filter=t;
                 }else{
@@ -3007,7 +3008,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     s.backgroundColor=innerColor;
 
                     var starto=stops[0].opacity?parseFloat(stops[0].opacity)*100:100
-                    var t =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t =( (s.filter?(s.filter+","):"")+'progid:DXImageTransform.Microsoft.Alpha(style=1, opacity='+starto+', finishopacity=0, startX='+xs+',finishX='+xe+',startY='+ys+',finishY='+ye+')').replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)s.msfilter = t;
                     s.filter=t;
 
@@ -3018,18 +3019,18 @@ xui.Class('xui.Dom','xui.absBox',{
                         node.appendChild(at);
                     style.backgroundColor = outerColor;
                     if(stops[stops.length-1].opacity){
-                        var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                        t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Alpha(opacity="+(parseFloat(stops[stops.length-1].opacity)*100)+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                         if(xui.browser.ie8)style.msfilter = t;
                         style.filter=t;
                     }
                 }
             },
             iecracker2=function(node,orient,stops){
-                var id="xui.s-ie8gdfix";
+                var t,id="xui.s-ie8gdfix";
                 if(!node || node.nodeType!=1 || !node.style)return;
                  var style=node.style;
                 if(!orient){
-                    var t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Gradient\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)style.msfilter = t;
                     style.filter=t;
                     var i,a=node.childNodes,l=a.length;
@@ -3040,13 +3041,13 @@ xui.Class('xui.Dom','xui.absBox',{
                         }
                     }
                     style.backgroundColor='';
-                    var t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t = ((style.filter||"").replace(/progid\:DXImageTransform\.Microsoft\.Alpha\([^)]+\)/ig,'')).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)style.msfilter = t;
                     style.filter = t;
                 }else{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr,
-                        ori=1,t;
+                        ori=1;
                     if(stops[0].opacity)
                         innerColor = innerColor.replace('#','#'+_toFF(stops[0].opacity,255));
                     if(stops[stops.length-1].opacity)
@@ -3077,7 +3078,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             outerColor=t;
                         break;
                     }
-                    var t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
+                    t = ((style.filter?(style.filter+","):"")+"progid:DXImageTransform.Microsoft.Gradient(StartColorstr='"+innerColor+"',EndColorstr='"+outerColor+"',GradientType="+ori+")").replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     if(xui.browser.ie8)style.msfilter = t;
                     style.filter =t;
                 }
@@ -3561,8 +3562,8 @@ xui.Class('xui.Dom','xui.absBox',{
                     }else{
                         var id="tmp_css3_test"+xui.id(),
                             css='@font-face{font-family:"font";src:url("https://")}',
-                            s=xui.CSS.addStyleSheet(css,id),
-                            sh=s.sheet || s.styleSheet,
+                            style=xui.CSS.addStyleSheet(css,id),
+                            sh=style.sheet || style.styleSheet,
                             ctxt=sh?((sh.cssRules && sh.cssRules[0])?sh.cssRules[0].cssText:sh.cssText||''):'';
 
                         rt=/src/i.test(ctxt) && ctxt.indexOf("@font-face") === 0;
@@ -3806,7 +3807,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     return;
                 if(me._showed){
                     if(o2)o2.empty(false);
-                    o1.css({zIndex:0,cursor:'',display:'none',cursor:''});
+                    o1.css({zIndex:0,cursor:'',display:'none'});
                     o1.query('style').remove(false);
                     me._showed=false;
                 }
@@ -4190,7 +4191,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         value = xui.Dom.getStyle(node, o, true);
                     return (value=='auto'||value==='')?value:(value||0);
                 }else{
-                    var f=xui.Dom._setUnitStyle,t,a,
+                    var f=xui.Dom._setUnitStyle,a,
                     av = xui.CSS.$addu(value);
                     return self.each(function(v){
                         if(v.nodeType!=1)return;
@@ -4238,7 +4239,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 ? ['inline-block', 'inline']
                 : ['inline-block'];
         var fun=function(p,e,cache,keydown){
-             var event=xui.Event,set,hash,rtnf,rst,remove={},
+             var event=xui.Event,set,hash,rtnf,rst,remove={}, f, arr,
                 ks=event.getKey(e);
             if(ks){
                 if(ks[0].length==1)ks[0]=ks[0].toLowerCase();

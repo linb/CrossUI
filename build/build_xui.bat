@@ -48,7 +48,8 @@ copy %relPath%xui\js\_begin.js /b ^
 xui.js
 
 java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%miniPath% xui.js
- 
+java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%miniPath% %outPath%xui\js%miniPath%
+
 del /q xui.js
 
 
@@ -125,6 +126,7 @@ copy %relPath%xui\js\_begin.js /b ^
 xui.js
 
 java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%allPath% xui.js  --charset utf-8
+java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%allPath% %outPath%xui\js%allPath%  --charset utf-8
 java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %rawPath%   --nomunge  xui.js  --charset utf-8
 copy xui.js  %outPath%xui\js%debugPath%
 

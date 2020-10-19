@@ -170,7 +170,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                         className:'xui-ui-ellipsis {_inputcls}',
                         tagName : 'input',
                         autocorrect:"off",
-                        autocomplete:"off",
+                        autocomplete:"{autocomplete}",
                         //autocapitalize:"off",
                         type : '{_inputtype}',
                         "name" : '{_name}',
@@ -503,6 +503,13 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
 
             dynCheck:false,
             selectOnFocus:true,
+            autocomplete: {
+                ini:"off",
+                listbox:['on','off'],
+                action: function (value) {
+                    this.getSubNode('INPUT').attr('autocomplete', value);
+                }
+            },
             placeholder: {
                 ini: '',
                 action: function (value) {
@@ -719,7 +726,8 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                                 min = profile.$px(autoe),
                                 t = profile.getSubNode('INPUT'),
                                 rh = root.height(),
-                                th1, th2, oth, offset;
+                                th1, ph, th2, oth, offset;
+                            t.css('overflow', 'hidden');
                             //get offset
                             {
                                 oth = t.get(0).style.height;
@@ -741,6 +749,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                                     if(profile.onAutoexpand) profile.boxing().onAutoexpand(profile, toH, offset);
                                 }
                             }
+                            t.css('overflow', '');
                         }
                     });
                 }

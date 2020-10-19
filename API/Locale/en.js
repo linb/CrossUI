@@ -11223,6 +11223,18 @@ xui.set(xui.Locale,["en","app"], {
                     "}"
                 ]
             },
+            getAutocomplete:{
+                $desc:"Gets autocomplete property for HTML 5 ",
+                $rtn:"String"
+            },
+            setAutocomplete:{
+                $desc:"Sets autocomplete property for HTML 5 ",
+                $rtn:"[self]",
+                $paras:[
+                    "value [Required] : String, 'on' or 'off'",
+                    $force
+                ]
+            },
             getPlaceholder:{
                 $desc:"Gets placeholder string for HTML 5 ",
                 $rtn:"String"

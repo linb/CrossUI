@@ -55,6 +55,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.properties.showMode=='compact')
                         profile.getRoot().query('button').css('color',clr);
                 }
+                profile.box._checkAutoexpand(profile);
             })
         },
         _compareValue:function(v1,v2){
@@ -757,7 +758,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 'z-index':20,
                 cursor:'pointer',
                 position:'absolute',
-                padding:0,
                 margin:0,
                 border:0,
                 background:'none',
@@ -1136,7 +1136,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         m=p.multiLines,
                         evt=xui.Event,
                         k=evt.getKey(e);
-
+                    if(parseInt(p.autoexpand))
+                        b._checkAutoexpand(profile);
                     //fire onchange first
                     if(k.key=='enter' && (!m||k.altKey) && !p.inputReadonly && !profile.$inputReadonly){
                         profile.$_onedit=true;

@@ -17,13 +17,13 @@ xui.Class('xui.Event',null,{
             return false;
         }
         node=null;
- 
+
         //type
         var type = event.type,
             xuievent=event.$xuievent,
             xuitype=event.$xuitype,
             xuiall=event.$xuiall;
-        
+
         if(xui.browser.fakeTouch && type=="click" && xui.getData(['!document','$fakescrolling'])){
             return false;
         }
@@ -73,13 +73,13 @@ xui.Class('xui.Event',null,{
                 type='size';
                 //for IE, always fire window onresize event after any innerHTML action
                 if(xui.browser.ie && w===src){
-                    var w=xui.browser.contentBox && d.documentElement.clientWidth || d.body.clientWidth,
-                        h=xui.browser.contentBox && d.documentElement.clientHeight || d.body.clientHeight;
-                    if(obj._w==w&&obj._h==h){
+                    var width=xui.browser.contentBox && d.documentElement.clientWidth || d.body.clientWidth,
+                        height=xui.browser.contentBox && d.documentElement.clientHeight || d.body.clientHeight;
+                    if(obj._w==width&&obj._h==height){
                         src=null;
                         return;
                     }else{
-                        obj._w=w;obj._h=h;
+                        obj._w=width;obj._h=height;
                     }
                 }
             }
@@ -122,7 +122,7 @@ xui.Class('xui.Event',null,{
                     f=src=null;
                 },150);
             }
-    
+
             if(dragdrop){
                 //shortcut for onDrag('mousemove')
                 if(type=='drag')
@@ -220,7 +220,7 @@ xui.Class('xui.Event',null,{
                 return true;
             }
             // Microsoft model (ignore attachEvent)
-            // reason: [this] is the window object, not the element; 
+            // reason: [this] is the window object, not the element;
             //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
             //else if (node.attachEvent) {
             //    return node.attachEvent(getHandler(evt),  fnc);
@@ -272,9 +272,9 @@ xui.Class('xui.Event',null,{
                 } catch(e) {}
                 node.removeEventListener(getName(evt), fnc, passiveSupported ? { passive: false} : false);
                 return true;
-            } 
+            }
             // Microsoft model (ignore attachEvent)
-            // reason: [this] is the window object, not the element; 
+            // reason: [this] is the window object, not the element;
             //             If use fnc.apply(node, arguments), you can hardly handle detachEvent when you  attachEvent a function for multi nodes, multi times
             //else if (node.detachEvent) {
             //    return node.detachEvent(getHandler(evt), fnc);
@@ -358,8 +358,8 @@ xui.Class('xui.Event',null,{
                         }
                     }while(node && (node=node.parentNode))
                 }catch(a){
+                    node=xui([target]);
                     var pos=this.getPos(event),
-                        node=xui([target]),
                         p=node.offset(),
                         s=node.cssSize(),
                         out=(pos.left<p.left||pos.left>p.left+s.width||pos.top<p.top||pos.top>p.top+s.height);
@@ -448,7 +448,7 @@ xui.Class('xui.Event',null,{
                 else{
                     if(!(t=arguments.callee.map)){
                         t = arguments.callee.map ={};
-                        var k,arr =
+                        var arr =
                         ("3,enter,8,backspace,9,tab,12,numlock,13,enter,19,pause,20,capslock," +
                         "27,esc,32, ,33,pageup,34,pagedown,35,end,36,home,37,left,38,up,39,right,40,down,44,printscreen," +
                         "45,insert,46,delete,50,down,52,left,54,right,56,up," +
@@ -527,8 +527,8 @@ xui.Class('xui.Event',null,{
         },
         getEventPara:function(event, mousePos){
             if(!mousePos)mousePos=xui.Event.getPos(event);
-            var keys = this.getKey(event), 
-            button=this.getBtn(event), 
+            var keys = this.getKey(event),
+            button=this.getBtn(event),
             h={
                 button:button,
                 pageX:mousePos&&mousePos.left,
@@ -595,9 +595,9 @@ xui.Class('xui.Event',null,{
             :-e.detail/3
         },
         $TAGNAMES:{
-          'select':'input','change':'input',  
-          'submit':'form','reset':'form',  
-          'error':'img','load':'img','abort':'img'  
+          'select':'input','change':'input',
+          'submit':'form','reset':'form',
+          'error':'img','load':'img','abort':'img'
         },
         _supportCache:{},
         isSupported:function(name, node) {
@@ -623,7 +623,7 @@ xui.Class('xui.Event',null,{
         _simulateMousedown:function(event){
             if(!event.touches)return true;
             var E=xui.Event,
-                touches = event.changedTouches, 
+                touches = event.changedTouches,
                 first = touches[0];
             if(event.touches.length>1)return true;
 
@@ -640,7 +640,7 @@ xui.Class('xui.Event',null,{
                     E.simulateEvent(first.target,"xuitouchdown",{screenX:first.screenX, screenY:first.screenY, clientX:first.clientX, clientY:first.clientY},'mousedown');
                 },100);
             }
-            
+
             return true;
         },
         _simulateMouseup:function(event){
@@ -712,13 +712,13 @@ xui.Class('xui.Event',null,{
         },
         a1=['before','on','after'],
         t1,t2,s;
-        
+
         t1=ns._map1={};
         xui.arr.each(ns._events,function(o){
             s=xui.str.initial(o);
             t1[o]=[a1[0]+s, a1[1]+s, a1[2]+s];
         });
-        
+
         t1=ns._eventMap={};
         t2=ns._eventHandler={};
         xui.arr.each(ns._events,function(o){
@@ -726,20 +726,20 @@ xui.Class('xui.Event',null,{
             t1[o]=t1[a1[1]+o]=t1[a1[0]+s]=t1[a1[1]+s]=t1[a1[2]+s]= o;
             t2[o]=t2[a1[1]+o]=t2[a1[0]+s]=t2[a1[1]+s]=t2[a1[2]+s]= (o in m1)?m1[o]:('on'+o);
         });
-        
+
         //add the root resize handler
         ns._addEventListener(w, "resize", ns.$eventhandler);
-        
+
         // DOMMouseScroll is for firefox only
         ns._addEventListener(w, "DOMMouseScroll", ns.$eventhandler3);
 
         // for simulation dblclick event in touchable device
         if(xui.browser.isTouch){
-            ns._addEventListener(d, 
+            ns._addEventListener(d,
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerdown":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerDown":
                     "touchstart", ns._simulateMousedown);
-            ns._addEventListener(d, 
+            ns._addEventListener(d,
                     (xui.browser.ie&&xui.browser.ver>=11)?"pointerup":
                     (xui.browser.ie&&xui.browser.ver>=10)?"MSPointerUp":
                     "touchend", ns._simulateMouseup);
@@ -783,16 +783,16 @@ xui.Class('xui.Event',null,{
                 charCode=options.charCode;
 
             var customEvent = null;
-            if (d.createEvent){    
+            if (d.createEvent){
                 try {
                     customEvent = d.createEvent("KeyEvents");
                     // TODO: special decipher in Firefox
                     customEvent.initKeyEvent(type, bubbles, cancelable, view, ctrlKey,altKey, shiftKey, metaKey, keyCode, charCode);
                 } catch (ex) {
                     try {
-                        customEvent = d.createEvent("Events");    
+                        customEvent = d.createEvent("Events");
                     } catch (uierror) {
-                        customEvent = d.createEvent("UIEvents");    
+                        customEvent = d.createEvent("UIEvents");
                     } finally {
                         customEvent.initEvent(type, bubbles, cancelable);
                         customEvent.view = view;
@@ -801,16 +801,16 @@ xui.Class('xui.Event',null,{
                         customEvent.shiftKey = shiftKey;
                         customEvent.metaKey = metaKey;
                         customEvent.keyCode = keyCode;
-                        customEvent.charCode = charCode;    
+                        customEvent.charCode = charCode;
                     }
                 }
-                target.dispatchEvent(customEvent);    
-                
-            } 
+                target.dispatchEvent(customEvent);
+
+            }
             // for IE
             else if(d.createEventObject) {
                 customEvent = d.createEventObject();
-    
+
                 customEvent.bubbles = bubbles;
                 customEvent.cancelable = cancelable;
                 customEvent.view = view;
@@ -818,10 +818,10 @@ xui.Class('xui.Event',null,{
                 customEvent.altKey = altKey;
                 customEvent.shiftKey = shiftKey;
                 customEvent.metaKey = metaKey;
-        
-    
+
+
                 customEvent.keyCode = (charCode > 0) ? charCode : keyCode;
-        
+
                 target.fireEvent("on" + type, customEvent);
             } else {
                 throw type + ' cant be simulated in ' + navigator.userAgent;
@@ -859,11 +859,11 @@ xui.Class('xui.Event',null,{
                 clientY=options.clientY,
                 button=options.button,
                 relatedTarget=options.relatedTarget;
-        
-            var customEvent = null;    
-            if (d.createEvent){    
+
+            var customEvent = null;
+            if (d.createEvent){
                 customEvent = d.createEvent("MouseEvents");
-                
+
                 if (customEvent.initMouseEvent){
                     customEvent.initMouseEvent(type, bubbles, cancelable, view, detail,
                                          screenX, screenY, clientX, clientY,
@@ -887,7 +887,7 @@ xui.Class('xui.Event',null,{
                     customEvent.button = button;
                     customEvent.relatedTarget = relatedTarget;
                 }
-    
+
                 if (relatedTarget && !customEvent.relatedTarget) {
                     if (type === "mouseout") {
                         customEvent.toElement = relatedTarget;
@@ -900,7 +900,7 @@ xui.Class('xui.Event',null,{
             //IE
             else if(d.createEventObject){
                 customEvent = d.createEventObject();
-        
+
                 customEvent.bubbles = bubbles;
                 customEvent.cancelable = cancelable;
                 customEvent.view = view;
@@ -913,7 +913,7 @@ xui.Class('xui.Event',null,{
                 customEvent.altKey = altKey;
                 customEvent.metaKey = metaKey;
                 customEvent.shiftKey = shiftKey;
-        
+
                 switch(button) {
                     case 0:
                         customEvent.button = 1;
@@ -927,15 +927,15 @@ xui.Class('xui.Event',null,{
                     default:
                         customEvent.button = 0;
                 }
-        
+
                 customEvent.relatedTarget = relatedTarget;
-        
-                target.fireEvent("on" + type, customEvent);    
+
+                target.fireEvent("on" + type, customEvent);
             } else {
                 throw type + ' cant be simulated in ' + navigator.userAgent;
             }
         },
-        UIEvent=function(target, type , options){    
+        UIEvent=function(target, type , options){
            xui.merge(options,{
                 bubbles : true,
                 cancelable:(type === "submit"),
@@ -946,22 +946,22 @@ xui.Class('xui.Event',null,{
                 cancelable=options.cancelable,
                 view=options.view,
                 detail=options.detail;
-    
+
             var customEvent = null;
-            if (d.createEvent){    
+            if (d.createEvent){
                 customEvent = d.createEvent("UIEvents");
                 customEvent.initUIEvent(type, bubbles, cancelable, view, detail);
-                target.dispatchEvent(customEvent);    
+                target.dispatchEvent(customEvent);
             }
             //IE
-            else if(d.createEventObject){ 
+            else if(d.createEventObject){
                 customEvent = d.createEventObject();
                 customEvent.bubbles = bubbles;
                 customEvent.cancelable = cancelable;
                 customEvent.view = view;
                 customEvent.detail = detail;
-    
-                target.fireEvent("on" + type, customEvent);    
+
+                target.fireEvent("on" + type, customEvent);
             } else {
                 throw type + ' cant be simulated in ' + navigator.userAgent;
             }
@@ -984,13 +984,17 @@ xui.Class('xui.Event',null,{
                 cancelable=options.cancelable,
                 detail=options.detail,
                 view=options.view,
+                screenX=options.screenX,
+                screenY=options.screenY,
+                clientX=options.clientX,
+                clientY=options.clientY,
                 ctrlKey=options.ctrlKey,
                 altKey=options.altKey,
                 shiftKey=options.shiftKey,
                 metaKey=options.metaKey,
                 scale=options.scale,
                 rotation=options.rotation;
-        
+
             var customEvent;
             customEvent = d.createEvent("GestureEvent");
             customEvent.initGestureEvent(type, bubbles, cancelable, view, detail,
@@ -1026,7 +1030,6 @@ xui.Class('xui.Event',null,{
                 rotation : 0.0
             },'without');
             var bubbles=options.bubbles,
-                cancelable=options.cancelable,
                 detail=options.detail,
                 view=options.view,
                 scale=options.scale,
@@ -1048,7 +1051,7 @@ xui.Class('xui.Event',null,{
                 if (xui.browser.isAndroid) {
                     if (xui.browser.ver < 4.0) {
                         customEvent = d.createEvent("MouseEvents");
-                        customEvent.initMouseEvent(type, bubbles, cancelable, view, detail, 
+                        customEvent.initMouseEvent(type, bubbles, cancelable, view, detail,
                             screenX, screenY, clientX, clientY,
                             ctrlKey, altKey, shiftKey, metaKey,
                             0, target);
@@ -1102,11 +1105,11 @@ xui.Class('xui.Event',null,{
             MSPointerDown:  mouseEvent,
             MSPointerUp:    mouseEvent,
             MSPointerMove:  mouseEvent,
-            
+
             keydown: keyEvent,
             keyup: keyEvent,
             keypress: keyEvent,
-            
+
             submit: UIEvent,
             blur: UIEvent,
             change: UIEvent,
@@ -1114,12 +1117,12 @@ xui.Class('xui.Event',null,{
             resize: UIEvent,
             scroll: UIEvent,
             select: UIEvent,
-            
+
             touchstart: touchEvent,
             touchmove: touchEvent,
             touchend: touchEvent,
             touchcancel: touchEvent,
-            
+
             gesturestart: gestureEvent,
             gesturechange: gestureEvent,
             gestureend: gestureEvent

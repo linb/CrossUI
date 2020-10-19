@@ -63,7 +63,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             });
         },
         insertItems:function(arr, pid/*true: the current item*/, base/*true: the current item*/,before, toggle){
-            var node,data,
+            var node,data,v,
                 b=this._afterInsertItems;
 
             return this.each(function(profile){
@@ -73,7 +73,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
                 data=profile.box._adjustItems(arr);
 
-                // current 
+                // current
                 if(pid===true){
                     v=prop.$UIvalue||prop.value;
                     if(v)v=(v+'').split(prop.valueSeparator);
@@ -152,7 +152,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             profile.boxing()._toggleNodes(data, true, true, true);
                     }
                 }
-                
+
                 if(b && profile.renderId)
                     profile.boxing()._afterInsertItems(profile, data, pid, base, before);
 
@@ -526,12 +526,12 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             beforeClick:function(profile, item, e, src){},
             onClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
-            onCmd:function(profile,item,cmdkey,e,src){},            
+            onCmd:function(profile,item,cmdkey,e,src){},
             onDblclick:function(profile, item, e, src){},
 
             onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
-            
+
             beforeFold:function(profile,item){},
             beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
@@ -624,7 +624,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 ignoreClick = sk==profile.keys.TOGGLE||sk==profile.keys.MARK;
 
             if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
-                
+
             if(properties.disabled|| item.disabled|| item.type=='split')return false;
 
             if(!ignoreClick && profile.onClick)
@@ -635,9 +635,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 profile.getSubNode('TOGGLE', itemId).onClick();
                 return;
             }
-    
+
             profile.getSubNode(profile.box._focusNodeKey, itemId).focus(true);
-    
+
             switch(properties.selMode){
             case 'none':
                 box.onItemSelected(profile, item, e, src, 0);
@@ -678,7 +678,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     arr.sort();
                     value = arr.join(properties.valueSeparator);
-    
+
                     //update string value only for _setCtrlValue
                     if(box.getUIValue() != value){
                         profile._noScroll=1;
@@ -970,7 +970,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 }else if(xui.isArr(sub)){
                                     b.insertItems(sub, item.id);
                                     // for []
-                                    if(!item.sub)item.sub=sub;                                    
+                                    if(!item.sub)item.sub=sub;
                                 }
                                 var s=0,arr=b.getUIValue(true);
                                 if(arr && arr.length){
@@ -998,10 +998,10 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             barNode.tagClass('-expand').tagClass('-fold',false);
                             icon.tagClass('-fold',false).tagClass('-expand');
                         }
-                        
+
                         if(!stopanim){
                             subNs.css("height","0px").css("display",'');
-                           
+
                             if(p.animCollapse){
                                 var h=0;
                                 subNs.children().each(function(o){

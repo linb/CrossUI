@@ -35,7 +35,7 @@ xui.Class("xui.MQTT","xui.absObj",{
                 server=xui.str.trim(prop.server);
             if(path.length && path[0]!="/")path="/"+path;
 
-            t = prf.$mqtt = new Paho.Client(server, parseInt(prop.port,10), path, prop.clientId);
+            t = prf.$mqtt = new window.Paho.Client(server, parseInt(prop.port,10), path, prop.clientId);
             t.onConnected = function(reconnect){
                 if(prf.onConnSuccess)prf.boxing().onConnSuccess(prf,reconnect);
             };
@@ -80,7 +80,7 @@ xui.Class("xui.MQTT","xui.absObj",{
             if(p=prop.password)opt.password=p;
             if(p=prop.keepAliveInterval)opt.keepAliveInterval=p;
             if(prop.willTopic && prop.willMessage){
-                var msg = new Paho.Message(willTopic);
+                var msg = new window.Paho.Message(prop.willTopic);
                 msg.destinationName = prop.willMessage;
                 msg.qos=parseInt(prop.willQos)||0;
                 msg.retained=prop.willRetained;
@@ -115,14 +115,14 @@ xui.Class("xui.MQTT","xui.absObj",{
                 opt.qos=parseInt(opt.qos)||0;
                 opt.onSuccess=function(){
                     prf.$mqtt_subed[topic]=new Date;
-                    if(prf.onSubSuccess)prf.boxing().onSubSuccess(prf,e);
+                    if(prf.onSubSuccess)prf.boxing().onSubSuccess(prf,topic);
                 };
                 opt.onFailure=function(e){
                     delete prf.$mqtt_subed[topic];
                     if(prf.onSubFailed)prf.boxing().onSubFailed(prf,e,topic);
                 };
                 opt.timeout=prop.timeout;
-                
+
                 t.subscribe(topic, opt);
             }
         },
@@ -132,13 +132,13 @@ xui.Class("xui.MQTT","xui.absObj",{
                 var opt=xui.isHash(option)?xui.copy(option):{};
                 opt.onSuccess=function(){
                    delete prf.$mqtt_subed[topic];
-                    if(prf.onUnsubSuccess)prf.boxing().onUnsubSuccess(prf,e);
+                    if(prf.onUnsubSuccess)prf.boxing().onUnsubSuccess(prf,topic);
                 };
                 opt.onFailure=function(e){
                     if(prf.onUnsubFailed)prf.boxing().onUnsubFailed(prf,e,topic);
                 };
                 opt.timeout=prop.timeout;
-                
+
                 t.unsubscribe(topic, opt);
             }
         },
@@ -162,10 +162,10 @@ xui.Class("xui.MQTT","xui.absObj",{
             subscribers:[],
 
             server:"broker.mqttdashboard.com",
-            port:"8000", 
+            port:"8000",
             path:"mqtt",
             clientId:"xui_mqtt_client",
-            
+
             timeout:30,
             userName:"",
             password:"",

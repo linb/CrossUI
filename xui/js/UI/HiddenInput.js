@@ -10,7 +10,8 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             });
         },
         _getCtrlValue:function(){
-            var node=this.getSubNode('KEY');
+            var node=this.getSubNode('INPUT'),
+                v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
             if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
             return v;
         }

@@ -413,7 +413,6 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
 
             'LIST span':{
                 overflow: 'hidden',
-                margin: '0',
                 cursor: 'pointer',
                 margin:'0 -1px -1px 0',
                 display: xui.$inlineBlock,
@@ -454,7 +453,7 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                     p.box._vC(p);
                     if(!p.properties.advance)
                         p.boxing().setUIValue(sid,true,null,'click');
-                        
+
                     return false;
                 },
                 onDblclick:function(p,e,s){
@@ -680,7 +679,7 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
             data.classBar= data.barDisplay?'xui-uibar-top':'xui-uibar-top-s';
             data.closeDisplay = data.closeBtn?'':nodisplay;
             data.advDispay = data.advance?'':'display:none;';
-            
+
             data._transparent = xui.getRes('inline.transparent');
             data._set = xui.wrapRes('inline.set');
             return data;

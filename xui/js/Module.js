@@ -111,7 +111,7 @@ xui.Class('xui.Module','xui.absProfile',{
              self=oldm;
         }else{
         	if(properties && properties.key && properties["xui.Module"]){
-	             var opt=properties;
+	             opt=properties;
 	             properties = (opt && opt.properties) || {};
 	             events = (opt && opt.events) || {};
 	             alias = opt.alias;
@@ -184,7 +184,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
             var fun = function(m){
                 if(m["xui.Module"]){
-                    for(var i=0,l=m._nodes,o;i<l, o=m._nodes[i];i++){
+                    for(var i=0,o;o=m._nodes[i];i++){
                         if(o["xui.Module"]) return fun(o);
                         if(o["xui.UIProfile"] && !o.box.$initRootHidden) return rtnPrf?o:o.getRoot();
                     }
@@ -595,7 +595,7 @@ xui.Class('xui.Module','xui.absProfile',{
         refresh:function(callback,ignoreEffects, purgeNow){
             var paras, b, p, s, fun,
                 o=this,
-                inm, firstUI,
+                inm, firstUI, childId,
                 // for builder project module updating
                 box=o.box,
                 host=o.host,
@@ -1368,7 +1368,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 },
                 key=m.KEY,
                 path=key.split("."),
-                n;
+                n,s;
             // clear cache
             if(s=xui.get(window,['xui','$cache','SC']))delete s[key];
             xui.set(window, path);

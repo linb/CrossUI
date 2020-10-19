@@ -118,9 +118,9 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                $order:4
              },
              // }}
-             
+
              // {{ for design mode (handsontable)
-            // reset 
+            // reset
             "KEY ITEM": {
               "position": "relative",
                 background:"transparent",
@@ -358,7 +358,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 });
         },
         _getLayoutData:function(prf){
-            var prop=prf.properties, 
+            var prop=prf.properties,
                 cells={}, borders, rowSetting={}, colSetting={}, merged=[],
                 layoutData = {},
                 data, rows, cols, t, p, s, tmp;
@@ -433,7 +433,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 layoutData = prop.layoutData,
                 rowSize=layoutData.rows||prop.defaultRowSize,
                 colSize=layoutData.cols||prop.defaultColumnSize,
-                childrenMap={}, t, merged={}, merged2={}, 
+                childrenMap={}, t, merged={}, merged2={},
                 getCellData = function(childrenMap, itemId){
                     var data = prf.onGetCellData && prf.boxing().onGetCellData(prf, itemId, xui.get(layoutData, ["cells", itemId]), childrenMap[itemId]);
                     if(!xui.isSet(data)){
@@ -508,7 +508,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     };
                     prf.ItemIdMapSubSerialId[itemId] = subSerialId;
                     prf.SubSerialIdMapItem[subSerialId] = item;
-                    
+
                     domId = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
                     styles = [];
                     xui.each(item.style,function(v,k){
@@ -549,8 +549,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 prf.box._layoutChanged(prf,force);
             };
             var boxNode = prf.getSubNode("BOX"),
-                elem = boxNode.get(0), 
-                htable, 
+                elem = boxNode.get(0),
+                htable,
                 prop = prf.properties,
                 layoutData = prop.layoutData,
                 designMode = true,
@@ -615,7 +615,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
 //                        }
                         TD.className = (TD.className||"")  + prf.getClass("ITEM");
                         if(designMode)
-                            TD.setAttribute('data-coord', itemId); 
+                            TD.setAttribute('data-coord', itemId);
                         if(cellprop._child_autoexpandH){
                             TD.style.height=cellprop._child_autoexpandH+"px";
                         }else{
@@ -644,7 +644,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                             if(arr.length){
                                 prf._pool_children = arr;
                             }
-                            
+
                             // reset memory map
                             prf.children=[];
                             for(var i in prf.SubSerialIdMapItem)
@@ -735,7 +735,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                                 (!node.id)
                                 || node.id==xui.$localeDomId
                                 || node.tagName=='tspan'
-                            ) 
+                            )
                             && node.parentNode!==document && node.parentNode!==window
                         ) node=node.parentNode;
                         var p=xui.UIProfile.getFromDom(node);
@@ -780,14 +780,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         if(!auto)
                             onLayoutChanged(prf);
                     },
-                    
+
                     // reset autoexpand
                     afterRowResize:function(row, size, dblclick){
                         onLayoutChanged(prf);
                         var cells = this.getCellMetaAtRow(row);
                         for(var i=0, l=cells.length;i<l;i++){
                             var target = prf.boxing().getChildren(cells[i].id);
-                            if(target['xui.UI.Input'] 
+                            if(target['xui.UI.Input']
                                 && target.getMultiLines && target.getMultiLines()
                                 && target.setAutoexpand
                                 ) {
@@ -891,7 +891,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             settings.rowHeaders = designMode;
             settings.colHeaders =  designMode;
 
-  
+
             // merged info
             if(layoutData.merged){
                 settings.mergeCells = layoutData.merged;
@@ -927,14 +927,14 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                     var coord = xui.ExcelFormula.toCoordinate(id);
                     data[coord.row][coord.col] = xui.isSet(cell.value)?cell.value:null;
                 });
-                
+
                 // set manualRowResize, manualColumnResize and data
                 for(var i=0;i<layoutData.rows;i++){
                     manualRowResize[i] = manualRowResize[i] || prop.defaultRowHeight;
                 }
                 settings.manualRowResize = manualRowResize;
                 settings.manualColumnResize = !xui.isEmpty(manualColumnResize) ? manualColumnResize : designMode;
-                
+
                 if(!xui.isEmpty(minRowHeights))settings.rowHeights = minRowHeights;
                 // don't use colWidths
                 //if(!xui.isEmpty(colWidths))settings.colWidths = colWidths;
@@ -951,8 +951,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 }
                 settings.manualRowResize = manualRowResize;
             }
-            prf.$htable = htable = new Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
-            
+            prf.$htable = htable = new window.Handsontable(elem, xui.merge(settings, fixedSet, 'all'));
+
             if(!layoutData.cols){
                 // reset layoutData
                 prf.properties.layoutData = prf.box._getLayoutData(prf);
@@ -968,7 +968,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                         xui.$purgeChildren(node);
 
                     if(!t.isDestroyed){
-                        Handsontable.hooks.destroy(t);
+                        window.Handsontable.hooks.destroy(t);
                         t.destroy();
                     }
                     delete this.$htable;
@@ -1138,7 +1138,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
             if(prf.renderId && target['xui.UI'] && target.size()==1){
                 var item = prf.getItemByItemId(subId), inputPrf = target.get(0), iProp=inputPrf.properties;
                 if(item){
-                    var cell = prf.getSubNode("ITEM", item._serialId), 
+                    var cell = prf.getSubNode("ITEM", item._serialId),
                         isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']),
                         mode = prf.boxing().getMode(),
                         show = mode!='read' || target['xui.UI.RichEditor'];
@@ -1175,7 +1175,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                                 if(target.setLabelPos)  target.setLabelPos('none').setLabelCaption('').setLabelSize('0');
                                 if(target.setVAlign)  target.setVAlign('middle');
 
-                                if(target['xui.UI.Input'] 
+                                if(target['xui.UI.Input']
                                     && target.getMultiLines && target.getMultiLines()
                                     && target.setAutoexpand
                                 ){
@@ -1255,7 +1255,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
                 boxNode = prf.getSubNode('BOX'),
                 offset = prf.box._getHeaderOffset(prf),
                 // caculate by px
-                ww=width?prf.$px(width):width, 
+                ww=width?prf.$px(width):width,
                 hh=height?prf.$px(height):height,
                 t;
             if(autoh)height=null;

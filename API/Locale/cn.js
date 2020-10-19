@@ -11151,16 +11151,29 @@ xui.set(xui.Locale,["cn","app"], {
                     "}"
                 ]
             },
+            getAutocomplete:{
+                $desc:""获得HTML5自动完成属性",
+                $rtn:"String"
+            },
+            setAutocomplete:{
+                $desc:"设置HTML5自动完成属性",
+                $rtn:"[self]",
+                $paras:[
+                    "value [必需参数] : String, 'on' or 'off'",
+                    $force
+                ]
+            },
             getPlaceholder:{
-                $desc:"获得HTML 5  空白提示字符串",
+                $desc:"获得HTML5空白提示字符串",
                 $rtn:"String"
             },
             setPlaceholder:{
-                $desc:"设置HTML 5  空白提示字符串",
+                $desc:"设置HTML5空白提示字符串",
                 $rtn:"[self]",
                 $paras:[
                     "value [必需参数] : String",
-                    $force                ]
+                    $force
+                ]
             },
             getExcelCellId:{
                 $desc:"获得模拟Excel单元格的id",

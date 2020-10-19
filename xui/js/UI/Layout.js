@@ -53,7 +53,6 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     }
                     profile.getRoot().prepend(r);
                     profile.adjustSize();
-                    t=null;
                 }
 
                 if(b)

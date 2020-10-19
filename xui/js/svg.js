@@ -7,7 +7,7 @@ xui.Class("xui.svg", "xui.UI",{
         if(typeof(Raphael)=="function"){
             Raphael._availableAttrs.href="";
             Raphael._availableAttrs.title="";
-    
+
             Raphael.el.shadow = function () {
                 var ns=this;
                 if (ns.type == "text")return null;
@@ -29,7 +29,7 @@ xui.Class("xui.svg", "xui.UI",{
                     path = Raphael.transformPath(path, "t"+(sw/2)+","+(sw/2)+"s"+rx+","+ry+","+(bbox.x+bbox.width+sw)+","+(bbox.y+bbox.height+sw));
                 else
                     path = Raphael.transformPath(path, "t"+c/2+","+c/2);
-    
+
                 for (var i=1,s; i < c+1; i++) {
                     s=r.path(path).attr({
                         stroke: "#666",
@@ -47,7 +47,7 @@ xui.Class("xui.svg", "xui.UI",{
                     out.transform(tr);
                 return out.insertBefore(ns);
             };
-            
+
             var  r = function(){
                 var m=arguments, g = m.length, b=0, a;
                 for (;b<g;b++)if ((a = m[b]) || !(a !== !1 && a !== 0)) return a;
@@ -59,15 +59,15 @@ xui.Class("xui.svg", "xui.UI",{
             t = function(m){
                 return "matrix(" + [ m.get(0), m.get(1), m.get(2), m.get(3), m.get(4), m.get(5) ].join() + ")";
             },
-            h = /^matrix\(|\)$/g, 
-            M = /\,/g, 
-            e = /\n|<br\s*?\/?>/gi, 
-            k = /[^\d\.]/gi, 
-            V = /[\(\)\s,\xb0#]/g, 
-            ga = /group/gi, 
-            w = /&/g, 
-            Q = /"/g, K = /'/g, 
-            G = /</g, aa = />/g, 
+            h = /^matrix\(|\)$/g,
+            M = /\,/g,
+            e = /\n|<br\s*?\/?>/gi,
+            k = /[^\d\.]/gi,
+            V = /[\(\)\s,\xb0#]/g,
+            ga = /group/gi,
+            w = /&/g,
+            Q = /"/g, K = /'/g,
+            G = /</g, aa = />/g,
             A = 0,
             l = Math, D = parseFloat, q = l.max, j = l.abs, s = l.pow, fa = String, ea = /[, ]+/, U = [ {
                 reg: /xmlns\=\"http\:\/\/www.w3.org\/2000\/svg\"/gi,
@@ -107,7 +107,7 @@ xui.Class("xui.svg", "xui.UI",{
                 str: function(e) {
                     return e.toLowerCase();
                 }
-            } ], 
+            } ],
             W = {
                 blur: function() {},
                 transform: function() {},
@@ -115,7 +115,7 @@ xui.Class("xui.svg", "xui.UI",{
                     d.attrSTR += ' xlink:href="' + d.attrs.src + '"';
                 },
                 path: function(e, d) {
-                    var h = d.attrs.path, h = Raphael._pathToAbsolute(h || "");
+                    var h = d.attrs.path; h = Raphael._pathToAbsolute(h || "");
                     d.attrSTR += ' d="' + (h.toString && h.toString() || "").replace(M, " ") + '"';
                 },
                 gradient: function(e, d, h) {
@@ -141,8 +141,8 @@ xui.Class("xui.svg", "xui.UI",{
                         }
                         b = Raphael._parseDots(b);
                         if (!b) return null;
-                        f === "radial" ? (g = '<radialGradient fx = "' + c + '" fy = "' + k + '" id = "' + a + '">', 
-                        r = "</radialGradient>") : (g = '<linearGradient x1 = "' + w[0] + '" y1 = "' + w[1] + '" x2 = "' + w[2] + '" y2 = "' + w[3] + '" gradientTransform ="matrix(' + e.matrix.invert() + ')" id = "' + a + '">', 
+                        f === "radial" ? (g = '<radialGradient fx = "' + c + '" fy = "' + k + '" id = "' + a + '">',
+                        r = "</radialGradient>") : (g = '<linearGradient x1 = "' + w[0] + '" y1 = "' + w[1] + '" x2 = "' + w[2] + '" y2 = "' + w[3] + '" gradientTransform ="matrix(' + e.matrix.invert() + ')" id = "' + a + '">',
                         r = "</linearGradient>");
                         e = 0;
                         for (w = b.length; e < w; e++) u += '<stop offset="' + (b[e].offset ? b[e].offset : e ? "100%" : "0%") + '" stop-color="' + (b[e].color || "#fff") + '" stop-opacity="' + (b[e].opacity === void 0 ? 1 : b[e].opacity) + '" />';
@@ -153,7 +153,7 @@ xui.Class("xui.svg", "xui.UI",{
                 },
                 fill: function(e, d) {
                     var h = d.attrs, b = h.fill, f;
-                    if (!e.attrs.gradient) if (b = Raphael.color(b), f = b.opacity, e.type === "text") d.styleSTR += "fill:" + b + "; stroke-opacity:0; "; else if (d.attrSTR += ' fill="' + b + '"', 
+                    if (!e.attrs.gradient) if (b = Raphael.color(b), f = b.opacity, e.type === "text") d.styleSTR += "fill:" + b + "; stroke-opacity:0; "; else if (d.attrSTR += ' fill="' + b + '"',
                     !h["fill-opacity"] && (f || f === 0)) d.attrSTR += ' fill-opacity="' + f + '"';
                 },
                 stroke: function(e, d) {
@@ -164,7 +164,7 @@ xui.Class("xui.svg", "xui.UI",{
                 },
                 "clip-rect": function(e, d, i) {
                     var b = fa(d.attrs["clip-rect"]), f = b.split(ea), b = b.replace(V, "_") + "__" + A++;
-                    f.length === 4 && (i[b] || (i[b] = !0, i.str += '<clipPath id="' + b + '"><rect x="' + f[0] + '" y="' + f[1] + '" width="' + f[2] + '" height="' + f[3] + '" transform="matrix(' + t(e.matrix.invert()).replace(h, "") + ')"/></clipPath>'), 
+                    f.length === 4 && (i[b] || (i[b] = !0, i.str += '<clipPath id="' + b + '"><rect x="' + f[0] + '" y="' + f[1] + '" width="' + f[2] + '" height="' + f[3] + '" transform="matrix(' + t(e.matrix.invert()).replace(h, "") + ')"/></clipPath>'),
                     d.attrSTR += ' clip-path="url(#' + b + ')"');
                 },
                 cursor: function(e, d) {
@@ -201,11 +201,11 @@ xui.Class("xui.svg", "xui.UI",{
                     a && a.replace && (a = a.replace(k, ""));
                     a = u(a, f && f * 1.2);
                     g = f ? f * .85 : a * .75;
-                    for (var f = i.x, c = r(i["vertical-align"], "middle").toLowerCase(), b = fa(b).split(e), i = b.length, l = 0, c = c === "top" ? g : c === "bottom" ? g - a * i : g - a * i * .5; l < i; l++) h.textSTR += "<tspan ", 
-                    g = (b[l] || "").replace(w, "&amp;").replace(Q, "&quot;").replace(K, "&#39;").replace(G, "&lt;").replace(aa, "&gt;"), 
+                    for (var f = i.x, c = r(i["vertical-align"], "middle").toLowerCase(), b = fa(b).split(e), i = b.length, l = 0, c = c === "top" ? g : c === "bottom" ? g - a * i : g - a * i * .5; l < i; l++) h.textSTR += "<tspan ",
+                    g = (b[l] || "").replace(w, "&amp;").replace(Q, "&quot;").replace(K, "&#39;").replace(G, "&lt;").replace(aa, "&gt;"),
                     h.textSTR += l ? 'dy="' + a + '" x="' + f + '" ' : 'dy="' + c + '"', h.textSTR += ">" + g + "</tspan>";
                 }
-            }, 
+            },
             X = function(e, i) {
                 var k = "", b = {
                     attrSTR: "",
@@ -230,8 +230,8 @@ xui.Class("xui.svg", "xui.UI",{
             Raphael.fn.toSVG = function(includeImage) {
                 var d = "", h = {str: ""}, b = 0, f = U.length, a = "";
                 if (Raphael.svg) {
-                    if (this.canvas && this.canvas.parentNode) 
-                        for (d = this.canvas.parentNode.innerHTML; b < f; b += 1) 
+                    if (this.canvas && this.canvas.parentNode)
+                        for (d = this.canvas.parentNode.innerHTML; b < f; b += 1)
                             h = U[b], d = d.replace(h.reg, h.str);
                 } else{
                     d = '<svg style="overflow: hidden; position: relative;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + this.width + '" version="1.1" height="' + this.height + '">';
@@ -290,7 +290,7 @@ xui.Class("xui.svg", "xui.UI",{
         delete o["stroke-opacity"];
         delete o['stroke-dashoffset'];
         delete o["stroke-width"];
-        
+
         delete this.prototype.toHtml;
     },
     Instance:{
@@ -1094,7 +1094,7 @@ xui.Class("xui.svg", "xui.UI",{
                                                 }
 
                                                 // magnetic function
-                                                var minDis=null;
+                                                var minDis=null,distance;
                                                 for(var i in anchors){
                                                     distance=Math.pow(Math.pow(Math.abs(ix-anchors[i].x),2)+Math.pow(Math.abs(iy-anchors[i].y),2),1/2);
                                                     if(distance<=magneticDistance1){
@@ -1841,7 +1841,7 @@ xui.Class("xui.svg", "xui.UI",{
                     var prf=this, e=prf._elset[0],
                         elm=e&&e.node;
                     if(!elm)return;
-                    var length = elm.getTotalLength(), 
+                    var length = elm.getTotalLength(),
                         style=elm.style,
                         trans=function(v){style.transition = style[xui.browser.cssTag2+'Transition'] =v;},
                         bak1 = style.strokeDasharray ||'',
@@ -1850,7 +1850,7 @@ xui.Class("xui.svg", "xui.UI",{
                     trans('none');
                     style.strokeDasharray = length + ',' + length;
                     style.strokeDashoffset = length;
-                    
+
                     // Trigger layout
                     elm.getBoundingClientRect();
                     trans('stroke-dashoffset '+v);
@@ -1885,7 +1885,7 @@ xui.Class("xui.svg", "xui.UI",{
                         if(!arr)return;
                         arr=arr.replace(/\s+/,'').split(',');
                         for(var i=0,l=arr.length;i<l;i++) sum += parseInt(arr[i],10);
-                        
+
                         if(sum>0){
                             sum=sum*2;
                             var offset=0, speed=parseInt(v, 10);
@@ -1965,7 +1965,7 @@ xui.Class("xui.svg", "xui.UI",{
             prf.box._initAttr2UI(prf);
             xui.setTimeout(function(){
                 if(prf.destroyed)return;
-                var prop=prf.properties,ins=prf.boxing(),alln=ins.getAllNodes(),t;
+                var prop=prf.properties,ins=prf.boxing(),alln=ins.getAllNodes(),t,v;
                 if(t=prop.animDraw){
                     ins.setAnimDraw(t,true);
                 }else if(t=prop.offsetFlow){
@@ -2155,17 +2155,17 @@ xui.Class("xui.svg", "xui.UI",{
                        r.remove();
                        div.empty();
                     }
-                    
+
                     if(xui.isNumb(bbox.x))
                         obbox.x=bbox.x;
                     if(xui.isNumb(bbox.y))
                         obbox.y=bbox.y;
-                        
+
                     //if('hAlign' in prf.box.$DataModel){
                         var ha=attr.hAlign||'center',
                             va=attr.vAlign||'middle',
                             offsetx=obbox?(textAnchor=='start'?-obbox.width/2:textAnchor=='middle'?0:obbox.width/2):0;
-    
+
                         if(xui.isNumb(bbox.x)){
                             if(ha=='center'){
                                 if(xui.isNumb(bbox.width)){
@@ -2198,7 +2198,7 @@ xui.Class("xui.svg", "xui.UI",{
                             }
                             h.x += offsetx;
                         }
-    
+
                         if(xui.isNumb(bbox.y)){
                             if(va=='middle'){
                                 if(xui.isNumb(bbox.height)){
@@ -2257,7 +2257,7 @@ xui.Class("xui.svg", "xui.UI",{
                        div.empty();
                     }
                     var obbox2=copy(obbox);
-                    
+
                     //if(obbox.width===0 || obbox.height===0)
                     //    return;
 
@@ -2353,7 +2353,7 @@ xui.Class("xui.svg", "xui.UI",{
                     el.transform("");
 
                     //for rotate setting
-                    var ir=-1, it=-1, rot; 
+                    var ir=-1, it=-1, rot;
                     for(var i=0,l=ts.length; i<l; i++){
                         if(ts[i][0]=='r'){
                             ir = i;
@@ -2370,7 +2370,7 @@ xui.Class("xui.svg", "xui.UI",{
                         el.transform("");
                         ts[it][1]-=ts2[0][1];
                         ts[it][2]-=ts2[0][2];
-                        
+
                         if(!ts[it][1] && !ts[it][2]){
                             xui.arr.removeFrom(ts, it);
                         }
@@ -2754,7 +2754,7 @@ xui.Class("xui.svg.absComb", "xui.svg",{
                 //onClick event
                 if(profile.onDblClick)
                     return profile.boxing().onDblClick(profile, e, src);
-            },            
+            },
             onContextmenu:function(profile, e, src){
                 if(profile.onContextmenu)
                     return profile.boxing().onContextmenu(profile, e, src)!==false;
@@ -3024,9 +3024,9 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             s.push(obj2);
 
             obj1 = paper.path(attr.path);
-            
+
             if(!prf.properties.bgLine)obj1.hide();
-            
+
             obj1.node.id=prf.box.KEY+"-BG:"+prf.serialId+":";
             s.push(obj1);
             obj1.insertBefore(obj2);
@@ -3552,7 +3552,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         _beforeSerialized:function(profile){
             var o = arguments.callee.upper.call(this,profile),prop=o.properties;
             var attrs=prop.attr=xui.clone(prop.attr,true);
-            
+
             xui.filter(attrs.KEY,function(o,i){
                 if(i=='transform'&&(!o||o.length<1))return false;
                 if(i=='href'||i=='target')return false;
@@ -3565,7 +3565,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     // transform is from KEY
                     if(i=='transform')return false;
                 });
-                
+
                 var type=key.split("_")[0];
                 if(type=="path"){
                     xui.each(attr,function(o,i){
@@ -3608,7 +3608,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             // other elements
             xui.each(attrs,function(attr,key){
                 if(key=="KEY")return;
-                
+
                 var type=key.split("_")[0].toLowerCase();
                 switch(type){
                     case "rect":
@@ -3625,7 +3625,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                         break;
                     case "path":
                         el =paper.path(attr.path);
-                        break;                    
+                        break;
                     case "text":
                         el = paper.text(attr.x, attr.y, attr.text);
                         break;
