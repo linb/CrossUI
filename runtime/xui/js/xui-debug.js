@@ -628,6 +628,32 @@ new function(){
                 }else return hash;
             }else return hash;
         },
+        deepEquals:function(x, y, deep, ignore, _curLayer){
+          if(!xui.isSet(deep)) deep=100;
+          if(!xui.isSet(_curLayer))_curLayer = 1;
+
+          if (x === y) return true;
+          if (!(x instanceof Object) || !(y instanceof Object)) return false;
+          if (x.constructor !== y.constructor) return false;
+          for (let p in x) {
+            if (ignore && ignore(p)) continue;
+            if (!x.hasOwnProperty(p)) continue;
+            if (!y.hasOwnProperty(p)) return false;
+            if (x[p] === y[p]) continue;
+            if (typeof x[p] !== "object") return false;
+            if (xui.isHash(x[p]) && xui.isHash(y[p]) && xui.isEmpty(x[p])&& xui.isEmpty(y[p])) continue;
+            if (xui.isArr(x[p]) && xui.isArr(y[p]) && x[p].length === 0 && y[p].length === 0) continue;
+            if (_curLayer >= deep) {
+              if (x[p] !== y[p]) return false;
+              continue;
+            } else if (!xui.deepEquals(x[p], y[p], deep, ignore, _curLayer + 1))
+              return false;
+          }
+          for (let p in y) {
+            if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) return false;
+          }
+          return true;
+        },
         /*filter hash/array
         filter: filter function(will delete "return false")
         */
@@ -54343,7 +54369,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 });
                                 if(profile.beforePopShow)
                                     editor.beforePopShow(function(editorprf, popCtl, items){
-                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell._col);
+                                        var rst;
+                                        if(editorEvents && editorEvents.beforePopShow)rst = editorEvents.beforePopShow(editorprf, popCtl, items);
+                                        rst = profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell._col);
+                                        return rst;
                                     });
                                 if(profile.afterPopShow)
                                     editor.afterPopShow(function(editorprf, popCtl){
@@ -54706,12 +54735,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },dfun=function(){
                                // if(editor) xui.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl,items){
+                            editor.onFocus(bfun).beforePopShow(function(editorprf, popCtl,items){
                                 bfun();
                                 editor.onBlur(null);
-                                // for compitable
-                                if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items, editorPrf.$cell._row, editorPrf.$cell_col);
+                                var rst;
+                                if(editorEvents && editorEvents.beforePopShow)rst = editorEvents.beforePopShow(editorprf, popCtl, items);
+                                if(profile.beforePopShow)rst = profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell_col);
+                                return rst;
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);

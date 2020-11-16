@@ -6889,7 +6889,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 });
                                 if(profile.beforePopShow)
                                     editor.beforePopShow(function(editorprf, popCtl, items){
-                                        return profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell._col);
+                                        var rst;
+                                        if(editorEvents && editorEvents.beforePopShow)rst = editorEvents.beforePopShow(editorprf, popCtl, items);
+                                        rst = profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell._col);
+                                        return rst;
                                     });
                                 if(profile.afterPopShow)
                                     editor.afterPopShow(function(editorprf, popCtl){
@@ -7252,12 +7255,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },dfun=function(){
                                // if(editor) xui.tryF(editor.undo,[],editor);
                             };
-                            editor.onFocus(bfun).beforePopShow(function(editorPrf, popCtl,items){
+                            editor.onFocus(bfun).beforePopShow(function(editorprf, popCtl,items){
                                 bfun();
                                 editor.onBlur(null);
-                                // for compitable
-                                if(profile.beforePopShow)
-                                    return profile.boxing().beforePopShow(profile, editorPrf.$cell, editorPrf, popCtl, items, editorPrf.$cell._row, editorPrf.$cell_col);
+                                var rst;
+                                if(editorEvents && editorEvents.beforePopShow)rst = editorEvents.beforePopShow(editorprf, popCtl, items);
+                                if(profile.beforePopShow)rst = profile.boxing().beforePopShow(profile, editorprf.$cell, editorprf, popCtl, items, editorprf.$cell._row, editorprf.$cell_col);
+                                return rst;
                             }).afterPopHide(function(){
                                 cfun();
                                 editor.onBlur(dfun);
