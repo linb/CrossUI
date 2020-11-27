@@ -22,6 +22,12 @@ xui.Class("xui.APICaller","xui.absObj",{
 
         setQueryData:function(data, path){
             return this.each(function(prf){
+                if(path)xui.set(prf.properties.queryData, (path||"").split("."), data);
+                else prf.properties.queryData=data||{};
+            });
+        },
+        setQueryArgs:function(data, path){
+            return this.each(function(prf){
                 if(path)xui.set(prf.properties.queryArgs, (path||"").split("."), data);
                 else prf.properties.queryArgs=data||{};
             });
@@ -51,6 +57,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
                 queryPassword=prop.queryPassword,
+                queryData=prop.queryData,
                 queryArgs=xui.clone(prop.queryArgs),
                 oAuth2Token=prop.oAuth2Token,
                 queryOptions=xui.clone(prop.queryOptions),
@@ -212,6 +219,8 @@ xui.Class("xui.APICaller","xui.absObj",{
 
             xui.merge(options, rMap, 'all');
             options.proxyType=proxyType;
+
+            if(queryData)options.data=queryData;
 
             if(xui.isEmpty(options.header)){
                 delete options.header;
@@ -420,6 +429,9 @@ xui.Class("xui.APICaller","xui.absObj",{
             },
 
             queryArgs:{
+                ini:{}
+            },
+            queryData:{
                 ini:{}
             },
             queryHeader:{

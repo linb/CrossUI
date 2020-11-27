@@ -268,7 +268,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: ' xui-uimenu {itemClass} {disabled}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-placeholder {imageClass}  {picClass}',
@@ -300,7 +300,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '  xui-uimenu {itemClass} {disabled}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     CHECKBOX:{
                         $order:0,
                          className:'xuifont',
@@ -326,7 +326,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '  xui-uimenu {itemClass} {disabled}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     RADIOBOX:{
                         $order:0,
                         className:'xuifont',

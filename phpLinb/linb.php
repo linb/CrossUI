@@ -328,7 +328,7 @@
              //post a=b$c=d
              if(count($_POST)>0){
                 foreach ($_POST as $k=>$v)
-                    $httpdata->$k = get_magic_quotes_gpc()?stripslashes($v):$v;
+                    $httpdata->$k = ini_set("magic_quotes_runtime",0)?stripslashes($v):$v;
              //post {a:'b',c:'d'}
              //or xmlhttp post
              }else{
@@ -337,7 +337,7 @@
                 if($request){
                     $request = LINB::$json->decode($request);
                     foreach ($request as $k=>$v)
-                        $httpdata->$k = is_string($v)?get_magic_quotes_gpc()?stripslashes($v):$v:$v;
+                        $httpdata->$k = is_string($v)?ini_set("magic_quotes_runtime",0)?stripslashes($v):$v:$v;
                 }
               }
 
@@ -347,12 +347,12 @@
              if($request){
                  if(strstr($request,'=')!==false){
                     foreach ($_GET as $k=>$v)
-                        $httpdata->$k = get_magic_quotes_gpc()?stripslashes($v):$v;
+                        $httpdata->$k = ini_set("magic_quotes_runtime",0)?stripslashes($v):$v;
                  //get ?{a:'b',c:'d'}
                  }else{
                     $request = LINB::$json->decode(rawurldecode($request));
                     foreach ($request as $k=>$v)
-                        $httpdata->$k = is_string($v)?get_magic_quotes_gpc()?stripslashes($v):$v:$v;
+                        $httpdata->$k = is_string($v)?ini_set("magic_quotes_runtime",0)?stripslashes($v):$v:$v;
                  }
              }
              if($_SERVER['QUERY_STRING']){

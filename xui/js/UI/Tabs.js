@@ -346,7 +346,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items:{
                     ITEM:{
                         className:'xui-uiborder-flat xui-uiborder-nob xui-uiborder-box xui-uiborder-radius-big-tl xui-uiborder-radius-big-tr xui-uibar {itemClass} {disabled} {readonly}',
-                        style:'{_itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay};{itemStyle};',
                         ITEMI:{
                             ITEMC:{
                                 HANDLE:{

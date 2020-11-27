@@ -4779,7 +4779,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     CMD:{
                         tagName:"span",
                         title:"{tips}",
-                        style:'{_style}{itemStyle}{_exstyle}',
+                        style:'{_style};{itemStyle};{_exstyle};',
                         className:'xui-node xui-tag-cmd',
                         tabindex: '{_tabindex}',
                         CMDICON:{
@@ -4794,7 +4794,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     CMD:{
                         tagName:"button",
                         title:"{tips}",
-                        style:'{_style}{itemStyle}{_exstyle}',
+                        style:'{_style};{itemStyle};{_exstyle};',
                         className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd xui-tag-cmd',
                         tabindex: '{_tabindex}',
                         CMDICON:{
@@ -4811,7 +4811,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         title:"{tips}",
                         src:"{image}",
                         border:"0",
-                        style:'{_style}{itemStyle}{_exstyle}',
+                        style:'{_style};{itemStyle};{_exstyle};',
                         className:'xui-node xui-tag-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         alt:"{caption}"

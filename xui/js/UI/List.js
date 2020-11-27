@@ -135,7 +135,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 items:{
                     ITEM:{
                         className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemCls} {_split} {itemClass} {disabled} {readonly}',
-                        style:'{itemStyle}{_itemDisplay}',
+                        style:'{itemStyle};{_itemDisplay};',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
                             $order:2,

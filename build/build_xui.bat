@@ -1,11 +1,9 @@
 set relPath=..\
-set compressTool=%relPath%tools/yuicompressor.jar
 set outPath=runtime\
 set miniPath=\xui.js
 
 set allPath=\xui-all.js
 set debugPath=\xui-debug.js
-
 set rawPath=%relPath%API\App\js\xui-raw.js
 
 
@@ -47,11 +45,12 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\_end.js /b ^
 xui.js
 
-java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%miniPath% xui.js
-java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%miniPath% %outPath%xui\js%miniPath%
+set pa=%cd%
+cd C:\nodejs\
+call terser %pa%\xui.js -c toplevel --mangle -o %pa%\%outPath%xui\js%miniPath%
+cd %pa%
 
 del /q xui.js
-
 
 rem ==================
 rem for all xui code
@@ -123,19 +122,22 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\UI\ECharts.js /b ^
 + %relPath%xui\js\UI\FormLayout.js /b ^
 + %relPath%xui\js\_end.js /b ^
-xui.js
+xui-all.js
 
-java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%allPath% xui.js  --charset utf-8
-java -jar  -Xmn128m -Xms512m -Xmx1024m  %compressTool% -o  %outPath%xui\js%allPath% %outPath%xui\js%allPath%  --charset utf-8
-java -jar  -Xmn128m -Xms512m -Xmx1024m   %compressTool% -o  %rawPath%   --nomunge  xui.js  --charset utf-8
-copy xui.js  %outPath%xui\js%debugPath%
+set pa=%cd%
+cd C:\nodejs\
+call terser %pa%\xui-all.js -c toplevel --mangle -o %pa%\%outPath%xui\js%allPath%
+call terser %pa%\xui-all.js -c toplevel -o %pa%\%rawPath%
+cd %pa%
+
+copy xui-all.js %outPath%xui\js%debugPath%
 
 rem ==================
 rem for extra classes
 rem ==================
 
-rem copy %relPath%xui\js\UI\FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
-rem copy %relPath%xui\js\UI\ECharts.js  %outPath%xui\js\UI\ECharts.js
+copy %relPath%xui\js\UI\FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
+copy %relPath%xui\js\UI\ECharts.js  %outPath%xui\js\UI\ECharts.js
 
 rem -----------------------
 rem for Coder.js
@@ -155,8 +157,6 @@ xcopy %outPath%*.* %oPath%%outPath% /E /Y
 
 rd %outPath% /S /Q
 
-del /q xui.js
-
-if %errorlevel% == 0 goto done
-pause
-:done
+del /q xui-all.js
+ 
+rem pause

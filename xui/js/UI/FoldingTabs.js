@@ -88,7 +88,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     ITEM:{
                         tagName : 'div',
                         className:'xui-uiborder-flat xui-uiborder-radius {_checked} {_precheked} {itemClass} {disabled} {readonly}',
-                        style:'{_itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay};{itemStyle};',
                         HEAD:{
                             tagName : 'div',
                             className:'xui-uibar  {_checked} {_precheked} ',

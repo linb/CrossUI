@@ -7,7 +7,7 @@
     root.xui = factory.call(root);
   }
 }(this, function() {/*!
-* CrossUI(xui) JavaScript Library v2.1
+* CrossUI(xui) JavaScript Library v3.0
 * http://crossui.com
 *
 * Copyright ( 2004 ~ present) CrossUI.com
@@ -788,6 +788,7 @@ new function(){
         isArr:function(target)   {return _to.call(target)==='[object Array]'},
         isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
         isStr:function(target)   {return _to.call(target)==='[object String]'},
+        isFile:function(target) {return _to.call(target)==='[object File]'},
         isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
         isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!(target.$xuievent||target.$xuieventpara)))},
         isElem:function(target) {return !!(target && target.nodeType === 1)},
@@ -1487,9 +1488,9 @@ xui.merge(xui,{
         : (t=="iajax"||t=="xdmi") ? xui.XDMI
         : (t=="ajax") ? xui.Ajax
         // include a file => XDMI
-        : (typeof query=='object' && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
+        : (options && (typeof options.data=='object') && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(options.data))) ? xui.XDMI
         // post: crossdomain => XDMI, else Ajax
-        : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
+        : (options && options.method && options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
         // get : crossdomain => JSONP, else Ajax
         : xui.absIO.isCrossDomain(uri) ? xui.JSONP : xui.Ajax;
     },
@@ -3495,7 +3496,9 @@ xui.Class('xui.absIO',null,{
             uri : options.uri?xui.adjustRes(options.uri,0,1,1):'',
             username:options.username||undefined,
             password:options.password||undefined,
-            query : options.query||'',
+            query : options.query||options.params||'',
+            data : options.data||'',
+            body : options.body||'',
             contentType : options.contentType||'',
             Accept : options.Accept||'',
             header : options.header||null,
@@ -3527,7 +3530,7 @@ xui.Class('xui.absIO',null,{
             self.query=xui.copy(self.query, function(o){return o!==undefined});
 
         if(!self._useForm && xui.isHash(self.query) && self.reqType!="xml")
-            self.query = con._buildQS(self.query, self.reqType=="json",self.method=='POST');
+            self.query = con._buildQS(self.query, self.reqType=="json");
 
         return self;
     },
@@ -3615,9 +3618,9 @@ xui.Class('xui.absIO',null,{
 
         callback:'callback',
 
-        _buildQS:function(hash, flag, post){
-            hash=xui.clone(hash,function(o,i){return !(xui.isNaN(o)||!xui.isDefined(o))});
-            return flag?((flag=xui.serialize(hash))&&(post?flag:encodeURIComponent(flag))):xui.urlEncode(hash);
+        _buildQS:function(hash, flag){
+            hash=xui.clone(hash,function(o,i){return !(xui.isNaN(o)||!xui.isDefined(o)||xui.isFile(o))});
+            return flag?((flag=xui.serialize(hash))&&(encodeURIComponent(flag))):xui.urlEncode(hash);
         },
         customQS:function(obj,ex){
             if(ex){
@@ -3709,11 +3712,18 @@ xui.Class('xui.Ajax','xui.absIO',{
                            self._clear();
                        }
                    };
-
-                if (!self._retryNo && self.method != "POST"){
-                    if(self.query)
-                        self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
+                // if we have 'data', use 'query' as 'params', else use 'query' as 'data'
+                if (!self._retryNo && self.query){
+                    self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
                     self.query=null;
+                }
+                if(self.data && xui.isHash(self.data)){
+                  var formData = new FormData();
+                  xui.each(self.data,function(o,i){
+                    if(xui.isFile(o)) formData.append(i, o, o.name);
+                    else formData.append(i, o);
+                  });
+                  self.data = formData;
                 }
                 if(self.username && self.password)
                     self._XML.open(self.method, self.uri, self.asy, self.username, self.password);
@@ -3753,7 +3763,7 @@ xui.Class('xui.Ajax','xui.absIO',{
                 }
 
                 //for firefox syc GET bug
-                try{self._XML.send(self.query);}catch(e){}
+                try{self._XML.send(self.data || null);}catch(e){}
 
                 if(self.asy){
                   if(self._XML && self.timeout > 0)
@@ -4093,14 +4103,14 @@ xui.Class('xui.XDMI','xui.absIO',{
             }
 
             var uri=self.uri;
-            if(self.method!='POST')
-                uri = uri.split("#")[0].split("?")[0];
+            if(self.query)
+                uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
 
             form.action=self.uri;
             form.method=self.method;
             form.target="xui_xdmi:"+id;
 
-            k=self.query||{};
+            k=self.data||{};
             var file,files=[];
             for(i in k){
                 if(k[i] && k[i]['xui.UIProfile'] && k[i].$xuiFileCtrl){
@@ -5758,6 +5768,12 @@ xui.Class("xui.ExcelFormula",null,{
 
         setQueryData:function(data, path){
             return this.each(function(prf){
+                if(path)xui.set(prf.properties.queryData, (path||"").split("."), data);
+                else prf.properties.queryData=data||{};
+            });
+        },
+        setQueryArgs:function(data, path){
+            return this.each(function(prf){
                 if(path)xui.set(prf.properties.queryArgs, (path||"").split("."), data);
                 else prf.properties.queryArgs=data||{};
             });
@@ -5787,6 +5803,7 @@ xui.Class("xui.ExcelFormula",null,{
                 proxyType=prop.proxyType.toLowerCase(),
                 queryUserName=prop.queryUserName,
                 queryPassword=prop.queryPassword,
+                queryData=prop.queryData,
                 queryArgs=xui.clone(prop.queryArgs),
                 oAuth2Token=prop.oAuth2Token,
                 queryOptions=xui.clone(prop.queryOptions),
@@ -5948,6 +5965,8 @@ xui.Class("xui.ExcelFormula",null,{
 
             xui.merge(options, rMap, 'all');
             options.proxyType=proxyType;
+
+            if(queryData)options.data=queryData;
 
             if(xui.isEmpty(options.header)){
                 delete options.header;
@@ -6156,6 +6175,9 @@ xui.Class("xui.ExcelFormula",null,{
             },
 
             queryArgs:{
+                ini:{}
+            },
+            queryData:{
                 ini:{}
             },
             queryHeader:{
@@ -23956,7 +23978,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     CMD:{
                         tagName:"span",
                         title:"{tips}",
-                        style:'{_style}{itemStyle}{_exstyle}',
+                        style:'{_style};{itemStyle};{_exstyle};',
                         className:'xui-node xui-tag-cmd',
                         tabindex: '{_tabindex}',
                         CMDICON:{
@@ -23971,7 +23993,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     CMD:{
                         tagName:"button",
                         title:"{tips}",
-                        style:'{_style}{itemStyle}{_exstyle}',
+                        style:'{_style};{itemStyle};{_exstyle};',
                         className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd xui-tag-cmd',
                         tabindex: '{_tabindex}',
                         CMDICON:{
@@ -23988,7 +24010,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         title:"{tips}",
                         src:"{image}",
                         border:"0",
-                        style:'{_style}{itemStyle}{_exstyle}',
+                        style:'{_style};{itemStyle};{_exstyle};',
                         className:'xui-node xui-tag-cmd {itemClass}',
                         tabindex: '{_tabindex}',
                         alt:"{caption}"
@@ -39121,7 +39143,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 items:{
                     ITEM:{
                         className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemCls} {_split} {itemClass} {disabled} {readonly}',
-                        style:'{itemStyle}{_itemDisplay}',
+                        style:'{itemStyle};{_itemDisplay};',
                         tabindex:'{_tabindex}',
                         LTAGCMDS:{
                             $order:2,
@@ -41788,7 +41810,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 items:{
                     ITEM:{
                         className:'xui-uiborder-flat xui-uiborder-nob xui-uiborder-box xui-uiborder-radius-big-tl xui-uiborder-radius-big-tr xui-uibar {itemClass} {disabled} {readonly}',
-                        style:'{_itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay};{itemStyle};',
                         ITEMI:{
                             ITEMC:{
                                 HANDLE:{
@@ -43368,7 +43390,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             items:{
                 ITEM:{
                     className:'xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,
@@ -45057,7 +45079,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: ' xui-uimenu {itemClass} {disabled}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-placeholder {imageClass}  {picClass}',
@@ -45089,7 +45111,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '  xui-uimenu {itemClass} {disabled}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     CHECKBOX:{
                         $order:0,
                          className:'xuifont',
@@ -45115,7 +45137,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ITEM:{
                     tabindex: -1,
                     className: '  xui-uimenu {itemClass} {disabled}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     RADIOBOX:{
                         $order:0,
                         className:'xuifont',
@@ -45687,15 +45709,15 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             if(profile.beforePopMenu && false==profile.boxing().beforePopMenu(profile, item, src)){
                 return;
             }else{
-                
+
                 xui.use(src).tagClass('-active');
-                
-                var menu, 
+
+                var menu,
                     id=item.id,
                     pro=profile.properties,
                     pid=pro.parentID||xui.ini.$rootContainer,
                     all='$allPops';
-                
+
                 profile.$curPop=id;
                 profile.$curElem=src;
                 profile.$menuPop = id;
@@ -45792,7 +45814,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $submap:{
                 items:{
                     ITEM:{
-                        style:'{itemStyle}{_itemDisplay}',
+                        style:'{itemStyle};{_itemDisplay};',
                         className:'xui-uimenu',
                         ITEMI:{
                             ITEMC:{
@@ -45927,9 +45949,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     if(item.disabled)return;
 
                     xui.use(src).tagClass('-active');
-                    
+
                     // if poped, stop to trigger document.body's onmousedown event
-                    return profile.boxing()._pop(item, src);                    
+                    return profile.boxing()._pop(item, src);
                 },
                 onMouseup:function(profile,e,src){
                     var item = profile.getItemByDom(src);
@@ -45997,7 +46019,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 ini:'auto',
                 readonly:true
             },
-                
+
             width:{
                 $spaceunit:1,
                 ini:'auto'
@@ -46225,7 +46247,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             BTN:{
                                 tagName:'button',
                                 className:'xui-uiborder-hidden xui-uiborder-radius xui-showfocus {itemcls} {itemClass}',
-                                style:'{itemStyle} {_boxDisplay}',
+                                style:'{itemStyle};{_boxDisplay};',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
                                     tagName:'div',
@@ -57544,7 +57566,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     ITEM:{
                         tagName : 'div',
                         className:'xui-uiborder-flat xui-uiborder-radius {_checked} {_precheked} {itemClass} {disabled} {readonly}',
-                        style:'{_itemDisplay} {itemStyle}',
+                        style:'{_itemDisplay};{itemStyle};',
                         HEAD:{
                             tagName : 'div',
                             className:'xui-uibar  {_checked} {_precheked} ',

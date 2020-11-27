@@ -177,7 +177,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             BTN:{
                                 tagName:'button',
                                 className:'xui-uiborder-hidden xui-uiborder-radius xui-showfocus {itemcls} {itemClass}',
-                                style:'{itemStyle} {_boxDisplay}',
+                                style:'{itemStyle};{_boxDisplay};',
                                 tabindex: '{_tabindex}',
                                 BOXWRAP:{
                                     tagName:'div',

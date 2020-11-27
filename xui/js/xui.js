@@ -1,5 +1,5 @@
 /*!
-* CrossUI(xui) JavaScript Library v2.1
+* CrossUI(xui) JavaScript Library v3.0
 * http://crossui.com
 *
 * Copyright ( 2004 ~ present) CrossUI.com
@@ -780,6 +780,7 @@ new function(){
         isArr:function(target)   {return _to.call(target)==='[object Array]'},
         isReg:function(target)   {return _to.call(target)==='[object RegExp]'},
         isStr:function(target)   {return _to.call(target)==='[object String]'},
+        isFile:function(target) {return _to.call(target)==='[object File]'},
         isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
         isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!(target.$xuievent||target.$xuieventpara)))},
         isElem:function(target) {return !!(target && target.nodeType === 1)},
@@ -1479,9 +1480,9 @@ xui.merge(xui,{
         : (t=="iajax"||t=="xdmi") ? xui.XDMI
         : (t=="ajax") ? xui.Ajax
         // include a file => XDMI
-        : (typeof query=='object' && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(query))) ? xui.XDMI
+        : (options && (typeof options.data=='object') && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(options.data))) ? xui.XDMI
         // post: crossdomain => XDMI, else Ajax
-        : (options&&options.method&&options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
+        : (options && options.method && options.method.toLowerCase()=='post') ?  xui.absIO.isCrossDomain(uri) ? xui.XDMI  : xui.Ajax
         // get : crossdomain => JSONP, else Ajax
         : xui.absIO.isCrossDomain(uri) ? xui.JSONP : xui.Ajax;
     },
@@ -3487,7 +3488,9 @@ xui.Class('xui.absIO',null,{
             uri : options.uri?xui.adjustRes(options.uri,0,1,1):'',
             username:options.username||undefined,
             password:options.password||undefined,
-            query : options.query||'',
+            query : options.query||options.params||'',
+            data : options.data||'',
+            body : options.body||'',
             contentType : options.contentType||'',
             Accept : options.Accept||'',
             header : options.header||null,
@@ -3519,7 +3522,7 @@ xui.Class('xui.absIO',null,{
             self.query=xui.copy(self.query, function(o){return o!==undefined});
 
         if(!self._useForm && xui.isHash(self.query) && self.reqType!="xml")
-            self.query = con._buildQS(self.query, self.reqType=="json",self.method=='POST');
+            self.query = con._buildQS(self.query, self.reqType=="json");
 
         return self;
     },
@@ -3607,9 +3610,9 @@ xui.Class('xui.absIO',null,{
 
         callback:'callback',
 
-        _buildQS:function(hash, flag, post){
-            hash=xui.clone(hash,function(o,i){return !(xui.isNaN(o)||!xui.isDefined(o))});
-            return flag?((flag=xui.serialize(hash))&&(post?flag:encodeURIComponent(flag))):xui.urlEncode(hash);
+        _buildQS:function(hash, flag){
+            hash=xui.clone(hash,function(o,i){return !(xui.isNaN(o)||!xui.isDefined(o)||xui.isFile(o))});
+            return flag?((flag=xui.serialize(hash))&&(encodeURIComponent(flag))):xui.urlEncode(hash);
         },
         customQS:function(obj,ex){
             if(ex){
@@ -3701,11 +3704,18 @@ xui.Class('xui.Ajax','xui.absIO',{
                            self._clear();
                        }
                    };
-
-                if (!self._retryNo && self.method != "POST"){
-                    if(self.query)
-                        self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
+                // if we have 'data', use 'query' as 'params', else use 'query' as 'data'
+                if (!self._retryNo && self.query){
+                    self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
                     self.query=null;
+                }
+                if(self.data && xui.isHash(self.data)){
+                  var formData = new FormData();
+                  xui.each(self.data,function(o,i){
+                    if(xui.isFile(o)) formData.append(i, o, o.name);
+                    else formData.append(i, o);
+                  });
+                  self.data = formData;
                 }
                 if(self.username && self.password)
                     self._XML.open(self.method, self.uri, self.asy, self.username, self.password);
@@ -3745,7 +3755,7 @@ xui.Class('xui.Ajax','xui.absIO',{
                 }
 
                 //for firefox syc GET bug
-                try{self._XML.send(self.query);}catch(e){}
+                try{self._XML.send(self.data || null);}catch(e){}
 
                 if(self.asy){
                   if(self._XML && self.timeout > 0)
@@ -4085,14 +4095,14 @@ xui.Class('xui.XDMI','xui.absIO',{
             }
 
             var uri=self.uri;
-            if(self.method!='POST')
-                uri = uri.split("#")[0].split("?")[0];
+            if(self.query)
+                uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
 
             form.action=self.uri;
             form.method=self.method;
             form.target="xui_xdmi:"+id;
 
-            k=self.query||{};
+            k=self.data||{};
             var file,files=[];
             for(i in k){
                 if(k[i] && k[i]['xui.UIProfile'] && k[i].$xuiFileCtrl){

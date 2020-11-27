@@ -30,15 +30,15 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             if(profile.beforePopMenu && false==profile.boxing().beforePopMenu(profile, item, src)){
                 return;
             }else{
-                
+
                 xui.use(src).tagClass('-active');
-                
-                var menu, 
+
+                var menu,
                     id=item.id,
                     pro=profile.properties,
                     pid=pro.parentID||xui.ini.$rootContainer,
                     all='$allPops';
-                
+
                 profile.$curPop=id;
                 profile.$curElem=src;
                 profile.$menuPop = id;
@@ -135,7 +135,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             $submap:{
                 items:{
                     ITEM:{
-                        style:'{itemStyle}{_itemDisplay}',
+                        style:'{itemStyle};{_itemDisplay};',
                         className:'xui-uimenu',
                         ITEMI:{
                             ITEMC:{
@@ -270,9 +270,9 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     if(item.disabled)return;
 
                     xui.use(src).tagClass('-active');
-                    
+
                     // if poped, stop to trigger document.body's onmousedown event
-                    return profile.boxing()._pop(item, src);                    
+                    return profile.boxing()._pop(item, src);
                 },
                 onMouseup:function(profile,e,src){
                     var item = profile.getItemByDom(src);
@@ -340,7 +340,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 ini:'auto',
                 readonly:true
             },
-                
+
             width:{
                 $spaceunit:1,
                 ini:'auto'

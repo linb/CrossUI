@@ -8,7 +8,7 @@ xui.Class("xui.UI.RadioBox", "xui.UI.List",{
             items:{
                 ITEM:{
                     className:'xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
-                    style:'{itemStyle}{_itemDisplay}',
+                    style:'{itemStyle};{_itemDisplay};',
                     tabindex: '{_tabindex}',
                     MARK:{
                         $order:0,
