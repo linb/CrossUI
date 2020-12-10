@@ -1008,21 +1008,26 @@ new function(){
 // not for complicated one, like:  (([a, b] = [1, (e=>e)(2)], {x: c} = {x: a + b}) => a + b + c)
 new function(){
   var reg1 = /(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,
-    reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/;
+    reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/,
+    AsyncFunction;
+  try{
+    AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+  }catch(e){}
   xui.merge(xui.fun,{
       body:function(fun){
-          var s=(""+fun).replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+          var s=(""+fun).replace(/^async\s+/,'').replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
             r=reg2.exec(s);
           return r ? (r[2][0]=="{" ? r[2].slice(1, -1) : r[2]) : (s.slice(s.indexOf("{") + 1, s.lastIndexOf("}")));
       },
       args:function(fun){
-          var s=(""+fun).replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+          var s=(""+fun).replace(/^async\s+/,'').replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
             r=reg2.exec(s);
           s=xui.str.trim( r ? (r[1][0]=="(" ? r[1].slice(1, -1) : r[1] ) : s.slice(s.indexOf("(") + 1, s.indexOf(")")) ).split(/\s*,\s*/);
           return s[0]?s:[];
       },
       clone:function(fun){
-          return new Function(xui.fun.args(fun),xui.fun.body(fun));
+          if(xui.isAsyncFun(fun) && AsyncFunction) return new AsyncFunction(xui.fun.args(fun),xui.fun.body(fun));
+          else return new Function(xui.fun.args(fun),xui.fun.body(fun));
       }
   });
 };
@@ -3497,8 +3502,7 @@ xui.Class('xui.absIO',null,{
             username:options.username||undefined,
             password:options.password||undefined,
             query : options.query||options.params||'',
-            data : options.data||'',
-            body : options.body||'',
+            data : options.data||options.body||'',
             contentType : options.contentType||'',
             Accept : options.Accept||'',
             header : options.header||null,
@@ -4103,9 +4107,17 @@ xui.Class('xui.XDMI','xui.absIO',{
             }
 
             var uri=self.uri;
-            if(self.query)
-                uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
-
+            if(self.query){
+                if(xui.isStr(self.query)){
+                  uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
+                }else if(xui.isHash(self.query)){
+                  if(xui.isHash(self.data)){
+                    xui.merge(self.data, self.query, 'without');
+                  }else{
+                    self.data = self.query;
+                  }
+                }
+            }
             form.action=self.uri;
             form.method=self.method;
             form.target="xui_xdmi:"+id;
@@ -54192,8 +54204,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!(i=n.id))return;
                     i=i.split(":")[2];
                     if(i=profile.cellMap[i])
-                           if(i._editor)
-                                i._editor.setWidth(width - i._editor.getRoot().offsetLeft());
+                      if(i._editor && i._editor!==profile.$curEditor) // only for inline editor
+                        i._editor.setWidth(width - i._editor.getRoot().offsetLeft());
                 });
             }
         },
@@ -54205,7 +54217,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     i=i.cells;
                     for(var j in i){
                        j=i[j];
-                       if(j._editor)
+                       if(j._editor && j._editor!==profile.$curEditor) // only for inline editor
                             j._editor.setHeight(profile.$addpx(height, 1, j._editor.getRootNode()));
                     }
                 }
@@ -54726,7 +54738,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 editor.expand(cellNode,false,null);
                              }
                         }
-                        editor.get(0).$editMode=editMode;
 
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");
@@ -54782,6 +54793,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile.$curEditor=editor;
                 profile.$cellInEditor=cell;
             }
+            editor.get(0).$editMode=editMode;
             if(ishotrow){
                 profile.__needchecktmprow=true;
                 profile.box._sethotrowoutterblur(profile);

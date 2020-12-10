@@ -6690,8 +6690,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!(i=n.id))return;
                     i=i.split(":")[2];
                     if(i=profile.cellMap[i])
-                           if(i._editor)
-                                i._editor.setWidth(width - i._editor.getRoot().offsetLeft());
+                      if(i._editor && i._editor!==profile.$curEditor) // only for inline editor
+                        i._editor.setWidth(width - i._editor.getRoot().offsetLeft());
                 });
             }
         },
@@ -6703,7 +6703,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     i=i.cells;
                     for(var j in i){
                        j=i[j];
-                       if(j._editor)
+                       if(j._editor && j._editor!==profile.$curEditor) // only for inline editor
                             j._editor.setHeight(profile.$addpx(height, 1, j._editor.getRootNode()));
                     }
                 }
@@ -7224,7 +7224,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 editor.expand(cellNode,false,null);
                              }
                         }
-                        editor.get(0).$editMode=editMode;
 
                         if(!inline)
                             editor.setVisibility(issharp ? "hidden" : "visible");
@@ -7280,6 +7279,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 profile.$curEditor=editor;
                 profile.$cellInEditor=cell;
             }
+            editor.get(0).$editMode=editMode;
             if(ishotrow){
                 profile.__needchecktmprow=true;
                 profile.box._sethotrowoutterblur(profile);

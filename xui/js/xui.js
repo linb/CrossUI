@@ -1000,21 +1000,26 @@ new function(){
 // not for complicated one, like:  (([a, b] = [1, (e=>e)(2)], {x: c} = {x: a + b}) => a + b + c)
 new function(){
   var reg1 = /(\s*\/\*[^*]*\*+([^\/][^*]*\*+)*\/)|(\s*\/\/[^\n]*)|(\)[\s\S]*)/g,
-    reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/;
+    reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/,
+    AsyncFunction;
+  try{
+    AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+  }catch(e){}
   xui.merge(xui.fun,{
       body:function(fun){
-          var s=(""+fun).replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+          var s=(""+fun).replace(/^async\s+/,'').replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
             r=reg2.exec(s);
           return r ? (r[2][0]=="{" ? r[2].slice(1, -1) : r[2]) : (s.slice(s.indexOf("{") + 1, s.lastIndexOf("}")));
       },
       args:function(fun){
-          var s=(""+fun).replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
+          var s=(""+fun).replace(/^async\s+/,'').replace(reg1,function(a){return a.charAt(0)!=")"?"":a}),
             r=reg2.exec(s);
           s=xui.str.trim( r ? (r[1][0]=="(" ? r[1].slice(1, -1) : r[1] ) : s.slice(s.indexOf("(") + 1, s.indexOf(")")) ).split(/\s*,\s*/);
           return s[0]?s:[];
       },
       clone:function(fun){
-          return new Function(xui.fun.args(fun),xui.fun.body(fun));
+          if(xui.isAsyncFun(fun) && AsyncFunction) return new AsyncFunction(xui.fun.args(fun),xui.fun.body(fun));
+          else return new Function(xui.fun.args(fun),xui.fun.body(fun));
       }
   });
 };
@@ -3489,8 +3494,7 @@ xui.Class('xui.absIO',null,{
             username:options.username||undefined,
             password:options.password||undefined,
             query : options.query||options.params||'',
-            data : options.data||'',
-            body : options.body||'',
+            data : options.data||options.body||'',
             contentType : options.contentType||'',
             Accept : options.Accept||'',
             header : options.header||null,
@@ -4095,9 +4099,17 @@ xui.Class('xui.XDMI','xui.absIO',{
             }
 
             var uri=self.uri;
-            if(self.query)
-                uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
-
+            if(self.query){
+                if(xui.isStr(self.query)){
+                  uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
+                }else if(xui.isHash(self.query)){
+                  if(xui.isHash(self.data)){
+                    xui.merge(self.data, self.query, 'without');
+                  }else{
+                    self.data = self.query;
+                  }
+                }
+            }
             form.action=self.uri;
             form.method=self.method;
             form.target="xui_xdmi:"+id;
