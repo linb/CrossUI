@@ -19,7 +19,7 @@
             // business logic code
             // $outputData can be any variable
             $outputData->strRresult="str";
-            $outputData->intResult=microtime()*1000000;
+            $outputData->intResult=number_format((float)microtime()*1000000,2);
             
             $outputData->inputData=$inputData;
             
@@ -40,6 +40,7 @@
         $outputData->message=$e->getMessage();
     }
 
+	header('Access-Control-Allow-Origin: *');  
     // echo result
     xui_echoResponse($inputData, $outputData, $ok);
 ?>

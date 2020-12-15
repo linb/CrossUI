@@ -1492,6 +1492,7 @@ xui.merge(xui,{
         return (t=="sajax"||t=="jsonp") ? xui.JSONP
         : (t=="iajax"||t=="xdmi") ? xui.XDMI
         : (t=="ajax") ? xui.Ajax
+        : (t=="fetch") ? xui.Fetch
         // include a file => XDMI
         : (options && (typeof options.data=='object') && ((function(d){if(!xui.isHash(d))return 0; for(var i in d)if((d[i] && d[i].nodeType==1 && d[i].nodeName=="INPUT") || (d[i] && d[i].$xuiFileCtrl))return 1})(options.data))) ? xui.XDMI
         // post: crossdomain => XDMI, else Ajax
@@ -1510,6 +1511,9 @@ xui.merge(xui,{
     },
     xdmi:function(uri, query, onSuccess, onFail, threadid, options){
         return xui.XDMI.apply(null, arguments).start();
+    },
+    fetch:function(uri, query, onSuccess, onFail, threadid, options){
+        return xui.Fetch.apply(null, arguments).start();
     },
     restGet:function(uri, query, onSuccess, onFail, threadid,options){
         if(!options) options={};options.method="get";
@@ -3505,12 +3509,11 @@ xui.Class('xui.absIO',null,{
             data : options.data||options.body||'',
             contentType : options.contentType||'',
             Accept : options.Accept||'',
-            header : options.header||null,
+            headers : options.headers||options.header||null,
             asy : options.asy!==false,
             scriptType: options.scriptType
         },'all');
-        var m=(options.method||con.method).toUpperCase();
-        options.method = 'POST'==m ? 'POST' : 'PUT'==m ? 'PUT' : 'DELETE'==m ? 'DELETE' : 'PATCH'==m ? 'PATCH' : 'GET';
+        options.method = (options.method||con.method).toUpperCase();
 
         var a='retry,timeout,reqType,rspType,optimized,customQS'.split(',');
         for(var i=0,l=a.length;i<l;i++){
@@ -3680,6 +3683,124 @@ xui.Class('xui.absIO',null,{
         }
     }
 });
+
+// fetch
+xui.Class('xui.Fetch','xui.absIO',{
+    Instance:{
+        withCredentials: true,
+        credentials: 'include',
+
+        _init:"method,headers,body,referrer,referrerPolicy,mode,credentials,cache,redirect,integrity,keepalive,signal".split(","),
+        start:function() {
+            var self=this;
+            if(false===xui.tryF(self.beforeStart,[],self)){
+                self._onEnd();
+                return;
+            }
+            if (!self._retryNo && self.query){
+                self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
+                self.query=null;
+            }
+            if (!self._retryNo)
+                self._onStart();
+            // form/json/blob
+            if(self.data){
+              if(xui.isHash(self.data)){
+                if(!xui.isEmpty(self.data)){
+                  if(self.reqType=="json"){
+                    self.body = JSON.stringify(self.data);
+                  }
+                  // others form datat
+                  else{
+                    var formData = new FormData();
+                    xui.each(self.data,function(o,i){
+                      if(xui.isFile(o)) formData.append(i, o, o.name);
+                      else formData.append(i, o);
+                    });
+                    self.body = formData;
+                  }
+                }else{
+                  self.body = null
+                }
+              }
+              // blob, stream or other formatted data
+              else{
+                // as is
+                self.body = self.data;
+              }
+            }
+
+            if(!self.controller){
+              self.controller = new AbortController()
+              self.signal = self.controller.signal;
+            }
+            if(xui.get(self,['headers','Authorization']) && !self.credentials){
+              self.credentials = 'include';
+            }
+
+            var init={};
+            xui.arr.each(self._init,function(k){
+              if(self.hasOwnProperty(k) && self[k])init[k] = self[k];
+            });
+
+            if(false===xui.tryF(self.beforeSend,[self.uri, init],self)){
+                self._onEnd();
+                return;
+            }
+            fetch(self.uri, init)
+            .then(function(response) {
+              if(response.ok){
+                try{
+                  switch(self.rspType.toLowerCase()){
+                    case 'arraybuffer':
+                      return response.arrayBuffer()
+                    case 'formData':
+                      return response.formData()
+                    case 'json':
+                      return response.json();
+                    case 'text':
+                      return response.text();
+                    case 'blob':
+                      return response.blob();
+                    default:
+                      self._onError(new Error('Unsupported rspType--'  + rspType));
+                  }
+                }catch(e){
+                  self._onError(e);
+                }
+              }else{
+                self._onError(new Error('Status problem--'  + response.status + " : " + response.statusText));
+              }
+            }).then(function(response) {
+              self._response=response;
+              self._onResponse();
+            }).catch(function(e) {
+              if (e.name === 'AbortError') {
+                // nothing
+              }else{
+                self._onError(e);
+              }
+            });
+
+            if(self.timeout > 0)
+              self._flag = xui.asyRun(function(){if(self && !self._end){
+                self.controller && self.controller.abort();
+                self._time();
+              }}, self.timeout);
+
+            return self;
+        },
+        abort:function(){
+            var self=this;
+            self.controller && self.controller.abort();
+            arguments.callee.upper.call(self);
+        },
+        _clear:function(){
+          // nothing
+        }
+    }
+});
+
 // AJAX
 xui.Class('xui.Ajax','xui.absIO',{
     Instance:{
@@ -3721,23 +3842,48 @@ xui.Class('xui.Ajax','xui.absIO',{
                     self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
                     self.query=null;
                 }
-                if(self.data && xui.isHash(self.data)){
-                  var formData = new FormData();
-                  xui.each(self.data,function(o,i){
-                    if(xui.isFile(o)) formData.append(i, o, o.name);
-                    else formData.append(i, o);
-                  });
-                  self.data = formData;
+                // form/json/blob
+                if(self.data){
+                  if(xui.isHash(self.data)){
+                    if(!xui.isEmpty(self.data)){
+                      var formData = new FormData();
+                      xui.each(self.data,function(o,i){
+                        if(xui.isFile(o)) formData.append(i, o, o.name);
+                        else formData.append(i, o);
+                      });
+                      self.body = formData;
+                    }else{
+                      self.body = null
+                    }
+                  }
+                  // blob, stream or other formatted data
+                  else{
+                    // as is
+                    self.body = self.data;
+                  }
                 }
+
                 if(self.username && self.password)
                     self._XML.open(self.method, self.uri, self.asy, self.username, self.password);
                 else
                     self._XML.open(self.method, self.uri, self.asy);
+                // upload progress
+                if(self.onUploadProgress && request.upload){
+                  self._XML.upload.addEventListener('progress', self._uploadProgress=function(e) {
+                    xui.tryF(self.onUploadProgress,[(e.loaded / e.total)*100, e.loaded, e.total, e],self);
+                  });
+                }
+                // download progress
+                if(self.onDownloadProgress){
+                  self._XML.onprogress = function(e){
+                      xui.tryF(self.onDownloadProgress,[(e.loaded / e.total)*100, e.loaded, e.total, e],self);
+                  }
+                }
 
                 self._header("Accept", self.Accept ? self.Accept :
                     (self.rspType=='json' ? "application/json,text/javascript,*/*;q=0.01" : self.rspType=='xml' ? "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" : "*/*")
                 );
-                // CROS doesn't support Content-type&X-Requested-With header
+                // CROS doesn't support Content-type&X-Requested-With headers
                 if(!xui.absIO.isCrossDomain(self.uri)){
                     self._header("Content-type", self.contentType ? self.contentType : (
                         (self.reqType=='xml' ? "text/xml; " : self.reqType=='json' ? "application/json; " : self.method=="POST" ? "application/x-www-form-urlencoded; " : "") + "charset=" + (self.charset||"UTF-8")
@@ -3755,8 +3901,8 @@ xui.Class('xui.Ajax','xui.absIO',{
                     }
                 }
                 try {
-                    if(xui.isHash(self.header))
-                        xui.each(self.header,function(o,i){
+                    if(xui.isHash(self.headers))
+                        xui.each(self.headers,function(o,i){
                             self._header(i, o);
                         });
                 } catch(e) {}
@@ -3767,7 +3913,7 @@ xui.Class('xui.Ajax','xui.absIO',{
                 }
 
                 //for firefox syc GET bug
-                try{self._XML.send(self.data || null);}catch(e){}
+                try{self._XML.send(self.body || null);}catch(e){}
 
                 if(self.asy){
                   if(self._XML && self.timeout > 0)
@@ -3783,17 +3929,17 @@ xui.Class('xui.Ajax','xui.absIO',{
         abort:function(){
             var self=this;
             if(self._XML){
-                self._XML.onreadystatechange=self._fun;
                 self._XML.abort();
-                self._XML=null;
+                self._clear();
             }
             arguments.callee.upper.call(self);
         },
         _clear:function(){
             var self=this;
             if(self._XML){
-                self._XML.onreadystatechange=self._fun;
-                self._XML=null;
+                self._XML.onreadystatechange=self._XML.onprogress=self._fun;
+                if(self._uploadProgress)self._XML.upload.removeEventListener('progress', self._uploadProgress);
+                self._uploadProgress=self._XML=null;
             }
         },
         _complete:function() {
@@ -3801,8 +3947,8 @@ xui.Class('xui.Ajax','xui.absIO',{
               var ns=this,obj,status = ns._XML.status;
               ns._txtresponse = ns.rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
               // try to get js object, or the original
-              ns._response = ns.rspType=="json" ?
-                  /^\s*\</.test(ns._txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(ns._txtresponse))) && obj.data ? obj.data
+              ns._response = (ns.rspType=="blob" || ns.rspType=="document" || ns.rspType=="arraybuffer") ? ns._XML.response :
+                  ns.rspType=="json" ? /^\s*\</.test(ns._txtresponse) && (obj=xui.XML.xml2json(xui.XML.parseXML(ns._txtresponse))) && obj.data ? obj.data
                   : ((obj=xui.unserialize(ns._txtresponse))===false?ns._txtresponse:obj)
                   : ns._txtresponse;
 
@@ -4108,14 +4254,10 @@ xui.Class('xui.XDMI','xui.absIO',{
 
             var uri=self.uri;
             if(self.query){
-                if(xui.isStr(self.query)){
-                  uri = uri.split("#")[0].split("?")[0]  + "?" + self.query;
-                }else if(xui.isHash(self.query)){
-                  if(xui.isHash(self.data)){
-                    xui.merge(self.data, self.query, 'without');
-                  }else{
-                    self.data = self.query;
-                  }
+                if(xui.isHash(self.data)){
+                  xui.merge(self.data, self.query, 'without');
+                }else{
+                  self.data = self.query;
                 }
             }
             form.action=self.uri;
@@ -4250,6 +4392,7 @@ xui.Class('xui.XDMI','xui.absIO',{
         },
         customQS:function(obj, ex){
             var s=this,c=s.constructor,t=c.callback,w=window;
+            if(typeof(obj)=="string")obj=xui.urlDecode(obj);
             if(w['postMessage'])
                 obj[t]=obj.parentDomain=w.location.origin || (w.location.protocol + "//" + w.location.hostname + (w.location.port ? ':' + w.location.port: ''));
             else
@@ -5764,11 +5907,13 @@ xui.Class("xui.ExcelFormula",null,{
         },
         destroy:function(){
             this.each(function(profile){
+              if(!profile.destroyed){
                 var box=profile.box,name=profile.properties.name;
                 //delete from pool
                 delete box._pool[name];
                 //free profile
                 profile.__gc();
+              }
             });
         },
         setHost:function(value, alias){
@@ -5927,7 +6072,7 @@ xui.Class("xui.ExcelFormula",null,{
                     if(prop.queryMethod=="auto")
                         rMap.method="POST";
                     // ensure string
-                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.serialize(queryArgs);
+                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.urlEncode(queryArgs);
                 break;
                 case "XML":
                     rMap.reqType="xml";
@@ -6165,15 +6310,15 @@ xui.Class("xui.ExcelFormula",null,{
 
             queryMethod:{
                 ini:"auto",
-                listbox:["auto","GET","POST","PUT","DELETE"]
+                listbox:["auto","GET","POST","PUT","DELETE","HEAD","PATCH","OPTIONS"]
             },
             requestType:{
-                ini:"FORM",
-                listbox:["FORM","JSON","XML","SOAP"]
+                ini:"JSON",
+                listbox:["JSON","FORM","XML","SOAP","BLOB","STREAM","ASIS"]
             },
             responseType:{
                 ini:"JSON",
-                listbox:["JSON","TEXT","XML","SOAP"]
+                listbox:["JSON","TEXT","XML","SOAP","FORMDATA","BLOB","ARRAYBUFFER"]
             },
 
             requestDataSource:{
@@ -6203,7 +6348,7 @@ xui.Class("xui.ExcelFormula",null,{
             },
             proxyType:{
                 ini:"auto",
-                listbox:["auto","AJAX","JSONP","XDMI"]// Cross-Domain Messaging with iframes
+                listbox:["auto","AJAX","JSONP","XDMI","FETCH"]// Cross-Domain Messaging with iframes
             },
             "name":{
                 set:function(value){

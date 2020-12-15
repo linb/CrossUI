@@ -6,11 +6,13 @@ xui.Class("xui.APICaller","xui.absObj",{
         },
         destroy:function(){
             this.each(function(profile){
+              if(!profile.destroyed){
                 var box=profile.box,name=profile.properties.name;
                 //delete from pool
                 delete box._pool[name];
                 //free profile
                 profile.__gc();
+              }
             });
         },
         setHost:function(value, alias){
@@ -169,7 +171,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                     if(prop.queryMethod=="auto")
                         rMap.method="POST";
                     // ensure string
-                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.serialize(queryArgs);
+                    queryArgs = typeof queryArgs=='string'?queryArgs:xui.urlEncode(queryArgs);
                 break;
                 case "XML":
                     rMap.reqType="xml";
@@ -407,15 +409,15 @@ xui.Class("xui.APICaller","xui.absObj",{
 
             queryMethod:{
                 ini:"auto",
-                listbox:["auto","GET","POST","PUT","DELETE"]
+                listbox:["auto","GET","POST","PUT","DELETE","HEAD","PATCH","OPTIONS"]
             },
             requestType:{
-                ini:"FORM",
-                listbox:["FORM","JSON","XML","SOAP"]
+                ini:"JSON",
+                listbox:["JSON","FORM","XML","SOAP","BLOB","STREAM","ASIS"]
             },
             responseType:{
                 ini:"JSON",
-                listbox:["JSON","TEXT","XML","SOAP"]
+                listbox:["JSON","TEXT","XML","SOAP","FORMDATA","BLOB","ARRAYBUFFER"]
             },
 
             requestDataSource:{
@@ -445,7 +447,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             },
             proxyType:{
                 ini:"auto",
-                listbox:["auto","AJAX","JSONP","XDMI"]// Cross-Domain Messaging with iframes
+                listbox:["auto","AJAX","JSONP","XDMI","FETCH"]// Cross-Domain Messaging with iframes
             },
             "name":{
                 set:function(value){
