@@ -2,8 +2,14 @@
   if(typeof define === "function" && define.amd) {
     define(function() { return factory.call(root) });
   } else if(typeof module === "object" && module.exports) {
-    module.exports = factory.call(root);
+      module.exports = root && root.document ? factory.call(root) :
+        function(w) {
+          if(!w.document){
+            throw new Error( "xui requires a window with a document" );
+          }
+          return factory.call(w);
+        };
   } else {
     root.xui = factory.call(root);
   }
-}(this, function() {
+}(typeof window !== "undefined" ? window : this, function() {

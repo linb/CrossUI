@@ -2,13 +2,19 @@
   if(typeof define === "function" && define.amd) {
     define(function() { return factory.call(root) });
   } else if(typeof module === "object" && module.exports) {
-    module.exports = factory.call(root);
+      module.exports = root && root.document ? factory.call(root) :
+        function(w) {
+          if(!w.document){
+            throw new Error( "xui requires a window with a document" );
+          }
+          return factory.call(w);
+        };
   } else {
     root.xui = factory.call(root);
   }
-}(this, function() {/*!
+}(typeof window !== "undefined" ? window : this, function() {/*!
 * CrossUI(xui) JavaScript Library v3.0
-* http://crossui.com
+* https://crossui.com
 *
 * Copyright ( 2004 ~ present) CrossUI.com
 * Released under the MIT license
@@ -16,7 +22,6 @@
 */
 // speed up references
 var undefined, window=this, document=window.document;
-if(!document)throw new Error("CrossUI requires a window with a document");
 
 // global : xui
 // we have to keep xui for gloable var
@@ -1133,7 +1138,7 @@ xui.merge(xui.Class, {
 
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:2.14,
+    version:3.00,
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -4252,13 +4257,20 @@ xui.Class('xui.XDMI','xui.absIO',{
                 };
             }
 
-            var uri=self.uri;
             if(self.query){
-                if(xui.isHash(self.data)){
-                  xui.merge(self.data, self.query, 'without');
+                // merge data to query for GET
+                if(self.method=="GET"){
+                  if(xui.isHash(self.data) && !xui.isEmpty(self.data)){
+                    xui.merge(self.query, self.data, 'without');
+                    self.data=self.query;
+                  }
                 }else{
-                  self.data = self.query;
+                  if(xui.isHash(self.query) && !xui.isEmpty(self.query)){
+                    self.data = self.data || {};
+                    xui.merge(self.data, self.query, 'without');
+                  }
                 }
+                self.query = null;
             }
             form.action=self.uri;
             form.method=self.method;
@@ -4287,7 +4299,10 @@ xui.Class('xui.XDMI','xui.absIO',{
                     }
                 }
             }
-            if(self.method=='POST' && b){
+
+            if(b){
+                // change to POST for file upload
+                self.method='POST';
                 form.enctype = 'multipart/form-data';
                 if(form.encoding)
                     form.encoding = form.enctype;
@@ -4407,6 +4422,7 @@ new function(){
     // for compitable
     xui.SAjax=xui.JSONP;
     xui.IAjax=xui.XDMI;
+    if(!('fetch' in window))xui.Fetch = xui.Ajax;
 };
 
 /*xui.SC for straight call
@@ -72577,6 +72593,5 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             }
         }
     }
-});  if(!('Class' in window))window.Class=function(){return xui.Class.apply(xui.Class,arguments);};
-  return xui;
+});  return xui;
 }));
