@@ -2839,11 +2839,12 @@ new function(){
                                 resume=j;break;
                             }
                         }else if(xui.isHash(fun)){
+                            if(fun.disabled)continue;
                             if('onOK' in fun ||'onKO' in fun){
-                                var resumeFun=function(key,args,flag){
+                                var resumeRtn,resumeFun=function(key,args,flag){
                                     if(recursive){
                                         if(xui.isStr(flag))_ns.temp[flag]=true;
-                                        return recursive.apply(key,args||[]);
+                                        return resumeRtn===false ? false : recursive.apply(key,args||[]);
                                     }
                                 };
                                 // onOK
@@ -2853,13 +2854,14 @@ new function(){
                                 if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                     if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                                 };
-                                ns.exec(_ns, fun, resumeFun, level);
+                                resumeRtn = ns.exec(_ns, fun, resumeFun, level);
                                 break;
-                            }else
+                            }else{
                                 if(false===(ns.exec(_ns, fun,null, level))){
                                     xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "The action returns false to stop the follow-up actions!");
                                     resume=j;break;
                                 }
+                            }
                         }
                     }
                     if(resume==j)resume=recursive=null;
@@ -5969,9 +5971,9 @@ xui.Class("xui.ExcelFormula",null,{
                 t2=funs['$APICaller:beforeData'],
                 t3=funs['$APICaller:onError'];
             // the global handler
-            if(xui.isFun(t1) && false===t1(requestId, prf))
+            if(xui.isFun(t1) && false===t1(prf, requestId))
                 return;
-            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
+            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [prf, requestId], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
                 return;
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))

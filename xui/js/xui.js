@@ -2825,11 +2825,12 @@ new function(){
                                 resume=j;break;
                             }
                         }else if(xui.isHash(fun)){
+                            if(fun.disabled)continue;
                             if('onOK' in fun ||'onKO' in fun){
-                                var resumeFun=function(key,args,flag){
+                                var resumeRtn,resumeFun=function(key,args,flag){
                                     if(recursive){
                                         if(xui.isStr(flag))_ns.temp[flag]=true;
-                                        return recursive.apply(key,args||[]);
+                                        return resumeRtn===false ? false : recursive.apply(key,args||[]);
                                     }
                                 };
                                 // onOK
@@ -2839,13 +2840,14 @@ new function(){
                                 if('onKO' in fun)(fun.args||fun.params||(fun.args=[]))[parseInt(fun.onKO,10)||0]=function(){
                                     if(resumeFun)resumeFun("koData",arguments,fun.koFlag);
                                 };
-                                ns.exec(_ns, fun, resumeFun, level);
+                                resumeRtn = ns.exec(_ns, fun, resumeFun, level);
                                 break;
-                            }else
+                            }else{
                                 if(false===(ns.exec(_ns, fun,null, level))){
                                     xui._debugInfo("pseudo", xui.str.repeat('  ',(level||1)) , "The action returns false to stop the follow-up actions!");
                                     resume=j;break;
                                 }
+                            }
                         }
                     }
                     if(resume==j)resume=recursive=null;
@@ -3943,7 +3945,7 @@ xui.Class('xui.Ajax','xui.absIO',{
         },
         _complete:function() {
               //this is for opera
-              var ns=this,obj,status = ns._XML.status;
+              var ns=this,obj,status=ns._XML.status,statusText=ns._XML.statusText;
               ns._txtresponse = ns.rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
               // try to get js object, or the original
               ns._response = (ns.rspType=="blob" || ns.rspType=="document" || ns.rspType=="arraybuffer") ? ns._XML.response :
@@ -3963,9 +3965,9 @@ xui.Class('xui.Ajax','xui.absIO',{
                   ns._onResponse();
               // offline or other Network problems
               else if(status===undefined || status<10 )
-                  ns._onError(new Error('Network problems--' +status));
+                  ns._onError(new Error('Network problems--' +status), status, statusText, ns._response);
               else
-                  ns._onError(new Error('XMLHTTP returns--' +status));
+                  ns._onError(new Error('XMLHTTP returns--' +status), status, statusText, ns._response);
             return ns._response;
         }
     },

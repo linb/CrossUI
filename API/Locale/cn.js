@@ -6450,9 +6450,13 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"设置远程数据源的数据请求参数",
                 $rtn:"[self]",
                 $paras:[
-                    "value [必需参数] : Object",
-                    $force
+                    "data [必需参数] : Object, xxx",
+                    "path [可选参数] : String, 路径, 例如 [a.b] => {a:{b:xxx}}"
                 ]
+            },
+            getQueryData:{
+                $desc:"获取远程数据源的请求数据",
+                $rtn:"Object"
             },
             setQueryData:{
                 $desc:"按照给定的路径，为 Web API 设置请求数据",

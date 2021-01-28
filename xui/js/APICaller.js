@@ -44,9 +44,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                 t2=funs['$APICaller:beforeData'],
                 t3=funs['$APICaller:onError'];
             // the global handler
-            if(xui.isFun(t1) && false===t1(requestId, prf))
+            if(xui.isFun(t1) && false===t1(prf, requestId))
                 return;
-            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [requestId, prf], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
+            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [prf, requestId], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
                 return;
             // Normally, Gives a change to modify "queryArgs" for XML
             if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))

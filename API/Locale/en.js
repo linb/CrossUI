@@ -6382,9 +6382,13 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Sets the arguments for the Web API",
                 $rtn:"[self]",
                 $paras:[
-                    "value [Required] : Object",
-                    $force
+                    "data [Required] : Object, xxx",
+                    "path [Optional] : String, the target path [a.b] => {a:{b:xxx}}"
                 ]
+            },
+            getQueryData:{
+                $desc:"Gets the data for the Web API",
+                $rtn:"Object"
             },
             setQueryData:{
                 $desc:"Sets the query data for the Web API",
