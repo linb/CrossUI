@@ -3591,10 +3591,10 @@ xui.Class('xui.absIO',null,{
                 xui.tryF(self.onSuccess,[self._response, self.rspType, self.threadid], self);
             self._onEnd();
         },
-        _onError:function(e){
+        _onError:function(e, status, statusText, response){
             var self=this;
-            if(false!==xui.tryF(self.beforeFail,[e, self.threadid],self))
-                xui.tryF(self.onFail,[e, self.rspType, self.threadid, e], self);
+            if(false!==xui.tryF(self.beforeFail,[e, self.threadid, status, statusText, response],self))
+                xui.tryF(self.onFail,[e, self.rspType, self.threadid, status, statusText, response], self);
             self._onEnd();
         },
         isAlive:function(){
@@ -3743,7 +3743,7 @@ xui.Class('xui.Fetch','xui.absIO',{
               self.credentials = 'include';
             }
 
-            var init={};
+            var init={},ok,e1,status,statusText;
             xui.arr.each(self._init,function(k){
               if(self.hasOwnProperty(k) && self[k])init[k] = self[k];
             });
@@ -3754,31 +3754,39 @@ xui.Class('xui.Fetch','xui.absIO',{
             }
             fetch(self.uri, init)
             .then(function(response) {
-              if(response.ok){
+                var rst;
+                status = response.status;
+                statusText = response.statusText;
                 try{
                   switch(self.rspType.toLowerCase()){
                     case 'arraybuffer':
-                      return response.arrayBuffer()
+                      rst = response.arrayBuffer();break;
                     case 'formData':
-                      return response.formData()
+                      rst = response.formData();break;
                     case 'json':
-                      return response.json();
+                      rst = response.json();break;
                     case 'text':
-                      return response.text();
+                      rst = response.text();break;
                     case 'blob':
-                      return response.blob();
+                      rst = response.blob();break;
                     default:
-                      self._onError(new Error('Unsupported rspType--'  + rspType));
+                      throw new Error('Unsupported rspType -- '  + rspType);
                   }
                 }catch(e){
-                  self._onError(e);
+                  e1 = e;
+                  return;
                 }
-              }else{
-                self._onError(new Error('Status problem--'  + response.status + " : " + response.statusText));
-              }
+                if(response.ok) ok = true;
+                else e1 = new Error('State error -- ' + status + ' ' + statusText);
+
+                return rst;
             }).then(function(response) {
-              self._response=response;
-              self._onResponse();
+              if(ok){
+                self._response = response;
+                self._onResponse();
+              }else{
+                self._onError(e1, status, statusText, response);
+              }
             }).catch(function(e) {
               if (e.name === 'AbortError') {
                 // nothing
@@ -6242,29 +6250,29 @@ xui.Class("xui.ExcelFormula",null,{
                 if(prf.onData)prf.boxing().onData(prf, rspData, requestId);
                 xui.tryF(onSuccess,arguments,this);
 
-            }, function(rspData){
-                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId);
+            }, function(errMsg, rspType, tid, status, statusText, response){
+                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, errMsg, requestId);
 
                 if(responseDataTarget&&responseDataTarget.length){
                     xui.arr.each(responseDataTarget, function(o, t){
                         switch(o.type){
                             case "alert":
-                                rspData = xui.stringify(rspData);
-                                if(xui.Coder)rspData=xui.Coder.formatText(rspData);
-                                alert(rspData);
+                                errMsg = xui.stringify(errMsg);
+                                if(xui.Coder)errMsg=xui.Coder.formatText(errMsg);
+                                alert(errMsg);
                             break;
                             case "log":
-                                xui.log(rspData);
+                                xui.log(errMsg);
                             break;
                         }
                     });
                 }
 
                 // the global handler
-                if(xui.isFun(t3))t3(rspData, requestId, prf);
-                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'$APICaller:onError');
+                if(xui.isFun(t3))t3(errMsg, requestId, prf, status, statusText, response);
+                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [errMsg, requestId, prf, status, statusText, response], ns.getHost(),null,null,'$APICaller:onError');
 
-                if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
+                if(prf.onError)prf.boxing().onError(prf, errMsg, requestId, status, statusText, response);
                 xui.tryF(onFail,arguments,this);
             }, threadid, options]);
 
@@ -6415,7 +6423,7 @@ xui.Class("xui.ExcelFormula",null,{
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
             beforeData:function(profile, rspData, requestId){},
-            onError:function(profile, rspData, requestId){}
+            onError:function(profile, errMsg, requestId, status, statusText, response){}
         }
     }
 });xui.Class("xui.MQTT","xui.absObj",{

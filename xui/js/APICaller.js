@@ -325,29 +325,29 @@ xui.Class("xui.APICaller","xui.absObj",{
                 if(prf.onData)prf.boxing().onData(prf, rspData, requestId);
                 xui.tryF(onSuccess,arguments,this);
 
-            }, function(rspData){
-                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, rspData, requestId);
+            }, function(errMsg, rspType, tid, status, statusText, response){
+                if(prf.afterInvoke)prf.boxing().afterInvoke(prf, errMsg, requestId);
 
                 if(responseDataTarget&&responseDataTarget.length){
                     xui.arr.each(responseDataTarget, function(o, t){
                         switch(o.type){
                             case "alert":
-                                rspData = xui.stringify(rspData);
-                                if(xui.Coder)rspData=xui.Coder.formatText(rspData);
-                                alert(rspData);
+                                errMsg = xui.stringify(errMsg);
+                                if(xui.Coder)errMsg=xui.Coder.formatText(errMsg);
+                                alert(errMsg);
                             break;
                             case "log":
-                                xui.log(rspData);
+                                xui.log(errMsg);
                             break;
                         }
                     });
                 }
 
                 // the global handler
-                if(xui.isFun(t3))t3(rspData, requestId, prf);
-                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [rspData, requestId, prf], ns.getHost(),null,null,'$APICaller:onError');
+                if(xui.isFun(t3))t3(errMsg, requestId, prf, status, statusText, response);
+                else if( xui.isHash(t3) && xui.isArr(t3.actions))xui.pseudocode._callFunctions(t3,  [errMsg, requestId, prf, status, statusText, response], ns.getHost(),null,null,'$APICaller:onError');
 
-                if(prf.onError)prf.boxing().onError(prf, rspData, requestId);
+                if(prf.onError)prf.boxing().onError(prf, errMsg, requestId, status, statusText, response);
                 xui.tryF(onFail,arguments,this);
             }, threadid, options]);
 
@@ -498,7 +498,7 @@ xui.Class("xui.APICaller","xui.absObj",{
             afterInvoke:function(profile, rspData, requestId){},
             onData:function(profile, rspData, requestId){},
             beforeData:function(profile, rspData, requestId){},
-            onError:function(profile, rspData, requestId){}
+            onError:function(profile, errMsg, requestId, status, statusText, response){}
         }
     }
 });

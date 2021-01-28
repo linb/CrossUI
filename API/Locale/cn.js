@@ -1095,7 +1095,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 目标地址",
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid, status, statusText, response]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ],
@@ -1107,7 +1107,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 目标地址",
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid, status, statusText, response]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
@@ -1118,7 +1118,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 目标地址",
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid, status, statusText, response]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
@@ -1129,7 +1129,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 目标地址",
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid, status, statusText, response]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
@@ -1140,7 +1140,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 目标地址",
                 "query [可选参数]:  Object/String, 请求的输入数据",
                 "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
-                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                "onFail [可选参数]: Function, 参数:[response Object, response type, threadid, status, statusText, response]. 当request失败时回调该函数",
                 "threadid [可选参数]: String, 目前request所在的线程的 id. 过程一般为: [挂起thread -> 执行request -> 继续thread]",
                 "options [可选参数]: Object, 一组配置数据"
             ]
@@ -1730,7 +1730,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 请求服务的 URL 地址",
                 "query [可选参数]:  Object/String, 要请求的数据",
                 "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
-                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). 如请求失败,调用这个回调函数",
                 "threadid [可选参数]: String,  绑定的线程ID",
                 "options [可选参数]: Object, 用来配置这个request的一组键值对"
             ]
@@ -1742,7 +1742,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "uri [必需参数]: String, 请求服务的 URL 地址",
                 "query [可选参数]:  Object/String, 要请求的数据",
                 "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
-                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+                "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). 如请求失败,调用这个回调函数",
                 "threadid [可选参数]: String,  绑定的线程ID",
                 "options [可选参数]: Object, 用来配置这个request的一组键值对"
             ]
@@ -1950,7 +1950,7 @@ xui.set(xui.Locale,["cn","app"], {
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略",
             "query [可选参数]:  Object/String, 要请求的数据",
             "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
-            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). 如请求失败,调用这个回调函数",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序: [挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括: " +
                 "<br>{"+
@@ -1968,7 +1968,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function, 函数参数: [obj, type]. 用来自定义query string对象的函数"+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数"+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String, status, statusText, response).  如请求失败,调用这个回调函数"+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数"+
                 "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数"+
@@ -1976,7 +1976,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数"+
                 "<br><em>//before events</em>"+
                 "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止"+
-                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid, status, statusText, response]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
                 "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略"+
                 "<br>}"
         ],
@@ -2050,7 +2050,7 @@ xui.set(xui.Locale,["cn","app"], {
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略",
             "query [可选参数]:  Object/String, 要请求的数据",
             "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
-            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). 如请求失败,调用这个回调函数",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序: [挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括: " +
                 "<br>{"+
@@ -2066,7 +2066,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数"+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数"+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String, status, statusText, response).  如请求失败,调用这个回调函数"+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数"+
                 "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数"+
@@ -2074,7 +2074,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数"+
                 "<br><em>//before events</em>"+
                 "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止"+
-                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid, status, statusText, response]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
                 "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略"+
                 "<br>}"
         ],
@@ -2148,7 +2148,7 @@ xui.set(xui.Locale,["cn","app"], {
             "uri [必需参数]: String/Object, String -- 请求服务的 URL 地址; Object(这时候uri参数等同于 options ) -- 一组用来配置request的键值对. 如果这个参数是Object, 后续的其他参数会被忽略",
             "query [可选参数]:  Object/String, 要请求的数据",
             "onSuccess [可选参数]: Function(response:Object, responsetype:String, threadid:String).如请求成功返回,调用这个回调函数",
-            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String). 如请求失败,调用这个回调函数",
+            "onFail [可选参数]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). 如请求失败,调用这个回调函数",
             "threadid [可选参数]: String, 绑定到这个请求的线程id号. 线程操作的顺序: [挂起这个thread -> 执行request -> 继续这个thread]",
             "options [可选参数]: Object, 用来配置这个request的一组键值对. 这些键值对可以包括: " +
                 "<br>{"+
@@ -2164,7 +2164,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function(obj:Object, type:String). 用来自定义query string对象的函数"+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function, 函数参数:[response Object, 如请求成功返回,调用这个回调函数"+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String).  如请求失败,调用这个回调函数"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String, status, statusText, response).  如请求失败,调用这个回调函数"+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, 函数参数:[the current retry time], 请求失败重试时调用的函数"+
                 "<br>&nbsp;&nbsp;onTimeout: Function, 请求超时的时候调用的函数"+
@@ -2172,7 +2172,7 @@ xui.set(xui.Locale,["cn","app"], {
                 "<br>&nbsp;&nbsp;onEnd: Function, 请求结束时调用的函数"+
                 "<br><em>//before events</em>"+
                 "<br>&nbsp;&nbsp;beforeStart: Function. 在请求数据发送前调用,如果这个函数返回 [false] ,请求会终止"+
-                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, 函数参数:[error Object, threadid, status, statusText, response]. 在请求返回失败前调用,如果这个函数返回 [false], onFail 函数将被忽略"+
                 "<br>&nbsp;&nbsp;beforeSuccess: Function, 函数参数:[response, response type, threadid]. 在请求返回失败前调用,如果这个函数返回 [false], onSuccess 函数将被忽略"+
                 "<br>}"
         ],
@@ -6539,7 +6539,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[xui.absIO]",
                 $paras:[
                     "onSuccess [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request成功时回调该函数",
-                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid]. 当request失败时回调该函数",
+                    "onFail [可选参数]: Function, 参数:[response Object, response type, threadid, status, statusText, response]. 当request失败时回调该函数",
                     "onStart [可选参数] : Function, ajax开始时的载的回调函数",
                     "onEnd [可选参数] : Function, ajax结束时的回调函数",
                     "mode [可选参数] : String, 调用方式,normal(ajax调用)/busy(ajax调用并显示busy界面)/return(不调用,返回ajax对象)之一,默认为normal",
@@ -6576,8 +6576,11 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在出现错误后调用",
                 $paras:[
                     "profile : xui.Profile",
-                    "rspData : Object, 从远程调用返回的数据",
-                    "requestId : String"
+                    "errMsg : Object, 错误消息",
+                    "requestId : String",
+                    "status : Number, 状态码",
+                    "statusText : String, 状态描述",
+                    "response : Object, API返回的数据"
                 ]
             },
             afterInvoke:{

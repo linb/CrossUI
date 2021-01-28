@@ -1099,7 +1099,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The URL of the request target",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever a request fails",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
             ],
@@ -1111,7 +1111,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The URL of the request target",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever a request fails",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
             ]
@@ -1122,7 +1122,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The URL of the request target",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever a request fails",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
             ]
@@ -1133,7 +1133,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The URL of the request target",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever a request fails",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
             ]
@@ -1144,7 +1144,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The URL of the request target",
                 "query [Optional]:  Object[Key/value pairs], request data. Defalut is {}",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever a request fails",
                 "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute request -> resume thread]",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
             ]
@@ -1718,7 +1718,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The request target URI",
                 "query [Optional]:  Object[Key/value pairs], request data",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever the request fails",
                 "threadid [Optional]: String, the thread id to be bound to the current request",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
              ]
@@ -1730,7 +1730,7 @@ xui.set(xui.Locale,["en","app"], {
                 "uri [Required]: String, The request target URI",
                 "query [Optional]:  Object[Key/value pairs], request data",
                 "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully",
-                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails",
+                "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever the request fails",
                 "threadid [Optional]: String, the thread id to be bound to the current request",
                 "options [Optional]: Object, a set of key/value pairs that configure the request"
              ]
@@ -1939,7 +1939,7 @@ xui.set(xui.Locale,["en","app"], {
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored",
             "query [Optional]:  Object[Key/value pairs], request data",
             "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully",
-            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails",
+            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever the request fails",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
             "options [Optional]: Object, a set of key/value pairs that configure the request. All options are optional. <strong>Values in Parameters has high priority</strong>" +
                 "<br>{"+
@@ -1957,7 +1957,7 @@ xui.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj, type]. A function to customize query string Object"+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully"+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String). Afunction to be executed whenever the request fails"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). Afunction to be executed whenever the request fails"+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, arguments:[the current retry time], A function will be triggered when the request retries"+
                 "<br>&nbsp;&nbsp;onTimeout: Function, , A function will be triggered when the request the request is timeout"+
@@ -1965,7 +1965,7 @@ xui.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;onEnd: Function,  , A function will be triggered when the request ends"+
                 "<br><em>//before events</em>"+
                 "<br>&nbsp;&nbsp;beforeStart: Function. A function to be executed before onStart, if it returns [false], the request will be End"+
-                "<br>&nbsp;&nbsp;beforeFail: Function, arguments:[error Object, threadid]. A function to be executed before onFail, if it returns [false], the request will not call onFail function"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, arguments:[error Object, threadid, status, statusText, response]. A function to be executed before onFail, if it returns [false], the request will not call onFail function"+
                 "<br>&nbsp;&nbsp;beforeSuccess: Function, arguments:[response, response type, threadid]. A function to be executed before onSuccess, if it returns [false], the request will not call onSuccess function"+
                 "<br>}"
         ],
@@ -2039,7 +2039,7 @@ xui.set(xui.Locale,["en","app"], {
             "uri [Required]: String/Object, String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored",
             "query [Optional]:  Object[Key/value pairs], request data",
             "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully",
-            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails",
+            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever the request fails",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
             "options [Optional]: Object, a set of key/value pairs that configure the request. All options are optional. <strong>Values in Parameters has high priority</strong>" +
                 "<br>{"+
@@ -2055,7 +2055,7 @@ xui.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj, type]. A function to customize query string Object"+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully"+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String). Afunction to be executed whenever the request fails"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). Afunction to be executed whenever the request fails"+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, arguments:[the current retry time], A function will be triggered when the request retries"+
                 "<br>&nbsp;&nbsp;onTimeout: Function, , A function will be triggered when the request the request is timeout"+
@@ -2063,7 +2063,7 @@ xui.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;onEnd: Function,  , A function will be triggered when the request ends"+
                 "<br><em>//before events</em>"+
                 "<br>&nbsp;&nbsp;beforeStart: Function. A function to be executed before onStart, if it returns [false], the request will be End"+
-                "<br>&nbsp;&nbsp;beforeFail: Function, arguments:[error Object, threadid]. A function to be executed before onFail, if it returns [false], the request will not call onFail function"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, arguments:[error Object, threadid, status, statusText, response]. A function to be executed before onFail, if it returns [false], the request will not call onFail function"+
                 "<br>&nbsp;&nbsp;beforeSuccess: Function, arguments:[response, response type, threadid]. A function to be executed before onSuccess, if it returns [false], the request will not call onSuccess function"+
                 "<br>}"
         ],
@@ -2138,7 +2138,7 @@ xui.set(xui.Locale,["en","app"], {
             "uri [Required]: String/Object. String -- The URL of the request target; Object(to see options) -- a set of key/value pairs that configure the request. If this parameter is Object, other parameters will be ignored",
             "query [Optional]:  Object[Key/value pairs], request data",
             "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully",
-            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request fails",
+            "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever the request fails",
             "threadid [Optional]: String, a thread id to be bound to the current request. [suspend the thread -> execute the request -> resume the thread]",
             "options [Optional]: Object, a set of key/value pairs that configure the request. All options are optional. <strong>Values in Parameters has high priority</strong>" +
                 "<br>{"+
@@ -2154,7 +2154,7 @@ xui.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;cusomQS: Function, arguments: [obj]. A function to customize query string Object"+
                 "<br><em>//normal events</em>"+
                 "<br>&nbsp;&nbsp;onSuccess: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever the request is done successfully"+
-                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String). Afunction to be executed whenever the request fails"+
+                "<br>&nbsp;&nbsp;onFail: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). Afunction to be executed whenever the request fails"+
                 "<br><em>//trace events</em>"+
                 "<br>&nbsp;&nbsp;onRetry: Function, arguments:[the current retry time], A function will be triggered when the request retries"+
                 "<br>&nbsp;&nbsp;onTimeout: Function, , A function will be triggered when the request the request is timeout"+
@@ -2162,7 +2162,7 @@ xui.set(xui.Locale,["en","app"], {
                 "<br>&nbsp;&nbsp;onEnd: Function,  , A function will be triggered when the request ends"+
                 "<br><em>//before events</em>"+
                 "<br>&nbsp;&nbsp;beforeStart: Function. A function to be executed before onStart, if it returns [false], the request will be End"+
-                "<br>&nbsp;&nbsp;beforeFail: Function, arguments:[error Object, threadid]. A function to be executed before onFail, if it returns [false], the request will not call onFail function"+
+                "<br>&nbsp;&nbsp;beforeFail: Function, arguments:[error Object, threadid, status, statusText, response]. A function to be executed before onFail, if it returns [false], the request will not call onFail function"+
                 "<br>&nbsp;&nbsp;beforeSuccess: Function, arguments:[response, response type, threadid]. A function to be executed before onSuccess, if it returns [false], the request will not call onSuccess function"+
                 "<br>}"
         ],
@@ -6471,7 +6471,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[xui.absIO]",
                 $paras:[
                     "onSuccess [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request is done successfully",
-                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String). A function to be executed whenever a request fails",
+                    "onFail [Optional]: Function(response:Object, responsetype:String, threadid:String, status, statusText, response). A function to be executed whenever a request fails",
                     "onStart [Optional]: Function(threadid:String).  onStart function for the call",
                     "onEnd [Optional]:  Function(threadid:String).  onEnd function for the call",
                     "mode [Optional] : String, the function's mode ,in 'normal'(calls ajax only)/busy(calls and shows busy UI)/return(doesn't call, returns ajax object), the default value is 'normal'",
@@ -6507,8 +6507,11 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when error raises",
                 $paras:[
                     "profile : xui.Profile",
-                    "rspData : Object, the data from remoting call",
-                    "requestId : String"
+                    "errMsg : Object, the data from remoting call",
+                    "requestId : String",
+                    "status : Number, status code",
+                    "statusText : String, status text",
+                    "response : Object, response data"
                 ]
             },
             afterInvoke:{

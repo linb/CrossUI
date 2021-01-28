@@ -3577,10 +3577,10 @@ xui.Class('xui.absIO',null,{
                 xui.tryF(self.onSuccess,[self._response, self.rspType, self.threadid], self);
             self._onEnd();
         },
-        _onError:function(e){
+        _onError:function(e, status, statusText, response){
             var self=this;
-            if(false!==xui.tryF(self.beforeFail,[e, self.threadid],self))
-                xui.tryF(self.onFail,[e, self.rspType, self.threadid, e], self);
+            if(false!==xui.tryF(self.beforeFail,[e, self.threadid, status, statusText, response],self))
+                xui.tryF(self.onFail,[e, self.rspType, self.threadid, status, statusText, response], self);
             self._onEnd();
         },
         isAlive:function(){
@@ -3729,7 +3729,7 @@ xui.Class('xui.Fetch','xui.absIO',{
               self.credentials = 'include';
             }
 
-            var init={};
+            var init={},ok,e1,status,statusText;
             xui.arr.each(self._init,function(k){
               if(self.hasOwnProperty(k) && self[k])init[k] = self[k];
             });
@@ -3740,31 +3740,39 @@ xui.Class('xui.Fetch','xui.absIO',{
             }
             fetch(self.uri, init)
             .then(function(response) {
-              if(response.ok){
+                var rst;
+                status = response.status;
+                statusText = response.statusText;
                 try{
                   switch(self.rspType.toLowerCase()){
                     case 'arraybuffer':
-                      return response.arrayBuffer()
+                      rst = response.arrayBuffer();break;
                     case 'formData':
-                      return response.formData()
+                      rst = response.formData();break;
                     case 'json':
-                      return response.json();
+                      rst = response.json();break;
                     case 'text':
-                      return response.text();
+                      rst = response.text();break;
                     case 'blob':
-                      return response.blob();
+                      rst = response.blob();break;
                     default:
-                      self._onError(new Error('Unsupported rspType--'  + rspType));
+                      throw new Error('Unsupported rspType -- '  + rspType);
                   }
                 }catch(e){
-                  self._onError(e);
+                  e1 = e;
+                  return;
                 }
-              }else{
-                self._onError(new Error('Status problem--'  + response.status + " : " + response.statusText));
-              }
+                if(response.ok) ok = true;
+                else e1 = new Error('State error -- ' + status + ' ' + statusText);
+
+                return rst;
             }).then(function(response) {
-              self._response=response;
-              self._onResponse();
+              if(ok){
+                self._response = response;
+                self._onResponse();
+              }else{
+                self._onError(e1, status, statusText, response);
+              }
             }).catch(function(e) {
               if (e.name === 'AbortError') {
                 // nothing
