@@ -3959,7 +3959,7 @@ xui.Class('xui.Ajax','xui.absIO',{
         },
         _complete:function() {
               //this is for opera
-              var ns=this,obj,status = ns._XML.status;
+              var ns=this,obj,status=ns._XML.status,statusText=ns._XML.statusText;
               ns._txtresponse = ns.rspType=='xml'?ns._XML.responseXML:ns._XML.responseText;
               // try to get js object, or the original
               ns._response = (ns.rspType=="blob" || ns.rspType=="document" || ns.rspType=="arraybuffer") ? ns._XML.response :
@@ -3979,9 +3979,9 @@ xui.Class('xui.Ajax','xui.absIO',{
                   ns._onResponse();
               // offline or other Network problems
               else if(status===undefined || status<10 )
-                  ns._onError(new Error('Network problems--' +status));
+                  ns._onError(new Error('Network problems--' +status), status, statusText, ns._response);
               else
-                  ns._onError(new Error('XMLHTTP returns--' +status));
+                  ns._onError(new Error('XMLHTTP returns--' +status), status, statusText, ns._response);
             return ns._response;
         }
     },
@@ -32751,7 +32751,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 $order:2
             },
             "KEY textarea":{
-                'white-space':'normal',
+                'white-space':'pre',
                 'overflow-x':'hidden',
                 'overflow-y':'auto'
             },
