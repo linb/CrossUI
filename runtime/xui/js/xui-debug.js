@@ -2684,6 +2684,11 @@ new function(){
                                             delete m.CS;
                                         }
                                     }
+                                }else if(method=="show"){
+                                    // special for xui.Module.show
+                                    iparams.unshift(function(err,module){
+                                        if(err){xui.message(err);}
+                                    });
                                 }
                                 if(xui.isFun(t=xui.get(_ns.page,[target,method])))t.apply(_ns.page[target],iparams);
                             }
