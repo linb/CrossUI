@@ -800,18 +800,18 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 onMouseover:function(profile, e, src){
                     var menu=profile._droppopmenu;
                     if(menu)return;
-
-                    var ins=profile.boxing(),
+                    var groupSize = 15,
+                        ins=profile.boxing(),
                         items=profile.properties.items,
                         nitems=[],
                         l=items.length,
                         ll;
-                    if(items.length>10){
-                        ll=Math.ceil(l/10);
+                    if(items.length>groupSize){
+                        ll=Math.ceil(l/groupSize);
                         for(var i=0;i<ll;i++)
-                            nitems.push({caption:(i*10+1) + " - " + Math.min(l,((i+1)*10+1)), sub:[]});
+                            nitems.push({caption:(i*groupSize+1) + " - " + Math.min(l,((i+1)*groupSize+1)), sub:[]});
                         xui.arr.each(items,function(item,i){
-                            nitems[parseInt(i/10)].sub.push(xui.clone(item,false,1));
+                            nitems[parseInt(i/groupSize)].sub.push(xui.clone(item,false,1));
                         });
                     }else{
                         nitems=xui.clone(items,false,2);
@@ -1213,7 +1213,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(width && item._w!=width){
                 list.width(wc = adjustunit(item._w=width, listfz));
                 if(!prop.noHandler){
-                    this._adjustHScroll(profile);
+                    this._adjustHScroll(profile, key);
                 }
             }
 
@@ -1223,10 +1223,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 xui.UI._adjustConW(profile, panel, wc);
             }
         },
-        _adjustHScroll:function(profile){
+        _adjustHScroll:function(profile, value){
             // SCROLL
-            var items = profile.getSubNode('ITEMS'),
-                innerW=items.width(),
+            var items = profile.getSubNode('ITEMS'), charW = xui.CSS.$px('1em'), curCapW = charW, showCount = 0,
+                cur = xui.isSet(value) && profile.getSubNode('CAPTION', profile.getSubIdByItemId(value)).id(),
+                innerW = items.width(),
                 list = profile.getSubNode('LIST'),
                 menu = profile.getSubNode('MENU'),
                 caps = profile.getSubNode('CAPTION',true),
@@ -1246,7 +1247,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     var w=0;
                     caps.each(function(item){
                         if(item.clientWidth==0)return;
-                        w += item.clientWidth;
+                        showCount++;
+                        if(xui.isSet(cur) && item.id===cur)curCapW=item.clientWidth;
+                        else w += item.clientWidth;
                     });
                     return w;
                 },
@@ -1263,11 +1266,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 // try 1: minus caption width
                 itemsW = getItemsW();
                 if(itemsW>innerW){
-                    var capw=getCapsW();
-                    if((itemsW - innerW) < capw * .5){
-                        var percent = 1- (itemsW - innerW) / capw;
+                    var otherCapsW=getCapsW(), min = itemsW - otherCapsW + charW;
+                    if(innerW > min + charW*(showCount - 1)){
+                        var percent = (innerW - min) / otherCapsW;
                         caps.each(function(cap){
-                            xui(cap).width(Math.floor(cap.clientWidth * percent) +'px');
+                            xui(cap).width((xui.isSet(cur) && cap.id===cur)?'auto':(Math.floor(cap.clientWidth * percent) +'px'));
                         });
                         profile._mode='narrow';
                     }else{

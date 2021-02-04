@@ -474,7 +474,7 @@ xui.Class('xui.Module','xui.absProfile',{
         // for outter events
         fireEvent:function(name, args, host){
             var self = this;
-            if(self.$inDesign || (self.host && self.host.$inDesign))return;
+            if((self.$inDesign || (self.host && self.host.$inDesign)) && !xui.get(self,["_PASSEVTS",name]))return;
 
             var r, tp = self._evsPClsBuildIn && self._evsPClsBuildIn[name],
                 ti = self._evsClsBuildIn && self._evsClsBuildIn[name],

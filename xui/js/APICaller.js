@@ -286,7 +286,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                                 alert(data);
                             break;
                             case "log":
-                                xui.log(data);
+                                xui.log(data, prf);
                             break;
                             case "databinder":
                                 if(t = xui.DataBinder.getFromName(o.name)){
@@ -318,7 +318,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                                 break;
                         }
                         if(t && t.actions && xui.isArr(t.actions)){
-                            xui.pseudocode._callFunctions(t, [rspData, ns], host,null,null,(host&&host.alias)+"."+ns.alias + "." + o.name);
+                            xui.pseudocode._callFunctions(t, [rspData, prf], host,null,null,(host&&host.alias)+"."+ns.alias + "." + o.name);
                         }
                     });
                 }

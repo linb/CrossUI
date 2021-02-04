@@ -1763,6 +1763,15 @@ xui.merge(xui,{
                     })
                 }catch(e){}
             }
+            if(cls['xui.Module'] && cls.prototype.functions){
+               xui.each(cls.prototype.functions,function(f){
+                 if(xui.isHash(f) && f.newbies && xui.isHash(f.newbies)){
+                   xui.each(f.newbies,function(c){
+                      if(!xui.SC.get(c))required.push(c);
+                   });
+                 }
+               })
+            }
         }
     },
     // Recursive require
@@ -5232,7 +5241,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                             if(prf){
                                 var events=prf[i], host=prf.host || prf;
                                 if(events && (!xui.isArr(events) || events.length)){
-                                    if(prf.$inDesign)return;
+                                    if(prf.$inDesign && !xui.get(prf,["host","_PASSEVTS",prf.alias,i]))return;
                                     prf.$lastEvent=i;
                                     if(arguments[0]!=prf)args[0]=prf;
                                     for(j=0;j<l;j++)args[args.length]=arguments[j];
