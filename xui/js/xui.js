@@ -1613,7 +1613,7 @@ xui.merge(xui,{
             // For fetching one class multiple times
             if(!onFetching[uri]){
                 onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-                if(!options.sync && !options.useAjax){
+                if(!options.useAjax){
                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
                     if(options.alien){ww=xui.window;xui.window={};}
                     xui.JSONP(uri,rnd,function(){
@@ -1643,7 +1643,8 @@ xui.merge(xui,{
                     },threadid,{
                         rspType : 'script',
                         keepDomNode : !options.noDomNode,
-                        attrs : attrs
+                        attrs : attrs,
+                        asy : !options.sync
                     }).start();
                 }else{
                     xui.Ajax(uri,rnd,function(rsp){
@@ -4048,6 +4049,7 @@ xui.Class('xui.JSONP','xui.absIO',{
             n.src = uri;
             n.type= self.scriptType||'text/javascript';
             n.charset=self.charset||'UTF-8';
+            n.async=!!self.asy;
 
             if(self.attrs)
                 xui.each(self.attrs,function(o,i){
