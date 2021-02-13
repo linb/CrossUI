@@ -193,6 +193,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             "KEY.readonly div, KEY.disabled div":{
                 display:'none'
             },
+            "KEY.readonly MOVE":{
+                display:'block',
+                $order:2
+            },
             "KEY.readonly CONF1, KEY.readonly CONF2":{
                 $order:10,
                 opacity: 1,

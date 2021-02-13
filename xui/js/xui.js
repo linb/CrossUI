@@ -1815,10 +1815,12 @@ xui.merge(xui,{
                             }else{
                                 uri= required2[j];
                             }
-                            if(id && !xui.Dom.byId(id)){
-                                xui.CSS.includeLink(uri,id,false, attrs);
-                            }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
-                                xui.CSS.includeLink(uri,id,false, attrs);
+                            if(uri && xui.isStr(uri) && xui.trim(url).length > 0){
+                              if(id && !xui.Dom.byId(id)){
+                                  xui.CSS.includeLink(uri,id,false, attrs);
+                              }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
+                                  xui.CSS.includeLink(uri,id,false, attrs);
+                              }
                             }
                         }
                         required2=null;
@@ -4979,8 +4981,9 @@ xui.Class('xui.Profile','xui.absProfile',{
             }
 
             //properties
-            var c={}, p=o.box.$DataStruct, map=xui.absObj.$specialChars;
-            xui.merge(c,o.properties, function(o,i){return (i in p) &&  p[i]!==o && !map[i.charAt(0)]});
+            var c={}, p=o.box.$DataStruct, df2=o.box[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], map=xui.absObj.$specialChars;
+            xui.merge(c,o.properties, function(o,i){return ( (df2 && (i in df2)) ? df2 : p) [i]!==o && !map[i.charAt(0)]; });
+
             if(!xui.isEmpty(c))r.properties=c;
 
             //events

@@ -625,8 +625,8 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(o.$domId!=o.domId)r.domId=o.domId;
 
             //properties
-            var c={}, p=o.box.$DataStruct, map=xui.absObj.$specialChars;
-            xui.merge(c,o.properties, function(o,i){return (i in p) &&  p[i]!==o && !map[i.charAt(0)]});
+            var c={}, p=o.box.$DataStruct, df1=xui.UI[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], df2=o.box[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], map=xui.absObj.$specialChars;
+            xui.merge(c,o.properties, function(o,i){return ( (df2 && (i in df2)) ? df2 : (df1 && (i in df1)) ? df1 : p ) [i]!==o && !map[i.charAt(0)]} );
             if(!xui.isEmpty(c))r.properties=c;
 
             //events
@@ -1139,8 +1139,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 profile,
                 t='default',
                 options,
-                df1=xui.UI.__resetDftProp,
-                df2=c.__resetDftProp,
                 df3=c.$adjustProp,
                 ds=c.$DataStruct,
                 alias,temp;
@@ -1157,10 +1155,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                     alias = c.pickAlias();
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
             }
+            var df1=xui.UI[profile.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'],
+              df2=c[profile.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'];
 
             for(var i in ds){
                 if(!(i in profile.properties)){
-                    temp = df2&&(i in df2) ? df2[i] : df1&&(i in df1) ? df1[i] : ds[i];
+                    temp = (df2&&(i in df2)) ? df2[i] : (df1&&(i in df1)) ? df1[i] : ds[i];
                     profile.properties[i]=typeof temp=='object'?xui.clone(temp,true):temp;
                 }
             }
@@ -6830,7 +6830,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
 
         _beforeSerialized:function(profile){
-            var b,t,r,o={};
+            var b,t,r,o={},df1,df2;
             xui.merge(o, profile, 'all');
             var p = o.properties = xui.clone(profile.properties,true),
                 ds = o.box.$DataStruct,
@@ -6842,7 +6842,8 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             // *** force to rem/px
             for(var i in dm){
-                if(dm[i].ini===p[i]) delete p[i];
+                df1=xui.UI[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], df2=o.box[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'];
+                if(( (df2 && (i in df2)) ? df2[i] :(df1&&(i in df1)) ? df1[i] : dm[i].ini )===p[i]) delete p[i];
                 else if(dm[i] && dm[i]['$spaceunit']){
                     if( (dm[i].ini===0||dm[i].ini==='0'||dm[i].ini==='0px'||dm[i].ini==='0em')
                         && (p[i]===0||p[i]==='0'||p[i]==='0px'||p[i]==='0em') ) delete p[i];

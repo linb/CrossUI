@@ -1627,7 +1627,7 @@ xui.merge(xui,{
             // For fetching one class multiple times
             if(!onFetching[uri]){
                 onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-                if(!options.sync && !options.useAjax){
+                if(!options.useAjax){
                     xui.Class._ignoreNSCache=1;xui.Class._last=null;
                     if(options.alien){ww=xui.window;xui.window={};}
                     xui.JSONP(uri,rnd,function(){
@@ -1657,7 +1657,8 @@ xui.merge(xui,{
                     },threadid,{
                         rspType : 'script',
                         keepDomNode : !options.noDomNode,
-                        attrs : attrs
+                        attrs : attrs,
+                        asy : !options.sync
                     }).start();
                 }else{
                     xui.Ajax(uri,rnd,function(rsp){
@@ -1828,10 +1829,12 @@ xui.merge(xui,{
                             }else{
                                 uri= required2[j];
                             }
-                            if(id && !xui.Dom.byId(id)){
-                                xui.CSS.includeLink(uri,id,false, attrs);
-                            }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
-                                xui.CSS.includeLink(uri,id,false, attrs);
+                            if(uri && xui.isStr(uri) && xui.trim(url).length > 0){
+                              if(id && !xui.Dom.byId(id)){
+                                  xui.CSS.includeLink(uri,id,false, attrs);
+                              }else if(!xui.querySelector('link[href="'+uri+'"]').get(0)){
+                                  xui.CSS.includeLink(uri,id,false, attrs);
+                              }
                             }
                         }
                         required2=null;
@@ -4062,6 +4065,7 @@ xui.Class('xui.JSONP','xui.absIO',{
             n.src = uri;
             n.type= self.scriptType||'text/javascript';
             n.charset=self.charset||'UTF-8';
+            n.async=!!self.asy;
 
             if(self.attrs)
                 xui.each(self.attrs,function(o,i){
@@ -4991,8 +4995,9 @@ xui.Class('xui.Profile','xui.absProfile',{
             }
 
             //properties
-            var c={}, p=o.box.$DataStruct, map=xui.absObj.$specialChars;
-            xui.merge(c,o.properties, function(o,i){return (i in p) &&  p[i]!==o && !map[i.charAt(0)]});
+            var c={}, p=o.box.$DataStruct, df2=o.box[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], map=xui.absObj.$specialChars;
+            xui.merge(c,o.properties, function(o,i){return ( (df2 && (i in df2)) ? df2 : p) [i]!==o && !map[i.charAt(0)]; });
+
             if(!xui.isEmpty(c))r.properties=c;
 
             //events
@@ -6349,11 +6354,11 @@ xui.Class("xui.ExcelFormula",null,{
             queryPassword:"",
 
             queryMethod:{
-                ini:"auto",
+                ini:"GET",
                 listbox:["auto","GET","POST","PUT","DELETE","HEAD","PATCH","OPTIONS"]
             },
             requestType:{
-                ini:"JSON",
+                ini:"FORM",
                 listbox:["JSON","FORM","XML","SOAP","BLOB","STREAM","ASIS"]
             },
             responseType:{
@@ -6387,7 +6392,7 @@ xui.Class("xui.ExcelFormula",null,{
                 ini:{}
             },
             proxyType:{
-                ini:"auto",
+                ini:"FETCH",
                 listbox:["auto","AJAX","JSONP","XDMI","FETCH"]// Cross-Domain Messaging with iframes
             },
             "name":{
@@ -15199,11 +15204,11 @@ xui.Class('xui.Module','xui.absProfile',{
         var self=this,opt,alias,t;
 
         // If it's a older module object, set xid first
-		if(properties && properties.constructor==self.constructor){
-			if(properties.$xid){
-				self.$xid = properties.$xid;
-			}
-		}
+        if(properties && properties.constructor==self.constructor){
+            if(properties.$xid){
+                self.$xid = properties.$xid;
+            }
+        }
 
         var upper=arguments.callee.upper;
         if(upper)upper.call(self);
@@ -15211,7 +15216,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
         // If it's a older module object, refresh itself
         if(properties && properties.constructor==self.constructor){
-        	 var oldm = properties;
+             var oldm = properties;
 
              events = oldm.events || {};
              alias = oldm.alias;
@@ -15220,13 +15225,13 @@ xui.Class('xui.Module','xui.absProfile',{
              // for refresh , use the old pointer
              self=oldm;
         }else{
-        	if(properties && properties.key && properties["xui.Module"]){
-	             opt=properties;
-	             properties = (opt && opt.properties) || {};
-	             events = (opt && opt.events) || {};
-	             alias = opt.alias;
-	             host = opt.host;
-	        }else{
+            if(properties && properties.key && properties["xui.Module"]){
+                 opt=properties;
+                 properties = (opt && opt.properties) || {};
+                 events = (opt && opt.events) || {};
+                 alias = opt.alias;
+                 host = opt.host;
+            }else{
                 if(!properties){
                     if(self.properties){
                         properties =  xui.clone(self.properties,true);
@@ -15235,8 +15240,8 @@ xui.Class('xui.Module','xui.absProfile',{
                     }else properties =  {};
                 }
                 events = events || (self.events?xui.clone(self.events):{});
-	        }
-	    }
+            }
+        }
 
 
         self.Class=self.constructor;
@@ -15307,7 +15312,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!ui.isEmpty())return ui.get(0);
         },
         getModule:function(top){
-        	var getUpperModule=function(module){
+            var getUpperModule=function(module){
                 // if it's a inner module
                 if(module.moduleClass && module.moduleXid){
                     var pm = xui.SC.get(module.moduleClass);
@@ -15352,9 +15357,9 @@ xui.Class('xui.Module','xui.absProfile',{
 
             // force to create and render the first layer inner modules
             innerUI.each(function(o,i){
-            	if((o=o.getModule()) && o!=ns){
-            		o._toDomElems();
-            	}
+                if((o=o.getModule()) && o!=ns){
+                    o._toDomElems();
+                }
             });
 
             return innerUI._toDomElems();
@@ -15530,7 +15535,7 @@ xui.Class('xui.Module','xui.absProfile',{
             arr.unshift(this);
             return this.fireEvent('onMessage',  arr);
         },
-        serialize:function(rtnString, keepHost, children){
+        serialize:function(rtnString, keepHost, oldDftProps){
             var t,m,
                 self=this,
                 o=(t=self.constructor._beforeSerialized)?t(self):self,
@@ -15552,6 +15557,12 @@ xui.Class('xui.Module','xui.absProfile',{
             //properties
             var c={}, p=o.box.$DataModel;
             xui.merge(c,o.properties, function(o,i){return p[i]!==o});
+
+            if(oldDftProps){
+              xui.each(oldDftProps,function(v,k){
+                if(v===c[k])delete c[k];
+              });
+            }
 
             // for inner coms prf
             if(t=o.properties.__inner_coms_prf__)c.__inner_coms_prf__=t;
@@ -15702,7 +15713,7 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             return self;
         },
-        refresh:function(callback,ignoreEffects, purgeNow){
+        refresh:function(callback, ignoreEffects, purgeNow, oldDftProps){
             var paras, b, p, s, fun,
                 o=this,
                 inm, firstUI, childId,
@@ -15734,8 +15745,15 @@ xui.Class('xui.Module','xui.absProfile',{
             }
 
             //unserialize
-            s = o.serialize(false, true);
-            o.destroy(true, true, true);
+            s = o.serialize(false, true, oldDftProps);
+            o.destroy(ignoreEffects!==false, purgeNow!==false, true);
+
+            if(oldDftProps && o.properties){
+              xui.each(oldDftProps,function(v,k){
+                if(v===o.properties[k])delete o.properties[k];
+              });
+            }
+
             //set back
             xui.merge(o,s,'all');
             // notice: remove destroyed here
@@ -15753,9 +15771,9 @@ xui.Class('xui.Module','xui.absProfile',{
             o.moduleXid=mxid;
 
             o.create(function(){
-            	var f=function(t,m){
+                var f=function(t,m){
                     if(callback)xui.tryF(callback);
-            	};
+                };
                 //for functions like: UI refresh itself
                 if(rt)rt.call(rt.target, o);
                 //add to parent, and trigger RenderTrigger
@@ -15852,7 +15870,7 @@ xui.Class('xui.Module','xui.absProfile',{
                             self._fireEvent('onLoadRequiredClassErr',  [e,layer]);
                         },null,false, threadid,
                         // dont use require's recursive
-                        {stopRecursive:1});
+                        {stopRecursive:1, sync:true});
 
                         required=[];
                         if(requireDeep.length){
@@ -16420,7 +16438,7 @@ xui.Class('xui.Module','xui.absProfile',{
         isDestroyed:function(){
             return !!this.destroyed;
         },
-        destroy:function(ignoreEffects, purgeNow,keepStructure){
+        destroy:function(ignoreEffects, purgeNow, keepStructure){
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
 
@@ -16430,7 +16448,7 @@ xui.Class('xui.Module','xui.absProfile',{
             }
 
             //set once
-        	self.destroyed=true;
+            self.destroyed=true;
             if(ns && ns.length)
                 xui.arr.each(ns, function(o){
                     if(o && o.box)
@@ -16439,13 +16457,13 @@ xui.Class('xui.Module','xui.absProfile',{
 
             if(ns && ns.length)
                 self._nodes.length=0;
-        	self._ctrlpool=null;
+            self._ctrlpool=null;
 
             self.unLinkAll();
 
             if(!keepStructure){
-	            xui.breakO(self);
-	        }else{
+                xui.breakO(self);
+            }else{
                 // for refresh itself
                 delete self.renderId;
                 delete self.created;
@@ -16459,7 +16477,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 xui.breakO(self.$afterDestroy,2);
             }
             //set again
-        	self.destroyed=true;
+            self.destroyed=true;
         },
         applyPseudo:function(funConf, args, scope){
             var ns=this;
@@ -20021,8 +20039,8 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(o.$domId!=o.domId)r.domId=o.domId;
 
             //properties
-            var c={}, p=o.box.$DataStruct, map=xui.absObj.$specialChars;
-            xui.merge(c,o.properties, function(o,i){return (i in p) &&  p[i]!==o && !map[i.charAt(0)]});
+            var c={}, p=o.box.$DataStruct, df1=xui.UI[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], df2=o.box[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], map=xui.absObj.$specialChars;
+            xui.merge(c,o.properties, function(o,i){return ( (df2 && (i in df2)) ? df2 : (df1 && (i in df1)) ? df1 : p ) [i]!==o && !map[i.charAt(0)]} );
             if(!xui.isEmpty(c))r.properties=c;
 
             //events
@@ -20535,8 +20553,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 profile,
                 t='default',
                 options,
-                df1=xui.UI.__resetDftProp,
-                df2=c.__resetDftProp,
                 df3=c.$adjustProp,
                 ds=c.$DataStruct,
                 alias,temp;
@@ -20553,10 +20569,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                     alias = c.pickAlias();
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
             }
+            var df1=xui.UI[profile.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'],
+              df2=c[profile.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'];
 
             for(var i in ds){
                 if(!(i in profile.properties)){
-                    temp = df2&&(i in df2) ? df2[i] : df1&&(i in df1) ? df1[i] : ds[i];
+                    temp = (df2&&(i in df2)) ? df2[i] : (df1&&(i in df1)) ? df1[i] : ds[i];
                     profile.properties[i]=typeof temp=='object'?xui.clone(temp,true):temp;
                 }
             }
@@ -26226,7 +26244,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
 
         _beforeSerialized:function(profile){
-            var b,t,r,o={};
+            var b,t,r,o={},df1,df2;
             xui.merge(o, profile, 'all');
             var p = o.properties = xui.clone(profile.properties,true),
                 ds = o.box.$DataStruct,
@@ -26238,7 +26256,8 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             // *** force to rem/px
             for(var i in dm){
-                if(dm[i].ini===p[i]) delete p[i];
+                df1=xui.UI[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'], df2=o.box[o.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'];
+                if(( (df2 && (i in df2)) ? df2[i] :(df1&&(i in df1)) ? df1[i] : dm[i].ini )===p[i]) delete p[i];
                 else if(dm[i] && dm[i]['$spaceunit']){
                     if( (dm[i].ini===0||dm[i].ini==='0'||dm[i].ini==='0px'||dm[i].ini==='0em')
                         && (p[i]===0||p[i]==='0'||p[i]==='0px'||p[i]==='0em') ) delete p[i];
@@ -29838,6 +29857,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             },
             "KEY.readonly div, KEY.disabled div":{
                 display:'none'
+            },
+            "KEY.readonly MOVE":{
+                display:'block',
+                $order:2
             },
             "KEY.readonly CONF1, KEY.readonly CONF2":{
                 $order:10,

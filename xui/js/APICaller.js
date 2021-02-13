@@ -408,11 +408,11 @@ xui.Class("xui.APICaller","xui.absObj",{
             queryPassword:"",
 
             queryMethod:{
-                ini:"auto",
+                ini:"GET",
                 listbox:["auto","GET","POST","PUT","DELETE","HEAD","PATCH","OPTIONS"]
             },
             requestType:{
-                ini:"JSON",
+                ini:"FORM",
                 listbox:["JSON","FORM","XML","SOAP","BLOB","STREAM","ASIS"]
             },
             responseType:{
@@ -446,7 +446,7 @@ xui.Class("xui.APICaller","xui.absObj",{
                 ini:{}
             },
             proxyType:{
-                ini:"auto",
+                ini:"FETCH",
                 listbox:["auto","AJAX","JSONP","XDMI","FETCH"]// Cross-Domain Messaging with iframes
             },
             "name":{
