@@ -4867,6 +4867,7 @@ xui.Class('xui.Profile','xui.absProfile',{
         self.host=host||self.host||self;
         self.Class=self.constructor;
         self.box=box||self.box;
+        self._dftProps={};
         if(self.events){
             self.setEvents(self.events);
             delete self.events;
@@ -4949,6 +4950,7 @@ xui.Class('xui.Profile','xui.absProfile',{
             }
             if(ns.afterDestroy)ns.boxing().afterDestroy(ns);
             xui.breakO([ns.properties, ns.events, ns],2);
+            ns._dftProps = null;
             //set again
             ns.destroyed=true;
         },
@@ -5161,6 +5163,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                     ps[n] = (typeof $set!='function' && typeof m=='function') ? m : xui.Class._fun(function(value,force,tag,tag2){
                         return this.each(function(v){
                             if(!v.properties)return;
+                            delete v._dftProps[i];
 
                             var t,nfz;
                             // *** force to em/px
@@ -5468,7 +5471,7 @@ xui.Class("xui.Timer","xui.absObj",{
 
             for(var i in (temp=c.$DataStruct))
                 if(!(i in profile.properties))
-                    profile.properties[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
+                    profile.properties[i]=profile._dftProps[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
 
             //set anti-links
             profile.link(c._cache,'self').link(xui._pool,'xui');

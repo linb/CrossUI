@@ -1161,7 +1161,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             for(var i in ds){
                 if(!(i in profile.properties)){
                     temp = (df2&&(i in df2)) ? df2[i] : (df1&&(i in df1)) ? df1[i] : ds[i];
-                    profile.properties[i]=typeof temp=='object'?xui.clone(temp,true):temp;
+                    profile.properties[i]=profile._dftProps[i]=typeof temp=='object'?xui.clone(temp,true):temp;
                 }
             }
             if(typeof(df3)=="function")df3(profile);
