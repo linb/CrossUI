@@ -5574,7 +5574,7 @@ xui.Class("xui.MessageService","xui.absObj",{
         _after_ini:function(profile){
             if(profile.$inDesign)return;
             var t, p=profile.properties;
-            if(t = p.recipientType||p.msgType)profile.boxing().seRecipientType(t, true);
+            if(t = p.recipientType||p.msgType)profile.boxing().setRecipientType(t, true);
         },
         destroy:function(){
             this.each(function(profile){
@@ -16826,6 +16826,8 @@ xui.Class('xui.Module','xui.absProfile',{
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             beforeCreated:function(module, threadid){},
+            beforeShow:function(module, threadid){},
+            afterShow:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},
             onLoadRequiredClassErr:function(module, threadid, err, layer){},

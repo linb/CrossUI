@@ -958,10 +958,10 @@ xui.Class('App', 'xui.Module',{
             return [o.$desc, arr.join('')];
         },
         __itemsel:function(profile, item, e, src, type){
-            xui.History.setFI(item.href);
+            xui.History.setFI("#"+item.href);
         },
         _listq_onitemselected:function (profile, item) {
-            xui.History.setFI(item.id);
+            xui.History.setFI("#"+item.id);
         },
         _pbq_onclick:function (profile, page) {
             var arr=SPA.$Qresult;

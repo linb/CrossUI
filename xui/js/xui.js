@@ -5560,7 +5560,7 @@ xui.Class("xui.MessageService","xui.absObj",{
         _after_ini:function(profile){
             if(profile.$inDesign)return;
             var t, p=profile.properties;
-            if(t = p.recipientType||p.msgType)profile.boxing().seRecipientType(t, true);
+            if(t = p.recipientType||p.msgType)profile.boxing().setRecipientType(t, true);
         },
         destroy:function(){
             this.each(function(profile){
