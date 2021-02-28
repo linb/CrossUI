@@ -133,7 +133,7 @@ class Uploader
     */
     public function check_type($file){
         // get file type
-        $ext = pathinfo($file['name'],PATHINFO_EXTENSION);
+        $ext = strtolower(pathinfo($file['name'],PATHINFO_EXTENSION));
         // make sure the image is a valid file type and that they type matches the extention
         if(!array_key_exists($ext,$this->mime_types))
             throw new Exception('Mime type invalid!');
@@ -164,7 +164,7 @@ class Uploader
                     if(is_writable($save_path))
                         $this->save_path = $save_path;
                     else
-                        throw new Exception('Destination ¡°$save_path¡± is not writable!');
+                        throw new Exception('Destination '.$save_path.' is not writable!');
                 }else
                     throw new Exception("Destination path is not valid: $save_path ");
 
