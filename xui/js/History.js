@@ -100,8 +100,9 @@ xui.Class("xui.History",null,{
             // ensure encode once
             if(fi){
                 if(!xui.isHash(fi)){
-                  path = xui.getUrlPath(fi+'');
-                  params = xui.getUrlParams(fi+'');
+                  fi = (fi[0]!='#'?'#':'') + fi;
+                  path = xui.getUrlPath(fi);
+                  params = xui.getUrlParams(fi);
                 }else{
                   params = fi;
                 }

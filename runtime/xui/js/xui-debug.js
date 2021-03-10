@@ -2938,6 +2938,7 @@ new function(){
         A2=/\uffff/.test('\uffff') ? /[\\\"\x00-\x1f\x7f-\uffff]/g : /[\\\"\x00-\x1f\x7f-\xff]/g,
         D=/^(-\d+|\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?((?:[+-](\d{2})(\d{2}))|Z)?$/,
         E=function(t,i,a,v,m,n,p){
+            if(!p)p=[t];
             for(i in t)
                 if((a=typeof (v=t[i]))=='string' && (v=D.exec(v))){
                     m=v[8]&&v[8].charAt(0);
@@ -2947,7 +2948,12 @@ new function(){
                     n+=m.getTimezoneOffset();
                     if(n)m.setTime(m.getTime()+n*60000);
                     t[i]=m;
-                }else if(a=='object' && t[i] && (xui.isObj(t[i]) || xui.isArr(t[i]))) E(t[i]);
+                }else if(a=='object' && t[i] && (xui.isHash(t[i]) || xui.isArr(t[i]))){
+                  if(xui.arr.indexOf(p, t[i])==-1){
+                    E(t[i],0,0,0,0,0,p);
+                    p.push(t[i]);
+                  }
+                }
             return t;
         },
 
@@ -18924,8 +18930,9 @@ xui.Class("xui.Tips", null,{
             // ensure encode once
             if(fi){
                 if(!xui.isHash(fi)){
-                  path = xui.getUrlPath(fi+'');
-                  params = xui.getUrlParams(fi+'');
+                  fi = (fi[0]!='#'?'#':'') + fi;
+                  path = xui.getUrlPath(fi);
+                  params = xui.getUrlParams(fi);
                 }else{
                   params = fi;
                 }
