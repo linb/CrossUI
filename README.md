@@ -48,7 +48,7 @@ These tools (without coding) can reduce development time significantly:
 
 ## CDN
 * https://cdn.jsdelivr.net/gh/linb/CrossUI@latest/runtime/xui/js/xui-all.js
-* https://crossui.com/libs/2.0/js/xui-all.js
+* https://crossui.com/libs/3.0/js/xui-all.js
 
 ## Others
 * Examples: https://www.crossui.com/examples.html
