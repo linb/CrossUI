@@ -80,13 +80,13 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     oitem._deep=pitem._deep+1;
                     item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'em;';
                     // for the last one
-                    item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                    item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked xui-uicmd-toggle':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
             }else{
                 oitem._deep=0;
                 item.rulerStyle='';
                 item.innerIcons='';
-                item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked xui-uicmd-toggle':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
             item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
@@ -103,7 +103,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             this._prepareCmds(profile, item);
-            
+
             if(item.type=='split'){
                 item._split='xui-uitem-split';
                 item._splitstyle='margin-left:'+(oitem._deep*p.$subMargin)+'em;';

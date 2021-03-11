@@ -2800,7 +2800,7 @@ new function(){
                                                         if(args&&args.length&&t.params&&t.params.length)
                                                             for(var i=0,l=args.length;i<l;i++)
                                                                 if(y=t.params[i]&&t.params[i].type)
-                                                                    args[i]=y=='String'?(args[i]+''):y=='Number'?(parseFloat(args[i])||0):y=='Boolean'?(!!args[i]):args[i];
+                                                                    args[i]=y=='String'?(xui.isSet(args[i])?(args[i]+''):args[i]):y=='Number'?(parseFloat(args[i])||0):y=='Boolean'?(!!args[i]):args[i];
                                                     }
                                                 }
                                             }
@@ -25053,14 +25053,23 @@ xui.Class("xui.UI",  "xui.absObj", {
                     && profile.box && profile.box['xui.absContainer']
                     && (con=profile.getContainer(true))
                 ) {
+                    var ignore={};
+                    ignore[profile.$xid]=1;
                     con.children().each(function(o,i,p){
                         if( (i=xui.UIProfile.getFromDom(o.id))
+                            && i!==profile
+                            && !ignore[i.$xid]
+                            && i.children.length
                             && i.box && i.box._onresize
+                            && i.box.$Behaviors.PanelKeys && i.box.$Behaviors.PanelKeys.length
                             && (p=i.properties)
                             && (('position' in p) && ('width' in p))
                             && (p.position=='static'||p.position=='relative')
                             && (p.width===''||p.width=='auto')
-                        )  xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                        )  {
+                          ignore[i.$xid]=1;
+                          xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                        }
                     });
                 }
                 // for have _onresize widget only
@@ -42896,15 +42905,16 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
-                if(height=='auto'){
-                    hc='auto';
-                }else{
-                    if(!prop.noHandler){
-                        height = height-listH;
-                    }
-                    if(height>0)hc=height;
-                };
-            }else hc=height;
+            }
+            if(height=='auto'){
+                hc='auto';
+            }else if(height){
+                if(!prop.noHandler){
+                    height = height-listH;
+                }
+                if(height>0)hc=height;
+            };
+
 
             if(width && item._w!=width){
                 list.width(wc = adjustunit(item._w=width, listfz));
@@ -45007,13 +45017,13 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
                     oitem._deep=pitem._deep+1;
                     item.rulerStyle='width:'+(oitem._deep*p.$subMargin)+'em;';
                     // for the last one
-                    item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                    item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked xui-uicmd-toggle':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
                 }
             }else{
                 oitem._deep=0;
                 item.rulerStyle='';
                 item.innerIcons='';
-                item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
+                item._fi_togglemark = item.sub?('xui-uicmd-toggle' + (item._checked?'-checked xui-uicmd-toggle':'')):(p.togglePlaceholder?'xui-uicmd-empty':'xui-uicmd-none');
             }
             // show image
             item.imageDisplay=(item.noIcon||p.noIcon)?"display:none;":"";
@@ -45030,7 +45040,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
             item._tabindex = p.tabindex;
             this._prepareCmds(profile, item);
-            
+
             if(item.type=='split'){
                 item._split='xui-uitem-split';
                 item._splitstyle='margin-left:'+(oitem._deep*p.$subMargin)+'em;';

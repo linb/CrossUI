@@ -5627,14 +5627,23 @@ xui.Class("xui.UI",  "xui.absObj", {
                     && profile.box && profile.box['xui.absContainer']
                     && (con=profile.getContainer(true))
                 ) {
+                    var ignore={};
+                    ignore[profile.$xid]=1;
                     con.children().each(function(o,i,p){
                         if( (i=xui.UIProfile.getFromDom(o.id))
+                            && i!==profile
+                            && !ignore[i.$xid]
+                            && i.children.length
                             && i.box && i.box._onresize
+                            && i.box.$Behaviors.PanelKeys && i.box.$Behaviors.PanelKeys.length
                             && (p=i.properties)
                             && (('position' in p) && ('width' in p))
                             && (p.position=='static'||p.position=='relative')
                             && (p.width===''||p.width=='auto')
-                        )  xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                        )  {
+                          ignore[i.$xid]=1;
+                          xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                        }
                     });
                 }
                 // for have _onresize widget only

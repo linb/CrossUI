@@ -1200,15 +1200,16 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             if(force)item._w=item._h=null;
             if(height && item._h!=height){
                 item._h=height;
-                if(height=='auto'){
-                    hc='auto';
-                }else{
-                    if(!prop.noHandler){
-                        height = height-listH;
-                    }
-                    if(height>0)hc=height;
-                };
-            }else hc=height;
+            }
+            if(height=='auto'){
+                hc='auto';
+            }else if(height){
+                if(!prop.noHandler){
+                    height = height-listH;
+                }
+                if(height>0)hc=height;
+            };
+
 
             if(width && item._w!=width){
                 list.width(wc = adjustunit(item._w=width, listfz));

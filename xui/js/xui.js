@@ -2786,7 +2786,7 @@ new function(){
                                                         if(args&&args.length&&t.params&&t.params.length)
                                                             for(var i=0,l=args.length;i<l;i++)
                                                                 if(y=t.params[i]&&t.params[i].type)
-                                                                    args[i]=y=='String'?(args[i]+''):y=='Number'?(parseFloat(args[i])||0):y=='Boolean'?(!!args[i]):args[i];
+                                                                    args[i]=y=='String'?(xui.isSet(args[i])?(args[i]+''):args[i]):y=='Number'?(parseFloat(args[i])||0):y=='Boolean'?(!!args[i]):args[i];
                                                     }
                                                 }
                                             }
