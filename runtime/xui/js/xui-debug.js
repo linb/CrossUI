@@ -536,8 +536,6 @@ new function(){
             if(!str)return "";
             var i, len,_t, m,n, flag, a1 = [], a2 = [],
                 me=arguments.callee,
-                reg1=me.reg1 || (me.reg1=/\\./g),
-                reg2=me.reg2 || (me.reg2=/\(/g),
                 reg3=me.reg3 || (me.reg3=/\$\d/),
                 reg4=me.reg4 || (me.reg4=/^\$\d+$/),
                 reg5=me.reg5 || (me.reg5=/'/),
@@ -550,7 +548,8 @@ new function(){
             xui.arr.each(reg,function(o){
                 m= typeof o[0]=='string'?o[0]:o[0].source;
                 n= o[1]||"";
-                len = ((m).replace(reg1, "").match(reg2) || "").length;
+                // use precise method
+                len = (new RegExp("("+m + ")|[\\s\\S]")).exec(" ").length-2;
                 if(typeof n !='function'){
                     if (reg3.test(n)) {
                         //if only one paras and valid
@@ -2545,7 +2544,8 @@ new function(){
                 adjust=adjustparam(conf.adjust,_ns)||null,
                 iconditions=[],t1,t2,
                 timeout=xui.isSet(conf.timeout)?parseInt(conf.timeout,10):null,
-                resetid=conf.resetid||null;
+                resetid=conf.resetid||null,
+                _type, _target, _page;
 
             var _debug = '"'+conf.desc+'"', _var = {type:type,target:target,method:method,args:iparams,pseudo:conf,scope:_ns};
 
@@ -2574,6 +2574,7 @@ new function(){
                 }
             }
             if(redirection && (arr = redirection.split(":")) && xui.isArr(arr)){
+                _type=type; _target=target;
                 if(arr[0])type = arr[0];
                 if(arr[1])target = arr[1];
                 if(arr[2])method = arr[2];
@@ -2632,11 +2633,15 @@ new function(){
                                 window.open('#!'+xui.urlEncode(hash));
                                 return;
                             }
-                            // try to get module
-                           var cls=xui.get(window,target.split(".")),ins;
-                            // TODO: now, only valid for the first one
-                            if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
-
+                            // the current page
+                            if(!target || target=="*"){
+                              ins = _ns.page;
+                            }else{
+                                // try to get module
+                                var cls=xui.get(window,target.split(".")),ins;
+                                // TODO: now, only valid for the first one
+                                if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
+                            }
                             if(method=="destroy"){
                                 if(ins)if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                                 return;
@@ -2773,6 +2778,15 @@ new function(){
                                             xui.set(_ns, xui._s2a('temp.'+xui.str.trim(iparams[0])), iparams[1]);
                                             break;
                                         case "call":
+                                            // modify the page instance
+                                            if(_type=="page"){
+                                                // temp page
+                                                _page = _ns.page;
+                                                // try to get module
+                                                var cls=xui.get(window,_target.split("."));
+                                                // TODO: now, only valid for the first one
+                                                if(cls)for(var i in cls._cache){_ns.page=cls._cache[i];break;}
+                                            }
                                             var args=iparams.slice(3), doit,doit2,y;
                                             t=iparams[0];
                                             if(xui.isStr(t)&&/^\{[\w][\w.]*[\w](\([^)]*\))?\}$/.test(t.replace(/\s/g,'').replace(/\[(\d+)\]/,".$1"))) {
@@ -2815,6 +2829,11 @@ new function(){
                                             }
                                             if(doit||doit2){
                                                 if(iparams[1]&&iparams[2]&&xui.get(_ns,xui._s2a(iparams[1])))xui.set(_ns, xui._s2a(iparams[1]+"."+iparams[2]), t);
+                                            }
+                                            // restore temp page
+                                            if(_page){
+                                              _ns.page=_page;
+                                              _page=null;
                                             }
                                            break;
                                      }

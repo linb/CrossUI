@@ -265,7 +265,9 @@ xui.Class("xui.Coder", null,{
                         arr.push(
                              // '=>' is for php
                              [/(,)(("[^"\n\r]*"|'[^'\n\r]*'|\w+)?(:|=>))/.source, function(a,i){return a[i+1]+"\n"+space[deep]+a[i+2]}],
-                             [/\b(case|default)\b[^:]+:/.source, function(a,i){return a[i]+"\n"+space[deep]}]
+                             [/\b(case|default)\b\s*([^:\n\r]+)\s*:/.source, function(a,i){
+                               return a[i+1] + " " + a[i+2] + ":\n" + space[deep]
+                             }]
                         );
                     }
                     // add \n
@@ -297,8 +299,8 @@ xui.Class("xui.Coder", null,{
                              [reg.NUMBER, '$0'],
                              // for "/*" comments , that does not necessary to start with new line.
                              [/\s+(\x01d[\d]+\x02)\s+([\),;])/, " $1 $2"],
-                             [/\b(await|async)\b\s*/, '$1 '],
-                             [/\s*((\+\+|\-\-|\&\&|\|\||!!|\=\>)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:]))\s*/.source,' $1 ']
+                             [/\b(await|async)\b\s*/, '$1 ']//,
+                            // [/ *((\+\+|\-\-|\&\&|\|\||!!|\=\>)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:])) */.source,' $1 ']
                          ]);
                     }
                 }
