@@ -2417,7 +2417,7 @@ new function(){
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 };
         },
-        exec:function(_ns, conf, resumeFun, level){
+        "exec":function(_ns, conf, resumeFun, level){
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2836,7 +2836,11 @@ new function(){
             }
             return conf["return"];
         },
-
+        "apply":function(funConf, args, scope){
+            var fs=xui.$cache.functions;
+            if(xui.isStr(funConf))funConf=fs&&fs[funConf];
+            return xui.isObj(funConf) ? xui.pseudocode._callFunctions(funConf, args||[], scope||this) : null;
+        },
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
             var ns=this, fun, resume=0, t, newbie,

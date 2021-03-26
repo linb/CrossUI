@@ -1332,14 +1332,14 @@ xui.Class('xui.Date',null,{
             var self=this, map=self.$TEXTFORMAT;
             date = self._date(date);
             firstDayOfWeek = self._numb(firstDayOfWeek);
-            return map[datepart]?map[datepart](date, false, firstDayOfWeek):datepart;
+            return map[datepart]?map[datepart](date, false, firstDayOfWeek):xui.Date.format(date,datepart);
         },
         format:function(date, format, firstDayOfWeek){
             var self=this, map=self.$TEXTFORMAT;
             date = self._date(date);
             firstDayOfWeek = self._numb(firstDayOfWeek);
             return format.replace(/(utciso|iso|yyyy|mm|ww|dd|hh|nn|ss|ms|de|c|y|q|m|w|d|h|n|s)/g, function(a,b){
-                return map[b]?map[b](date,true,firstDayOfWeek):b;
+                return map[b]?map[b](date,true,firstDayOfWeek):xui.Date.format(date,b);
             });
         }
     }

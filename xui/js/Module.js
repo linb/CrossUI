@@ -487,7 +487,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 tt = self.events && self.events[name],
                 applyEvents=function(prf, events, host, args){
                     var j;
-                    args=args||[];
+                    args=xui.isSet(args)?xui.isArr(args)?args:[args]:[];
 
                     if(xui.isStr(events)||xui.isFun(events))events=[events];
                     if(xui.isNumb(j=(events.actions||events)[0].event)  && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);

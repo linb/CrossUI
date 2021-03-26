@@ -2431,7 +2431,7 @@ new function(){
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 };
         },
-        exec:function(_ns, conf, resumeFun, level){
+        "exec":function(_ns, conf, resumeFun, level){
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2850,7 +2850,11 @@ new function(){
             }
             return conf["return"];
         },
-
+        "apply":function(funConf, args, scope){
+            var fs=xui.$cache.functions;
+            if(xui.isStr(funConf))funConf=fs&&fs[funConf];
+            return xui.isObj(funConf) ? xui.pseudocode._callFunctions(funConf, args||[], scope||this) : null;
+        },
         _callFunctions:function(pseudo, args, module, temp, holder, fromtag, level){
             temp=temp||{};
             var ns=this, fun, resume=0, t, newbie,
@@ -9870,14 +9874,14 @@ xui.Class('xui.Event',null,{
             var self=this, map=self.$TEXTFORMAT;
             date = self._date(date);
             firstDayOfWeek = self._numb(firstDayOfWeek);
-            return map[datepart]?map[datepart](date, false, firstDayOfWeek):datepart;
+            return map[datepart]?map[datepart](date, false, firstDayOfWeek):xui.Date.format(date,datepart);
         },
         format:function(date, format, firstDayOfWeek){
             var self=this, map=self.$TEXTFORMAT;
             date = self._date(date);
             firstDayOfWeek = self._numb(firstDayOfWeek);
             return format.replace(/(utciso|iso|yyyy|mm|ww|dd|hh|nn|ss|ms|de|c|y|q|m|w|d|h|n|s)/g, function(a,b){
-                return map[b]?map[b](date,true,firstDayOfWeek):b;
+                return map[b]?map[b](date,true,firstDayOfWeek):xui.Date.format(date,b);
             });
         }
     }
@@ -15630,7 +15634,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 tt = self.events && self.events[name],
                 applyEvents=function(prf, events, host, args){
                     var j;
-                    args=args||[];
+                    args=xui.isSet(args)?xui.isArr(args)?args:[args]:[];
 
                     if(xui.isStr(events)||xui.isFun(events))events=[events];
                     if(xui.isNumb(j=(events.actions||events)[0].event)  && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
