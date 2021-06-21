@@ -1799,10 +1799,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 row=xui.arr.indexOf(prf.properties.rows, cell._row);
             return col==-1||row==-1?null:excelType?xui.ExcelFormula.toCellId(col,row):{row:row,col:col};
         },
-        // 0:2 => row:0, col:2
-        // A3 => row:0, col:2
+        // 2:0 => row:2, col:0
+        // A3 => [2,0] > row:2, col:0
         updateCellByRowCol2:function(mixedId, options, dirtyMark, triggerEvent){
-            var arr=mixedId.indexOf(":")!=-1?mixedId.split(":"):xui.ExcelFormula.toCoordinate(mixedId,true),
+            var arr=mixedId.indexOf(":")!=-1?mixedId.split(":"):xui.ExcelFormula.toCoordinate(mixedId,-1,true),
                 row=parseInt(arr[0],10),
                 col=parseInt(arr[1],10);
             return this.updateCellByRowCol(row,col,options,dirtyMark,triggerEvent);
@@ -2549,17 +2549,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tabindex: '{_tabindex}',
                             style:'{cellStyle}{firstCellStyle}',
                             className:'xui-v-wrapper xui-showfocus {cellClass}{firstCellClass}',
-                           MARK:{
+                            ROWLRULER:{
                                 $order:1,
+                                style:'{_treeMode};{_rulerW}'
+                            },
+                            MARK:{
+                                $order:2,
                                 className:'xuifont',
                                 $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
-                            ROWLRULER:{
-                                $order:2,
-                                style:'{_treeMode};{_rulerW}'
-                            },
-                             ROWNUM:{
+                            ROWNUM:{
                                 $order:3,
                                 className:'xui-ui-readonly',
                                 style:'{_rowNumbDisplay}'
@@ -2571,14 +2571,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
-                                $order:1,
+                                $order:5,
                                 tagName:'span',
                                 className:'xui-ltag-cmds',
                                 style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             FCELLCAPTION:{
-                                $order:5,
+                                $order:6,
                                 className:"xui-v-node",
                                 text:"{caption}"
                             },
@@ -2625,22 +2625,22 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tabindex: '{_tabindex}',
                             style:'{cellStyle}{firstCellStyle}',
                             className:'xui-v-wrapper xui-showfocus {cellClass}{firstCellClass}',
-                           MARK:{
+                            ROWLRULER:{
                                 $order:1,
+                                $customId:1,
+                                style:'{_treeMode};{_rulerW}'
+                            },
+                            MARK:{
+                                $order:2,
                                 $customId:1,
                                 className:'xuifont',
                                 $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
-                            ROWLRULER:{
-                                $order:2,
-                                $customId:1,
-                                style:'{_treeMode};{_rulerW}'
-                            },
                             ROWNUM:{
                                 $order:3,
                                 $customId:1,
-                                 className:'xui-ui-readonly',
+                                className:'xui-ui-readonly',
                                 style:'{_rowNumbDisplay}'
                             },
                             ROWTOGGLE:{
@@ -2651,14 +2651,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
-                                $order:1,
+                                $order:5,
                                 $customId:1,
                                 tagName:'span',
                                 style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             FCELLCAPTION:{
-                                $order:5,
+                                $order:6,
                                 $customId:1,
                                 className:"xui-v-node",
                                 text:"{caption}"
@@ -2698,17 +2698,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             className:'xui-v-wrapper xui-showfocus {cellClass}',
                             style:'{bgcolor};{cellStyle}',
                             tabindex: '{_tabindex}',
-                           MARK:{
+                            ROWLRULER:{
                                 $order:1,
+                                $customId:1,
+                                style:'{_treeMode};{_rulerW}'
+                            },
+                            MARK:{
+                                $order:2,
                                 $customId:1,
                                 className:'xuifont',
                                 $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
-                            },
-                            ROWLRULER:{
-                                $order:2,
-                                $customId:1,
-                                style:'{_treeMode};{_rulerW}'
                             },
                             ROWNUM:{
                                 $order:3,
@@ -2724,14 +2724,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $fonticon:'{_fi_togglemark}'
                             },
                             LTAGCMDS:{
-                                $order:1,
+                                $order:5,
                                 $customId:1,
                                 tagName:'span',
                                 style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
                             CELLCAPTION:{
-                                $order:5,
+                                $order:6,
                                 style:'{color}',
                                 className:'xui-v-node xui-treegrid-fcellcaption',
                                 text:"{_caption}"
@@ -2871,7 +2871,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'vertical-align': 'middle'
             },
             'HFMARK, MARK':{
-                'margin-left':'.5em'
+                'margin-right':'.5em'
             },
             DIRTYMARK:{
                 position:'absolute',
@@ -2982,8 +2982,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'padding-right':'1px',
                 overflow:'visible'
             },
-            'CELLS1-group FCELLCAPTION, CELLS1-group CELLA,  CELLS1-group GCELLA, CELLS1-group ROWNUM, CELLS2-group FCELLCAPTION, CELLS2-group CELLA, CELLS2-group GCELLA':{
+            'CELLS1-group FCELLCAPTION, CELLS2-group FCELLCAPTION':{
                 'font-weight':'bold',
+            },
+            'CELLS1-group FCELLCAPTION, CELLS1-group CELLA,  CELLS1-group GCELLA, CELLS1-group ROWNUM, CELLS2-group FCELLCAPTION, CELLS2-group CELLA, CELLS2-group GCELLA':{
                 overflow:'visible'
             },
             'CELLS1-active, CELLS2-active, CELLA-active':{
