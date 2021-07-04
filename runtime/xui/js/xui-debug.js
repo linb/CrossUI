@@ -2469,8 +2469,11 @@ new function(){
                         case 'exclude':
                             return (x+"").indexOf(y+"")==-1;
                         case 'begin':
+                        case 'start':
+                        case 'starts':
                             return (x+"").indexOf(y+"")===0;
                         case 'end':
+                        case 'ends':
                             return (x+"").indexOf(y+"")===(x+"").length-(y+"").length;
                         case "objhaskey":
                             return typeof(x)=="object"?(y in x):false;
