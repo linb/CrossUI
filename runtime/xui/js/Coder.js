@@ -300,7 +300,10 @@ xui.Class("xui.Coder", null,{
                              // for "/*" comments , that does not necessary to start with new line.
                              [/\s+(\x01d[\d]+\x02)\s+([\),;])/, " $1 $2"],
                              [/\b(await|async)\b\s*/, '$1 '],
-                             [/ *((\+\+|\-\-|\&\&|\|\||!!|\=\>)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:])) */.source,' $1 ']
+                             //*xui.debugMode && window.console && console.log( "[[API calling]]", callerPrf );
+                             [/(\s*)(((\*\*|\+\+|\-\-|\&\&|\|\||!!|\=\>)|([=!]==)|((<<|>>>|>>)=?)|([\+\-\*\/\%\&|^<>!=~]=?)|([?:])))(\s*)/.source,function(a, i){
+                               return (!a[i+1].length||a[i+1].indexOf('\n')==-1?" ":a[i+1]) + a[i+2] + (!a[i+10].length||a[i+10].indexOf('\n')==-1?" ":a[i+10]);
+                             }]
                          ]);
                     }
                 }

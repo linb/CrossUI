@@ -7624,13 +7624,13 @@ xui.Class("xui.absList", "xui.absObj",{
                                     .setResizer(true)
                                     .setValue(item.caption||"");
                                 if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
-                                var undo=function(){
+                                editor.undo=function(){
                                     // ays is a must
                                     xui.resetRun('absList_editor_reset', function(){
                                         if(editor&&!editor.isDestroyed()){
                                             editor.getRoot().setBlurTrigger("absList_editor_blur",null);
                                             editor.destroy();
-                                            editor=null;
+                                            editor=editor.undo=null;
                                         }
                                     });
                                 };
@@ -7638,10 +7638,10 @@ xui.Class("xui.absList", "xui.absObj",{
                                     if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
                                         profile.boxing().updateItem(item.id, {caption:nv});
                                         if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                        undo();
+                                        editor.undo();
                                     }
                                 }).onCancel(function(){
-                                    undo();
+                                    editor.undo();
                                 });
                                 xui('body').append(editor);
                                 var root=editor.getRoot();
@@ -7652,7 +7652,7 @@ xui.Class("xui.absList", "xui.absObj",{
                                 });
                                 // For scroll to undo
                                 root.setBlurTrigger("absList_editor_blur",function(){
-                                    undo();
+                                    editor.undo();
                                 });
                                 editor.activate();
                             }
@@ -7809,7 +7809,7 @@ xui.Class("xui.absList", "xui.absObj",{
             beforePrepareItem:function(profile, item, pid){},
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
-            beforeEditApply:function(profile, item, caption, editor, tag){},
+            beforeEditApply:function(profile, item, value, editor, tag){},
             onEndEdit:function(profile, item, editor){}
         },
         getDropKeys:function(profile,node){

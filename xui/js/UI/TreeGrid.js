@@ -7131,22 +7131,22 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             options.tagVar=editorPrf.properties.tagVar;
 
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col))){
-			              if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
-			                profile._setFromEditor=1;
-			                grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
-			                delete profile._setFromEditor;
-			              }
-			              if((nc=_getcell(editorPrf)) && nc!==cc){
-			                editorPrf.$cell = nc
-			                nc._editor=editor;
-			                if(!inline){
-			                  profile.$cellInEditor=nc;
-			                }
-			              }
+                            if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
+                              profile._setFromEditor=1;
+                              grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+                              delete profile._setFromEditor;
+                            }
+                            if((nc=_getcell(editorPrf)) && nc!==cc){
+                              editorPrf.$cell = nc
+                              nc._editor=editor;
+                              if(!inline){
+                                profile.$cellInEditor=nc;
+                              }
+                            }
 
-			              if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
-			                xui.tryF(editor.undo,[true],editor);
-			              }
+                            if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
+                              xui.tryF(editor.undo,[true],editor);
+                            }
                         }
                     })
                     .beforeNextFocus(function(editorPrf, e){

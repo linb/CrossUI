@@ -7129,7 +7129,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $paras:[
                     $profile,
                     "item : Object, 子项对象",
-                    "caption: String. 要更新的内容",
+                    "value: String. 要更新的内容",
                     "editor: Object, 编辑器对象",
                     "tag: String, 动作来源"
                 ]

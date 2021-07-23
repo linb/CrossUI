@@ -7052,7 +7052,7 @@ xui.set(xui.Locale,["en","app"], {
                 $paras:[
                     $profile,
                     "item : Object. item object",
-                    "caption: String. updated content",
+                    "value: String. updated content",
                     "editor: Object, the editor object",
                     "tag: String,  action source"
                 ]
