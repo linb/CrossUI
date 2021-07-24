@@ -318,12 +318,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //
                 obj21 = profile.getSubNode('ROW1', base);
                 obj22 = profile.getSubNode('ROW2', base);
-                if(before){
-                    obj21.addPrev(nodes21);
-                    obj22.addPrev(nodes22);
-                }else{
-                    obj21.addNext(nodes21);
-                    obj22.addNext(nodes22);
+                if(obj22 && obj22.get(0)){
+                  if(before){
+                      obj21.addPrev(nodes21);
+                      obj22.addPrev(nodes22);
+                  }else{
+                      obj21.addNext(nodes21);
+                      obj22.addNext(nodes22);
+                  }
                 }
             }
 

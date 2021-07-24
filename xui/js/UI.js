@@ -7186,16 +7186,20 @@ xui.Class("xui.absList", "xui.absObj",{
                         //if no base specified
                         node = profile.getSubNode(box._ITEMSKEY || profile.keys.ITEMS || profile.keys.KEY);
                         //items.length==1 for that one have fake item(for example: editable poll)
-                        if(before)
-                            node.prepend(r);
-                        else
-                            node.append(r);
+                        if(node &&node.get(0)){
+                          if(before)
+                              node.prepend(r);
+                          else
+                              node.append(r);
+                        }
                     }else{
                         node=profile.getSubNodeByItemId(box._ITEMKEY || 'ITEM', base);
-                        if(before)
-                            node.addPrev(r);
-                        else
-                            node.addNext(r);
+                        if(node &&node.get(0)){
+                          if(before)
+                              node.addPrev(r);
+                          else
+                              node.addNext(r);
+                        }
                     }
                 }
 

@@ -26638,16 +26638,20 @@ xui.Class("xui.absList", "xui.absObj",{
                         //if no base specified
                         node = profile.getSubNode(box._ITEMSKEY || profile.keys.ITEMS || profile.keys.KEY);
                         //items.length==1 for that one have fake item(for example: editable poll)
-                        if(before)
-                            node.prepend(r);
-                        else
-                            node.append(r);
+                        if(node &&node.get(0)){
+                          if(before)
+                              node.prepend(r);
+                          else
+                              node.append(r);
+                        }
                     }else{
                         node=profile.getSubNodeByItemId(box._ITEMKEY || 'ITEM', base);
-                        if(before)
-                            node.addPrev(r);
-                        else
-                            node.addNext(r);
+                        if(node &&node.get(0)){
+                          if(before)
+                              node.addPrev(r);
+                          else
+                              node.addNext(r);
+                        }
                     }
                 }
 
@@ -27076,13 +27080,13 @@ xui.Class("xui.absList", "xui.absObj",{
                                     .setResizer(true)
                                     .setValue(item.caption||"");
                                 if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
-                                var undo=function(){
+                                editor.undo=function(){
                                     // ays is a must
                                     xui.resetRun('absList_editor_reset', function(){
                                         if(editor&&!editor.isDestroyed()){
                                             editor.getRoot().setBlurTrigger("absList_editor_blur",null);
                                             editor.destroy();
-                                            editor=null;
+                                            editor=editor.undo=null;
                                         }
                                     });
                                 };
@@ -27090,10 +27094,10 @@ xui.Class("xui.absList", "xui.absObj",{
                                     if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
                                         profile.boxing().updateItem(item.id, {caption:nv});
                                         if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                        undo();
+                                        editor.undo();
                                     }
                                 }).onCancel(function(){
-                                    undo();
+                                    editor.undo();
                                 });
                                 xui('body').append(editor);
                                 var root=editor.getRoot();
@@ -27104,7 +27108,7 @@ xui.Class("xui.absList", "xui.absObj",{
                                 });
                                 // For scroll to undo
                                 root.setBlurTrigger("absList_editor_blur",function(){
-                                    undo();
+                                    editor.undo();
                                 });
                                 editor.activate();
                             }
@@ -27261,7 +27265,7 @@ xui.Class("xui.absList", "xui.absObj",{
             beforePrepareItem:function(profile, item, pid){},
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
-            beforeEditApply:function(profile, item, caption, editor, tag){},
+            beforeEditApply:function(profile, item, value, editor, tag){},
             onEndEdit:function(profile, item, editor){}
         },
         getDropKeys:function(profile,node){
@@ -44010,7 +44014,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     if(base){
                         node=profile.getSubNodeByItemId('ITEM', base);
-                        if(node){
+                        if(node && node.get(0)){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
                             if(before)
                                 node.addPrev(r);
@@ -44031,7 +44035,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         else
                             node=profile.getSubNode('ITEMS');
 
-                        if(node){
+                        if(node && node.get(0)){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
                             if(before)
                                 node.prepend(r);
@@ -48091,12 +48095,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 //
                 obj21 = profile.getSubNode('ROW1', base);
                 obj22 = profile.getSubNode('ROW2', base);
-                if(before){
-                    obj21.addPrev(nodes21);
-                    obj22.addPrev(nodes22);
-                }else{
-                    obj21.addNext(nodes21);
-                    obj22.addNext(nodes22);
+                if(obj22 && obj22.get(0)){
+                  if(before){
+                      obj21.addPrev(nodes21);
+                      obj22.addPrev(nodes22);
+                  }else{
+                      obj21.addNext(nodes21);
+                      obj22.addNext(nodes22);
+                  }
                 }
             }
 
@@ -54904,22 +54910,22 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             options.tagVar=editorPrf.properties.tagVar;
 
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col))){
-			              if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
-			                profile._setFromEditor=1;
-			                grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
-			                delete profile._setFromEditor;
-			              }
-			              if((nc=_getcell(editorPrf)) && nc!==cc){
-			                editorPrf.$cell = nc
-			                nc._editor=editor;
-			                if(!inline){
-			                  profile.$cellInEditor=nc;
-			                }
-			              }
+                            if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
+                              profile._setFromEditor=1;
+                              grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+                              delete profile._setFromEditor;
+                            }
+                            if((nc=_getcell(editorPrf)) && nc!==cc){
+                              editorPrf.$cell = nc
+                              nc._editor=editor;
+                              if(!inline){
+                                profile.$cellInEditor=nc;
+                              }
+                            }
 
-			              if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
-			                xui.tryF(editor.undo,[true],editor);
-			              }
+                            if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
+                              xui.tryF(editor.undo,[true],editor);
+                            }
                         }
                     })
                     .beforeNextFocus(function(editorPrf, e){

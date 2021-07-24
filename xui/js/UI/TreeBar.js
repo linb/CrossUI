@@ -102,7 +102,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     }
                     if(base){
                         node=profile.getSubNodeByItemId('ITEM', base);
-                        if(node){
+                        if(node && node.get(0)){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
                             if(before)
                                 node.addPrev(r);
@@ -123,7 +123,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         else
                             node=profile.getSubNode('ITEMS');
 
-                        if(node){
+                        if(node && node.get(0)){
                             r=profile._buildItems('items', profile.box._prepareItems(profile, data, pid));
                             if(before)
                                 node.prepend(r);
