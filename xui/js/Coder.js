@@ -238,7 +238,7 @@ xui.Class("xui.Coder", null,{
                 if(!reverse){
                     arr=[
                         // a[b[6]]
-                        [/\[[^,;\n{}\x01\x03]+\]/.source, "$0"],
+                        [/\[[^,;\n{}\x01\x03\]]+\]/.source, "$0"],
                         // [{
                         [/(\[)\s*(\{)/.source, function(a,i){Brackets[deep+1]=1; return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
                         // [   or  {
@@ -258,7 +258,7 @@ xui.Class("xui.Coder", null,{
                         // ]
                         [/\]/.source, function(a,i){Brackets[deep]=0; return '\n'+space[--deep]+a[i] }],
                         // if(1)b() else if(2)d() else c()
-                        [/(\bif\b\([^)]*\))([^\{\n\)\|\&\+\-\*\/\^\,\?\<\>\=])/.source, function(a, i){return a[i+1] + (a[i+2]=="{"||a[i+2]=="\n" ? a[i+2] : ("\n" + space[deep+1] + a[i+2])) }],
+                        [/(\bif\b\([^)]*\))([^\{\n\)\|\&\+\-\*\/\^\,\?\<\>\!\=])/.source, function(a, i){return a[i+1] + (a[i+2]=="{"||a[i+2]=="\n" ? a[i+2] : ("\n" + space[deep+1] + a[i+2])) }],
                         [/(?!\n\s*)\belse\b/.source, function(a, i){return "\n"+ space[deep] + a[i]}]
                     ];
                     if(type!='css'){

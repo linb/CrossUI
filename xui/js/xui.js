@@ -3780,7 +3780,7 @@ xui.Class('xui.Fetch','xui.absIO',{
               self.credentials = 'include';
             }
 
-            var init={},ok,e1,status,statusText;
+            var init={},rsp,ee,ok,status,statusText;
             xui.arr.each(self._init,function(k){
               if(self.hasOwnProperty(k) && self[k])init[k] = self[k];
             });
@@ -3792,8 +3792,10 @@ xui.Class('xui.Fetch','xui.absIO',{
             fetch(self.uri, init)
             .then(function(response) {
                 var rst;
+                rsp = response;
                 status = response.status;
                 statusText = response.statusText;
+                ok = response.ok;
                 try{
                   switch(self.rspType.toLowerCase()){
                     case 'arraybuffer':
@@ -3810,26 +3812,28 @@ xui.Class('xui.Fetch','xui.absIO',{
                       throw new Error('Unsupported rspType -- '  + rspType);
                   }
                 }catch(e){
-                  e1 = e;
+                  ok = false;
                   return;
                 }
-                if(response.ok) ok = true;
-                else e1 = new Error('State error -- ' + status + ' ' + statusText);
-
                 return rst;
             }).then(function(response) {
-              if(ok){
-                self._response = response;
-                self._onResponse();
-              }else{
-                self._onError(e1, status, statusText, response);
+              try{
+                if(ok){
+                  self._response = response;
+                  self._onResponse();
+                }else{
+                  self._onError(response, status, statusText, response);
+                }
+              }
+              // catch error in _onResponse
+              catch(e){
+                ee = e;
               }
             }).catch(function(e) {
-              if (e.name === 'AbortError') {
-                // nothing
-              }else{
-                self._onError(e);
-              }
+              if (e.name !== 'AbortError')
+                self._onError(e, status, statusText, rsp);
+            }).finally(function(){
+              if(ee)throw ee;
             });
 
             if(self.timeout > 0)

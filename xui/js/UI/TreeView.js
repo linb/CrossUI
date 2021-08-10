@@ -2,7 +2,7 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
     Initialize:function(){
         this.addTemplateKeys(['IMAGE']);
          var t = this.getTemplate();
-         t.$submap.items.ITEM.BAR.className='xui-uitembg xui-uiborder-radius xui-showfocus {cls_group} {cls_fold} {_split} {disabled} {readonly}';
+         t.$submap.items.ITEM.BAR.className='xui-uitembg xui-uiborder-radius xui-showfocus {itemClass} {cls_group} {cls_fold} {_split} {disabled} {readonly}';
          var n=t.$submap.items.ITEM.BAR.ITEMICON;
          n.$fonticon = '{_fi_cls_file}';
          this.setTemplate(t);
