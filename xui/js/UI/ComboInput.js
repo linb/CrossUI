@@ -164,7 +164,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         clearPopCache:function(){
             var profile=this.get(0);
             if(profile.renderId)
-                profile.getSubNode('POOL').empty();
+                profile.getSubNode('POOL').empty(true, true);
             delete profile.$poplink;
             return this;
         },
@@ -481,8 +481,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         },
         expand:function(node, ignoreEvent, e){
             var profile=this.get(0);
-            if(profile.renderId)
-                profile.boxing()._drop(e,node,node,ignoreEvent);
+            if(profile.renderId){
+              node = node || profile.getSubNode("BOX");
+              profile.boxing()._drop(e,node,node,ignoreEvent);
+            }
         },
         collapse:function(){
             var profile=this.get(0);

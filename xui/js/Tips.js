@@ -50,7 +50,7 @@ xui.Class("xui.Tips", null,{
                     n=tips._Node.style;
                     n.left = Math.min(tips._tpl._ww-tips._tpl._w, Math.max(0, Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left), 10))) + 'px';
                     n.top = Math.min(tips._tpl._hh-tips._tpl._h, Math.max(0, Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top), 10))) + 'px';
-                    
+
                     tips._pos=p;
                 }
             }
@@ -236,7 +236,7 @@ xui.Class("xui.Tips", null,{
                                 styleI.width=(self._w=Math.round(w))+'px';
                                 self._h=self.n.height();
                             }
-                            
+
                             node.removeClass('xui-ui-hidden');
                             if(pos===true){
                                 style.visibility='visible';
@@ -249,7 +249,7 @@ xui.Class("xui.Tips", null,{
                                     height:32
                                 }},1);
                             }
-                            
+
                             style=styleI=t1=null;
                         }else
                             node.css('zIndex',0).hide();

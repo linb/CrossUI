@@ -2088,6 +2088,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         }
     },
     Initialize:function(){
+        var cv_supported = xui.Dom.css3Support("content-visibility");
         var ns=this.prototype;
         xui.arr.each('getSubNode,getSubNodes,getDomId,getRootNode,getRoot,getContainer'.split(','),function(o){
             if(!ns[o]){
@@ -3201,8 +3202,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                 padding:'0',
                 margin:'0'
              },
-            ".xui-ui-hidden, .xui-ui-hidden *":{
+            ".xui-ui-hidden": cv_supported ? {
                 $order:12,
+                'content-visibility':'hidden',
+                'contain-intrinsic-size':'0px 0px',
+                'contain':'style layout paint',
+                 visibility:'hidden'
+              }: {},
+            ".xui-ui-hidden, .xui-ui-hidden *": cv_supported ? {}: {
+                $order:13,
                 visibility:'hidden'
              }
         });

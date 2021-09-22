@@ -227,6 +227,11 @@ xui.Class("xui.APICaller","xui.absObj",{
             if(xui.isEmpty(options.header)){
                 delete options.header;
             }
+            // queryOptions.timeout > prop.timeout > con.timeout
+            options.timeout = xui.isNumb(queryOptions.timeout) ? queryOptions.timeout
+              : xui.isNumb(prop.timeout) ? prop.timeout
+              : con.timeout;
+
             var cookies={},t;
             if(!xui.isEmpty(prop.fakeCookies)){
                 options.$onStart = function(){
@@ -351,6 +356,8 @@ xui.Class("xui.APICaller","xui.absObj",{
                 xui.tryF(onFail,arguments,this);
             }, threadid, options]);
 
+            prf._rpc = ajax;
+
             if(mode=="busy")
                 xui.observableRun(function(threadid){
                     ajax.threadid=threadid;
@@ -360,13 +367,32 @@ xui.Class("xui.APICaller","xui.absObj",{
                 return ajax;
             else
                 ajax.start();
+        },
+        getRPCInstance:function(){
+          var ns=this,prf=ns.get(0);
+          return prf && prf._rpc;
+        },
+        start:function(){
+          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          if(rpc && rpc.getStatus && rpc.getStatus()!="started")
+            rpc.start();
+        },
+        abort:function(){
+          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          if(rpc && rpc.getStatus && rpc.getStatus()=="started")
+            rpc.abort();
+        },
+        getStatus:function(){
+          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          return rpc && rpc.getStatus && rpc.getStatus();
         }
     },
     Static:{
         WDSLCache:{},
         $nameTag:"api_",
+        timeout: 60000,
         _pool:{},
-        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1,responseCallback:1},
+        _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryData:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1,responseCallback:1},
         destroyAll:function(){
             this.pack(xui.toArr(this._pool,false),false).destroy();
             this._pool={};
@@ -406,6 +432,8 @@ xui.Class("xui.APICaller","xui.absObj",{
             oAuth2Token:"",
             queryUserName:"",
             queryPassword:"",
+
+            timeout:null,
 
             queryMethod:{
                 ini:"GET",

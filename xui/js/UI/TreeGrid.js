@@ -2977,7 +2977,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 overflow:'visible'
             },
             'CELLS1, CELLS2':{
-                overflow:'visible'
+                overflow:'visible',
+                "content-visibility":"auto"
             },
             'CELLS1-group FCELL, CELLS2-group FCELL':{
                 'border-right':0,
@@ -3519,7 +3520,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.adjustSize();
                     }else{
                         row.height=profile.$forceu(h);
-                        profile.getSubNode("CELLS2",subId).height(row.height);
+                        profile.getSubNode("CELLS2",subId).css({
+                          height:row.height,
+                          'contain-intrinsic-size':row.height
+                        });
                         o.height(row._rowHeight=row.height);
                         profile.box._adjusteditorH(profile, o, row._rowHeight);
                     }
@@ -6160,7 +6164,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 // use em for row Height
                 t._rowHeight = profile.$forceu(row._rowHeight || row.height || prop.rowHeight, 'em');
                 row._rowHeight = t._rowHeight;
-                t._rowHeight="height:"+t._rowHeight;
+                t._rowHeight="height:"+t._rowHeight+";contain-intrinsic-size:"+t._rowHeight;
 
                 t.rowHandlerDisplay=prop.rowHandler?'':NONE;
                 t.rowDDDisplay=(('rowResizer' in row)?row.rowResizer:prop.rowResizer)?'':NONE;
@@ -7874,9 +7878,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 borderC++;
             });
 
-            var lcellw=profile.getSubNode("LHCELL").get(0).clientWidth || 0;
+            // try to avoid clientWidth for performance
+            var hc = profile.getSubNode("LHCELL").get(0),
+              lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? hc.clientWidth : 0;
             profile.getSubNodes('LCELL',true).each(function(hc){
-                if(hc.children.length){
+                if(xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"])){
                     lcellw=Math.max(lcellw, hc.clientWidth);
                 }
             });

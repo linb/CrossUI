@@ -176,7 +176,7 @@ xui.Class('xui.Debugger', null, {
                 },function(){
                     last.left(l+(last.width+width)/2+20);
                 }).start();
-                
+
                 var lh=last.offsetHeight();
                xui.filter(allmsg,function(ind){
                     if(ind.isEmpty())
@@ -207,7 +207,7 @@ xui.Class('xui.Debugger', null, {
             xui.asyRun(function(){
                 if(div._thread&&div._thread.id&&div._thread.isAlive())div._thread.abort();
                 div._thread=div.animate({top:[div.top(), height+20]},null,function(){
-                     stack.push(div); 
+                     stack.push(div);
                      div.hide();
                      div.__hide=1;
                 },300,0).start();

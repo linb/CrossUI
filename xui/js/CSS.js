@@ -107,7 +107,7 @@ xui.Class("xui.CSS", null,{
                 else
                     try{e.appendChild(document.createTextNode(txt||''))}catch(p){e.styleSheet.cssText = txt||''}
                 if(backOf===-1){
-                    if(head.firstChild) head.insertBefore(e, head.firstChild); 
+                    if(head.firstChild) head.insertBefore(e, head.firstChild);
                     else head.appendChild(e);
                 }else if(backOf===1){
                     head.appendChild(e);
@@ -429,14 +429,14 @@ xui.Class("xui.CSS", null,{
                 ( u ? u=='em' : (xui.$us()==1)) ? this.$em(v,node,roundPx!==false)+'em':
                 Math.round(this.$px(v,node,roundPx!==false))+'px'
         },
-       
+
         $picku:function(v){return v && v!='auto' && (v+'').replace(/[-\d\s.]*/g,'') || (xui.$us()==1?'em':'px')},
         $addu:function(v){return v=='auto'?v:(xui.isFinite(v)||this.$isPx(v))?Math.round(parseFloat(v)||0)+'px':v+''}
     },
     Initialize:function(){
         var b=xui.browser,
             inlineblock= (b.gek
-                    ? b.ver<3 
+                    ? b.ver<3
                         ? ((b.ver<3?"-moz-outline-offset:-1px !important;":"") + "display:-moz-inline-block;display:-moz-inline-box;display:inline-block;")
                         :"display:inline-block;"
                     : b.ie6
@@ -449,7 +449,7 @@ xui.Class("xui.CSS", null,{
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
             (!xui.browser.fakeTouch && xui.browser.deviceType != 'touchOnly'?".xuifont-active, .xuicon-active{ color: #3393D2; }":"")+
             ".xuifont-checked, .xuicon-checked{ color: #3393D2; }"+
-            
+
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
@@ -485,7 +485,7 @@ xui.Class("xui.CSS", null,{
             ".xui-node-em{font-style:italic;}"+
             ".xui-node-legend{color:#000;}"+
             (b.ie6?("#"+xui.$localeDomId+"{vertical-align:baseline;}"):"")+
-            
+
             // some cross browser css solution
             ".xui-nofocus:focus{outline:0;}"+
             ".xui-cls-wordwrap{"+
@@ -508,8 +508,8 @@ xui.Class("xui.CSS", null,{
             ".xuicon{margin: 0 .25em;"+
             inlineblock +
             "}" +
-            ".xuicon:before{height:1em;width:1em;}" + 
-            ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" + 
+            ".xuicon:before{height:1em;width:1em;}" +
+            ".xui-ui-ctrl, .xui-ui-reset{font-family:arial,helvetica,clean,sans-serif; font-style:normal; font-weight:normal; vertical-align:middle; color:#000; }" +
             //xui-ui-ctrl must be after xui-ui-reset
             ".xui-ui-reset{font-size: inherit;}"+
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
@@ -519,11 +519,11 @@ xui.Class("xui.CSS", null,{
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
-        
+
         /*
         xui.Thread.repeat(function(t){
             if((t=xui.CSS._dftEm) && (t!==xui.CSS._getDftEmSize(true)))xui.CSS.adjustFont();
         }, 10000);
         */
-    }   
+    }
 });

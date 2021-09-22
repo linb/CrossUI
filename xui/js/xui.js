@@ -3581,6 +3581,7 @@ xui.Class('xui.absIO',null,{
         if(!self._useForm && xui.isHash(self.query) && self.reqType!="xml")
             self.query = con._buildQS(self.query, self.reqType=="json");
 
+        self._status = "init";
         return self;
     },
     Instance:{
@@ -3599,14 +3600,14 @@ xui.Class('xui.absIO',null,{
                 self.start();
             }else{
                 if(false!==xui.tryF(self.onTimeout,[],self))
-                    self._onError(new Error("Request timeout"));
+                    self._onError(new Error("Request timeout: " + self.timeout +"ms"));
             }
         },
         _onEnd:function(){
             var self=this;
-            if(!self._end){
-                self._end=true;
-                if(self._flag>0){
+            if('end' != self._status){
+                self._status = "end";
+                if(self._flag != 0){
                     xui.clearTimeout(self._flag);
                     self._flag=0
                 }
@@ -3618,6 +3619,7 @@ xui.Class('xui.absIO',null,{
         },
         _onStart:function(){
             var self=this;
+            self._status = "started";
             xui.Thread.suspend(self.threadid);
             xui.tryF(self.$onStart,[],self);
             xui.tryF(self.onStart,[],self);
@@ -3628,14 +3630,38 @@ xui.Class('xui.absIO',null,{
                 xui.tryF(self.onSuccess,[self._response, self.rspType, self.threadid], self);
             self._onEnd();
         },
+        _handleTimeout:function(){
+            var self = this,
+              doTimeout = function(){
+                if(self && "started" == self._status){
+                  self.controller && self.controller.abort();
+                  self._time();
+                }
+              },
+              tryTimeout = function(){
+                if(self.timeoutHandler)
+                  xui.confirm(timeoutHandler.title||"Time out",
+                    xui.adjustRes(timeoutHandler.message || "The request timed out ( {timeout} ms ), do you want to wait another round ( {timeout} ms) ?", false, true, false, null, self)
+                     , function(){
+                      if(self && "started" == self._status)
+                        self._flag = xui.asyRun(tryTimeout, self.timeout);
+                  }, doTimeout);
+                else doTimeout()
+              };
+
+            self._flag = xui.asyRun(tryTimeout, self.timeout);
+        },
         _onError:function(e, status, statusText, response){
             var self=this;
             if(false!==xui.tryF(self.beforeFail,[e, self.threadid, status, statusText, response],self))
                 xui.tryF(self.onFail,[e, self.rspType, self.threadid, status, statusText, response], self);
             self._onEnd();
         },
+        getStatus:function(){
+            return this._status;
+        },
         isAlive:function(){
-            return !this._end;
+            return this._status!="end";
         },
         abort:function(){
             this._onEnd();
@@ -3837,11 +3863,7 @@ xui.Class('xui.Fetch','xui.absIO',{
             });
 
             if(self.timeout > 0)
-              self._flag = xui.asyRun(function(){if(self && !self._end){
-                self.controller && self.controller.abort();
-                self._time();
-              }}, self.timeout);
-
+                self._handleTimeout();
             return self;
         },
         abort:function(){
@@ -3971,7 +3993,7 @@ xui.Class('xui.Ajax','xui.absIO',{
 
                 if(self.asy){
                   if(self._XML && self.timeout > 0)
-                    self._flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+                    self._handleTimeout();
                 }else
                     return self._complete();
 
@@ -4128,11 +4150,7 @@ xui.Class('xui.JSONP','xui.absIO',{
 
             //set timeout
             if(self.timeout > 0)
-                self._flag = xui.asyRun(function(){
-                    if(self && !self._end){
-                        self._time()
-                    }
-                }, self.timeout);
+              self._handleTimeout();
         },
         _clear:function(){
             var self=this, n=self.node, c=self.constructor,id=self.id,_pool=c._pool;
@@ -4374,7 +4392,7 @@ xui.Class('xui.XDMI','xui.absIO',{
             t=form=null;
             //set timeout
             if(self.timeout > 0)
-                self._flag = xui.asyRun(function(){if(self && !self._end){self._time()}}, self.timeout);
+              self._handleTimeout();
         },
         _clear:function(){
             var self=this, n=self.node,f=self.form, c=self.constructor, w=window, div=document.createElement('div'),id=self.id,_pool=c._pool;

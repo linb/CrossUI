@@ -22,7 +22,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                 if(pn && (item._scrollTop=pn.scrollTop||0))
                                     pn.scrollTop=0;
 
-                                box.getPanel(itemId).css('display','none');
+                                if(xui.Dom.css3Support("content-visibility")){
+                                  box.getPanel(itemId).css({'content-visibility':'hidden',height:0});
+                                }else{
+                                  box.getPanel(itemId).css('display','none');
+                                }
                             }
                         }
                     },
@@ -39,7 +43,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // show pane
                                 //box.getPanel(value).css('position','relative').show('auto','auto');
-                                box.getPanel(itemId).css('display','block');
+                                if(xui.Dom.css3Support("content-visibility")){
+                                  box.getPanel(itemId).css('content-visibility', 'visible');
+                                }else{
+                                  box.getPanel(itemId).css('display','block');
+                                }
                                 if(item._scrollTop)
                                     box.getPanel(itemId).get(0).scrollTop=item._scrollTop;
 
@@ -415,7 +423,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     PANEL:{
                         tagName : 'div',
                         className:'xui-uibase xui-uicontainer',
-                        style:"{_overflow};{_bginfo}",
+                        style:"{_overflow};{_bginfo};{_p_display};",
                         text:'{html}'+xui.UI.$childTag
                     }
                 },
@@ -532,6 +540,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 //top:'-10000px',
                 //left:'-10000px',
                 display:'none',
+                'content-visibility':'hidden',
+                'contain-intrinsic-size':'0px 0px',
+                'contain':'style layout paint',
+                height:0,
                 width:'100%',
                 overflow:'auto'
             },
@@ -1007,6 +1019,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 item._overflow = item.overflow.indexOf(':')!=-1?(item.overflow):(item.overflow?("overflow:"+item.overflow):"");
             else if(xui.isStr(p.overflow))
                 item._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
+
+            if(xui.Dom.css3Support("content-visibility")){
+              item._p_display="display:block";
+            }
 
             this._prepareCmds(profile, item);
         },
