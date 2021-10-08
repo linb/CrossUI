@@ -3046,7 +3046,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             '.xui-tag-cmd':{
                 "margin":'0 .125em',
                 "padding": '.1667em',
-                'vertical-align':'middle'
+                'vertical-align':'middle',
+                cursor: 'pointer'
             },
             '.xui-inline-object':{
                 'vertical-align':'middle',
