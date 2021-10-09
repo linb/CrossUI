@@ -499,6 +499,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 }
                 delete ns['*'];
             }
+            ns._$cache={};
             return ns;
         },
         //get events function from profile

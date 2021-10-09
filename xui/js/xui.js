@@ -4809,6 +4809,7 @@ xui.Class('xui.absProfile',null,{
         if(upper)upper.call(this);
         upper=null;
         if(!this.$xid)this.$xid=xui.absProfile.$xid.next();
+        this._$cache={};
     },
     Instance:{
         getId:function(){

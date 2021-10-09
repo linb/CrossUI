@@ -4201,8 +4201,9 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(value !==undefined)
                     return this.each(function(v){
                         if(v===window || v===document){
-                            if(a)a[o]=value;if(b)b[o]=value;
-                        }else if(v)v[o]=value;
+                            if(a&&a[o]!==value)a[o]=value;
+                            if(b&&b[o]!==value)b[o]=value;
+                        }else if(v&&v[o]!==value)v[o]=value;
                     });
                 else
                     return (v=this.get(0)) ? (v===window || v===document) ? (window["scrollTop"==o?"pageYOffset":"pageXOffset"] || (a[o]||b[o]||0))
