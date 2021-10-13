@@ -22612,7 +22612,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             '.xui-css-noscroll, .xui-css-noscroll body':{
                 overflow:'hidden',
                 'overflow-x':'hidden',
-                'overflow-y':'hidden'
+                'overflow-y':'hidden',
+                'content-visibility':'auto'
             },
             '.xui-css-noscrollx, .xui-css-noscroll body':{
                 'overflow-x':'hidden'
@@ -48359,7 +48360,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     (o.colRenderer||co.colRenderer).call(null,profile,o);
             });
             // move it manually
-            if(prop.treeMode=='infirstcell'){
+            if(prop.treeMode=='infirstcell' && arr[0]){
                 profile.getSubNode('HCELLA', arr[0]._serialId).prepend(
                     profile.getSubNode('LTAGCMDS')
                 ).prepend(
@@ -49990,7 +49991,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
         adjustEditor:function(adjustFun){
-            var ns=this,prf=this.get(0),borderW=profile._$cache.hasOwnProperty('_root_cb') ? profile._$cache._root_cb : (profile._$cache._root_cb = profile.getRoot().contentBox()?1:0);
+            var ns=this,prf=this.get(0),cb=profile._$cache.hasOwnProperty('_root_cb') ? profile._$cache._root_cb : (profile._$cache._root_cb = profile.getRoot().contentBox()?1:0);
             if(prf && prf.$curEditor){
                 var editor=prf.$curEditor,
                     cell=prf.$cellInEditor;
@@ -50000,8 +50001,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var cellNode = prf.getSubNode('CELL', cell.id),
                         absPos=cellNode.offset(null, prf.getSubNode('SCROLL22')),
                         size = cellNode.cssSize();
-                    editor.setLeft(absPos.left-1).setTop(absPos.top-1)
-                    .setWidth(size.width+borderW+1).setHeight(size.height+borderW)
+                    editor.setLeft(absPos.left-(cb?1:0)).setTop(absPos.top-(cb?1:0))
+                    .setWidth(size.width+(cb?1:0)+1).setHeight(size.height+(cb?1:0))
                     .reLayout(true);
                 }
             }
@@ -50070,21 +50071,23 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     style:'{firstCellStyle};',
                                                     className:'xui-v-wrapper xui-showfocus {firstCellClass}',
                                                     HHANDLER:{
+                                                        $order:1,
                                                         tagName:'div',
                                                         style:'{colDDDisplay}'
                                                     },
                                                     FHANDLER:{
+                                                        $order:2,
                                                         tagName:'div',
                                                         style:'{rowDDDisplay}'
                                                     },
                                                     HFMARK:{
-                                                        $order:1,
+                                                        $order:3,
                                                         className:"xuifont",
                                                         $fonticon:"xui-uicmd-check",
                                                         style:'{_rowMarkDisplay}'
                                                     },
                                                     LTAGCMDS:{
-                                                        $order:2,
+                                                        $order:4,
                                                         tagName:'span',
                                                         className:'xui-ltag-cmds',
                                                         style:'{_ltagDisplay}',
@@ -50095,6 +50098,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                         text:'{gridHandlerCaption}'
                                                     },
                                                     SORT:{
+                                                        $order:6,
                                                         className:'xuifont',
                                                         $fonticon:'xui-icon-sort',
                                                         style:'{sortDisplay}'
@@ -50483,6 +50487,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tabindex: '{_tabindex}',
                             style:'{cellStyle}{firstCellStyle}',
                             className:'xui-v-wrapper xui-showfocus {cellClass}{firstCellClass}',
+                            FHANDLER:{
+                                $order:0,
+                                tagName:'div',
+                                style:'{rowDDDisplay}'
+                            },
                             ROWLRULER:{
                                 $order:1,
                                 style:'{_treeMode};{_rulerW}'
@@ -50493,33 +50502,28 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
-                            ROWNUM:{
-                                $order:3,
-                                className:'xui-ui-readonly',
-                                style:'{_rowNumbDisplay}'
-                            },
-                            ROWTOGGLE:{
-                                $order:4,
-                                style:'{_treeMode};',
-                                className:'xuifont',
-                                $fonticon:'{_fi_togglemark}'
-                            },
                             LTAGCMDS:{
-                                $order:5,
+                                $order:3,
                                 tagName:'span',
                                 className:'xui-ltag-cmds',
                                 style:'{_ltagDisplay}',
                                 text:"{ltagCmds}"
                             },
+                            ROWNUM:{
+                                $order:4,
+                                className:'xui-ui-readonly',
+                                style:'{_rowNumbDisplay}'
+                            },
+                            ROWTOGGLE:{
+                                $order:5,
+                                style:'{_treeMode};',
+                                className:'xuifont',
+                                $fonticon:'{_fi_togglemark}'
+                            },
                             FCELLCAPTION:{
                                 $order:6,
                                 className:"xui-v-node",
                                 text:"{caption}"
-                            },
-                            FHANDLER:{
-                                $order:0,
-                                tagName:'div',
-                                style:'{rowDDDisplay}'
                             }
                         }
                     }
@@ -50571,25 +50575,25 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
-                            ROWNUM:{
+                            LTAGCMDS:{
                                 $order:3,
+                                $customId:1,
+                                tagName:'span',
+                                style:'{_ltagDisplay}',
+                                text:"{ltagCmds}"
+                            },
+                            ROWNUM:{
+                                $order:4,
                                 $customId:1,
                                 className:'xui-ui-readonly',
                                 style:'{_rowNumbDisplay}'
                             },
                             ROWTOGGLE:{
-                                $order:4,
+                                $order:5,
                                 $customId:1,
                                 style:'{_treeMode};',
                                 className:'xuifont',
                                 $fonticon:'{_fi_togglemark}'
-                            },
-                            LTAGCMDS:{
-                                $order:5,
-                                $customId:1,
-                                tagName:'span',
-                                style:'{_ltagDisplay}',
-                                text:"{ltagCmds}"
                             },
                             FCELLCAPTION:{
                                 $order:6,
@@ -50644,25 +50648,25 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 $fonticon:'xui-uicmd-check',
                                 style:'{_rowMarkDisplay}'
                             },
-                            ROWNUM:{
+                            LTAGCMDS:{
                                 $order:3,
+                                $customId:1,
+                                tagName:'span',
+                                style:'{_ltagDisplay}',
+                                text:"{ltagCmds}"
+                            },
+                            ROWNUM:{
+                                $order:4,
                                 $customId:1,
                                  className:'xui-ui-readonly',
                                 style:'{_rowNumbDisplay}'
                             },
                             ROWTOGGLE:{
-                                $order:4,
+                                $order:5,
                                 $customId:1,
                                 style:'{_treeMode};',
                                 className:'xuifont',
                                 $fonticon:'{_fi_togglemark}'
-                            },
-                            LTAGCMDS:{
-                                $order:5,
-                                $customId:1,
-                                tagName:'span',
-                                style:'{_ltagDisplay}',
-                                text:"{ltagCmds}"
                             },
                             CELLCAPTION:{
                                 $order:6,
@@ -50977,7 +50981,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'vertical-align':'middle',
                 overflow:'hidden'
             },
-            'GCELL, FHCELL, FCELL, HCELL, HSCELL, CELL':{
+            'GCELL, FHCELL, FCELL, HCELL, HSCELL, CELL, LCELL':{
               "content-visibility":"auto"
             },
             'FHCELL, HCELL, HSCELL':{
@@ -55348,7 +55352,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(t=body22.get(0).childNodes){
                         l=t.length;
                         while(l){
-                            if(t[l-1].clientHeight){
+                            if(t[l-1].clientHeight && !(t[l-1].firstChild && (t[l-1].firstChild.id+"").indexOf("-GCELL:")!=1)){
                                 last2=t[l-1];
                                 break;
                             }
@@ -55372,8 +55376,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 }
 
-                if(last2){
-                    bodyw=adjustunit(bw = last2.offsetLeft);
+                if(last2||last1){
+                    bodyw=adjustunit(bw = last2?last2.offsetLeft:last1.offsetLeft);
                 }else{
                     var prop = profile.properties,hd=prop.header,rows=prop.rows,
                     //defult
@@ -55797,7 +55801,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 cols=profile.colMap,
                 t2=profile.getSubNode('SCROLL22'),
                 t3=profile.getSubNode('BODY22'),
-                bW = profile._$cache.hasOwnProperty('_body22_b_w') ? profile._$cache._body22_b_w : (profile._$cache._body22_b_w = t3.contentBox()?2:0),
+                bW = profile._$cache.hasOwnProperty('_body22_b_w') ? profile._$cache._body22_b_w : (profile._$cache._body22_b_w = t3.contentBox()?1:0),
                 width=t2.width(),
                 borderC=0;
 

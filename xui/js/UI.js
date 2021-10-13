@@ -3071,7 +3071,8 @@ xui.Class("xui.UI",  "xui.absObj", {
             '.xui-css-noscroll, .xui-css-noscroll body':{
                 overflow:'hidden',
                 'overflow-x':'hidden',
-                'overflow-y':'hidden'
+                'overflow-y':'hidden',
+                'content-visibility':'auto'
             },
             '.xui-css-noscrollx, .xui-css-noscroll body':{
                 'overflow-x':'hidden'
