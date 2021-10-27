@@ -1303,7 +1303,7 @@ xui.merge(xui,{
         var okey=xui.getTheme();
         if(key!=okey){
             var onend=function(onSucess){
-                if(okey!='default'){
+                if(okey!='default' && okey!="'default'" && okey!='"default"'){
                     var style;
                     while(style=xui.CSS.$getCSSValue('.setting-uikey','fontFamily',okey)){
                         style.disabled=true;

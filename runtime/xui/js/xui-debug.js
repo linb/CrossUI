@@ -1317,7 +1317,7 @@ xui.merge(xui,{
         var okey=xui.getTheme();
         if(key!=okey){
             var onend=function(onSucess){
-                if(okey!='default'){
+                if(okey!='default' && okey!="'default'" && okey!='"default"'){
                     var style;
                     while(style=xui.CSS.$getCSSValue('.setting-uikey','fontFamily',okey)){
                         style.disabled=true;
@@ -10456,7 +10456,7 @@ xui.Class('xui.Event',null,{
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:.875rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
-            ".setting-uikey{font-family:'default'}"
+            ".setting-uikey{font-family:default}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
