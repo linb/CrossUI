@@ -80,8 +80,8 @@ xui.Class("xui.MQTT","xui.absObj",{
             if(p=prop.password)opt.password=p;
             if(p=prop.keepAliveInterval)opt.keepAliveInterval=p;
             if(prop.willTopic && prop.willMessage){
-                var msg = new window.Paho.Message(prop.willTopic);
-                msg.destinationName = prop.willMessage;
+                var msg = new window.Paho.Message(prop.willMessage);
+                msg.destinationName = prop.willTopic;
                 msg.qos=parseInt(prop.willQos)||0;
                 msg.retained=prop.willRetained;
                 opt.willMessage=msg;
