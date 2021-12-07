@@ -6615,8 +6615,8 @@ xui.Class("xui.ExcelFormula",null,{
             if(p=prop.password)opt.password=p;
             if(p=prop.keepAliveInterval)opt.keepAliveInterval=p;
             if(prop.willTopic && prop.willMessage){
-                var msg = new window.Paho.Message(prop.willTopic);
-                msg.destinationName = prop.willMessage;
+                var msg = new window.Paho.Message(prop.willMessage);
+                msg.destinationName = prop.willTopic;
                 msg.qos=parseInt(prop.willQos)||0;
                 msg.retained=prop.willRetained;
                 opt.willMessage=msg;
@@ -6729,7 +6729,8 @@ xui.Class("xui.ExcelFormula",null,{
             onMsgArrived: function(profile, payloadString, msgObj){}
         }
     }
-});xui.Class("xui.DataBinder","xui.absObj",{
+});
+xui.Class("xui.DataBinder","xui.absObj",{
     Instance:{
         _ini:xui.Timer.prototype._ini,
         destroy:function(){
@@ -31223,7 +31224,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 input = ns.$input = document.createElement('input'),
                 prevent = function(e){e.preventDefault(); e.stopPropagation();},
                 validFiles = function(files) {
-                  var fs=[], arr = dropFileTypes.split(/,\s*/);
+                  var fs=[], arr = dropFileTypes.toLowerCase().split(/\s*,\s*/);
                   for (var i = 0, len = files.length; i < len; i++) {
                     var pass;
                     if(maxFileSize && files[i].size>maxFileSize){
@@ -31238,21 +31239,27 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         continue;
                       }
                     }
-                    if(arr.indexOf(files[i].type)!=-1){
+                    // 'image/jpeg,image/png,image/gif',
+                    if(files[i].type && xui.arr.indexOf(arr, files[i].type.toLowerCase())!=-1){
                       fs.push(files[i]);
                       pass=1;
                     }else{
                       for(var j=0, k=arr.length;j<k;j++){
-                        if(arr[j].indexOf("*")!=-1){
-                          if(arr[j]=="*" || (new RegExp("^" + arr[j].replace('*','')+ "[.-\\w]+$")).test(files[i].type)){
+                        if(
+                          // '*'
+                          arr[j]=="*" ||
+                          // 'image/*'
+                          (xui.str.endWith(arr[j], "/*")  && xui.str.startWith(files[i].type.toLowerCase(), arr[j].replace("*",""))) ||
+                          // '.doc,.docx'
+                          (xui.str.startWith(arr[j], ".") && xui.str.endWith(  files[i].name.toLowerCase(), arr[j]))
+                        ){
                             fs.push(files[i]);
                             pass=1;
                             break;
-                          }
                         }
                       }
                     }
-                    if(!pass && ns.onFileError)ns.boxing().onFileError(ns, 'Type is not allowed: '+files[i].type, files[i]);
+                    if(!pass && ns.onFileError)ns.boxing().onFileError(ns, 'File type is not allowed: ' + files[i].name + " (" + files[i].type +")", files[i]);
                   }
                   return fs;
                 };
