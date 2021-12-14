@@ -237,8 +237,8 @@ xui.Class("xui.Coder", null,{
                 var Brackets={};
                 if(!reverse){
                     arr=[
-                        // a[b[6]]
-                        [/\[[^,;\n{}\x01\x03\]]+\]/.source, "$0"],
+                        // a[b[6]] =>a[*]
+                        [/\[[^;\n{}\x01\x03\[\]]+\]/.source, "$0"],
                         // [{
                         [/(\[)\s*(\{)/.source, function(a,i){Brackets[deep+1]=1; return a[i+1]+'\n'+space[++deep]+a[i+2]+'\n'+space[++deep]}],
                         // [   or  {

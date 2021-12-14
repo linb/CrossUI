@@ -35333,24 +35333,28 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    delete profile.$poplink;
                     if(focus)
                         profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
                         profile.__tryToHide= xui.asyRun(function(){
-                            // destroyed
-                            if(!profile.box)return;
-                            delete profile.__tryToHide;
-
                             if(!drop.destroyed){
-                                if(xui.browser.opr)
-                                    drop.getRoot().css('display','none');
-                                if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
-                                profile.getSubNode('POOL').append(drop.getRoot());
+                                if(profile.getSubNode('POOL').get(0)){
+                                  if(xui.browser.opr)
+                                      drop.getRoot().css('display','none');
+                                  if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
+
+                                  profile.getSubNode('POOL').append(drop.getRoot());
+                                }else{
+                                  drop.boxing().destroy(true);
+                                }
                             }
-                            if(focus)
-                                profile.boxing().activate();
+                            // maybe destroyed
+                            if(profile.box){
+                              delete profile.__tryToHide;
+                              if(focus)
+                                  profile.boxing().activate();
+                            }
                         });
                     }
                 }
@@ -43032,10 +43036,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
-            if(!item){
-                item=prop.items[0];
-                key=item&&item.id;
-            }
+
             if(!item)return;
             var panel = profile.boxing().getPanel(key),
                 us = xui.$us(profile),
@@ -51134,6 +51135,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ClickEffected:  {ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELLA', CELL:'CELLA', HCELL:['HCELLA','HSCELLA'],HSCELL:['HCELLA','HSCELLA'], CMD:'CMD'},
             DraggableKeys:['FCELL'],
             DroppableKeys:['SCROLL21','SCROLL22','CELLS1','CELLS2','FCELL'],
+            onMouseout:function(profile, e, src){
+                profile.box.$cancelHoverEditor(profile);
+            },
             HFMARK:{
                 onClick:function(profile,e,src){
                     if(profile.properties.selMode!='multi'&&profile.properties.selMode!='multibycheckbox')return;
@@ -51200,6 +51204,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getSrc(e)==xui(src).get(0) && profile.__hastmpRow && profile.__needchecktmprow)
                         profile.box._checkNewLine(profile,'oninner');
+                },
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
                 }
             },
             SCROLL21:{
@@ -51212,6 +51219,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getSrc(e)==xui(src).get(0) && profile.__hastmpRow && profile.__needchecktmprow)
                         profile.box._checkNewLine(profile,'oninner');
+                },
+                onMouseover:function(profile, e, src){
+                    profile.box.$cancelHoverEditor(profile);
                 }
             },
             HEADER2:{
@@ -54451,10 +54461,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                 //if update value
                 if('value' in options){
-                    if(!pdm || dirtyMark===false)
+                    if(!pdm || dirtyMark===false){
                         cell._oValue=cell.value;
                         if('unit' in cell)cell._oUnit=cell.unit;
-                    else{
+                    }else{
                         if(cell.value===cell._oValue&&( !('unit' in cell) || cell._oUnit===cell.unit)){
                             if(psdm)
                                 node.removeClass('xui-ui-dirty');
@@ -54686,9 +54696,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(getPro('disabled') || getPro('readonly') ||  !getPro('editable'))return ;
 
             var editor,
-                grid = this,
+                grid = this, tt,
                 prop = profile.properties,
                 cb=profile._$cache.hasOwnProperty('_root_cb') ? profile._$cache._root_cb : (profile._$cache._root_cb = profile.getRoot().contentBox()),
+                rowb=profile._$cache.hasOwnProperty('_cell2_b') ? profile._$cache._cell2_b : (tt = profile.getSubNode("ROWS22").first(2) ) ? (profile._$cache._cell2_b = tt._borderH()) : 0,
                 type=getPro('type')||'input',
                 //region = prop.freezedColumn prop.freezedRow
                 col = cell._col,
@@ -54787,7 +54798,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 top:0,
                                 cachePopWnd:true,
                                 width:Math.max(0, profile.$px(cell._col._colWidth) - offX + (cb?2:1)),
-                                height:profile.$px(cell._row._rowHeight)+(cb?1:0),
+                                height:profile.$px(cell._row._rowHeight)+(cb?1:0) - rowb,
                                 visibility:'visible',
                                 zIndex:100
                             },'all');
@@ -54972,8 +54983,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         };
 
                     //undo function is a must
-                    editor[inline?'remove':'undo']=function(refocus, inactive){
-                        var editor=this;
+                    editor.undo=function(refocus, inactive){
+                        var editor=this, cell=editor.get(0).$cell;
                         // execute once
                         editor.undo=null;
                         profile.getSubNode('CELL', _getcell(editor.get(0))._serialId).removeClass("editing");
@@ -54981,6 +54992,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(profile.box)
                             profile.box._trycheckrowdirty(profile,profile.$cellInEditor);
                         if(!inactive){
+                            if(xui.isFun(editor.collapse))editor.collapse();
+
                             if(editor.get(0) && editor.get(0).box){
                                 // for ie's setBlurTrigger doesn't trigger onchange event
                                 editor.getSubNode('INPUT').onBlur(true);
@@ -55019,7 +55032,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             //don't use disply:none, firfox has many bugs about Caret or renderer
                             editor.hide();
 
-                            if(xui.isFun(editor.collapse))editor.collapse();
                         }
                         if(editorEvents){
                             var h={};
@@ -55037,7 +55049,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         if(!editorCacheKey && editor.get(0)){
                             editor.destroy(true);
                         }
-                        cell._editor=editor=null;
+                        delete cell._editor;
                     };
 
 

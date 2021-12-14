@@ -133,24 +133,28 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    delete profile.$poplink;
                     if(focus)
                         profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
                         profile.__tryToHide= xui.asyRun(function(){
-                            // destroyed
-                            if(!profile.box)return;
-                            delete profile.__tryToHide;
-
                             if(!drop.destroyed){
-                                if(xui.browser.opr)
-                                    drop.getRoot().css('display','none');
-                                if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
-                                profile.getSubNode('POOL').append(drop.getRoot());
+                                if(profile.getSubNode('POOL').get(0)){
+                                  if(xui.browser.opr)
+                                      drop.getRoot().css('display','none');
+                                  if(drop.boxing()._clearMouseOver)drop.boxing()._clearMouseOver();
+
+                                  profile.getSubNode('POOL').append(drop.getRoot());
+                                }else{
+                                  drop.boxing().destroy(true);
+                                }
                             }
-                            if(focus)
-                                profile.boxing().activate();
+                            // maybe destroyed
+                            if(profile.box){
+                              delete profile.__tryToHide;
+                              if(focus)
+                                  profile.boxing().activate();
+                            }
                         });
                     }
                 }

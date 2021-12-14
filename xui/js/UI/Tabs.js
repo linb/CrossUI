@@ -1188,10 +1188,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 key=prop.$UIvalue||prop.value;
                 item = profile.getItemByItemId(key);
             }
-            if(!item){
-                item=prop.items[0];
-                key=item&&item.id;
-            }
+
             if(!item)return;
             var panel = profile.boxing().getPanel(key),
                 us = xui.$us(profile),
