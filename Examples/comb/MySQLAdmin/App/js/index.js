@@ -7,14 +7,14 @@ xui.Class('App', 'xui.Module',{
         iniComponents:function(){
             // [[Code created by CrossUI RAD Tools
             var host=this, children=[], append=function(child){children.push(child.get(0))};
-            
+
             append(
                 (new xui.UI.Layout)
                 .setHost(host,"layout4")
                 .setItems([{"id":"before", "pos":"before", "min":10, "size":200, "locked":false, "folded":false, "cmd":true, "hidden":false}, {"id":"main", "min":10}])
                 .setType("horizontal")
             );
-            
+
             host.layout4.append(
                 (new xui.UI.Tabs)
                 .setHost(host,"tabs")
@@ -22,7 +22,7 @@ xui.Class('App', 'xui.Module',{
                 .setValue("Start")
                 .setCustomStyle({"PANEL":"overflow:hidden"})
             , 'main');
-            
+
             host.tabs.append(
                 (new xui.UI.Div)
                 .setHost(host,"div44")
@@ -32,14 +32,14 @@ xui.Class('App', 'xui.Module',{
                 .setHeight(40)
                 .setHtml("Select any entity in tree to view details")
             , 'Start');
-            
+
             host.layout4.append(
                 (new xui.UI.Panel)
                 .setHost(host,"panel15")
                 .setZIndex(1)
                 .setCaption("Hierarchy")
             , 'before');
-            
+
             host.panel15.append(
                 (new xui.UI.TreeBar)
                 .setHost(host,"treebar4")
@@ -48,14 +48,14 @@ xui.Class('App', 'xui.Module',{
                 .onGetContent("_treebar4_ongetcontent")
                 .onItemSelected("_treebar4_onitemselected")
             );
-            
+
             append(
                 (new xui.UI.ToolBar)
                 .setHost(host,"toolbar7")
                 .setItems([{"id":"item a", "sub":[{"id":"add", "caption":"Add connection"}, {"id":"delete", "caption":"Delete connection"}, {"id":"query", "caption":"SQL query"}], "caption":"item a"}])
                 .onClick("_toolbar7_onclick")
             );
-            
+
             return children;
             // ]]Code created by CrossUI RAD Tools
         },
@@ -105,7 +105,7 @@ xui.Class('App', 'xui.Module',{
                 SPA.request({action:'listtables', dbname:item.id},function(rsp){
                     var arr=[];
                     xui.arr.each(rsp.data,function(o){
-                        arr.push({id:o[0],caption:o[0],group:true,tag:'table',_dbname:item.id});
+                        arr.push({id:o[0],caption:o[0],tag:'table',_dbname:item.id});
                     });
                     callback(arr);
                 });

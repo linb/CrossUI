@@ -3910,6 +3910,10 @@ xui.Class('xui.Ajax','xui.absIO',{
                 self._onEnd();
                 return;
             }
+            if (!self._retryNo && self.query){
+                self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
+                self.query=null;
+            }
             if (!self._retryNo)
                 self._onStart();
             try {
@@ -3927,11 +3931,6 @@ xui.Class('xui.Ajax','xui.absIO',{
                            self._clear();
                        }
                    };
-                // if we have 'data', use 'query' as 'params', else use 'query' as 'data'
-                if (!self._retryNo && self.query){
-                    self.uri = self.uri.split("#")[0].split("?")[0] + "?" + self.query;
-                    self.query=null;
-                }
                 // form/json/blob
                 if(self.data){
                   if(xui.isHash(self.data)){
@@ -4339,19 +4338,9 @@ xui.Class('xui.XDMI','xui.absIO',{
                 };
             }
 
+            self.data = self.data || {};
             if(self.query){
-                // merge data to query for GET
-                if(self.method=="GET"){
-                  if(xui.isHash(self.data) && !xui.isEmpty(self.data)){
-                    xui.merge(self.query, self.data, 'without');
-                    self.data=self.query;
-                  }
-                }else{
-                  if(xui.isHash(self.query) && !xui.isEmpty(self.query)){
-                    self.data = self.data || {};
-                    xui.merge(self.data, self.query, 'without');
-                  }
-                }
+                xui.merge(self.data, self.query, 'without');
                 self.query = null;
             }
             form.action=self.uri;
