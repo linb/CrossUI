@@ -450,7 +450,9 @@ xui.Class('xui.UIProfile','xui.Profile', {
         },
         $forceu:function(value,u,node,roundPx){
             var ns=this;
-            return xui.CSS.$forceu(value,u,node||function(){return ns.getEmSize()},roundPx);
+            return xui.CSS.$forceu(value,
+              u || (ns.$inDesign ? xui.get(xui.ini, ['$designConfig','$DevEnv','SpaceUnit']) : u),
+              node||function(){return ns.getEmSize()},roundPx);
         },
         $addpx:function(a,b,node){
             var ns=this;
@@ -7907,8 +7909,14 @@ xui.Class("xui.absValue", "xui.absObj",{
                     if(properties.dirtyMark && properties.showDirtyMark){
                         if(profile.beforeDirtyMark && false===profile.boxing().beforeDirtyMark(profile,flag)){}
                         else{
-                            if(flag) o.addClass(d);
-                            else o.removeClass(d);
+                            if(flag){
+                              o.addClass(d);
+                              if(profile.box.DIRYMARKICON=="DIRTYMARK")o.removeClass("xui-display-none");
+                            }
+                            else{
+                              o.removeClass(d);
+                              if(profile.box.DIRYMARKICON=="DIRTYMARK")o.addClass("xui-display-none");
+                            }
                         }
                     }
                     profile._dirtyFlag=flag;

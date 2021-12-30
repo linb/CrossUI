@@ -2345,7 +2345,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     text:'&nbsp;'
                 }
             },
-            DIRTYMARK:{},
+            DIRTYMARK:{
+              className:"xui-display-none"
+            },
             $submap : {
                 /*the other header in table header*/
                 header1:function(profile,template,v,tag,result,index){
@@ -4252,11 +4254,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         keys=xui.Event.getKey(e),
                         key = keys.key,
                         cell=profile.cellMap[profile.getSubId(src)],
+                        editable=profile.box.getCellOption(profile, cell, 'editable'),
                         type=profile.box.getCellOption(profile, cell, 'type');
 
 
                     if(key=='enter'){
-                        if(type=='button'||type=='label'||type=='checkbox'){
+                        if(!editable || type=='button'||type=='label'||type=='checkbox'){
                             xui(src).onClick();
                             return;
                         }else

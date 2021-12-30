@@ -6036,13 +6036,11 @@ xui.Class("xui.ExcelFormula",null,{
                 t1=funs['$APICaller:beforeInvoke'],
                 t2=funs['$APICaller:beforeData'],
                 t3=funs['$APICaller:onError'];
+
             // the global handler
-            if(xui.isFun(t1) && false===t1(prf, requestId))
+            if(xui.isFun(t1) && false===t1(prf, prop.requestId))
                 return;
-            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [prf, requestId], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
-                return;
-            // Normally, Gives a change to modify "queryArgs" for XML
-            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
+            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [prf, prop.requestId], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
                 return;
 
             var responseType=prop.responseType,
@@ -6350,6 +6348,10 @@ xui.Class("xui.ExcelFormula",null,{
             }, threadid, options]);
 
             prf._rpc = ajax;
+
+            // Normally, Gives a change to modify "queryArgs" for XML
+            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
+                return;
 
             if(mode=="busy")
                 xui.observableRun(function(threadid){
@@ -19981,7 +19983,9 @@ xui.Class('xui.UIProfile','xui.Profile', {
         },
         $forceu:function(value,u,node,roundPx){
             var ns=this;
-            return xui.CSS.$forceu(value,u,node||function(){return ns.getEmSize()},roundPx);
+            return xui.CSS.$forceu(value,
+              u || (ns.$inDesign ? xui.get(xui.ini, ['$designConfig','$DevEnv','SpaceUnit']) : u),
+              node||function(){return ns.getEmSize()},roundPx);
         },
         $addpx:function(a,b,node){
             var ns=this;
@@ -27438,8 +27442,14 @@ xui.Class("xui.absValue", "xui.absObj",{
                     if(properties.dirtyMark && properties.showDirtyMark){
                         if(profile.beforeDirtyMark && false===profile.boxing().beforeDirtyMark(profile,flag)){}
                         else{
-                            if(flag) o.addClass(d);
-                            else o.removeClass(d);
+                            if(flag){
+                              o.addClass(d);
+                              if(profile.box.DIRYMARKICON=="DIRTYMARK")o.removeClass("xui-display-none");
+                            }
+                            else{
+                              o.removeClass(d);
+                              if(profile.box.DIRYMARKICON=="DIRTYMARK")o.addClass("xui-display-none");
+                            }
                         }
                     }
                     profile._dirtyFlag=flag;
@@ -33998,18 +34008,23 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
         _setCtrlValue:function(value){
             if(xui.isNull(value) || !xui.isDefined(value))value='';
             return this.each(function(profile){
-                profile.getSubNode('KEY').attr('value',value+"");
+                profile.getRoot().attr('value',value+"");
             });
         },
         _getCtrlValue:function(){
-            var node=this.getSubNode('INPUT'),
-                v= (node&&!node.isEmpty()) ? this.getSubNode('INPUT').attr('value') : "";
+            var node=this.getRoot(),
+                v= (node&&!node.isEmpty()) ? node.attr('value') : "";
             if(v.indexOf("\r")!=-1)v=v.replace(/(\r\n|\r)/g, "\n");
             return v;
         }
     },
     Static:{
-        $initRootHidden:true,
+        _beforeSerialized:function(profile){
+          profile = xui.UI._beforeSerialized(profile);
+          var o=profile.properties;
+          delete o.left;delete o.top;delete o.width;delete o.height;delete o.bottom;delete o.right;delete o.zIndex;delete o.position;
+          return profile;
+        },
         Templates:{
             className:'xui-display-none',
             style:'display:none',
@@ -34019,23 +34034,12 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
         DataModel:{
             locked:null,
             required:null,
-            dataBinder:null,
-            dataField:null,
             display:null,
             visibility:null,
-            position:null,
-            left:null,
-            top:null,
-            right:null,
-            bottom:null,
-            width:null,
-            height:null,
             rotate:null,
             showEffects:null,
             hideEffects:null,
             activeAnim:null,
-            tabindex:null,
-            zIndex:null,
             defaultFocus:null,
             hoverPop:null,
             hoverPopType:null,
@@ -34150,7 +34154,9 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                     tagName:'div',
                     className:'xui-uiborder-flat xui-uiborder-radius xui-uibase'
                 },
-                DIRTYMARK:{},
+                DIRTYMARK:{
+                  className:"xui-display-none"
+                },
                 POOL:{}
             }
         },
@@ -50270,7 +50276,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     text:'&nbsp;'
                 }
             },
-            DIRTYMARK:{},
+            DIRTYMARK:{
+              className:"xui-display-none"
+            },
             $submap : {
                 /*the other header in table header*/
                 header1:function(profile,template,v,tag,result,index){
@@ -52177,11 +52185,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         keys=xui.Event.getKey(e),
                         key = keys.key,
                         cell=profile.cellMap[profile.getSubId(src)],
+                        editable=profile.box.getCellOption(profile, cell, 'editable'),
                         type=profile.box.getCellOption(profile, cell, 'type');
 
 
                     if(key=='enter'){
-                        if(type=='button'||type=='label'||type=='checkbox'){
+                        if(!editable || type=='button'||type=='label'||type=='checkbox'){
                             xui(src).onClick();
                             return;
                         }else

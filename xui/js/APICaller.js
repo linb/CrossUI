@@ -43,13 +43,11 @@ xui.Class("xui.APICaller","xui.absObj",{
                 t1=funs['$APICaller:beforeInvoke'],
                 t2=funs['$APICaller:beforeData'],
                 t3=funs['$APICaller:onError'];
+
             // the global handler
-            if(xui.isFun(t1) && false===t1(prf, requestId))
+            if(xui.isFun(t1) && false===t1(prf, prop.requestId))
                 return;
-            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [prf, requestId], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
-                return;
-            // Normally, Gives a change to modify "queryArgs" for XML
-            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
+            else if( xui.isHash(t1) && xui.isArr(t1.actions) && false===xui.pseudocode._callFunctions(t1,  [prf, prop.requestId], ns.getHost(),null,null,'$APICaller:beforeInvoke'))
                 return;
 
             var responseType=prop.responseType,
@@ -357,6 +355,10 @@ xui.Class("xui.APICaller","xui.absObj",{
             }, threadid, options]);
 
             prf._rpc = ajax;
+
+            // Normally, Gives a change to modify "queryArgs" for XML
+            if(prf.beforeInvoke && false===prf.boxing().beforeInvoke(prf, requestId))
+                return;
 
             if(mode=="busy")
                 xui.observableRun(function(threadid){

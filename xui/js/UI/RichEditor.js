@@ -63,7 +63,9 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                     tagName:'div',
                     className:'xui-uiborder-flat xui-uiborder-radius xui-uibase'
                 },
-                DIRTYMARK:{},
+                DIRTYMARK:{
+                  className:"xui-display-none"
+                },
                 POOL:{}
             }
         },
