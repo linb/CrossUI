@@ -26945,6 +26945,9 @@ xui.Class("xui.absList", "xui.absObj",{
                     serialId=xui.get(profile,['ItemIdMapSubSerialId',nid || itemId]);
                     arr=box._prepareItems(profile, [item],item._pid,false, serialId);
                     node.replace(profile._buildItems(arguments[2]||'items', arr),false);
+                    if(box._afterItemRefreshed){
+                        box._afterItemRefreshed(profile, item);
+                    }
 
                     // restore sub nodes
                     if(oldsub && !oldsub.isEmpty()){
@@ -58010,12 +58013,10 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     value = value?value.split(prop.valueSeparator):[];
 
                     xui.arr.each(uiv,function(key){
-                        if(xui.arr.indexOf(value,key)==-1)
-                            fold(key, arr1);
+                      fold(key, arr1);
                     });
                     xui.arr.each(value,function(key){
-                        if(xui.arr.indexOf(uiv,key)==-1)
-                            expand(key, arr2);
+                      expand(key, arr2);
                     });
                 }else{
                     fold(uiv, arr1);
@@ -58433,6 +58434,14 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                 item._tlgchecked = profile.getClass('TOGGLE','-checked');
             }
             this._prepareCmds(profile, item);
+        },
+        _afterItemRefreshed:function(profile, item){
+            var panel = profile.getSubNodeByItemId('PANEL', item.id);
+            xui.arr.each(profile.children,function(a){
+              if(a[1]==item.id){
+                  panel.append(a[0]);
+              }
+            });
         },
         _onresize:function(profile,width,height,force,key){
             if(force){profile._w=profile._h=null;}

@@ -7412,6 +7412,9 @@ xui.Class("xui.absList", "xui.absObj",{
                     serialId=xui.get(profile,['ItemIdMapSubSerialId',nid || itemId]);
                     arr=box._prepareItems(profile, [item],item._pid,false, serialId);
                     node.replace(profile._buildItems(arguments[2]||'items', arr),false);
+                    if(box._afterItemRefreshed){
+                        box._afterItemRefreshed(profile, item);
+                    }
 
                     // restore sub nodes
                     if(oldsub && !oldsub.isEmpty()){
