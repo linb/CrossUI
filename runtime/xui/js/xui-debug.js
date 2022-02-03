@@ -1138,6 +1138,7 @@ xui.merge(xui.Class, {
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
     version:3.00,
+    versionDate:'03/02/2022',
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -2431,7 +2432,7 @@ new function(){
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 };
         },
-        "exec":function(_ns, conf, resumeFun, level){
+        exec:function(_ns, conf, resumeFun, level){
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -5639,7 +5640,7 @@ xui.Class("xui.MessageService","xui.absObj",{
                 var ins=profile.boxing()
                 xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
                     xui.publish(t, [msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9,function(){
-                        xui.tryF(readReceipt);
+                        xui.tryF(readReceipt, xui.toArr(arguments));
                         if(profile.onReceipt) profile.boxing().onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
                     }], null, ins);
                 });
@@ -24407,10 +24408,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                             item=box.getItemByDom(src);
 
                         args=[profile, e, ns, key, data, item];
-                        if((t=profile.onDropTest) && (false===box.onDropTest.apply(box,args)))
+
+                        if((t=profile.onDropTest)){
+                          if(false===box.onDropTest.apply(box,args))
                             return;
-                        if((t=profile.box._onDropTest) && (false===t.apply(profile.host||profile, args)))
+                        }else if((t=profile.box._onDropTest)){
+                          if(false===t.apply(profile.host||profile, args))
                             return;
+                        }
+
                         //for trigger onDrop
                         dd.setDropElement(src);
                         if(profile.onDropMarkShow && (false===box.onDropMarkShow.apply(box,args))){}
@@ -44266,12 +44272,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         /*
         *open to deep node
         */
-        openToNode:function(id, triggerEvent){
+        openToNode:function(id, triggerEvent, stopanim){
             return this.each(function(profile){
-                var res=false, a=[],
-                    fun=function(arr, catId, layer){
+                var res=false, a=[];
+                var fun=function(arr, catId, layer){
                         layer = layer || 0;
-                        var me=arguments.callee;
                         xui.arr.each(arr,function(o){
                             if(o.id==catId){
                                 a.push(o);
@@ -44279,7 +44284,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 return false;
                             }
                             if(o.sub && xui.isArr(o.sub)){
-                                res = me.call(me, o.sub, catId, ++layer)
+                                res = fun.call(null, o.sub, catId, ++layer);
                                 if(res){
                                     a.push(o);
                                     return false;
@@ -44287,13 +44292,13 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             }
                         });
                         return res;
-                    }
-                fun(profile.properties.items, id);
+                    };
+                fun.call(null, profile.properties.items, id);
                 if(res){
                     a.reverse();
                     xui.arr.each(a,function(o,i){
                         if(o.sub){
-                            profile.boxing().toggleNode(o.id,true);
+                            profile.boxing().toggleNode(o.id,true,false, stopanim);
                             // for the last one, trigger its onclick event
                             if(triggerEvent!==false &&  i==a.length-1 && !(o.hasOwnProperty('group')?o.group:profile.properties.group))
                                 profile.boxing().fireItemClickEvent(o.id);
@@ -44843,15 +44848,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             var fid=data&&data.domId;
             if(fid){
                 var tid=xui.use(src).id();
+                // stop to self
                 if(fid==tid)return false;
-
+                // stop to the next
                 if(xui.get(xui.use(src).get(0),['parentNode','previousSibling','firstChild','id'])==fid)return false;
-
-                var oitem=profile.getItemByDom(fid);
-
-                // stop self
-                if(oitem && item && oitem._pid==item.id)return false;
-
+                // stop to descendants
                 var p=xui.use(src).get(0),
                     rn=profile.getRootNode();
                 // stop children
@@ -44932,7 +44933,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
             this._prepareCmds(profile, item);
 
-            if(xui.browser.fakeTouch || xui.browser.deviceType == 'mouseOnly'){
+            if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly'){
                 item._optDisplay = p.optBtn?'display:block;':'';
             }
 
@@ -49453,13 +49454,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(rowId){
                     var row=ins.getRowbyRowId(rowId),
                         header=ins.getHeader('min');
-                    rowId=row.id;
-                    // must adjust it first
-                    var rows=prf.box._adjustRows(prf, [hash]),
-                        cells=rows[0].cells;
-                    xui.arr.each(row.cells,function(t,j){
-                        xui.isDefined(cells[j] && cells[j].value) && ins.updateCellByRowCol(rowId, header[j], cells[j], dirtyMark, triggerEvent);
-                    });
+                    if(row){
+                        rowId=row.id;
+                        // must adjust it first
+                        var rows=prf.box._adjustRows(prf, [hash]),
+                            cells=rows[0].cells;
+                        xui.arr.each(row.cells,function(t,j){
+                            xui.isDefined(cells[j] && cells[j].value) && ins.updateCellByRowCol(rowId, header[j], cells[j], dirtyMark, triggerEvent);
+                        });
+                    }
                 }
                 p.rowMap=hash;
             });
@@ -50156,12 +50159,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     text:'{headerTail}'
                                                 },
                                                 RTAGCMDS:{
-                                                    $order:1,
+                                                    $order:2,
                                                     tagName:'span',
                                                     className:'xui-rtag-cmds',
                                                     style:'{_rtagDisplay}',
                                                     text:"{rtagCmds}"
                                                 }
+                                            },
+                                            FORSCROLLBAR:{
+                                                $order:3,
+                                                tagName:'span'
                                             }
                                         },
                                         GRPCELLBOX2:{
@@ -50803,6 +50810,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 overflow:'hidden'
+            },
+            FORSCROLLBAR:{
+                // for scroll position reight, + scroll bar width
+                width:'10em'
             },
             'KEY .xuitgtd, KEY .xuitgth, KEY .xuitgtr':{
                 border:'0!important',

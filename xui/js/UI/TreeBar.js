@@ -197,12 +197,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         /*
         *open to deep node
         */
-        openToNode:function(id, triggerEvent){
+        openToNode:function(id, triggerEvent, stopanim){
             return this.each(function(profile){
-                var res=false, a=[],
-                    fun=function(arr, catId, layer){
+                var res=false, a=[];
+                var fun=function(arr, catId, layer){
                         layer = layer || 0;
-                        var me=arguments.callee;
                         xui.arr.each(arr,function(o){
                             if(o.id==catId){
                                 a.push(o);
@@ -210,7 +209,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                                 return false;
                             }
                             if(o.sub && xui.isArr(o.sub)){
-                                res = me.call(me, o.sub, catId, ++layer)
+                                res = fun.call(null, o.sub, catId, ++layer);
                                 if(res){
                                     a.push(o);
                                     return false;
@@ -218,13 +217,13 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             }
                         });
                         return res;
-                    }
-                fun(profile.properties.items, id);
+                    };
+                fun.call(null, profile.properties.items, id);
                 if(res){
                     a.reverse();
                     xui.arr.each(a,function(o,i){
                         if(o.sub){
-                            profile.boxing().toggleNode(o.id,true);
+                            profile.boxing().toggleNode(o.id,true,false, stopanim);
                             // for the last one, trigger its onclick event
                             if(triggerEvent!==false &&  i==a.length-1 && !(o.hasOwnProperty('group')?o.group:profile.properties.group))
                                 profile.boxing().fireItemClickEvent(o.id);
@@ -774,15 +773,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             var fid=data&&data.domId;
             if(fid){
                 var tid=xui.use(src).id();
+                // stop to self
                 if(fid==tid)return false;
-
+                // stop to the next
                 if(xui.get(xui.use(src).get(0),['parentNode','previousSibling','firstChild','id'])==fid)return false;
-
-                var oitem=profile.getItemByDom(fid);
-
-                // stop self
-                if(oitem && item && oitem._pid==item.id)return false;
-
+                // stop to descendants
                 var p=xui.use(src).get(0),
                     rn=profile.getRootNode();
                 // stop children
@@ -863,7 +858,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             }
             this._prepareCmds(profile, item);
 
-            if(xui.browser.fakeTouch || xui.browser.deviceType == 'mouseOnly'){
+            if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly'){
                 item._optDisplay = p.optBtn?'display:block;':'';
             }
 

@@ -1124,6 +1124,7 @@ xui.merge(xui.Class, {
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
     version:3.00,
+    versionDate:'03/02/2022',
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -2417,7 +2418,7 @@ new function(){
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 };
         },
-        "exec":function(_ns, conf, resumeFun, level){
+        exec:function(_ns, conf, resumeFun, level){
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -5625,7 +5626,7 @@ xui.Class("xui.MessageService","xui.absObj",{
                 var ins=profile.boxing()
                 xui.arr.each(recipientType.split(/[\s,;:]+/),function(t){
                     xui.publish(t, [msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9,function(){
-                        xui.tryF(readReceipt);
+                        xui.tryF(readReceipt, xui.toArr(arguments));
                         if(profile.onReceipt) profile.boxing().onReceipt.apply(ins, [profile, t, xui.toArr(arguments)]);
                     }], null, ins);
                 });

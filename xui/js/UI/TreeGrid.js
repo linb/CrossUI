@@ -1519,13 +1519,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(rowId){
                     var row=ins.getRowbyRowId(rowId),
                         header=ins.getHeader('min');
-                    rowId=row.id;
-                    // must adjust it first
-                    var rows=prf.box._adjustRows(prf, [hash]),
-                        cells=rows[0].cells;
-                    xui.arr.each(row.cells,function(t,j){
-                        xui.isDefined(cells[j] && cells[j].value) && ins.updateCellByRowCol(rowId, header[j], cells[j], dirtyMark, triggerEvent);
-                    });
+                    if(row){
+                        rowId=row.id;
+                        // must adjust it first
+                        var rows=prf.box._adjustRows(prf, [hash]),
+                            cells=rows[0].cells;
+                        xui.arr.each(row.cells,function(t,j){
+                            xui.isDefined(cells[j] && cells[j].value) && ins.updateCellByRowCol(rowId, header[j], cells[j], dirtyMark, triggerEvent);
+                        });
+                    }
                 }
                 p.rowMap=hash;
             });
@@ -2222,12 +2224,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                                     text:'{headerTail}'
                                                 },
                                                 RTAGCMDS:{
-                                                    $order:1,
+                                                    $order:2,
                                                     tagName:'span',
                                                     className:'xui-rtag-cmds',
                                                     style:'{_rtagDisplay}',
                                                     text:"{rtagCmds}"
                                                 }
+                                            },
+                                            FORSCROLLBAR:{
+                                                $order:3,
+                                                tagName:'span'
                                             }
                                         },
                                         GRPCELLBOX2:{
@@ -2869,6 +2875,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 display:'block',
                 position:'absolute',
                 overflow:'hidden'
+            },
+            FORSCROLLBAR:{
+                // for scroll position reight, + scroll bar width
+                width:'10em'
             },
             'KEY .xuitgtd, KEY .xuitgth, KEY .xuitgtr':{
                 border:'0!important',

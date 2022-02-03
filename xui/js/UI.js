@@ -4874,10 +4874,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                             item=box.getItemByDom(src);
 
                         args=[profile, e, ns, key, data, item];
-                        if((t=profile.onDropTest) && (false===box.onDropTest.apply(box,args)))
+
+                        if((t=profile.onDropTest)){
+                          if(false===box.onDropTest.apply(box,args))
                             return;
-                        if((t=profile.box._onDropTest) && (false===t.apply(profile.host||profile, args)))
+                        }else if((t=profile.box._onDropTest)){
+                          if(false===t.apply(profile.host||profile, args))
                             return;
+                        }
+
                         //for trigger onDrop
                         dd.setDropElement(src);
                         if(profile.onDropMarkShow && (false===box.onDropMarkShow.apply(box,args))){}
