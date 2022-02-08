@@ -10780,7 +10780,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
             },target,reversed);
         },
-
+        contains:function(node){
+          var c = this.get(0);
+          if(c.contains)return c.contains(node);
+          else{
+              while(node=node.parentNode){
+                if(node==c)return true;
+              }
+              return false;
+          }
+        },
         //flag: false => no remove this from momery(IE)
         replace:function(target, triggerGC){
             if(xui.isHash(target) || xui.isStr(target))
@@ -51148,7 +51157,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             DraggableKeys:['FCELL'],
             DroppableKeys:['SCROLL21','SCROLL22','CELLS1','CELLS2','FCELL'],
             onMouseout:function(profile, e, src){
-                profile.box.$cancelHoverEditor(profile);
+                if(!xui(src).contains(xui.Event.getSrc(e)))
+                  profile.box.$cancelHoverEditor(profile);
             },
             HFMARK:{
                 onClick:function(profile,e,src){

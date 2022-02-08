@@ -316,7 +316,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
             },target,reversed);
         },
-
+        contains:function(node){
+          var c = this.get(0);
+          if(c.contains)return c.contains(node);
+          else{
+              while(node=node.parentNode){
+                if(node==c)return true;
+              }
+              return false;
+          }
+        },
         //flag: false => no remove this from momery(IE)
         replace:function(target, triggerGC){
             if(xui.isHash(target) || xui.isStr(target))
