@@ -53988,13 +53988,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         uicell.progress=caption;
                 break;
                 case 'listbox':
+                case 'combobox':
+                case 'helpinput':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
                     // don't use capOut in capOut case
                     caption=xui.adjustRes(unit(/*xui.isSet(capOut)?capOut:*/ren(profile,cell,uicell,f6),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
                 break;
-                case 'dropbox':
+                case 'popbox':
                 case 'cmdbox':
+                case 'button':
+                case 'dropbutton':
                     cell.value=cell.hasOwnProperty("value")?cell.value:"";
                     caption=xui.adjustRes(unit(xui.isSet(capOut)?capOut:ren(profile,cell,uicell,f7),cell));
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
