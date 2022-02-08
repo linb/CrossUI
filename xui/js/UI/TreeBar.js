@@ -781,13 +781,12 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 var p=xui.use(src).get(0),
                     rn=profile.getRootNode();
                 // stop children
-                while((p=p.parentNode)){
-                    if(profile.getSubId(p.id) == profile.getSubId(fid)){
-                        return false;
-                    }
-                    if(p.id==xui.get(rn,["parentNode","id"])){
-                        break;
-                    }
+                if(xui.UIProfile.getFromDom(fid)===profile){
+                  while((p=p.parentNode) && xui.UIProfile.getFromDom(p)===profile){
+                      if(profile.getSubId(p.id) == profile.getSubId(fid)){
+                          return false;
+                      }
+                  }
                 }
             }
         },

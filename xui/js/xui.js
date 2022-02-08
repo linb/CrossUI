@@ -1318,6 +1318,7 @@ xui.merge(xui,{
                 }
                 if(refresh!==false)
                     xui.CSS.adjustFont();
+                xui.Dom._scrollBarSize = null;
                 xui.tryF(onSucess);
             };
             if(key=='default'){
@@ -1360,6 +1361,7 @@ xui.merge(xui,{
                     fun();
             }
         }else{
+            xui.Dom._scrollBarSize = null;
             xui.tryF(onSucess);
         }
     },

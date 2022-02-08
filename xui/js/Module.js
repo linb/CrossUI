@@ -544,7 +544,7 @@ xui.Class('xui.Module','xui.absProfile',{
                     xui.tryF(onEnd,[null, self, threadid], self);
                 }else{
                     // if parent is an ui object without rendered, dont render the module
-                    if(!(parent && parent['xui.UI']  && !parent.get(0).renderId))
+                    if(!(parent && parent['xui.UI'] && parent.get(0) && !parent.get(0).renderId))
                         self.render();
 
                     if(false===xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
