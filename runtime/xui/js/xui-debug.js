@@ -3543,7 +3543,7 @@ xui.Class('xui.absIO',null,{
         if(typeof uri=='object')
             options=uri;
         else{
-            options=options||{};
+            options=options?xui.copy(options):{};
             xui.merge(options, {
                 uri:uri,
                 query:query,
@@ -5096,7 +5096,7 @@ xui.Class('xui.absObj',"xui.absBox",{
         self.setEventHandlers(self.EventHandlers);
         delete self.EventHandlers;
 
-        m=me.a5 || (me.a5=xui.toArr('RenderTrigger,LayoutTrigger'));
+        m=me.a5 || (me.a5=xui.toArr('BeforeRenderTrigger,RenderTrigger,LayoutTrigger'));
         for(j=0;v=m[j++];){
             temp=[];
              if((t=self.$parent) && (l=t.length))
@@ -19709,6 +19709,14 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(ns.beforeRender&&false===ins.beforeRender(ns))
                 return;
 
+            //BeforeRenderTrigger
+            if(t=ns.BeforeRenderTrigger){
+                for(var i=0,l=t.length;i<l;i++)
+                    t[i].call(ns);
+                delete ns.BeforeRenderTrigger;
+            }
+
+
             //first render
             if(!ns.renderId){
                 var ele=xui.Dom.byId(ns.$domId);
@@ -19899,6 +19907,8 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 ns.LayoutTrigger.length=0;
             if(ns.RenderTrigger)
                 ns.RenderTrigger.length=0;
+            if(ns.BeforeRenderTrigger)
+                ns.BeforeRenderTrigger.length=0;
 
             //gc children
             if((t=ns.children).length){
@@ -20732,6 +20742,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             profile.$domId = profile.key + ":" + profile.serialId + ":";
             profile.domId = profile.domId || profile.$domId;
 
+            profile.BeforeRenderTrigger=xui.copy(c.$BeforeRenderTrigger);
             profile.RenderTrigger=xui.copy(c.$RenderTrigger);
             profile.LayoutTrigger=xui.copy(c.$LayoutTrigger);
 
@@ -23956,6 +23967,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
+            self.$BeforeRenderTrigger=self.$BeforeRenderTrigger||[];
             self.$RenderTrigger=self.$RenderTrigger||[];
             self.$RenderTrigger.push(function(){
                 if(this.properties.readonly){
@@ -31211,6 +31223,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             },
             'KEY-fold PANEL':{
                 display:'none'
+            },
+            SIDEBAR:{
+                overflow:"hidden"
             },
             'KEY-fold SIDEBAR':{
                 cursor:'pointer',
@@ -39623,6 +39638,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
                 position:'relative',
+                "content-visibility":"auto",
                 'white-space': 'nowrap'
             },
             MARK:{
@@ -44449,6 +44465,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             ITEM:{
                 'white-space': 'nowrap',
+                "content-visibility":"auto",
                 position:'relative',
                 overflow:'hidden'
             },
@@ -50244,10 +50261,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     className:'{_columnfreezed}',
                                     BODY21:{
                                         tagName:'div',
+                                        ROWS21_B:{
+                                            $order:1,
+                                            tagName:'div'
+                                        },
                                         ROWS21:{
                                             $order:1,
                                             tagName:'div',
                                             text:'{rows21}'
+                                        },
+                                        ROWS21_A:{
+                                            $order:3,
+                                            tagName:'div'
                                         }
                                     }
                                 }
@@ -50260,10 +50285,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     tagName:'div',
                                     BODY22:{
                                         tagName:'div',
-                                        ROWS22:{
+                                        ROWS22_B:{
                                             $order:1,
+                                            tagName:'div'
+                                        },
+                                        ROWS22:{
+                                            $order:2,
                                             tagName:'div',
                                             text:'{rows22}'
+                                        },
+                                        ROWS22_A:{
+                                            $order:3,
+                                            tagName:'div'
                                         }
                                     }
                                 }
@@ -50454,8 +50487,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 text:'{cells}'
                             }
                         },
-                        SUB1:{
+                        SUB1_B:{
                             $order:3,
+                            tagName:'div'
+                        },
+                        SUB1:{
+                            $order:4,
+                            tagName:'div',
+                            text:"{sub1}"
+                        },
+                        SUB1_A:{
+                            $order:5,
                             tagName:'div'
                         }
                     }
@@ -50494,8 +50536,17 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 }
                             }
                         },
-                        SUB2:{
+                        SUB2_B:{
                             $order:3,
+                            tagName:'div'
+                        },
+                        SUB2:{
+                            $order:4,
+                            tagName:'div',
+                            text:"{sub2}"
+                        },
+                        SUB2_A:{
+                            $order:5,
                             tagName:'div'
                         }
                     }
@@ -51010,7 +51061,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 'vertical-align':'middle',
                 overflow:'hidden'
             },
-            'GCELL, FHCELL, FCELL, HCELL, HSCELL, CELL, LCELL':{
+            'ROW1, ROW2':{
               "content-visibility":"auto"
             },
             'FHCELL, HCELL, HSCELL':{
@@ -51138,12 +51189,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                cursor:'pointer',
                'vertical-align':'middle'
             },
-            'SUB1, SUM22':{
+            'SUB1, SUB2':{
                 //for ie bug: relative , height='auto' will disppear
                 zoom:xui.browser.ie?1:null,
                 height:0,
                 position:'relative',
                 overflow:'visible'
+            },
+            'ROWS21_B, ROWS21_A, ROWS22_B, ROWS22_A, SUB1_B, SUB1_A, SUB2_B, SUB2_A':{
+                position:'relative'
             },
             ROWTOGGLE:{
                 padding:'0 .334em 0 0'
@@ -51208,20 +51262,21 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var node=xui.use(src).get(0),
                         l=node.scrollLeft||0,
                         t=node.scrollTop||0;
-                    xui.resetRun(profile.$xid+':scroll',function(){
+                    //xui.resetRun(profile.$xid+':scroll',function(){
                       if(profile.destroyed)return;
 
                       if(profile.$sl!=l){
                           profile.getSubNodes(['HEADER2','SCROLL12']).scrollLeft(profile.$sl=l);
                       }
                       if(profile.$st!=t){
+                          console.log("*****", "onScroll height");
                           profile.getSubNode('SCROLL21').get(0).scrollTop=profile.$st=t;
                           //for IE11's scrollbar bug
                           if((t=profile.getSubNode('SCROLL21').get(0).scrollTop) && t!=profile.$st){
                               node.scrollTop=profile.$st=t;
                           }
                       }
-                    });
+                    //});
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getSrc(e)==xui(src).get(0) && profile.__hastmpRow && profile.__needchecktmprow)
@@ -51229,6 +51284,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 },
                 onMouseover:function(profile, e, src){
                     profile.box.$cancelHoverEditor(profile);
+                },
+                onSize:function(profile, e, src){
+                    var node=xui.use(src), h = node.height();
+                    if(profile.$ssh != h){
+                      profile.$ssh = h;
+                      console.log("*****", "onSize height");
+                    }
                 }
             },
             SCROLL21:{
@@ -53093,8 +53155,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 prop.grpCols.length=0;
             };
             ns.$cache_editor={};
-            if(!prop.iniFold)
-                ins._toggleRows(prop.rows,true);
+
             // trigger render
             xui.arr.each(prop.header,function(o){
                 if(xui.isFun(o.colRenderer||prop.colOptions.colRenderer))
@@ -53111,8 +53172,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             xui.arr.each(prop.rows,function(o){
                 if(xui.isFun(o.rowRenderer||prop.rowOptions.rowRenderer))
                     (o.rowRenderer||prop.rowOptions.rowRenderer).call(null,ns,o);
-                    if(false===getPro(ns, o, "iniFold"))
-                        ins._toggleRows([o],true);
+                if(false===getPro(ns, o, "iniFold"))
+                    ins._toggleRows([o],true);
             });
 
             ns.box.__ensurehotrow(ns,null);
@@ -54282,6 +54343,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
+                        console.log("*****", "afterFold");
 
                         xui.resetRun(id, function(cb){
                             profile.box._asy(profile);
@@ -54330,6 +54392,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             item._checked = true;
                             if(ins.afterExpand)
                                 ins.afterExpand(profile,item);
+                            console.log("*****", "afterExpand");
                         }
                         subNs.css({display:'',height:'auto',overflow:''});
                         if((prop.freezedRow||prop.rowHandler) && !subNs1.height() && (t=subNs2.height()))

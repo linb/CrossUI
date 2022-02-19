@@ -216,6 +216,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 zoom:xui.browser.ie?1:null,
                 cursor:'pointer',
                 position:'relative',
+                "content-visibility":"auto",
                 'white-space': 'nowrap'
             },
             MARK:{

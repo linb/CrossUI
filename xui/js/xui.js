@@ -3529,7 +3529,7 @@ xui.Class('xui.absIO',null,{
         if(typeof uri=='object')
             options=uri;
         else{
-            options=options||{};
+            options=options?xui.copy(options):{};
             xui.merge(options, {
                 uri:uri,
                 query:query,
@@ -5082,7 +5082,7 @@ xui.Class('xui.absObj',"xui.absBox",{
         self.setEventHandlers(self.EventHandlers);
         delete self.EventHandlers;
 
-        m=me.a5 || (me.a5=xui.toArr('RenderTrigger,LayoutTrigger'));
+        m=me.a5 || (me.a5=xui.toArr('BeforeRenderTrigger,RenderTrigger,LayoutTrigger'));
         for(j=0;v=m[j++];){
             temp=[];
              if((t=self.$parent) && (l=t.length))

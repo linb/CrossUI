@@ -236,6 +236,9 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             'KEY-fold PANEL':{
                 display:'none'
             },
+            SIDEBAR:{
+                overflow:"hidden"
+            },
             'KEY-fold SIDEBAR':{
                 cursor:'pointer',
                 'background-color':'#B6B6B6'

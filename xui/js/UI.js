@@ -164,6 +164,14 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(ns.beforeRender&&false===ins.beforeRender(ns))
                 return;
 
+            //BeforeRenderTrigger
+            if(t=ns.BeforeRenderTrigger){
+                for(var i=0,l=t.length;i<l;i++)
+                    t[i].call(ns);
+                delete ns.BeforeRenderTrigger;
+            }
+
+
             //first render
             if(!ns.renderId){
                 var ele=xui.Dom.byId(ns.$domId);
@@ -354,6 +362,8 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 ns.LayoutTrigger.length=0;
             if(ns.RenderTrigger)
                 ns.RenderTrigger.length=0;
+            if(ns.BeforeRenderTrigger)
+                ns.BeforeRenderTrigger.length=0;
 
             //gc children
             if((t=ns.children).length){
@@ -1187,6 +1197,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             profile.$domId = profile.key + ":" + profile.serialId + ":";
             profile.domId = profile.domId || profile.$domId;
 
+            profile.BeforeRenderTrigger=xui.copy(c.$BeforeRenderTrigger);
             profile.RenderTrigger=xui.copy(c.$RenderTrigger);
             profile.LayoutTrigger=xui.copy(c.$LayoutTrigger);
 
@@ -4411,6 +4422,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 self['xui.absContainer']=true;
             }
             self.setEventHandlers(hls);
+            self.$BeforeRenderTrigger=self.$BeforeRenderTrigger||[];
             self.$RenderTrigger=self.$RenderTrigger||[];
             self.$RenderTrigger.push(function(){
                 if(this.properties.readonly){
