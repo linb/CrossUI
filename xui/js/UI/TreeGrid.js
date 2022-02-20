@@ -386,41 +386,47 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         adjustPage:function(trigger, force){
           var ns=this, prf=ns.get(0),
-              getRenderRows = function(row, propRowH, dftRowH, rowHEdge, renderFrom, renderTo, parentRow, index, total, beforeGap, afterGap){
-                var rowH =  row.hidden? 0 :
-                    ( ( ('_rowHeight' in row) ? propRowH ==  row._rowHeight ? dftRowH : prf.$px(row._rowHeight) : ('height' in row) ? prf.$px(row.height) : dftRowH) + rowHEdge )
-                ;
+              findRowsInRenderView = function(prf, row, propRowH, dftRowH, rowHEdge, renderFrom, renderTo, parentRow, index){
+                var rowH =  row.hidden? 0 : ( ( ('_rowHeight' in row) ? propRowH ==  row._rowHeight ? dftRowH : prf.$px(row._rowHeight) : ('height' in row) ? prf.$px(row.height) : dftRowH) + rowHEdge );
 
-                total.cursor += rowH;
-                if(total.cursor >= renderFrom && total.cursor <= renderTo){
-                    if(!parentRow._renderRange1)parentRow._renderRange1 = [index];
-                    parentRow._renderRange1[1] = index;
-                }
-                if(row.sub && xui.isArr(row.sub) && row._checked){
-                    beforeGap = afterGap = 0;
-                    row._beforeGap = row._mainGap = row._afterGap = 0;
+                row._space_sub = row._space_before = row._space_after = 0;
+                row._space_main = rowH;
+                row._space_from = prf._space_cursor;
+
+                var cursor_top = prf._space_cursor, cursor_bottom = cursor_top + rowH;
+                prf._space_cursor = cursor_bottom;
+                row._space_to1 = cursor_bottom;
+
+                if(row.sub && xui.isArr(row.sub)){
                     // bak original ones
-                    row._o_renderRange1 = row._renderRange1 || [-1,-1];
-                    row._o_renderRange2 = row._renderRange2 || [-1,-1];
-                    delete row._renderRange1; delete row._renderRange2;
-                    for(var i=0,l=row.sub.length;i<l;i++){
-                        getRenderRows(row.sub[i], propRowH, dftRowH, rowHEdge, renderFrom, renderTo, row, i, total, beforeGap, afterGap);
-                        if(row._renderRange2){
-                            parentRow._mainGap += row._beforeGap + row._mainGap + row._afterGap;
-                        }else{
-                            parentRow._beforeGap += row._beforeGap;
-                            parentRow._afterGap += row._afterGap;
+                    row._o_renderRange = row._renderRange || [-1,-1];
+                    row._renderRange = [-1,-1];
+                    if(row._checked){
+                        for(var i=0,l=row.sub.length;i<l;i++){
+                            findRowsInRenderView(prf, row.sub[i], propRowH, dftRowH, rowHEdge, renderFrom, renderTo, row, i);
                         }
+                        cursor_bottom = prf._space_cursor;
+                        row._space_sub = row._space_main - rowH;
                     }
                 }
-                if(total.cursor < renderFrom){
-                    parentRow._beforeGap += rowH;
-                }else if(total.cursor >= renderFrom && total.cursor <= renderTo){
-                    if(!parentRow._renderRange2)parentRow._renderRange2 = [index];
-                    parentRow._renderRange2[1] = index;
-                    parentRow._mainGap += rowH;
-                }else if(total.cursor > renderTo){
-                    parentRow._afterGap += rowH;
+
+                row._space = cursor_bottom - cursor_top;
+                row._space_to2 = cursor_bottom;
+                parentRow._space_to2 = row._space_to2;
+
+                // add to before, after or main
+                if(cursor_bottom < renderFrom){
+                    parentRow._space_before += row._space;
+                }else if(cursor_top > renderTo){
+                    parentRow._space_after += row._space;
+                }else{
+                    parentRow._space_main += row._space;
+                }
+
+                // row itself have intersection
+                if(!(cursor_bottom < renderFrom || cursor_top > renderTo)){
+                    if(parentRow._renderRange[0]==-1)parentRow._renderRange = [index];
+                    parentRow._renderRange[1] = index;
                 }
             };
           if(prf && prf.properties.scrollPagination){
@@ -433,48 +439,49 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                           if(prf.beforeAdjustPage && false===ns.beforeAdjustPage(prf, trigger))return;
 
                           var prop=prf.properties, dftRowH=prf.$px(prop.rowHeight),
-                              renderFrom = Math.floor( Math.max(0, top - height)), renderTo = Math.ceil(top + 2*height),
-                              total = {cursor:0};
-                          // ignore freezed rows
-                          prf._beforeGap = prf._mainGap = prf._afterGap = 0;
-                          // bak original ones
-                          prf._o_renderRange1 = prf._renderRange1 || [-1,-1];
-                          prf._o_renderRange2 = prf._renderRange2 || [-1,-1];
-                          delete prf._renderRange1; delete prf._renderRange2;
-                          for(var i=prop.freezedRow||0, l=prop.rows.length; i<l; i++){
-                              getRenderRows(prop.rows[i], prop.rowHeight, dftRowH, xui.get(prop.nodeEdges,["rowH"])||0, renderFrom, renderTo, prf, i, total);
-                          }
-                          try{
-                              prf._ignoreScrollTrigger = 1;
-                              // hold height
-                              //prf.getSubNodes(["BODY21","BODY22"]).height(prf.getSubNode("BODY22").height());
+                              renderFrom = Math.floor( Math.max(0, top - height)),
+                              renderTo = Math.ceil(top + 2*height);
 
-                              // clear dom only, keep rows cells struct
-                              // set contents
-                              // remove dom only
-                              var start = Math.max(prf._o_renderRange2[0], prf._renderRange2[0]),
-                                  stop = Math.min(prf._o_renderRange2[1], prf._renderRange2[1]);
+                          // ignore freezed rows
+                          prf._space_from = prf._space_to1 = prf._space_to2 = 0;
+                          prf._space_before = prf._space_main = prf._space_after = 0;
+                          // bak original ones
+                          prf._o_renderRange = prf._renderRange || [-1,-1];
+                          prf._renderRange = [-1,-1];
+                          prf._space_cursor = 0;
+                          for(var i=prop.freezedRow||0, l=prop.rows.length; i<l; i++){
+                              findRowsInRenderView(prf, prop.rows[i], prop.rowHeight, dftRowH, xui.get(prop.nodeEdges,["rowH"])||0, renderFrom, renderTo, prf, i);
+                          }
+                          delete prf._space_cursor;
+                          prf._space = prf._space_to2 - prf._space_from;
+
+                          //try{
+                              prf._ignoreScrollTrigger = 1;
+
+                              // adjustRenderForRow
+                              var start = Math.max(prf._o_renderRange[0], prf._renderRange[0]),
+                                  stop = Math.min(prf._o_renderRange[1], prf._renderRange[1]);
                               // can keep some dom rows
                               // |---------|
                               //       |---------|
-                              if(stop >= start){
-                                  // remove these
-                                  var index = prf._o_renderRange2[0], nodes=[]
+                              if(stop!=-1 && stop >= start){
+                                  // remove rows out of view
+                                  var index = prf._o_renderRange[0], nodes=[]
                                   prf.getSubNode("ROWS21").children().each(function(row, i){
-                                      if(index + i< start || index+1 > stop){
+                                      if(index + i< start || index + i > stop){
                                           nodes.push(row);
                                       }
                                   });
                                   prf.getSubNode("ROWS22").children().each(function(row, i){
-                                      if(index + i< start || index+1 > stop){
+                                      if(index + i< start || index + i > stop){
                                           nodes.push(row);
                                       }
                                   });
                                   xui(nodes).remove();
 
-                                  // insert those
+                                  // insert new rows into view
                                   var bs=[],as=[];
-                                  for(var i=prf._renderRange2[0], l=prf._renderRange2[1];i<=l;i++){
+                                  for(var i=prf._renderRange[0], l=prf._renderRange[1];i<=l;i++){
                                       if(i < start)bs.push(prop.rows[i]);
                                       else if(i > stop)as.push(prop.rows[i]);
                                   }
@@ -487,24 +494,51 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                   prf.getSubNode("ROWS21").html("");
                                   prf.getSubNode("ROWS22").html("");
                                   // insert all
-                                  prf.boxing().insertRows(prop.rows.slice(prf._renderRange2[0], prf._renderRange2[1]+1), null, null, false, true, false, true);
+                                  if(prf._renderRange[0]!=-1){
+                                      prf.boxing().insertRows(prop.rows.slice(prf._renderRange[0], prf._renderRange[1]+1), null, null, false, true, false, true);
+                                  }
                               }
 
-                              // adjust height
-                              prf.getSubNodes(["ROWS21_B","ROWS22_B"]).height(prf.$forceu(prf._beforeGap||0));
-                              prf.getSubNodes(["ROWS21_A","ROWS22_A"]).height(prf.$forceu(prf._afterGap||0));
+                              // set 3 height
+                              prf.getSubNodes(["ROWS21_B","ROWS22_B"]).height(prf.$forceu(prf._space_before||0));
+                              prf.getSubNodes(["ROWS21_A","ROWS22_A"]).height(prf.$forceu(prf._space_after||0));
+                              // for debug
+                              prf.getSubNodes(["ROWS21","ROWS22"]).height( prf._space_main + "px");
+
+                              // for sub rows
+                              //if(row._checked && row._inited){
+                              //}
+
                               // keep scroll
                               prf._$viewTop = top; prf._$viewHeight = height;
-                              // auto height, should equal to original fixed height
-                              // prf.getSubNodes(["BODY21","BODY22"]).height("auto");
 
-                              //console.log("******", "adjustPage", trigger, top, scrollNode.scrollTop(), renderFrom, renderTo, total.cursor);
-                              //console.log(prf._beforeGap + prf.getSubNode("ROWS22").height() + prf._afterGap, prf._beforeGap, prf._mainGap, prf._afterGap, prf.getSubNode("ROWS22").height())
+
+                              /* console.log("adjustPage", {
+                                  trigger,
+                                  region: {
+                                    beforeScrollTop: top,
+                                    afterScrollTop: scrollNode.scrollTop(),
+                                    renderFrom,
+                                    renderTo
+                                  },
+                                  height: {
+                                      space_from: prf._space_from,
+                                      space_to2: prf._space_to2,
+                                      space: prf._space,
+
+                                      space_before: prf._space_before,
+                                      space_main: prf._space_main,
+                                      space_after: prf._space_after,
+
+                                      nodes_height: prf.getSubNode("ROWS22").height(),
+                                      real_height: prf._space_before + prf.getSubNode("ROWS22").height() + prf._space_after
+                                  }
+                              });*/
 
                               if(prf.afterAdjustPage) ns.afterAdjustPage(prf, trigger, top, height, renderFrom, renderTo);
-                          }catch(e){}finally{
+                          //}catch(e){}finally{
                               delete prf._ignoreScrollTrigger;
-                          }
+                          //}
                       }
                   }
               },trigger=="onScroll"?100:0);
@@ -582,11 +616,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             });
             profile.$cache_editor={};
         },
-        _toggleRows:function(rows, expand){
+        _toggleRows:function(rows, expand, recursive, stopanim, callback){
             var self=this;
             if(rows && rows.length)
                 xui.arr.each(rows,function(o){
-                    if(o.id)self.toggleRow(o.id, expand);
+                    if(o.id)self.toggleRow(o.id, expand, recursive, stopanim, callback);
                 });
         },
         isSubInited:function(id){
@@ -751,11 +785,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         toggleRow:function(rowId, expand, recursive, stopanim, callback){
             var ns=this, profile = this.get(0),self=arguments.callee,
                     v=profile.rowMap2,rows=profile.properties.rows;
+            expand = !xui.isSet(expand)?true:!!expand;
             if(xui.isNumb(rowId))rowId=xui.get(rows,[rowId==-1?(rows.length-1):rowId,"id"]);
             if(v&&v[rowId]){
                 var row = profile.rowMap[v[rowId]];
-                if(row && row.sub && (!xui.isSet(expand) || !!expand !== !!row._checked)){
-                    profile.box._setSub(profile, row, xui.isSet(expand) ?!!expand:!row._checked, recursive, stopanim||recursive, callback);
+                if(row && row.sub && expand !== !!row._checked){
+                    profile.box._setSub(profile, row, !row._checked, recursive, stopanim||recursive, callback);
                 }
             }else{
                 xui.arr.each(rows,function(row){
@@ -2685,17 +2720,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         SUB1_B:{
                             $order:3,
-                            style:"{_beforeGap}",
+                            style:"{_space_before}",
                             tagName:'div'
                         },
                         SUB1:{
                             $order:4,
                             tagName:'div',
+                            style:"{_space_sub}",
                             text:"{sub1}"
                         },
                         SUB1_A:{
                             $order:5,
-                            style:"{_afterGap}",
+                            style:"{_space_after}",
                             tagName:'div'
                         }
                     }
@@ -2736,17 +2772,18 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         },
                         SUB2_B:{
                             $order:3,
-                            style:"{_beforeGap}",
+                            style:"{_space_before}",
                             tagName:'div'
                         },
                         SUB2:{
                             $order:4,
                             tagName:'div',
+                            style:"{_space_sub}",
                             text:"{sub2}"
                         },
                         SUB2_A:{
                             $order:5,
-                            style:"{_afterGap}",
+                            style:"{_space_after}",
                             tagName:'div'
                         }
                     }
@@ -3459,13 +3496,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             SCROLL22:{
                 onScroll:function(profile, e, src){
-                    if(profile._ignoreScrollTrigger)return;
                     var node=xui.use(src).get(0),
                         l=node.scrollLeft||0,
                         t=node.scrollTop||0;
                     //xui.resetRun(profile.$xid+':scroll',function(){
                       if(profile.destroyed)return;
-                      if(profile._ignoreScrollTrigger)return;
 
                       if(profile.$sl!=l){
                           profile.getSubNodes(['HEADER2','SCROLL12']).scrollLeft(profile.$sl=l);
@@ -3476,7 +3511,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                           if((t=profile.getSubNode('SCROLL21').get(0).scrollTop) && t!=profile.$st){
                               node.scrollTop=profile.$st=t;
                           }
-                          profile.boxing().adjustPage("onScroll");
+
+                          if(!profile._ignoreScrollTrigger)
+                            profile.boxing().adjustPage("onScroll");
                       }
                     //});
                 },
@@ -5992,8 +6029,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 uicell={};
             cell=xui.isSet(cell) ? xui.isHash(cell) ? cell : {value:cell} :{};
 
-            if(cell._row && cell._row.id==row.id && cell._col==col && cell[SubID] && profile.cellMap[cell[SubID]] && profile.cellMap[cell[SubID]].id==cell.id){
-                // use the prepared one
+            if(cell._row && cell._row==row && ns._isRowUsed(profile, row)){
+                // use prepared one
             }else{
                 //cell/cell link to row
                 cell._row=row;
@@ -6401,8 +6438,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             for(var i=0,l=arr.length;i<l;i++){
                 row = arr[i];
                 // prepared row
-                if(row && (temp=row[SubID]) && b[temp] &&  b[temp].id==row.id && a[row.id]==temp){
+                if(self._isRowUsed(profile, row)){
                   // use prepared one
+                  temp=row[SubID];
                 }else{
                   // give id (avoid conflicts)
                   if(!row.id || a[row.id]){
@@ -6457,8 +6495,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 t._row0DfW=prop.rowHandlerWidth?('width:'+profile.$forceu(prop.rowHandlerWidth)):'';
                 t._rulerW='width:'+ (row.rulerWidth || profile.$forceu(4+_layer*mm));
 
-                t._beforeGap = row._beforeGap ? ('height:'+profile.$forceu(row._beforeGap)) : "";
-                t._afterGap = row._afterGap ? ('height:'+profile.$forceu(row._afterGap)) : "";
+                t._space_before = row.hasOwnProperty("_space_before") ? ('height:'+profile.$forceu(row._space_before)) : "";
+                t._space_after = row.hasOwnProperty("_space_after") ? ('height:'+profile.$forceu(row._space_after)) : "";
+                t._space_sub= row.hasOwnProperty("_space_sub") ? ('height:'+profile.$forceu(row._space_sub)) : "";
 
                 // use em for row Height
                 t._rowHeight = profile.$forceu(row._rowHeight || row.height || prop.rowHeight, 'em');
@@ -6559,7 +6598,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 markNode = profile.box._getToggleNode(profile, itemId),
                 subNs = profile.getSubNodes(['SUB1','SUB2'], itemId),
                 subNs1 = xui(subNs.get(0)),
-                subNs2 = xui(subNs.get(1));
+                subNs2 = xui(subNs.get(1)),
+                subNs_x = profile.getSubNodes(['SUB1_A','SUB1_B','SUB2_A','SUB2_B'], itemId);
 
             if(xui.Thread.isAlive(profile.key+":"+profile.$xid)) return;
             //close
@@ -6570,6 +6610,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                     var onend=function(){
                         subNs.css({display:'none', height:0, overflow:''});
+                        subNs_x.css({display:'none'});
                         markNode.tagClass('-checked', false);
                         item._checked = false;
 
@@ -6635,6 +6676,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ins.adjustPage("afterExpand", true);
                         }
                         subNs.css({display:'',height:'auto',overflow:''});
+                        subNs_x.css({display:''});
                         if((prop.freezedRow||prop.rowHandler) && !subNs1.height() && (t=subNs2.height()))
                             subNs1.height(t);
 
@@ -7839,8 +7881,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             profile._headerLayers = layer;
             return a;
         },
+        _isRowUsed:function(profile, row){
+           var serialId=row[xui.UI.$tag_subId];
+           return row.id && serialId && profile.rowMap2[row.id]==serialId && profile.rowMap[serialId]==row;
+        },
         _adjustRows:function(profile, arr, ignoreMixColumn){
-            var a,m,h={},hvalue={},hcap={},p=profile.properties,uid=p.uidColumn,key,keys, mixcol,rheader=[];
+            var ns=this,a,m,h={},hvalue={},hcap={},p=profile.properties,uid=p.uidColumn,key,keys, mixcol,rheader=[];
             if(uid)uid=xui.arr.subIndexOf(p.header,'id',uid);
             else uid=-1;
 
@@ -7864,64 +7910,68 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             else a=xui.copy(arr);
 
             xui.arr.each(a,function(o,i){
-                //id will be adjusted in _prepareItems
-                if(xui.isArr(o))a[i]={cells:xui.copy(o)};
-                else a[i]=xui.copy(o);
+                if(ns._isRowUsed(profile, o)){
+                  // use prepared one
+                }else{
+                    //id will be adjusted in _prepareItems
+                    if(xui.isArr(o))a[i]={cells:xui.copy(o)};
+                    else a[i]=xui.copy(o);
 
-                // there's mix column
-                if(mixcol && xui.isArr(a[i].cells)){
-                    var cells1=a[i].cells,cells2=[],col;
-                    for(var j=0,l=rheader.length;j<l;j++){
-                        col=rheader[j];
-                        if(col in h)cells2.push(cells1[j]);
-                        else{
-                            if(col in hvalue){
-                                cells2.push({
-                                    value:cells1[j],
-                                    caption:cells1[++j]
-                                });
+                    // there's mix column
+                    if(mixcol && xui.isArr(a[i].cells)){
+                        var cells1=a[i].cells,cells2=[],col;
+                        for(var j=0,l=rheader.length;j<l;j++){
+                            col=rheader[j];
+                            if(col in h)cells2.push(cells1[j]);
+                            else{
+                                if(col in hvalue){
+                                    cells2.push({
+                                        value:cells1[j],
+                                        caption:cells1[++j]
+                                    });
+                                }
                             }
                         }
+                        a[i].cells=cells2;
                     }
-                    a[i].cells=cells2;
-                }
 
-                // check if it's a map row data
-                //1 > {col:value} 2 >{cells:{col:value}}
-                var tt = (xui.isHash(a[i]) && (!a[i].cells || !xui.isObj(a[i].cells))) ? 1 : (a[i].cells && xui.isHash(a[i].cells)) ? 2: 0;
-                if(!o.group && tt){
-                    var cells=[], hash;
-                    xui.each(tt==1?a[i]:a[i].cells,function(v,i){
-                        if(i in h)cells[h[i]]=xui.isHash(v)?v:{value:v};
-                        else{
-                            if(i in hvalue){
-                                hash=cells[hvalue[i]]||{};
-                                hash.value=v;
-                                cells[hvalue[i]]=hash;
+                    // check if it's a map row data
+                    //1 > {col:value} 2 >{cells:{col:value}}
+                    var tt = (xui.isHash(a[i]) && (!a[i].cells || !xui.isObj(a[i].cells))) ? 1 : (a[i].cells && xui.isHash(a[i].cells)) ? 2: 0;
+                    if(!o.group && tt){
+                        var cells=[], hash;
+                        xui.each(tt==1?a[i]:a[i].cells,function(v,i){
+                            if(i in h)cells[h[i]]=xui.isHash(v)?v:{value:v};
+                            else{
+                                if(i in hvalue){
+                                    hash=cells[hvalue[i]]||{};
+                                    hash.value=v;
+                                    cells[hvalue[i]]=hash;
+                                }
+                                if(i in hcap){
+                                    hash=cells[hcap[i]]||{};
+                                    hash.caption=v;
+                                    cells[hcap[i]]=hash;
+                                }
                             }
-                            if(i in hcap){
-                                hash=cells[hcap[i]]||{};
-                                hash.caption=v;
-                                cells[hcap[i]]=hash;
-                            }
+                        });
+                        a[i].cells=cells;
+                    }
+
+                    xui.arr.each(m = a[i].cells, function(o,i){
+                        if(xui.isDefined(o)){
+                            //It's a hash
+                            if(!!o && xui.isHash(o))
+                                m[i]=xui.copy(o);
+                            // not a hash
+                            else
+                                m[i]={value:o};
                         }
                     });
-                    a[i].cells=cells;
-                }
-
-                xui.arr.each(m = a[i].cells, function(o,i){
-                    if(xui.isDefined(o)){
-                        //It's a hash
-                        if(!!o && xui.isHash(o))
-                            m[i]=xui.copy(o);
-                        // not a hash
-                        else
-                            m[i]={value:o};
+                    // set uidColumn cell's value to row id
+                    if(!('id' in a[i]) && uid!=-1 && m[uid]&& m[uid].value){
+                        a[i].id=m[uid].value;
                     }
-                });
-                // set uidColumn cell's value to row id
-                if(!('id' in a[i]) && uid!=-1 && m[uid]&& m[uid].value){
-                    a[i].id=m[uid].value;
                 }
             });
             return a;
