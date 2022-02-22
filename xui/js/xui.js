@@ -347,6 +347,34 @@ new function(){
         idleRun:function(fun, args, scope){
             return window.requestIdleCallback(typeof fun=='string' ? function(){xui.exec(fun)} : function(){fun.apply(scope,args||[]);fun=args=null;});
         },
+        asyQueue: function(fun, args, scope, onOK, onKO){
+            var me=xui.asyQueue;
+            me._asyQ = me._asyQ || (me._asyQ = []);
+            me._qSchedule = me._qSchedule || (me._qSchedule = function(){
+                if(!me._asyQTick){
+                    me._asyQTick = xui.asyRun(function(){
+                        var i,err;
+                        try{
+                            while (i = me._asyQ.shift()){
+                              i.fun.apply(i.scope, i.args);
+                              if(i.onOK)i.onOK();
+                            }
+                        }catch(e){
+                            err = e;
+                        }
+                        me._asyQTick = false;
+                        if (me._asyQ.length) me._qSchedule();
+                        if(err){
+                          if(i.onKO)i.onKO(err);
+                          else throw err;
+                        }
+                    });
+                }
+            });
+            me._asyQ.push({fun:fun, args:args, scope:scope, onOK:onOK, onKO:onKO});
+            me._qSchedule();
+            return me._asyQTick;
+        },
         asyHTML:function(content, callback, defer, size){
             var div = document.createElement('div'),
                 fragment = document.createDocumentFragment(),

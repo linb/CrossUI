@@ -509,6 +509,8 @@ xui.Class('xui.DragDrop',null,{
                 if(!p.isWorking)return false;
 
                 if(d._proxy){
+                    // crack for new chrome performance problem
+                    document.body.style.contentVisibility="hidden";
                     if(!p.verticalOnly){
                         d._proxyLeft=Math.floor(d._left(
                             ((p.maxLeftOffset!==null && p.x<=p.restrictedLeft)?p.restrictedLeft:
@@ -531,6 +533,7 @@ xui.Class('xui.DragDrop',null,{
                         d._pre.top=d._proxyTop;
                         p.curPos.top = d._proxyTop + d.$proxySize;
                     }
+                    document.body.style.contentVisibility="";
                 }else{
                     p.curPos.left = p.x;
                     p.curPos.top = p.y;

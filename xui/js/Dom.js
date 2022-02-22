@@ -271,9 +271,9 @@ xui.Class('xui.Dom','xui.absBox',{
                     for(i=0;o=ns[i];i++)
                         fragment.appendChild(o);
                 }
-                xui.Dom.applyWillChange(one,true);
+                xui.Dom.beforeNodeChange( );
                 fun.call(one,fragment);
-                xui.Dom.applyWillChange(one,false);
+                xui.Dom.afterNodeChange( );
                 for(i=0;o=arr[i];i++){
                     for(j=0;v=o[0][j];j++)
                         v.call(o[1]);
@@ -333,11 +333,11 @@ xui.Class('xui.Dom','xui.absBox',{
             target=xui(target);
             var v,i,c=this.get(0),ns=target.get(),l=ns.length;
             if(l>0 && (v=ns[l-1])){
-                xui.Dom.applyWillChange(c.parentNode,true);
+                xui.Dom.beforeNodeChange( );
                 c.parentNode.replaceChild(v,c);
                 for(i=0;i<l-1;i++)
                     v.parentNode.insertBefore(ns[i],v);
-                xui.Dom.applyWillChange(v.parentNode,false);
+                xui.Dom.afterNodeChange( );
                 //for memory __gc
                 if(triggerGC)
                     this.remove();
@@ -362,27 +362,20 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         //flag : false => remove from dom tree, not free memory
         remove:function(triggerGC, purgeNow, callback){
+            xui.Dom.beforeNodeChange( );
             if(triggerGC===false)
                 this.each(function(o,i){
                     if(o.raphael&&o.remove)o.remove();
                     else if(o.parentNode){
-                      xui.Dom.applyWillChange(o.parentNode,true);
                       o.parentNode.removeChild(o);
-                      xui.Dom.applyWillChange(o.parentNode,false);
                     }
                 });
             else{
-                var c=xui.$getGhostDiv();
-                xui.Dom.applyWillChange(c,true);
+                var c=xui.$getGhostDiv(),p;
                 // append to ghost first
                 this.each(function(o){
-                    o.parentNode && xui.Dom.applyWillChange(o.parentNode,true);
-                    //
-                    xui.Dom.css3Support("content-visibility") && (o.style.contentVisibility = "hidden");
                     c.appendChild(o);
-                    o.parentNode && xui.Dom.applyWillChange(o.parentNode,false);
                 },true);
-                xui.Dom.applyWillChange(c,false);
                 var f=function(){
                     xui.$purgeChildren(c);
                     if(callback){
@@ -394,15 +387,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 // for performance
                 if(purgeNow)f();else xui.asyRun(f);
             }
+            xui.Dom.afterNodeChange( );
             return this;
         },
         //set innerHTML empty
         //flag = false: no gc
         empty:function(triggerGC, purgeNow){
             return this.each(function(o){
-                xui.Dom.applyWillChange(o,true);
+                var _applied= xui.Dom.beforeNodeChange( );
                 xui([o]).html('',triggerGC, null, purgeNow);
-                xui.Dom.applyWillChange(o,false);
+                xui.Dom.afterNodeChange( );
             });
         },
 
@@ -411,11 +405,11 @@ xui.Class('xui.Dom','xui.absBox',{
             var s='',t,i,o=this.get(0);triggerGC=triggerGC!==false;
             if(content!==undefined){
                 if(o){
-                    xui.Dom.applyWillChange(o,true);
                     if(o.nodeType==3)
                         o.nodeValue=content;
                     else{
                          if(!o.firstChild && content==="")return this;
+                         xui.Dom.beforeNodeChange( );
                          // innerHTML='' in IE, will clear it's childNodes innerHTML
                          // only asy purgeChildren need this line
                          // if(!triggerGC && xui.browser.ie)while(t=o.firstChild)o.removeChild(t);
@@ -468,9 +462,9 @@ xui.Class('xui.Dom','xui.absBox',{
 
                         //if(triggerGC)
                         //    xui.UI.$addEventsHandler(o);
-
+                        xui.Dom.afterNodeChange( );
                     }
-                    xui.Dom.applyWillChange(o,false);
+
                     o=null;
                 }
                 return this;
@@ -597,6 +591,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 normal=!map2[name=map1[name]||name];
             if(value!==undefined){
                 return self.each(function(o){
+                    xui.Dom.beforeNodeChange( );
                     //remove attr
                     if(value===null){
                         if(iestyle)o.style.cssText='';
@@ -616,6 +611,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         }else
                             o.setAttribute(name, value);
                     }
+                    xui.Dom.afterNodeChange( );
                  });
             //get attr
             }else{
@@ -769,9 +765,9 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         scrollIntoView:function(){
             return  this.each(function(o){
-                xui.Dom.applyWillChange(o.parentNode,true,"scroll-position");
+                xui.Dom.willChange(o,"scroll-position");
                 o.scrollIntoView();
-                xui.Dom.applyWillChange(o.parentNode,false);
+                xui.Dom.unWillChange(o);
             });
         },
         /*
@@ -1133,17 +1129,15 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.Thread.abort(tid);
                     xui.setNodeData(o,'_inthread');
                 }
-
+                xui.Dom.beforeNodeChange( );
                 style=o.style;
                 vv=xui.getNodeData(o);
                 if(vv._xuihide){
-                    xui.Dom.applyWillChange(o.parentNode,true);
                     if('_left' in vv)if(style.left!=(t=vv._left))style.left=t;
                     if('_top' in vv)if(style.top!=(t=vv._top))style.top=t;
                     if('_position' in vv)if(style.position!=(t=vv._position))style.position=t;
                     if(style.visibility!='visible')style.visibility='visible';
                     xui(o).removeClass('xui-ui-hidden');
-                    xui.Dom.applyWillChange(o.parentNode,false);
                     vv._xuihide=0;
                 }
                 if(xui.isSet(left))style.left=left;
@@ -1162,6 +1156,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
                 if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
                 if(showEffects)xui.Dom._vAnimate(o,showEffects,callback);else if(callback)callback();
+                xui.Dom.afterNodeChange( );
             });
         },
         hide:function(callback,hideEffects,ignoreEffects){
@@ -1184,11 +1179,11 @@ xui.Class('xui.Dom','xui.absBox',{
                         vv._left = style.left;
                         vv._xuihide=1;
                     }
-                    xui.Dom.applyWillChange(o.parentNode,true);
+                    xui.Dom.beforeNodeChange( );
                     xui(o).addClass('xui-ui-hidden');
                     if(style.position!='absolute')style.position = 'absolute';
                     style.visibility="hidden";
-                    xui.Dom.applyWillChange(o.parentNode,false);
+                    xui.Dom.afterNodeChange( );
 
                     if(callback)callback();
                 };
@@ -1201,10 +1196,12 @@ xui.Class('xui.Dom','xui.absBox',{
             var self=this;
             if(typeof region=='object'){
                 var i,t,node=self.get(0), dom=xui.Dom, f=dom._setUnitStyle,m={};
-                xui.Dom.applyWillChange(node,true,"left, top, width, height");
+                xui.Dom.beforeNodeChange( );
+                xui.Dom.willChange(node,"left, top, width, height");
                 for(var j=0,c=dom._boxArr;i=c[j++];)
                     m[i] = ((i in region) && region[i]!==null)?f(node,i,region[i]):false;
-                xui.Dom.applyWillChange(node,false);
+                xui.Dom.unWillChange(node);
+                xui.Dom.afterNodeChange( );
                 if(triggerEvent){
                     f=dom.$hasEventHandler;
                     if(f(node,'onsize') && (m.width||m.height))self.onSize(true, {width:m.width,height:m.height});
@@ -1229,10 +1226,12 @@ xui.Class('xui.Dom','xui.absBox',{
             if(node){
                if(size){
                     var t;
-                    xui.Dom.applyWillChange(node,true,"width, height");
+                    xui.Dom.beforeNodeChange( );
+                    xui.Dom.willChange(node,"width, height");
                     b1 = size.width!==null?f(node,'width',size.width):false;
                     b2 = size.height!==null?f(node,'height',size.height):false;
-                    xui.Dom.applyWillChange(node,false);
+                    xui.Dom.unWillChange(node);
+                    xui.Dom.afterNodeChange( );
                     if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onsize'))self.onSize(true, {width:b1,height:b2});
                     r=self;
                 }else
@@ -1251,10 +1250,12 @@ xui.Class('xui.Dom','xui.absBox',{
                 b1,b2,r;
             if(pos){
                 var t;
-                xui.Dom.applyWillChange(node,true,"left, top");
+                xui.Dom.beforeNodeChange( );
+                xui.Dom.willChange(node,"left, top");
                 b1 = pos.left!=null?f(node,'left',pos.left):false;
                 b2 = pos.top!==null?f(node,'top',pos.top):false;
-                xui.Dom.applyWillChange(node,false);
+                xui.Dom.unWillChange(node);
+                xui.Dom.afterNodeChange( );
                 if(triggerEvent && (b1||b2) && dom.$hasEventHandler(node,'onmove'))this.onMove(true, {left:b1,top:b2});
                 r=this;
             }
@@ -1332,9 +1333,9 @@ xui.Class('xui.Dom','xui.absBox',{
                         // some include window.scrollX/Y, others do not include
                         // we have to use a base div {left:0,top:0} to do offset, to replace "scrollXXX" offset solution
                         var base = xui.Dom.getEmptyDiv();
-                        base.css({left:0,top:0,position:'absolute'});
+                        base.css({left:0,top:0,position:'absolute','content-visibility':''});
                         var basRect=xui.Dom.$getBoundingClientRect(base.get(0), original);
-                        base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE});
+                        base.css({left:xui.Dom.HIDE_VALUE,top:xui.Dom.HIDE_VALUE,'content-visibility':'hidden'});
 
                         // var basRect=xui.Dom.$getBoundingClientRect(db, original);
                         add(pos, -basRect.left, -basRect.top);
@@ -2307,7 +2308,7 @@ xui.Class('xui.Dom','xui.absBox',{
             || "";
         },
         _setClass:function(o,v){
-            xui.Dom.applyWillChange(o.parentNode,true);
+            xui.Dom.beforeNodeChange( );
             if(typeof o.className=="string"){
                 o.className=v;
             }else if(typeof o.className.baseVal=="string"){
@@ -2315,7 +2316,7 @@ xui.Class('xui.Dom','xui.absBox',{
             }else if(typeof o.getAttribute!="undefined"){
                 o.setAttribute(v);
             }
-            xui.Dom.applyWillChange(o.parentNode,false);
+            xui.Dom.afterNodeChange( );
         },
         /*
         pos: {left:,top:} or dom element
@@ -2520,7 +2521,7 @@ xui.Class('xui.Dom','xui.absBox',{
             var ns=this;
             if(force||!ns._scrollBarSize){
                 var div;
-                xui('body').append(div=xui.create('<div style="width:50px;height:50px;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
+                xui('body').append(div=xui.create('<div style="width:50px;height:50px;content-visibility:hidden;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
                 ns._scrollBarSize=div.get(0).offsetWidth-div.get(0).clientWidth;
                 div.remove();
             }
@@ -2531,7 +2532,7 @@ xui.Class('xui.Dom','xui.absBox',{
             var ns=this;
             if(force||!ns._dpi){
                 var div;
-                xui('body').append(div=xui.create('<div style="width:1in;height:1in;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
+                xui('body').append(div=xui.create('<div style="width:1in;height:1in;content-visibility:hidden;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
                 ns._dpi=div.get(0).offsetHeight;
                 div.remove();
             }
@@ -3544,24 +3545,23 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(name=="filter"){
                         value=value.replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
                     }
-                    // xui.Dom.applyWillChange(node,true,name);
+
+                    xui.Dom.beforeNodeChange( );
                     style[name]=value;
                     if(name2)style[name2]=value;
                     if(name3)style[name3]=value;
                     if(name4)style[name4]=value;
-                    // xui.Dom.applyWillChange(node,false);
+                    xui.Dom.afterNodeChange( );
                 }
             }else
                 for(var i in name)
                     arguments.callee.call(this,node, i, name[i]);
         },
-        _css3prop:'opacity,textShadow,animationName,columnCount,flexWrap,boxDirection,backgroundSize,perspective,boxShadow,borderImage,borderRadius,boxReflect,transform,transition'.split(','),
+        _css3prop:'opacity,textShadow,animationName,columnCount,flexWrap,boxDirection,backgroundSize,perspective,boxShadow,borderImage,borderRadius,boxReflect,transform,transition,contentVisibility,willChange'.split(','),
+        _css3Support:{},
         css3Support:function(key){
-            var self=arguments.callee,
-                _c=self._c||(self._c={});
-
+            var _c=this._css3Support;
             key=key.replace("$","").replace(/\-(\w)/g, function(a,b){return b.toUpperCase()});
-
             if(key in _c)return _c[key];
 
             var n = document.createElement("div"),
@@ -3661,8 +3661,18 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             return _c[key]=rt;
         },
-        applyWillChange:function(node, before, target){
-          if(node && node.style && xui.Dom.css3Support("will-change")) node.style.willChange = before?(target||"contents"):"";
+        beforeNodeChange:function(node, keys){
+          if(document.body && document.body.style.contentVisibility!="hidden" && this.css3Support("contentVisibility"))
+              document.body.style.contentVisibility="hidden";
+        },
+        afterNodeChange:function(node){
+            document.body && (document.body.style.contentVisibility = "");
+        },
+        willChange:function(node, keys){
+            node && node.style && this.css3Support("willChange") && (node.style.willChange=keys||"contents");
+        },
+        unWillChange:function(node){
+            node && node.style && this.css3Support("willChange") && (node.style.willChange="");
         },
         supportPromise:function(){
           var dom=xui.Dom;
@@ -3804,7 +3814,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 ini=function(o){
                 o.id=id;
                 // position:relative; is for text wrap bug
-                xui([o]).attr('style','position:absolute;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
+                xui([o]).attr('style','position:absolute;content-visibility:hidden;visibility:hidden;overflow:visible;left:'+xui.Dom.HIDE_VALUE+';top:'+xui.Dom.HIDE_VALUE+';');
             };
             sequence=sequence || 1;
             pid=body==doc.body?'':pid.n0.replace('!','');

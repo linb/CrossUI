@@ -285,17 +285,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     v.width=v._col._colWidth;
                 });
             });
-            // check freezed row exists?
-            if(profile.properties.freezedRow){
-                profile._passFreezedRow = 1;
-                var t = profile.getSubNode('ROWS12');
-                if(!t.isEmpty()  && t.query('div','id',/-ROWS12\:/).isEmpty())
-                    delete profile._passFreezedRow;
-            }
 
             //build dom
-            var nodes21 = profile._buildItems('rows21', arr),
-                nodes22 = profile._buildItems('rows22', arr);
+            var nodes21 = profile._buildItems(pid&&profile.rowMap[pid]._region==1?'rows11':'rows21', arr),
+                nodes22 = profile._buildItems(pid&&profile.rowMap[pid]._region==1?'rows12':'rows22', arr);
 
             //get base dom
             if(!base){
@@ -516,6 +509,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                       }
                       delete prf._space_cursor;
                       prf._space = prf._space_to2 - prf._space_from;
+                      prf._space_sub = prf._space_main;
 
                       // avoid tigger other call
                       prf._ignoreScrollTrigger = 1;
@@ -528,6 +522,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                       prf._$viewTop = top; prf._$viewHeight = height;
 
                       if(prf.afterAdjustPage) ns.afterAdjustPage(prf, trigger, top, height, renderFrom, renderTo);
+
                       // remove this
                       delete prf._ignoreScrollTrigger;
                   }
@@ -2672,30 +2667,22 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 rows11:function(profile,template,v,tag,result,index){
-                    if(profile._passFreezedRow)return false;
-                    if(index > profile.properties.freezedRow)return false;
                     profile.rowMap[v._serialId]._region=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows12:function(profile,template,v,tag,result,index){
-                    if(profile._passFreezedRow)return false;
-                    if(index > profile.properties.freezedRow)return false;
                     profile.rowMap[v._serialId]._region=1;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
                 rows21:function(profile,template,v,tag,result,index){
-                    if(!profile._passFreezedRow && index <= profile.properties.freezedRow)return;
-                    profile.rowMap[v._serialId]._region=2;
+                    profile.rowMap[v._serialId]._region=profile.rowMap[v._serialId]._region||2;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row1", result, index,'rows1');
                 },
                 rows22:function(profile,template,v,tag,result,index){
-                    if(!profile._passFreezedRow && index <= profile.properties.freezedRow)return;
-                    // *** dont calculate freeze rows again
-                    profile._passFreezedRow=1;
-                    profile.rowMap[v._serialId]._region=2;
+                    profile.rowMap[v._serialId]._region=profile.rowMap[v._serialId]._region||2;
                     // keep realtag for real data
                     xui.UI.$doTemplate(profile,template,v, "row2", result, index,'rows2');
                 },
@@ -6319,7 +6306,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
 
             if('_renderer' in cell)delete cell._renderer;
-            cell._caption = cell._$tips = cell._$tmpcap = caption;
+            // max: show 1024
+            cell._caption = cell._$tips = cell._$tmpcap = caption.replace(/(.{1024})..+/, "$1…");
 
             var t2=getPro(profile, cell, 'disabled'),
                 t3=getPro(profile, cell, 'readonly');
@@ -6364,7 +6352,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 uicell.cellCls=profile.getClass('CELL', '-'+type) + (t2?(' '+dcls):'') + (t3?(' '+rcls):'');
                 uicell.type=type;
                 uicell.value=cell.value;
-                uicell._caption=caption;
+                uicell._caption=caption.replace(/(.{1024})..+/, "$1…");
                 uicell.cellStyle=getPro(profile, cell, 'cellStyle');
                 uicell.cellClass=getPro(profile, cell, 'cellClass');
             }else{
@@ -6459,11 +6447,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                   if(row.caption && !row.tips)
                       row._$tips=row.caption;
-                }
-                if(!pid){
-                    row._freezed = i<=prop.freezedRow;
-                }else{
-                    row._freezed = b[pid]._freezed;
                 }
                 // for UI
                 if(mode!="memoryOnly"){
@@ -6692,7 +6675,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     // right-bottom border
                                     subNs.addClass('xui-uiborder-r xui-uiborder-b xui-uiborder-light');
                                 }else if(xui.isArr(sub)){
-                                    b.insertRows(sub, item.id, null, true, true, false, !item._freezed&&p.renderViewSize?"memoryOnly":"all");
+                                    b.insertRows(sub, item.id, null, true, true, false, item._region!=1&&p.renderViewSize?"memoryOnly":"all");
                                     // for []
                                     if(!item.sub)item.sub=sub;
                                 }
@@ -7666,23 +7649,23 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 s22.width(adjustunit(w2));
 
                 // for scroll sync
-                xui.asyRun(function(){
+                xui.idleRun(function(){
                     // separated read/write
                     var b21e=b21.isEmpty(),
                         s21e=s21.isEmpty(),
                         b12e=b12.isEmpty(),
                         s12e=s12.isEmpty(),
                         fr=prop.freezedRow,
-                        pb=!s21e?((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) + 'px'):'',
+                        pb=!s21e?((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) ):0,
                         st=!s21e?s22.scrollTop():0,
                         sl=(fr&&!s12e)?s22.scrollLeft():0,
-                        pr=(fr&&!b12e)?((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0) + 'px'):'';
+                        pr=(fr&&!b12e)?((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0)):0
 
-                    if(!b21e)b21.css('padding-bottom', pb);
-                    if(fr&&!b12e)b12.css('padding-right', pr);
-                    if(!s21e)s21.scrollTop(st);
-                    if(fr&&!s12e)s12.scrollLeft(sl);
-                },100);
+                    if(pb&&!b21e)b21.css('padding-bottom', pb+"px");
+                    if(pr&&fr&&!b12e)b12.css('padding-right', pr+"px");
+                    if(st&&!s21e)s21.scrollTop(st);
+                    if(sl&&fr&&!s12e)s12.scrollLeft(sl);
+                });
 
                 // adjust height
                 s11.height(rr?adjustunit(rr):0);
