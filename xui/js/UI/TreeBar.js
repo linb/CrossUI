@@ -363,7 +363,6 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             ITEM:{
                 'white-space': 'nowrap',
-                "content-visibility":"auto",
                 position:'relative',
                 overflow:'hidden'
             },

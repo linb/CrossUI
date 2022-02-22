@@ -3228,7 +3228,16 @@ xui.Class("xui.UI",  "xui.absObj", {
             ".xui-ui-hidden, .xui-ui-hidden *": cv_supported ? {}: {
                 $order:13,
                 visibility:'hidden'
-             }
+             },
+            ".xui-forcescroll":{
+                "overflow":"auto",
+                "scrollbar-width": "none",
+                "-ms-overflow-style": "none"
+            },
+            ".xui-forcescroll::-webkit-scrollbar":{
+              width: "0",
+              height: "0"
+            }
         });
     },
     $End:function(){
