@@ -3662,11 +3662,11 @@ xui.Class('xui.Dom','xui.absBox',{
             return _c[key]=rt;
         },
         beforeNodeChange:function(node, keys){
-          if(document.body && document.body.style.contentVisibility!="hidden" && this.css3Support("contentVisibility"))
-              document.body.style.contentVisibility="hidden";
+          if(document.documentElement && document.documentElement.style.contentVisibility!="hidden" && this.css3Support("contentVisibility"))
+              document.documentElement.style.contentVisibility="hidden";
         },
         afterNodeChange:function(node){
-            document.body && (document.body.style.contentVisibility = "");
+            document.documentElement && document.documentElement.style.contentVisibility == "hidden" && (document.documentElement.style.contentVisibility = "");
         },
         willChange:function(node, keys){
             node && node.style && this.css3Support("willChange") && (node.style.willChange=keys||"contents");

@@ -6937,7 +6937,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var i='tagVar';
             if((i in p) && p[i] && xui.isHash(p[i]) && xui.isEmpty(p[i]))delete p[i];
 
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"],function(key){
+            xui.arr.each( ["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"].concat( xui.toArr(profile.box._objectProp2||{},true) || [] ),function(key){
                 if(t=p[key]){
                     if(!xui.isHash(t)){
                         return;

@@ -14154,11 +14154,11 @@ xui.Class('xui.Dom','xui.absBox',{
             return _c[key]=rt;
         },
         beforeNodeChange:function(node, keys){
-          if(document.body && document.body.style.contentVisibility!="hidden" && this.css3Support("contentVisibility"))
-              document.body.style.contentVisibility="hidden";
+          if(document.documentElement && document.documentElement.style.contentVisibility!="hidden" && this.css3Support("contentVisibility"))
+              document.documentElement.style.contentVisibility="hidden";
         },
         afterNodeChange:function(node){
-            document.body && (document.body.style.contentVisibility = "");
+            document.documentElement && document.documentElement.style.contentVisibility == "hidden" && (document.documentElement.style.contentVisibility = "");
         },
         willChange:function(node, keys){
             node && node.style && this.css3Support("willChange") && (node.style.willChange=keys||"contents");
@@ -18166,7 +18166,7 @@ xui.Class('xui.DragDrop',null,{
 
                 if(d._proxy){
                     // crack for new chrome performance problem
-                    document.body.style.contentVisibility="hidden";
+                    document.documentElement.style.contentVisibility="hidden";
                     if(!p.verticalOnly){
                         d._proxyLeft=Math.floor(d._left(
                             ((p.maxLeftOffset!==null && p.x<=p.restrictedLeft)?p.restrictedLeft:
@@ -18189,7 +18189,7 @@ xui.Class('xui.DragDrop',null,{
                         d._pre.top=d._proxyTop;
                         p.curPos.top = d._proxyTop + d.$proxySize;
                     }
-                    document.body.style.contentVisibility="";
+                    document.documentElement.style.contentVisibility="";
                 }else{
                     p.curPos.left = p.x;
                     p.curPos.top = p.y;
@@ -26523,7 +26523,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var i='tagVar';
             if((i in p) && p[i] && xui.isHash(p[i]) && xui.isEmpty(p[i]))delete p[i];
 
-            xui.arr.each(["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"],function(key){
+            xui.arr.each( ["dockMargin","conDockPadding","conDockSpacing","sandboxTheme","propBinder"].concat( xui.toArr(profile.box._objectProp2||{},true) || [] ),function(key){
                 if(t=p[key]){
                     if(!xui.isHash(t)){
                         return;
@@ -51438,7 +51438,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 padding:'0 .334em 0 0'
             }
         },
-        _objectProp:{rowOptions:1,colOptions:1,nodeEdges:1},
+        _objectProp:{rowOptions:1,colOptions:1},
+        _objectProp2:{nodeEdges:1},
         Behaviors:{
             //don't add cell in HoverEffected, for 'hover' editMode
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELLA', CELL:'CELLA', HCELL:['HCELLA','HSCELLA'],HSCELL:['HCELLA','HSCELLA'], FHCELL:'HCELLA',FCELL:'CELLA',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY22:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
@@ -52981,7 +52982,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.box._adjusteditorH(this, this.getSubNodes(['CELLS1','CELLS2'], true).height(v),v);
                 }
             },
-
             nodeEdges:{
                 ini:{
                     rowW:0,

@@ -3428,7 +3428,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 padding:'0 .334em 0 0'
             }
         },
-        _objectProp:{rowOptions:1,colOptions:1,nodeEdges:1},
+        _objectProp:{rowOptions:1,colOptions:1},
+        _objectProp2:{nodeEdges:1},
         Behaviors:{
             //don't add cell in HoverEffected, for 'hover' editMode
             HoverEffected:{ROWTOGGLE:'ROWTOGGLE', GCELL:'GCELLA', CELL:'CELLA', HCELL:['HCELLA','HSCELLA'],HSCELL:['HCELLA','HSCELLA'], FHCELL:'HCELLA',FCELL:'CELLA',CMD:'CMD',SCROLL22:"SCROLL22",BODY11:"BODY11",BODY12:"BODY12",BODY21:"BODY22",BODY22:"BODY22",HEADER1:"HEADER1",HEADER2:"HEADER2"},
@@ -4971,7 +4972,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     this.box._adjusteditorH(this, this.getSubNodes(['CELLS1','CELLS2'], true).height(v),v);
                 }
             },
-
             nodeEdges:{
                 ini:{
                     rowW:0,
