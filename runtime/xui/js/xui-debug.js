@@ -48554,7 +48554,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             arr=box._prepareHeader(profile, header);
             prop.header = header;
 
-            this.removeAllRows();
+            this.removeAllRows(false);
 
             profile.getSubNodes(['HCELL','HSCELL'], true).remove();
 
@@ -53052,11 +53052,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 ini:{},
                 set:function(value){
                     var o=this;
-                    if(o.renderId)
+                    if(o.renderId){
                         o.boxing().removeAllRows(false)
-                        .insertRows(value, null, null, false, false, false, o.properties.renderViewSize ? "memoryOnly" : "all" );
+                        .insertRows(value, null, null, false, false, !!o.properties.hotRowMode, o.properties.renderViewSize ? "memoryOnly" : "all" );
                     //use copy to avoid outer memory link
-                    else
+                    }else
                         o.properties.rows = xui.copy(value);
                 }
             },
@@ -53222,19 +53222,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             rowOptions:{
                 ini:{},
                 action:function(value){
-                    var ins=this.boxing(),
-                        rows=ins.getRows('data');
-                    ins.removeAllRows();
-                    ins.insertRows(rows);
+                    if(this.renderId){
+                        var ins=this.boxing(),rows=ins.getRows('data');
+                        ins.removeAllRows(false).insertRows(rows, null, null, false, false, !!this.properties.hotRowMode, this.properties.renderViewSize ? "memoryOnly" : "all" );
+                    }
                 }
             },
             colOptions:{
                 ini:{},
                 action:function(value){
-                    var ins=this.boxing(),
-                        rows=ins.getRows('data');
-                    ins.removeAllRows();
-                    ins.insertRows(rows);
+                    if(this.renderId){
+                        var ins=this.boxing(),rows=ins.getRows('data');
+                        ins.removeAllRows(false).insertRows(rows, null, null, false, false, !!this.properties.hotRowMode, this.properties.renderViewSize ? "memoryOnly" : "all" );
+                    }
                 }
             },
             treeMode:{
@@ -53478,7 +53478,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _addTempRow:function(profile,focusPos, pid, baseRow){
             var prop=profile.properties;
-            if(prop.readonly || prop.disabled  || !prop.editable || !prop.header || !prop.renderViewSize || prop.header.length<=0)
+            if(prop.readonly || prop.disabled  || !prop.editable || !prop.header || !!prop.renderViewSize || prop.header.length<=0)
                 return false;
 
             delete profile.__hastmpRow;
