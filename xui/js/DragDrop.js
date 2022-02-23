@@ -510,7 +510,7 @@ xui.Class('xui.DragDrop',null,{
 
                 if(d._proxy){
                     // crack for new chrome performance problem
-                    document.documentElement.style.contentVisibility="hidden";
+                    d._proxystyle.contentVisibility="hidden";
                     if(!p.verticalOnly){
                         d._proxyLeft=Math.floor(d._left(
                             ((p.maxLeftOffset!==null && p.x<=p.restrictedLeft)?p.restrictedLeft:
@@ -533,7 +533,7 @@ xui.Class('xui.DragDrop',null,{
                         d._pre.top=d._proxyTop;
                         p.curPos.top = d._proxyTop + d.$proxySize;
                     }
-                    document.documentElement.style.contentVisibility="";
+                    d._proxystyle.contentVisibility="";
                 }else{
                     p.curPos.left = p.x;
                     p.curPos.top = p.y;
@@ -658,6 +658,7 @@ xui.Class('xui.DragDrop',null,{
                     region=d._Region=xui.create(s1+'top:solid 2px #ff6600;left:0;top:0;width:100%;height:0;"></div>'+s1+'right'+s2+'right:0;top:0;height:100%;width:0;"></div>'+s1+'bottom'+s2+'bottom:0;left:0;width:100%;height:0;"></div>'+s1+'left'+s2+'width:0;left:0;top:0;height:100%;"></div>');
                     rh=d._rh=xui([region.get(1),region.get(3)]);
                 }
+                region.get(0).style.contentVisibility="hidden";
                 target=xui(target);
                 if(xui.browser.ie6)rh.height('100%');
                 if(target.css('display')=='block'){
@@ -676,6 +677,7 @@ xui.Class('xui.DragDrop',null,{
                     d._R=target;
                     target.css(bg, '#FA8072');
                 }
+                region.get(0).style.contentVisibility="";
                 d.setDragIcon(dragIcon||'move');
             }else
                 d.setDragIcon('none');

@@ -392,7 +392,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 }
                 ns.$files = files;
                 if(ns.onFiles)ns.boxing().onFiles(ns, ns.$files = validFiles(files));
-              }
+              };
               input.type = "file";
               input.accept = ns.properties.dropFileTypes;
               input.multiple = true;

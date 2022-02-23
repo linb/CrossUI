@@ -46,7 +46,7 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                     $order:1,
                     className:'xuicon {imageClass}  {picClass}',
                     style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
-                    text:'{iconFontCode}' 
+                    text:'{iconFontCode}'
                 },
                 CAPTION:{
                     $order:2,

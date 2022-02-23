@@ -394,8 +394,10 @@ xui.Class('xui.Dom','xui.absBox',{
         //flag = false: no gc
         empty:function(triggerGC, purgeNow){
             return this.each(function(o){
-                var _applied= xui.Dom.beforeNodeChange( );
+                xui.Dom.beforeNodeChange( );
+                xui.Dom.willChange();
                 xui([o]).html('',triggerGC, null, purgeNow);
+                xui.Dom.unWillChange();
                 xui.Dom.afterNodeChange( );
             });
         },
@@ -410,6 +412,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     else{
                          if(!o.firstChild && content==="")return this;
                          xui.Dom.beforeNodeChange( );
+                         xui.Dom.willChange();
                          // innerHTML='' in IE, will clear it's childNodes innerHTML
                          // only asy purgeChildren need this line
                          // if(!triggerGC && xui.browser.ie)while(t=o.firstChild)o.removeChild(t);
@@ -462,6 +465,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
                         //if(triggerGC)
                         //    xui.UI.$addEventsHandler(o);
+                        xui.Dom.unWillChange();
                         xui.Dom.afterNodeChange( );
                     }
 
@@ -1757,7 +1761,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 p=xui("body").get(0);
             }
             if(node.nodeType !=1 || !p)return 1;
-
+            xui.Dom.beforeNodeChange( );
             t=p.childNodes;
             for(k=0;o=t[k];k++){
                 style = o.style;
@@ -1775,6 +1779,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 j = parseInt(node.style.zIndex,10) || 0;
                 return i>j?i:j;
             }
+            xui.Dom.afterNodeChange( );
             return this;
         },
         /*

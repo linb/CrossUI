@@ -667,7 +667,7 @@ new function(){
           if (x === y) return true;
           if (!(x instanceof Object) || !(y instanceof Object)) return false;
           if (x.constructor !== y.constructor) return false;
-          for (let p in x) {
+          for (var p in x) {
             if (ignore && ignore(p)) continue;
             if (!x.hasOwnProperty(p)) continue;
             if (!y.hasOwnProperty(p)) return false;
@@ -681,7 +681,7 @@ new function(){
             } else if (!xui.deepEquals(x[p], y[p], deep, ignore, _curLayer + 1))
               return false;
           }
-          for (let p in y) {
+          for (var p in y) {
             if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) return false;
           }
           return true;
@@ -1043,7 +1043,7 @@ new function(){
     reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/,
     AsyncFunction;
   try{
-    AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+    AsyncFunction = eval('Object.getPrototypeOf(async function(){}).constructor');
   }catch(e){}
   xui.merge(xui.fun,{
       body:function(fun){
@@ -1166,7 +1166,7 @@ xui.merge(xui.Class, {
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
     version:3.00,
-    versionDate:'21/02/2022',
+    versionDate:'23/02/2022',
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -1335,18 +1335,18 @@ xui.merge(xui,{
             e = document.createElement("xui");
             e.className="setting-uikey";
             document.body.appendChild(e);
-            a = xui(e).css('font-family')
+            a = xui(e).css('font-family').replace(/^'(.*)'$/,'$1').replace(/^"(.*)"$/,'$1')
             document.body.removeChild(e);
         }catch(e){}finally{
             return a||"default";
         }
     },
     setTheme:function(key, refresh, onSucess, onFail, tag){
-        key=key||'default';
+        key=(key||'default').replace(/^'(.*)'$/,'$1').replace(/^"(.*)"$/,'$1');
         var okey=xui.getTheme();
         if(key!=okey){
             var onend=function(onSucess){
-                if(okey!='default' && okey!="'default'" && okey!='"default"'){
+                if(okey!='default'){
                     var style;
                     while(style=xui.CSS.$getCSSValue('.setting-uikey','fontFamily',okey)){
                         style.disabled=true;
@@ -1385,11 +1385,14 @@ xui.merge(xui,{
                     xui.CSS.includeLink(path+'theme.css',id);
 
                     var count=0,fun=function(){
-                        // timeout: 5 seconds
-                        if(count++>4){
+                        // timeout: 3 seconds
+                        if(count++>2){
                             fun=count=null;
-                            if(false!==xui.tryF(onFail))
+                            if(false!==xui.tryF(onFail)){
+                                //go on any way
+                                onend(onSucess);
                                 throw new Error('errLoadTheme:'+key);
+                            }
                             return;
                         }
                         //test
@@ -3900,10 +3903,10 @@ xui.Class('xui.Fetch','xui.absIO',{
               catch(e){
                 ee = e;
               }
-            }).catch(function(e) {
+            })['catch'](function(e) {
               if (e.name !== 'AbortError')
                 self._onError(e, status, statusText, rsp);
-            }).finally(function(){
+            })['finally'](function(){
               if(ee)throw ee;
             });
 
@@ -10479,7 +10482,7 @@ xui.Class('xui.Event',null,{
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:.875rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
-            ".setting-uikey{font-family:default}"
+            ".setting-uikey{font-family:'default'}"
            ;
 
         this.addStyleSheet(css, 'xui.CSS');
@@ -10886,8 +10889,10 @@ xui.Class('xui.Dom','xui.absBox',{
         //flag = false: no gc
         empty:function(triggerGC, purgeNow){
             return this.each(function(o){
-                var _applied= xui.Dom.beforeNodeChange( );
+                xui.Dom.beforeNodeChange( );
+                xui.Dom.willChange();
                 xui([o]).html('',triggerGC, null, purgeNow);
+                xui.Dom.unWillChange();
                 xui.Dom.afterNodeChange( );
             });
         },
@@ -10902,6 +10907,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     else{
                          if(!o.firstChild && content==="")return this;
                          xui.Dom.beforeNodeChange( );
+                         xui.Dom.willChange();
                          // innerHTML='' in IE, will clear it's childNodes innerHTML
                          // only asy purgeChildren need this line
                          // if(!triggerGC && xui.browser.ie)while(t=o.firstChild)o.removeChild(t);
@@ -10954,6 +10960,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
                         //if(triggerGC)
                         //    xui.UI.$addEventsHandler(o);
+                        xui.Dom.unWillChange();
                         xui.Dom.afterNodeChange( );
                     }
 
@@ -12249,7 +12256,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 p=xui("body").get(0);
             }
             if(node.nodeType !=1 || !p)return 1;
-
+            xui.Dom.beforeNodeChange( );
             t=p.childNodes;
             for(k=0;o=t[k];k++){
                 style = o.style;
@@ -12267,6 +12274,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 j = parseInt(node.style.zIndex,10) || 0;
                 return i>j?i:j;
             }
+            xui.Dom.afterNodeChange( );
             return this;
         },
         /*
@@ -18166,7 +18174,7 @@ xui.Class('xui.DragDrop',null,{
 
                 if(d._proxy){
                     // crack for new chrome performance problem
-                    document.documentElement.style.contentVisibility="hidden";
+                    d._proxystyle.contentVisibility="hidden";
                     if(!p.verticalOnly){
                         d._proxyLeft=Math.floor(d._left(
                             ((p.maxLeftOffset!==null && p.x<=p.restrictedLeft)?p.restrictedLeft:
@@ -18189,7 +18197,7 @@ xui.Class('xui.DragDrop',null,{
                         d._pre.top=d._proxyTop;
                         p.curPos.top = d._proxyTop + d.$proxySize;
                     }
-                    document.documentElement.style.contentVisibility="";
+                    d._proxystyle.contentVisibility="";
                 }else{
                     p.curPos.left = p.x;
                     p.curPos.top = p.y;
@@ -18314,6 +18322,7 @@ xui.Class('xui.DragDrop',null,{
                     region=d._Region=xui.create(s1+'top:solid 2px #ff6600;left:0;top:0;width:100%;height:0;"></div>'+s1+'right'+s2+'right:0;top:0;height:100%;width:0;"></div>'+s1+'bottom'+s2+'bottom:0;left:0;width:100%;height:0;"></div>'+s1+'left'+s2+'width:0;left:0;top:0;height:100%;"></div>');
                     rh=d._rh=xui([region.get(1),region.get(3)]);
                 }
+                region.get(0).style.contentVisibility="hidden";
                 target=xui(target);
                 if(xui.browser.ie6)rh.height('100%');
                 if(target.css('display')=='block'){
@@ -18332,6 +18341,7 @@ xui.Class('xui.DragDrop',null,{
                     d._R=target;
                     target.css(bg, '#FA8072');
                 }
+                region.get(0).style.contentVisibility="";
                 d.setDragIcon(dragIcon||'move');
             }else
                 d.setDragIcon('none');
@@ -18650,9 +18660,10 @@ xui.Class("xui.Tips", null,{
                 if(tips._Node){
                     p=event.getPos(e);
                     n=tips._Node.style;
+                    n.contentVisibility="hidden";
                     n.left = Math.min(tips._tpl._ww-tips._tpl._w, Math.max(0, Math.round((parseFloat(n.left)||0) + (p.left-tips._pos.left), 10))) + 'px';
                     n.top = Math.min(tips._tpl._hh-tips._tpl._h, Math.max(0, Math.round((parseFloat(n.top)||0) + (p.top-tips._pos.top), 10))) + 'px';
-
+                    n.contentVisibility="";
                     tips._pos=p;
                 }
             }
@@ -18825,6 +18836,7 @@ xui.Class("xui.Tips", null,{
 
                             //set content, AND dimension
                             var style=node.get(0).style, t1=self.n.get(0),styleI=t1.style;
+                            style.contentVisibility="hidden";
                             //hide first
                             style.visibility='hidden';
                             //set content
@@ -18851,7 +18863,7 @@ xui.Class("xui.Tips", null,{
                                     height:32
                                 }},1);
                             }
-
+                            style.contentVisibility="";
                             style=styleI=t1=null;
                         }else
                             node.css('zIndex',0).hide();
@@ -31430,7 +31442,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 }
                 ns.$files = files;
                 if(ns.onFiles)ns.boxing().onFiles(ns, ns.$files = validFiles(files));
-              }
+              };
               input.type = "file";
               input.accept = ns.properties.dropFileTypes;
               input.multiple = true;
@@ -33945,7 +33957,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                     $order:1,
                     className:'xuicon {imageClass}  {picClass}',
                     style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
-                    text:'{iconFontCode}' 
+                    text:'{iconFontCode}'
                 },
                 CAPTION:{
                     $order:2,

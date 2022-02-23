@@ -653,7 +653,7 @@ new function(){
           if (x === y) return true;
           if (!(x instanceof Object) || !(y instanceof Object)) return false;
           if (x.constructor !== y.constructor) return false;
-          for (let p in x) {
+          for (var p in x) {
             if (ignore && ignore(p)) continue;
             if (!x.hasOwnProperty(p)) continue;
             if (!y.hasOwnProperty(p)) return false;
@@ -667,7 +667,7 @@ new function(){
             } else if (!xui.deepEquals(x[p], y[p], deep, ignore, _curLayer + 1))
               return false;
           }
-          for (let p in y) {
+          for (var p in y) {
             if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) return false;
           }
           return true;
@@ -1029,7 +1029,7 @@ new function(){
     reg2 = /^\s*(\([\w,\s]*\)|\s*[\w]+\s*)\s*=>\s*([\s\S]*)\s*$/,
     AsyncFunction;
   try{
-    AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+    AsyncFunction = eval('Object.getPrototypeOf(async function(){}).constructor');
   }catch(e){}
   xui.merge(xui.fun,{
       body:function(fun){
@@ -1152,7 +1152,7 @@ xui.merge(xui.Class, {
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
     version:3.00,
-    versionDate:'21/02/2022',
+    versionDate:'23/02/2022',
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -1321,18 +1321,18 @@ xui.merge(xui,{
             e = document.createElement("xui");
             e.className="setting-uikey";
             document.body.appendChild(e);
-            a = xui(e).css('font-family')
+            a = xui(e).css('font-family').replace(/^'(.*)'$/,'$1').replace(/^"(.*)"$/,'$1')
             document.body.removeChild(e);
         }catch(e){}finally{
             return a||"default";
         }
     },
     setTheme:function(key, refresh, onSucess, onFail, tag){
-        key=key||'default';
+        key=(key||'default').replace(/^'(.*)'$/,'$1').replace(/^"(.*)"$/,'$1');
         var okey=xui.getTheme();
         if(key!=okey){
             var onend=function(onSucess){
-                if(okey!='default' && okey!="'default'" && okey!='"default"'){
+                if(okey!='default'){
                     var style;
                     while(style=xui.CSS.$getCSSValue('.setting-uikey','fontFamily',okey)){
                         style.disabled=true;
@@ -1371,11 +1371,14 @@ xui.merge(xui,{
                     xui.CSS.includeLink(path+'theme.css',id);
 
                     var count=0,fun=function(){
-                        // timeout: 5 seconds
-                        if(count++>4){
+                        // timeout: 3 seconds
+                        if(count++>2){
                             fun=count=null;
-                            if(false!==xui.tryF(onFail))
+                            if(false!==xui.tryF(onFail)){
+                                //go on any way
+                                onend(onSucess);
                                 throw new Error('errLoadTheme:'+key);
+                            }
                             return;
                         }
                         //test
@@ -3886,10 +3889,10 @@ xui.Class('xui.Fetch','xui.absIO',{
               catch(e){
                 ee = e;
               }
-            }).catch(function(e) {
+            })['catch'](function(e) {
               if (e.name !== 'AbortError')
                 self._onError(e, status, statusText, rsp);
-            }).finally(function(){
+            })['finally'](function(){
               if(ee)throw ee;
             });
 
