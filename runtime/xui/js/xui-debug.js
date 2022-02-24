@@ -2206,7 +2206,7 @@ new function(){
         xui.merge(ini,window.xui_ini,'all');
 
     //browser sniffer
-    var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
+    var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d&&d.documentMode, b=xui.browser={
         kde:/webkit/.test(u),
         applewebkit:/applewebkit/.test(u),
         opr:/opera/.test(u),
@@ -2214,7 +2214,7 @@ new function(){
         newie:/trident\/.* rv:([0-9]{1,}[.0-9]{0,})/.test(u),
         gek:/mozilla/.test(u) && !/(compatible|webkit)/.test(u),
 
-        isStrict:d.compatMode=="CSS1Compat",
+        isStrict:d&&d.compatMode=="CSS1Compat",
         isWebKit:/webkit/.test(u),
         isFF:/firefox/.test(u),
         isChrome:/chrome/.test(u),
@@ -2227,7 +2227,7 @@ new function(){
         isSecure:location.href.toLowerCase().indexOf("https")==0,
         // detect touch for browser
         isTouch: !!(navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
-            || (("ontouchend" in d) && !(/hp-tablet/).test(u) )
+            || (d && ("ontouchend" in d) && !(/hp-tablet/).test(u) )
             || (w.DocumentTouch && d instanceof w.DocumentTouch)
             || w.PointerEvent
             || w.MSPointerEvent),
@@ -31387,54 +31387,68 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     return;
                   }else{
                       if(xui.Dom.supportPromise() && e.dataTransfer.items && e.dataTransfer.items[0] && e.dataTransfer.items[0].webkitGetAsEntry){
-                        var getFilesFromDataTransferItems = async function(dataTransferItems){
-                          var readFile = function(entry, path){
-                            return new Promise(function(resolve, reject){
-                              entry.file(function(file){
-                                file.filepath = (path||'') + file.name;
-                                resolve(file)
-                              }, function(err){reject(err)})
-                            })
-                          },
-                          dirReadEntries = function(dirReader, path){
-                            return new Promise(function(resolve, reject){
-                              dirReader.readEntries(async function(entries){
-                                var files = []
-                                for (var entry of entries) {
-                                  const itemFiles = await getFilesFromEntry(entry, path)
-                                  files = files.concat(itemFiles)
-                                }
-                                resolve(files);
-                              }, function(err){reject(err)})
-                            })
-                          },
-                          readDir = async function(entry, path){
-                            var dirReader = entry.createReader(),
-                              newPath = path + entry.name + '/',
-                              files = [], newFiles;
-                            do {
-                              newFiles = await dirReadEntries(dirReader, newPath)
-                              files = files.concat(newFiles)
-                            } while (newFiles.length > 0)
-                            return files;
-                          },
-                          getFilesFromEntry = async function(entry, path){
-                            return entry.isDirectory ? (await readDir(entry, path||'')) : [await readFile(entry, path||'')];
-                          },
-                          files = [], entries = [];
-                          for (var i=0, l=dataTransferItems.length; i<l; i++) entries.push(dataTransferItems[i].webkitGetAsEntry())
-                          for (var entry of entries) files = files.concat(await getFilesFromEntry(entry));
-                          return files;
-                        };
-                        (async function(){
-                          try{
-                            var files = await getFilesFromDataTransferItems(e.dataTransfer.items)
-                            if(ns.onFiles)ns.boxing().onFiles(ns, ns.$files = validFiles(files));
-                          }catch(e){
-                            if(ns.onFileError)ns.boxing().onFileError(ns, 'Error at: '+xui.getErrMsg(e), e);
-                          }
-                        })();
-                        return;
+                          var getFilesFromDataTransferItems = function(dataTransferItems){
+                              return new Promise(function(resolve, reject){
+                                var readFile = function(entry, path){
+                                  return new Promise(function(resolve, reject){
+                                    entry.file(function(file){
+                                      file.filepath = (path||'') + file.name;
+                                      resolve(file)
+                                    }, function(err){reject(err)})
+                                  })
+                                },
+                                dirReadEntries = function(dirReader, path, ref, promises){
+                                    promises = promises || [];
+                                    dirReader.readEntries(function(entries){
+                                      for(var i=0,l=entries.length,entry;i<l;i++) {
+                                          var entry = entries[i];
+                                          if(entry.isDirectory){
+                                              ref.dirCount++;
+                                              readDir(entry, path).then(function(ps){
+                                                  promises = promises.concat(ps);
+                                                  ref.dirCount--;
+                                                  if(ref.dirCount===0) ref.callback(promises);
+                                              },function(e){
+                                                  throw e;
+                                              });
+                                          }else{
+                                              promises.push(readFile(entry, path||''));
+                                          }
+                                      }
+                                      if(entries.length>0) dirReadEntries(dirReader, path, ref, promises);
+                                      else if(ref.dirCount===0) ref.callback(promises);
+                                    });
+                                },
+                                readDir = function(entry, path){
+                                    return new Promise(function(resolve, reject){
+                                        try{
+                                            dirReadEntries(entry.createReader(), path + entry.name + '/', {callback:function(promises){
+                                                // read all files
+                                                Promise.all(promises).then(function(files){
+                                                    resolve(files);
+                                                }, reject);
+                                            }, dirCount:0});
+                                        }catch(e){reject(e);}
+                                    });
+                                },
+                                getFilesFromEntry = function(entry, path){
+                                  return entry.isDirectory ? readDir(entry, path||'') : readFile(entry, path||'');
+                                };
+                                var promises = [], entries = [];
+                                for (var i=0, l=dataTransferItems.length; i<l; i++) entries.push(dataTransferItems[i].webkitGetAsEntry())
+                                for(var i=0,l=entries.length;i<l;i++) promises.push(getFilesFromEntry(entries[i]));
+                                Promise.all(promises).then(function(files){
+                                    resolve(files.flat());
+                                }, reject);
+                              });
+                          };
+
+                          getFilesFromDataTransferItems(e.dataTransfer.items).then(function(files){
+                              if(ns.onFiles)ns.boxing().onFiles(ns, ns.$files = validFiles(files));
+                          },function(e){
+                              if(ns.onFileError)ns.boxing().onFileError(ns, 'Error at: '+xui.getErrMsg(e), e);
+                          });
+                          return;
                       }
                   }
                 } else if(e.target) {

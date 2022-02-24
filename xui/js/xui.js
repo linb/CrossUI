@@ -2192,7 +2192,7 @@ new function(){
         xui.merge(ini,window.xui_ini,'all');
 
     //browser sniffer
-    var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d.documentMode, b=xui.browser={
+    var w=window, u=navigator.userAgent.toLowerCase(), d=document, dm=d&&d.documentMode, b=xui.browser={
         kde:/webkit/.test(u),
         applewebkit:/applewebkit/.test(u),
         opr:/opera/.test(u),
@@ -2200,7 +2200,7 @@ new function(){
         newie:/trident\/.* rv:([0-9]{1,}[.0-9]{0,})/.test(u),
         gek:/mozilla/.test(u) && !/(compatible|webkit)/.test(u),
 
-        isStrict:d.compatMode=="CSS1Compat",
+        isStrict:d&&d.compatMode=="CSS1Compat",
         isWebKit:/webkit/.test(u),
         isFF:/firefox/.test(u),
         isChrome:/chrome/.test(u),
@@ -2213,7 +2213,7 @@ new function(){
         isSecure:location.href.toLowerCase().indexOf("https")==0,
         // detect touch for browser
         isTouch: !!(navigator.userAgent.match(/AppleWebkit.*Mobile.*/)
-            || (("ontouchend" in d) && !(/hp-tablet/).test(u) )
+            || (d && ("ontouchend" in d) && !(/hp-tablet/).test(u) )
             || (w.DocumentTouch && d instanceof w.DocumentTouch)
             || w.PointerEvent
             || w.MSPointerEvent),
