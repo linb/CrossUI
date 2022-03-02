@@ -1549,6 +1549,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             profile.cellMap = {};
             profile.rowMap2 = {};
 
+            // clear pagination vars
+            profile._$viewTop = profile._$viewHeight = -1;
+            profile._o_renderRange = profile._renderRange = null;
+
             // remove activerow/cell
             delete profile.$activeCell;
             delete profile.$activeRow;
@@ -6538,9 +6542,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 renderer=self.getCellOption(profile, cell, 'cellRenderer') || prop.renderer,
                 cellCapTpl=self.getCellOption(profile, cell, 'cellCapTpl');
 
+            // del this, or adjustData will adjustRes for _caption
+            delete cell._caption;
+            delete cell._$tips;
+            delete cell._$tmpcap;
+
             // allow to set caption dynamically
             if(cellCapTpl)
                 cell._caption=cellCapTpl;
+
             xui.UI.adjustData(profile, cell, uicell, 'sub');
 
             if(renderer)
