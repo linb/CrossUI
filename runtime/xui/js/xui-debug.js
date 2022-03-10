@@ -48418,7 +48418,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
               }
           },
           findRowsInRenderView = function(prf, row, propRowH, dftRowH, rowHEdge, renderFrom, renderTo, parentRow, index){
-              var rowH =  row.hidden? 0 : ( ( ('_rowHeight' in row) ? propRowH ==  row._rowHeight ? dftRowH : prf.$px(row._rowHeight) : ('height' in row) ? prf.$px(row.height) : dftRowH) + rowHEdge );
+              var rowH =  row.hidden? 0 : ( ( xui.isSet(row._rowHeight) ? propRowH ==  row._rowHeight ? dftRowH : prf.$px(row._rowHeight) : xui.isSet(row.height) ? prf.$px(row.height) : dftRowH) + rowHEdge );
 
               row._space_sub = row._space_before = row._space_after = 0;
               row._space_from = prf._space_cursor;
@@ -58396,10 +58396,12 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     value = value?value.split(prop.valueSeparator):[];
 
                     xui.arr.each(uiv,function(key){
-                      fold(key, arr1);
+                      if(xui.arr.indexOf(value, key)==-1)
+                        fold(key, arr1);
                     });
                     xui.arr.each(value,function(key){
-                      expand(key, arr2);
+                      if(xui.arr.indexOf(uiv, key)==-1)
+                        expand(key, arr2);
                     });
                 }else{
                     fold(uiv, arr1);
@@ -58718,7 +58720,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(prop.disabled|| item.disabled)return false;
                     if(prop.readonly|| item.readonly)return false;
 
-                    profile.getSubNode('TITLE').focus(true);
+                    profile.getSubNode('TITLE', itemId).focus(true);
 
                     switch(prop.selMode){
                     case 'multi':

@@ -47,10 +47,12 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     value = value?value.split(prop.valueSeparator):[];
 
                     xui.arr.each(uiv,function(key){
-                      fold(key, arr1);
+                      if(xui.arr.indexOf(value, key)==-1)
+                        fold(key, arr1);
                     });
                     xui.arr.each(value,function(key){
-                      expand(key, arr2);
+                      if(xui.arr.indexOf(uiv, key)==-1)
+                        expand(key, arr2);
                     });
                 }else{
                     fold(uiv, arr1);
@@ -369,7 +371,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                     if(prop.disabled|| item.disabled)return false;
                     if(prop.readonly|| item.readonly)return false;
 
-                    profile.getSubNode('TITLE').focus(true);
+                    profile.getSubNode('TITLE', itemId).focus(true);
 
                     switch(prop.selMode){
                     case 'multi':

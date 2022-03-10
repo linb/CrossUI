@@ -382,7 +382,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
               }
           },
           findRowsInRenderView = function(prf, row, propRowH, dftRowH, rowHEdge, renderFrom, renderTo, parentRow, index){
-              var rowH =  row.hidden? 0 : ( ( ('_rowHeight' in row) ? propRowH ==  row._rowHeight ? dftRowH : prf.$px(row._rowHeight) : ('height' in row) ? prf.$px(row.height) : dftRowH) + rowHEdge );
+              var rowH =  row.hidden? 0 : ( ( xui.isSet(row._rowHeight) ? propRowH ==  row._rowHeight ? dftRowH : prf.$px(row._rowHeight) : xui.isSet(row.height) ? prf.$px(row.height) : dftRowH) + rowHEdge );
 
               row._space_sub = row._space_before = row._space_after = 0;
               row._space_from = prf._space_cursor;
