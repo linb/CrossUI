@@ -509,6 +509,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         _innerCall:function(name){
             var self=this;
+            if(self.destroyed)return;
             return xui.tryF(self[name],[self, self.threadid],self);
         },
         customAppend:function(parent,subId,left,top,threadid){
@@ -521,6 +522,7 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.show(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
+            if(this.destroyed)return self;
             xui.UI.$trytoApplyCSS();
 
             if(false===this._fireEvent('beforeShow'))return false;
@@ -578,6 +580,7 @@ xui.Class('xui.Module','xui.absProfile',{
             this._showed=0;
         },
         render:function(triggerLayout){
+            if(this.destroyed)return self;
             var self=this, checkSubMdls=function(m){
                 xui.arr.each(m._nodes,function(o){
                     //Recursive call
@@ -810,7 +813,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         _createInnerModules:function(tid){
             var self=this;
-            if(self._recursived || self._innerModulesCreated)
+            if(self.destroyed || self._recursived || self._innerModulesCreated)
                 return;
             var stop, checkCycle=function(h){
                 if(h && h["xui.Module"] && h.moduleClass && h.moduleXid){

@@ -11265,7 +11265,10 @@ xui.Class('xui.Dom','xui.absBox',{
         scrollIntoView:function(){
             return  this.each(function(o){
                 xui.Dom.willChange(o,"scroll-position");
-                o.scrollIntoView();
+                if(o.hasOwnProperty('scrollIntoViewIfNeeded'))
+                  o.scrollIntoViewIfNeeded();
+                else
+                  o.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
                 xui.Dom.unWillChange(o);
             });
         },
@@ -15798,6 +15801,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         _innerCall:function(name){
             var self=this;
+            if(self.destroyed)return;
             return xui.tryF(self[name],[self, self.threadid],self);
         },
         customAppend:function(parent,subId,left,top,threadid){
@@ -15810,6 +15814,7 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.show(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
+            if(this.destroyed)return self;
             xui.UI.$trytoApplyCSS();
 
             if(false===this._fireEvent('beforeShow'))return false;
@@ -15867,6 +15872,7 @@ xui.Class('xui.Module','xui.absProfile',{
             this._showed=0;
         },
         render:function(triggerLayout){
+            if(this.destroyed)return self;
             var self=this, checkSubMdls=function(m){
                 xui.arr.each(m._nodes,function(o){
                     //Recursive call
@@ -16099,7 +16105,7 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         _createInnerModules:function(tid){
             var self=this;
-            if(self._recursived || self._innerModulesCreated)
+            if(self.destroyed || self._recursived || self._innerModulesCreated)
                 return;
             var stop, checkCycle=function(h){
                 if(h && h["xui.Module"] && h.moduleClass && h.moduleXid){
@@ -24846,15 +24852,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                     adjustRenderer = function(hash, prop, events){
                         if(hash){
                             var mapReg=/^\s*([^>\s]+)?\s*>\s*([^>\s]+)\s*$/;
-                            // 'alias > propName' in item
+                            // 'alias > propName' assignments in tagVar, for xui.Module or xui.UI renderer
                             xui.each(hash,function(o,i){
-                                // alias > key =>alias > key
-                                // > key => key
+                                //' alias > key ' =>' alias > key '
+                                //' > key ' => 'key '
                                 if(mapReg.test(i)) prop[i.replace(/^\s*>\s*/,'')]=o;
                             });
-                            // 'ModuleProp' in item
+                            // 'ModuleProp' in tagVar
                             if(xui.isHash(hash.ModuleProp))prop = xui.merge(prop, hash.ModuleProp, 'all');
-                            // 'ModuleEvents' in item
+                            // 'ModuleEvents' in tagVar
                             if(xui.isHash(hash.ModuleEvents))events = xui.merge(events, hash.ModuleEvents, 'all');
                             // add ref here
                             prop.parentProp = hash;
@@ -27214,7 +27220,12 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         scrollIntoView:function(itemId){
             itemId=this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId);
-            if(itemId=itemId.get(0))itemId.scrollIntoView();
+            if(itemId=itemId.get(0)){
+                if(itemId.hasOwnProperty('scrollIntoViewIfNeeded'))
+                  itemId.scrollIntoViewIfNeeded();
+                else
+                  itemId.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+            }
             return this;
         },
         selectItem:function(itemId){
@@ -56254,14 +56265,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // try the best to avoid using offsetWidth for performance
             if(!profile._$cache.hasOwnProperty("__lcellW")){
-              var hc = profile.getSubNode("LHCELL").get(0), lcw,
-                lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? (lcw=hc.offsetWidth) : 0;
+              var hc = profile.getSubNode("LHCELL").get(0),
+                lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? hc.offsetWidth : 0;
               profile.getSubNodes('LCELL',true).each(function(hc){
                   if(xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"])){
-                      lcellw=Math.max(lcellw, lcw);
+                      // only use once for performance
+                      lcellw=Math.max(lcellw, hc.offsetWidth);
+                      return;
                   }
               });
-              profile._$cache.__lcellW = lcellw;
+              profile._$cache.__lcellW = lcellw || 0;
             }
 
             width -= profile._$cache.__lcellW;

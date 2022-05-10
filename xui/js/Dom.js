@@ -770,7 +770,10 @@ xui.Class('xui.Dom','xui.absBox',{
         scrollIntoView:function(){
             return  this.each(function(o){
                 xui.Dom.willChange(o,"scroll-position");
-                o.scrollIntoView();
+                if(o.hasOwnProperty('scrollIntoViewIfNeeded'))
+                  o.scrollIntoViewIfNeeded();
+                else
+                  o.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
                 xui.Dom.unWillChange(o);
             });
         },

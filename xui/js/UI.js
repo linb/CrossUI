@@ -5248,15 +5248,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                     adjustRenderer = function(hash, prop, events){
                         if(hash){
                             var mapReg=/^\s*([^>\s]+)?\s*>\s*([^>\s]+)\s*$/;
-                            // 'alias > propName' in item
+                            // 'alias > propName' assignments in tagVar, for xui.Module or xui.UI renderer
                             xui.each(hash,function(o,i){
-                                // alias > key =>alias > key
-                                // > key => key
+                                //' alias > key ' =>' alias > key '
+                                //' > key ' => 'key '
                                 if(mapReg.test(i)) prop[i.replace(/^\s*>\s*/,'')]=o;
                             });
-                            // 'ModuleProp' in item
+                            // 'ModuleProp' in tagVar
                             if(xui.isHash(hash.ModuleProp))prop = xui.merge(prop, hash.ModuleProp, 'all');
-                            // 'ModuleEvents' in item
+                            // 'ModuleEvents' in tagVar
                             if(xui.isHash(hash.ModuleEvents))events = xui.merge(events, hash.ModuleEvents, 'all');
                             // add ref here
                             prop.parentProp = hash;
@@ -7616,7 +7616,12 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         scrollIntoView:function(itemId){
             itemId=this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId);
-            if(itemId=itemId.get(0))itemId.scrollIntoView();
+            if(itemId=itemId.get(0)){
+                if(itemId.hasOwnProperty('scrollIntoViewIfNeeded'))
+                  itemId.scrollIntoViewIfNeeded();
+                else
+                  itemId.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+            }
             return this;
         },
         selectItem:function(itemId){

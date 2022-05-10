@@ -8218,14 +8218,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             // try the best to avoid using offsetWidth for performance
             if(!profile._$cache.hasOwnProperty("__lcellW")){
-              var hc = profile.getSubNode("LHCELL").get(0), lcw,
-                lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? (lcw=hc.offsetWidth) : 0;
+              var hc = profile.getSubNode("LHCELL").get(0),
+                lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? hc.offsetWidth : 0;
               profile.getSubNodes('LCELL',true).each(function(hc){
                   if(xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"])){
-                      lcellw=Math.max(lcellw, lcw);
+                      // only use once for performance
+                      lcellw=Math.max(lcellw, hc.offsetWidth);
+                      return;
                   }
               });
-              profile._$cache.__lcellW = lcellw;
+              profile._$cache.__lcellW = lcellw || 0;
             }
 
             width -= profile._$cache.__lcellW;
