@@ -225,8 +225,8 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 $spaceunit:1,
                 ini:'25em'
             },
-            chartCDN:"https://cdn.jsdelivr.net/npm/echarts@4.2.0-rc.2/dist/echarts.min.js",
-            chartCDNGL:"https://cdn.jsdelivr.net/npm/echarts-gl@1.1.1/dist/echarts-gl.min.js",
+            chartCDN:"//cdn.jsdelivr.net/npm/echarts",
+            chartCDNGL:"//cdn.jsdelivr.net/npm/echarts-gl",
             chartTheme:{
                 ini:"",
                 action: function(v){
@@ -379,7 +379,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 prf.boxing().busy(false, "Loading charts ...");
                 var gl=prop.chartCDNGL;
                 xui.include("echarts",prop.chartCDN,function(){
-                    if(gl) xui.include("",gl,function(){
+                    if(gl) xui.include("echarts-gl",gl,function(){
                         if(prf && prf.box){
                             prf.boxing().free();
                             fun();
