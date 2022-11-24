@@ -1,7 +1,7 @@
 {
     "author": "linb.net@gmail.com",
-    "compile_args": "arg1",
-    "compile_ver": "<ver:3.6.5>",
+    "compile_args": "",
+    "compile_ver": "",
     "description": "",
     "design_parameters": {
         "block_count": 0,
@@ -114,7 +114,7 @@
                 "name": "$config",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^CONFIG.88kh8npd^"
+                    "^CONFIG.846f42ve^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -137,7 +137,7 @@
                 "name": "$credential",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^CREDENTIAL.hfmzumy1^"
+                    "^CREDENTIAL.6rpw92bn^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -160,7 +160,7 @@
                 "name": "$default_wait",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^DEFAULT_WAIT.anhc11w7^"
+                    "^DEFAULT_WAIT.hiw6xvhb^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -183,7 +183,7 @@
                 "name": "$long_wait",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^LONG_WAIT.78tk7ie4^"
+                    "^LONG_WAIT.ciryj8l5^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -206,7 +206,7 @@
                 "name": "$setup_file",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^SETUP_FILE.62f7w612^"
+                    "^SETUP_FILE.itkqgn04^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -233,8 +233,8 @@
                 "name": "$script",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^SCRIPT.611cfs3m^",
-                    "^SCRIPT.1pv60jpm^"
+                    "^SCRIPT.4q8zj5hs^",
+                    "^SCRIPT.8aijseo0^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -262,7 +262,7 @@
                 "name": "$Password",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^PASSWORD.d5lchoxa^"
+                    "^PASSWORD.dl6cz516^"
                 ],
                 "scope": "g.2",
                 "value_indexes": [
@@ -285,7 +285,7 @@
                 "name": "$Password",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^PASSWORD.c8dazr87^"
+                    "^PASSWORD.h2njtzkt^"
                 ],
                 "scope": "g.3",
                 "value_indexes": [
@@ -308,7 +308,7 @@
                 "name": "$credential",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^CREDENTIAL.da9gcg8l^"
+                    "^CREDENTIAL.2wf8wq6h^"
                 ],
                 "scope": "g.3",
                 "value_indexes": [
@@ -331,7 +331,7 @@
                 "name": "$base_dir",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^BASE_DIR.1eozhg0z^"
+                    "^BASE_DIR.77e8iiw^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -354,7 +354,7 @@
                 "name": "$script_array",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^SCRIPT_ARRAY.frozu2d^"
+                    "^SCRIPT_ARRAY.8c4meozt^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -377,7 +377,7 @@
                 "name": "$full_path",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^FULL_PATH.2qt0wfbh^"
+                    "^FULL_PATH.c1smakka^"
                 ],
                 "scope": "g.4",
                 "value_indexes": [
@@ -398,9 +398,9 @@
     "name": "upload/test.py",
     "owner": "linb.net@gmail.com",
     "parsed_words": [],
-    "price": 1,
+    "price": 0,
     "size": 2174,
     "tags": [],
-    "updated": "Thu, 24 Nov 2022 19:27:18 GMT",
+    "updated": "Thu, 24 Nov 2022 20:10:39 GMT",
     "valid_words": []
 }
