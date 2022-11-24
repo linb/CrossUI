@@ -1,12 +1,13 @@
 {
     "author": "linb.net@gmail.com",
-    "compile_args": "args",
-    "compile_ver": "",
+    "compile_args": "arg1",
+    "compile_ver": "<ver:3.6.5>",
     "description": "",
     "design_parameters": {
         "block_count": 0,
         "blocks": [],
         "input_file": "demo scripts/ADSingleDomain.ps1",
+        "lang": "python",
         "notes": "",
         "parse_time": "00:00:00.0457694",
         "scopes": {
@@ -113,7 +114,7 @@
                 "name": "$config",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^CONFIG.d1ekji1w^"
+                    "^CONFIG.88kh8npd^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -136,7 +137,7 @@
                 "name": "$credential",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^CREDENTIAL.jncsayrp^"
+                    "^CREDENTIAL.hfmzumy1^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -159,7 +160,7 @@
                 "name": "$default_wait",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^DEFAULT_WAIT.gmzmw2ji^"
+                    "^DEFAULT_WAIT.anhc11w7^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -182,7 +183,7 @@
                 "name": "$long_wait",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^LONG_WAIT.l927y8jw^"
+                    "^LONG_WAIT.78tk7ie4^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -205,7 +206,7 @@
                 "name": "$setup_file",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^SETUP_FILE.7kf9ch07^"
+                    "^SETUP_FILE.62f7w612^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -232,8 +233,8 @@
                 "name": "$script",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^SCRIPT.dxfm1n8v^",
-                    "^SCRIPT.kvslligt^"
+                    "^SCRIPT.611cfs3m^",
+                    "^SCRIPT.1pv60jpm^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -261,7 +262,7 @@
                 "name": "$Password",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^PASSWORD.78rkm90d^"
+                    "^PASSWORD.d5lchoxa^"
                 ],
                 "scope": "g.2",
                 "value_indexes": [
@@ -284,7 +285,7 @@
                 "name": "$Password",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^PASSWORD.3fl4zz4e^"
+                    "^PASSWORD.c8dazr87^"
                 ],
                 "scope": "g.3",
                 "value_indexes": [
@@ -307,7 +308,7 @@
                 "name": "$credential",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^CREDENTIAL.3tggd0fw^"
+                    "^CREDENTIAL.da9gcg8l^"
                 ],
                 "scope": "g.3",
                 "value_indexes": [
@@ -330,7 +331,7 @@
                 "name": "$base_dir",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^BASE_DIR.al1tpcbh^"
+                    "^BASE_DIR.1eozhg0z^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -353,7 +354,7 @@
                 "name": "$script_array",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^SCRIPT_ARRAY.fo7a6y71^"
+                    "^SCRIPT_ARRAY.frozu2d^"
                 ],
                 "scope": "g",
                 "value_indexes": [
@@ -376,7 +377,7 @@
                 "name": "$full_path",
                 "ontology": "Unknown",
                 "replacement_names": [
-                    "^FULL_PATH.i6dhum8r^"
+                    "^FULL_PATH.2qt0wfbh^"
                 ],
                 "scope": "g.4",
                 "value_indexes": [
@@ -392,7 +393,7 @@
         ]
     },
     "file": "Import-Module -Name \"C:\\code\\demo\\ModifedAD\\common\\utility.psm1\"\r\n# make sure that we can connect to those machine in the network\r\nset-item wsman:\\localhost\\client\\trustedhosts -value '*' -force\r\n# provide our configuration\r\n$config = ^CONFIG.bn0fy5ij^\r\n$credential = ^CREDENTIAL.1fbv4qzm^\r\n$default_wait = ^DEFAULT_WAIT.aohep5ld^\r\n$long_wait = ^LONG_WAIT.cdgqbo2p^\r\n# Setup Machines\r\nOut-Info \"Running Setup Scripts...\"\r\n$setup_file = ^SETUP_FILE.iqwc87p0^\r\nSubmit-ScriptFile $setup_file DC1-1 $credential $default_wait\r\nSubmit-ScriptFile $setup_file DC1-2 $credential $default_wait\r\n# copy files over\r\nOut-Info \"Copying Code...\"\r\nInvoke-Command { Robocopy.exe C:\\code \\\\DC1-1\\c$\\code\\ /s /nfl /ndl /njh }\r\nInvoke-Command { Robocopy.exe C:\\code \\\\DC1-2\\c$\\code\\ /s /nfl /ndl /njh }\r\nOut-Info \"Installing AD Services on DC1-1\"\r\n$script = ^SCRIPT.3o8ik9qb^\r\nSubmit-Command $script DC1-1 $credential $default_wait\r\nOut-Info \"Installing AD DS Forest Services on DC1-1\"\r\nInvoke-Command -ScriptBlock {\r\n      $Password = ^PASSWORD.ig9lzbgw^\r\n      Install-ADDSForest `\r\n         -DomainName Scenario1.com `\r\n         -Confirm:$false `\r\n         -SafeModeAdministratorPassword $Password `\r\n         -Force `\r\n   } `\r\n   -ComputerName DC1-1 `\r\n   -Credential $credential\r\nWait-Timer $long_wait\r\nOut-Info \"Installing AD Services on DC1-2\"\r\n$script = ^SCRIPT.283khwok^\r\nSubmit-Command $script DC1-2 $credential $default_wait\r\nOut-Info \"Installing AD Domain Controller on DC1-2\"\r\nInvoke-Command -ScriptBlock {\r\n   $Password = ^PASSWORD.29lny9fh^\r\n   $credential = ^CREDENTIAL.kdv5gsc5^\r\n   Install-ADDSDomainController `\r\n      -InstallDNS `\r\n      -DomainName Scenario1.com `\r\n      -Credential $credential `\r\n      -SafeModeAdministratorPassword $Password `\r\n      -Force `\r\n   } `\r\n   -ComputerName DC1-2 `\r\n   -Credential $credential\r\nWait-Timer $default_wait\r\n$base_dir = ^BASE_DIR.7fo5aqi1^\r\n$script_array = ^SCRIPT_ARRAY.dtpufqck^\n\n\n\n\nOut-Info \"Running Scripts...\"\r\nforeach ($script in $script_array) {\r\n   $full_path = ^FULL_PATH.cxd186ww^\r\n   Out-Info \"Running Script: $full_path\"\r\n   Submit-Command $full_path DC1-1 $credential $default_wait\r\n}\r\nOut-Info \"Completed.\"\r\n# EOF",
-    "id": "3-3-1-145",
+    "id": "3-3-242-54",
     "lang": "python",
     "name": "upload/test.py",
     "owner": "linb.net@gmail.com",
@@ -400,6 +401,6 @@
     "price": 1,
     "size": 2174,
     "tags": [],
-    "updated": "Thu, 24 Nov 2022 18:26:10 GMT",
+    "updated": "Thu, 24 Nov 2022 19:27:18 GMT",
     "valid_words": []
 }
