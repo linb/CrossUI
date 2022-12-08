@@ -1,0 +1,406 @@
+{
+    "author": "linb.net@gmail.com",
+    "compile_args": "",
+    "compile_ver": "",
+    "description": "",
+    "design_parameters": {
+        "block_count": 0,
+        "blocks": [],
+        "input_file": "demo scripts/ADSingleDomain.ps1",
+        "lang": "python",
+        "notes": "",
+        "parse_time": "00:00:00.0457694",
+        "scopes": {
+            "g": {
+                "declarations": {
+                    "$base_dir": true,
+                    "$config": true,
+                    "$credential": true,
+                    "$default_wait": true,
+                    "$long_wait": true,
+                    "$script": true,
+                    "$script_array": true,
+                    "$setup_file": true
+                },
+                "end": 6,
+                "index": 0,
+                "line": [
+                    1,
+                    63
+                ],
+                "name": "global",
+                "start": 1,
+                "type": "ScriptBlockAst"
+            },
+            "g.0": {
+                "declarations": {},
+                "end": 75,
+                "index": 0,
+                "line": [
+                    16,
+                    16
+                ],
+                "name": "global.BlockStatement#0",
+                "start": 16,
+                "type": "ScriptBlockAst"
+            },
+            "g.1": {
+                "declarations": {},
+                "end": 75,
+                "index": 0,
+                "line": [
+                    17,
+                    17
+                ],
+                "name": "global.BlockStatement#1",
+                "start": 16,
+                "type": "ScriptBlockAst"
+            },
+            "g.2": {
+                "declarations": {
+                    "$Password": true
+                },
+                "end": 5,
+                "index": 0,
+                "line": [
+                    22,
+                    29
+                ],
+                "name": "global.BlockStatement#2",
+                "start": 29,
+                "type": "ScriptBlockAst"
+            },
+            "g.3": {
+                "declarations": {
+                    "$Password": true,
+                    "$credential": true
+                },
+                "end": 5,
+                "index": 0,
+                "line": [
+                    37,
+                    46
+                ],
+                "name": "global.BlockStatement#3",
+                "start": 29,
+                "type": "ScriptBlockAst"
+            },
+            "g.4": {
+                "declarations": {
+                    "$full_path": true
+                },
+                "end": 2,
+                "index": 0,
+                "line": [
+                    57,
+                    61
+                ],
+                "name": "global.BlockStatement#4",
+                "start": 1,
+                "type": "ForEachStatementAst"
+            }
+        },
+        "script": "tmpvn9i_fja",
+        "type": "script",
+        "variable_count": 12,
+        "variables": [
+            {
+                "line_numbers": [
+                    [
+                        5,
+                        5
+                    ]
+                ],
+                "name": "$config",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^CONFIG.846f42ve^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        11,
+                        79
+                    ]
+                ],
+                "values": [
+                    "Import-Yaml -FilePath \"C:\\code\\demo\\ModifedAD\\config\\scenario1.yaml\""
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        6,
+                        6
+                    ]
+                ],
+                "name": "$credential",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^CREDENTIAL.6rpw92bn^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        15,
+                        43
+                    ]
+                ],
+                "values": [
+                    "Get-Credential Administrator"
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        7,
+                        7
+                    ]
+                ],
+                "name": "$default_wait",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^DEFAULT_WAIT.hiw6xvhb^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        17,
+                        19
+                    ]
+                ],
+                "values": [
+                    "30"
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        8,
+                        8
+                    ]
+                ],
+                "name": "$long_wait",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^LONG_WAIT.ciryj8l5^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        14,
+                        17
+                    ]
+                ],
+                "values": [
+                    "360"
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        11,
+                        11
+                    ]
+                ],
+                "name": "$setup_file",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^SETUP_FILE.itkqgn04^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        15,
+                        57
+                    ]
+                ],
+                "values": [
+                    "\"C:\\code\\demo\\ModifedAD\\scripts\\setup.ps1\""
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        19,
+                        19
+                    ],
+                    [
+                        34,
+                        34
+                    ]
+                ],
+                "name": "$script",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^SCRIPT.4q8zj5hs^",
+                    "^SCRIPT.8aijseo0^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        11,
+                        54
+                    ],
+                    [
+                        11,
+                        54
+                    ]
+                ],
+                "values": [
+                    "\"Install-WindowsFeature AD-Domain-Services\"",
+                    "\"Install-WindowsFeature AD-Domain-Services\""
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        23,
+                        23
+                    ]
+                ],
+                "name": "$Password",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^PASSWORD.dl6cz516^"
+                ],
+                "scope": "g.2",
+                "value_indexes": [
+                    [
+                        19,
+                        84
+                    ]
+                ],
+                "values": [
+                    "(ConvertTo-SecureString -String \"1Password!\" -AsPlainText -Force)"
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        38,
+                        38
+                    ]
+                ],
+                "name": "$Password",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^PASSWORD.h2njtzkt^"
+                ],
+                "scope": "g.3",
+                "value_indexes": [
+                    [
+                        16,
+                        81
+                    ]
+                ],
+                "values": [
+                    "(ConvertTo-SecureString -String \"1Password!\" -AsPlainText -Force)"
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        39,
+                        39
+                    ]
+                ],
+                "name": "$credential",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^CREDENTIAL.2wf8wq6h^"
+                ],
+                "scope": "g.3",
+                "value_indexes": [
+                    [
+                        18,
+                        56
+                    ]
+                ],
+                "values": [
+                    "Get-Credential Scenario1\\Administrator"
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        50,
+                        50
+                    ]
+                ],
+                "name": "$base_dir",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^BASE_DIR.77e8iiw^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        13,
+                        45
+                    ]
+                ],
+                "values": [
+                    "\"C:\\code\\demo\\ModifedAD\\scripts\""
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        51,
+                        55
+                    ]
+                ],
+                "name": "$script_array",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^SCRIPT_ARRAY.8c4meozt^"
+                ],
+                "scope": "g",
+                "value_indexes": [
+                    [
+                        17,
+                        38
+                    ]
+                ],
+                "values": [
+                    "\"GPOs.ps1\",\r\n                \"OrganizationUnits.ps1\",\r\n                \"PasswordPolicies.ps1\",\r\n                \"ServiceGroups.ps1\",\r\n                \"ServiceAccounts.ps1\""
+                ]
+            },
+            {
+                "line_numbers": [
+                    [
+                        58,
+                        58
+                    ]
+                ],
+                "name": "$full_path",
+                "ontology": "Unknown",
+                "replacement_names": [
+                    "^FULL_PATH.c1smakka^"
+                ],
+                "scope": "g.4",
+                "value_indexes": [
+                    [
+                        17,
+                        44
+                    ]
+                ],
+                "values": [
+                    "Join-Path $base_dir $script"
+                ]
+            }
+        ]
+    },
+    "file": "Import-Module -Name \"C:\\code\\demo\\ModifedAD\\common\\utility.psm1\"\r\n# make sure that we can connect to those machine in the network\r\nset-item wsman:\\localhost\\client\\trustedhosts -value '*' -force\r\n# provide our configuration\r\n$config = ^CONFIG.bn0fy5ij^\r\n$credential = ^CREDENTIAL.1fbv4qzm^\r\n$default_wait = ^DEFAULT_WAIT.aohep5ld^\r\n$long_wait = ^LONG_WAIT.cdgqbo2p^\r\n# Setup Machines\r\nOut-Info \"Running Setup Scripts...\"\r\n$setup_file = ^SETUP_FILE.iqwc87p0^\r\nSubmit-ScriptFile $setup_file DC1-1 $credential $default_wait\r\nSubmit-ScriptFile $setup_file DC1-2 $credential $default_wait\r\n# copy files over\r\nOut-Info \"Copying Code...\"\r\nInvoke-Command { Robocopy.exe C:\\code \\\\DC1-1\\c$\\code\\ /s /nfl /ndl /njh }\r\nInvoke-Command { Robocopy.exe C:\\code \\\\DC1-2\\c$\\code\\ /s /nfl /ndl /njh }\r\nOut-Info \"Installing AD Services on DC1-1\"\r\n$script = ^SCRIPT.3o8ik9qb^\r\nSubmit-Command $script DC1-1 $credential $default_wait\r\nOut-Info \"Installing AD DS Forest Services on DC1-1\"\r\nInvoke-Command -ScriptBlock {\r\n      $Password = ^PASSWORD.ig9lzbgw^\r\n      Install-ADDSForest `\r\n         -DomainName Scenario1.com `\r\n         -Confirm:$false `\r\n         -SafeModeAdministratorPassword $Password `\r\n         -Force `\r\n   } `\r\n   -ComputerName DC1-1 `\r\n   -Credential $credential\r\nWait-Timer $long_wait\r\nOut-Info \"Installing AD Services on DC1-2\"\r\n$script = ^SCRIPT.283khwok^\r\nSubmit-Command $script DC1-2 $credential $default_wait\r\nOut-Info \"Installing AD Domain Controller on DC1-2\"\r\nInvoke-Command -ScriptBlock {\r\n   $Password = ^PASSWORD.29lny9fh^\r\n   $credential = ^CREDENTIAL.kdv5gsc5^\r\n   Install-ADDSDomainController `\r\n      -InstallDNS `\r\n      -DomainName Scenario1.com `\r\n      -Credential $credential `\r\n      -SafeModeAdministratorPassword $Password `\r\n      -Force `\r\n   } `\r\n   -ComputerName DC1-2 `\r\n   -Credential $credential\r\nWait-Timer $default_wait\r\n$base_dir = ^BASE_DIR.7fo5aqi1^\r\n$script_array = ^SCRIPT_ARRAY.dtpufqck^\n\n\n\n\nOut-Info \"Running Scripts...\"\r\nforeach ($script in $script_array) {\r\n   $full_path = ^FULL_PATH.cxd186ww^\r\n   Out-Info \"Running Script: $full_path\"\r\n   Submit-Command $full_path DC1-1 $credential $default_wait\r\n}\r\nOut-Info \"Completed.\"\r\n# EOF",
+    "id": "3-3-242-54",
+    "lang": "python",
+    "name": "upload/test.py",
+    "owner": "linb.net@gmail.com",
+    "parsed_words": [],
+    "price": 0,
+    "size": 2174,
+    "tags": [],
+    "updated": "Thu, 24 Nov 2022 20:10:39 GMT",
+    "valid_words": []
+}
