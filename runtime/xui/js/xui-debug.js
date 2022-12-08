@@ -24418,7 +24418,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         tagName:"span",
                         title:"{tips}",
                         style:'{_style};{itemStyle};{_exstyle};',
-                        className:'xui-node xui-tag-cmd',
+                        className:'xui-node xui-tag-cmd {exClass}',
                         tabindex: '{_tabindex}',
                         CMDICON:{
                           className:'{itemClass}',
@@ -24433,7 +24433,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         tagName:"button",
                         title:"{tips}",
                         style:'{_style};{itemStyle};{_exstyle};',
-                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd xui-tag-cmd',
+                        className:'xui-node xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius xui-list-cmd xui-tag-cmd {exClass}',
                         tabindex: '{_tabindex}',
                         CMDICON:{
                           className:'{itemClass}',
@@ -24450,7 +24450,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         src:"{image}",
                         border:"0",
                         style:'{_style};{itemStyle};{_exstyle};',
-                        className:'xui-node xui-tag-cmd {itemClass}',
+                        className:'xui-node xui-tag-cmd {itemClass} {exClass}',
                         tabindex: '{_tabindex}',
                         alt:"{caption}"
                     }
@@ -35441,7 +35441,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             };
         },
-        _cache:function(type, focus){
+        _cache:function(type, ignoreEvent){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
 
@@ -35450,7 +35450,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    if(focus)
+                    if(false!==ignoreEvent)
                         profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
@@ -35469,7 +35469,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             // maybe destroyed
                             if(profile.box){
                               delete profile.__tryToHide;
-                              if(focus)
+                              if(false!==ignoreEvent)
                                   profile.boxing().activate();
                             }
                         });
@@ -35478,7 +35478,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
             delete profile.$poplink;
 
-            if(profile.afterPopHide)
+            if(false!==ignoreEvent && profile.afterPopHide)
                 this.afterPopHide(profile, drop, type);
             return cached;
         },
@@ -35589,7 +35589,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if(( false!==ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -35762,19 +35762,21 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
+                    if(false!==ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
                     var node=o.reBoxing(),pid=pro.parentID||xui.ini.$rootContainer;
                     node.popToTop(baseNode||profile.getSubNode('BOX'),null,
                          pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
 
-                    xui.tryF(o.activate,[],o);
+                    if(false!==ignoreEvent){
+                        xui.tryF(o.activate,[],o);
+                    }
 
                     //for on blur disappear
                     var sid=profile.key+":"+profile.$xid;
                     node.setBlurTrigger(sid, function(){
-                        box._cache('blur');
+                        box._cache('blur',true);
                         xui.Event.keyboardHook('esc',0,0,0,sid);
                     });
 
@@ -35796,7 +35798,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().popFileSelector();
                 }
 
-                if(!ignoreEvent && profile.afterPopShow)
+                if(false!==ignoreEvent && profile.afterPopShow)
                     box.afterPopShow(profile, drop);
             });
         },
@@ -35807,10 +35809,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
               profile.boxing()._drop(e,node,node,ignoreEvent);
             }
         },
-        collapse:function(){
+        collapse:function(ignoreEvent){
             var profile=this.get(0);
             if(profile.renderId && profile.$poplink)
-                profile.boxing()._cache('call');
+                profile.boxing()._cache('call',["collapse",ignoreEvent]);
         },
         getPopWnd:function(){
             var profile=this.get(0);
@@ -55520,7 +55522,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     })
                     .beforeNextFocus(function(editorPrf, e){
-                        if(editor.undo)
+                        if(editMode!="inline" && editor.undo)
                             xui.tryF(editor.undo,[true],editor);
                         var hash=xui.Event.getEventPara(e);
                         // fake 'right' key
@@ -71821,8 +71823,8 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 $spaceunit:1,
                 ini:'25em'
             },
-            chartCDN:"https://cdn.jsdelivr.net/npm/echarts@4.2.0-rc.2/dist/echarts.min.js",
-            chartCDNGL:"https://cdn.jsdelivr.net/npm/echarts-gl@1.1.1/dist/echarts-gl.min.js",
+            chartCDN:"//cdn.jsdelivr.net/npm/echarts",
+            chartCDNGL:"//cdn.jsdelivr.net/npm/echarts-gl",
             chartTheme:{
                 ini:"",
                 action: function(v){
@@ -71975,7 +71977,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
                 prf.boxing().busy(false, "Loading charts ...");
                 var gl=prop.chartCDNGL;
                 xui.include("echarts",prop.chartCDN,function(){
-                    if(gl) xui.include("",gl,function(){
+                    if(gl) xui.include("echarts-gl",gl,function(){
                         if(prf && prf.box){
                             prf.boxing().free();
                             fun();

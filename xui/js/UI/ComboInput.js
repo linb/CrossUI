@@ -124,7 +124,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 }
             };
         },
-        _cache:function(type, focus){
+        _cache:function(type, ignoreEvent){
             if(this.isDestroyed())return ;
             var profile=this.get(0);
 
@@ -133,7 +133,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    if(focus)
+                    if(false!==ignoreEvent)
                         profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
@@ -152,7 +152,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             // maybe destroyed
                             if(profile.box){
                               delete profile.__tryToHide;
-                              if(focus)
+                              if(false!==ignoreEvent)
                                   profile.boxing().activate();
                             }
                         });
@@ -161,7 +161,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
             delete profile.$poplink;
 
-            if(profile.afterPopHide)
+            if(false!==ignoreEvent && profile.afterPopHide)
                 this.afterPopHide(profile, drop, type);
             return cached;
         },
@@ -272,7 +272,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if(( false!==ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -445,19 +445,21 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
+                    if(false!==ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
                     var node=o.reBoxing(),pid=pro.parentID||xui.ini.$rootContainer;
                     node.popToTop(baseNode||profile.getSubNode('BOX'),null,
                          pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
 
-                    xui.tryF(o.activate,[],o);
+                    if(false!==ignoreEvent){
+                        xui.tryF(o.activate,[],o);
+                    }
 
                     //for on blur disappear
                     var sid=profile.key+":"+profile.$xid;
                     node.setBlurTrigger(sid, function(){
-                        box._cache('blur');
+                        box._cache('blur',true);
                         xui.Event.keyboardHook('esc',0,0,0,sid);
                     });
 
@@ -479,7 +481,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().popFileSelector();
                 }
 
-                if(!ignoreEvent && profile.afterPopShow)
+                if(false!==ignoreEvent && profile.afterPopShow)
                     box.afterPopShow(profile, drop);
             });
         },
@@ -490,10 +492,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
               profile.boxing()._drop(e,node,node,ignoreEvent);
             }
         },
-        collapse:function(){
+        collapse:function(ignoreEvent){
             var profile=this.get(0);
             if(profile.renderId && profile.$poplink)
-                profile.boxing()._cache('call');
+                profile.boxing()._cache('call',["collapse",ignoreEvent]);
         },
         getPopWnd:function(){
             var profile=this.get(0);

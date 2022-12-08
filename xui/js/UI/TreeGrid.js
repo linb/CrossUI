@@ -7473,7 +7473,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         }
                     })
                     .beforeNextFocus(function(editorPrf, e){
-                        if(editor.undo)
+                        if(editMode!="inline" && editor.undo)
                             xui.tryF(editor.undo,[true],editor);
                         var hash=xui.Event.getEventPara(e);
                         // fake 'right' key
