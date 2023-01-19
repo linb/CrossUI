@@ -1605,11 +1605,12 @@ xui.merge(xui,{
         var attrs,id,uri,attr,obj;
         if(xui.isHash(item)){
             id = item.id;
-            uri = item.uri;
-            attrs=xui.copy(item);
-            delete attrs.id;delete attrs.uri;
+            uri = item.uri || item.url;
+            attrs = item.attrs || xui.copy(item);
+            delete attrs.id; delete attrs.uri; delete attrs.url;
         }else{
             // [A.B]//crossui.com/A/js/b.js
+            // [ObjName]./lib/ObjName.1_0.js
             if(obj=/^\[([\w][\w\.]*[\w])\](.+)/.exec(item)) {
                 id = obj[1];
                 uri = obj[2];
@@ -2105,20 +2106,23 @@ xui.merge(xui,{
                 // use place holder to lazy bind
                 }else{
                     o = new xui.UI.MoudluePlaceHolder();
-                    xui.require(tag,function(module){
-                         if(module&&module["xui.Module"]){
-                            var t=o.get(0);
-                            if(t){
-                                if(t.renderId){
-                                    var m=new module();
-                                    m.create(function(){
-                                        o.replaceWithModule(m);
-                                    });
-                                }else{
-                                    t._module = new module();
+                    xui.require(tag,function(modules,key){
+                         for(key in modules){
+                             var module = modules[key];
+                             if(module&&module["xui.Module"]){
+                                var t=o.get(0);
+                                if(t){
+                                    if(t.renderId){
+                                        var m=new module();
+                                        m.create(function(){
+                                            o.replaceWithModule(m);
+                                        });
+                                    }else{
+                                        t._module = new module();
+                                    }
                                 }
-                            }
-                         }
+                             }
+                          }
                      });
                 }
             //from HTML element tagName
@@ -3811,8 +3815,9 @@ xui.Class('xui.Fetch','xui.absIO',{
                 if(!xui.isEmpty(self.data)){
                   if(self.reqType=="json"){
                     self.body = JSON.stringify(self.data);
+                    xui.set(self,['headers','Content-type', '"application/json']);
                   }
-                  // others form datat
+                  // others form data
                   else{
                     var formData = new FormData();
                     xui.each(self.data,function(o,i){

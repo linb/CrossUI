@@ -263,7 +263,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 $order:2
             },
             "KEY textarea":{
-                'white-space':'pre',
+                'white-space':'normal',
                 'overflow-x':'hidden',
                 'overflow-y':'auto'
             },

@@ -325,7 +325,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(temp&&temp.length){
                 var needshowinput=[],arrt=[];
                 xui.arr.each(temp,function(o){
-                       if(box.getCellOption(profile, o, "editable")&&
+                       if(box.getCellOption(profile, o, "editable")!==false&&
                            (box.getCellOption(profile, o, "editMode")=="inline"|| box.getCellOption(profile, o, "type")=='dropbutton'))
                             needshowinput.push(o);
                 });
@@ -1398,7 +1398,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         xui.arr.each(temp,function(o){
-                               if(box.getCellOption(profile, o, "editable")&&
+                               if(box.getCellOption(profile, o, "editable")!==false&&
                                    (box.getCellOption(profile, o, "editMode")=="inline"||box.getCellOption(profile, o, "type")=="dropbutton"))
                                     box._editCell(profile,o);
                         });
@@ -2253,7 +2253,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(refresh){
                 var getPro=profile.box.getCellOption;
                 xui.each(profile.cellMap,function(o){
-                       if(getPro(profile, o, "editable") &&
+                       if(getPro(profile, o, "editable")!==false &&
                            (getPro(profile, o, "editMode")=="inline" || getPro(profile, o, "type")=='dropbutton' ))
                             profile.box._editCell(profile,o,null,true);
                 });
@@ -4361,7 +4361,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(box.getCellOption(profile, i, "disabled"))return;
 
                     var editMode=box.getCellOption(profile, i, "editMode");
-                    if( box.getCellOption(profile, i, "editable") && xui.str.startWith(editMode,"hover")){
+                    if( box.getCellOption(profile, i, "editable")!==false && xui.str.startWith(editMode,"hover")){
                         if(editMode=='hoversharp' && box.getCellOption(profile, i, "type")=='file'){
                         //    profile.box.$cancelHoverEditor(profile);
                         }else{
@@ -5413,7 +5413,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box.__ensurehotrow(ns,null);
 
             xui.each(ns.cellMap,function(o){
-                   if(getPro(ns, o, "editable") &&
+                   if(getPro(ns, o, "editable")!==false &&
                        (getPro(ns, o, "editMode")=="inline" || getPro(ns, o, "type")=='dropbutton' ))
                         box._editCell(ns,o);
             });

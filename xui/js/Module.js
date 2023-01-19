@@ -441,7 +441,7 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             //properties
             var c={}, p=o.box.$DataModel;
-            xui.merge(c,o.properties, function(o,i){return p[i]!==o});
+            xui.merge(c,o.properties, function(o,i){return !xui.deepEquals(p[i], o) });
 
             if(oldDftProps){
               xui.each(oldDftProps,function(v,k){

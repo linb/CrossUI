@@ -240,6 +240,7 @@ xui.Class("xui.Tips", null,{
                             }
 
                             node.removeClass('xui-ui-hidden');
+                            style.contentVisibility="";
                             if(pos===true){
                                 style.visibility='visible';
                             }else{
@@ -251,7 +252,6 @@ xui.Class("xui.Tips", null,{
                                     height:32
                                 }},1);
                             }
-                            style.contentVisibility="";
                             style=styleI=t1=null;
                         }else
                             node.css('zIndex',0).hide();

@@ -133,7 +133,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    if(false!==ignoreEvent)
+                    if(!ignoreEvent)
                         profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
@@ -152,7 +152,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             // maybe destroyed
                             if(profile.box){
                               delete profile.__tryToHide;
-                              if(false!==ignoreEvent)
+                              if(!ignoreEvent)
                                   profile.boxing().activate();
                             }
                         });
@@ -161,7 +161,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
             delete profile.$poplink;
 
-            if(false!==ignoreEvent && profile.afterPopHide)
+            if(!ignoreEvent && profile.afterPopHide)
                 this.afterPopHide(profile, drop, type);
             return cached;
         },
@@ -272,7 +272,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if(( false!==ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -445,14 +445,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(false!==ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
+                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
                     var node=o.reBoxing(),pid=pro.parentID||xui.ini.$rootContainer;
                     node.popToTop(baseNode||profile.getSubNode('BOX'),null,
                          pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
 
-                    if(false!==ignoreEvent){
+                    if(!ignoreEvent){
                         xui.tryF(o.activate,[],o);
                     }
 
@@ -481,7 +481,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().popFileSelector();
                 }
 
-                if(false!==ignoreEvent && profile.afterPopShow)
+                if(!ignoreEvent && profile.afterPopShow)
                     box.afterPopShow(profile, drop);
             });
         },

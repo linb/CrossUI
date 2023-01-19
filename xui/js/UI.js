@@ -5208,7 +5208,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     // imageClass + image
                     if(hashOut.image){
                         hashOut.imageClass='xui-icon-placeholder';
-                        hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+                        hashOut.backgroundImage="background-image:url("+ xui.adjustRes(hashOut.image) +");";
                     }
                     if(hashOut.imagePos)
                         hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
@@ -8570,7 +8570,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             flagText:{
               ini:'',
               action:function(v){
-                this.getSubNode('FLAG').text(v);
+                this.getSubNode('FLAG').text(v).css("display",v?"":"none");
               }
             },
             flagClass:{
@@ -9134,7 +9134,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
             flagText:{
               ini:'',
               action:function(v){
-                this.getSubNode('FLAG').text(v);
+                this.getSubNode('FLAG').text(v).css("display",v?"":"none");
               }
             },
             flagClass:{
@@ -9596,7 +9596,10 @@ xui.Class("xui.AnimBinder","xui.absObj",{
     Instance:{
         _ini:xui.Timer.prototype._ini,
         _after_ini:function(profile,ins,alias){
-             if(!profile.name)profile.Instace.setName(alias);
+             var box=profile.box,name=profile.properties.name;
+             if(name && box._pool[name]!==profile){
+                 box._pool[name]=profile;
+             }
         },
         getParent:xui.Timer.prototype.getParent,
         getChildrenId:xui.Timer.prototype.getChildrenId,
@@ -9608,12 +9611,6 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 //free profile
                 profile.__gc();
             });
-        },
-        setHost:function(value, alias){
-            var self=this;
-            if(value && alias)
-                self.setName(alias);
-            return arguments.callee.upper.apply(self,arguments);
         },
         apply:function(node, onEnd){
             var prf=this.get(0), fs=prf.properties['frames'], arr=[], frame, frame1, frame2, endpoints;

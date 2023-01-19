@@ -2,24 +2,23 @@ xui.Class("xui.APICaller","xui.absObj",{
     Instance:{
         _ini:xui.Timer.prototype._ini,
         _after_ini:function(profile,ins,alias){
-             if(!profile.name)profile.Instace.setName(alias);
+             var box=profile.box,name=profile.properties.name;
+             if(name && box._pool[name]!==profile){
+                 box._pool[name]=profile;
+             }
         },
         destroy:function(){
             this.each(function(profile){
               if(!profile.destroyed){
                 var box=profile.box,name=profile.properties.name;
                 //delete from pool
-                delete box._pool[name];
+                if(name){
+                    delete box._pool[name];
+                }
                 //free profile
                 profile.__gc();
               }
             });
-        },
-        setHost:function(value, alias){
-            var self=this;
-            if(value && alias)
-                self.setName(alias);
-            return arguments.callee.upper.apply(self,arguments);
         },
 
         setQueryData:function(data, path){
@@ -248,6 +247,9 @@ xui.Class("xui.APICaller","xui.absObj",{
                         xui.Cookies.remove(k);
                     });
                     xui.Cookies.set(cookies);
+                    if(prop.autoDestroy){
+                         ns.destroy();
+                    }
                 };
             }
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
@@ -375,17 +377,17 @@ xui.Class("xui.APICaller","xui.absObj",{
           return prf && prf._rpc;
         },
         start:function(){
-          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          var rpc = this.getRPCInstance();
           if(rpc && rpc.getStatus && rpc.getStatus()!="started")
-            rpc.start();
+              rpc.start();
         },
         abort:function(){
-          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          var rpc = this.getRPCInstance();
           if(rpc && rpc.getStatus && rpc.getStatus()=="started")
-            rpc.abort();
+              rpc.abort();
         },
         getStatus:function(){
-          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          var rpc = this.getRPCInstance();
           return rpc && rpc.getStatus && rpc.getStatus();
         }
     },
@@ -521,7 +523,8 @@ xui.Class("xui.APICaller","xui.absObj",{
                     prop.responseCallback=[];
                     this.invoke(fun,fun);
                 }
-            }
+            },
+            autoDestroy: false
         },
         EventHandlers:{
             beforeInvoke:function(profile, requestId){},

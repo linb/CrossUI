@@ -4,7 +4,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
         xui.UI.SLabel = xui.UI.Label;
         var key="xui.UI.SLabel";
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
-    },    
+    },
     Instance:{
         fireClickEvent:function(){
             this.getRoot().onClick();
@@ -101,6 +101,11 @@ xui.Class("xui.UI.Label", "xui.UI",{
                     this.getSubNode('ICON').css('backgroundSize', value||'');
                 }
             },
+            imageRepeat:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundRepeat', value||'');
+                }
+            },
             imageClass: {
                 ini:'',
                 action:function(v,ov){
@@ -191,6 +196,6 @@ xui.Class("xui.UI.Label", "xui.UI",{
               data._vAlign2 = 'vertical-align:'+(data.vAlign||'');
             }
             return data;
-        }        
+        }
     }
 });

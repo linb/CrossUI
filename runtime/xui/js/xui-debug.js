@@ -1619,11 +1619,12 @@ xui.merge(xui,{
         var attrs,id,uri,attr,obj;
         if(xui.isHash(item)){
             id = item.id;
-            uri = item.uri;
-            attrs=xui.copy(item);
-            delete attrs.id;delete attrs.uri;
+            uri = item.uri || item.url;
+            attrs = item.attrs || xui.copy(item);
+            delete attrs.id; delete attrs.uri; delete attrs.url;
         }else{
             // [A.B]//crossui.com/A/js/b.js
+            // [ObjName]./lib/ObjName.1_0.js
             if(obj=/^\[([\w][\w\.]*[\w])\](.+)/.exec(item)) {
                 id = obj[1];
                 uri = obj[2];
@@ -2119,20 +2120,23 @@ xui.merge(xui,{
                 // use place holder to lazy bind
                 }else{
                     o = new xui.UI.MoudluePlaceHolder();
-                    xui.require(tag,function(module){
-                         if(module&&module["xui.Module"]){
-                            var t=o.get(0);
-                            if(t){
-                                if(t.renderId){
-                                    var m=new module();
-                                    m.create(function(){
-                                        o.replaceWithModule(m);
-                                    });
-                                }else{
-                                    t._module = new module();
+                    xui.require(tag,function(modules,key){
+                         for(key in modules){
+                             var module = modules[key];
+                             if(module&&module["xui.Module"]){
+                                var t=o.get(0);
+                                if(t){
+                                    if(t.renderId){
+                                        var m=new module();
+                                        m.create(function(){
+                                            o.replaceWithModule(m);
+                                        });
+                                    }else{
+                                        t._module = new module();
+                                    }
                                 }
-                            }
-                         }
+                             }
+                          }
                      });
                 }
             //from HTML element tagName
@@ -3825,8 +3829,9 @@ xui.Class('xui.Fetch','xui.absIO',{
                 if(!xui.isEmpty(self.data)){
                   if(self.reqType=="json"){
                     self.body = JSON.stringify(self.data);
+                    xui.set(self,['headers','Content-type', '"application/json']);
                   }
-                  // others form datat
+                  // others form data
                   else{
                     var formData = new FormData();
                     xui.each(self.data,function(o,i){
@@ -6029,24 +6034,23 @@ xui.Class("xui.ExcelFormula",null,{
     Instance:{
         _ini:xui.Timer.prototype._ini,
         _after_ini:function(profile,ins,alias){
-             if(!profile.name)profile.Instace.setName(alias);
+             var box=profile.box,name=profile.properties.name;
+             if(name && box._pool[name]!==profile){
+                 box._pool[name]=profile;
+             }
         },
         destroy:function(){
             this.each(function(profile){
               if(!profile.destroyed){
                 var box=profile.box,name=profile.properties.name;
                 //delete from pool
-                delete box._pool[name];
+                if(name){
+                    delete box._pool[name];
+                }
                 //free profile
                 profile.__gc();
               }
             });
-        },
-        setHost:function(value, alias){
-            var self=this;
-            if(value && alias)
-                self.setName(alias);
-            return arguments.callee.upper.apply(self,arguments);
         },
 
         setQueryData:function(data, path){
@@ -6275,6 +6279,9 @@ xui.Class("xui.ExcelFormula",null,{
                         xui.Cookies.remove(k);
                     });
                     xui.Cookies.set(cookies);
+                    if(prop.autoDestroy){
+                         ns.destroy();
+                    }
                 };
             }
             var ajax = xui._getrpc(queryURL, queryArgs, options).apply(null, [queryURL, queryArgs, function(rspData){
@@ -6402,17 +6409,17 @@ xui.Class("xui.ExcelFormula",null,{
           return prf && prf._rpc;
         },
         start:function(){
-          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          var rpc = this.getRPCInstance();
           if(rpc && rpc.getStatus && rpc.getStatus()!="started")
-            rpc.start();
+              rpc.start();
         },
         abort:function(){
-          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          var rpc = this.getRPCInstance();
           if(rpc && rpc.getStatus && rpc.getStatus()=="started")
-            rpc.abort();
+              rpc.abort();
         },
         getStatus:function(){
-          var ns=this,prf=ns.get(0), rpc = prf && prf._rpc;
+          var rpc = this.getRPCInstance();
           return rpc && rpc.getStatus && rpc.getStatus();
         }
     },
@@ -6548,7 +6555,8 @@ xui.Class("xui.ExcelFormula",null,{
                     prop.responseCallback=[];
                     this.invoke(fun,fun);
                 }
-            }
+            },
+            autoDestroy: false
         },
         EventHandlers:{
             beforeInvoke:function(profile, requestId){},
@@ -15733,7 +15741,7 @@ xui.Class('xui.Module','xui.absProfile',{
             }
             //properties
             var c={}, p=o.box.$DataModel;
-            xui.merge(c,o.properties, function(o,i){return p[i]!==o});
+            xui.merge(c,o.properties, function(o,i){return !xui.deepEquals(p[i], o) });
 
             if(oldDftProps){
               xui.each(oldDftProps,function(v,k){
@@ -18858,6 +18866,7 @@ xui.Class("xui.Tips", null,{
                             }
 
                             node.removeClass('xui-ui-hidden');
+                            style.contentVisibility="";
                             if(pos===true){
                                 style.visibility='visible';
                             }else{
@@ -18869,7 +18878,6 @@ xui.Class("xui.Tips", null,{
                                     height:32
                                 }},1);
                             }
-                            style.contentVisibility="";
                             style=styleI=t1=null;
                         }else
                             node.css('zIndex',0).hide();
@@ -24812,7 +24820,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     // imageClass + image
                     if(hashOut.image){
                         hashOut.imageClass='xui-icon-placeholder';
-                        hashOut.backgroundImage="background-image:url("+ hashOut.image +");";
+                        hashOut.backgroundImage="background-image:url("+ xui.adjustRes(hashOut.image) +");";
                     }
                     if(hashOut.imagePos)
                         hashOut.backgroundPosition='background-position:'+hashOut.imagePos+';';
@@ -28174,7 +28182,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             flagText:{
               ini:'',
               action:function(v){
-                this.getSubNode('FLAG').text(v);
+                this.getSubNode('FLAG').text(v).css("display",v?"":"none");
               }
             },
             flagClass:{
@@ -28738,7 +28746,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
             flagText:{
               ini:'',
               action:function(v){
-                this.getSubNode('FLAG').text(v);
+                this.getSubNode('FLAG').text(v).css("display",v?"":"none");
               }
             },
             flagClass:{
@@ -29200,7 +29208,10 @@ xui.Class("xui.AnimBinder","xui.absObj",{
     Instance:{
         _ini:xui.Timer.prototype._ini,
         _after_ini:function(profile,ins,alias){
-             if(!profile.name)profile.Instace.setName(alias);
+             var box=profile.box,name=profile.properties.name;
+             if(name && box._pool[name]!==profile){
+                 box._pool[name]=profile;
+             }
         },
         getParent:xui.Timer.prototype.getParent,
         getChildrenId:xui.Timer.prototype.getChildrenId,
@@ -29212,12 +29223,6 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 //free profile
                 profile.__gc();
             });
-        },
-        setHost:function(value, alias){
-            var self=this;
-            if(value && alias)
-                self.setName(alias);
-            return arguments.callee.upper.apply(self,arguments);
         },
         apply:function(node, onEnd){
             var prf=this.get(0), fs=prf.properties['frames'], arr=[], frame, frame1, frame2, endpoints;
@@ -31793,7 +31798,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
         xui.UI.SLabel = xui.UI.Label;
         var key="xui.UI.SLabel";
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
-    },    
+    },
     Instance:{
         fireClickEvent:function(){
             this.getRoot().onClick();
@@ -31890,6 +31895,11 @@ xui.Class("xui.UI.Label", "xui.UI",{
                     this.getSubNode('ICON').css('backgroundSize', value||'');
                 }
             },
+            imageRepeat:{
+                action: function(value){
+                    this.getSubNode('ICON').css('backgroundRepeat', value||'');
+                }
+            },
             imageClass: {
                 ini:'',
                 action:function(v,ov){
@@ -31980,7 +31990,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
               data._vAlign2 = 'vertical-align:'+(data.vAlign||'');
             }
             return data;
-        }        
+        }
     }
 });
 xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
@@ -33067,7 +33077,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 $order:2
             },
             "KEY textarea":{
-                'white-space':'pre',
+                'white-space':'normal',
                 'overflow-x':'hidden',
                 'overflow-y':'auto'
             },
@@ -35450,7 +35460,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 if(!cached){
                     if(!drop.destroyed)
                         drop.boxing().destroy(true);
-                    if(false!==ignoreEvent)
+                    if(!ignoreEvent)
                         profile.boxing().activate();
                 }else{
                     if(!profile.__tryToHide){
@@ -35469,7 +35479,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             // maybe destroyed
                             if(profile.box){
                               delete profile.__tryToHide;
-                              if(false!==ignoreEvent)
+                              if(!ignoreEvent)
                                   profile.boxing().activate();
                             }
                         });
@@ -35478,7 +35488,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
             delete profile.$poplink;
 
-            if(false!==ignoreEvent && profile.afterPopHide)
+            if(!ignoreEvent && profile.afterPopHide)
                 this.afterPopHide(profile, drop, type);
             return cached;
         },
@@ -35589,7 +35599,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 pos.top += main.offsetHeight();
 
                 //special cmd type: getter, 'cmdbox' and 'popbox'
-                if(( false!==ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
+                if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
 
                 // for standard drop
@@ -35762,14 +35772,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     profile.boxing().setPopWnd(o);
 
-                    if(false!==ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
+                    if(!ignoreEvent && profile.beforePopShow && false===box.beforePopShow(profile, drop, profile.properties.items))
                         return;
                     //pop
                     var node=o.reBoxing(),pid=pro.parentID||xui.ini.$rootContainer;
                     node.popToTop(baseNode||profile.getSubNode('BOX'),null,
                          pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer():xui(pid):null);
 
-                    if(false!==ignoreEvent){
+                    if(!ignoreEvent){
                         xui.tryF(o.activate,[],o);
                     }
 
@@ -35798,7 +35808,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     profile.boxing().popFileSelector();
                 }
 
-                if(false!==ignoreEvent && profile.afterPopShow)
+                if(!ignoreEvent && profile.afterPopShow)
                     box.afterPopShow(profile, drop);
             });
         },
@@ -48374,7 +48384,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(temp&&temp.length){
                 var needshowinput=[],arrt=[];
                 xui.arr.each(temp,function(o){
-                       if(box.getCellOption(profile, o, "editable")&&
+                       if(box.getCellOption(profile, o, "editable")!==false&&
                            (box.getCellOption(profile, o, "editMode")=="inline"|| box.getCellOption(profile, o, "type")=='dropbutton'))
                             needshowinput.push(o);
                 });
@@ -49447,7 +49457,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                     if(temp.length){
                         xui.arr.each(temp,function(o){
-                               if(box.getCellOption(profile, o, "editable")&&
+                               if(box.getCellOption(profile, o, "editable")!==false&&
                                    (box.getCellOption(profile, o, "editMode")=="inline"||box.getCellOption(profile, o, "type")=="dropbutton"))
                                     box._editCell(profile,o);
                         });
@@ -50302,7 +50312,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(refresh){
                 var getPro=profile.box.getCellOption;
                 xui.each(profile.cellMap,function(o){
-                       if(getPro(profile, o, "editable") &&
+                       if(getPro(profile, o, "editable")!==false &&
                            (getPro(profile, o, "editMode")=="inline" || getPro(profile, o, "type")=='dropbutton' ))
                             profile.box._editCell(profile,o,null,true);
                 });
@@ -52410,7 +52420,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(box.getCellOption(profile, i, "disabled"))return;
 
                     var editMode=box.getCellOption(profile, i, "editMode");
-                    if( box.getCellOption(profile, i, "editable") && xui.str.startWith(editMode,"hover")){
+                    if( box.getCellOption(profile, i, "editable")!==false && xui.str.startWith(editMode,"hover")){
                         if(editMode=='hoversharp' && box.getCellOption(profile, i, "type")=='file'){
                         //    profile.box.$cancelHoverEditor(profile);
                         }else{
@@ -53462,7 +53472,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.box.__ensurehotrow(ns,null);
 
             xui.each(ns.cellMap,function(o){
-                   if(getPro(ns, o, "editable") &&
+                   if(getPro(ns, o, "editable")!==false &&
                        (getPro(ns, o, "editMode")=="inline" || getPro(ns, o, "type")=='dropbutton' ))
                         box._editCell(ns,o);
             });
