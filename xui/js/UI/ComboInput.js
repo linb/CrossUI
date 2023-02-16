@@ -744,7 +744,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 $order:4,
                 cursor:'pointer',
                 'text-align':'left',
-                'white-space': 'normal',
+                'white-space': 'pre-wrap',
                 overflow:'hidden'
             },
             'KEY-type-button INPUT, KEY-type-dropbutton INPUT':{

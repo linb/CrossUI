@@ -3155,7 +3155,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             'SCROLL11, SCROLL12, SCROLL21, SCROLL22':{
                 position:'relative',
-                'text-align':'left'
+                'text-align':'left',
+                'will-change': 'transform'
             },
             'SCROLL11, SCROLL12':{
                 overflow:'hidden'
@@ -3531,7 +3532,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var node=xui.use(src).get(0),
                         t=node.scrollTop||0;
                     if(profile.$st!=t)
-                        profile.getSubNode('SCROLL22').get(0).scrollTop=t;
+                        profile.getSubNode('SCROLL22').get(0).scrollTop=profile.$st=t;
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getSrc(e)==xui(src).get(0) && profile.__hastmpRow && profile.__needchecktmprow)

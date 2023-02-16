@@ -5446,12 +5446,13 @@ xui.Class("xui.UI",  "xui.absObj", {
             hoverPopType:{
                 ini:'outer',
                 dftWidth:180,
-                listbox:['outer','outer_tb','outer_lr','inner',
+                combobox:['outer','outer_tb','outer_lr','inner',
                 'outerleft-outertop','left-outertop','center-outertop','right-outertop','outerright-outertop',
                 'outerleft-top','left-top','center-top','right-top','outerright-top',
                 'outerleft-middle','left-middle','center-middle','right-middle','outerright-middle',
                 'outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom',
-                'outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom'
+                'outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom',
+                'outer:-1'
                 ]
             },
             locked:{
@@ -7973,6 +7974,10 @@ xui.Class("xui.absValue", "xui.absObj",{
                 if(v && xui.isArr(v) && v.length>1)
                     v.sort();
             }
+            if(prf.beforeValueGet){
+              var vv=prf.beforeValueGet(prf, v);
+              if(xui.isDefined(vv))v=vv;
+            }
             return v;
         },
         getUIValue:function(returnArr){
@@ -7997,6 +8002,10 @@ xui.Class("xui.absValue", "xui.absObj",{
                     v=v.split(prop.valueSeparator);
                 if(v && xui.isArr(v) && v.length>1)
                     v.sort();
+            }
+            if(prf.beforeUIValueGet){
+              var vv=prf.beforeUIValueGet(prf, v);
+              if(xui.isDefined(vv))v=vv;
             }
             return v;
         },
@@ -8200,11 +8209,13 @@ xui.Class("xui.absValue", "xui.absObj",{
         },
         EventHandlers:{
            //real value set
+            beforeValueGet:function(profile, value){},
             beforeValueSet:function(profile, oldValue, newValue,force, tag){},
             afterValueSet:function(profile, oldValue, newValue,force, tag){},
             onValueChange:function(profile, oldValue, newValue, force, tag){},
 
             //ui value set
+            beforeUIValueGet:function(profile, value){},
             beforeUIValueSet:function(profile, oldValue, newValue, force, tag, tagVar){},
             afterUIValueSet:function(profile, oldValue, newValue, force, tag, tagVar){},
             onChange:function(profile, oldValue, newValue, force, tag, tagVar){},

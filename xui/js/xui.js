@@ -670,7 +670,8 @@ new function(){
           for (var p in y) {
             if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) return false;
           }
-          return true;
+          // for two functions
+          return x+""==y+"";
         },
         /*filter hash/array
         filter: filter function(will delete "return false")

@@ -351,7 +351,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 if(prf.onMouseEvent)
                     xui.arr.each(evts1,function(name){
                         chart.on(name, function(params){
-                            if(prf && prf.onMouseEvent)prf.onMouseEvent(prf, name, params);
+                            if(prf && prf.onMouseEvent)prf.boxing().onMouseEvent(prf, name, params);
                         });
                     });
 
@@ -359,7 +359,7 @@ xui.Class("xui.UI.ECharts","xui.UI",{
                 if(prf.onChartEvent)
                     xui.arr.each(evts2,function(name){
                          chart.on(name, function(params){
-                            if(prf && prf.onChartEvent)prf.onChartEvent(prf, name, params);
+                            if(prf && prf.onChartEvent)prf.boxing().onChartEvent(prf, name, params);
                         });
                     });
 
