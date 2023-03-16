@@ -27679,14 +27679,14 @@ xui.Class("xui.absValue", "xui.absObj",{
                     //value copy
                     prop.$UIvalue = value;
 
+                    if(!prop.dirtyMark)
+                        box.setValue(value,false,'uiv',cv || triggerEventOnly);
+
                     if(profile.renderId && !triggerEventOnly)box._setDirtyMark();
 
                     if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag, tagVar);
                     if(profile._onChange)box._onChange(profile, ovalue, value, force, tag, tagVar);
                     if(profile.onChange)box.onChange(profile, ovalue, value, force, tag, tagVar);
-
-                    if(!prop.dirtyMark)
-                        box.setValue(value,false,'uiv',cv || triggerEventOnly);
 
                     if(prop.excelCellId && box.notifyExcel){
                         box.notifyExcel(false);
@@ -45099,12 +45099,13 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
                         if(prop.dynDestory || item.dynDestory){
+                            var bak=xui.clone(item.sub, true);
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
                             profile.boxing().removeItems(arr);
-                            item.sub=true;
                             delete item._inited;
+                            item.sub = bak;
                         }
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
@@ -52500,8 +52501,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 var v = cell.value;
 
                                 box._updCell(profile, cell, !v, p.dirtyMark, true, true);
-                                var e = xui.get(cell,['editorEvents','onChange']);
-                                if(e)e(null, v, !v);
+                                var c = xui.get(cell,['editorEvents','onChange']);
+                                if(c)c(null, v, !v);
 
                                 profile.box._trycheckrowdirty(profile,cell);
 

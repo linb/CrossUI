@@ -4433,8 +4433,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 var v = cell.value;
 
                                 box._updCell(profile, cell, !v, p.dirtyMark, true, true);
-                                var e = xui.get(cell,['editorEvents','onChange']);
-                                if(e)e(null, v, !v);
+                                var c = xui.get(cell,['editorEvents','onChange']);
+                                if(c)c(null, v, !v);
 
                                 profile.box._trycheckrowdirty(profile,cell);
 

@@ -8066,14 +8066,14 @@ xui.Class("xui.absValue", "xui.absObj",{
                     //value copy
                     prop.$UIvalue = value;
 
+                    if(!prop.dirtyMark)
+                        box.setValue(value,false,'uiv',cv || triggerEventOnly);
+
                     if(profile.renderId && !triggerEventOnly)box._setDirtyMark();
 
                     if(profile.afterUIValueSet)box.afterUIValueSet(profile, ovalue, value, force, tag, tagVar);
                     if(profile._onChange)box._onChange(profile, ovalue, value, force, tag, tagVar);
                     if(profile.onChange)box.onChange(profile, ovalue, value, force, tag, tagVar);
-
-                    if(!prop.dirtyMark)
-                        box.setValue(value,false,'uiv',cv || triggerEventOnly);
 
                     if(prop.excelCellId && box.notifyExcel){
                         box.notifyExcel(false);
