@@ -1466,6 +1466,8 @@ xui.merge(xui,{
         if(!xui.isStr(str))return str;
         wrap=wrap?xui.wrapRes:xui.getRes;
         str=str.replace(/\$([\$\.\-\)])/g,function(a,b){return xui._escapeMap[b]||a;});
+        // do not use @ any more
+        onlyBraces = true;
         str=xui._langscMark.test(str) ?  str.replace(xui._langReg, function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z){
                     // protect $@{
             return c=='$' ? onlyVars?a:d :

@@ -197,7 +197,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         /*
         *open to deep node
         */
-        openToNode:function(id, triggerEvent, stopanim){
+        openToNode:function(id, triggerEvent, stopanim, intoView, callback){
             return this.each(function(profile){
                 var res=false, a=[];
                 var fun=function(arr, catId, layer){
@@ -230,7 +230,13 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         }else if(triggerEvent!==false){
                             profile.boxing().fireItemClickEvent(o.id);
                         }
+                        if(intoView&&(i==a.length-1 || o.sub)){
+                            profile.boxing().getSubNode("BAR",o.id).scrollIntoView();
+                            xui.tryF(callback);
+                        }
                     });
+                }else{
+                  xui.tryF(callback);
                 }
             });
         },
