@@ -27,6 +27,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                 }else{
                                   box.getPanel(itemId).css('display','none');
                                 }
+                                box.getPanel(itemId).removeClass("xui-activated");
                             }
                         }
                     },
@@ -50,6 +51,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                 }
                                 if(item._scrollTop)
                                     box.getPanel(itemId).get(0).scrollTop=item._scrollTop;
+
+                                box.getPanel(itemId).addClass("xui-activated");
 
                                 profile.adjustSize(false, false, value);
 

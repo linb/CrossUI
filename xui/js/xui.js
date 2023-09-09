@@ -297,9 +297,13 @@ new function(){
                 }
             }else{
                 if(value===undefined){
-                    if(hash.hasOwnProperty && hash.hasOwnProperty(path))
-                        delete hash[path];
-                    else hash[path]=undefined;
+                    if(path in hash){
+                        if(hash.hasOwnProperty && hash.hasOwnProperty(path)){
+                            delete hash[path];
+                        }else{
+                            hash[path]=undefined;
+                        }
+                    }
                 }else{
                     return hash[path]=value;
                 }
@@ -1163,8 +1167,9 @@ xui.merge(xui,{
     $localeDomId:'xlid',
     $dateFormat:'',
     $rand:"_rnd_",
+    $ver:"_v_",
     _rnd:function(force){
-        return xui.debugMode||force?xui.$rand+"="+xui.rand():null;
+        return xui.debugMode||force ? (xui.$rand + "=" + xui.rand()) : xui.production_version ? ( xui.$ver + "=" + xui.production_version):null;
     },
     _debugPre:function(arr){
         arr=xui.toArr(arr);
@@ -1937,7 +1942,7 @@ xui.merge(xui,{
     },
     getClassName:function(uri){
         if(uri&&xui.isStr(uri)){
-            var a=uri.split(/\/js\//g),
+            var a=uri.split("#")[0].split("?")[0].split(/\/js\//g),
                 b,c,n=a.length;
             if(n>=2){
                 if(a[n-2]+"/"==xui.ini.path)a[n-2]="xui";
@@ -2307,7 +2312,7 @@ new function(){
     if(!ini.path){
         var s,arr = document.getElementsByTagName('script'), reg = /js\/xui(-[\w]+)?\.js$/,l=arr.length;
         while(--l>=0){
-            s=arr[l].src;
+            s=arr[l].src.split("#")[0].split("?")[0];
             if(s.match(reg)){
                 ini.path = s.replace(reg,'').replace(/\(/g,"%28").replace(/\)/g,"%29");
                 break;

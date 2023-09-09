@@ -3513,7 +3513,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             HFMARK:{
                 onClick:function(profile,e,src){
-                    if(profile.properties.selMode!='multi'&&profile.properties.selMode!='multibycheckbox')return;
+                    var prop=profile.properties;
+                    if(prop.disabled || prop.readonly)return;
+                    if(prop.selMode!='multi'&&prop.selMode!='multibycheckbox')return;
 
                     var rows=[];
                     xui.each(profile.rowMap,function(o){
@@ -3528,7 +3530,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }else{
                         profile._$checkAll=true;
                         xui.use(src).tagClass('-checked')
-                        profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator),null,null,'click');
+                        profile.boxing().setUIValue(rows.join(prop.valueSeparator),null,null,'click');
                         profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
                     return false;
@@ -8083,7 +8085,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 _layers=profile._headerLayers,
                 headerh=profile.properties.headerHeight,
                 h=profile.$px(headerh,0,true),
-                cacuH=profile.$px(profile.box.$DataModel.headerHeight.ini,0,true)*(_layers+1),
+                cacuH=profile.$px(profile.box.$DataModel.headerHeight,0,true)*(_layers+1),
                 border=profile._$cache.hasOwnProperty('_root_b_w') ? profile._$cache._root_b_w : (profile._$cache._root_b_w = profile.getRoot().contentBox()?2:0),
                 tt,l,th,col,rh,upper,grpcolsh,h2;
             // ensure height here

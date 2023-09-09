@@ -311,9 +311,13 @@ new function(){
                 }
             }else{
                 if(value===undefined){
-                    if(hash.hasOwnProperty && hash.hasOwnProperty(path))
-                        delete hash[path];
-                    else hash[path]=undefined;
+                    if(path in hash){
+                        if(hash.hasOwnProperty && hash.hasOwnProperty(path)){
+                            delete hash[path];
+                        }else{
+                            hash[path]=undefined;
+                        }
+                    }
                 }else{
                     return hash[path]=value;
                 }
@@ -1177,8 +1181,9 @@ xui.merge(xui,{
     $localeDomId:'xlid',
     $dateFormat:'',
     $rand:"_rnd_",
+    $ver:"_v_",
     _rnd:function(force){
-        return xui.debugMode||force?xui.$rand+"="+xui.rand():null;
+        return xui.debugMode||force ? (xui.$rand + "=" + xui.rand()) : xui.production_version ? ( xui.$ver + "=" + xui.production_version):null;
     },
     _debugPre:function(arr){
         arr=xui.toArr(arr);
@@ -1951,7 +1956,7 @@ xui.merge(xui,{
     },
     getClassName:function(uri){
         if(uri&&xui.isStr(uri)){
-            var a=uri.split(/\/js\//g),
+            var a=uri.split("#")[0].split("?")[0].split(/\/js\//g),
                 b,c,n=a.length;
             if(n>=2){
                 if(a[n-2]+"/"==xui.ini.path)a[n-2]="xui";
@@ -2321,7 +2326,7 @@ new function(){
     if(!ini.path){
         var s,arr = document.getElementsByTagName('script'), reg = /js\/xui(-[\w]+)?\.js$/,l=arr.length;
         while(--l>=0){
-            s=arr[l].src;
+            s=arr[l].src.split("#")[0].split("?")[0];
             if(s.match(reg)){
                 ini.path = s.replace(reg,'').replace(/\(/g,"%28").replace(/\)/g,"%29");
                 break;
@@ -21196,8 +21201,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // call it anyway => another $afterRefresh
                 if(special && save)o.$handleCustomVars(save);
 
-                if(n.host&&n.host['xui.Module']){
-                    delete n.host.$ignoreAutoDestroy;
+                if(n.n0.host&&n.n0.host['xui.Module']){
+                    delete n.n0.host.$ignoreAutoDestroy;
                 }
             });
         },
@@ -33333,8 +33338,8 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             dynCheck:false,
             selectOnFocus:true,
             autocomplete: {
-                ini:"off",
-                listbox:['on','off'],
+                ini:"none",
+                listbox:['on','off','none'],
                 action: function (value) {
                     this.getSubNode('INPUT').attr('autocomplete', value);
                 }
@@ -42014,6 +42019,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                 }else{
                                   box.getPanel(itemId).css('display','none');
                                 }
+                                box.getPanel(itemId).removeClass("xui-activated");
                             }
                         }
                     },
@@ -42037,6 +42043,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                 }
                                 if(item._scrollTop)
                                     box.getPanel(itemId).get(0).scrollTop=item._scrollTop;
+
+                                box.getPanel(itemId).addClass("xui-activated");
 
                                 profile.adjustSize(false, false, value);
 
@@ -51589,7 +51597,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             HFMARK:{
                 onClick:function(profile,e,src){
-                    if(profile.properties.selMode!='multi'&&profile.properties.selMode!='multibycheckbox')return;
+                    var prop=profile.properties;
+                    if(prop.disabled || prop.readonly)return;
+                    if(prop.selMode!='multi'&&prop.selMode!='multibycheckbox')return;
 
                     var rows=[];
                     xui.each(profile.rowMap,function(o){
@@ -51604,7 +51614,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }else{
                         profile._$checkAll=true;
                         xui.use(src).tagClass('-checked')
-                        profile.boxing().setUIValue(rows.join(profile.properties.valueSeparator),null,null,'click');
+                        profile.boxing().setUIValue(rows.join(prop.valueSeparator),null,null,'click');
                         profile.boxing().onRowSelected(profile, "allrows", e, src, 1);
                     }
                     return false;
@@ -56159,7 +56169,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 _layers=profile._headerLayers,
                 headerh=profile.properties.headerHeight,
                 h=profile.$px(headerh,0,true),
-                cacuH=profile.$px(profile.box.$DataModel.headerHeight.ini,0,true)*(_layers+1),
+                cacuH=profile.$px(profile.box.$DataModel.headerHeight,0,true)*(_layers+1),
                 border=profile._$cache.hasOwnProperty('_root_b_w') ? profile._$cache._root_b_w : (profile._$cache._root_b_w = profile.getRoot().contentBox()?2:0),
                 tt,l,th,col,rh,upper,grpcolsh,h2;
             // ensure height here

@@ -1581,8 +1581,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 // call it anyway => another $afterRefresh
                 if(special && save)o.$handleCustomVars(save);
 
-                if(n.host&&n.host['xui.Module']){
-                    delete n.host.$ignoreAutoDestroy;
+                if(n.n0.host&&n.n0.host['xui.Module']){
+                    delete n.n0.host.$ignoreAutoDestroy;
                 }
             });
         },
