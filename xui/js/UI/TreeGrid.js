@@ -1419,8 +1419,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 xui.arr.insertAny(prop.header, col, pos);
                 // insert dom node
                 base = profile.getSubNode(leftRegion?'HCELLS1':'HCELLS2').children().get(pos-1/*must be before LCELL*/);
-                if(base)
-                    xui(base).addNext(profile._buildItems(leftRegion?'header1':'header2', [colResult[1]]));
+                var col_dom = profile._buildItems(leftRegion?'header1':'header2', [colResult[1]]);
+                if(base){
+                    xui(base).addNext(col_dom);
+                }else{
+                    profile.getSubNode(leftRegion?'HCELLS1':'HCELLS2').prepend(col_dom);
+                }
 
                 // render
                 var co=profile.properties.colOptions;
@@ -3952,10 +3956,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var p=profile.properties,
                       id = profile.getSubId(src),
                       col = profile.colMap[id];
-                    if(p.renderViewSize || p.freezedRow){
-                       return false;
-                    }
-
                     if(!col){
                         if(profile.onClickGridHandler)
                             profile.boxing().onClickGridHandler(profile,e,src);
@@ -3968,6 +3968,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         if(p.disabled || col.disabled)return false;
                         if(!(col.hasOwnProperty('colSortable')?col.colSortable:p.colSortable))return;
+                    }
+
+                    if(p.renderViewSize || p.freezedRow){
+                       return false;
                     }
 
                     if(col&&col._isgroup){
@@ -5939,7 +5943,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             data.rowDDDisplay=prop.rowResizer?'':NONE;
             data.rowHandlerDisplay=prop.rowHandler?'':NONE;
             data.sortDisplay=NONE;
-            data._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?"":"display:none;";
+            data._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?(data.readonly||data.disabled?NONE:""):NONE;
 
             if(!prop.header || !xui.isArr(prop.header))
                 prop.header = [];
@@ -6211,8 +6215,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 },
-                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""},
-                f8=function(v){return v?(v+'').replace(/\t/g,'    ').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/ /g,'&nbsp;').replace(/\t/g,'    ').replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f8=function(v){return v?(v+'').replace(/ /g,'&nbsp;').replace(/\t/g,'    ').replace(/(\r\n|\n|\r)/g,"<br />"):""},
                 f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""},
                 f4=function(v,profile,cell){
                     if(v||v===0){
@@ -6506,7 +6510,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                   row._layer=_layer;
 
                   row._tabindex=prop.tabindex;
-                  row._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?"":NONE;
+                  row._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?(row.readonly||row.disabled?NONE:""):NONE;
 
                   row._treeMode=_treemode?'':NONE;
 

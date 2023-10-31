@@ -4433,14 +4433,14 @@ xui.Class("xui.UI",  "xui.absObj", {
             self.setEventHandlers(hls);
             self.$BeforeRenderTrigger=self.$BeforeRenderTrigger||[];
             self.$RenderTrigger=self.$RenderTrigger||[];
-            self.$RenderTrigger.push(function(){
-                if(this.properties.readonly){
-                    this.boxing().setReadonly(true, true);
-                }
-            });
-
+            if(xui.arr.indexOf(self.$RenderTrigger, xui.UI._dft_render_t)==-1)
+              self.$RenderTrigger.push(xui.UI._dft_render_t);
         },
-
+        _dft_render_t:function(){
+            if(this.properties.readonly){
+                this.boxing().setReadonly(true, true);
+            }
+        },
         addTemplateKeys:function(arr){
             var self=this, key=self.KEY, me=arguments.callee, reg=me._reg||(me._reg=/\./g);
             xui.arr.each(arr,function(i){
@@ -5233,15 +5233,15 @@ xui.Class("xui.UI",  "xui.absObj", {
             // ensoure to trigger load event of img
             if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_blank;
             if(o=hashOut.renderer||hashIn.renderer){
-                hashOut.caption = xui.UI._applyRenderer(profile, o, hashIn, hashOut);
+                hashOut.caption = xui.UI._applyRenderer(profile, o, hashIn, hashOut, type);
             }
             return hashOut;
         },
         // Module.xxx / App.xxx
         // {obj.key.xxx} <= hashOut
-        _applyRenderer:function(profile, renderer, hashIn, hashOut){
+        _applyRenderer:function(profile, renderer, hashIn, hashOut, type){
             if(xui.isFun(renderer)){
-                return xui.adjustRes(renderer.call(profile,hashIn,hashOut));
+                return xui.adjustRes(renderer.call(profile,hashIn,hashOut,type));
             }else if(xui.isStr(renderer)){
                 var obj,prf,alias,prop={},events={},t,
                     clsReg=/^\s*[\w]+\.[\w.]+\s*$/,
@@ -5262,8 +5262,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                             prop.parentProp = hash;
                         }
                     };
-
-                if(clsReg.test(renderer) && (obj=xui.SC.get(renderer))){
+                if(profile.host && profile.host!=profile && xui.isFun(profile.host[renderer])){
+                    return xui.adjustRes(profile.host[renderer].call(profile, hashIn, hashOut, type));
+                }else if(clsReg.test(renderer) && (obj=xui.SC.get(renderer))){
                     if(obj['xui.UI']||obj['xui.Module']){
                         obj=new obj();
                         prf=obj.get(0);

@@ -24053,14 +24053,14 @@ xui.Class("xui.UI",  "xui.absObj", {
             self.setEventHandlers(hls);
             self.$BeforeRenderTrigger=self.$BeforeRenderTrigger||[];
             self.$RenderTrigger=self.$RenderTrigger||[];
-            self.$RenderTrigger.push(function(){
-                if(this.properties.readonly){
-                    this.boxing().setReadonly(true, true);
-                }
-            });
-
+            if(xui.arr.indexOf(self.$RenderTrigger, xui.UI._dft_render_t)==-1)
+              self.$RenderTrigger.push(xui.UI._dft_render_t);
         },
-
+        _dft_render_t:function(){
+            if(this.properties.readonly){
+                this.boxing().setReadonly(true, true);
+            }
+        },
         addTemplateKeys:function(arr){
             var self=this, key=self.KEY, me=arguments.callee, reg=me._reg||(me._reg=/\./g);
             xui.arr.each(arr,function(i){
@@ -24853,15 +24853,15 @@ xui.Class("xui.UI",  "xui.absObj", {
             // ensoure to trigger load event of img
             if(!hashOut.image && box.IMGNODE)hashOut.image=xui.ini.img_blank;
             if(o=hashOut.renderer||hashIn.renderer){
-                hashOut.caption = xui.UI._applyRenderer(profile, o, hashIn, hashOut);
+                hashOut.caption = xui.UI._applyRenderer(profile, o, hashIn, hashOut, type);
             }
             return hashOut;
         },
         // Module.xxx / App.xxx
         // {obj.key.xxx} <= hashOut
-        _applyRenderer:function(profile, renderer, hashIn, hashOut){
+        _applyRenderer:function(profile, renderer, hashIn, hashOut, type){
             if(xui.isFun(renderer)){
-                return xui.adjustRes(renderer.call(profile,hashIn,hashOut));
+                return xui.adjustRes(renderer.call(profile,hashIn,hashOut,type));
             }else if(xui.isStr(renderer)){
                 var obj,prf,alias,prop={},events={},t,
                     clsReg=/^\s*[\w]+\.[\w.]+\s*$/,
@@ -24882,8 +24882,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                             prop.parentProp = hash;
                         }
                     };
-
-                if(clsReg.test(renderer) && (obj=xui.SC.get(renderer))){
+                if(profile.host && profile.host!=profile && xui.isFun(profile.host[renderer])){
+                    return xui.adjustRes(profile.host[renderer].call(profile, hashIn, hashOut, type));
+                }else if(clsReg.test(renderer) && (obj=xui.SC.get(renderer))){
                     if(obj['xui.UI']||obj['xui.Module']){
                         obj=new obj();
                         prf=obj.get(0);
@@ -31436,18 +31437,20 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                                     promises = promises || [];
                                     dirReader.readEntries(function(entries){
                                       for(var i=0,l=entries.length,entry;i<l;i++) {
-                                          var entry = entries[i];
-                                          if(entry.isDirectory){
-                                              ref.dirCount++;
-                                              readDir(entry, path).then(function(ps){
-                                                  promises = promises.concat(ps);
-                                                  ref.dirCount--;
-                                                  if(ref.dirCount===0) ref.callback(promises);
-                                              },function(e){
-                                                  throw e;
-                                              });
-                                          }else{
-                                              promises.push(readFile(entry, path||''));
+                                          // DD a file in compressed folder, the entry will be null
+                                          if(entries[i]){
+                                            if(entries[i].isDirectory){
+                                                ref.dirCount++;
+                                                readDir(entries[i], path).then(function(ps){
+                                                    promises = promises.concat(ps);
+                                                    ref.dirCount--;
+                                                    if(ref.dirCount===0) ref.callback(promises);
+                                                },function(e){
+                                                    throw e;
+                                                });
+                                            }else{
+                                                promises.push(readFile(entries[i], path||''));
+                                            }
                                           }
                                       }
                                       if(entries.length>0) dirReadEntries(dirReader, path, ref, promises);
@@ -31471,7 +31474,12 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                                 };
                                 var promises = [], entries = [];
                                 for (var i=0, l=dataTransferItems.length; i<l; i++) entries.push(dataTransferItems[i].webkitGetAsEntry())
-                                for(var i=0,l=entries.length;i<l;i++) promises.push(getFilesFromEntry(entries[i]));
+                                for(var i=0,l=entries.length;i<l;i++){
+                                  // DD a file in compressed folder, the entry will be null
+                                  if(entries[i]){
+                                    promises.push(getFilesFromEntry(entries[i]));
+                                  }
+                                }
                                 Promise.all(promises).then(function(files){
                                     resolve(files.flat());
                                 }, reject);
@@ -33338,7 +33346,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             dynCheck:false,
             selectOnFocus:true,
             autocomplete: {
-                ini:"none",
+                ini:"off",
                 listbox:['on','off','none'],
                 action: function (value) {
                     this.getSubNode('INPUT').attr('autocomplete', value);
@@ -49503,8 +49511,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 xui.arr.insertAny(prop.header, col, pos);
                 // insert dom node
                 base = profile.getSubNode(leftRegion?'HCELLS1':'HCELLS2').children().get(pos-1/*must be before LCELL*/);
-                if(base)
-                    xui(base).addNext(profile._buildItems(leftRegion?'header1':'header2', [colResult[1]]));
+                var col_dom = profile._buildItems(leftRegion?'header1':'header2', [colResult[1]]);
+                if(base){
+                    xui(base).addNext(col_dom);
+                }else{
+                    profile.getSubNode(leftRegion?'HCELLS1':'HCELLS2').prepend(col_dom);
+                }
 
                 // render
                 var co=profile.properties.colOptions;
@@ -52036,10 +52048,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var p=profile.properties,
                       id = profile.getSubId(src),
                       col = profile.colMap[id];
-                    if(p.renderViewSize || p.freezedRow){
-                       return false;
-                    }
-
                     if(!col){
                         if(profile.onClickGridHandler)
                             profile.boxing().onClickGridHandler(profile,e,src);
@@ -52052,6 +52060,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         if(p.disabled || col.disabled)return false;
                         if(!(col.hasOwnProperty('colSortable')?col.colSortable:p.colSortable))return;
+                    }
+
+                    if(p.renderViewSize || p.freezedRow){
+                       return false;
                     }
 
                     if(col&&col._isgroup){
@@ -54023,7 +54035,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             data.rowDDDisplay=prop.rowResizer?'':NONE;
             data.rowHandlerDisplay=prop.rowHandler?'':NONE;
             data.sortDisplay=NONE;
-            data._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?"":"display:none;";
+            data._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?(data.readonly||data.disabled?NONE:""):NONE;
 
             if(!prop.header || !xui.isArr(prop.header))
                 prop.header = [];
@@ -54295,8 +54307,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 },
-                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/\t/g,'    ').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""},
-                f8=function(v){return v?(v+'').replace(/\t/g,'    ').replace(/ /g,'&nbsp;').replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/ /g,'&nbsp;').replace(/\t/g,'    ').replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                f8=function(v){return v?(v+'').replace(/ /g,'&nbsp;').replace(/\t/g,'    ').replace(/(\r\n|\n|\r)/g,"<br />"):""},
                 f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""},
                 f4=function(v,profile,cell){
                     if(v||v===0){
@@ -54590,7 +54602,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                   row._layer=_layer;
 
                   row._tabindex=prop.tabindex;
-                  row._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?"":NONE;
+                  row._rowMarkDisplay=(prop.selMode=="multi"||prop.selMode=="multibycheckbox")?(row.readonly||row.disabled?NONE:""):NONE;
 
                   row._treeMode=_treemode?'':NONE;
 

@@ -351,18 +351,20 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                                     promises = promises || [];
                                     dirReader.readEntries(function(entries){
                                       for(var i=0,l=entries.length,entry;i<l;i++) {
-                                          var entry = entries[i];
-                                          if(entry.isDirectory){
-                                              ref.dirCount++;
-                                              readDir(entry, path).then(function(ps){
-                                                  promises = promises.concat(ps);
-                                                  ref.dirCount--;
-                                                  if(ref.dirCount===0) ref.callback(promises);
-                                              },function(e){
-                                                  throw e;
-                                              });
-                                          }else{
-                                              promises.push(readFile(entry, path||''));
+                                          // DD a file in compressed folder, the entry will be null
+                                          if(entries[i]){
+                                            if(entries[i].isDirectory){
+                                                ref.dirCount++;
+                                                readDir(entries[i], path).then(function(ps){
+                                                    promises = promises.concat(ps);
+                                                    ref.dirCount--;
+                                                    if(ref.dirCount===0) ref.callback(promises);
+                                                },function(e){
+                                                    throw e;
+                                                });
+                                            }else{
+                                                promises.push(readFile(entries[i], path||''));
+                                            }
                                           }
                                       }
                                       if(entries.length>0) dirReadEntries(dirReader, path, ref, promises);
@@ -386,7 +388,12 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                                 };
                                 var promises = [], entries = [];
                                 for (var i=0, l=dataTransferItems.length; i<l; i++) entries.push(dataTransferItems[i].webkitGetAsEntry())
-                                for(var i=0,l=entries.length;i<l;i++) promises.push(getFilesFromEntry(entries[i]));
+                                for(var i=0,l=entries.length;i<l;i++){
+                                  // DD a file in compressed folder, the entry will be null
+                                  if(entries[i]){
+                                    promises.push(getFilesFromEntry(entries[i]));
+                                  }
+                                }
                                 Promise.all(promises).then(function(files){
                                     resolve(files.flat());
                                 }, reject);

@@ -505,7 +505,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             dynCheck:false,
             selectOnFocus:true,
             autocomplete: {
-                ini:"none",
+                ini:"off",
                 listbox:['on','off','none'],
                 action: function (value) {
                     this.getSubNode('INPUT').attr('autocomplete', value);
