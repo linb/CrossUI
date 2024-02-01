@@ -44660,6 +44660,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 "padding-right":'.333em',
                 "float":"right"
             },
+            'ITEMS-tagcmdtopright RTAGCMDS':{
+                "top":'-.25em',
+                "right":'-.5em',
+                "position":"absolute"
+            },
             TOGGLE:{
                 padding:'0 .334em 0 0'
             }
@@ -44834,7 +44839,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             },
             tagCmdsAlign:{
                 ini:"right",
-                listbox:['left','right','floatright'],
+                listbox:['left','right','floatright','topright'],
                 action:function(v){
                     var profile=this,box=profile.getSubNode("ITEMS"),cls=profile.getClass('ITEMS','-tagcmd');
                     box.removeClass(new RegExp(cls+'[\w]*')).addClass(profile.getClass('ITEMS','-tagcmd'+v));
