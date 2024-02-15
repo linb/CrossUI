@@ -8145,7 +8145,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }
         },
          _focuscell:function(profile, e, src){
-            if(profile.properties.disabled||profile.properties.readonly)return;
+            if(profile.properties.disabled)return;
             if(!xui.use(src).get(0))return;
             // ensure call _focuscell once when click
             if(!profile.$_ensureOnce){
