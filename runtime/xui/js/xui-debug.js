@@ -524,8 +524,10 @@ new function(){
             decimalSeparator=decimalSeparator||".";
             value=""+parseFloat(value);
             if(value.indexOf('e')==-1){
-                value=xui.toFixedNumber(value,precision) + "";
-                value= value.split(".");
+                if(precision>=0){
+                    value=xui.toFixedNumber(value,precision) + "";
+                }
+                value= value.split(decimalSeparator);
                 if(forceFillZero!==false){
                     if((value[1]?value[1].length:0)<precision)value[1]=(value[1]||"")+xui.str.repeat('0',precision-(value[1]?value[1].length:0));
                 }
@@ -48560,17 +48562,26 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                   keep_from = keep_to = -1;
                   subRows21.html("");
                   subRows22.html("");
+                  // clear vars
+                  for(var r in prf.rowMap)delete prf.rowMap[r]._indom;
+                  for(var c in prf.cellMap)delete prf.cellMap[c]._indom;
               }else{
                   // remove rows out of view
                   var index = row._o_renderRange[0], nodes=[];
                   subRows21.children().each(function(row, i){
                       if(index + i< keep_from || index + i > keep_to){
                           nodes.push(row);
+                          // clear vars
+                          var r=ns._getObjByDom(row,'row');
+                          if(r&&r._indom){delete r._indom;if(r.cells){xui.arr.each(r.cells,function(c){delete c._indom;})}}
                       }
                   });
                   subRows22.children().each(function(row, i){
                       if(index + i< keep_from || index + i > keep_to){
                           nodes.push(row);
+                          // clear vars
+                          var r=ns._getObjByDom(row,'row');
+                          if(r&&r._indom){delete r._indom;if(r.cells){xui.arr.each(r.cells,function(c){delete c._indom;})}}
                       }
                   });
                   xui(nodes).remove();
@@ -48701,6 +48712,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //render
             var co=profile.properties.colOptions;
             xui.arr.each(arr,function(o){
+                o._indom=1;
                 if(xui.isFun(o.colRenderer||co.colRenderer))
                     (o.colRenderer||co.colRenderer).call(null,profile,o);
             });
@@ -49274,6 +49286,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                             //render
                             xui.arr.each(arr,function(o){
+                                o._indom=1;
                                 if(xui.isFun(o.rowRenderer||ro.rowRenderer))
                                     (o.rowRenderer||ro.rowRenderer).call(null,profile,o);
                             });
@@ -54480,6 +54493,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(node)node.html((caption===null||caption===undefined)?cell.value:caption,false);
             }
 
+            cell._indom=1;
             if('_renderer' in cell)delete cell._renderer;
             // max: show 1024
             cell._caption = cell._$tips = cell._$tmpcap = caption.replace(/(.{1024})..+/, "$1…");
@@ -54960,10 +54974,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 delete cell._$tips;
                 delete cell._$tmpcap;
 
+                var ot = cell.type;
                 xui.merge(cell,options,'all');
 
                 node=profile.getSubNode('CELLA', cellId);
-                if('type' in options){
+                if(('type' in options) && (options.type!==ot)){
                     var uicell={};
                     box._adjustCell(profile, cell, uicell);
                     node.parent().replace(profile._buildItems('rows2.cells', [uicell]));

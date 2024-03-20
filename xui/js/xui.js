@@ -510,8 +510,10 @@ new function(){
             decimalSeparator=decimalSeparator||".";
             value=""+parseFloat(value);
             if(value.indexOf('e')==-1){
-                value=xui.toFixedNumber(value,precision) + "";
-                value= value.split(".");
+                if(precision>=0){
+                    value=xui.toFixedNumber(value,precision) + "";
+                }
+                value= value.split(decimalSeparator);
                 if(forceFillZero!==false){
                     if((value[1]?value[1].length:0)<precision)value[1]=(value[1]||"")+xui.str.repeat('0',precision-(value[1]?value[1].length:0));
                 }
