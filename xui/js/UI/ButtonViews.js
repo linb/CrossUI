@@ -3,6 +3,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         var t=this.getTemplate(),keys=this.$Keys;
         t.LIST.className='xui-uibar';
         this.setTemplate(t);
+        t.LIST.ITEMS.className = 'xui-ui-unselectable {_specialIconCls} {_vTxtCls}';
         t.$submap.items.ITEM.className = 'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
     },
@@ -100,6 +101,17 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'vertical-align':'middle',
                 margin:'.125em'
             },
+            'ITEMS-vertical-text-lr HANDLE, ITEMS-vertical-text--lr HANDLE':{
+                'writing-mode': xui.browser.ie?'tb-rl':'vertical-lr'
+            },
+            'ITEMS-vertical-text-rl CAPTION, ITEMS-vertical-text--rl CAPTION':{
+                transform: 'rotate(180deg)',
+                '-moz-transform': 'rotate(180deg)',
+                '-webkit-transform': 'rotate(180deg)',
+                '-o-transform': 'rotate(180deg)',
+                '-ms-transform': 'rotate(180deg)',
+                '-khtml-transform': 'rotate(180deg)'
+            },
             'ITEM-checked HANDLE':{
             }
         },
@@ -170,6 +182,14 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     this.adjustSize();
                 }
+            },
+            verticalText:{
+                ini:'',
+                listbox:['','lr', 'rl'],
+                action:function(v){
+                    var hl=this.getSubNode('ITEMS');
+                    hl.tagClass('(-vertical-text-lr|-vertical-text-rl)',false).tagClass('-vertical-text-'+v, true);
+                }            
             },
             borderType:{
                 ini:'none',
@@ -250,6 +270,12 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 this.getSubNode('ITEMS').addClass('xui-css-noscroll');
             }
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
+        },
+        _prepareData:function(profile){
+            var data = arguments.callee.upper.call(this, profile);
+            if(data.verticalText)
+                data._vTxtCls = profile.getClass("ITEMS", "-vertical-text-" + data.verticalText);
+            return data;
         },
         _onresize:function(profile,width,height,force,key){
             var prop = profile.properties,
