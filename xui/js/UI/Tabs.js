@@ -602,6 +602,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         item = profile.getItemByDom(src),
                         box = profile.boxing();
 
+                    if(profile.beforeItemClick && false===box.beforeItemClick (profile,item,e,src))return false;
+
                     if(prop.disabled || item.disabled)return false;
                     if(prop.readonly || item.readonly)return false;
 
@@ -651,6 +653,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             return rt;
                         }
                     }
+                    if(profile.afterItemClick)return box.afterItemClick(profile,item,e,src);
                 }
             },
             HANDLE:{
@@ -971,6 +974,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             afterPageClose:function(profile, item){},
             onShowOptions:function(profile,item,e,src){},
             onItemSelected:function(profile, item,e,src,type){},
+            beforeItemClick:function(profile,item,e,src){},
+            afterItemClick:function(profile,item,e,src){},
             onCaptionActive:function(profile, item,e,src){},
             onClickPanel:function(profile, item, e, src){}
         },

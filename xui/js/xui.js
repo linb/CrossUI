@@ -1771,13 +1771,13 @@ xui.merge(xui,{
             if(xui.isArr( t = cls.prototype.Required)){
                 for(var i=0,l=t.length;i<l;i++){
                     if(xui.isArr(t[i])){
-                        required.push(t[i]);
+                        required.indexOf(t[i])==-1 && required.push(t[i]);
                     }else{
                         obj = xui._getIdUri(t[i], options);
                         id = obj.id;
                         uri = obj.uri;
                         if( ( !id || !xui.isSet(xui.SC.get(id))) && !xui.$cache.clsByURI[uri] && !xui.$cache.fetching[uri] ) {
-                            required.push(t[i]);
+                            required.indexOf(t[i])==-1 && required.push(t[i]);
                         }
                     }
                 }
@@ -1785,14 +1785,14 @@ xui.merge(xui,{
             // new class in iniComponents
             if(cls['xui.Module'] && xui.isFun(t = cls.prototype.iniComponents)){
                 try{
-                    (t+"").replace(/\bappend\s*\(\s*xui.create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
-                        if(!xui.SC.get(b))required.push(b);
+                    (t+"").replace(/\bappend\s*\(\s*xui\s*\.\s*create\s*\(\s*['"]([\w.]+)['"]\s*[,)]/g,function(a,b){
+                        if(!xui.SC.get(b))required.indexOf(b)==-1 && required.push(b);
                         return a;
-                    }).replace(/\.setRenderer\s*\(\s*['"]([a-zA-Z]+([\w]+\.?)+[\w]+)['"]\s*\)/g,function(a,b){
-                        if(!xui.SC.get(b))required.push(b);
+                    }).replace(/\.\s*(setRenderer|setModuleName)\s*\(\s*['"]([a-zA-Z]+([\w]+\.?)+[\w]+)['"]\s*\)/g,function(a,b,c){
+                        if(!xui.SC.get(c))required.indexOf(c)==-1 && required.push(c);
                         return a;
                     }).replace(/['"](renderer|cellRenderer)['"]\s*:\s*['"]([a-zA-Z]+([\w]+\.?)+[\w]+)['"]\s*/g,function(a,b,c){
-                        if(!xui.SC.get(c))required.push(c);
+                        if(!xui.SC.get(c))required.indexOf(c)==-1 && required.push(c);
                         return a;
                     })
                       .replace(/['"]newbies['"]\s*:\s*\{([^}]+)\}/g,function(a,b,c){
@@ -1812,7 +1812,7 @@ xui.merge(xui,{
                xui.each(cls.prototype.functions,function(f){
                  if(xui.isHash(f) && f.newbies && xui.isHash(f.newbies)){
                    xui.each(f.newbies,function(c){
-                      if(!xui.SC.get(c))required.push(c);
+                      if(!xui.SC.get(c))required.indexOf(c)==-1 && required.push(c);
                    });
                  }
                })
@@ -2115,7 +2115,7 @@ xui.merge(xui,{
                     o=new t();
                 // use place holder to lazy bind
                 }else{
-                    o = new xui.UI.MoudluePlaceHolder();
+                    o = new xui.UI.ModulePlaceHolder();
                     xui.require(tag,function(modules,key){
                          for(key in modules){
                              var module = modules[key];
@@ -2154,9 +2154,9 @@ xui.merge(xui,{
                     o=new t(tag);
                 // use place holder to lazy bind
                 }else{
-                    o = new xui.UI.MoudluePlaceHolder();
-                    if(t=tag.events)o.setEvents(t);
-                    if(t=tag.properties)o.setProperties(t);
+                    o = new xui.UI.ModulePlaceHolder();
+                    if(t=tag.events)o.setModuleEvents(t);
+                    if(t=tag.properties)o.setModuleProperties(t);
 
                     if(tag.moduleClass && tag.moduleXid){
                         o.get(0).moduleClass = tag.moduleClass;
@@ -5218,7 +5218,12 @@ xui.Class('xui.absObj',"xui.absBox",{
                 dm=self.$DataModel,
                 ps=self.prototype,
                 i,j,t,o,n,m,r;
-
+            if(hash && hash["$blacklist"]){
+                // keep refrence
+                for(var i in ds)if(i in hash["$blacklist"])delete ds[i];
+                for(var i in dm)if(i in hash["$blacklist"])delete dm[i];
+                delete hash["$blacklist"];
+            }
             //merge default value and properties
             for(i in hash){
                 if(!dm[i])dm[i]={};

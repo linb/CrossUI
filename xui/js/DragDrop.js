@@ -895,6 +895,128 @@ xui.Class('xui.DragDrop',null,{
             }
             xui.setNodeData(node.$xid, ['_dropKeys'], h);
 
+        },
+        attachNativeDrag : function(node, dragKey, dragData, ondragstart, ondragend){
+            xui(node).attr('draggable', 'true');
+            var _ondragstart = function(e){
+                e.dataTransfer.setData('text/plain', xui.serialize({dragKey:dragKey, dragData:dragData}));
+                e.dataTransfer.dropEffect = 'copy';
+                if(ondragstart){
+                    ondragstart.call(e);
+                }
+            };
+            node.addEventListener("dragstart", _ondragstart, false);
+            if(xui.isFun(ondragend)){
+                node.addEventListener("dragend",ondragend, false);
+            }
+            return [_ondragstart, ondragend];
+        },
+        detachNativeDrag : function(node, evs){
+            var ondragstart = evs[0], ondragend = evs[1];
+            node.removeEventListener("dragstart", ondragstart, false);
+            if(xui.isFun(ondragend)){
+                node.removeEventListener("dragend",ondragend, false);
+            }
+        },
+        attachNativeDrop : function(){
+            var dd = xui.DragDrop;
+            // Utility function to trigger custom mouse events
+            function triggerMouseEvent(eventType, originalEvent) {
+                if(originalEvent.srcElement){
+                    originalEvent.srcElement.dispatchEvent(new MouseEvent(eventType, {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: originalEvent.clientX,
+                        clientY: originalEvent.clientY,
+                        view: window
+                    }));
+                }
+            }
+            function startXUIDD(dragKey, dragData){
+                dd._profile.isWorking = true;
+                document['onmouseover'] = dd.$onDrag;
+                dd._source = {
+                    onDrag:function(){},
+                    onDragstop:function(){}
+                };
+                dd._profile.dragKey = dragKey;
+                dd._profile.dragData = dragData;
+            }
+            function stopXUIDD(){
+                dd._profile.isWorking = false;
+                document['onmouseover'] = null;
+            }
+            function isXUIDroppable(src){
+                return src.$xid && xui.getNodeData(src.$xid, ["eHandlers","ondrop"]);
+            }
+            function dropXUI(e){
+                if(dd._profile.isWorking)
+                    dd.$onDrop(e);
+            }
+
+            function ondragenter(e) {
+                if(!e.relatedTarget){
+                    var data = xui.unserialize(e.dataTransfer.getData('text/plain'));
+                    if(data){
+                        if(data.dragKey && data.dragData){
+                            startXUIDD(data.dragKey, data.dragData);
+                        }else{
+                            console.log("No XUI DD dragKey or dragData in dataTransfer");
+                        }
+                    }else{
+                        console.log("Invalid XUI DD data format in dataTransfer");
+                        // test
+                        startXUIDD("iAny","h");
+                    }
+                }else{
+                    if(isXUIDroppable(e.srcElement)){
+                        triggerMouseEvent('mouseover', e);
+                    }else{
+                        return false;
+                    }
+                }
+            }
+            function ondragleave(e) {
+                if(!e.relatedTarget) stopXUIDD();
+                triggerMouseEvent('mouseout', e);
+            }
+            function ondrop(e) {
+                e.preventDefault();
+                if(isXUIDroppable(e.srcElement)){
+                    dropXUI(e);
+                    stopXUIDD();
+                }else{
+                    return false;
+                }
+            }
+            function ondragover(e) {
+                e.preventDefault();
+                if(isXUIDroppable(e.srcElement)){
+                    triggerMouseEvent('mouseover', e);
+                    if(dd._profile.dropElement){
+                        e.dataTransfer.dropEffect = 'copy';
+                    }else{
+                        e.dataTransfer.dropEffect = 'none';
+                    }
+                }else{
+                    e.dataTransfer.dropEffect = 'none';
+                    return false;
+                }
+            }
+
+          // convert native drop to xui drop
+            document.addEventListener('dragenter', ondragenter,false);
+            document.addEventListener('dragleave', ondragleave,false);
+            document.addEventListener('dragover', ondragover,false);
+            document.addEventListener('drop', ondrop,false);
+            return [ondragenter, ondragleave, ondragover, ondrop];
+        },
+        detachNativeDrop : function(evs){
+            var ondragenter=evs[0], ondragleave=evs[1], ondragover=evs[2], ondrop=evs[3];
+            document.removeEventListener('dragenter', ondragenter,false);
+            document.removeEventListener('dragleave', ondragleave,false);
+            document.removeEventListener('dragover', ondragover,false);
+            document.removeEventListener('drop', ondrop,false);
         }
     },
     After:function(){

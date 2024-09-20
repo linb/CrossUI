@@ -453,7 +453,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         o=xui.use(src).parent(),
                         r=profile.getRoot(),
                         item = profile.getItemByDom(src),
-                        sum=0, cur,
+                        sum=0, cur, rs,
                         innerW=null,innerH=null,mainItem;
                     for (var i=0,l=t.items.length; i<l; i++){
                         if(!t.items[i].hidden)sum+= t.items[i].size || 80;
@@ -463,13 +463,15 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     if(t.type=='vertical'){
                         innerH = r.height();
                         //use size to ignore onresize event once
-                        item._size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y
-                        o.height(profile.$isEm(height)?profile.$px2em(item._size, o)+'em':item._size);
+                        item._size =  profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.y;
+                        rs = profile.$isEm(height)?profile.$px2em(item._size, o)+'em':item._size;
+                        o.height(rs);
                         cur = sum * item._size / innerH;
                     }else{
                         innerW = r.width();
-                        item._size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x
-                        o.width(profile.$isEm(width)?profile.$px2em(item._size, o)+'em':item._size);
+                        item._size = profile._cur + (profile.pos=='before'?1:-1)*xui.DragDrop.getProfile().offset.x;
+                        rs = profile.$isEm(width)?profile.$px2em(item._size, o)+'em':item._size;
+                        o.width(rs);
                         cur = sum * item._size / innerW;
                     }
                     // always - main
@@ -479,6 +481,8 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                     // use px here,  _onresize handle em things
                     xui.UI.$tryResize(profile,  innerW, innerH, true);
                     profile._limited=0;
+                    if(profile.onDragResized)
+                        return profile.boxing().onDragResized(profile, item, rs, src);
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!="left")return;
@@ -503,6 +507,9 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         panel = profile.getSubNode('PANEL',itemId),
                         move = profile.getSubNode('MOVE',itemId),
                         _handlerSize=(item.locked?0:t.type=='vertical'?move.offsetHeight():move.offsetWidth());
+
+                    if(profile.beforeFold && false === profile.boxing().beforeFold(profile, item, item.folded, e, src))
+                        return false;
 
                     if(t.type=='vertical'){
                         // restore resize mode
@@ -652,7 +659,9 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             }
         },
         EventHandlers:{
-            onClickPanel:function(profile, item, e, src){}
+            onClickPanel:function(profile, item, e, src){},
+            beforeFold:function(profile, item, folded, e, src){},
+            onDragResized:function(profile, item, size, e, src){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];

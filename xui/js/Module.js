@@ -854,7 +854,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var autoDestroy = self.autoDestroy || self.properties.autoDestroy;
             if(autoDestroy)
                 xui.arr.each(self._nodes,function(o){
-                    if(o.box && o.box["xui.UI"] && !o.box["xui.UI.MoudluePlaceHolder"] && !o.box.$initRootHidden){
+                    if(o.box && o.box["xui.UI"] && !o.box["xui.UI.ModulePlaceHolder"] && !o.box.$initRootHidden){
                         (o.$afterDestroy=(o.$afterDestroy||{}))["moduleDestroyTrigger"]=function(ignoreEffects, purgeNow){
                             if(autoDestroy && !self.destroyed && !self.$ignoreAutoDestroy)
                                 self.destroy(ignoreEffects, purgeNow);

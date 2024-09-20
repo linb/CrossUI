@@ -577,7 +577,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
                         o=m[i];
                         if(o&&o[0]){
                             if(o[0][k2]){
-                                var mh=new xui.UI.MoudluePlaceHolder({
+                                var mh=new xui.UI.ModulePlaceHolder({
                                     host:o[0].host,
                                     alias:o[0].alias
                                 });
@@ -690,6 +690,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
                 r.exchildren=o.exchildren;
             }
             moduleHash=null;
+            self.box._onSerialized && self.box._onSerialized(r, self);
             return rtnString===false?r:xui.serialize(r);
         },
         _applySetAction:function(fun, value, ovalue, force, tag, tag2){
@@ -1154,6 +1155,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 options,
                 df3=c.$adjustProp,
                 ds=c.$DataStruct,
+                sp=c.$applySpecial,
                 alias,temp;
             if(properties && properties['xui.Profile']){
                 profile=properties;
@@ -1167,6 +1169,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }else
                     alias = c.pickAlias();
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
+                // special
+                if(sp)sp(profile, options);
             }
             var df1=xui.UI[profile.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'],
               df2=c[profile.$inDesign?'__resetDftProp_in_Desinger':'__resetDftProp'];
@@ -1717,7 +1721,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     a=[],z,
                     moduleClass=prf.moduleClass,
                     moduleXid=prf.moduleXid,
-                    getModlue=function(p){
+                    getModule=function(p){
                         if(p.moduleClass && p.moduleXid){
                             // exclude the container's module
                             if(p.moduleClass!==moduleClass && p.moduleXid!==moduleXid){
@@ -1730,7 +1734,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     // module in module, we use the top mudule only( exclude the container's module )
                                     // look up toward top layer
                                      if(q && q.moduleClass && q.moduleXid && q.moduleClass!==moduleClass && q.moduleXid!==moduleXid){
-                                        return getModlue(q);
+                                        return getModule(q);
                                      }else if(q){
                                         return q;
                                      }
@@ -1741,7 +1745,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     },
                     f=function(p){
                         xui.arr.each(p.children,function(v,t){
-                            t=getModlue(v[0]);
+                            t=getModule(v[0]);
                             if(t){
                                 a.push(t);
                                 if(t['xui.UIProfile'] && t.children && t.children.length)
@@ -1751,7 +1755,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     };
                 xui.arr.each(prf.children,function(v,t){
                     if((subId&&typeof(subId)=="string")?v[1]===subId:1){
-                        t=getModlue(v[0]);
+                        t=getModule(v[0]);
                         if(t){
                             a.push(t);
                             if(t['xui.UIProfile'] && t.children && t.children.length)
@@ -3113,7 +3117,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             },
             /*
             ".xui-ui-diry:after":{
-                content: "";
+                content: "''";
                 position: 'absolute',
                 top: 0,
                 left: 0,
@@ -5277,7 +5281,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         prf._render_holder=profile;
 
                         if(obj['xui.Module']){
-                            var mp=(new xui.UI.MoudluePlaceHolder());
+                            var mp=(new xui.UI.ModulePlaceHolder());
                             prf=mp.get(0);
                             prf._module=obj;
                             obj=mp;
@@ -9437,7 +9441,7 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
     }
 });
 
-xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
+xui.Class("xui.UI.ModulePlaceHolder", "xui.UI.Div",{
     Instance:{
         destroy:function(ignoreEffects, purgeNow){
             var o=this.get(0);
@@ -9453,24 +9457,12 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
         draggable:null,
         busy:null,
         free:null,
-        // for Module
-        setProperties:function(key,value){
-            var self=this.get(0);
-            if(!self._properties)self._properties={};
-            if(!key)self._properties={};
-            else if(typeof key=='string') self._properties[key]=value;
-            else{
-                xui.merge(self._properties, key, 'all');
-                if(value && xui.isHash(value))
-                    xui.merge(self._properties, value, 'all');
-            }
-            return this;
-        },
+
         getValue:function(){
-            return xui.get(this.get(0), ['_properties','value']);
+            return xui.get(this.get(0), ['properties','moduleProperties','value']);
         },
         setValue:function(value){
-            xui.set(this.get(0), ['_properties','value'],value);
+            xui.set(this.get(0), ['properties','moduleProperties','value'],value);
             return this;
         },
         getUIValue:function(){
@@ -9479,27 +9471,6 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
         setUIValue:function(value){
             this.get(0)._$UIvalue=value;
             return this;
-        },
-        getProperties:function(key){
-            var self=this.get(0);
-            if(!self._properties)self._properties={};
-            return key?self._properties[key]:self._properties;
-        },
-        setEvents:function(key,value){
-            var self=this.get(0);
-            if(!self._events)self._events={};
-            if(!key)
-                self._events={};
-            else if(typeof key=='string')
-                self._events[key]=value;
-            else
-                xui.merge(self._events, key, 'all');
-            return this;
-        },
-        getEvents:function(key){
-            var self=this.get(0);
-            if(!self._events)self._events={};
-            return key?this._events[key]:this._events;
         },
         replaceWithModule:function(module){
             var self=this,
@@ -9512,7 +9483,7 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
                             xui.tryF(t.$afterAttached,[prf],t);
                         });
                     // Avoid being removed from host
-                    prf.alias=null;
+                    // prf.alias=null;
                     prf._module=null;
                     if(prf.box)prf.boxing().destroy();
                 };
@@ -9524,8 +9495,8 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
             // host and alias
             if(prf.host || prf.alias)module.setHost(prf.host, prf.alias);
             if('_$UIvalue' in prf)module.$UIvalue=prf._$UIvalue;
-            if(t=prf._events)module.setEvents(t);
-            if(t=prf._properties)module.setProperties(t);
+            if(t=prf.properties.moduleEvents)module.setEvents(t);
+            if(t=prf.properties.moduleProperties)module.setProperties(t);
             // maybe in other module
             if(prf.moduleClass && prf.moduleXid){
                 if(m = xui.Module.getInstance(prf.moduleClass, prf.moduleXid)){
@@ -9541,40 +9512,61 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
 
             if(prf.$afterReplaced)prf.$afterReplaced.call(module);
             // Avoid being removed from host
-            prf.alias=null;
+            // prf.alias=null;
             prf._module=null;
             self.destroy();
         }
     },
     Static:{
+        _objectProp:{moduleProperties:1,moduleEvents:1},
         Templates:{
             tagName:'div',
-            style:'left:0;top:0;width:0;height:0;visibility:hidden;display:none;position:absolute;z-index:0;'
+            INFO:{
+                text:'{_module_name}'
+            }
+        },
+        Appearances:{
+            KEY:{
+                left:0,
+                top:0,
+                width:"100%",
+                height:"100%",
+                position:"absolute",
+                "z-index":0,
+                'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.6'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
+            },
+            'KEY::before, KEY::after': {
+                content: "''",
+                position: "absolute",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%"
+            },
+            'KEY::before': {
+               background: "linear-gradient(to top left, transparent calc(50% - 1px), #cdcdcd, transparent calc(50% + 1px))"
+            },
+            'KEY::after': {
+               background: "linear-gradient(to top right, transparent calc(50% - 1px), #cdcdcd, transparent calc(50% + 1px))"
+            },
+            INFO:{
+                left:0,
+                top:0,
+                width:"100%",
+                "padding-top":"1em",
+                "text-align":"center",
+                'z-index':10
+            }
         },
         DataModel:{
-            showEffects:null,
-            hideEffects:null,
-            activeAnim:null,
-            hoverPop:null,
-            hoverPopType:null,
-            dock:null,
-            dockStretch:null,
-            renderer:null,
-            html:null,
-            disableClickEffect:null,
-            disableHoverEffect:null,
-            disableTips:null,
-            disabled:null,
-            defaultFocus:null,
-            dockIgnore:null,
-            dockOrder:null,
-            dockMargin:null,
-            dockFloat:null,
-            dockMinW:null,
-            dockMinH:null,
-            dockMaxW:null,
-            dockMaxH:null,
-            tips:null
+            "$blacklist": "showEffects,hideEffects,activeAnim,hoverPop,hoverPopType,dock,dockStretch,renderer,html,disableClickEffect,disableHoverEffect,disableTips,disabled,defaultFocus,dockIgnore,dockOrder,dockMargin,dockFloat,dockMinW,dockMinH,dockMaxW,dockMaxH,tips".split(","),
+            moduleProperties:{
+                ini:{}
+            },
+            moduleEvents:{
+                ini:{}
+            },
+            moduleName : ""
         },
         EventHandlers:{
             onContextmenu:null,
@@ -9597,7 +9589,12 @@ xui.Class("xui.UI.MoudluePlaceHolder", "xui.UI.Div",{
         // for parent UIProfile toHtml case
         RenderTrigger:function(){
             var prf=this;
-            if(prf && !prf._replaced && prf._module){
+            if(prf.$inDesign)return;
+
+            if(prf && !prf._replaced && (prf._module||prf.properties.moduleName)){
+                if(!prf._module){
+                    prf._module = xui.create(prf.properties.moduleName, "xui.Module");
+                }
                 prf.boxing().replaceWithModule(prf._module);
             }
         }

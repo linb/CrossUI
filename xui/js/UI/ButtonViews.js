@@ -101,10 +101,19 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'vertical-align':'middle',
                 margin:'.125em'
             },
-            'ITEMS-vertical-text-lr HANDLE, ITEMS-vertical-text--lr HANDLE':{
+            'ITEMS-vertical-text-lr HANDLE, ITEMS-vertical-text-rl HANDLE':{
                 'writing-mode': xui.browser.ie?'tb-rl':'vertical-lr'
             },
-            'ITEMS-vertical-text-rl CAPTION, ITEMS-vertical-text--rl CAPTION':{
+            'ITEMS-vertical-text-lr RULER, ITEMS-vertical-text-rl RULER':{
+                width:'1em',
+                height:'0',
+                'vertical-align':'middle'
+            },
+            'ITEMS-vertical-text-lr CAPTION':{
+                "vertical-align": "bottom"
+            },
+            'ITEMS-vertical-text-rl CAPTION':{
+                "vertical-align": "bottom",
                 transform: 'rotate(180deg)',
                 '-moz-transform': 'rotate(180deg)',
                 '-webkit-transform': 'rotate(180deg)',
@@ -189,7 +198,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 action:function(v){
                     var hl=this.getSubNode('ITEMS');
                     hl.tagClass('(-vertical-text-lr|-vertical-text-rl)',false).tagClass('-vertical-text-'+v, true);
-                }            
+                }
             },
             borderType:{
                 ini:'none',
