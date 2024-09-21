@@ -5123,6 +5123,7 @@ xui.Class('xui.absObj',"xui.absBox",{
         }
 
         self.setDataModel(self.DataModel);
+        self._DataModel = self.DataModel;
         delete self.DataModel;
 
         self.setEventHandlers(self.EventHandlers);

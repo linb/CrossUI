@@ -1,5 +1,5 @@
 /*
-        initialize
+    initialize
     beforeCreated
     onCreated
     beforeShow
@@ -145,6 +145,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
         self.host=host||self;
         self.alias=alias;
+        self.container = null;
 
         self.$UIvalue="";
 
@@ -254,6 +255,12 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         getAlias:function(){
             return this.alias;
+        },
+        setContainer:function(container){
+            return this.container = container;
+        },
+        getContainer:function(){
+            return this.container;
         },
         setHost:function(host, alias){
             return xui.absObj.prototype._setHostAlias.call(this, host, alias);
