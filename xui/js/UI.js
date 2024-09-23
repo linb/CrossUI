@@ -1021,15 +1021,17 @@ xui.Class("xui.UI",  "xui.absObj", {
                             xui.setData([aysid,'$ui.hover.pop'],{item:item});
                             xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                             if(!beforePop || false!==beforePop(prf, node, e, src, item)){
-                                if(popmenu) popmenu.popUp(src, type, parent);
-                                else node.popToTop(src, type, parent);
-                                node.onMouseover(function(){
-                                    xui(src).onMouseover(true)
-                                },'hoverPop')
-                                node.onMouseout(function(){
-                                    xui(src).onMouseout(true)
-                                },'hoverPop');
-                                callback(mtype);
+                                if(xui(src).isDisplayed()){
+                                    if(popmenu) popmenu.popUp(src, type, parent);
+                                    else node.popToTop(src, type, parent);
+                                    node.onMouseover(function(){
+                                        xui(src).onMouseover(true)
+                                    },'hoverPop')
+                                    node.onMouseout(function(){
+                                        xui(src).onMouseout(true)
+                                    },'hoverPop');
+                                    callback(mtype);
+                                }
                             }
                         }
                     }else{
@@ -3753,7 +3755,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         if(nodes&&nodes.length){
                             nodes=xui(nodes);
                             box=profile.boxing();
-                            var showId = "beforeHoverEffect:"+profile.getUid(),
+                            var showId = "beforeHoverEffect:"+profile.getUid() + (item?(":"+item.id):""),
                                 hideId = showId + "_";
 
                             if(mode==1){
@@ -3761,10 +3763,10 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
                                         if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseover'))return;
-
                                     var target = item || profile,
                                       hoverItem = profile._hoverItem;
                                       profile._willHover = hoverItem ? null : target;
+
                                     xui.resetRun.cancel(hideId);
 
                                     xui.resetRun(showId, function(){
@@ -3798,7 +3800,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     if(prop.disableHoverEffect===true||(item&&item.disableHoverEffect))return;
                                     if(prop.disableHoverEffect && (new RegExp("\\b"+profile.getKey(src,true)+"\\b")).test(prop.disableHoverEffect||""))return;
                                             if(profile.beforeHoverEffect && false === box.beforeHoverEffect(profile, item, e, src, 'mouseout'))return;
-
                                     var target = item || profile;
                                     if(profile._willHover == target){
                                       delete profile._willHover;
@@ -3808,10 +3809,11 @@ xui.Class("xui.UI",  "xui.absObj", {
                                         xui.resetRun.cancel(showId);
                                         delete profile._willHover;
                                         if(profile.renderId && target){
-                                          profile.$onHover && profile.$onHover(profile, item, e, src, 'mouseout',function(){
-                                            delete profile._hoverItem;
-                                          });
-                                        }
+                                            if(profile._hoverItem == target)
+                                              profile.$onHover && profile.$onHover(profile, item, e, src, 'mouseout',function(){
+                                                delete profile._hoverItem;
+                                              });
+                                            }
                                       },200);
                                         }
                                     nodes.tagClass('(-hover|-active)', false);

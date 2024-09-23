@@ -1267,7 +1267,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 getItemsW=function(){
                     var w=0;
                     items.children().each(function(item){
-                        if(item.offsetWidth==0)return;
+                        if(!item.offsetParent)return;
                         if(!w){
                             w = item.offsetLeft + item.offsetWidth;
                             return false;

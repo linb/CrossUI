@@ -232,7 +232,7 @@ xui.Class("xui.Tips", null,{
                             //set dimension
                             if(xui.browser.ie){
                                 style.width=styleI.width=(self._w=Math.round(w+(w%2)))+'px';
-                                h=t1.offsetHeight;
+                                h=t1.offsetParent?t1.offsetHeight:0;
                                 style.height=(self._h=Math.round(h-(h%2)))+'px';
                             }else{
                                 styleI.width=(self._w=Math.round(w))+'px';

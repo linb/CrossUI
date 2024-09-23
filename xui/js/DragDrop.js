@@ -902,7 +902,8 @@ xui.Class('xui.DragDrop',null,{
                 e.dataTransfer.setData('text/plain', xui.serialize({dragKey:dragKey, dragData:dragData}));
                 e.dataTransfer.dropEffect = 'copy';
                 if(ondragstart){
-                    ondragstart.call(e);
+                    if(false===ondragstart.call(e))
+                        return false;
                 }
             };
             node.addEventListener("dragstart", _ondragstart, false);

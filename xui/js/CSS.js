@@ -350,7 +350,7 @@ xui.Class("xui.CSS", null,{
                     }else{
                         var div;
                         xui('body').append(div=xui.create('<div class="xui-ui-ctrl" style="height:1em;visibility:hidden;position:absolute;border:0;margin:0;padding:0;left:-10000px;"></div>'));
-                        ns._dftEm=div.get(0).offsetHeight;
+                        ns._dftEm=div.get(0).offsetParent?div.get(0).offsetHeight:0;
                         div.remove();
 
                         ns._dftEmStr=ns._dftEm+"px";

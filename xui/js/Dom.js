@@ -755,9 +755,13 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             return this;
         },
+        isDisplayed() {
+          var n=this.get(0);
+          return n && !!n.offsetParent;
+        },
         isScrollBarShowed:function(type){
             var n=this.get(0);
-            if(n)return type=='y'?((n.offsetWidth||0)>(n.clientWidth||0)):((n.offsetHeight||0)>(n.clientHeight||0));
+            if(n && n.offsetParent)return type=='y'?((n.offsetWidth||0)>(n.clientWidth||0)):((n.offsetHeight||0)>(n.clientHeight||0));
         },
         scrollable:function(type){
             type=type=='x'?'scrollLeft':'scrollTop';
@@ -1702,14 +1706,13 @@ xui.Class('xui.Dom','xui.absBox',{
             var me=arguments.callee, getStyle=xui.Dom.getStyle, map = me.map || (me.map={a:1,input:1,select:1,textarea:1,button:1,object:1}),t,node;
             return !!(
                 (node = this.get(0)) &&
+                // is displayed
+                node.offsetParent &&
                 node.focus &&
                 //IE bug: It can't be focused with 'default tabIndex 0'; but if you set it to 0, it can be focused.
                 //So, for cross browser, don't set tabIndex to 0
                 (((t=map[node.nodeName.toLowerCase()]) && !(parseInt(node.tabIndex,10)<=-1)) || (!t && parseInt(node.tabIndex,10)>=(xui.browser.ie?1:0))) &&
-                getStyle(node,'display')!='none' &&
-                getStyle(node,'visibility')!='hidden' &&
-                node.offsetWidth>0 &&
-                node.offsetHeight>0
+                getStyle(node,'visibility')!='hidden'
             );
         },
         focus:function(force){
@@ -2026,12 +2029,14 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.setData([aysid,'$ui.hover.pop'],1);
                     xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                     if(!beforePop || false!==beforePop(prf, node, e, src)){
-                        node.popToTop(src, type, parent,showEffects);
-                        node.onMouseover(function(){
-                            self.onMouseover(true)
-                        },'hoverPop').onMouseout(function(){
-                            self.onMouseout(true)
-                        },'hoverPop');
+                        if(xui(src).isDisplayed()){
+                            node.popToTop(src, type, parent,showEffects);
+                            node.onMouseover(function(){
+                                self.onMouseover(true)
+                            },'hoverPop').onMouseout(function(){
+                                self.onMouseout(true)
+                            },'hoverPop');
+                        }
                     }
                 }
             },aysid).onMouseout(type===null?null:function(prf, e, src){
@@ -2106,7 +2111,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         };
                         if(!v.checkChild || isChild()){
                             v.target.each(function(o){
-                                if(o.parentNode && (w=o.offsetWidth) && (h=o.offsetHeight)){
+                                if(o.parentNode && (w=o.offsetParent?o.offsetWidth:0) && (h=o.offsetParent?o.offsetHeight:0)){
                                     pos=xui([o]).offset();
                                     if(p.left>=pos.left && p.top>=pos.top && p.left<=(pos.left+w) && p.top<=(pos.top+h)){
                                         return b=false;
@@ -2541,7 +2546,7 @@ xui.Class('xui.Dom','xui.absBox',{
             if(force||!ns._dpi){
                 var div;
                 xui('body').append(div=xui.create('<div style="width:1in;height:1in;content-visibility:hidden;visibility:hidden;position:absolute;margin:0;padding:0;left:-100%;top:-100%;overflow:scroll;"></div>'));
-                ns._dpi=div.get(0).offsetHeight;
+                ns._dpi=div.get(0).offsetParent?div.get(0).offsetHeight:0;
                 div.remove();
             }
             return ns._dpi;
@@ -2778,7 +2783,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     return m;
                 };
                 var matrix=computeMatrix(value),
-                  ow=node.offsetWidth,oh=node.offsetHeight,
+                  ow=node.offsetParent?node.offsetWidth:0, oh=node.offsetParent?node.offsetHeight:0,
                   filter=matrix.getFilter();
 //xui.echo(filter);
                 t=((style.filter?(style.filter+","):"")+filter).replace(/(^[\s,]*)|([\s,]*$)/g,'').replace(/,[\s]+/g,','+(xui.browser.ver==8?"":" "));
@@ -2909,8 +2914,8 @@ xui.Class('xui.Dom','xui.absBox',{
                     var innerColor=stops[0].clr,
                         outerColor=stops[stops.length-1].clr;
 
-                    var ew=node.offsetWidth||0,
-                    eh=node.offsetHeight||0,
+                    var ew=node.offsetParent?node.offsetWidth:0,
+                    eh=node.offsetParent?node.offsetHeight:0,
                     aw=ew*rate*2,
                     ah=eh*rate*2;
 
@@ -3602,7 +3607,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         css='#'+n.id+'{line-height:auto;margin:0;padding:0;border:0;font:0/0 a}#'+n.id+':after{content:\'a\';visibility:hidden;line-height:auto;margin:0;padding:0;border:0;font:3px/1 a}';
                     xui.CSS.addStyleSheet(css,id);
                     xui('body').append(n);
-                    var v=n.offsetHeight;
+                    var v=n.offsetParent?n.offsetHeight:0;
                     xui.CSS.remove("id",id);
                     xui(n.id).remove(n);
                     rt = v>=3;
@@ -4115,7 +4120,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 f=xui.Dom._setUnitStyle,type=typeof value,t1;
                 if(type=='undefined' || type=='boolean'){
                     if(value===true){
-                        n=(getStyle(node,'display')=='none') || node.offsetHeight===0;
+                        n=(getStyle(node,'display')=='none') || !node.offsetParent;
                         if(n){
                             var temp = xui.Dom.getEmptyDiv().html('*',false);
                             xui([node]).swap(temp);
@@ -4136,7 +4141,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             if(node===document||node===window){
                                 r=xui(node)[o[1]]();
                             }else{
-                                r=node[o[6]];
+                                r=node.offsetParent?node[o[6]]:0;
                                 //get from css setting before css applied
                                 if(!r){
                                     if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);

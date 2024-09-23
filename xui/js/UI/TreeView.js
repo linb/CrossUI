@@ -101,6 +101,11 @@ xui.Class("xui.UI.TreeView","xui.UI.TreeBar",{
             item.disabled = item.disabled?'xui-ui-disabled':'';
             item._itemDisplay=item.hidden?'display:none;':'';
             item.mark2Display = ('showMark' in item)?(item.showMark?'':'display:none;'):(p.selMode=='multi'||p.selMode=='multibycheckbox')?'':'display:none;';
+            //change css class
+            if(item.sub && (item.hasOwnProperty('group')?item.group:p.group)){
+                item.cls_group = profile.getClass('BAR','-group');
+                item.mark2Display = 'display:none';
+            }
             item._tabindex = p.tabindex;
             this._prepareCmds(profile, item);
 

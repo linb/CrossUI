@@ -1011,7 +1011,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             if(p.animCollapse){
                                 var h=0;
                                 subNs.children().each(function(o){
-                                    h+=o.offsetHeight;
+                                    h+=o.offsetParent?o.offsetHeight:0;
                                 });
                                 subNs.animate({'height':[0,h]},null,function(){
                                     onend(empty);

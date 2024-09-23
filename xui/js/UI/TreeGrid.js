@@ -4157,7 +4157,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var psrc=xui.use(src).parent().xid();
                     if(false===profile.box._colDragCheck(profile,psrc))return;
                     xui.DragDrop.setDropElement(src).setDropFace(src,'move');
-                    var nn=xui.use(psrc).get(0), left=nn.offsetLeft + (col._region==2?profile._leftregionw:0), top=nn.offsetTop+nn.offsetHeight;
+                    var nn=xui.use(psrc).get(0), left=nn.offsetLeft + (col._region==2?profile._leftregionw:0), top=nn.offsetTop+(nn.offsetParent?nn.offsetHeight:0);
                     profile.getSubNode("ARROW")
                         .left(left)
                         .top(top)
@@ -4621,9 +4621,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         body21 = profile.getSubNode('SCROLL21'),
                         body22 = profile.getSubNode('SCROLL22'),
                         keyid=new RegExp("^"+profile.box.$Keys.CELLA+":"+profile.serialId+":"),
-                        hasBody12 = !!body12.offsetWidth() ,
-                        hasBody21 = !!body21.offsetWidth() ,
-                        hasBody22 = !!body22.offsetHeight() ,
+                        hasBody12 = !!body12.isDisplayed() ,
+                        hasBody21 = !!body21.isDisplayed() ,
+                        hasBody22 = !!body22.isDisplayed() ,
                         first11 = body11.nextFocus(true, true, false, keyid),
                         first12 = body12.nextFocus(true, true, false, keyid),
                         first21 = body21.nextFocus(true, true, false, keyid),
@@ -5775,7 +5775,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             else if(flag===true){
                 var ws=[],t;
                 profile.getSubNode('FCELLCAPTION',true).each(function(o){
-                    if((t=o.parentNode).parentNode.offsetHeight>0 && xui.Dom.getStyle(t,'overflow')!='visible')
+                    if((t=o.parentNode).offsetParent && xui.Dom.getStyle(t,'overflow')!='visible')
                         if(n=map[profile.getSubId(o.id)])
                             ws.push(xui([o]).width() + n._layer*ww);
                 });
@@ -6801,7 +6801,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             if(p.animCollapse) {
                                 var h=0;
                                 subNs2.children().each(function(o){
-                                    h+=o.offsetHeight;
+                                    h+=o.offsetParent ? o.offsetHeight : 0;
                                 });
                                 subNs.css('overflow','hidden');
                                 subNs.animate({'height':[0,h]},null,function(){
@@ -7797,7 +7797,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 --l;
                             }
                         }
-                        ww=last1?(last1.offsetWidth+last1.offsetLeft):0;
+                        ww=last1 && last1.offsetParent?(last1.offsetWidth+last1.offsetLeft):0;
                         hiw = adjustunit(ww+100);
                         bodyw = bw = last1.offsetLeft;
                     }
@@ -8297,7 +8297,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(!profile._$cache.hasOwnProperty('_col_border_w')){
               profile.getSubNodes('HCELL',true).each(function(hc){
                   if(hc.clientHeight){
-                      profile._$cache._col_border_w = hc.offsetWidth - profile.$px(hc.style.width);
+                      profile._$cache._col_border_w = (hc.offsetParent?hc.offsetWidth:0)- profile.$px(hc.style.width);
                       return false;
                   }
               });
@@ -8306,11 +8306,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // try the best to avoid using offsetWidth for performance
             if(!profile._$cache.hasOwnProperty("__lcellW")){
               var hc = profile.getSubNode("LHCELL").get(0),
-                lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? hc.offsetWidth : 0;
+                lcellw = xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"]) ? (hc.offsetParent?hc.offsetWidth:0) : 0;
               profile.getSubNodes('LCELL',true).each(function(hc){
                   if(xui.get(hc,["firstChild","firstChild"]) || xui.get(hc,["lastChild","firstChild"])){
                       // only use once for performance
-                      lcellw=Math.max(lcellw, hc.offsetWidth);
+                      lcellw=Math.max(lcellw, (hc.offsetParent?hc.offsetWidth:0));
                       return;
                   }
               });

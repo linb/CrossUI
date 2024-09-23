@@ -22,7 +22,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             items:{
                 ITEM:{
                     tabindex:'{_tabindex}',
-                    className:'xui-uitembg xui-uiborder-radius xui-showfocus {itemClass} {disabled} {readonly}',
+                    className:'xui-uitembg xui-uiborder-radius xui-showfocus {_itemRow} {itemClass} {disabled} {readonly}',
                     style:'padding:{itemPadding};margin:{itemMargin};{_itemSize};{itemStyle}',
                     ITEMFRAME:{
                         style:'{_inneritemSize}',
@@ -314,6 +314,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize,autoImgSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
             });
+            item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             item.itemWidth=(!auto1&&(t=item.itemWidth))?profile.$forceu(t):'';
             item.itemHeight=(!auto1&&(t=item.itemHeight))?profile.$forceu(t):'';
             item.itemMargin=(t=item.itemMargin)?profile.$forceu(t):0;

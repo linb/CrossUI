@@ -6,6 +6,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         t.LIST.ITEMS.className = 'xui-ui-unselectable {_specialIconCls} {_vTxtCls}';
         t.$submap.items.ITEM.className = 'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius {itemClass} {disabled} {readonly} {itemPosCls}';
         delete keys.LEFT;delete keys.RIGHT;delete keys.DROP;
+        t.LIST.LISTBG={$order:0,className:'{_listbg} xui-uiborder-dark xui-uibar-checked'};
     },
     Static:{
         Appearances:{
@@ -20,8 +21,46 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 $order:2,
                 position:'relative'
             },
-            LISTBG:{
-                display:'none'
+            'LIST-attop > ITEMS, LIST-atbottom > ITEMS, LIST-attop > ITEMS > ITEM, LIST-atbottom > ITEMS > ITEM':{
+                $order:2,
+                height:'100%'
+            },
+            'LISTBG-t, LISTBG-b, LISTBG-l,LISTBG-r':{
+                position:'absolute',
+                overflow:'hidden',
+                display:'block'
+            },
+            "LISTBG-t":{
+                left:0,
+                right:0,
+                top: 'auto',
+                bottom:0,
+                height:'1px',
+                width:'100%'
+            },
+            "LISTBG-b":{
+                left:0,
+                right:0,
+                top: 0,
+                bottom:'auto',
+                height:'1px',
+                width:'100%'
+            },
+            "LISTBG-l":{
+                left:'auto',
+                right:0,
+                top: 0,
+                bottom:0,
+                width:'1px',
+                height:'100%'
+            },
+            "LISTBG-r":{
+                left:0,
+                right:'auto',
+                top: 0,
+                bottom:0,
+                width:'1px',
+                height:'100%'
             },
             MENU:{
                 display:'none',
@@ -52,17 +91,14 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             'ITEMS-left, ITEMS-left ITEMC':{
                 $order:1,
-                height:'auto',
                 'text-align': 'left'
             },
             'ITEMS-center, ITEMS-center ITEMC':{
                 $order:1,
-                height:'auto',
                 'text-align': 'center'
             },
             'ITEMS-right, ITEMS-right ITEMC':{
                 $order:1,
-                height:'auto',
                 'text-align': 'right'
             },
             'ITEMS-left HANDLE, ITEMS-right HANDLE':{
@@ -133,19 +169,25 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     var self=this,
                         hs = self.getSubNode('LIST'),
                         h = self.getSubNode('ITEMS'),
+                        bg = self.getSubNode('LISTBG'),
                         unit = 0+self.$picku();
+                    bg.tagClass("-(t|b|l|r)", false)
                     switch(v){
                         case 'left':
                             hs.cssRegion({left:unit,top:unit,right:'auto',bottom:unit});
+                            bg.tagClass("-l");
                         break;
                         case 'top':
                             hs.cssRegion({left:unit,top:unit,right:unit,bottom:'auto'});
+                            bg.tagClass("-t");
                         break;
                         case 'right':
                             hs.cssRegion({left:'auto',top:unit,right:unit,bottom:unit});
+                            bg.tagClass("-r");
                         break;
                         case 'bottom':
                             hs.cssRegion({left:unit,top:'auto',right:unit,bottom:unit});
+                            bg.tagClass("-b");
                        break;
                     }
                     switch(v){
@@ -156,7 +198,6 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         case 'top':
                         case 'bottom':
                             h.tagClass('-block',false);
-                            hs.height('auto');
                             break;
                     }
                     // add 'at' to be distinguished from xui-uibar-bottom
@@ -187,7 +228,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             },
             barSize:{
                 $spaceunit:1,
-                ini:'2em',
+                ini:'6em',
                 action:function(v){
                     this.adjustSize();
                 }
@@ -281,9 +322,11 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
         _prepareData:function(profile){
-            var data = arguments.callee.upper.call(this, profile);
+            var data = arguments.callee.upper.call(this, profile), loc="-"+data.barLocation.charAt(0);
             if(data.verticalText)
                 data._vTxtCls = profile.getClass("ITEMS", "-vertical-text-" + data.verticalText);
+
+            data._listbg = "xui-uiborder" + loc + " " + profile.getClass("LISTBG", loc);
             return data;
         },
         _onresize:function(profile,width,height,force,key){
@@ -336,7 +379,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     }else{
                         hl.css('overflow-y','hidden');
                     }
-                    itmsH = hs.height(prop.barSize||'auto').offsetHeight(true);
+                    itmsH = hs.height('auto').offsetHeight(true);
                     hl.css('position','relative');
 
                     if(width){
@@ -415,7 +458,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                         hc=hh;
                     }
                     if(height || width){
-                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : prop.barSize, hlfz,true);
+                        var v = profile.$px(prop.sideBarStatus=='fold' ? prop.sideBarSize : (!prop.barSize || prop.barSize=="auto"?profile.box.$DataStruct.barSize:prop.barSize), hlfz,true);
                         var vv = !cb?0:(hl._paddingW() + hl._marginW());
 
                         //caculate by px
