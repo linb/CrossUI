@@ -525,21 +525,21 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:4,
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{
@@ -683,7 +683,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             if(this.key!="xui.UI.List")return;
 
             var p=this.properties;
-            xui.UI.$doResize(this,p.width,p.height);
+            xui.UI.$tryResize(this,p.width,p.height);
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,

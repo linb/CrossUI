@@ -140,21 +140,21 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v&&v!='auto'?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:4,
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{

@@ -11974,8 +11974,8 @@ xui.Class('xui.Dom','xui.absBox',{
         tagClass:function(tag, isAdd){
             var self=this,
                 me=arguments.callee,
-                r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("([-\\w]+" + tag + "((-[\w]*)+|$))")),
-                r2=me["_r2"]||(me["_r2"]=/([-\w]+)/g);
+                r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("(xui-[-\\w]+" + tag + "((-[\w]*)+|$))")),
+                r2=me["_r2"]||(me["_r2"]=/(xui-[-\w]+)/g);
             self.removeClass(r1);
             isAdd=false!==isAdd;
             var r= isAdd ? self.replaceClass(r2, '$1 $1' + tag) : self;
@@ -31495,7 +31495,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     ns.box._adjustSideBar(ns, v, prop.sideBarType);
 
                     // use sync way
-                    xui.UI.$doResize(ns, prop.width, prop.height,true);
+                    xui.UI.$tryResize(ns, prop.width, prop.height,true);
                     ns.boxing().adjustDock(true);
                 }
             },
@@ -32519,7 +32519,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             'KEY-h DECREASE, KEY-h INCREASE':{
                 top:'50%',
                 'margin-top':'-.5em'
-            },            
+            },
             'KEY-h IND1,KEY-h IND2, KEY-v IND1,KEY-v IND2':{
                 padding:0,
                 margin:0
@@ -32555,7 +32555,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 $order:10,
                 left:'50%',
                 'margin-left':'-.5em'
-            },            
+            },
             'KEY-v DECREASE':{
                 $order:10,
                 top:0
@@ -32828,21 +32828,21 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
-                }                
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
+                }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:4,
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{
@@ -33020,7 +33020,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(labelSize)
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(box.width()+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz), 
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz),
                     width: '',
                     height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
@@ -33043,7 +33043,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             if(labelSize)
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(box.height()+labelGap):0),labelfz), 
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(box.height()+labelGap):0),labelfz),
                     width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelfz),
                     height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
@@ -33576,21 +33576,21 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ini:'0',
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:'4',
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{
@@ -34598,21 +34598,21 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v&&v!='auto'?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:4,
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{
@@ -40281,21 +40281,21 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:4,
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{
@@ -40439,7 +40439,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             if(this.key!="xui.UI.List")return;
 
             var p=this.properties;
-            xui.UI.$doResize(this,p.width,p.height);
+            xui.UI.$tryResize(this,p.width,p.height);
         },
         _onresize:function(profile,width,height){
             var prop=profile.properties,
@@ -43933,10 +43933,8 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'vertical-align':'middle'
             },
             'ITEMS-vertical-text-lr CAPTION':{
-                "vertical-align": "bottom"
             },
             'ITEMS-vertical-text-rl CAPTION':{
-                "vertical-align": "bottom",
                 transform: 'rotate(180deg)',
                 '-moz-transform': 'rotate(180deg)',
                 '-webkit-transform': 'rotate(180deg)',
@@ -56970,7 +56968,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         box._max(profile,'max', fun, ignoreEffects);
                     else{
                         // resize immidiately here, maybe max here
-                        xui.UI.$doResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
+                        xui.UI.$tryResize(profile, (tt&&tt[1])||p.width, (tt&&tt[2])||p.height);
                         root.show(left||left===0?adjustunit(left):null, top||top===0?adjustunit(top):null, fun,null,ignoreEffects);
                         box._refreshRegion(profile);
                     }

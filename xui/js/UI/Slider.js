@@ -125,7 +125,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             'KEY-h DECREASE, KEY-h INCREASE':{
                 top:'50%',
                 'margin-top':'-.5em'
-            },            
+            },
             'KEY-h IND1,KEY-h IND2, KEY-v IND1,KEY-v IND2':{
                 padding:0,
                 margin:0
@@ -161,7 +161,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 $order:10,
                 left:'50%',
                 'margin-left':'-.5em'
-            },            
+            },
             'KEY-v DECREASE':{
                 $order:10,
                 top:0
@@ -434,21 +434,21 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
                 ini:0,
                 action: function(v){
                     this.getSubNode('LABEL').css({display:v?'':'none'});
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelPos:{
                 ini:"left",
                 listbox:['none','left','top', 'right', 'bottom'],
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
-                }                
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
+                }
             },
             labelGap:{
                 $spaceunit:2,
                 ini:4,
                 action: function(v){
-                    xui.UI.$doResize(this,this.properties.width,this.properties.height,true);
+                    xui.UI.$tryResize(this,this.properties.width,this.properties.height,true);
                 }
             },
             labelCaption:{
@@ -626,7 +626,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(labelSize)
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(box.width()+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz), 
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(height-labelSize+labelGap):0),labelfz),
                     width: '',
                     height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });
@@ -649,7 +649,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             if(labelSize)
                 label.cssRegion({
                     left: adjustunit(width===null?null:Math.max(0,labelPos=='right'?(width-labelSize+labelGap):0),labelfz),
-                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(box.height()+labelGap):0),labelfz), 
+                    top:  adjustunit(height===null?null:Math.max(0,labelPos=='bottom'?(box.height()+labelGap):0),labelfz),
                     width: adjustunit(width===null?null:Math.max(0,((labelPos=='left'||labelPos=='right')?(labelSize-labelGap):width)),labelfz),
                     height: adjustunit(height===null?null:Math.max(0,((labelPos=='top'||labelPos=='bottom')?(labelSize-labelGap):height)),labelfz)
                 });

@@ -146,10 +146,8 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 'vertical-align':'middle'
             },
             'ITEMS-vertical-text-lr CAPTION':{
-                "vertical-align": "bottom"
             },
             'ITEMS-vertical-text-rl CAPTION':{
-                "vertical-align": "bottom",
                 transform: 'rotate(180deg)',
                 '-moz-transform': 'rotate(180deg)',
                 '-webkit-transform': 'rotate(180deg)',

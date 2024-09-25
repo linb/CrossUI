@@ -1455,8 +1455,8 @@ xui.Class('xui.Dom','xui.absBox',{
         tagClass:function(tag, isAdd){
             var self=this,
                 me=arguments.callee,
-                r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("([-\\w]+" + tag + "((-[\w]*)+|$))")),
-                r2=me["_r2"]||(me["_r2"]=/([-\w]+)/g);
+                r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("(xui-[-\\w]+" + tag + "((-[\w]*)+|$))")),
+                r2=me["_r2"]||(me["_r2"]=/(xui-[-\w]+)/g);
             self.removeClass(r1);
             isAdd=false!==isAdd;
             var r= isAdd ? self.replaceClass(r2, '$1 $1' + tag) : self;

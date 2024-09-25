@@ -197,7 +197,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                     ns.box._adjustSideBar(ns, v, prop.sideBarType);
 
                     // use sync way
-                    xui.UI.$doResize(ns, prop.width, prop.height,true);
+                    xui.UI.$tryResize(ns, prop.width, prop.height,true);
                     ns.boxing().adjustDock(true);
                 }
             },
