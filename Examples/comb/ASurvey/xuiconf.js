@@ -8,8 +8,9 @@ xui.ini.$PageAppearance = {
 // [[Font Icons CDN
 xui.ini.$FontIconsCDN = {
     "fontawesome":{
-        "href":"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
-        "integrity":"sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        "href":"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css",
+        "integrity":"sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==",
+        "crossorigin":"anonymous"
     }
 };
 // ]]Font Icons CDN
@@ -22,7 +23,7 @@ xui.ini.$DefaultProp={
     }
 };
 // ]]Default Prop
- 
+
 // [[Develop Env Setting
 xui.ini.$DevEnv = {
     "designViewConf":{

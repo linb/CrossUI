@@ -9203,7 +9203,8 @@ xui.Class("xui.UI.Div", "xui.UI",{
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, value){}
+            onClick:function(profile, e, value){},
+            afterAutoLoad:function(profile, result){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -9241,11 +9242,15 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 ins.getContainer().html("",false);
                 ins.append(ifr);
 
-                if((_if.method||"").toLowerCase()=="post")
+                if((_if.method||"").toLowerCase()=="post"){
+                    ins.append(ifr);
                     xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
-                else
+                }else{
                     ifr.src=_if.url;
+                    ins.append(ifr);
+                }
                 if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
+                if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,id);
             }else if(prop.ajaxAutoLoad){
                 var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
                     options={rspType:"text"};
@@ -9257,10 +9262,12 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                     node.html(rsp,true,true);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp);
                     ins.free();
                 }, function(err){
                     node.html("<div>"+err+"</div>",true,false);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp);
                     ins.free();
                 }, null, options).start();
             }

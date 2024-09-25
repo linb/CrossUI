@@ -977,7 +977,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             beforeItemClick:function(profile,item,e,src){},
             afterItemClick:function(profile,item,e,src){},
             onCaptionActive:function(profile, item,e,src){},
-            onClickPanel:function(profile, item, e, src){}
+            onClickPanel:function(profile, item, e, src){},
+            afterAutoLoad:function(profile, item, result){}
         },
         RenderTrigger:function(){
             var self=this,v,i,ins;
@@ -1115,12 +1116,12 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                  });
             }
         },
-        _forIniPanelView:function(profile, item){
+        _forIniPanelView:function(prf, item){
             if(!item)return;
-            var prop=profile.properties,box=profile.boxing();
+            var prop=prf.properties,box=prf.boxing();
             if(!item._$ini){
                 item._$ini=true;
-                if(profile.onIniPanelView)box.onIniPanelView(profile,item);
+                if(prf.onIniPanelView)box.onIniPanelView(prf,item);
                 if(item.iframeAutoLoad){
                     box.getPanel(item.id).css('overflow','hidden');
                     var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:xui.clone(item.iframeAutoLoad,true),
@@ -1144,25 +1145,33 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     ifr.allowTransparency='true';
                     ifr.width='100%';
                     ifr.height='100%';
-                    box.getPanel(item.id).html("").append(ifr);
 
-                    if((_if.method||"").toLowerCase()=="post")
+                    if((_if.method||"").toLowerCase()=="post"){
+                        box.getPanel(item.id).html("").append(ifr);
                         xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
-                    else
+                    }else{
                         ifr.src=_if.url;
+                        box.getPanel(item.id).html("").append(ifr);
+                    }
+                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,id);
                 }else if(item.ajaxAutoLoad){
                     var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:xui.clone(item.ajaxAutoLoad,true),
                         options={rspType:"text"};
                     xui.merge(options, _ajax.options);
                     if(!_ajax.query)_ajax.query={};
                     _ajax.query._rand=xui.rand();
-                    box.busy(false,null,"PANEL",profile.getSubIdByItemId(item.id));
+                    box.busy(false,null,"PANEL",prf.getSubIdByItemId(item.id));
                     var node=box.getPanel(item.id);
                     xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                         node.html(rsp,true,true);
+                        if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
+                        if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,rsp);
                         box.free();
                     }, function(err){
                         node.html("<div>"+err+"</div>",true,false);
+                        if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
+                        if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,rsp);
                         box.free();
                     }, null, options).start();
                 }

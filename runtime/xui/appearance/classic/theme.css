@@ -177,6 +177,8 @@
 }
 .xui-buttonviews-list-attop .xui-buttonviews-item-checked{
     border-top:solid 3px #ff0000;
+	border-left:solid 1px #CFE4FE;
+	border-right:solid 1px #CFE4FE;
     padding-top:0;
 }
 .xui-buttonviews-list-atbottom .xui-buttonviews-item{
@@ -184,6 +186,8 @@
 }
 .xui-buttonviews-list-atbottom .xui-buttonviews-item-checked{
     border-bottom:solid 3px #ff0000;
+	border-left:solid 1px #CFE4FE;
+	border-right:solid 1px #CFE4FE;
     padding-bottom:0;
 }
 .xui-buttonviews-list-atleft .xui-buttonviews-item{
@@ -191,6 +195,8 @@
 }
 .xui-buttonviews-list-atleft .xui-buttonviews-item-checked{
     border-left:solid 3px #ff0000;
+	border-top:solid 1px #CFE4FE;
+	border-bottom:solid 1px #CFE4FE;
     padding-left:0;
 }
 .xui-buttonviews-list-atright .xui-buttonviews-item{
@@ -198,6 +204,8 @@
 }
 .xui-buttonviews-list-atright .xui-buttonviews-item-checked{
     border-right:solid 3px #ff0000;
+	border-top:solid 1px #CFE4FE;
+	border-bottom:solid 1px #CFE4FE;
     padding-right:0;
 }
 .xui-buttonviews-menu2, .xui-buttonviews-itemc{

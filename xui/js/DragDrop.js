@@ -921,6 +921,8 @@ xui.Class('xui.DragDrop',null,{
         },
         attachNativeDrop : function(){
             var dd = xui.DragDrop;
+            if(dd._attachedNativeDrop)return dd._attachedNativeDrop;
+
             // Utility function to trigger custom mouse events
             function triggerMouseEvent(eventType, originalEvent) {
                 if(originalEvent.srcElement){
@@ -931,6 +933,8 @@ xui.Class('xui.DragDrop',null,{
                         clientY: originalEvent.clientY,
                         view: window
                     }));
+                    dd._profile.x = originalEvent.clientX;
+                    dd._profile.y = originalEvent.clientY;
                 }
             }
             function startXUIDD(dragKey, dragData){
@@ -944,6 +948,8 @@ xui.Class('xui.DragDrop',null,{
                 dd._profile.dragData = dragData;
             }
             function stopXUIDD(){
+                dd.setDropFace();
+                dd._reset();
                 dd._profile.isWorking = false;
                 document['onmouseover'] = null;
             }
@@ -964,10 +970,15 @@ xui.Class('xui.DragDrop',null,{
                         }else{
                             console.log("No XUI DD dragKey or dragData in dataTransfer");
                         }
+                    }else if(dd._xui_dragging_data){
+                        data = dd._xui_dragging_data;
+                        if(data.dragKey && data.dragData){
+                            startXUIDD(data.dragKey, data.dragData);
+                        }else{
+                            console.log("No XUI DD dragKey or dragData in dataTransfer");
+                        }
                     }else{
                         console.log("Invalid XUI DD data format in dataTransfer");
-                        // test
-                        startXUIDD("iAny","h");
                     }
                 }else{
                     if(isXUIDroppable(e.srcElement)){
@@ -983,12 +994,9 @@ xui.Class('xui.DragDrop',null,{
             }
             function ondrop(e) {
                 e.preventDefault();
-                if(isXUIDroppable(e.srcElement)){
-                    dropXUI(e);
-                    stopXUIDD();
-                }else{
-                    return false;
-                }
+                stopXUIDD();
+                delete dd._xui_dragging_data;
+                return false;
             }
             function ondragover(e) {
                 e.preventDefault();
@@ -1004,20 +1012,41 @@ xui.Class('xui.DragDrop',null,{
                     return false;
                 }
             }
+            function ondragdatamessage(e){
+                if(e.data){
+                    try{
+                        var json=xui.unserialize(e.data);
+                        if(json && '_xui_dragging_data' in json){
+                            if(json._xui_dragging_data){
+                                dd._xui_dragging_data=json._xui_dragging_data;
+                            }else{
+                                delete dd._xui_dragging_data;
+                            }
+                        }
+                    }catch(e){}
+                }
+            }
 
-          // convert native drop to xui drop
+            // convert native drop to xui drop
             document.addEventListener('dragenter', ondragenter,false);
             document.addEventListener('dragleave', ondragleave,false);
             document.addEventListener('dragover', ondragover,false);
             document.addEventListener('drop', ondrop,false);
-            return [ondragenter, ondragleave, ondragover, ondrop];
+            window.addEventListener('message', ondragdatamessage,false);
+
+            return dd._attachedNativeDrop = [ondragenter, ondragleave, ondragover, ondrop, ondragdatamessage];
         },
         detachNativeDrop : function(evs){
-            var ondragenter=evs[0], ondragleave=evs[1], ondragover=evs[2], ondrop=evs[3];
+            evs = evs || dd._attachedNativeDrop;
+
+            var ondragenter=evs[0], ondragleave=evs[1], ondragover=evs[2], ondrop=evs[3], ondragdatamessage=evs[4];
             document.removeEventListener('dragenter', ondragenter,false);
             document.removeEventListener('dragleave', ondragleave,false);
             document.removeEventListener('dragover', ondragover,false);
             document.removeEventListener('drop', ondrop,false);
+            window.removeEventListener('message', ondragdatamessage,false);
+
+            delete dd._attachedNativeDrop;
         }
     },
     After:function(){
