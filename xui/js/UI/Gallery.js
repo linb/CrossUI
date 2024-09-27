@@ -155,10 +155,11 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                             var p=profile.properties,
                                   nn=xui.use(src),
                                   node=nn.get(0),
-                                  item=profile.getItemByDom(src);
+                                  item=profile.getItemByDom(src),
+                                  autoImgSize=('autoImgSize' in item)?item.autoImgSize:p.autoImgSize;
                             if(!item)return;
                             var icon=profile.getSubNodeByItemId('ICON',item.id);
-                            if(item.autoImgSize||p.autoImgSize){
+                            if(autoImgSize){
                                 nn.attr('width','');nn.attr('height','');
                             }else{
                                 nn.attr('width',item.imgWidth);nn.attr('height',item.imgWidth);
@@ -232,45 +233,45 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             iconFontSize:{
                 ini:'',
                 action:function(v){
-                    this.getSubNode('ICON',true).css('font-size',v);
+                    this.boxing().refresh();
                 }
             },
             itemMargin:{
                 ini:6,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css('margin',v||0);
+                    this.boxing().refresh();
                 }
             },
             itemPadding:{
                 ini:2,
                 action:function(v){
-                    this.getSubNode('ITEM',true).css('padding',v||0);
+                    this.boxing().refresh();
                 }
             },
             itemWidth:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    if(!this.properties.autoItemSize)this.getSubNode('ITEMFRAME',true).width(v||'');
+                    this.boxing().refresh();
                 }
             },
             itemHeight:{
                 $spaceunit:1,
                 ini:32,
                 action:function(v){
-                    if(!this.properties.autoItemSize)this.getSubNode('ITEMFRAME',true).height(v||'');
+                   this.boxing().refresh();
                 }
             },
             imgWidth:{
                 ini:16,
                 action:function(v){
-                    if(!this.properties.autoImgSize)this.getSubNode('IMAGE',true).width(v||'');
+                    this.boxing().refresh();
                 }
             },
             imgHeight:{
                 ini:16,
                 action:function(v){
-                    if(!this.properties.autoImgSize)this.getSubNode('IMAGE',true).height(v||'');
+                    this.boxing().refresh();
                 }
             },
             width:{
@@ -308,7 +309,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                 cols=p.columns,
                 rows=p.rows,
                 auto1=item.autoItemSize||p.autoItemSize,
-                auto2=item.autoImgSize||p.autoImgSize,
+                auto2=('autoImgSize' in item)?item.autoImgSize:p.autoImgSize,
                 t;
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize,autoImgSize'),function(i){

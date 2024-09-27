@@ -5681,7 +5681,7 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             prf._inValid=1;
         },
-        $doResize:function(profile,w,h,force,key){
+        _doResize:function(profile,w,h,force,key){
             if(force || ((w||h) && (profile._resize_w!=w || profile._resize_h!=h))){
                 var root=profile.getRootNode(),con;
                 //destroyed before resize
@@ -5711,7 +5711,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             && (p.width===''||p.width=='auto')
                         )  {
                           ignore[i.$xid]=1;
-                          xui.UI.$doResize(i,xui(o).width(),null,force,key);
+                          xui.UI._doResize(i,xui(o).width(),null,force,key);
                         }
                     });
                 }
@@ -5739,7 +5739,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 //adjust width and height
                 //w=parseFloat(w)||null;
                 w=((w===""||w=='auto')?"auto":((xui.isFinite(w)||profile.$isPx(w))?(parseFloat(w)||0):w))||null
-                h=((h===""||h=='auto')?"auto":  ((xui.isFinite(h)||profile.$isPx(h))?(parseFloat(h)||0):h))||null;
+                h=((h===""||h=='auto')?"auto": ((xui.isFinite(h)||profile.$isPx(h))?(parseFloat(h)||0):h))||null;
 
                 //if it it has delay resize, overwrite arguments
                 if('_$visibility' in profile){
@@ -5751,7 +5751,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             // destroyed
                             if(!profile.box)return;
                             if(profile && profile._$rs_args)
-                                xui.UI.$doResize.apply(null,profile._$rs_args);
+                                xui.UI._doResize.apply(null,profile._$rs_args);
                         });
                     }
                     //keep the last one, neglect zero and 'auto'
@@ -5763,7 +5763,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }else{
 //for performance checking
 //console.log('resize',profile.$xid,w,h,force,key);
-                    xui.UI.$doResize(profile,w,h,force,key);
+                    xui.UI._doResize(profile,w,h,force,key);
                 }
             }
         },

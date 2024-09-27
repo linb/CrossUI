@@ -926,6 +926,10 @@ xui.Class('xui.DragDrop',null,{
             // Utility function to trigger custom mouse events
             function triggerMouseEvent(eventType, originalEvent) {
                 if(originalEvent.srcElement){
+                    dd._profile.x = originalEvent.clientX;
+                    dd._profile.y = originalEvent.clientY;
+                    xui.Event.simulateEvent(originalEvent.srcElement,eventType,{screenX:originalEvent.screenX, screenY:originalEvent.screenY, clientX:originalEvent.clientX, clientY:originalEvent.clientY});
+                    /*
                     originalEvent.srcElement.dispatchEvent(new MouseEvent(eventType, {
                         bubbles: true,
                         cancelable: true,
@@ -933,11 +937,13 @@ xui.Class('xui.DragDrop',null,{
                         clientY: originalEvent.clientY,
                         view: window
                     }));
-                    dd._profile.x = originalEvent.clientX;
-                    dd._profile.y = originalEvent.clientY;
+                    */
                 }
             }
+
+
             function startXUIDD(dragKey, dragData){
+                dd._end()._reset();
                 dd._profile.isWorking = true;
                 document['onmouseover'] = dd.$onDrag;
                 dd._source = {
@@ -948,19 +954,11 @@ xui.Class('xui.DragDrop',null,{
                 dd._profile.dragData = dragData;
             }
             function stopXUIDD(){
-                dd.setDropFace();
-                dd._reset();
-                dd._profile.isWorking = false;
-                document['onmouseover'] = null;
+
             }
             function isXUIDroppable(src){
                 return src.$xid && xui.getNodeData(src.$xid, ["eHandlers","ondrop"]);
             }
-            function dropXUI(e){
-                if(dd._profile.isWorking)
-                    dd.$onDrop(e);
-            }
-
             function ondragenter(e) {
                 if(!e.relatedTarget){
                     var data = xui.unserialize(e.dataTransfer.getData('text/plain'));
@@ -980,23 +978,24 @@ xui.Class('xui.DragDrop',null,{
                     }else{
                         console.log("Invalid XUI DD data format in dataTransfer");
                     }
-                }else{
-                    if(isXUIDroppable(e.srcElement)){
-                        triggerMouseEvent('mouseover', e);
-                    }else{
-                        return false;
-                    }
+                }else if(isXUIDroppable(e.srcElement)){
+                    triggerMouseEvent('mouseover', e);
                 }
             }
             function ondragleave(e) {
-                if(!e.relatedTarget) stopXUIDD();
-                triggerMouseEvent('mouseout', e);
+                if(!e.relatedTarget){
+                    dd._end()._reset();
+                    dd._profile.isWorking = false;
+                    document['onmouseover'] = null;
+                }else if(isXUIDroppable(e.srcElement)){
+                    triggerMouseEvent('mouseout', e);
+                }
             }
             function ondrop(e) {
-                e.preventDefault();
-                stopXUIDD();
+                // trigger xui drop
+                dd.$onDrop(e);
+                document['onmouseover'] = null;
                 delete dd._xui_dragging_data;
-                return false;
             }
             function ondragover(e) {
                 e.preventDefault();
