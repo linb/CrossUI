@@ -29427,7 +29427,7 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
                     prf._module = xui.create(prf.properties.moduleName, "xui.Module");
                     prf._module.host = prf.host;
                     prf._module.alias = prf.alias;
-                    prf._module.container = prf.getParent();
+                    prf._module.module_container = prf.getParent();
                 }
                 prf.boxing().replaceWithModule(prf._module);
             }
