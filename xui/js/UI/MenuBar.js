@@ -55,6 +55,8 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                             self.hide(false);
                         }).onMenuSelected(function(pro, item, src){
                             return profile.boxing().onMenuSelected(profile, pro, item, src);
+                        }).beforeShowSubMenu(function(pro, item, src){
+                            return profile.boxing().beforeShowSubMenu(profile, pro, item, src);
                         }).onShowSubMenu(function(pro, item, src){
                             return profile.boxing().onShowSubMenu(profile, pro, item, src);
                         });
@@ -86,7 +88,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             id = profile.$curPop,
             node = profile.$curElem;
 
-            if(menu = profile.$allPops[id]){
+            if(menu = profile.$allPops && profile.$allPops[id]){
                 //To avoid trigger recursive call
                 if(false!==arguments[0])
                     menu.hide(false,ignoreEffects);
@@ -96,11 +98,19 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             }
             profile.$menuPop=profile.$curPop=profile.$curElem=null;
         },
-        clearPopCache:function(){
+        clearPopCache:function(id){
             var profile=this.get(0);
             if(profile.renderId){
-                profile.getSubNode('POOL').empty();
-                profile.$allPops=profile.$curPop=profile.$curElem=null;
+                if(id){
+                    var t = profile.$allPops[id];
+                    if(t&&t.get(0)){
+                        t.destroy();
+                        delete profile.$allPops[id];
+                    }
+                }else{
+                    profile.getSubNode('POOL').empty();
+                    profile.$allPops=profile.$curPop=profile.$curElem=null;
+                }
             }
         }
     },
@@ -373,6 +383,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             onGetPopMenu:function(profile, item, callback){},
             onMenuBtnClick:function(profile, item, src){},
             beforePopMenu:function(profile, item, src){},
+            beforeShowSubMenu:function(profile, popProfile, item, src){},
             onShowSubMenu:function(profile, popProfile, item, src){},
             onMenuSelected:function(profile, popProfile, item, src){}
         },

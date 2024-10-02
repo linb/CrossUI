@@ -138,7 +138,12 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 pid=p.parentID||xui.ini.$rootContainer,
                 sms='$subPopMenuShowed',
                 hl='$highLight',
-                cm='$childPopMenu';
+                cm='$childPopMenu',
+                conainer = pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : parent || null;
+
+            if(false===profile.beforeShow && profile.boxing().beforeShow(profile, pos, type, conainer, ignoreEffects, e))
+                return ns;
+
             //ensure rendered
             if(!profile.renderId){
                 //use empty idv for LayoutTrigger
@@ -150,7 +155,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 xui([profile.$highLight]).tagClass('-hover',false);
 
             // set container
-            profile._conainer = pid ? xui.get(profile,["host", pid]) ? profile.host[pid].getContainer(): xui(pid) : parent || null;
+            profile._conainer = conainer;
 
             profile.getRoot().popToTop(pos, type, profile._conainer,null,null,ignoreEffects);
 
@@ -159,6 +164,8 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             ns._initGrp();
             profile[cm]=profile[sms]=profile[hl]=null;
+
+            profile.onShow && profile.boxing().onShow(profile, pos, type);
             return ns;
         },
         hide:function(triggerEvent, ignoreEffects , e){
@@ -171,7 +178,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 cm='$childPopMenu',
                 fun=function(){
                     if(false!==triggerEvent)
-                        if(false===profile.boxing().beforeHide(profile, ignoreEffects, e))
+                        if(false===profile.beforeHide && profile.boxing().beforeHide(profile, ignoreEffects, e))
                             return this;
 
                     if(!root || root.css('display')=='none')return;
@@ -203,7 +210,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         root.setBlurTrigger(profile.$xid,null);
 
                     if(false!==triggerEvent)
-                        profile.boxing().onHide(profile);
+                        profile.onHide && profile.boxing().onHide(profile);
                 };
             root.hide(fun,null,ignoreEffects);
             return this;
@@ -215,6 +222,21 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _afterRemoveItems:function(profile){
             if(!profile.renderId)return;
             profile.boxing().adjustSize();
+        },
+        clearPopCache:function(id){
+            var profile=this.get(0);
+            if(profile.renderId){
+                if(id){
+                    var t = profile.$allPops[id];
+                    if(t&&t.get(0)){
+                        t.destroy();
+                        delete profile.$allPops[id];
+                    }
+                }else{
+                    profile.getSubNode('POOL').empty();
+                    profile.$allPops=null;
+                }
+            }
         }
     },
     Initialize:function(){
@@ -500,13 +522,16 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
 
                     if(!Cancel && item.sub){
+                        if(false===profile.boxing().beforeShowSubMenu(profile, item, src, e)){
+                            return;
+                        }
                         // if no sub arrays
                         if(!(xui.isArr(item.sub) && item.sub.length)){
                             if(profile.onShowSubMenu){
                                 var r=profile[all][itemId];
                                 if(r && r['xui.UI'] && !r.isEmpty()){}
                                 else
-                                    r=profile.boxing().onShowSubMenu(profile, item, src);
+                                    r=profile.boxing().onShowSubMenu(profile, item, src, e);
 
                                 // return UI control
                                 if(r && r['xui.UI'] && !r.isEmpty()){
@@ -538,10 +563,11 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             if(!(pop = profile[all][itemId])){
                                 var pro=profile.properties;
                                 pop = (new xui.UI.PopMenu({position:'absolute', items:item.sub, autoHide:pro.autoHide, showEffects:pro.showEffects, hideEffects:pro.hideEffects})).render(true);
-                                pop.onShowSubMenu(function(pro, item, src){
-                                    return profile.boxing().onShowSubMenu(profile, item, src);
-                                });
-                                pop.onMenuSelected(function(pro, item, src){
+                                pop.beforeShowSubMenu(function(pro, item, src, e){
+                                    return profile.boxing().beforeShowSubMenu(profile, item, src, e);
+                                }).onShowSubMenu(function(pro, item, src, e){
+                                    return profile.boxing().onShowSubMenu(profile, item, src, e);
+                                }).onMenuSelected(function(pro, item, src){
                                     return profile.boxing().onMenuSelected(profile, item, src);
                                 });
                                 popp=pop.get(0);
@@ -693,7 +719,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             }
                             break;
                         case 'right':
-                            if((t=profile.$subPopMenuShowed) && t == profile.$allPops[itemId])
+                            if((t=profile.$subPopMenuShowed) && t == profile.$allPops && profile.$allPops[itemId])
                                 t.activate();
                             break;
                     }
@@ -788,7 +814,10 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $vborder:0
         }),
         EventHandlers:{
-            onShowSubMenu:function(profile, item, src){},
+            beforeShowSubMenu:function(profile, item, src, e){},
+            onShowSubMenu:function(profile, item, src, e){},
+            beforeShow:function(profile, pos, type, conainer, ignoreEffects, e){},
+            onShow:function(profile, pos, type){},
             beforeHide:function(profile,e){},
             onHide:function(profile){},
             onMenuSelected:function(profile, item, src){}

@@ -7138,8 +7138,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在编辑器消失前调用",
                 $paras:[
                     $profile,
-                    "item : Object, 子项对象",
-                    "editor: Object, 编辑器对象"
+                    "item : Object, 子项对象"
                 ]
             }
         }
@@ -18504,8 +18503,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在编辑器消失前调用",
                 $paras:[
                     $profile,
-                    "cell : Object, 单元格对象",
-                    "editor: Object, 编辑器对象"
+                    "cell : Object, 单元格对象"
                 ]
             },
             beforeIniEditor:{

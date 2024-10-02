@@ -1030,7 +1030,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     node.onMouseout(function(){
                                         xui(src).onMouseout(true)
                                     },'hoverPop');
-                                    callback(mtype);
+                                    callback&&callback(mtype);
                                 }
                             }
                         }
@@ -1042,7 +1042,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                 if(popmenu) popmenu.hide();
                                 else node.hide();
                                 node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
-                                callback(mtype);
+                                callback&&callback(mtype);
                             }
                         });
                     }
@@ -1065,7 +1065,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                             if(popmenu) popmenu.hide();
                             else node.hide();
                             node.onMouseover(null,'hoverPop').onMouseout(null,'hoverPop');
-                            callback(mtype);
                         }
                     });
                 },'hoverPop');
@@ -7224,7 +7223,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 if(base===true){
                         v=prop.$UIvalue||prop.value;
                         if(v)v=(v+'').split(prop.valueSeparator);
-                        k=profile.getItemByItemId(v[0]);
+                        k=v&&v.length&&profile.getItemByItemId(v[0]);
                         base=k?k.id:null;
                 }
 
@@ -7402,7 +7401,7 @@ xui.Class("xui.absList", "xui.absObj",{
             if(!itemId){
                 v=prop.$UIvalue||prop.value;
                 if(v)v=(v+'').split(prop.valueSeparator);
-                v=profile.getItemByItemId(v[0]);
+                v=v&&v.length&&profile.getItemByItemId(v[0]);
                 itemId=v?v.id:null;
             }
             var box=profile.box,
@@ -7644,13 +7643,12 @@ xui.Class("xui.absList", "xui.absObj",{
             this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).focus(true);
             return this;
         },
-        scrollIntoView:function(itemId){
-            itemId=this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId);
-            if(itemId=itemId.get(0)){
-                if(itemId.hasOwnProperty('scrollIntoViewIfNeeded'))
-                  itemId.scrollIntoViewIfNeeded();
-                else
-                  itemId.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        scrollIntoView:function(itemId, no_anim){
+            itemId=this.getSubNodeByItemId(this.constructor._scrollItemKey || this.constructor._focusNodeKey, itemId);
+            var elem = itemId.get(0);
+            if(elem){
+                //this.getSubNode("BOX").scrollTop(itemId.offsetTop());
+                elem.scrollIntoView({ behavior: !no_anim?'smooth':'auto', block: 'nearest', inline: 'start' });
             }
             return this;
         },
@@ -7661,8 +7659,8 @@ xui.Class("xui.absList", "xui.absObj",{
             this.getSubNodeByItemId(this.constructor._focusNodeKey, itemId).onClick();
             return this;
         },
-        editItem:function(itemId/*default is the current*/){
-            var profile=this.get(0),
+        editItem:function(itemId/*default is the current*/,callback/*function(profile, editor)*/){
+            var profile=this.get(0), ins = profile.boxing(),
                 prop=profile.properties,
                 item,source,v;
             if(profile&&profile.renderId&&!profile.destroyed){
@@ -7671,7 +7669,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 if(!itemId){
                     v=prop.$UIvalue||prop.value;
                     if(v)v=(v+'').split(prop.valueSeparator);
-                    v=profile.getItemByItemId(v[0]);
+                    v=v&&v.length&&profile.getItemByItemId(v[0]);
                     itemId=v?v.id:null;
                 }
                 if(itemId){
@@ -7693,7 +7691,7 @@ xui.Class("xui.absList", "xui.absObj",{
 
                             var editor;
                             if(profile.beforeIniEditor){
-                                editor=profile.boxing().beforeIniEditor(profile, item, source);
+                                editor=ins.beforeIniEditor(profile, item, source);
                                 if(editor===false)
                                     return;
                             }
@@ -7704,7 +7702,10 @@ xui.Class("xui.absList", "xui.absObj",{
                                     .setHeight(Math.max(size2.height, 20))
                                     .setResizer(true)
                                     .setValue(item.caption||"");
-                                if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,item,editor);
+                                if(profile.onBeginEdit)ins.onBeginEdit(profile,item,editor);
+                                var callback_endEdit=function(){
+                                  editor && editor.undo && editor.undo();
+                                };
                                 editor.undo=function(){
                                     // ays is a must
                                     xui.resetRun('absList_editor_reset', function(){
@@ -7712,17 +7713,19 @@ xui.Class("xui.absList", "xui.absObj",{
                                             editor.getRoot().setBlurTrigger("absList_editor_blur",null);
                                             editor.destroy();
                                             editor=editor.undo=null;
+                                            if(profile.onEndEdit)ins.onEndEdit(profile,item);
                                         }
                                     });
                                 };
                                 editor.beforeUIValueSet(function(prf, ov, nv, force, tag){
-                                    if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, item, nv, editor, tag))){
-                                        profile.boxing().updateItem(item.id, {caption:nv});
-                                        if(profile.onEndEdit)profile.boxing().onEndEdit(profile,item,editor);
-                                        editor.undo();
+
+                                    if(false!==(profile.beforeEditApply&&ins.beforeEditApply(profile, item, nv, editor, tag, callback_endEdit))){
+                                        ins.updateItem(item.id, {caption:nv});
+                                        callback_endEdit();
                                     }
+                                    if(profile.afterEditApply)ins.afterEditApply(profile, item, nv, editor, tag);
                                 }).onCancel(function(){
-                                    editor.undo();
+                                    callback_endEdit();
                                 });
                                 xui('body').append(editor);
                                 var root=editor.getRoot();
@@ -7733,9 +7736,14 @@ xui.Class("xui.absList", "xui.absObj",{
                                 });
                                 // For scroll to undo
                                 root.setBlurTrigger("absList_editor_blur",function(){
-                                    editor.undo();
+                                    callback_endEdit();
                                 });
-                                editor.activate();
+
+                                if(false !== (xui.isFun(callback)?callback.apply(profile.host, [profile, editor, root]):null)){
+                                    xui.asyRun(function(){
+                                        editor.get(0) && editor.activate();
+                                    });
+                                }
                             }
                         }
                     }
@@ -7890,8 +7898,9 @@ xui.Class("xui.absList", "xui.absObj",{
             beforePrepareItem:function(profile, item, pid){},
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
-            beforeEditApply:function(profile, item, value, editor, tag){},
-            onEndEdit:function(profile, item, editor){}
+            beforeEditApply:function(profile, item, value, editor, tag, callback_endEdit){},
+            afterEditApply:function(profile, item, value, editor, tag){},
+            onEndEdit:function(profile, item){}
         },
         getDropKeys:function(profile,node){
             var item=profile.getItemByDom(node);

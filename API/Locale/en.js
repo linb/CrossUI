@@ -7061,8 +7061,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the item's editor is hidden",
                 $paras:[
                     $profile,
-                    "item : Object. item object",
-                    "editor: Object, the editor object"
+                    "item : Object. item object"
                 ]
             }
         }
@@ -18576,8 +18575,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Fired when the cell's editor is hidden",
                 $paras:[
                     $profile,
-                    "cell : Object. cell object",
-                    "editor: Object, the editor object"
+                    "cell : Object. cell object"
                 ]
             },
             beforeIniEditor:{

@@ -2150,7 +2150,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     .setValue(row.value||row.value||"");
 
                 if(profile.onBeginEdit)profile.boxing().onBeginEdit(profile,row,editor, 'row',row, null);
-
+                var callback_endEdit=function(){
+                    editor && editor.undo && xui.tryF(editor.undo,[],editor);
+                };
                 editor.undo=function(){
                     var editor=this, row=editor.get(0) && editor.get(0).$row;
                     // execute once
@@ -2192,13 +2194,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     var options={value:nv},t;
                     if(prf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(t=prf.properties.tagVar))
                         options.tagVar=t;
-                    if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, row, options, editor, tag, 'row', row, null))){
+                    if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, row, options, editor, tag, 'row', row, null, callback_endEdit))){
                         profile.boxing().updateRow(row.id, {value:nv, caption:nv+""});
-                        xui.tryF(editor.undo,[],editor);
+                        callback_endEdit();
                     }
+                    profile.afterEditApply&&profile.boxing().afterEditApply(profile, row, options, editor, tag, 'row', row, null);
                 })
                 .beforeNextFocus(function(prop, e){
-                    xui.tryF(editor.undo,[true],editor);
+                    callback_endEdit();
                     var hash=xui.Event.getEventPara(e);
                     if(hash.key=='enter')hash.$key='right';
                     profile.getSubNode('CELLA', row._serialId).onKeydown(true,hash);
@@ -2206,7 +2209,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     return false;
                 })
                 .onCancel(function(){
-                    xui.tryF(editor.undo,[],editor);
+                    callback_endEdit();
                 })
 
                 baseNode.append(editor);
@@ -2218,7 +2221,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 var root=editor.getRoot();
                 // For scroll to undo
                 root.setBlurTrigger("tg_editor_blur:"+profile.$xid,function(){
-                    xui.tryF(editor.undo,[],editor);
+                    callback_endEdit();
                     return false;
                 });
 
@@ -2321,7 +2324,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             var profile=this.get(0),editor;
             if(!profile)return;
             if(editor = profile.$curEditor){
-                xui.tryF(editor.undo,[],editor);
+                editor.undo && xui.tryF(editor.undo,[],editor);
             }
             if(!ignoreInline)
                 xui.each(profile.cellMap,function(cell){
@@ -5434,7 +5437,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeIniEditor:function(profile, cell, cellNode, pNode, type, row, col){},
             onBeginEdit:function(profile, cell, editor, type, row, col){},
-            beforeEditApply:function(profile, cell, options, editor, tag, type, row, col){},
+            beforeEditApply:function(profile, cell, options, editor, tag, type, row, col, callback_endEdit){},
+            afterEditApply:function(profile, cell, options, editor, tag, type, row, col){},
             onEndEdit:function(profile, cell, editor, type, row, col){},
 
            // Editors' default events
@@ -7161,7 +7165,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(!inline){
                 //clear the prev editor
                 editor = profile.$curEditor;
-                if(editor)xui.tryF(editor.undo,[],editor);
+                editor && editor.undo && xui.tryF(editor.undo,[],editor);
                 editor=null;
             }
 
@@ -7212,6 +7216,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         editorDropListHeight = getPro('editorDropListHeight'),
                         editorCommandBtn=getPro('editorCommandBtn'),
                         beforeEditApply=getPro('beforeEditApply'),
+                        afterEditApply=getPro('afterEditApply'),
                         t,oldProp;
 
 
@@ -7539,15 +7544,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                         if(editorPrf.properties.hasOwnProperty("tagVar") && !xui.isEmpty(editorPrf.properties.tagVar))
                             options.tagVar=editorPrf.properties.tagVar;
-
-                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col))){
-                            if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
-                              profile._setFromEditor=1;
-                              grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
-                              delete profile._setFromEditor;
-                            }
+                        var callback_endEdit=function(){
                             if((nc=_getcell(editorPrf)) && nc!==cc){
-                              editorPrf.$cell = nc
+                              editorPrf.$cell = nc;
                               nc._editor=editor;
                               if(!inline){
                                 profile.$cellInEditor=nc;
@@ -7555,13 +7554,21 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
 
                             if(xui.str.endWith(editMode,"sharp") && type!='spin' && type!='counter'){
-                              xui.tryF(editor.undo,[true],editor);
+                              editor && editor.undo && xui.tryF(editor.undo,[true],editor);
                             }
+                        };
+                        if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col, callback_endEdit))){
+                            profile._setFromEditor=1;
+                            grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+                            delete profile._setFromEditor;
+
+                            callback_endEdit();
                         }
+                        profile.afterEditApply&&profile.boxing().afterEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col);
                     })
                     .beforeNextFocus(function(editorPrf, e){
-                        if(editMode!="inline" && editor.undo)
-                            xui.tryF(editor.undo,[true],editor);
+                        if(editMode!="inline")
+                            editor && editor.undo && xui.tryF(editor.undo,[true],editor);
                         var hash=xui.Event.getEventPara(e);
                         // fake 'right' key
                         if(hash.key=='enter')hash.$key='right';
@@ -7576,16 +7583,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(!inline){
                         editor
                         .onCancel(function(){
-                            if(editor)
-                                xui.tryF(editor.undo,[],editor);
+                            editor && editor.undo && xui.tryF(editor.undo,[],editor);
                         })
                         .afterPopHide(function(p,r,type){
                             if(xui.str.endWith(editMode,"sharp"))
-                                xui.tryF(editor.undo,[type!="blur"&&type!="call"],editor);
+                                editor && editor.undo && xui.tryF(editor.undo,[type!="blur"&&type!="call"],editor);
                         })
                         .getRoot().setBlurTrigger(profile.$xid+":editor", function(){
-                            if(editor)
-                                xui.tryF(editor.undo,[],editor);
+                            editor && editor.undo && xui.tryF(editor.undo,[],editor);
                             return false;
                         });
 
@@ -7661,10 +7666,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                 if(editor)editor.getRoot().onMouseout(null,"tg-hover-edit");
                             },cfun=function(){
                                 if(editor)editor.getRoot().onMouseout(function(){
-                                    if(editor) xui.tryF(editor.undo,[],editor);
+                                    editor && editor.undo && xui.tryF(editor.undo,[],editor);
                                 },"tg-hover-edit");
                             },dfun=function(){
-                               // if(editor) xui.tryF(editor.undo,[],editor);
+                               // editor && editor.undo && xui.tryF(editor.undo,[],editor);
                             };
                             editor.onFocus(bfun).beforePopShow(function(editorprf, popCtl,items){
                                 bfun();
@@ -8396,7 +8401,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(xui.str.startWith(type,'hover')){
                 var editor=profile.$curEditor;
                 if(type=="hover" && (t=editor.get(0)) && t.$poplink)return false;
-                xui.tryF(editor.undo,[],editor);
+                editor && editor.undo && xui.tryF(editor.undo,[],editor);
             }
         },
         _onresize:function(profile,width,height){

@@ -77,7 +77,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(pid===true){
                     v=prop.$UIvalue||prop.value;
                     if(v)v=(v+'').split(prop.valueSeparator);
-                    k=profile.getItemByItemId(v[0]);
+                    k=v&&v.length&&profile.getItemByItemId(v[0]);
                     pid=k?k.id:null;
                 }
 
@@ -97,7 +97,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                     if(base===true){
                         v=prop.$UIvalue||prop.value;
                         if(v)v=(v+'').split(prop.valueSeparator);
-                        k=profile.getItemByItemId(v[0]);
+                        k=v&&v.length&&profile.getItemByItemId(v[0]);
                         base=k?k.id:null;
                     }
                     if(base){
@@ -246,6 +246,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         }
     },
     Static:{
+        _scrollItemKey:"ITEM",
         _focusNodeKey:'BAR',
         Templates:{
             tagName : 'div',
