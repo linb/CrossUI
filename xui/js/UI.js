@@ -5453,7 +5453,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                             b.hoverPop(t,null);
                          if(v && (t=ns.host[v]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
                             b.hoverPop(t, p.hoverPopType, function(prf, node, e, src, item){
-                                t.properties.tagVar.hoverFrom=arguments;
+                                if(t.properties.tagVar)
+                                    t.properties.tagVar.hoverFrom=arguments;
                                 if(p.hoverPopNodeType){
                                     if(!(new RegExp("\\b"+t.getKey(src,true)+"\\b")).test(p.hoverPopNodeType))return false;
                                 }
@@ -5461,7 +5462,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                   return ns.boxing().beforeHoverPop(prf, item, node, e, src);
                                 }
                             },function(prf, node, e, src, item){
-                                delete t.properties.tagVar.hoverFrom;
+                                if(t.properties.tagVar)
+                                    delete t.properties.tagVar.hoverFrom;
                                 if(ns.beforeHoverHide){
                                   return ns.boxing().beforeHoverHide(prf, item, node, e, src);
                                 }

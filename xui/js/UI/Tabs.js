@@ -192,6 +192,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         profile.boxing().removeChildren(subId,destroyChildren)
                 }
             });
+            return this;
         },
         iniPanelView:function(subId){
             return this.each(function(profile){
@@ -205,6 +206,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
                 }
             });
+            return this;
         },
 
         ////
