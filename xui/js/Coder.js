@@ -151,7 +151,7 @@ xui.Class("xui.Coder", null,{
             ]);
         },
         /*decode code
-        str: source code
+        code: source code
         key: js/php/css
         */
         formatText:function(code, type, reverse, indent){
@@ -236,7 +236,7 @@ xui.Class("xui.Coder", null,{
                 code=xui.replace(code,arr);
                 var Brackets={};
                 if(!reverse){
-                    arr=[
+                    arr=arr.concat([
                         // a[b[6]] =>a[*]
                         [/\[[^;\n{}\x01\x03\[\]]+\]/.source, "$0"],
                         // [{
@@ -260,7 +260,7 @@ xui.Class("xui.Coder", null,{
                         // if(1)b() else if(2)d() else c()
                         [/(\bif\b\([^)]*\))([^\{\n\)\|\&\+\-\*\/\^\,\?\<\>\!\=])/.source, function(a, i){return a[i+1] + (a[i+2]=="{"||a[i+2]=="\n" ? a[i+2] : ("\n" + space[deep+1] + a[i+2])) }],
                         [/(?!\n\s*)\belse\b/.source, function(a, i){return "\n"+ space[deep] + a[i]}]
-                    ];
+                    ]);
                     if(type!='css'){
                         arr.push(
                              // '=>' is for php

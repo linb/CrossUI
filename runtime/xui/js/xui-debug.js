@@ -671,24 +671,31 @@ new function(){
           if(!xui.isSet(_curLayer))_curLayer = 1;
 
           if (x === y) return true;
-          if (!(x instanceof Object) || !(y instanceof Object)) return false;
-          if (x.constructor !== y.constructor) return false;
+          if (!(x instanceof Object) || !(y instanceof Object))
+              return false;
+          if (x.constructor !== y.constructor)
+              return false;
           for (var p in x) {
             if (ignore && ignore(p)) continue;
             if (!x.hasOwnProperty(p)) continue;
-            if (!y.hasOwnProperty(p)) return false;
+            if (!y.hasOwnProperty(p))
+                return false;
             if (x[p] === y[p]) continue;
-            if (typeof x[p] !== "object") return false;
+            if (typeof x[p] !== "object")
+                return false;
             if (xui.isHash(x[p]) && xui.isHash(y[p]) && xui.isEmpty(x[p])&& xui.isEmpty(y[p])) continue;
             if (xui.isArr(x[p]) && xui.isArr(y[p]) && x[p].length === 0 && y[p].length === 0) continue;
+            if (xui.isFun(x[p]) && xui.isFun(y[p]) && (x[p]===y[p] || (x[p]+"") === (y[p]+"")) ) continue;
             if (_curLayer >= deep) {
-              if (x[p] !== y[p]) return false;
+              if (x[p] !== y[p])
+                  return false;
               continue;
             } else if (!xui.deepEquals(x[p], y[p], deep, ignore, _curLayer + 1))
-              return false;
+                return false;
           }
           for (var p in y) {
-            if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) return false;
+            if (y.hasOwnProperty(p) && !x.hasOwnProperty(p))
+                return false;
           }
           // for two functions
           return x+""==y+"";
@@ -21089,6 +21096,18 @@ xui.Class("xui.UI",  "xui.absObj", {
                 prf.adjustSize(useProp, asy, flag);
             });
         },
+        refreshSize:function(){
+            return this.each(function(prf){
+                var n = prf.getRoot(), r = n.get(0);
+                if(r && (r=r.style)){
+                    var ow=r.width, oh=r.height;
+                    // trigger onsize event
+                    n.cssSize({width:n.width()+1,height:n.height()+1}, true);
+                    n.cssSize({width:n.width(),height:n.height()}, true);
+                    r.width = ow; r.height = oh;
+                }
+            });
+        },
         reLayout:function(force){
             return this.each(function(o){
                 if(!o.renderId)return;
@@ -21872,7 +21891,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
                         var n=o.getRootNode();
                         // ensure display
-                        if(n && n.clientHeight){
+                        if(n && n.offsetParent){
                             if(force){
                                 var style=n.style;
                                 // ensure force 1
@@ -25244,7 +25263,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                             b.hoverPop(t,null);
                          if(v && (t=ns.host[v]) && (t=t.get(0)) && t.renderId&& !t.destroyed)
                             b.hoverPop(t, p.hoverPopType, function(prf, node, e, src, item){
-                                t.properties.tagVar.hoverFrom=arguments;
+                                if(t.properties.tagVar)
+                                    t.properties.tagVar.hoverFrom=arguments;
                                 if(p.hoverPopNodeType){
                                     if(!(new RegExp("\\b"+t.getKey(src,true)+"\\b")).test(p.hoverPopNodeType))return false;
                                 }
@@ -25252,7 +25272,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                                   return ns.boxing().beforeHoverPop(prf, item, node, e, src);
                                 }
                             },function(prf, node, e, src, item){
-                                delete t.properties.tagVar.hoverFrom;
+                                if(t.properties.tagVar)
+                                    delete t.properties.tagVar.hoverFrom;
                                 if(ns.beforeHoverHide){
                                   return ns.boxing().beforeHoverHide(prf, item, node, e, src);
                                 }
@@ -42245,10 +42266,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                     pn.scrollTop=0;
 
                                 if(xui.Dom.css3Support("content-visibility")){
+                                  item._expand_h = box.getPanel(itemId).height();
                                   box.getPanel(itemId).css({'content-visibility':'hidden',height:0});
-                                }else{
-                                  box.getPanel(itemId).css('display','none');
                                 }
+                                box.getPanel(itemId).css('display','none');
+
                                 box.getPanel(itemId).removeClass("xui-activated");
                             }
                         }
@@ -42266,10 +42288,13 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // show pane
                                 //box.getPanel(value).css('position','relative').show('auto','auto');
+                                box.getPanel(itemId).css('display','block');
                                 if(xui.Dom.css3Support("content-visibility")){
-                                  box.getPanel(itemId).css('content-visibility', 'visible');
-                                }else{
-                                  box.getPanel(itemId).css('display','block');
+                                  if(item._expand_h){
+                                      box.getPanel(itemId).css('height', item._expand_h + "px");
+                                      delete item._expand_h;
+                                  }
+                                  box.getPanel(itemId).css('content-visibility','visible');
                                 }
                                 if(item._scrollTop)
                                     box.getPanel(itemId).get(0).scrollTop=item._scrollTop;
@@ -42414,6 +42439,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         profile.boxing().removeChildren(subId,destroyChildren)
                 }
             });
+            return this;
         },
         iniPanelView:function(subId){
             return this.each(function(profile){
@@ -42427,6 +42453,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     });
                 }
             });
+            return this;
         },
 
         ////

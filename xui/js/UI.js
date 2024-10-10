@@ -1298,6 +1298,18 @@ xui.Class("xui.UI",  "xui.absObj", {
                 prf.adjustSize(useProp, asy, flag);
             });
         },
+        refreshSize:function(){
+            return this.each(function(prf){
+                var n = prf.getRoot(), r = n.get(0);
+                if(r && (r=r.style)){
+                    var ow=r.width, oh=r.height;
+                    // trigger onsize event
+                    n.cssSize({width:n.width()+1,height:n.height()+1}, true);
+                    n.cssSize({width:n.width(),height:n.height()}, true);
+                    r.width = ow; r.height = oh;
+                }
+            });
+        },
         reLayout:function(force){
             return this.each(function(o){
                 if(!o.renderId)return;
@@ -2081,7 +2093,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     if('dock' in prop && prop.dock && prop.dock!='none' && o.renderId){
                         var n=o.getRootNode();
                         // ensure display
-                        if(n && n.clientHeight){
+                        if(n && n.offsetParent){
                             if(force){
                                 var style=n.style;
                                 // ensure force 1

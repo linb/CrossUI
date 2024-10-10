@@ -23,10 +23,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                     pn.scrollTop=0;
 
                                 if(xui.Dom.css3Support("content-visibility")){
+                                  item._expand_h = box.getPanel(itemId).height();
                                   box.getPanel(itemId).css({'content-visibility':'hidden',height:0});
-                                }else{
-                                  box.getPanel(itemId).css('display','none');
                                 }
+                                box.getPanel(itemId).css('display','none');
+
                                 box.getPanel(itemId).removeClass("xui-activated");
                             }
                         }
@@ -44,10 +45,13 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             if(!dm.hasOwnProperty("noPanel") || !prop.noPanel){
                                 // show pane
                                 //box.getPanel(value).css('position','relative').show('auto','auto');
+                                box.getPanel(itemId).css('display','block');
                                 if(xui.Dom.css3Support("content-visibility")){
-                                  box.getPanel(itemId).css('content-visibility', 'visible');
-                                }else{
-                                  box.getPanel(itemId).css('display','block');
+                                  if(item._expand_h){
+                                      box.getPanel(itemId).css('height', item._expand_h + "px");
+                                      delete item._expand_h;
+                                  }
+                                  box.getPanel(itemId).css('content-visibility','visible');
                                 }
                                 if(item._scrollTop)
                                     box.getPanel(itemId).get(0).scrollTop=item._scrollTop;
