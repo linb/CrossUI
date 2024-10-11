@@ -37,6 +37,7 @@ xui.set(xui.Locale,["en","app"], {
     };
     var $force="force [Optional] : Boolean, force to set the property value even if the same property value already exists. Default is [false]";
     var $profile="profile : xui.UIProfile. The current control's profile object";
+    var $module="module : xui.Module. The current module object";
     /*
     $desc string
     $paras array

@@ -12595,6 +12595,7 @@ xui.Class('xui.Dom','xui.absBox',{
             node.css('display','none');
             return this;
         },
+
         //for remove obj when blur
         setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,
                                   /*two inner params */ checkChild, triggerNext){
@@ -12856,6 +12857,22 @@ xui.Class('xui.Dom','xui.absBox',{
                 o.setAttribute(v);
             }
             xui.Dom.afterNodeChange( );
+        },
+        cancelBlurTrigger : function(id){
+            var arr = xui.Dom._blurTrigger && xui.Dom._blurTrigger.arr;
+            if(arr){
+                if(id){
+                    xui.arr.removeValue(arr,id);
+                    delete arr[id];
+                    xui.tryF(arr[id].trigger,[],arr[id].target);
+                }else{
+                    xui.arr.each(arr,function(i){
+                        xui.tryF(arr[i].trigger, [], arr[i].target);
+                    });
+                    for(var i in arr)delete arr[i];
+                    arr.length=0;
+                }
+            }
         },
         /*
         pos: {left:,top:} or dom element
@@ -18615,7 +18632,7 @@ xui.Class('xui.DragDrop',null,{
                 e.dataTransfer.setData('text/plain', xui.serialize({dragKey:dragKey, dragData:dragData}));
                 e.dataTransfer.dropEffect = 'copy';
                 if(ondragstart){
-                    if(false===ondragstart.call(e))
+                    if(false===ondragstart.call(node, e, dragKey, dragData))
                         return false;
                 }
             };
@@ -21208,13 +21225,14 @@ xui.Class("xui.UI",  "xui.absObj", {
             this.get(0).setDomId(id);
             return this;
         },
-        hide:function(ignoreEffects){
+        hide:function(ignoreEffects, callback){
             return this.each(function(o){
                 if(o.renderId){
                     var t=o.properties,a=ignoreEffects?null:xui.Dom._getEffects(t.hideEffects,0);
                     o.getRoot().hide(function(){
                         t.top=t.left=Math.round(parseFloat(xui.Dom.HIDE_VALUE)||0)+"px";
                         o._dockIgnore=true;
+                        xui.tryF(callback);
                     },a);
                 }
             });
@@ -27460,7 +27478,7 @@ xui.Class("xui.absList", "xui.absObj",{
             var elem = itemId.get(0);
             if(elem){
                 //this.getSubNode("BOX").scrollTop(itemId.offsetTop());
-                elem.scrollIntoView({ behavior: !no_anim?'smooth':'auto', block: 'nearest', inline: 'start' });
+                elem.scrollIntoView({ behavior: !no_anim?'smooth':'auto', block: 'center', inline: 'nearest' });
             }
             return this;
         },
@@ -29305,10 +29323,10 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
             };
             return arguments.callee.upper.apply(this,[ignoreEffects, purgeNow]);
         },
-        adjustDock:null,
-        draggable:null,
-        busy:null,
-        free:null,
+        adjustDock:xui.fun(),
+        draggable:xui.fun(),
+        busy:xui.fun(),
+        free:xui.fun(),
 
         getValue:function(){
             return xui.get(this.get(0), ['properties','moduleProperties','value']);
@@ -29445,7 +29463,6 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         },
         _onSerialized:function(o, profile){
             for(var i in o.properties)if(!(i in this._DataModel))delete o.properties[i];
-            o.properties.dock;
         },
         // for parent UIProfile toHtml case
         RenderTrigger:function(){

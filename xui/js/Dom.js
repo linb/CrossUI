@@ -2069,6 +2069,7 @@ xui.Class('xui.Dom','xui.absBox',{
             node.css('display','none');
             return this;
         },
+
         //for remove obj when blur
         setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,
                                   /*two inner params */ checkChild, triggerNext){
@@ -2330,6 +2331,22 @@ xui.Class('xui.Dom','xui.absBox',{
                 o.setAttribute(v);
             }
             xui.Dom.afterNodeChange( );
+        },
+        cancelBlurTrigger : function(id){
+            var arr = xui.Dom._blurTrigger && xui.Dom._blurTrigger.arr;
+            if(arr){
+                if(id){
+                    xui.arr.removeValue(arr,id);
+                    delete arr[id];
+                    xui.tryF(arr[id].trigger,[],arr[id].target);
+                }else{
+                    xui.arr.each(arr,function(i){
+                        xui.tryF(arr[i].trigger, [], arr[i].target);
+                    });
+                    for(var i in arr)delete arr[i];
+                    arr.length=0;
+                }
+            }
         },
         /*
         pos: {left:,top:} or dom element
