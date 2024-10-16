@@ -1,6 +1,7 @@
 xui.Class('xui.Module.JSONEditor', 'xui.Module',{
     Instance:{
         activate:function(){},
+        _oldvalue:{},
         setValue:function(str, keyOptions){
             var ns=this,
                 obj=xui.isStr(str)?str?xui.unserialize(str):false:str,
@@ -11,6 +12,7 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 ns.tg.updateHeader("key",{type:'input',editorListItems: null});
             }
             ns.tg.setRows(rows).free();
+            ns._oldvalue = obj||{};
         },
         getValue:function(returnObj){
             var rows=this.tg.getRows();
@@ -19,6 +21,9 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         getEditor:function(){
             return this.tg;
+        },
+        checkDirty:function(){
+            return !xui.deepEquals(this._oldvalue, this.getValue(true));
         },
         iniComponents:function(){
             // [[Code created by CrossUI RAD Studio
@@ -355,6 +360,9 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                 case "add2":
                     nid=xui.stamp();
                     tg.insertRows([{id:nid, cells:[{value:type=='array'?'[index]':ns.getDefaultKey(),readonly:type=='array'},'null','']}]);
+                    if(tg.getRows().length===1){
+                        tg.adjustRelWith();
+                    }
                     break;
                 case 'up':
                      nid=xui.stamp();
@@ -366,7 +374,10 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
                     break;
                 case 'del':
                    // xui.confirm('confirm','Do you want to delete this node?',function(){
-                          tg.removeRows([row.id]);
+                        tg.removeRows([row.id]);
+                        if(tg.getRows().length===0){
+                            tg.adjustRelWith();
+                        }
                   //  });
                     break;
             }

@@ -317,14 +317,22 @@ xui.Class('xui.Dom','xui.absBox',{
             },target,reversed);
         },
         contains:function(node){
-          var c = this.get(0);
-          if(c.contains)return c.contains(node);
-          else{
-              while(node=node.parentNode){
-                if(node==c)return true;
+            var con=false;
+            this.each(function(c){
+              if(c.contains && c.contains(node)){
+                  con = true;
+              }else{
+                  var _n=node;
+                  while(_n=_n.parentNode){
+                    if(_n==c){
+                        con = true;
+                        break;
+                    }
+                  }
               }
-              return false;
-          }
+              if(con)return false;
+            });
+            return con;
         },
         //flag: false => no remove this from momery(IE)
         replace:function(target, triggerGC){
@@ -2071,8 +2079,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
 
         //for remove obj when blur
-        setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,
-                                  /*two inner params */ checkChild, triggerNext){
+        setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,triggerNext/*check next? */){
             var ns=this,
                 doc=document,
                 sid='$blur_triggers$',
@@ -2102,15 +2109,10 @@ xui.Class('xui.Dom','xui.absBox',{
                         if(!v)return;
 
                         b=true;
-                        var isChild=function(){
-                            var nds=v.target.get();
-                            while (srcN && srcN.nodeName && srcN.nodeName!="BODY" && srcN.nodeName!="HTML"){
-                                if(xui.arr.indexOf(nds,srcN)!=-1)
-                                    return true;
-                                srcN = srcN.parentNode;
-                            }
-                        };
-                        if(!v.checkChild || isChild()){
+                        // if child, do not trigger
+                        if(v.target.contains(srcN)){
+                            b=false;
+                        }else{
                             v.target.each(function(o){
                                 if(o.parentNode && (w=o.offsetParent?o.offsetWidth:0) && (h=o.offsetParent?o.offsetHeight:0)){
                                     pos=xui([o]).offset();
@@ -2120,8 +2122,6 @@ xui.Class('xui.Dom','xui.absBox',{
                                 }
                             });
                         }
-
-                        isChild=null;
 
                         // anti trigger
                         if(!b && !xui.isFun(v.trigger))
@@ -2173,7 +2173,6 @@ xui.Class('xui.Dom','xui.absBox',{
                 arr[id]={
                     trigger:trigger,
                     target:target,
-                    checkChild:!!checkChild,
                     stopNext:!triggerNext
                 };
                 arr.push(id);

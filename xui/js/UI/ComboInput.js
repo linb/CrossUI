@@ -419,6 +419,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             profile.box.$drop[cachekey]=drop;
 
                         o.render();
+                        xui.UI._doResize(drop,drop.properties.width,drop.properties.height);
                     }
 
                     o=drop.boxing();
@@ -533,7 +534,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             ICON:{
                 className:'xuifont {imageClass}  {picClass}',
                 //for cover xuicon
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                 text:'{iconFontCode}'
             }
         };

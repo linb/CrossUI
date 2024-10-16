@@ -363,9 +363,9 @@ xui.Class('xui.DragDrop',null,{
             var fromN=xui.Event.getSrc(e);
 
             d._start=function(e){
-//ie6: mousemove - mousedown =>78 ms
-//delay is related to window size, weird
-            //                  try{
+                //ie6: mousemove - mousedown =>78 ms
+                //delay is related to window size, weird
+                //                  try{
                 var p=d._profile;
                 //set profile
                 xui.merge(p, profile, "with");
@@ -389,6 +389,7 @@ xui.Class('xui.DragDrop',null,{
                 // on scrollbar
                 if(profile.x >= d._box.width  || profile.y >= d._box.height ){d._end()._reset();return true}
 
+                d.onDragBegin && d.onDragBegin();
                 d._source.onDragbegin();
 
                 //set back first
@@ -443,7 +444,7 @@ xui.Class('xui.DragDrop',null,{
                         });
                     }
                 }
-            //                  }catch(e){d._end()._reset();}
+                //                  }catch(e){d._end()._reset();}
             };
             if(xui.browser.ie){
                 d.$ondragstart=doc.ondragstart;
@@ -455,7 +456,7 @@ xui.Class('xui.DragDrop',null,{
 
             //fire document onmousedown event
             if(profile.targetNode.get(0)!==doc)
-                xui(doc).onMousedown(true, xui.Event.getEventPara(e, _pos));
+                profile.targetNode.onMousedown(true, xui.Event.getEventPara(e, _pos));
 
             if(profile.dragDefer<1){
                 xui.tryF(d._start,[e],d);

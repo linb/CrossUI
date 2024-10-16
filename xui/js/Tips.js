@@ -182,16 +182,17 @@ xui.Class("xui.Tips", null,{
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
-                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item,t ;
+                    var s = typeof item=='object'? xui.Tips._getTipsTxt(item) :item,t ;
                     if(typeof s=='function')
                         s=s();
                     if(!xui.Tips.HTMLTips){
                         s+='';
-                         xui.Tips._curTips=xui.adjustRes(s);
+                        s=xui.adjustRes(s);
+                        xui.Tips._curTips=s;
                         s=s.replace(/<[^>]*>/g,'');
                         if(t=xui.Tips._activePrf){
-                            if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
-                            else  xui.Tips._activeNode.attr('title', s);
+                            if(t.box&&t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
+                            else xui.Tips._activeNode.attr('title', s);
                         }
                     }else{
                         var self=this,node,_ruler,w,h;
@@ -212,7 +213,7 @@ xui.Class("xui.Tips", null,{
                             s=xui.adjustRes(s);
                             xui.Tips._curTips=s;
                             if(!item.transTips || !html)
-                                s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xui-cls-wordwrap */xui-custom">'+s+'</div>';
+                                s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xif(t=xui.Tips._activePrf){ui-cls-wordwrap */xui-custom">'+s+'</div>';
                             //set to this one
                             self._n.get(0).innerHTML=s;
 
@@ -273,13 +274,14 @@ xui.Class("xui.Tips", null,{
     },
     Static:{
         _reg:/-([\w]+):/,
-        TIPSKEY:'tips',
         MAXWIDTH:600,
         HTMLTips:true,
         MOVABLE:true,
         DELAYTIME:400,
         AUTOHIDETIME:5000,
-
+        _getTipsTxt:function(h){
+            return h.desc || h.tips || h.caption;
+        },
         _showF:function(){
             if(xui.ini.disableTips)return;
             var self=this,
@@ -354,7 +356,7 @@ xui.Class("xui.Tips", null,{
             //if(self._tpl)self._tpl.hide();
 
             //base check
-            if(typeof item =='string' || (item && (item[key||xui.Tips.TIPSKEY]))){
+            if(typeof item =='string' || (item && xui.Tips._getTipsTxt(item))){
                 //get template
                 t = self._tpl = self._Types[item.tipsTemplate] || self._Types['default'];
                 t.show(item,pos,key);

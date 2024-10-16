@@ -385,7 +385,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         ICON:{
                                             $order:2,
                                             className:'xuicon {imageClass}  {picClass}',
-                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{

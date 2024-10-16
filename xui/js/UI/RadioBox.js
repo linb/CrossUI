@@ -18,7 +18,7 @@ xui.Class("xui.UI.RadioBox", "xui.UI.List",{
                     ICON:{
                         $order:1,
                         className:'xuicon {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{

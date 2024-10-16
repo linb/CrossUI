@@ -226,7 +226,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     ICON:{
                         $order:2,
                         className:'xuicon {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -838,6 +838,8 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             ns.destroyTrigger = function(){
                 var s=this;
                 if(s.$inModal)s.box._unModal(s);
+                if(s.$resizer)
+                    s.boxing()._unResizer();
             };
         },
         LayoutTrigger:function(){

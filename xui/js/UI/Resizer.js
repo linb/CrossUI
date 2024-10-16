@@ -51,8 +51,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             removeResizer:function(){
                 var s = this.id();
                 xui.arr.each(xui.UI.Resizer._cache,function(o){
-                    if(o && o.$resizeId==s)
+                    if(o && o.$resizeId==s){
+                        if(o.proxy)o.proxy.remove(true);
                         o.boxing().destroy(true);
+                    }
                 });
                 return this;
             },
@@ -130,6 +132,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     if(!target.$getResizer())return;
                     target.removeResizer();
                     delete o.$resizer;
+                    xui.DragDrop && xui.DragDrop._end()._reset();
                 });
             }
         },function(o,i){

@@ -26,7 +26,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                         ICON:{
                             $order:2,
                             className:'xuicon {imageClass}  {picClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {

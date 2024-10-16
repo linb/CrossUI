@@ -32,7 +32,7 @@ xui.Class('xui.Module','xui.absProfile',{
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated, onDomReady){
             ns.load.apply(ns, [cls, function(err, module){
-                if(module)module.setHost(window, xui.ini.rootModuleName);
+                if(xui.ini.rootModuleName) window[xui.ini.rootModuleName] = module;
                 xui.tryF(onEnd, [err, module], module);
             }, lang, theme, showUI, parent, subId, onCreated, onDomReady]);
         };
@@ -81,12 +81,12 @@ xui.Class('xui.Module','xui.absProfile',{
             // events for instance
             e.events={};
         }
-        self._nameId=0;
-        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
+        self._nameId=self._refId=0;
+        self._nameTag=self.$nameTag||(self.KEY.replace("xui.",'').replace(/\./g,'_').toLowerCase());
         self._cache=[];
     },
     Constructor:function(properties, events, host){
-        var self=this,opt,alias,t;
+        var self=this,opt,alias,ref,t;
 
         // If it's a older module object, set xid first
         if(properties && properties.constructor==self.constructor){
@@ -105,6 +105,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
              events = oldm.events || {};
              alias = oldm.alias;
+             ref = oldm.ref;
              host = oldm.host;
              properties = oldm.properties || {};
              // for refresh , use the old pointer
@@ -115,6 +116,7 @@ xui.Class('xui.Module','xui.absProfile',{
                  properties = (opt && opt.properties) || {};
                  events = (opt && opt.events) || {};
                  alias = opt.alias;
+                 ref = opt.ref;
                  host = opt.host;
             }else{
                 if(!properties){
@@ -133,24 +135,21 @@ xui.Class('xui.Module','xui.absProfile',{
         self.box=self.constructor;
         self.key=self.KEY;
 
-        if(!alias)alias =self.constructor.pickAlias();
         if(!xui.isEmpty(self.constructor.$DataModel)){
             xui.merge( properties, xui.clone(self.constructor.$DataModel),'without');
         }
         //
         self._links={};
-        self.link(self.constructor._cache, "self");
-        self.link(xui.Module._cache, "xui.module");
-        self.link(xui._pool,'xui');
+        self.link(self.constructor._cache, "self").link(xui.Module._cache, "xui.module");
 
         self.host=host||self;
         self.alias=alias;
+        self.ref=ref;
         self.container = null;
 
         self.$UIvalue="";
 
         self._nodes=[];
-        self._ctrlpool={};
         self.events=events;
         self.properties={};
         self.hooks={};
@@ -262,8 +261,8 @@ xui.Class('xui.Module','xui.absProfile',{
         getContainer:function(){
             return this.container;
         },
-        setHost:function(host, alias){
-            return xui.absObj.prototype._setHostAlias.call(this, host, alias);
+        setHost:function(host, alias, ref){
+            return xui.absObj.prototype._setHostAlias.call(this, host, alias, ref);
         },
         getName:function(){
             return this.properties.name || this.alias;
@@ -437,6 +436,7 @@ xui.Class('xui.Module','xui.absProfile',{
                     key:o.KEY,
                     host:o.host
                 };
+            if(o.ref)r.ref=o.ref;
             //host
             if(r.host===self){
                 delete r.host;
@@ -482,6 +482,7 @@ xui.Class('xui.Module','xui.absProfile',{
         clone:function(){
             var ns=this.serialize(false,true);
             delete ns.alias;
+            delete ns.ref;
             return this.constructor.unserialize(ns);
         },
         // for outter events
@@ -616,6 +617,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 box=o.box,
                 host=o.host,
                 alias=o.alias,
+                ref=o.ref,
                 $xid=o.$xid,
                 hashIn=o._render_conf,
                 pPrf=o._render_holder,
@@ -659,7 +661,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             //create, must keep the original refrence pointer
             new box(o);
-            if(host)o.setHost(host,alias);
+            if(host)o.setHost(host,alias,ref);
 
             // must here
             o.moduleClass=mcls;
@@ -1324,7 +1326,7 @@ xui.Class('xui.Module','xui.absProfile',{
         AddComponents:function(obj){
             var self=this;
             xui.arr.each(obj.get(),function(o){
-                o.boxing().setHost(self, o.alias);
+                o.boxing().setHost(self, o.alias, o.ref);
                 self._nodes.push(o);
                 xui.Module.$attachModuleInfo(self,o);
             });
@@ -1337,9 +1339,14 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
 
+
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
-                try{delete self.host[self.alias]}catch(e){self.host[self.alias]=null}
+                try{if(self.alias in self.host)delete self.host[self.alias];}catch(e){self.host[self.alias]=void(0)}
+                if(self.host._ctrlpool && (self.alias in self.host._ctrlpool))delete self.host._ctrlpool[self.alias];
+            }
+            if(self.ref && self.host && self.host[self.ref]){
+                try{if(self.ref in self.host)delete self.host[self.ref];}catch(e){self.host[self.ref]=void(0)}
             }
 
             //set once
@@ -1352,9 +1359,8 @@ xui.Class('xui.Module','xui.absProfile',{
 
             if(ns && ns.length)
                 self._nodes.length=0;
-            self._ctrlpool=null;
 
-            self.unLinkAll();
+            xui.absProfile.prototype.__gc.call(this);
 
             if(!keepStructure){
                 xui.breakO(self);
@@ -1387,7 +1393,8 @@ xui.Class('xui.Module','xui.absProfile',{
             var m=this,keep={
                     '$children':m.$children,
                     _cache:m._cache,
-                    _nameId:m._nameId
+                    _nameId:m._nameId,
+                    _refId:m._refId
                 },
                 key=m.KEY,
                 path=key.split("."),
@@ -1413,6 +1420,9 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         pickAlias:function(){
             return xui.absObj.$pickAlias(this);
+        },
+        pickRef:function(){
+            return xui.absObj.$pickRef(this);
         },
         getFromDom:function(id){
             var prf=xui.UIProfile.getFromDom(id);

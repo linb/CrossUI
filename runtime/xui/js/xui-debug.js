@@ -1997,6 +1997,17 @@ xui.merge(xui,{
         }
         return l===0?null:l===1?a[0]:a;
     },
+    getObjectByRef:function(ref){
+        var o,a=[],l=0;
+        for(var i in xui._pool){
+            o=xui._pool[i];
+            if(('ref' in o)&&o.ref===ref){
+                a.push(o);
+                l++;
+            }
+        }
+        return l===0?null:l===1?a[0]:a;
+    },
     _ghostDivId:"xui.ghost::",
     $getGhostDiv:function(){
         var pool=xui.$cache.ghostDiv,
@@ -2196,7 +2207,7 @@ xui.merge(xui,{
                 o = new (xui.SC(tag.key))(tag);
             }
         }
-        if(o['xui.absObj'] && (t=o.n0) && (t.host&&t.host!=t) &&  t.alias)o.setHost(t.host, t.alias);
+        if(o['xui.absObj'] && (t=o.n0) && (t.host&&t.host!=t) &&  t.alias)o.setHost(t.host, t.alias, t.ref);
         return o;
     },
     query:function(){
@@ -2736,36 +2747,46 @@ new function(){
                             break;
                         case 'control':
                         case 'module':
-                            if(target.charAt(0)=='{' && (t = xui.adjustVar(target, _ns)) && xui.isFun(t.getAlias))
-                                target = t.getAlias();
-                            if(method=="disable"||method=="enable"){
-                                if(xui.isFun(t=xui.get(_ns.page,[target,"setDisabled"])))t.apply(_ns.page[target],[method=="disable",true]);
-                            }else{
-                                if(method=="setProperties"){
-                                    // [0] is native var, [1] is expression var
-                                    var params=xui.merge(iparams[0], iparams[1], 'all');
-                                    iparams[1]=null;
-                                    if(m=params){
-                                        if(m.CA){
-                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomAttr"])))t.apply(_ns.page[target],[m.CA]);
-                                            delete m.CA;
+                            var alias, ref;
+                            if(target.charAt(0)=='{' && (t = xui.adjustVar(target, _ns))){
+                                if(xui.isFun(t.getRef))ref=t.getRef();
+                                if(xui.isFun(t.getAlias))alias=t.getAlias();
+                            }
+                            if(alias || ref){
+                                if(method=="disable"||method=="enable"){
+                                    if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setDisabled"])))t.apply(_ns.page[ref],[method=="disable",true]);
+                                    else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setDisabled"])))t.apply(_ns.page[alias],[method=="disable",true]);
+                                }else{
+                                    if(method=="setProperties"){
+                                        // [0] is native var, [1] is expression var
+                                        var params=xui.merge(iparams[0], iparams[1], 'all');
+                                        iparams[1]=null;
+                                        if(m=params){
+                                            if(m.CA){
+                                                if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setCustomAttr"])))t.apply(_ns.page[ref],[m.CA]);
+                                                else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setCustomAttr"])))t.apply(_ns.page[alias],[m.CA]);
+                                                delete m.CA;
+                                            }
+                                            if(m.CC){
+                                                if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setCustomClass"])))t.apply(_ns.page[ref],[m.CC]);
+                                                else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setCustomClass"])))t.apply(_ns.page[alias],[m.CC]);
+                                                delete m.CC;
+                                            }
+                                            if(m.CS){
+                                                if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setCustomStyle"])))t.apply(_ns.page[ref],[m.CS]);
+                                                else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setCustomStyle"])))t.apply(_ns.page[alias],[m.CS]);
+                                                delete m.CS;
+                                            }
                                         }
-                                        if(m.CC){
-                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomClass"])))t.apply(_ns.page[target],[m.CC]);
-                                            delete m.CC;
-                                        }
-                                        if(m.CS){
-                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomStyle"])))t.apply(_ns.page[target],[m.CS]);
-                                            delete m.CS;
-                                        }
+                                    }else if(method=="show"){
+                                        // special for xui.Module.show
+                                        iparams.unshift(function(err,module){
+                                            if(err){xui.message(err);}
+                                        });
                                     }
-                                }else if(method=="show"){
-                                    // special for xui.Module.show
-                                    iparams.unshift(function(err,module){
-                                        if(err){xui.message(err);}
-                                    });
+                                    if(ref && xui.isFun(t=xui.get(_ns.page,[ref,method])))t.apply(_ns.page[ref],iparams);
+                                    else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,method])))t.apply(_ns.page[alias],iparams);
                                 }
-                                if(xui.isFun(t=xui.get(_ns.page,[target,method])))t.apply(_ns.page[target],iparams);
                             }
                             break;
                         case 'other':
@@ -4869,8 +4890,17 @@ xui.Class('xui.absProfile',null,{
         upper=null;
         if(!this.$xid)this.$xid=xui.absProfile.$xid.next();
         this._$cache={};
+        this._ctrlpool={};
+
+        this._links={};
+        this.link(xui._pool,'xui');
     },
     Instance:{
+        __gc:function(){
+            this.unLinkAll();
+            this._links = null;
+            this._$cache=this._ctrlpool=null;
+        },
         getId:function(){
             return this.$xid;
         },
@@ -4986,7 +5016,7 @@ xui.Class('xui.Profile','xui.absProfile',{
             self.setEvents(self.events);
             delete self.events;
         }
-        self._links={};
+
     },
     Instance:{
         setEvents:function(key, value){
@@ -5040,6 +5070,7 @@ xui.Class('xui.Profile','xui.absProfile',{
                 });
                 delete ns.$beforeDestroy;
             }
+
             xui.tryF(ns.$ondestory,args,ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
@@ -5047,10 +5078,15 @@ xui.Class('xui.Profile','xui.absProfile',{
             // try to clear parent host
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
-                delete ns.host[ns.alias];
+                try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
+                if(ns.host._ctrlpool && (ns.alias in ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
+            }
+            if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
+                try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
             }
 
-            ns.unLinkAll();
+            xui.absProfile.prototype.__gc.call(this);
+
             xui.tryF(ns.clearCache,[],ns);
 
             //set once
@@ -5086,6 +5122,7 @@ xui.Class('xui.Profile','xui.absProfile',{
                     key:o.key,
                     host:o.host
                 };
+            if(o.ref)r.ref=o.ref;
             //host
             if(r.host===self){
                 delete r.host;
@@ -5131,8 +5168,8 @@ xui.Class('xui.absObj',"xui.absBox",{
     After:function(){
         var self=this, me=arguments.callee,
             temp,t,k,u,m,i,j,l,v,n,b;
-        self._nameId=0;
-        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
+        self._nameId=self._refId=0;
+        self._nameTag=self.$nameTag||(self.KEY.replace("xui.","").replace(/\./g,'_').toLowerCase());
         self._cache=[];
         m=me.a1 || (me.a1=xui.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){
@@ -5220,11 +5257,27 @@ xui.Class('xui.absObj',"xui.absBox",{
         pickAlias:function(){
             return xui.absObj.$pickAlias(this);
         },
+        pickRef:function(){
+            return xui.absObj.$pickRef(this);
+        },
         $pickAlias:function(cls){
-            var a=cls._nameTag, p=cls._cache,t;
+            var a=cls._nameTag+"_", p=cls._cache,t;
             while(t=(a+(++cls._nameId))){
                 for(var i=0,l=p.length;i<l;i++){
                     if(p[i].alias===t){
+                        t=-1;
+                        break;
+                    }
+                }
+                if(t==-1)continue;
+                else return t;
+            }
+        },
+        $pickRef:function(cls){
+            var a="$"+cls._nameTag+"#", p=cls._cache,t;
+            while(t=(a+(++cls._refId))){
+                for(var i=0,l=p.length;i<l;i++){
+                    if(p[i].ref===t){
                         t=-1;
                         break;
                     }
@@ -5409,6 +5462,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             var arr=[],clrItems=arguments,f=function(p){
                 //remove those
                 delete p.alias;
+                delete p.ref;
                 for(var i=0;i<clrItems.length;i++)
                     delete p[clrItems[i]];
                 if(p.children)
@@ -5483,36 +5537,116 @@ xui.Class('xui.absObj',"xui.absBox",{
         alias:function(value){
             return value?this.setAlias(value):this.getAlias();
         },
-        host:function(value, alias){
-            return value?this.setHost(value, alias):this.getHost();
+        ref:function(value){
+            return value?this.setRef(value):this.getRef();
         },
-        setHost:function(host, alias){
-            return this._setHostAlias(host, alias);
+        host:function(value, alias, ref){
+            return value?this.setHost(value, alias, ref):this.getHost();
         },
-        _setHostAlias:function(host, alias){
+        setHost:function(host, alias, ref){
+            return this._setHostAlias(host, alias, ref);
+        },
+        detachHost:function(){
             var self=this,
-                  prf=this.get(0),
-                  oldAlias=prf.alias;
-
-            alias=alias||prf.alias;
-
-            if(oldAlias){
-                if(prf.host && prf.host!==prf){
-                    try{delete prf.host[oldAlias]}catch(e){prf.host[oldAlias]=undefined}
-                    if(prf.host._ctrlpool)
-                        delete prf.host._ctrlpool[oldAlias];
+              prf=this.get(0),
+              host=prf.host,
+              ref=prf.ref,
+              alias=prf.alias;
+            if(host){
+                prf.host = null;
+                if(alias){
+                    try{if(alias in host)delete host[alias];}catch(e){host[alias]=void(0)}
+                    if(host._ctrlpool&&(alias in host._ctrlpool))delete host._ctrlpool[alias];
+                }
+                if(ref){
+                    try{if(ref in host)delete host[ref];}catch(e){host[ref]=void(0)}
                 }
             }
-            prf.alias=alias;
-            if(prf.box&&prf.box._syncAlias){
-                prf.box._syncAlias(prf,oldAlias,alias);
+        },
+        _setHostAlias:function(host, alias, ref){
+            var self=this, coverable,
+                  prf=this.get(0),
+                  oldHost=prf.host,
+                  oldRef=prf.ref,
+                  oldAlias=prf.alias;
+
+            if(ref && oldRef && oldRef!==ref){
+                throw new Error("Can not set the refrence again");
+            }
+            if((!host && !alias)||(oldHost===host && oldAlias===alias && oldRef===ref)){
+                return self;
             }
 
-            if(host)prf.host=host;
-            if(prf.host && prf.host!==prf){
-                prf.host[alias]=self;
-                if(prf.host._ctrlpool)
-                    prf.host._ctrlpool[alias]=self.get(0);
+            // check new alias
+            if(alias){
+                if(/^\$.+#[\d]+$/.test(alias)){
+                    throw new Error("The alias '"+alias+"' format error");
+                }
+                var t_host = host || oldHost;
+                if(t_host && (alias in t_host) && xui.isSet(t_host[alias]) && t_host[alias]!==self){
+                    // can't rewrite existing memeber except xui.absObj
+                    try{coverable = xui.get(t_host[alias],["xui.absObj"]);}catch(e){coverable=false}
+                    if(!coverable){
+                        throw new Error("The host includes a member '"+alias+"' already");
+                    }
+                }
+                if(alias === (oldRef||ref)){
+                    throw new Error("The alias '"+alias+"' can not equal with the ref");
+                }
+            }
+            if(ref){
+                if(!/^\$.+#[\d]+$/.test(ref)){
+                    throw new Error("The ref '"+ref+"' format error");
+                }
+                var t_host = host || oldHost;
+                if(t_host && (ref in t_host) && t_host[ref]!==self){
+                    // can't rewrite existing memeber except xui.absObj
+                    try{coverable = xui.get(t_host[alias],["xui.absObj"]);}catch(e){coverable=false}
+                    if(!coverable){
+                        throw new Error("The host includes a refrence member '"+ref+"' already");
+                    }
+                }
+            }
+
+            // clear old
+            if(oldHost && oldAlias){
+                try{if(oldAlias in oldHost)delete oldHost[oldAlias];}catch(e){oldHost[oldAlias]=void(0)}
+                if(xui.isHash(oldHost._ctrlpool)&&(oldAlias in oldHost._ctrlpool))
+                    delete oldHost._ctrlpool[oldAlias];
+            }
+
+            // reset host & name
+            if(host){
+                prf.host=host;
+            }else{
+                host=prf.host;
+            }
+            if(alias){
+                prf.alias=alias;
+            }else{
+                alias=prf.alias;
+            }
+
+            if(host!==prf){
+                if(oldHost==host){
+                    if(oldAlias && oldAlias!==alias){
+                        try{if(oldAlias in host)delete host[oldAlias];}catch(e){host[oldAlias]=void(0)}
+                        if(xui.isHash(host._ctrlpool) && (oldAlias in host._ctrlpool))
+                            delete host._ctrlpool[oldAlias];
+
+                        if(prf.box && prf.box._syncAlias){
+                            prf.box._syncAlias(prf, oldAlias, alias);
+                        }
+                    }
+                }
+
+                host[alias]=self;
+                if(xui.isHash(host._ctrlpool))
+                    host._ctrlpool[alias]=self.get(0);
+
+                if(ref && oldRef!==ref){
+                    host[ref]=self;
+                }
             }
             return self;
         },
@@ -5521,6 +5655,12 @@ xui.Class('xui.absObj',"xui.absBox",{
         },
         getAlias:function(){
             return this.get(0).alias;
+        },
+        setRef:function(ref){
+            return this._setHostAlias(null, null, ref);
+        },
+        getAlias:function(){
+            return this.get(0).ref;
         },
         getHost:function(){
             return this.get(0).host;
@@ -5577,14 +5717,14 @@ xui.Class("xui.Timer","xui.absObj",{
                 alias,temp;
             if(properties && properties['xui.Profile']){
                 profile=properties;
-                alias = profile.alias || c.pickAlias();
+                alias = profile.alias;
             }else{
                 if(properties && properties.key && xui.absBox.$type[properties.key]){
                     options=properties;
                     properties=null;
-                    alias = options.alias || c.pickAlias();
+                    alias = options.alias;
                 }else
-                    alias = c.pickAlias();
+                    alias = null;
                 profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
             }
             profile._n=profile._n||[];
@@ -5594,7 +5734,7 @@ xui.Class("xui.Timer","xui.absObj",{
                     profile.properties[i]=profile._dftProps[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
 
             //set anti-links
-            profile.link(c._cache,'self').link(xui._pool,'xui');
+            profile.link(c._cache,'self');
 
             self._nodes.push(profile);
             profile.Instace=self;
@@ -6448,7 +6588,7 @@ xui.Class("xui.ExcelFormula",null,{
     },
     Static:{
         WDSLCache:{},
-        $nameTag:"api_",
+        $nameTag:"api",
         timeout: 60000,
         _pool:{},
         _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryData:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1,responseCallback:1},
@@ -6800,7 +6940,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                 profile.__gc();
             });
         },
-        setHost:function(value, alias){
+        setHost:function(value, alias, ref){
             var self=this;
             if(value && alias)
                 self.setName(alias);
@@ -7177,7 +7317,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
         }
     },
     Static:{
-        $nameTag:"databinder_",
+        $nameTag:"databinder",
         _pool:{},
         _objectProp:{tagVar:1,propBinder:1,data:1},
         destroyAll:function(){
@@ -10843,14 +10983,22 @@ xui.Class('xui.Dom','xui.absBox',{
             },target,reversed);
         },
         contains:function(node){
-          var c = this.get(0);
-          if(c.contains)return c.contains(node);
-          else{
-              while(node=node.parentNode){
-                if(node==c)return true;
+            var con=false;
+            this.each(function(c){
+              if(c.contains && c.contains(node)){
+                  con = true;
+              }else{
+                  var _n=node;
+                  while(_n=_n.parentNode){
+                    if(_n==c){
+                        con = true;
+                        break;
+                    }
+                  }
               }
-              return false;
-          }
+              if(con)return false;
+            });
+            return con;
         },
         //flag: false => no remove this from momery(IE)
         replace:function(target, triggerGC){
@@ -12597,8 +12745,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
 
         //for remove obj when blur
-        setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,
-                                  /*two inner params */ checkChild, triggerNext){
+        setBlurTrigger : function(id, trigger/*[false] for anti*/, group /*keep the original refrence*/,triggerNext/*check next? */){
             var ns=this,
                 doc=document,
                 sid='$blur_triggers$',
@@ -12628,15 +12775,10 @@ xui.Class('xui.Dom','xui.absBox',{
                         if(!v)return;
 
                         b=true;
-                        var isChild=function(){
-                            var nds=v.target.get();
-                            while (srcN && srcN.nodeName && srcN.nodeName!="BODY" && srcN.nodeName!="HTML"){
-                                if(xui.arr.indexOf(nds,srcN)!=-1)
-                                    return true;
-                                srcN = srcN.parentNode;
-                            }
-                        };
-                        if(!v.checkChild || isChild()){
+                        // if child, do not trigger
+                        if(v.target.contains(srcN)){
+                            b=false;
+                        }else{
                             v.target.each(function(o){
                                 if(o.parentNode && (w=o.offsetParent?o.offsetWidth:0) && (h=o.offsetParent?o.offsetHeight:0)){
                                     pos=xui([o]).offset();
@@ -12646,8 +12788,6 @@ xui.Class('xui.Dom','xui.absBox',{
                                 }
                             });
                         }
-
-                        isChild=null;
 
                         // anti trigger
                         if(!b && !xui.isFun(v.trigger))
@@ -12699,7 +12839,6 @@ xui.Class('xui.Dom','xui.absBox',{
                 arr[id]={
                     trigger:trigger,
                     target:target,
-                    checkChild:!!checkChild,
                     stopNext:!triggerNext
                 };
                 arr.push(id);
@@ -15377,7 +15516,7 @@ xui.Class('xui.Module','xui.absProfile',{
         var ns=this;
         xui.launch = function(cls, onEnd, lang, theme, showUI, parent, subId, onCreated, onDomReady){
             ns.load.apply(ns, [cls, function(err, module){
-                if(module)module.setHost(window, xui.ini.rootModuleName);
+                if(xui.ini.rootModuleName) window[xui.ini.rootModuleName] = module;
                 xui.tryF(onEnd, [err, module], module);
             }, lang, theme, showUI, parent, subId, onCreated, onDomReady]);
         };
@@ -15426,12 +15565,12 @@ xui.Class('xui.Module','xui.absProfile',{
             // events for instance
             e.events={};
         }
-        self._nameId=0;
-        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
+        self._nameId=self._refId=0;
+        self._nameTag=self.$nameTag||(self.KEY.replace("xui.",'').replace(/\./g,'_').toLowerCase());
         self._cache=[];
     },
     Constructor:function(properties, events, host){
-        var self=this,opt,alias,t;
+        var self=this,opt,alias,ref,t;
 
         // If it's a older module object, set xid first
         if(properties && properties.constructor==self.constructor){
@@ -15450,6 +15589,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
              events = oldm.events || {};
              alias = oldm.alias;
+             ref = oldm.ref;
              host = oldm.host;
              properties = oldm.properties || {};
              // for refresh , use the old pointer
@@ -15460,6 +15600,7 @@ xui.Class('xui.Module','xui.absProfile',{
                  properties = (opt && opt.properties) || {};
                  events = (opt && opt.events) || {};
                  alias = opt.alias;
+                 ref = opt.ref;
                  host = opt.host;
             }else{
                 if(!properties){
@@ -15478,24 +15619,21 @@ xui.Class('xui.Module','xui.absProfile',{
         self.box=self.constructor;
         self.key=self.KEY;
 
-        if(!alias)alias =self.constructor.pickAlias();
         if(!xui.isEmpty(self.constructor.$DataModel)){
             xui.merge( properties, xui.clone(self.constructor.$DataModel),'without');
         }
         //
         self._links={};
-        self.link(self.constructor._cache, "self");
-        self.link(xui.Module._cache, "xui.module");
-        self.link(xui._pool,'xui');
+        self.link(self.constructor._cache, "self").link(xui.Module._cache, "xui.module");
 
         self.host=host||self;
         self.alias=alias;
+        self.ref=ref;
         self.container = null;
 
         self.$UIvalue="";
 
         self._nodes=[];
-        self._ctrlpool={};
         self.events=events;
         self.properties={};
         self.hooks={};
@@ -15607,8 +15745,8 @@ xui.Class('xui.Module','xui.absProfile',{
         getContainer:function(){
             return this.container;
         },
-        setHost:function(host, alias){
-            return xui.absObj.prototype._setHostAlias.call(this, host, alias);
+        setHost:function(host, alias, ref){
+            return xui.absObj.prototype._setHostAlias.call(this, host, alias, ref);
         },
         getName:function(){
             return this.properties.name || this.alias;
@@ -15782,6 +15920,7 @@ xui.Class('xui.Module','xui.absProfile',{
                     key:o.KEY,
                     host:o.host
                 };
+            if(o.ref)r.ref=o.ref;
             //host
             if(r.host===self){
                 delete r.host;
@@ -15827,6 +15966,7 @@ xui.Class('xui.Module','xui.absProfile',{
         clone:function(){
             var ns=this.serialize(false,true);
             delete ns.alias;
+            delete ns.ref;
             return this.constructor.unserialize(ns);
         },
         // for outter events
@@ -15961,6 +16101,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 box=o.box,
                 host=o.host,
                 alias=o.alias,
+                ref=o.ref,
                 $xid=o.$xid,
                 hashIn=o._render_conf,
                 pPrf=o._render_holder,
@@ -16004,7 +16145,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             //create, must keep the original refrence pointer
             new box(o);
-            if(host)o.setHost(host,alias);
+            if(host)o.setHost(host,alias,ref);
 
             // must here
             o.moduleClass=mcls;
@@ -16669,7 +16810,7 @@ xui.Class('xui.Module','xui.absProfile',{
         AddComponents:function(obj){
             var self=this;
             xui.arr.each(obj.get(),function(o){
-                o.boxing().setHost(self, o.alias);
+                o.boxing().setHost(self, o.alias, o.ref);
                 self._nodes.push(o);
                 xui.Module.$attachModuleInfo(self,o);
             });
@@ -16682,9 +16823,14 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
 
+
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
-                try{delete self.host[self.alias]}catch(e){self.host[self.alias]=null}
+                try{if(self.alias in self.host)delete self.host[self.alias];}catch(e){self.host[self.alias]=void(0)}
+                if(self.host._ctrlpool && (self.alias in self.host._ctrlpool))delete self.host._ctrlpool[self.alias];
+            }
+            if(self.ref && self.host && self.host[self.ref]){
+                try{if(self.ref in self.host)delete self.host[self.ref];}catch(e){self.host[self.ref]=void(0)}
             }
 
             //set once
@@ -16697,9 +16843,8 @@ xui.Class('xui.Module','xui.absProfile',{
 
             if(ns && ns.length)
                 self._nodes.length=0;
-            self._ctrlpool=null;
 
-            self.unLinkAll();
+            xui.absProfile.prototype.__gc.call(this);
 
             if(!keepStructure){
                 xui.breakO(self);
@@ -16732,7 +16877,8 @@ xui.Class('xui.Module','xui.absProfile',{
             var m=this,keep={
                     '$children':m.$children,
                     _cache:m._cache,
-                    _nameId:m._nameId
+                    _nameId:m._nameId,
+                    _refId:m._refId
                 },
                 key=m.KEY,
                 path=key.split("."),
@@ -16758,6 +16904,9 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         pickAlias:function(){
             return xui.absObj.$pickAlias(this);
+        },
+        pickRef:function(){
+            return xui.absObj.$pickRef(this);
         },
         getFromDom:function(id){
             var prf=xui.UIProfile.getFromDom(id);
@@ -18093,9 +18242,9 @@ xui.Class('xui.DragDrop',null,{
             var fromN=xui.Event.getSrc(e);
 
             d._start=function(e){
-//ie6: mousemove - mousedown =>78 ms
-//delay is related to window size, weird
-            //                  try{
+                //ie6: mousemove - mousedown =>78 ms
+                //delay is related to window size, weird
+                //                  try{
                 var p=d._profile;
                 //set profile
                 xui.merge(p, profile, "with");
@@ -18119,6 +18268,7 @@ xui.Class('xui.DragDrop',null,{
                 // on scrollbar
                 if(profile.x >= d._box.width  || profile.y >= d._box.height ){d._end()._reset();return true}
 
+                d.onDragBegin && d.onDragBegin();
                 d._source.onDragbegin();
 
                 //set back first
@@ -18173,7 +18323,7 @@ xui.Class('xui.DragDrop',null,{
                         });
                     }
                 }
-            //                  }catch(e){d._end()._reset();}
+                //                  }catch(e){d._end()._reset();}
             };
             if(xui.browser.ie){
                 d.$ondragstart=doc.ondragstart;
@@ -18185,7 +18335,7 @@ xui.Class('xui.DragDrop',null,{
 
             //fire document onmousedown event
             if(profile.targetNode.get(0)!==doc)
-                xui(doc).onMousedown(true, xui.Event.getEventPara(e, _pos));
+                profile.targetNode.onMousedown(true, xui.Event.getEventPara(e, _pos));
 
             if(profile.dragDefer<1){
                 xui.tryF(d._start,[e],d);
@@ -19011,16 +19161,17 @@ xui.Class("xui.Tips", null,{
                 this.show=function(item, pos, key){
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
-                    var s = typeof item=='object'? item[key||xui.Tips.TIPSKEY] :item,t ;
+                    var s = typeof item=='object'? xui.Tips._getTipsTxt(item) :item,t ;
                     if(typeof s=='function')
                         s=s();
                     if(!xui.Tips.HTMLTips){
                         s+='';
-                         xui.Tips._curTips=xui.adjustRes(s);
+                        s=xui.adjustRes(s);
+                        xui.Tips._curTips=s;
                         s=s.replace(/<[^>]*>/g,'');
                         if(t=xui.Tips._activePrf){
-                            if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
-                            else  xui.Tips._activeNode.attr('title', s);
+                            if(t.box&&t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
+                            else xui.Tips._activeNode.attr('title', s);
                         }
                     }else{
                         var self=this,node,_ruler,w,h;
@@ -19041,7 +19192,7 @@ xui.Class("xui.Tips", null,{
                             s=xui.adjustRes(s);
                             xui.Tips._curTips=s;
                             if(!item.transTips || !html)
-                                s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xui-cls-wordwrap */xui-custom">'+s+'</div>';
+                                s='<div class="xui-ui-ctrl xui-node xui-node-div  xui-uiborder-flat xui-uicell-alt xui-node-tips xui-tips-c /*xif(t=xui.Tips._activePrf){ui-cls-wordwrap */xui-custom">'+s+'</div>';
                             //set to this one
                             self._n.get(0).innerHTML=s;
 
@@ -19102,13 +19253,14 @@ xui.Class("xui.Tips", null,{
     },
     Static:{
         _reg:/-([\w]+):/,
-        TIPSKEY:'tips',
         MAXWIDTH:600,
         HTMLTips:true,
         MOVABLE:true,
         DELAYTIME:400,
         AUTOHIDETIME:5000,
-
+        _getTipsTxt:function(h){
+            return h.desc || h.tips || h.caption;
+        },
         _showF:function(){
             if(xui.ini.disableTips)return;
             var self=this,
@@ -19183,7 +19335,7 @@ xui.Class("xui.Tips", null,{
             //if(self._tpl)self._tpl.hide();
 
             //base check
-            if(typeof item =='string' || (item && (item[key||xui.Tips.TIPSKEY]))){
+            if(typeof item =='string' || (item && xui.Tips._getTipsTxt(item))){
                 //get template
                 t = self._tpl = self._Types[item.tipsTemplate] || self._Types['default'];
                 t.show(item,pos,key);
@@ -20165,11 +20317,12 @@ xui.Class('xui.UIProfile','xui.Profile', {
             // try to clear parent host
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
-                ns.host[ns.alias]=null;
-                if(!(ns.host===window && xui.browser.ie && xui.browser.ver<=8))
-                    delete ns.host[ns.alias];
+                try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
+                if(ns.host._ctrlpool && (ns.alias in  ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
             }
-
+            if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
+                try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
+            }
             //clear anti link
             ns.unLinkAll();
 
@@ -20394,7 +20547,8 @@ xui.Class('xui.UIProfile','xui.Profile', {
                             if(o[0][k2]){
                                 var mh=new xui.UI.ModulePlaceHolder({
                                     host:o[0].host,
-                                    alias:o[0].alias
+                                    alias:o[0].alias,
+                                    ref:o[0].ref
                                 });
                                 mh.get(0)._module = o[0];
                                 o[0] = mh.get(0);
@@ -20437,6 +20591,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
                     host:o.host
                 },
                 zz = o.moduleClass+"["+o.moduleXid+"]";
+            if(o.ref)r.ref=o.ref;
             //host
             if(r.host===self){
                 delete r.host;
@@ -20978,15 +21133,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                 alias,temp;
             if(properties && properties['xui.Profile']){
                 profile=properties;
-                alias = profile.alias || c.pickAlias();
+                alias = profile.alias;
                 xui.UIProfile.apply(profile,[host,self.$key,alias,c,null,events]);
             }else{
                 if(properties && properties.key && xui.absBox.$type[properties.key]){
                     options=properties;
                     properties=null;
-                    alias = options.alias || c.pickAlias();
+                    alias = options.alias;
                 }else
-                    alias = c.pickAlias();
+                    alias = null;
                 profile=new xui.UIProfile(host,self.$key,alias,c,properties,events, options);
                 // special
                 if(sp)sp(profile, options);
@@ -21025,7 +21180,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             profile.LayoutTrigger=xui.copy(c.$LayoutTrigger);
 
             //set links
-            profile.link(xui.UI._cache,'UI').link(c._cache,'self').link(xui._pool,'xui');
+            profile.link(xui.UI._cache,'UI').link(c._cache,'self');
 
             temp=profile.children;
             profile.children=[];
@@ -21292,7 +21447,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 box=o.box;
 
                 var host=o.host,
-                    alias=o.alias;
+                    alias=o.alias,
+                    ref=o.ref,
+                    tagcls=o.tagcls;
                 if(o.host&&o.host['xui.Module']){
                     o.host.$ignoreAutoDestroy=true;
                 }
@@ -21338,8 +21495,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                 children = xui.copy(o.children);
                 o.boxing().removeChildren();
 
-                //unserialize
+                // unserialize
                 s = o.serialize(false, true);
+                // will set those later
+                delete s.host;
+                delete s.alias;
+                delete s.ref;
+
                 fun = o.$refreshTrigger;
 
                 //replace
@@ -21365,6 +21527,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 o.serialId=serialId;
                 o.moduleClass=mcls;
                 o.moduleXid=mxid;
+                o.tagcls=tagcls;
                 if(renderConf)o._render_conf=renderConf;
                 if(renderHolder)o._render_holder=renderHolder;
                 if(inlineConf)o._inline_conf=inlineConf;
@@ -21394,7 +21557,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 else
                     p.append(n);
 
-                if(host)n.setHost(host,alias);
+                if(host)n.setHost(host,alias,ref);
 
                 //restore children
                 xui.arr.each(children,function(v){
@@ -24610,8 +24773,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                         c['object'] = ns._prepareInlineObj(profile, c, p.tabindex);
                         c.type='profile';
                     }else{
-                        if(!('tips' in c))c.tips=c.caption||c.id;
-
                         c.id=c.id.replace(/[^0-9a-zA-Z]/g,'');
                         if(!c.type)c.type="text";
 
@@ -24900,24 +25061,29 @@ xui.Class("xui.UI",  "xui.absObj", {
                   spc = prop.conDockSpacing,
                   c = container.children(),
                   l = c.size(),off,pw,w,tw,index=0,ww,rowtotal=0,
-                allCtrls=[],
+                  allCtrls=[],
                 // redo last row
-                redoLastRow = function(pw, row, allCtrls){
+                handleLastRow = function(pw, row, cols, allCtrls){
                     var rowLen = row.length,
-                         colW = Math.floor(pw/rowLen),
-                         rowtotal = 0,
-                         rw, ww, prf, node, min ,max;
+                        colW,
+                        t = 0,
+                        rw, ww, prf, node, min ,max;
                     for(var i=0; i<rowLen; i++){
                         node = row[i][0];
                         prf = row[i][1];
                         min = row[i][2];
                         max = row[i][3];
-                        if(i==rowLen-1){
-                            ww = prf.$forceu( Math.min(max, Math.max(min, pw -  rowtotal) ) );
-                        }else{
-                            ww = prf.$forceu( rw = Math.min(max, Math.max(min, colW) ) );
-                            rowtotal += rw;
+                        colW = Math.floor(pw/cols) * (xui.get(prf.properties, ["tagVar","layout_columns"])||1 );
+
+                        ww = prf.$forceu( rw = Math.min(max, Math.max(min, colW) ) );
+
+                        // last one, if the width is calculated from dockMinW or layout_columns
+                        if(i==rowLen-1 && rw > Math.floor(pw/cols)){
+                            ww = prf.$forceu( rw = Math.min(max, Math.max(min, pw - t) ) );
                         }
+
+                        t += rw;
+
                         allCtrls.push([node, prf, ww, rw]);
                     }
                 };
@@ -24936,42 +25102,49 @@ xui.Class("xui.UI",  "xui.absObj", {
             pw = containerWidth - off;
             // It must be integer
             w = Math.floor(pw/cols);
-            var curCtrl, lastRow=[], min, max;
+            var curCtrl, isFirstCol=true, isFirstRow=true, oneRow=[], min, max;
             // set width
-            c.each(function(n,i,prf,p,rw){
+            c.each(function(n,i,prf,p,rw,css){
                 //if(trigger && n!=trigger)return;
                 if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
                     curCtrl=xui(n);
                     p=curCtrl.css('position');
                     if(p=='relative'||p=='static'){
                         if(prf){
-                            curCtrl.css({
+                            css={
                                 position:'relative',
                                 left:'auto',
                                 top:'auto',
                                 right:'auto',
                                 bottom:'auto',
-                                'margin-left': (i===0 ? pad.left : spc.width)+'px',
-                                'margin-top': (i===0 ? pad.top : spc.height)+'px'
-                            });
+                                'margin-left': (isFirstCol ? pad.left : spc.width)+'px',
+                                'margin-top': (isFirstRow ? pad.top : spc.height)+'px'
+                            };
                             min = xui.CSS.$px(prf.properties.dockMinW)||0;
                             max = xui.CSS.$px(prf.properties.dockMaxW) || (pw + off);
-                            ww=prf.$forceu( rw = Math.min(max, Math.max(min, w) ) );
+                            ww=prf.$forceu( rw = Math.min(max, Math.max(min, w * (xui.get(prf.properties, ["tagVar","layout_columns"])||1 )  ) ) );
                             rowtotal += rw;
+                            isFirstCol = false;
                             if(rowtotal > pw){
+                                // new row
+                                css['margin-left'] = (isFirstCol ? pad.left : spc.width)+'px';
+                                css['margin-top'] = (isFirstRow ? pad.top : spc.height)+'px';
                                 // redo last row
-                                redoLastRow(pw + (cols-lastRow.length)*spc.width, lastRow, allCtrls);
-                                lastRow=[];
+                                handleLastRow(pw + (cols-oneRow.length)*spc.width, oneRow, cols, allCtrls);
+                                isFirstRow = false;
+                                isFirstCol = true;
+                                oneRow=[];
                                 rowtotal=rw;
                             }
-                            lastRow.push([curCtrl,prf,min,max]);
+                            curCtrl.css(css);
+                            oneRow.push([curCtrl,prf,min,max]);
                         }
                     }
                 }
             });
             // redo last row
-            if(lastRow.length)
-                redoLastRow(pw + (cols-lastRow.length)*spc.width, lastRow,  allCtrls);
+            if(oneRow.length)
+                handleLastRow(pw + (cols-oneRow.length)*spc.width, oneRow, cols, allCtrls);
 
             // set width to ctrls (properties.width + dom width);
             for(var i=0,l=allCtrls.length;i<l;i++){
@@ -25093,7 +25266,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(xui.isFun(renderer)){
                 return xui.adjustRes(renderer.call(profile,hashIn,hashOut,type));
             }else if(xui.isStr(renderer)){
-                var obj,prf,alias,prop={},events={},t,
+                var obj,prf,alias,ref,prop={},events={},t,
                     clsReg=/^\s*[\w]+\.[\w.]+\s*$/,
                     adjustRenderer = function(hash, prop, events){
                         if(hash){
@@ -25119,6 +25292,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                         obj=new obj();
                         prf=obj.get(0);
                         alias=xui.get(hashOut,['tagVar','alias'])||prf.alias;
+                        ref=xui.get(hashOut,['tagVar','ref'])||prf.ref;
                         if(hashIn){
                             hashIn._render_xid=prf.$xid;
                             hashIn._render_obj=prf;
@@ -25136,7 +25310,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                             if(obj.setDisplay)obj.setDisplay('inline-block');
                         }
 
-                        obj.setHost(profile.host, alias);
+                        obj.setHost(profile.host, alias, ref);
 
                         // after host setting
                         // for item/cell/row/col etc.
@@ -26954,7 +27128,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             obj._inline_conf=item;
             obj._inline_holder=profile;
 
-            if(obj.alias && (!obj.host||obj.host===obj))obj.boxing().setHost(profile.host,obj.alias);
+            if(obj.alias && (!obj.host||obj.host===obj))obj.boxing().setHost(profile.host,obj.alias,obj.ref);
             (profile.$attached||(profile.$attached=[])).push(obj);
             return obj;
         },
@@ -27016,6 +27190,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             return result;
         },
         _showTips:function(profile, node, pos){
+            if(!xui.Tips)return;
             if(profile.properties.disableTips)return;
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
@@ -27759,10 +27934,10 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         //
         _showTips:function(profile, node, pos){
+            if(!xui.Tips)return;
             if(profile.properties.disableTips)return;
             if(profile.onShowTips)
                 return profile.boxing().onShowTips(profile, node, pos);
-            if(!xui.Tips)return;
 
             var t=profile.properties,
                 id=node.id,
@@ -27775,7 +27950,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 else xui.Tips.hide();
                 return false;
             }else if(profile.properties.autoTips && item && 'caption' in item){
-                if(item.caption||item.comment)xui.Tips.show(pos, {tips: xui.adjustRes((item.caption||'') + (item.caption||item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item) });
+                if(item.desc||item.caption||item.comment)xui.Tips.show(pos, {tips: xui.adjustRes((item.desc||item.caption||'') + (item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item) });
                 else xui.Tips.hide();
                 return false;
             }else
@@ -28391,7 +28566,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             style:'{_style};',
             ICON:{
                 className:'xuicon {imageClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{imageDisplay}{_fontsize}{_fontclr}',
                 text:'{iconFontCode}'
             },
             FLAG:{
@@ -28657,7 +28832,7 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             ICON:{
                 $order:1,
                 className:'xuicon {imageClass}  {picClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -29363,7 +29538,7 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
 
             if(prf.$beforeReplaced)prf.$beforeReplaced.call(module);
             // host and alias
-            if(prf.host || prf.alias)module.setHost(prf.host, prf.alias);
+            if(prf.host || prf.alias)module.setHost(prf.host, prf.alias, prf.ref);
             if('_$UIvalue' in prf)module.$UIvalue=prf._$UIvalue;
             if(t=prf.properties.moduleEvents)module.setEvents(t);
             if(t=prf.properties.moduleProperties)module.setProperties(t);
@@ -29472,8 +29647,8 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
             if(prf && !prf._replaced && (prf._module||prf.properties.moduleName)){
                 if(!prf._module){
                     prf._module = xui.create(prf.properties.moduleName, "xui.Module");
-                    prf._module.host = prf.host;
-                    prf._module.alias = prf.alias;
+                    prf.boxing().detachHost();
+                    prf._module.setHost(prf.host, prf.alias, prf.ref);
                     prf._module.module_container = prf.getParent();
                 }
                 prf.boxing().replaceWithModule(prf._module);
@@ -29533,7 +29708,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
     Static:{
         _objectProp:{tagVar:1,propBinder:1,"frames":1},
         _beforeSerialized:xui.Timer._beforeSerialized,
-        $nameTag:"ani_",
+        $nameTag:"ani",
         _pool:{},
         destroyAll:function(){
             this.pack(xui.toArr(this._pool,false),false).destroy();
@@ -30255,8 +30430,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             removeResizer:function(){
                 var s = this.id();
                 xui.arr.each(xui.UI.Resizer._cache,function(o){
-                    if(o && o.$resizeId==s)
+                    if(o && o.$resizeId==s){
+                        if(o.proxy)o.proxy.remove(true);
                         o.boxing().destroy(true);
+                    }
                 });
                 return this;
             },
@@ -30334,6 +30511,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     if(!target.$getResizer())return;
                     target.removeResizer();
                     delete o.$resizer;
+                    xui.DragDrop && xui.DragDrop._end()._reset();
                 });
             }
         },function(o,i){
@@ -32115,7 +32293,7 @@ xui.Class("xui.UI.Label", "xui.UI",{
             ICON:{
                 $order:1,
                 className:'xuicon {imageClass}  {picClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -34272,7 +34450,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 ICON:{
                     $order:1,
                     className:'xuicon {imageClass}  {picClass}',
-                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                    style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                     text:'{iconFontCode}'
                 },
                 CAPTION:{
@@ -36027,6 +36205,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             profile.box.$drop[cachekey]=drop;
 
                         o.render();
+                        xui.UI._doResize(drop,drop.properties.width,drop.properties.height);
                     }
 
                     o=drop.boxing();
@@ -36141,7 +36320,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             ICON:{
                 className:'xuifont {imageClass}  {picClass}',
                 //for cover xuicon
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                 text:'{iconFontCode}'
             }
         };
@@ -39954,7 +40133,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         ICON:{
                             $order:10,
                             className:'xuicon {imageClass}  {picClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -40987,7 +41166,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                         ICON:{
                             $order:2,
                             className:'xuicon {imageClass}  {picClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION:{
@@ -41543,7 +41722,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                         ICON:{
                             $order:2,
                             className:'xuicon {imageClass}  {picClass}',
-                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                             text:'{iconFontCode}'
                         },
                         CAPTION : {
@@ -42645,7 +42824,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                                         ICON:{
                                             $order:2,
                                             className:'xuicon {imageClass}  {picClass}',
-                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                            style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                             text:'{iconFontCode}'
                                         },
                                         CAPTION:{
@@ -44345,7 +44524,7 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                     ICON:{
                         $order:1,
                         className:'xuicon {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -44437,7 +44616,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ICON:{
                 $order:10,
                 className:'xuicon {imageClass}  {picClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                 text:'{iconFontCode}'
             },
             CAPTION:{
@@ -44886,7 +45065,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             ITEMICON:{
                                 $order:6,
                                 className:'xuicon {imageClass} {picClass}',
-                                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                 text:'{iconFontCode}'
                             },
                             ITEMCAPTION:{
@@ -46062,7 +46241,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-placeholder {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{_iconDisplay}{iconStyle}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{_iconDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -46820,7 +46999,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                                     ICON:{
                                         $order:1,
                                         className:'xuicon {imageClass}  {picClass}',
-                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{
@@ -47252,7 +47431,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                                     ICON:{
                                         $order:1,
                                         className:'xuicon {imageClass}  {picClass}',
-                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{
@@ -50869,7 +51048,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             }
             return ns;
-        }
+        },
+        adjustRelWith:function(){
+            return this.each(function(profile){
+                if(!profile.renderId)return;
+                profile.box._adjustRelWith(profile, true);
+            });
+        },
     },
     Before:function(key){
         if(key=='xui.UI.TreeGrid'){
@@ -54255,7 +54440,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         xui.clearTimeout(profile[k]);
                         delete profile[k];
                     });
-                },xui([f('SCROLL11'),f('SCROLL12'),f('SCROLL21'),f('SCROLL22')]),null,true);
+                },xui([f('SCROLL11'),f('SCROLL12'),f('SCROLL21'),f('SCROLL22')]),true);
             }
         },
         _cacheRows:function(profile){
@@ -56767,13 +56952,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }else
                 return true;
         },
-        _adjustRelWith:function(profile){
+        _adjustRelWith:function(profile, force){
             var _ww,
                 t2=profile.getSubNode('SCROLL22'),
                 t3=profile.getSubNode('BODY22'),
                 bW = profile._$cache.hasOwnProperty('_body22_b_w') ? profile._$cache._body22_b_w : (profile._$cache._body22_b_w = t3.contentBox()?1:0),
                 width=t2.width(),
                 borderC=0;
+            if(force)delete profile._$cache.__lcellW;
 
             var fixW=0,relWTotal=0,relWCol=[],relWCol2=[],overflowX;
             //if(prop.rowHandler){
@@ -57216,7 +57402,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     ICON:{
                         $order:2,
                         className:'xuicon {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{
@@ -57828,6 +58014,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             ns.destroyTrigger = function(){
                 var s=this;
                 if(s.$inModal)s.box._unModal(s);
+                if(s.$resizer)
+                    s.boxing()._unResizer();
             };
         },
         LayoutTrigger:function(){
@@ -59028,7 +59216,7 @@ xui.Class("xui.UI.FoldingTabs", "xui.UI.Tabs",{
                                     ICON:{
                                         $order:2,
                                         className:'xuicon {imageClass}  {picClass}',
-                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                         text:'{iconFontCode}'
                                     },
                                     CAPTION:{

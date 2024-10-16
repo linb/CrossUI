@@ -393,7 +393,7 @@ xui.Class("xui.APICaller","xui.absObj",{
     },
     Static:{
         WDSLCache:{},
-        $nameTag:"api_",
+        $nameTag:"api",
         timeout: 60000,
         _pool:{},
         _objectProp:{tagVar:1,propBinder:1,queryArgs:1,queryData:1,queryHeader:1,queryOptions:1,fakeCookies:1,requestDataSource:1,responseDataTarget:1,responseCallback:1},

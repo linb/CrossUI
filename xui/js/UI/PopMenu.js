@@ -294,7 +294,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     ICON:{
                         $order:0,
                         className:'xuicon xui-icon-placeholder {imageClass}  {picClass}',
-                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{_iconDisplay}{iconStyle}',
+                        style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{_iconDisplay}',
                         text:'{iconFontCode}'
                     },
                     CAPTION:{

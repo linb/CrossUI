@@ -304,7 +304,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                             ITEMICON:{
                                 $order:6,
                                 className:'xuicon {imageClass} {picClass}',
-                                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                                 text:'{iconFontCode}'
                             },
                             ITEMCAPTION:{

@@ -1983,6 +1983,17 @@ xui.merge(xui,{
         }
         return l===0?null:l===1?a[0]:a;
     },
+    getObjectByRef:function(ref){
+        var o,a=[],l=0;
+        for(var i in xui._pool){
+            o=xui._pool[i];
+            if(('ref' in o)&&o.ref===ref){
+                a.push(o);
+                l++;
+            }
+        }
+        return l===0?null:l===1?a[0]:a;
+    },
     _ghostDivId:"xui.ghost::",
     $getGhostDiv:function(){
         var pool=xui.$cache.ghostDiv,
@@ -2182,7 +2193,7 @@ xui.merge(xui,{
                 o = new (xui.SC(tag.key))(tag);
             }
         }
-        if(o['xui.absObj'] && (t=o.n0) && (t.host&&t.host!=t) &&  t.alias)o.setHost(t.host, t.alias);
+        if(o['xui.absObj'] && (t=o.n0) && (t.host&&t.host!=t) &&  t.alias)o.setHost(t.host, t.alias, t.ref);
         return o;
     },
     query:function(){
@@ -2722,36 +2733,46 @@ new function(){
                             break;
                         case 'control':
                         case 'module':
-                            if(target.charAt(0)=='{' && (t = xui.adjustVar(target, _ns)) && xui.isFun(t.getAlias))
-                                target = t.getAlias();
-                            if(method=="disable"||method=="enable"){
-                                if(xui.isFun(t=xui.get(_ns.page,[target,"setDisabled"])))t.apply(_ns.page[target],[method=="disable",true]);
-                            }else{
-                                if(method=="setProperties"){
-                                    // [0] is native var, [1] is expression var
-                                    var params=xui.merge(iparams[0], iparams[1], 'all');
-                                    iparams[1]=null;
-                                    if(m=params){
-                                        if(m.CA){
-                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomAttr"])))t.apply(_ns.page[target],[m.CA]);
-                                            delete m.CA;
+                            var alias, ref;
+                            if(target.charAt(0)=='{' && (t = xui.adjustVar(target, _ns))){
+                                if(xui.isFun(t.getRef))ref=t.getRef();
+                                if(xui.isFun(t.getAlias))alias=t.getAlias();
+                            }
+                            if(alias || ref){
+                                if(method=="disable"||method=="enable"){
+                                    if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setDisabled"])))t.apply(_ns.page[ref],[method=="disable",true]);
+                                    else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setDisabled"])))t.apply(_ns.page[alias],[method=="disable",true]);
+                                }else{
+                                    if(method=="setProperties"){
+                                        // [0] is native var, [1] is expression var
+                                        var params=xui.merge(iparams[0], iparams[1], 'all');
+                                        iparams[1]=null;
+                                        if(m=params){
+                                            if(m.CA){
+                                                if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setCustomAttr"])))t.apply(_ns.page[ref],[m.CA]);
+                                                else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setCustomAttr"])))t.apply(_ns.page[alias],[m.CA]);
+                                                delete m.CA;
+                                            }
+                                            if(m.CC){
+                                                if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setCustomClass"])))t.apply(_ns.page[ref],[m.CC]);
+                                                else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setCustomClass"])))t.apply(_ns.page[alias],[m.CC]);
+                                                delete m.CC;
+                                            }
+                                            if(m.CS){
+                                                if(ref && xui.isFun(t=xui.get(_ns.page,[ref,"setCustomStyle"])))t.apply(_ns.page[ref],[m.CS]);
+                                                else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,"setCustomStyle"])))t.apply(_ns.page[alias],[m.CS]);
+                                                delete m.CS;
+                                            }
                                         }
-                                        if(m.CC){
-                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomClass"])))t.apply(_ns.page[target],[m.CC]);
-                                            delete m.CC;
-                                        }
-                                        if(m.CS){
-                                            if(xui.isFun(t=xui.get(_ns.page,[target,"setCustomStyle"])))t.apply(_ns.page[target],[m.CS]);
-                                            delete m.CS;
-                                        }
+                                    }else if(method=="show"){
+                                        // special for xui.Module.show
+                                        iparams.unshift(function(err,module){
+                                            if(err){xui.message(err);}
+                                        });
                                     }
-                                }else if(method=="show"){
-                                    // special for xui.Module.show
-                                    iparams.unshift(function(err,module){
-                                        if(err){xui.message(err);}
-                                    });
+                                    if(ref && xui.isFun(t=xui.get(_ns.page,[ref,method])))t.apply(_ns.page[ref],iparams);
+                                    else if(alias && xui.isFun(t=xui.get(_ns.page,[alias,method])))t.apply(_ns.page[alias],iparams);
                                 }
-                                if(xui.isFun(t=xui.get(_ns.page,[target,method])))t.apply(_ns.page[target],iparams);
                             }
                             break;
                         case 'other':
@@ -4855,8 +4876,17 @@ xui.Class('xui.absProfile',null,{
         upper=null;
         if(!this.$xid)this.$xid=xui.absProfile.$xid.next();
         this._$cache={};
+        this._ctrlpool={};
+
+        this._links={};
+        this.link(xui._pool,'xui');
     },
     Instance:{
+        __gc:function(){
+            this.unLinkAll();
+            this._links = null;
+            this._$cache=this._ctrlpool=null;
+        },
         getId:function(){
             return this.$xid;
         },
@@ -4972,7 +5002,7 @@ xui.Class('xui.Profile','xui.absProfile',{
             self.setEvents(self.events);
             delete self.events;
         }
-        self._links={};
+
     },
     Instance:{
         setEvents:function(key, value){
@@ -5026,6 +5056,7 @@ xui.Class('xui.Profile','xui.absProfile',{
                 });
                 delete ns.$beforeDestroy;
             }
+
             xui.tryF(ns.$ondestory,args,ns);
             if(ns.onDestroy)ns.boxing().onDestroy();
             if(ns.destroyTrigger)ns.destroyTrigger();
@@ -5033,10 +5064,15 @@ xui.Class('xui.Profile','xui.absProfile',{
             // try to clear parent host
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
-                delete ns.host[ns.alias];
+                try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
+                if(ns.host._ctrlpool && (ns.alias in ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
+            }
+            if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
+                try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
             }
 
-            ns.unLinkAll();
+            xui.absProfile.prototype.__gc.call(this);
+
             xui.tryF(ns.clearCache,[],ns);
 
             //set once
@@ -5072,6 +5108,7 @@ xui.Class('xui.Profile','xui.absProfile',{
                     key:o.key,
                     host:o.host
                 };
+            if(o.ref)r.ref=o.ref;
             //host
             if(r.host===self){
                 delete r.host;
@@ -5117,8 +5154,8 @@ xui.Class('xui.absObj',"xui.absBox",{
     After:function(){
         var self=this, me=arguments.callee,
             temp,t,k,u,m,i,j,l,v,n,b;
-        self._nameId=0;
-        self._nameTag=self.$nameTag||(self.KEY.replace(/\./g,'_').toLowerCase());
+        self._nameId=self._refId=0;
+        self._nameTag=self.$nameTag||(self.KEY.replace("xui.","").replace(/\./g,'_').toLowerCase());
         self._cache=[];
         m=me.a1 || (me.a1=xui.toArr('$Keys,$DataStruct,$EventHandlers,$DataModel'));
         for(j=0;v=m[j++];){
@@ -5206,11 +5243,27 @@ xui.Class('xui.absObj',"xui.absBox",{
         pickAlias:function(){
             return xui.absObj.$pickAlias(this);
         },
+        pickRef:function(){
+            return xui.absObj.$pickRef(this);
+        },
         $pickAlias:function(cls){
-            var a=cls._nameTag, p=cls._cache,t;
+            var a=cls._nameTag+"_", p=cls._cache,t;
             while(t=(a+(++cls._nameId))){
                 for(var i=0,l=p.length;i<l;i++){
                     if(p[i].alias===t){
+                        t=-1;
+                        break;
+                    }
+                }
+                if(t==-1)continue;
+                else return t;
+            }
+        },
+        $pickRef:function(cls){
+            var a="$"+cls._nameTag+"#", p=cls._cache,t;
+            while(t=(a+(++cls._refId))){
+                for(var i=0,l=p.length;i<l;i++){
+                    if(p[i].ref===t){
                         t=-1;
                         break;
                     }
@@ -5395,6 +5448,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             var arr=[],clrItems=arguments,f=function(p){
                 //remove those
                 delete p.alias;
+                delete p.ref;
                 for(var i=0;i<clrItems.length;i++)
                     delete p[clrItems[i]];
                 if(p.children)
@@ -5469,36 +5523,116 @@ xui.Class('xui.absObj',"xui.absBox",{
         alias:function(value){
             return value?this.setAlias(value):this.getAlias();
         },
-        host:function(value, alias){
-            return value?this.setHost(value, alias):this.getHost();
+        ref:function(value){
+            return value?this.setRef(value):this.getRef();
         },
-        setHost:function(host, alias){
-            return this._setHostAlias(host, alias);
+        host:function(value, alias, ref){
+            return value?this.setHost(value, alias, ref):this.getHost();
         },
-        _setHostAlias:function(host, alias){
+        setHost:function(host, alias, ref){
+            return this._setHostAlias(host, alias, ref);
+        },
+        detachHost:function(){
             var self=this,
-                  prf=this.get(0),
-                  oldAlias=prf.alias;
-
-            alias=alias||prf.alias;
-
-            if(oldAlias){
-                if(prf.host && prf.host!==prf){
-                    try{delete prf.host[oldAlias]}catch(e){prf.host[oldAlias]=undefined}
-                    if(prf.host._ctrlpool)
-                        delete prf.host._ctrlpool[oldAlias];
+              prf=this.get(0),
+              host=prf.host,
+              ref=prf.ref,
+              alias=prf.alias;
+            if(host){
+                prf.host = null;
+                if(alias){
+                    try{if(alias in host)delete host[alias];}catch(e){host[alias]=void(0)}
+                    if(host._ctrlpool&&(alias in host._ctrlpool))delete host._ctrlpool[alias];
+                }
+                if(ref){
+                    try{if(ref in host)delete host[ref];}catch(e){host[ref]=void(0)}
                 }
             }
-            prf.alias=alias;
-            if(prf.box&&prf.box._syncAlias){
-                prf.box._syncAlias(prf,oldAlias,alias);
+        },
+        _setHostAlias:function(host, alias, ref){
+            var self=this, coverable,
+                  prf=this.get(0),
+                  oldHost=prf.host,
+                  oldRef=prf.ref,
+                  oldAlias=prf.alias;
+
+            if(ref && oldRef && oldRef!==ref){
+                throw new Error("Can not set the refrence again");
+            }
+            if((!host && !alias)||(oldHost===host && oldAlias===alias && oldRef===ref)){
+                return self;
             }
 
-            if(host)prf.host=host;
-            if(prf.host && prf.host!==prf){
-                prf.host[alias]=self;
-                if(prf.host._ctrlpool)
-                    prf.host._ctrlpool[alias]=self.get(0);
+            // check new alias
+            if(alias){
+                if(/^\$.+#[\d]+$/.test(alias)){
+                    throw new Error("The alias '"+alias+"' format error");
+                }
+                var t_host = host || oldHost;
+                if(t_host && (alias in t_host) && xui.isSet(t_host[alias]) && t_host[alias]!==self){
+                    // can't rewrite existing memeber except xui.absObj
+                    try{coverable = xui.get(t_host[alias],["xui.absObj"]);}catch(e){coverable=false}
+                    if(!coverable){
+                        throw new Error("The host includes a member '"+alias+"' already");
+                    }
+                }
+                if(alias === (oldRef||ref)){
+                    throw new Error("The alias '"+alias+"' can not equal with the ref");
+                }
+            }
+            if(ref){
+                if(!/^\$.+#[\d]+$/.test(ref)){
+                    throw new Error("The ref '"+ref+"' format error");
+                }
+                var t_host = host || oldHost;
+                if(t_host && (ref in t_host) && t_host[ref]!==self){
+                    // can't rewrite existing memeber except xui.absObj
+                    try{coverable = xui.get(t_host[alias],["xui.absObj"]);}catch(e){coverable=false}
+                    if(!coverable){
+                        throw new Error("The host includes a refrence member '"+ref+"' already");
+                    }
+                }
+            }
+
+            // clear old
+            if(oldHost && oldAlias){
+                try{if(oldAlias in oldHost)delete oldHost[oldAlias];}catch(e){oldHost[oldAlias]=void(0)}
+                if(xui.isHash(oldHost._ctrlpool)&&(oldAlias in oldHost._ctrlpool))
+                    delete oldHost._ctrlpool[oldAlias];
+            }
+
+            // reset host & name
+            if(host){
+                prf.host=host;
+            }else{
+                host=prf.host;
+            }
+            if(alias){
+                prf.alias=alias;
+            }else{
+                alias=prf.alias;
+            }
+
+            if(host!==prf){
+                if(oldHost==host){
+                    if(oldAlias && oldAlias!==alias){
+                        try{if(oldAlias in host)delete host[oldAlias];}catch(e){host[oldAlias]=void(0)}
+                        if(xui.isHash(host._ctrlpool) && (oldAlias in host._ctrlpool))
+                            delete host._ctrlpool[oldAlias];
+
+                        if(prf.box && prf.box._syncAlias){
+                            prf.box._syncAlias(prf, oldAlias, alias);
+                        }
+                    }
+                }
+
+                host[alias]=self;
+                if(xui.isHash(host._ctrlpool))
+                    host._ctrlpool[alias]=self.get(0);
+
+                if(ref && oldRef!==ref){
+                    host[ref]=self;
+                }
             }
             return self;
         },
@@ -5507,6 +5641,12 @@ xui.Class('xui.absObj',"xui.absBox",{
         },
         getAlias:function(){
             return this.get(0).alias;
+        },
+        setRef:function(ref){
+            return this._setHostAlias(null, null, ref);
+        },
+        getAlias:function(){
+            return this.get(0).ref;
         },
         getHost:function(){
             return this.get(0).host;
@@ -5563,14 +5703,14 @@ xui.Class("xui.Timer","xui.absObj",{
                 alias,temp;
             if(properties && properties['xui.Profile']){
                 profile=properties;
-                alias = profile.alias || c.pickAlias();
+                alias = profile.alias;
             }else{
                 if(properties && properties.key && xui.absBox.$type[properties.key]){
                     options=properties;
                     properties=null;
-                    alias = options.alias || c.pickAlias();
+                    alias = options.alias;
                 }else
-                    alias = c.pickAlias();
+                    alias = null;
                 profile=new xui.Profile(host,self.$key,alias,c,properties,events, options);
             }
             profile._n=profile._n||[];
@@ -5580,7 +5720,7 @@ xui.Class("xui.Timer","xui.absObj",{
                     profile.properties[i]=profile._dftProps[i]=typeof temp[i]=='object'?xui.copy(temp[i]):temp[i];
 
             //set anti-links
-            profile.link(c._cache,'self').link(xui._pool,'xui');
+            profile.link(c._cache,'self');
 
             self._nodes.push(profile);
             profile.Instace=self;

@@ -17,7 +17,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
             ICON:{
                 $order:10,
                 className:'xuicon {imageClass}  {picClass}',
-                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}{iconStyle}',
+                style:'{backgroundImage}{backgroundPosition}{backgroundSize}{backgroundRepeat}{iconFontSize}{imageDisplay}',
                 text:'{iconFontCode}'
             },
             CAPTION:{

@@ -2361,7 +2361,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 }
             }
             return ns;
-        }
+        },
+        adjustRelWith:function(){
+            return this.each(function(profile){
+                if(!profile.renderId)return;
+                profile.box._adjustRelWith(profile, true);
+            });
+        },
     },
     Before:function(key){
         if(key=='xui.UI.TreeGrid'){
@@ -5747,7 +5753,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         xui.clearTimeout(profile[k]);
                         delete profile[k];
                     });
-                },xui([f('SCROLL11'),f('SCROLL12'),f('SCROLL21'),f('SCROLL22')]),null,true);
+                },xui([f('SCROLL11'),f('SCROLL12'),f('SCROLL21'),f('SCROLL22')]),true);
             }
         },
         _cacheRows:function(profile){
@@ -8259,13 +8265,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }else
                 return true;
         },
-        _adjustRelWith:function(profile){
+        _adjustRelWith:function(profile, force){
             var _ww,
                 t2=profile.getSubNode('SCROLL22'),
                 t3=profile.getSubNode('BODY22'),
                 bW = profile._$cache.hasOwnProperty('_body22_b_w') ? profile._$cache._body22_b_w : (profile._$cache._body22_b_w = t3.contentBox()?1:0),
                 width=t2.width(),
                 borderC=0;
+            if(force)delete profile._$cache.__lcellW;
 
             var fixW=0,relWTotal=0,relWCol=[],relWCol2=[],overflowX;
             //if(prop.rowHandler){

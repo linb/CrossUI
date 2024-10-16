@@ -12,7 +12,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
                 profile.__gc();
             });
         },
-        setHost:function(value, alias){
+        setHost:function(value, alias, ref){
             var self=this;
             if(value && alias)
                 self.setName(alias);
@@ -389,7 +389,7 @@ xui.Class("xui.DataBinder","xui.absObj",{
         }
     },
     Static:{
-        $nameTag:"databinder_",
+        $nameTag:"databinder",
         _pool:{},
         _objectProp:{tagVar:1,propBinder:1,data:1},
         destroyAll:function(){
