@@ -5557,7 +5557,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                   oldAlias=prf.alias;
 
             if(ref && oldRef && oldRef!==ref){
-                throw new Error("Can not set the refrence again");
+                throw new Error("Can not set the reference again");
             }
             if((!host && !alias)||(oldHost===host && oldAlias===alias && oldRef===ref)){
                 return self;
@@ -5611,6 +5611,9 @@ xui.Class('xui.absObj',"xui.absBox",{
                 prf.alias=alias;
             }else{
                 alias=prf.alias;
+            }
+            if(ref && oldRef!==ref){
+                prf.ref=ref;
             }
 
             if(host!==prf){

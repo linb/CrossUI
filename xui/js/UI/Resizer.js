@@ -158,7 +158,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         }
                         b._resizer(v,arg);
                         if(this.$inDesign){
-                            this.$resizer.get(0).$inDesign=1;
+                            t=this.$resizer.get(0);
+                            t && (t.$inDesign=1);
                         }
                     }else
                         b._unResizer();

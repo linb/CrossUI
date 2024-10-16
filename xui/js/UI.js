@@ -1580,10 +1580,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
                 ns[i]=n.get(0);
 
-                //for functions like: UI refresh itself
-                if(fun)
-                    fun.call(fun.target,n.get(0));
-
                 //add to parent, and trigger RenderTrigger
                 if(b)
                     p.append(n,paras);
@@ -1605,6 +1601,10 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                 if(uiv)
                     n.setUIValue(uiv,true,null,'refresh');
+
+                //for functions like: UI refresh itself
+                if(fun)
+                    fun.call(fun.target,n.get(0));
 
                 if(ar){
                     n.get(0).$afterRefresh=ar;
@@ -5159,13 +5159,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                             rowtotal += rw;
                             isFirstCol = false;
                             if(rowtotal > pw){
+                                isFirstRow = false;
+                                isFirstCol = true;
                                 // new row
                                 css['margin-left'] = (isFirstCol ? pad.left : spc.width)+'px';
                                 css['margin-top'] = (isFirstRow ? pad.top : spc.height)+'px';
                                 // redo last row
                                 handleLastRow(pw + (cols-oneRow.length)*spc.width, oneRow, cols, allCtrls);
-                                isFirstRow = false;
-                                isFirstCol = true;
                                 oneRow=[];
                                 rowtotal=rw;
                             }

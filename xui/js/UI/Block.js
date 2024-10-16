@@ -119,6 +119,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             //delete those properties
             disabled:null,
             tips:null,
+            disableTips:null,
             rotate:null,
             iframeAutoLoad:{
                 ini:"",
