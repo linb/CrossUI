@@ -889,7 +889,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 cellsMap={},
                 cell2alias = {}, alias2cell={};
             if(formula){
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                     var p = prf.properties,t;
                     if((t=p.excelCellId) && /^\s*[a-zA-Z]+[\d]+\s*$/.test(t)){
                         cell2alias[t]=prf.alias;
@@ -920,7 +920,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 rowMax = 0, colMax = 0,
                 cellId = profileFrom && profileFrom.alias;
             //1. collection all formula cells
-            xui.each(this._ctrlpool, function(prf){
+            xui.each(this._alias_pool, function(prf){
                 var p = prf.properties,t;
                 if(t=p.excelCellFormula){
                     formulaCells[prf.alias]=[prf,t];
@@ -1003,7 +1003,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             var hash={},t;
-            xui.each(this._ctrlpool, function(prf){
+            xui.each(this._alias_pool, function(prf){
                 t=hash[prf.alias]=prf.serialize(false,false,false);
                 delete t.key;
                 delete t.alias;
@@ -1015,7 +1015,7 @@ xui.Class('xui.Module','xui.absProfile',{
         setProfile:function(profiles){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-             xui.each(this._ctrlpool, function(prf,i){
+             xui.each(this._alias_pool, function(prf,i){
                 if(prf.alias in profiles){
                     i=profiles[prf.alias];
                     var ins=prf.boxing();
@@ -1042,7 +1042,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var hash={};
             try{
                 scope_set.call(this);
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         xui.each(prop.propBinder,function(fun,key){
@@ -1067,7 +1067,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             try{
                 scope_set.call(this, dataMap);
-                 xui.each(this._ctrlpool, function(prf){
+                 xui.each(this._alias_pool, function(prf){
                     prf.boxing().reBindProp(dataMap,scope_set,scope_clear, true);
                 });
             }catch(e){
@@ -1078,7 +1078,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             var hash={};
-             xui.each(this._ctrlpool, function(prf){
+             xui.each(this._alias_pool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),
                     ih=hash[prf.alias]={};
@@ -1096,7 +1096,7 @@ xui.Class('xui.Module','xui.absProfile',{
         setData:function(data){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-             xui.each(this._ctrlpool, function(prf){
+             xui.each(this._alias_pool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),ih;
                if(prf.alias in data){
@@ -1118,7 +1118,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var hash={}, cap, uv;
-                 xui.each(this._ctrlpool, function(prf){
+                 xui.each(this._alias_pool, function(prf){
                     if('value' in prf.properties){
                         if(xui.isSet(prf.properties.caption)){
                             cap = prf.properties.caption;
@@ -1145,7 +1145,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 if(!xui.isEmpty(values)){
-                     xui.each(this._ctrlpool, function(prf){
+                     xui.each(this._alias_pool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
                             var v=values[prf.alias],b=xui.isHash(v) ;
                             prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
@@ -1164,7 +1164,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var hash={};
-                 xui.each(this._ctrlpool, function(prf){
+                 xui.each(this._alias_pool, function(prf){
                     if('$UIvalue' in prf.properties)
                         hash[prf.alias]=prf.properties.$UIvalue;
                 });
@@ -1178,7 +1178,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 if(!xui.isEmpty(values)){
-                     xui.each(this._ctrlpool, function(prf){
+                     xui.each(this._alias_pool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
                             var v=values[prf.alias],b=xui.isHash(v) ;
                             prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'module');
@@ -1195,7 +1195,7 @@ xui.Class('xui.Module','xui.absProfile',{
         resetValue:function(innerUI){
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
@@ -1206,7 +1206,7 @@ xui.Class('xui.Module','xui.absProfile',{
         updateValue:function(innerUI){
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
@@ -1220,7 +1220,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var dirtied=false;
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                     if(prf.boxing().isDirtied){
                         if(prf.boxing().isDirtied()){
                             return false;
@@ -1236,7 +1236,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
 
-                  xui.each(this._ctrlpool, function(prf){
+                  xui.each(this._alias_pool, function(prf){
                      if(prf.boxing().checkValid){
                          if(!prf.boxing().checkValid()){
                              return false;
@@ -1260,7 +1260,7 @@ xui.Class('xui.Module','xui.absProfile',{
         getForms:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-            var nodes = xui.copy(this._ctrlpool),t,k='xui.absContainer';
+            var nodes = xui.copy(this._alias_pool),t,k='xui.absContainer';
             xui.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
@@ -1272,7 +1272,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var nodes=[];
             var fun = function(m){
                     if(m["xui.Module"]){
-                        xui.each(m._ctrlpool,function(o){
+                        xui.each(m._alias_pool,function(o){
                             if(o["xui.Module"])fun(o);
                             else nodes.push(o);
                         });
@@ -1343,10 +1343,11 @@ xui.Class('xui.Module','xui.absProfile',{
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
                 try{if(self.alias in self.host)delete self.host[self.alias];}catch(e){self.host[self.alias]=void(0)}
-                if(self.host._ctrlpool && (self.alias in self.host._ctrlpool))delete self.host._ctrlpool[self.alias];
+                if(self.host._alias_pool && (self.alias in self.host._alias_pool))delete self.host._alias_pool[self.alias];
             }
             if(self.ref && self.host && self.host[self.ref]){
                 try{if(self.ref in self.host)delete self.host[self.ref];}catch(e){self.host[self.ref]=void(0)}
+                if(self.host._ref_pool && (self.ref in self.host._ref_pool))delete self.host._ref_pool[self.ref];
             }
 
             //set once

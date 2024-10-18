@@ -250,14 +250,14 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             },
             itemWidth:{
                 $spaceunit:1,
-                ini:32,
+                ini:'32px',
                 action:function(v){
                     this.boxing().refresh();
                 }
             },
             itemHeight:{
                 $spaceunit:1,
-                ini:32,
+                ini:'32px',
                 action:function(v){
                    this.boxing().refresh();
                 }

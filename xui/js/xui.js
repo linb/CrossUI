@@ -4876,7 +4876,8 @@ xui.Class('xui.absProfile',null,{
         upper=null;
         if(!this.$xid)this.$xid=xui.absProfile.$xid.next();
         this._$cache={};
-        this._ctrlpool={};
+        this._alias_pool={};
+        this._ref_pool={};
 
         this._links={};
         this.link(xui._pool,'xui');
@@ -4885,7 +4886,7 @@ xui.Class('xui.absProfile',null,{
         __gc:function(){
             this.unLinkAll();
             this._links = null;
-            this._$cache=this._ctrlpool=null;
+            this._$cache=this._alias_pool=this._ref_pool=null;
         },
         getId:function(){
             return this.$xid;
@@ -4974,6 +4975,9 @@ xui.Class('xui.absProfile',null,{
         },
         getChildrenId:function(){
             return this.childrenId;
+        },
+        getByRef:function(ref){
+            return this._ref_pool[ref];
         }
     },
     Static:{
@@ -5065,10 +5069,11 @@ xui.Class('xui.Profile','xui.absProfile',{
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
-                if(ns.host._ctrlpool && (ns.alias in ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
+                if(ns.host._alias_pool && (ns.alias in ns.host._alias_pool))delete ns.host._alias_pool[ns.alias];
             }
             if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
+                if(ns.host._ref_pool && (ns.ref in ns.host._ref_pool))delete ns.host._ref_pool[ns.ref];
             }
 
             xui.absProfile.prototype.__gc.call(this);
@@ -5542,10 +5547,11 @@ xui.Class('xui.absObj',"xui.absBox",{
                 prf.host = null;
                 if(alias){
                     try{if(alias in host)delete host[alias];}catch(e){host[alias]=void(0)}
-                    if(host._ctrlpool&&(alias in host._ctrlpool))delete host._ctrlpool[alias];
+                    if(host._alias_pool&&(alias in host._alias_pool))delete host._alias_pool[alias];
                 }
                 if(ref){
                     try{if(ref in host)delete host[ref];}catch(e){host[ref]=void(0)}
+                    if(host._ref_pool&&(ref in host._ref_pool))delete host._ref_pool[ref];
                 }
             }
         },
@@ -5565,9 +5571,6 @@ xui.Class('xui.absObj',"xui.absBox",{
 
             // check new alias
             if(alias){
-                if(/^\$.+#[\d]+$/.test(alias)){
-                    throw new Error("The alias '"+alias+"' format error");
-                }
                 var t_host = host || oldHost;
                 if(t_host && (alias in t_host) && xui.isSet(t_host[alias]) && t_host[alias]!==self){
                     // can't rewrite existing memeber except xui.absObj
@@ -5581,9 +5584,6 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }
             }
             if(ref){
-                if(!/^\$.+#[\d]+$/.test(ref)){
-                    throw new Error("The ref '"+ref+"' format error");
-                }
                 var t_host = host || oldHost;
                 if(t_host && (ref in t_host) && t_host[ref]!==self){
                     // can't rewrite existing memeber except xui.absObj
@@ -5597,8 +5597,8 @@ xui.Class('xui.absObj',"xui.absBox",{
             // clear old
             if(oldHost && oldAlias){
                 try{if(oldAlias in oldHost)delete oldHost[oldAlias];}catch(e){oldHost[oldAlias]=void(0)}
-                if(xui.isHash(oldHost._ctrlpool)&&(oldAlias in oldHost._ctrlpool))
-                    delete oldHost._ctrlpool[oldAlias];
+                if(xui.isHash(oldHost._alias_pool)&&(oldAlias in oldHost._alias_pool))
+                    delete oldHost._alias_pool[oldAlias];
             }
 
             // reset host & name
@@ -5620,8 +5620,8 @@ xui.Class('xui.absObj',"xui.absBox",{
                 if(oldHost==host){
                     if(oldAlias && oldAlias!==alias){
                         try{if(oldAlias in host)delete host[oldAlias];}catch(e){host[oldAlias]=void(0)}
-                        if(xui.isHash(host._ctrlpool) && (oldAlias in host._ctrlpool))
-                            delete host._ctrlpool[oldAlias];
+                        if(xui.isHash(host._alias_pool) && (oldAlias in host._alias_pool))
+                            delete host._alias_pool[oldAlias];
 
                         if(prf.box && prf.box._syncAlias){
                             prf.box._syncAlias(prf, oldAlias, alias);
@@ -5630,11 +5630,12 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }
 
                 host[alias]=self;
-                if(xui.isHash(host._ctrlpool))
-                    host._ctrlpool[alias]=self.get(0);
+                if(xui.isHash(host._alias_pool))
+                    host._alias_pool[alias]=self.get(0);
 
                 if(ref && oldRef!==ref){
-                    host[ref]=self;
+                    if(xui.isHash(host._ref_pool))
+                        host._ref_pool[ref]=self.get(0);
                 }
             }
             return self;

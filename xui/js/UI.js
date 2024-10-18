@@ -351,10 +351,11 @@ xui.Class('xui.UIProfile','xui.Profile', {
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
-                if(ns.host._ctrlpool && (ns.alias in  ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
+                if(ns.host._alias_pool && (ns.alias in  ns.host._alias_pool))delete ns.host._alias_pool[ns.alias];
             }
             if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
+                if(ns.host._ref_pool && (ns.ref in  ns.host._ref_pool))delete ns.host._ref_pool[ns.ref];
             }
             //clear anti link
             ns.unLinkAll();
@@ -2227,6 +2228,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             //invalid after dom dom Node
             zIndex:{
                 ini:1,
+                precision:0,
                 action:function(value){
                     this.getRoot().css('zIndex',value);
                 }
@@ -8729,6 +8731,7 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
         },
         DataModel:{
             nodeName:null,
+
             tabindex:1,
             width:'auto',
             height:'auto',
@@ -9506,6 +9509,8 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             onResize:null,
             onShowTips:null,
             beforeHoverEffect:null,
+            beforeHoverHide:null,
+            beforeHoverPop:null,
             beforeAppend:null,
             afterAppend:null,
             beforeRender:null,
@@ -9676,15 +9681,22 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         RenderTrigger:function(){
             var prf=this;
             if(prf.$inDesign)return;
-
+            var created;
             if(prf && !prf._replaced && (prf._module||prf.properties.moduleName)){
                 if(!prf._module){
                     prf._module = xui.create(prf.properties.moduleName, "xui.Module");
-                    prf.boxing().detachHost();
-                    prf._module.setHost(prf.host, prf.alias, prf.ref);
-                    prf._module.module_container = prf.getParent();
+                    if(prf._module.KEY == prf.properties.moduleName){
+                        prf.boxing().detachHost();
+                        prf._module.setHost(prf.host, prf.alias, prf.ref);
+                        prf._module.module_container = prf.getParent();
+                        created=1;
+                    }
                 }
-                prf.boxing().replaceWithModule(prf._module);
+                if(created){
+                    prf.boxing().replaceWithModule(prf._module);
+                }else if(xui.debugMode){
+                    prf.getRoot().css('display', 'block');
+                }
             }
         }
     }

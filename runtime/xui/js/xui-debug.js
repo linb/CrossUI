@@ -4890,7 +4890,8 @@ xui.Class('xui.absProfile',null,{
         upper=null;
         if(!this.$xid)this.$xid=xui.absProfile.$xid.next();
         this._$cache={};
-        this._ctrlpool={};
+        this._alias_pool={};
+        this._ref_pool={};
 
         this._links={};
         this.link(xui._pool,'xui');
@@ -4899,7 +4900,7 @@ xui.Class('xui.absProfile',null,{
         __gc:function(){
             this.unLinkAll();
             this._links = null;
-            this._$cache=this._ctrlpool=null;
+            this._$cache=this._alias_pool=this._ref_pool=null;
         },
         getId:function(){
             return this.$xid;
@@ -4988,6 +4989,9 @@ xui.Class('xui.absProfile',null,{
         },
         getChildrenId:function(){
             return this.childrenId;
+        },
+        getByRef:function(ref){
+            return this._ref_pool[ref];
         }
     },
     Static:{
@@ -5079,10 +5083,11 @@ xui.Class('xui.Profile','xui.absProfile',{
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
-                if(ns.host._ctrlpool && (ns.alias in ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
+                if(ns.host._alias_pool && (ns.alias in ns.host._alias_pool))delete ns.host._alias_pool[ns.alias];
             }
             if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
+                if(ns.host._ref_pool && (ns.ref in ns.host._ref_pool))delete ns.host._ref_pool[ns.ref];
             }
 
             xui.absProfile.prototype.__gc.call(this);
@@ -5556,10 +5561,11 @@ xui.Class('xui.absObj',"xui.absBox",{
                 prf.host = null;
                 if(alias){
                     try{if(alias in host)delete host[alias];}catch(e){host[alias]=void(0)}
-                    if(host._ctrlpool&&(alias in host._ctrlpool))delete host._ctrlpool[alias];
+                    if(host._alias_pool&&(alias in host._alias_pool))delete host._alias_pool[alias];
                 }
                 if(ref){
                     try{if(ref in host)delete host[ref];}catch(e){host[ref]=void(0)}
+                    if(host._ref_pool&&(ref in host._ref_pool))delete host._ref_pool[ref];
                 }
             }
         },
@@ -5571,7 +5577,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                   oldAlias=prf.alias;
 
             if(ref && oldRef && oldRef!==ref){
-                throw new Error("Can not set the refrence again");
+                throw new Error("Can not set the reference again");
             }
             if((!host && !alias)||(oldHost===host && oldAlias===alias && oldRef===ref)){
                 return self;
@@ -5579,9 +5585,6 @@ xui.Class('xui.absObj',"xui.absBox",{
 
             // check new alias
             if(alias){
-                if(/^\$.+#[\d]+$/.test(alias)){
-                    throw new Error("The alias '"+alias+"' format error");
-                }
                 var t_host = host || oldHost;
                 if(t_host && (alias in t_host) && xui.isSet(t_host[alias]) && t_host[alias]!==self){
                     // can't rewrite existing memeber except xui.absObj
@@ -5595,9 +5598,6 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }
             }
             if(ref){
-                if(!/^\$.+#[\d]+$/.test(ref)){
-                    throw new Error("The ref '"+ref+"' format error");
-                }
                 var t_host = host || oldHost;
                 if(t_host && (ref in t_host) && t_host[ref]!==self){
                     // can't rewrite existing memeber except xui.absObj
@@ -5611,8 +5611,8 @@ xui.Class('xui.absObj',"xui.absBox",{
             // clear old
             if(oldHost && oldAlias){
                 try{if(oldAlias in oldHost)delete oldHost[oldAlias];}catch(e){oldHost[oldAlias]=void(0)}
-                if(xui.isHash(oldHost._ctrlpool)&&(oldAlias in oldHost._ctrlpool))
-                    delete oldHost._ctrlpool[oldAlias];
+                if(xui.isHash(oldHost._alias_pool)&&(oldAlias in oldHost._alias_pool))
+                    delete oldHost._alias_pool[oldAlias];
             }
 
             // reset host & name
@@ -5626,13 +5626,16 @@ xui.Class('xui.absObj',"xui.absBox",{
             }else{
                 alias=prf.alias;
             }
+            if(ref && oldRef!==ref){
+                prf.ref=ref;
+            }
 
             if(host!==prf){
                 if(oldHost==host){
                     if(oldAlias && oldAlias!==alias){
                         try{if(oldAlias in host)delete host[oldAlias];}catch(e){host[oldAlias]=void(0)}
-                        if(xui.isHash(host._ctrlpool) && (oldAlias in host._ctrlpool))
-                            delete host._ctrlpool[oldAlias];
+                        if(xui.isHash(host._alias_pool) && (oldAlias in host._alias_pool))
+                            delete host._alias_pool[oldAlias];
 
                         if(prf.box && prf.box._syncAlias){
                             prf.box._syncAlias(prf, oldAlias, alias);
@@ -5641,11 +5644,12 @@ xui.Class('xui.absObj',"xui.absBox",{
                 }
 
                 host[alias]=self;
-                if(xui.isHash(host._ctrlpool))
-                    host._ctrlpool[alias]=self.get(0);
+                if(xui.isHash(host._alias_pool))
+                    host._alias_pool[alias]=self.get(0);
 
                 if(ref && oldRef!==ref){
-                    host[ref]=self;
+                    if(xui.isHash(host._ref_pool))
+                        host._ref_pool[ref]=self.get(0);
                 }
             }
             return self;
@@ -16373,7 +16377,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 cellsMap={},
                 cell2alias = {}, alias2cell={};
             if(formula){
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                     var p = prf.properties,t;
                     if((t=p.excelCellId) && /^\s*[a-zA-Z]+[\d]+\s*$/.test(t)){
                         cell2alias[t]=prf.alias;
@@ -16404,7 +16408,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 rowMax = 0, colMax = 0,
                 cellId = profileFrom && profileFrom.alias;
             //1. collection all formula cells
-            xui.each(this._ctrlpool, function(prf){
+            xui.each(this._alias_pool, function(prf){
                 var p = prf.properties,t;
                 if(t=p.excelCellFormula){
                     formulaCells[prf.alias]=[prf,t];
@@ -16487,7 +16491,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             var hash={},t;
-            xui.each(this._ctrlpool, function(prf){
+            xui.each(this._alias_pool, function(prf){
                 t=hash[prf.alias]=prf.serialize(false,false,false);
                 delete t.key;
                 delete t.alias;
@@ -16499,7 +16503,7 @@ xui.Class('xui.Module','xui.absProfile',{
         setProfile:function(profiles){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-             xui.each(this._ctrlpool, function(prf,i){
+             xui.each(this._alias_pool, function(prf,i){
                 if(prf.alias in profiles){
                     i=profiles[prf.alias];
                     var ins=prf.boxing();
@@ -16526,7 +16530,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var hash={};
             try{
                 scope_set.call(this);
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                     var prop=prf.properties;
                     if(prop.propBinder)
                         xui.each(prop.propBinder,function(fun,key){
@@ -16551,7 +16555,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
             try{
                 scope_set.call(this, dataMap);
-                 xui.each(this._ctrlpool, function(prf){
+                 xui.each(this._alias_pool, function(prf){
                     prf.boxing().reBindProp(dataMap,scope_set,scope_clear, true);
                 });
             }catch(e){
@@ -16562,7 +16566,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!this._innerModulesCreated)this._createInnerModules();
 
             var hash={};
-             xui.each(this._ctrlpool, function(prf){
+             xui.each(this._alias_pool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),
                     ih=hash[prf.alias]={};
@@ -16580,7 +16584,7 @@ xui.Class('xui.Module','xui.absProfile',{
         setData:function(data){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-             xui.each(this._ctrlpool, function(prf){
+             xui.each(this._alias_pool, function(prf){
                 var prop=prf.properties,
                     ins=prf.boxing(),ih;
                if(prf.alias in data){
@@ -16602,7 +16606,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var hash={}, cap, uv;
-                 xui.each(this._ctrlpool, function(prf){
+                 xui.each(this._alias_pool, function(prf){
                     if('value' in prf.properties){
                         if(xui.isSet(prf.properties.caption)){
                             cap = prf.properties.caption;
@@ -16629,7 +16633,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 if(!xui.isEmpty(values)){
-                     xui.each(this._ctrlpool, function(prf){
+                     xui.each(this._alias_pool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
                             var v=values[prf.alias],b=xui.isHash(v) ;
                             prf.boxing().setValue((b && ('value' in v)) ? v.value : v, true,'module');
@@ -16648,7 +16652,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var hash={};
-                 xui.each(this._ctrlpool, function(prf){
+                 xui.each(this._alias_pool, function(prf){
                     if('$UIvalue' in prf.properties)
                         hash[prf.alias]=prf.properties.$UIvalue;
                 });
@@ -16662,7 +16666,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 if(!xui.isEmpty(values)){
-                     xui.each(this._ctrlpool, function(prf){
+                     xui.each(this._alias_pool, function(prf){
                         if('value' in prf.properties && prf.alias in values){
                             var v=values[prf.alias],b=xui.isHash(v) ;
                             prf.boxing().setUIValue((b && ('value' in v))?v.value:v, true,false,'module');
@@ -16679,7 +16683,7 @@ xui.Class('xui.Module','xui.absProfile',{
         resetValue:function(innerUI){
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                      if(prf.boxing().resetValue)prf.boxing().resetValue();
                 });
             }else{
@@ -16690,7 +16694,7 @@ xui.Class('xui.Module','xui.absProfile',{
         updateValue:function(innerUI){
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                      if(prf.boxing().updateValue)prf.boxing().updateValue();
                 });
             }else{
@@ -16704,7 +16708,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(!this._innerModulesCreated)this._createInnerModules();
 
                 var dirtied=false;
-                xui.each(this._ctrlpool, function(prf){
+                xui.each(this._alias_pool, function(prf){
                     if(prf.boxing().isDirtied){
                         if(prf.boxing().isDirtied()){
                             return false;
@@ -16720,7 +16724,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(innerUI){
                 if(!this._innerModulesCreated)this._createInnerModules();
 
-                  xui.each(this._ctrlpool, function(prf){
+                  xui.each(this._alias_pool, function(prf){
                      if(prf.boxing().checkValid){
                          if(!prf.boxing().checkValid()){
                              return false;
@@ -16744,7 +16748,7 @@ xui.Class('xui.Module','xui.absProfile',{
         getForms:function(){
             if(!this._innerModulesCreated)this._createInnerModules();
 
-            var nodes = xui.copy(this._ctrlpool),t,k='xui.absContainer';
+            var nodes = xui.copy(this._alias_pool),t,k='xui.absContainer';
             xui.filter(nodes,function(o){
                 return !!(o.box[k]);
             });
@@ -16756,7 +16760,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var nodes=[];
             var fun = function(m){
                     if(m["xui.Module"]){
-                        xui.each(m._ctrlpool,function(o){
+                        xui.each(m._alias_pool,function(o){
                             if(o["xui.Module"])fun(o);
                             else nodes.push(o);
                         });
@@ -16827,10 +16831,11 @@ xui.Class('xui.Module','xui.absProfile',{
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
                 try{if(self.alias in self.host)delete self.host[self.alias];}catch(e){self.host[self.alias]=void(0)}
-                if(self.host._ctrlpool && (self.alias in self.host._ctrlpool))delete self.host._ctrlpool[self.alias];
+                if(self.host._alias_pool && (self.alias in self.host._alias_pool))delete self.host._alias_pool[self.alias];
             }
             if(self.ref && self.host && self.host[self.ref]){
                 try{if(self.ref in self.host)delete self.host[self.ref];}catch(e){self.host[self.ref]=void(0)}
+                if(self.host._ref_pool && (self.ref in self.host._ref_pool))delete self.host._ref_pool[self.ref];
             }
 
             //set once
@@ -20318,10 +20323,11 @@ xui.Class('xui.UIProfile','xui.Profile', {
             var o;
             if(ns.alias && ns.host && (o=ns.host[ns.alias]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.alias in ns.host)delete ns.host[ns.alias];}catch(e){ns.host[ns.alias]=void(0)}
-                if(ns.host._ctrlpool && (ns.alias in  ns.host._ctrlpool))delete ns.host._ctrlpool[ns.alias];
+                if(ns.host._alias_pool && (ns.alias in  ns.host._alias_pool))delete ns.host._alias_pool[ns.alias];
             }
             if(ns.ref && ns.host && (o=ns.host[ns.ref]) && (o=o._nodes) && (o.length===0 || o.length===1 && o[0]==ns)){
                 try{if(ns.ref in ns.host)delete ns.host[ns.ref];}catch(e){ns.host[ns.ref]=void(0)}
+                if(ns.host._ref_pool && (ns.ref in  ns.host._ref_pool))delete ns.host._ref_pool[ns.ref];
             }
             //clear anti link
             ns.unLinkAll();
@@ -21547,10 +21553,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
                 ns[i]=n.get(0);
 
-                //for functions like: UI refresh itself
-                if(fun)
-                    fun.call(fun.target,n.get(0));
-
                 //add to parent, and trigger RenderTrigger
                 if(b)
                     p.append(n,paras);
@@ -21572,6 +21574,10 @@ xui.Class("xui.UI",  "xui.absObj", {
 
                 if(uiv)
                     n.setUIValue(uiv,true,null,'refresh');
+
+                //for functions like: UI refresh itself
+                if(fun)
+                    fun.call(fun.target,n.get(0));
 
                 if(ar){
                     n.get(0).$afterRefresh=ar;
@@ -22194,6 +22200,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             //invalid after dom dom Node
             zIndex:{
                 ini:1,
+                precision:0,
                 action:function(value){
                     this.getRoot().css('zIndex',value);
                 }
@@ -25126,13 +25133,13 @@ xui.Class("xui.UI",  "xui.absObj", {
                             rowtotal += rw;
                             isFirstCol = false;
                             if(rowtotal > pw){
+                                isFirstRow = false;
+                                isFirstCol = true;
                                 // new row
                                 css['margin-left'] = (isFirstCol ? pad.left : spc.width)+'px';
                                 css['margin-top'] = (isFirstRow ? pad.top : spc.height)+'px';
                                 // redo last row
                                 handleLastRow(pw + (cols-oneRow.length)*spc.width, oneRow, cols, allCtrls);
-                                isFirstRow = false;
-                                isFirstCol = true;
                                 oneRow=[];
                                 rowtotal=rw;
                             }
@@ -28696,6 +28703,7 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
         },
         DataModel:{
             nodeName:null,
+
             tabindex:1,
             width:'auto',
             height:'auto',
@@ -29473,6 +29481,8 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             onResize:null,
             onShowTips:null,
             beforeHoverEffect:null,
+            beforeHoverHide:null,
+            beforeHoverPop:null,
             beforeAppend:null,
             afterAppend:null,
             beforeRender:null,
@@ -29643,15 +29653,22 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         RenderTrigger:function(){
             var prf=this;
             if(prf.$inDesign)return;
-
+            var created;
             if(prf && !prf._replaced && (prf._module||prf.properties.moduleName)){
                 if(!prf._module){
                     prf._module = xui.create(prf.properties.moduleName, "xui.Module");
-                    prf.boxing().detachHost();
-                    prf._module.setHost(prf.host, prf.alias, prf.ref);
-                    prf._module.module_container = prf.getParent();
+                    if(prf._module.KEY == prf.properties.moduleName){
+                        prf.boxing().detachHost();
+                        prf._module.setHost(prf.host, prf.alias, prf.ref);
+                        prf._module.module_container = prf.getParent();
+                        created=1;
+                    }
                 }
-                prf.boxing().replaceWithModule(prf._module);
+                if(created){
+                    prf.boxing().replaceWithModule(prf._module);
+                }else if(xui.debugMode){
+                    prf.getRoot().css('display', 'block');
+                }
             }
         }
     }
@@ -30537,7 +30554,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         }
                         b._resizer(v,arg);
                         if(this.$inDesign){
-                            this.$resizer.get(0).$inDesign=1;
+                            t=this.$resizer.get(0);
+                            t && (t.$inDesign=1);
                         }
                     }else
                         b._unResizer();
@@ -31641,6 +31659,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             //delete those properties
             disabled:null,
             tips:null,
+            disableTips:null,
             rotate:null,
             iframeAutoLoad:{
                 ini:"",
@@ -33939,8 +33958,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             },
             autoexpand:{
-                $spaceunit:1,
-                ini:"",
+                ini:false,
                 action:function(v){
                     this.boxing().refresh();
                 }
@@ -40975,14 +40993,14 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             itemWidth:{
                 $spaceunit:1,
-                ini:32,
+                ini:'32px',
                 action:function(v){
                     this.boxing().refresh();
                 }
             },
             itemHeight:{
                 $spaceunit:1,
-                ini:32,
+                ini:'32px',
                 action:function(v){
                    this.boxing().refresh();
                 }

@@ -662,8 +662,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             },
             autoexpand:{
-                $spaceunit:1,
-                ini:"",
+                ini:false,
                 action:function(v){
                     this.boxing().refresh();
                 }
