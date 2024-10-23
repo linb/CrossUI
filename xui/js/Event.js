@@ -501,10 +501,13 @@ xui.Class('xui.Event',null,{
             res[0]=res[0];
             res.key=res[0];
             res.keyCode=k;
+            res.code=event.code;
+            res.okey=event.key;
             res.type=type;
             res.ctrlKey=!!res[1];
             res.shiftKey=!!res[2];
             res.altKey=!!res[3];
+            res.e=event;
 
             if(type=='keypress'){
                 if(this.$keydownchar && this.$keydownchar.length>1)
@@ -534,6 +537,8 @@ xui.Class('xui.Event',null,{
                 pageX:mousePos&&mousePos.left,
                 pageY:mousePos&&mousePos.top,
                 key:keys.key,
+                code:event.code,
+                okey:event.key,
                 keyCode:keys.keyCode,
                 ctrlKey:keys.ctrlKey,
                 shiftKey:keys.shiftKey,

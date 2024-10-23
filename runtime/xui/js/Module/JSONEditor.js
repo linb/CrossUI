@@ -470,8 +470,8 @@ xui.Class('xui.Module.JSONEditor', 'xui.Module',{
         },
         $EventHandlers:{
             onchange:function(module/*xui.Module, the current module*/, json/*String, json text*/){},
-            onEdit:function(column/*String, key or value*/, editor/*the editor object*/){},
-            onSelect:function(path/*Array, key path*/, key/*String, key*/, value/*String, value*/, row/*Object, row data*/){}
+            onEdit:function(colId/*String, key or value*/, editor/*the editor object*/){},
+            onSelect:function(paths/*Array, key paths*/, key/*String, key*/, value/*String, value*/, row/*Object, row data*/){}
         },
         viewStyles:{ }
     }

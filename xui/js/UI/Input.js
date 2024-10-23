@@ -703,7 +703,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onCancel:function(profile){},
             onInputClick:function(profile, e, src){},
             beforeFormatCheck:function(profile, value){},
-            beforeFormatMark:function(profile, formatErr){},
+            beforeFormatMark:function(profile, isFormatErr){},
             beforeKeypress:function(profile,caret,keyboard,e,src){},
 
             onLabelClick:function(profile, e, src){},

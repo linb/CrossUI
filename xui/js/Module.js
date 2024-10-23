@@ -41,7 +41,7 @@ xui.Class('xui.Module','xui.absProfile',{
         xui.Com=ns;
         ns.$activeClass$='xui.Module';
 
-        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9){
+        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
             var arr=xui.toArr(arguments);
             xui.arr.each(xui.Module._cache,function(o){
                  o.fireEvent('onGlobalMessage',  arr);
@@ -254,6 +254,12 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         getAlias:function(){
             return this.alias;
+        },
+        setRef:function(ref){
+            return xui.absObj.prototype._setHostAlias.call(null, null, ref);
+        },
+        getRef:function(){
+            return this.ref;
         },
         setContainer:function(container){
             return this.container = container;
@@ -1733,7 +1739,7 @@ xui.Class('xui.Module','xui.absProfile',{
             afterShow:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},
-            onLoadRequiredClassErr:function(module, threadid, err, layer){},
+            onLoadRequiredClassErr:function(module, threadid, error, layer){},
             onIniResource:function(module, threadid){},
             beforeIniComponents:function(module, threadid){},
             afterIniComponents:function(module, threadid){},

@@ -158,7 +158,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                         }
                         b._resizer(v,arg);
                         if(this.$inDesign){
-                            t=this.$resizer.get(0);
+                            t=this.$resizer && this.$resizer.get(0);
                             t && (t.$inDesign=1);
                         }
                     }else
@@ -194,7 +194,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             "KEY.readonly.active, KEY.disabled.active":{
                 'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
             },
-            "KEY.readonly div, KEY.disabled div":{
+            "KEY.readonly L, KEY.readonly R, KEY.readonly T, KEY.readonly B, KEY.readonly RT,KEY.readonly RB, KEY.readonly LT,KEY.readonly LB, KEY.readonly ROTATE":{
+                display: "none"
+            },
+            "KEY.disabled div":{
                 display:'none'
             },
             "KEY.readonly MOVE":{
@@ -224,7 +227,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 $order:1,
                 cursor:'crosshair'
             },
-             HANDLER:{
+            HANDLER:{
                 $order:0,
                 position:'absolute',
                 display:'block',
@@ -787,6 +790,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         },
         _onMousedown:function(profile, e, src, axis){
             if(profile.$inDesign)return;
+            if(profile.properties.readonly && axis!='exmove')return false;
             if(profile.properties.disabled)return false;
 
             var ddparas=this._getDDParas(0, axis);

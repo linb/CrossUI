@@ -490,7 +490,7 @@ xui.Class("xui.UI.FusionChartsXT","xui.UI",{
             }
         },
         EventHandlers:{
-            onFusionChartsEvent:function(profile, eventObject, argumentsObject){},
+            onFusionChartsEvent:function(profile, eventObject, argsObject){},
             onDataClick:function(profile, argsMap){},
             onLabelClick:function(profile, argsMap){},
             onAnnotationClick:function(profile, argsMap){},

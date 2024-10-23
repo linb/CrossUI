@@ -296,7 +296,7 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             activeLast: true
         }),
         EventHandlers:{
-            onGetContent:function(profile,item,onEnd){},
+            onGetContent:function(profile,item,callback){},
             onShowOptions:function(profile,item,e,src){}
         },
          RenderTrigger:function(){

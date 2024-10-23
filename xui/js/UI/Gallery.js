@@ -197,12 +197,15 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
                 }
             },
             FLAG:{
+                beforeMousedown:function(profile,e,src){
+                    var item = profile.getItemByDom(src), box = profile.boxing();
+                    if(profile.beforeFlagMousedown  && false=== box.beforeFlagMousedown(profile,item,e,src)){
+                        return false;
+                    }
+                },
                 onClick:function(profile, e, src){
-                    var item = profile.getItemByDom(src),
-                        box = profile.boxing();
-
-                    if(profile.onFlagClick){
-                        box.onFlagClick(profile,item,e,src);
+                    var item = profile.getItemByDom(src), box = profile.boxing();
+                    if(profile.onFlagClick && false===box.onFlagClick(profile,item,e,src)){
                         return false;
                     }
                 }
@@ -297,6 +300,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
         },
         EventHandlers:{
             onCmd:null,
+            beforeFlagMousedown:function(profile,item,e,src){},
             onFlagClick:function(profile,item,e,src){}
         },
         _prepareData:function(profile){

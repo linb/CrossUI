@@ -28,35 +28,35 @@ xui.Class("xui.History",null,{
         _callbackTag:null,
         _callbackArr:null,
         _inner_callback:null,
-        _callback:function(fragment, init, newAdd){
+        _callback:function(fragment, init, callback){
             var ns=this, arr, f;
             xui.arr.each(xui.Module._cache,function(m){
               // by created order
                if(m._evsClsBuildIn && ('onFragmentChanged' in m._evsClsBuildIn)){
                    // function or pseudocode
                    if(xui.isFun(f = m._evsClsBuildIn.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
-                       m.fireEvent('onFragmentChanged', [m,fragment, init, newAdd]);
+                       m.fireEvent('onFragmentChanged', [m,fragment, init, callback]);
                    }
                }
                else if(m._evsPClsBuildIn && ('onFragmentChanged' in m._evsPClsBuildIn)){
                    // function or pseudocode
                    if(xui.isFun(f = m._evsPClsBuildIn.onFragmentChanged) || (xui.isArr(f) && f[0].type)){
-                       m.fireEvent('onFragmentChanged', [m,fragment, init, newAdd]);
+                       m.fireEvent('onFragmentChanged', [m,fragment, init, callback]);
                    }
                }
             });
             // tag
-            if(xui.isFun(ns._callbackTag) && false===ns._callbackTag(fragment, init, newAdd))return;
+            if(xui.isFun(ns._callbackTag) && false===ns._callbackTag(fragment, init, callback))return;
             // tagVar
             arr = ns._callbackArr;
             if(arr&&xui.isArr(arr)){
                 for(var i=0,l=arr.length;i<l;i++){
-                    if(xui.isFun(arr[i]) && false===arr[i](fragment, init, newAdd))
+                    if(xui.isFun(arr[i]) && false===arr[i](fragment, init, callback))
                         return;
                 }
             }
             // the last one
-            if(xui.isFun(ns._inner_callback))ns._inner_callback(fragment, init, newAdd);
+            if(xui.isFun(ns._inner_callback))ns._inner_callback(fragment, init, callback);
         },
         /* set callback function
         callback: function(hashStr<"string after #">)

@@ -1775,7 +1775,6 @@ xui.Class('xui.Dom','xui.absBox',{
                 p=xui("body").get(0);
             }
             if(node.nodeType !=1 || !p)return 1;
-            xui.Dom.beforeNodeChange( );
             t=p.childNodes;
             for(k=0;o=t[k];k++){
                 style = o.style;
@@ -1793,7 +1792,6 @@ xui.Class('xui.Dom','xui.absBox',{
                 j = parseInt(node.style.zIndex,10) || 0;
                 return i>j?i:j;
             }
-            xui.Dom.afterNodeChange( );
             return this;
         },
         /*
@@ -2331,17 +2329,21 @@ xui.Class('xui.Dom','xui.absBox',{
             }
             xui.Dom.afterNodeChange( );
         },
-        cancelBlurTrigger : function(id){
+        cancelBlurTrigger : function(id, stopTrigger){
             var arr = xui.Dom._blurTrigger && xui.Dom._blurTrigger.arr;
             if(arr){
                 if(id){
-                    xui.arr.removeValue(arr,id);
-                    delete arr[id];
-                    xui.tryF(arr[id].trigger,[],arr[id].target);
+                    if(arr[id]){
+                        if(!stopTrigger)
+                            arr[id].trigger && xui.tryF(arr[id].trigger,[],arr[id].target);
+                        xui.arr.removeValue(arr,id);
+                        delete arr[id];
+                    }
                 }else{
-                    xui.arr.each(arr,function(i){
-                        xui.tryF(arr[i].trigger, [], arr[i].target);
-                    });
+                    if(!stopTrigger)
+                        xui.arr.each(arr,function(i){
+                            arr[i].trigger && xui.tryF(arr[i].trigger, [], arr[i].target);
+                        });
                     for(var i in arr)delete arr[i];
                     arr.length=0;
                 }

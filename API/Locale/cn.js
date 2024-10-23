@@ -5890,7 +5890,7 @@ xui.set(xui.Locale,["cn","app"], {
                     'module : xui.Module 对象',
                     'fragment : String, URL片段',
                     'init : Boolen, 初始化',
-                    'newAdd: Function, 新设置的callback'
+                    'callback: Function, 新设置的callback'
                 ]
             },
             onMessage:{
@@ -8462,7 +8462,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "subId [可选参数] : String, 决定哪个subid下面的子控件会被移除, [true]表示移除所有. 默认为[true]",
-                    "bDestroy [可选参数] : Boolean, 是否移除的子控件会被销毁. 默认为[false]"
+                    "destroy [可选参数] : Boolean, 是否移除的子控件会被销毁. 默认为[false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9607,7 +9607,7 @@ xui.set(xui.Locale,["cn","app"], {
                     $profile,
                     "child : xui.UIProfile, 移除的子控件",
                     "subId : String, 子控件在父控件的容器标识",
-                    "bdestroy : Boolean, 是否在移除后被销毁"
+                    "destroy : Boolean, 是否在移除后被销毁"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-h'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9624,7 +9624,7 @@ xui.set(xui.Locale,["cn","app"], {
                     $profile,
                     "child : xui.UIProfile, 移除的子控件",
                     "subId : String, 子控件在父控件的容器标识",
-                    "bdestroy : Boolean, 是否在移除后被销毁"
+                    "destroy : Boolean, 是否在移除后被销毁"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-j'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11511,7 +11511,7 @@ xui.set(xui.Locale,["cn","app"], {
                     $profile,
                     "e: Event, 事件对象",
                     "src: String, 事件所属DOM元素的xid",
-                    "btn: String, 点击的按钮",
+                    "button: String, 点击的按钮. left/right",
                     "value: String, 界面值"
                 ]
             },
@@ -19229,7 +19229,7 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"在设置图表选项前调用",
                 $paras:[
                     $profile,
-                    "option: Object, option 对象"
+                    "options: Object, option 对象"
                 ]
             }
         }

@@ -120,15 +120,15 @@ xui.Class("xui.UI.Audio", "xui.UI",{
                 prop = prf.properties,
                 ef = function(event){
                     if(prf.onMediaEvent){
-                        prf.boxing().onMediaEvent(prf, (event||window.event).type,  arguments);
+                        prf.boxing().onMediaEvent(prf, (event||window.event).type,  xui.toArr(arguments));
                     }
                 },t;
-   
+
             xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "), function(event, i){
                 if(i = H5&&H5.get(0))
                     xui.Event._addEventListener(i, event, ef);
             });
-            
+
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["detachEvents"]=function(){
                 xui.arr.each("loadstart progress durationchange seeked seeking timeupdate playing canplay canplaythrough volumechange ratechange loadedmetadata loadeddata play pause ended".split(" "),function(event, i){
                     if(i=H5&&H5.get(0))
@@ -158,14 +158,14 @@ xui.Class("xui.UI.Audio", "xui.UI",{
             onMediaEvent:function(profile, eventType, params){}
         },
         _onresize:function(profile,width,height){
-            var H5=profile.getSubNode('H5'), 
+            var H5=profile.getSubNode('H5'),
                 size=H5.cssSize(),
                 prop=profile.properties,
                 us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
 
                 // caculate by px
-                ww=width?profile.$px(width):width, 
+                ww=width?profile.$px(width):width,
                 hh=height?profile.$px(height):height;
 
             if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){

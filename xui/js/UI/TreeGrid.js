@@ -5374,12 +5374,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             noCtrlKey:true
         },
         EventHandlers:{
-            beforeAdjustPage:function(profile, trigger){},
-            afterAdjustPage:function(profile, trigger, top, height, renderFrom, renderTo){},
-            onBodyLayout:function(profile, trigger){},
+            beforeAdjustPage:function(profile, type){},
+            afterAdjustPage:function(profile, type, top, height, renderFrom, renderTo){},
+            onBodyLayout:function(profile, type){},
             beforeApplyDataset:function(profile, dataset){},
 
-            beforeCellKeydown:function(profile,cell,keys){},
+            beforeCellKeydown:function(profile,cell, keyboard){},
             afterCellFocused:function(profile, cell, row){},
 
             beforeInitHotRow:function(profile){},
@@ -5387,7 +5387,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeInsertRows:function(profile, args){},
             afterInsertRows:function(profile, args, rows){},
-            afterInsertRowsToDom:function(profile, args, nodes1, nodes2){},
+            afterInsertRowsToDom:function(profile, args, leftrows, mainrows){},
             beforeRemoveRows:function(profile, args){},
             afterRemoveRows:function(profile, args){},
             afterRemoveRowsFromDom:function(profile, args){},
@@ -5410,8 +5410,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeColSorted:function(profile, col){},
             afterColSorted:function(profile, col){},
 
-            beforeColShowHide:function(profile,colId,flag){},
-            afterColShowHide:function(profile,colId,flag){},
+            beforeColShowHide:function(profile,colId,show){},
+            afterColShowHide:function(profile,colId,show){},
             beforeColResized:function(profile,colId,width){},
             afterColResized:function(profile,colId,width){},
             beforeRowResized:function(profile, rowId, height){},
@@ -5443,15 +5443,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             beforeIniEditor:function(profile, cell, cellNode, pNode, type, row, col){},
             onBeginEdit:function(profile, cell, editor, type, row, col){},
-            beforeEditApply:function(profile, cell, options, editor, tag, type, row, col, callback_endEdit){},
+            beforeEditApply:function(profile, cell, options, editor, tag, type, row, col, callback){},
             afterEditApply:function(profile, cell, options, editor, tag, type, row, col){},
             onEndEdit:function(profile, cell, editor, type, row, col){},
 
            // Editors' default events
             onFileDlgOpen:function(profile, cell, editorPrf, src,row,col){},
             beforeComboPop:function(profile, cell, editorPrf, pos, e, src,row,col){},
-            beforePopShow:function(profile, cell, editorPrf, popCtl, items,row,col){},
-            afterPopShow:function(profile, cell, editorPrf, popCtl,row,col){},
+            beforePopShow:function(profile, cell, editorPrf, popPrf, items,row,col){},
+            afterPopShow:function(profile, cell, editorPrf, popPrf,row,col){},
             onCommand:function(profile, cell, editorPrf, src, type,row, col){},
             onEditorClick:function(profile, cell, editorPrf, type, src, row ,col){},
             beforeUnitUpdated:function(profile, cell, editorPrf, type, row, col){},

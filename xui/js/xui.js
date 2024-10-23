@@ -4977,7 +4977,7 @@ xui.Class('xui.absProfile',null,{
             return this.childrenId;
         },
         getByRef:function(ref){
-            return this._ref_pool[ref];
+            return (ref = this._ref_pool[ref]) && ref.boxing();
         }
     },
     Static:{
@@ -5265,7 +5265,7 @@ xui.Class('xui.absObj',"xui.absBox",{
             }
         },
         $pickRef:function(cls){
-            var a="$"+cls._nameTag+"#", p=cls._cache,t;
+            var a="$"+cls._nameTag+"_", p=cls._cache,t;
             while(t=(a+(++cls._refId))){
                 for(var i=0,l=p.length;i<l;i++){
                     if(p[i].ref===t){
@@ -5579,9 +5579,6 @@ xui.Class('xui.absObj',"xui.absBox",{
                         throw new Error("The host includes a member '"+alias+"' already");
                     }
                 }
-                if(alias === (oldRef||ref)){
-                    throw new Error("The alias '"+alias+"' can not equal with the ref");
-                }
             }
             if(ref){
                 var t_host = host || oldHost;
@@ -5628,11 +5625,11 @@ xui.Class('xui.absObj',"xui.absBox",{
                         }
                     }
                 }
-
-                host[alias]=self;
-                if(xui.isHash(host._alias_pool))
-                    host._alias_pool[alias]=self.get(0);
-
+                if(alias){
+                    host[alias]=self;
+                    if(xui.isHash(host._alias_pool))
+                        host._alias_pool[alias]=self.get(0);
+                }
                 if(ref && oldRef!==ref){
                     if(xui.isHash(host._ref_pool))
                         host._ref_pool[ref]=self.get(0);
@@ -5649,7 +5646,7 @@ xui.Class('xui.absObj',"xui.absBox",{
         setRef:function(ref){
             return this._setHostAlias(null, null, ref);
         },
-        getAlias:function(){
+        getRef:function(){
             return this.get(0).ref;
         },
         getHost:function(){
@@ -5796,10 +5793,10 @@ xui.Class("xui.Timer","xui.absObj",{
         },
         EventHandlers:{
             // return false will stop the Timer
-            onTime:function(profile, threadId){},
-            onStart:function(profile, threadId){},
-            onSuspend:function(profile, threadId){},
-            onEnd:function(profile, threadId){}
+            onTime:function(profile, threadid){},
+            onStart:function(profile, threadid){},
+            onSuspend:function(profile, threadid){},
+            onEnd:function(profile, threadid){}
         }
     }
 });

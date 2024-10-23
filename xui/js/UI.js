@@ -1430,7 +1430,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             var prf=this.get(0), t=prf.getRoot();
             if(t=t.get(0)){
                 prf._dockIgnore=false;
-                xui(t).popUp(pos, type, parent, trigger, group);
+                return xui(t).popUp(pos, type, parent, trigger, group);
             }
         },
         show:function(parent,subId,left,top,ignoreEffects,callback){
@@ -1822,7 +1822,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         *     [xui.UI]
         *     [xui.UI, [xui.UI]
         **/
-        removeChildren:function(subId, bDestroy, purgeNow){
+        removeChildren:function(subId, destroy, purgeNow){
             return this.each(function(o){
                 var c=xui.copy(o.children),
                     s=o.box.$DataModel.valueSeparator||";",
@@ -1840,15 +1840,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                         }
                     }
                     if(b){
-                        if(o.beforeRemove && false===o.boxing().beforeRemove(o,v[0],v[1],bDestroy))
+                        if(o.beforeRemove && false===o.boxing().beforeRemove(o,v[0],v[1],destroy))
                             return;
 
                         v[0].unlinkParent();
 
                         if(o.afterRemove)
-                            o.boxing().afterRemove(o,v[0],v[1],bDestroy);
+                            o.boxing().afterRemove(o,v[0],v[1],destroy);
 
-                        if(bDestroy && !v[0].destroyed)
+                        if(destroy && !v[0].destroyed)
                             v[0].boxing().destroy(true, purgeNow);
                     }
                 });
@@ -2986,6 +2986,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                 'text-align': 'center'
             },
             '.xui-uiflag-1':{
+                top:'-.5em',
+                right:'-.5em',
+                width:xui.browser.contentBox?'1em':'1.625em',
+                height:xui.browser.contentBox?'1em':'1.625em',
+                'line-height':xui.browser.contentBox?'1em':'1.625em',
+                padding: '.125em'
             },
             '.xui-uiflag-2':{
                 $order:17,
@@ -5662,15 +5668,15 @@ xui.Class("xui.UI",  "xui.absObj", {
             afterPropertyChanged:function(profile,name,value,ovalue){},
             beforeAppend:function(profile,child){},
             afterAppend:function(profile,child){},
-            beforeRemove:function(profile,child,subId,bdestroy){},
-            afterRemove:function(profile,child,subId,bdestroy){},
+            beforeRemove:function(profile,child,subId,destroy){},
+            afterRemove:function(profile,child,subId,destroy){},
             onDestroy:function(profile){},
             beforeDestroy:function(profile){},
             afterDestroy:function(profile){},
             onShowTips:function(profile, node, pos){},
             onContextmenu:function(profile, e, src, item){},
-            beforeHoverPop:function(prf, item, node, e, src){},
-            beforeHoverHide:function(prf, item, node, e, src){}
+            beforeHoverPop:function(profile, item, node, e, src){},
+            beforeHoverHide:function(profile, item, node, e, src){}
         },
         RenderTrigger:function(){
             var prf=this, b=prf.boxing(),p=prf.properties,t,
@@ -7938,7 +7944,7 @@ xui.Class("xui.absList", "xui.absObj",{
             beforePrepareItem:function(profile, item, pid){},
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
-            beforeEditApply:function(profile, item, value, editor, tag, callback_endEdit){},
+            beforeEditApply:function(profile, item, value, editor, tag, callback){},
             afterEditApply:function(profile, item, value, editor, tag){},
             onEndEdit:function(profile, item){}
         },
@@ -9254,7 +9260,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         EventHandlers:{
             onClick:function(profile, e, value){},
-            afterAutoLoad:function(profile, result){}
+            afterAutoLoad:function(profile, text){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -9601,24 +9607,27 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         }
     },
     Static:{
+        _no_position:true,
         _objectProp:{moduleProperties:1,moduleEvents:1},
         Templates:{
             tagName:'div',
+            style:'{_style}',
             INFO:{
                 text:'&lt;{moduleName}&gt;'
             }
         },
         Appearances:{
             ".xui-desinger-canvas KEY":{
-                display:"block"
+                display:xui.$inlineBlock,
             },
             KEY:{
                 display:"none",
                 left:0,
                 top:0,
-                width:"100%",
-                height:"100%",
-                position:"absolute",
+                width:"auto",
+                height:"auto",
+                position:"relative",
+                "text-align":"center",
                 "z-index":0,
                 'background-image':"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 8 8'%3E%3Cg fill='%239C92AC' fill-opacity='0.6'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E\")" ,
             },
@@ -9639,9 +9648,7 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
             INFO:{
                 left:0,
                 top:0,
-                width:"100%",
-                "padding-top":"1em",
-                "text-align":"center",
+                "padding":"1em",
                 'z-index':10
             }
         },
@@ -9654,7 +9661,16 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
                 ini:{}
             },
             moduleName : "",
-            dock:"fill"
+            autoFill: {
+                ini:true,
+                action:function(value){
+                    this.getRoot().css({width:value?'100%':'auto',height:value?'100%':'auto'});
+                }
+            },
+            locked:{
+                hidden:1,
+                ini:true
+            }
         },
         EventHandlers:{
             onContextmenu:null,
@@ -9676,6 +9692,11 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         },
         _onSerialized:function(o, profile){
             for(var i in o.properties)if(!(i in this._DataModel))delete o.properties[i];
+        },
+        _prepareData:function(profile,data){
+            data=arguments.callee.upper.call(this, profile,data);
+            data._style = data.autoFill?"width:100%;height:100%":"";
+            return data;
         },
         // for parent UIProfile toHtml case
         RenderTrigger:function(){

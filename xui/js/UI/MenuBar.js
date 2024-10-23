@@ -51,14 +51,14 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         if(pro.hideEffects)hash.hideEffects=pro.hideEffects;
                         var menu = xui.create('PopMenu',hash);
                         profile.getSubNode('POOL').append(menu);
-                        menu.onHide(function(pro){
+                        menu.onHide(function(prf){
                             self.hide(false);
-                        }).onMenuSelected(function(pro, item, src){
-                            return profile.boxing().onMenuSelected(profile, pro, item, src);
-                        }).beforeShowSubMenu(function(pro, item, src){
-                            return profile.boxing().beforeShowSubMenu(profile, pro, item, src);
-                        }).onShowSubMenu(function(pro, item, src){
-                            return profile.boxing().onShowSubMenu(profile, pro, item, src);
+                        }).onMenuSelected(function(prf, item, src){
+                            return profile.boxing().onMenuSelected(profile, prf, item, src);
+                        }).beforeShowSubMenu(function(prf, item, src){
+                            return profile.boxing().beforeShowSubMenu(profile, prf, item, src);
+                        }).onShowSubMenu(function(prf, item, src){
+                            return profile.boxing().onShowSubMenu(profile, prf, item, src);
                         });
                         menu.get(0).$hideMenuPool = profile.getSubNode('POOL');
                         menu.get(0)[all] = profile[all];
@@ -383,9 +383,9 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
             onGetPopMenu:function(profile, item, callback){},
             onMenuBtnClick:function(profile, item, src){},
             beforePopMenu:function(profile, item, src){},
-            beforeShowSubMenu:function(profile, popProfile, item, src){},
-            onShowSubMenu:function(profile, popProfile, item, src){},
-            onMenuSelected:function(profile, popProfile, item, src){}
+            beforeShowSubMenu:function(profile, popPrf, item, src){},
+            onShowSubMenu:function(profile, popPrf, item, src){},
+            onMenuSelected:function(profile, popPrf, item, src){}
         },
         RenderTrigger:function(){
             if(this.properties.disabled)this.boxing().setDisabled(true,true);

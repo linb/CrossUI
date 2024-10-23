@@ -389,9 +389,9 @@ xui.Class("xui.UI.ECharts","xui.UI",{
             }
         },
         EventHandlers:{
-            onMouseEvent:function(profile, eventName, eventParams){},
-            onChartEvent:function(profile, eventName, eventParams){},
-            beforeSetOption:function(prf, option){},
+            onMouseEvent:function(profile, name, params){},
+            onChartEvent:function(profile, name, params){},
+            beforeSetOption:function(profile, options){},
             onShowTips:null
         },
         _beforeSerialized:function(profile){

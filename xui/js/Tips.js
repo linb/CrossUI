@@ -6,7 +6,7 @@ xui.Class("xui.Tips", null,{
         var dd=xui.DragDrop, tips=this;
         if(dd){
             dd.$reset=function(){
-                tips._pos={left:dd._profile.x,top:dd._profile.y}
+                tips.hide();
             };
         }
         if(xui.browser.fakeTouch){
@@ -31,7 +31,7 @@ xui.Class("xui.Tips", null,{
             tips._cancel();
         },'$Tips',-1)
         .afterMousemove(function(obj, e){
-            if(dd.isWorking)return;
+            if(dd._profile.isWorking)return;
             var event=xui.Event,p,n;
 
             if((p=xui.resetRun.$cache) && p['$Tips']){
@@ -82,33 +82,37 @@ xui.Class("xui.Tips", null,{
             }catch(e){}
 
             //check id
-            if((_from=event._getProfile(id)) && _from.box && _from.KEY=='xui.UIProfile'){
-                if(_from.properties.disableTips || _from.behavior.disableTips){
-                    node=null;
-                    return rtn(false);
+            if(_from=event._getProfile(id)){
+                var isuip = _from.box && _from.KEY=='xui.UIProfile';
+                if(isuip){
+                    if(_from.properties.disableTips || _from.behavior.disableTips){
+                        node=null;
+                        return rtn(false);
+                    }
+
+                    var nt=_from.behavior.NoTips;
+                    if(nt){
+                        for(var i=0,l=nt.length;i<l;i++){
+                            if(id.indexOf(_from.keys[nt[i]])===0)
+                                return rtn(false);
+                        }
+                    }
+                    nt=_from.behavior.PanelKeys;
+                    if(nt){
+                        for(var i=0,l=nt.length;i<l;i++){
+                            if(id.indexOf(_from.keys[nt[i]])===0)
+                                return rtn(false);
+                        }
+                    }
+                    nt=_from.behavior.HoverEffected;
+                    //if onShowTips exists, use seprated id, or use item scope id
+                    tempid=_from.onShowTips?id:id.replace(tips._reg,
+                    //if HoverEffected exists, use seprated id
+                    function(a,b){
+                        return nt&&(b in nt)?a:':';
+                    });
                 }
 
-                var nt=_from.behavior.NoTips;
-                if(nt){
-                    for(var i=0,l=nt.length;i<l;i++){
-                        if(id.indexOf(_from.keys[nt[i]])===0)
-                            return rtn(false);
-                    }
-                }
-                nt=_from.behavior.PanelKeys;
-                if(nt){
-                    for(var i=0,l=nt.length;i<l;i++){
-                        if(id.indexOf(_from.keys[nt[i]])===0)
-                            return rtn(false);
-                    }
-                }
-                nt=_from.behavior.HoverEffected;
-                //if onShowTips exists, use seprated id, or use item scope id
-                tempid=_from.onShowTips?id:id.replace(tips._reg,
-                //if HoverEffected exists, use seprated id
-                function(a,b){
-                    return nt&&(b in nt)?a:':';
-                });
                 if(tips._markId && tempid==tips._markId)
                     return rt;
 
@@ -140,9 +144,9 @@ xui.Class("xui.Tips", null,{
                         }, tips.DELAYTIME);
                     }
                 }
-            }else
+            }else{
                 tips._cancel();
-
+            }
             node=null;
             return rt;
         },'$Tips',-1)
@@ -180,6 +184,7 @@ xui.Class("xui.Tips", null,{
         this._Types = {
             'default' : new function(){
                 this.show=function(item, pos, key){
+                    if(xui.DragDrop._profile.isWorking)return;
                     //if trigger onmouseover before onmousemove, pos will be undefined
                     if(!pos)return;
                     var s = typeof item=='object'? xui.Tips._getTipsTxt(item) :item,t ;
@@ -266,7 +271,7 @@ xui.Class("xui.Tips", null,{
                             else  xui.Tips._activeNode.attr('title', null);
                         }
                     }else{
-                        this.node.css('zIndex',0).hide();
+                        this.node && this.node.css('zIndex',0).hide();
                     }
                 };
             }
@@ -280,7 +285,7 @@ xui.Class("xui.Tips", null,{
         DELAYTIME:400,
         AUTOHIDETIME:5000,
         _getTipsTxt:function(h){
-            return h.desc || h.tips || h.caption;
+            return h.desc || h.tips || h.caption || xui.getNodeData(xui.Tips._activeNode.get(0), "tips");
         },
         _showF:function(){
             if(xui.ini.disableTips)return;
@@ -288,20 +293,21 @@ xui.Class("xui.Tips", null,{
                 _from=self._from,
                 node=xui.Dom.byId(self._enode),
                 pos=self._pos,
-                id,
-                o,t,b=true;
+                t,id,
+                o=_from.box,
+                b=true;
 
             self._from=self._enode=null;
 
-            if(!node || !_from || !pos || !(o=_from.box))return;
+            if(!node || !_from || !pos)return;
 
             //1.CF.showTips
             b=false!==((t=_from.CF) && (t=t.showTips) && t(_from, node, pos));
             //2._showTips / onShowTips
             //check if showTips works
-            if(b!==false)b=false!==(_from._showTips && _from._showTips(_from, node, pos));
+            if(b!==false && o)b=false!==(_from._showTips && _from._showTips(_from, node, pos));
             //check if showTips works
-            if(b!==false)b=false!==(o._showTips && o._showTips(_from, node, pos));
+            if(b!==false && o)b=false!==(o._showTips && o._showTips(_from, node, pos));
 
             //default tips var(profile.tips > profile.properties.tips)
             if(b!==false){
@@ -317,6 +323,16 @@ xui.Class("xui.Tips", null,{
                     if(t.caption||t.labelCaption){
                         self.show(pos, {tips:t.caption||t.labelCaption});
                         b=false;
+                    }
+                }
+                else{
+                    var t=xui.Tips._activeNode.get(0);
+                    if(t){
+                        t = xui.getNodeData(t, "tips");
+                        if(t){
+                            self.show(pos, {tips:t});
+                            b=false;
+                        }
                     }
                 }
             }

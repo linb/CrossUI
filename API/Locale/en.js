@@ -5823,7 +5823,7 @@ xui.set(xui.Locale,["en","app"], {
                     'module : xui.Module',
                     'fragment : String, URL fragment',
                     'init : Boolen, initialized',
-                    'newAdd: Function, the extra callback'
+                    'callback: Function, the extra callback'
                 ]
             },
             onMessage:{
@@ -8435,7 +8435,7 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "subId [Optional] : String, the sub id that determines which profile will be removed. [true] for all profiles.  Default is [true]",
-                    "bdestroy : Boolean, to be destroyed or not. Default is [false]"
+                    "destroy : Boolean, to be destroyed or not. Default is [false]"
                 ],
                 $snippet:[
                     "var id='xui.temp.ui2'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9576,7 +9576,7 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "child : xui.UIProfile, to be removed",
                     "subId : String, container's id",
-                    "bdestroy : Boolean, to be destroyed or not"
+                    "destroy : Boolean, to be destroyed or not"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-h'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -9593,7 +9593,7 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "child : xui.UIProfile, to be removed",
                     "subId : String, container's id",
-                    "bdestroy : Boolean, to be destroyed or not"
+                    "destroy : Boolean, to be destroyed or not"
                 ],
                 $snippet:[
                     "var id='xui.temp.b3-j'; if(!xui.Dom.byId(id)){this.prepend(xui.create('<div id='+id+' style=\"border:solid 1px;padding:10px;\">' + '<br /><button onclick=\"xui(this).parent().remove()\">remove this example</button>' + '</div>'));"+
@@ -11583,7 +11583,7 @@ xui.set(xui.Locale,["en","app"], {
                     $profile,
                     "e: Event, DOM event Object",
                     "src : String, the event source DOM element's xid",
-                    "btn: String, the button",
+                    "button: String, the button. left or right",
                     "value: String, the value"
                 ]
             },
@@ -19302,7 +19302,7 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Triggerred before settig option to ECharts",
                 $paras:[
                     $profile,
-                    "option: Object, option object"
+                    "options: Object, option object"
                 ]
             }
         }
