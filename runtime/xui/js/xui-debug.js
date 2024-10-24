@@ -27989,8 +27989,13 @@ xui.Class("xui.absList", "xui.absObj",{
                 else xui.Tips.hide();
                 return false;
             }else if(profile.properties.autoTips && item && 'caption' in item){
-                if(item.desc||item.caption||item.comment)xui.Tips.show(pos, {tips: xui.adjustRes((item.desc||item.caption||'') + (item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item) });
-                else xui.Tips.hide();
+                if(item.desc||item.caption||item.comment){
+                    t = item.desc||item.caption;
+                    xui.Tips.show(pos, {
+                        tips: xui.adjustRes(t + (t && item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item)
+                    });
+                }else
+                    xui.Tips.hide();
                 return false;
             }else
                 return true;
@@ -41112,6 +41117,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize,autoImgSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
+                if(item[i] && xui.isStr(item[i]))
+                    item[i] = item[i].split(":").pop().replace(";","");
             });
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             item.itemWidth=(!auto1&&(t=item.itemWidth))?profile.$forceu(t):'';

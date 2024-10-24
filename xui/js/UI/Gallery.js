@@ -318,6 +318,8 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
 
             xui.arr.each(xui.toArr('itemWidth,itemHeight,imgWidth,imgHeight,itemPadding,itemMargin,iconFontSize,autoItemSize,autoImgSize'),function(i){
                 item[i] = xui.isSet(item[i])?item[i]:p[i];
+                if(item[i] && xui.isStr(item[i]))
+                    item[i] = item[i].split(":").pop().replace(";","");
             });
             item._itemRow = profile.properties.itemRow?'xui-item-row':'';
             item.itemWidth=(!auto1&&(t=item.itemWidth))?profile.$forceu(t):'';

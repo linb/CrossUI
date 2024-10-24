@@ -7991,8 +7991,13 @@ xui.Class("xui.absList", "xui.absObj",{
                 else xui.Tips.hide();
                 return false;
             }else if(profile.properties.autoTips && item && 'caption' in item){
-                if(item.desc||item.caption||item.comment)xui.Tips.show(pos, {tips: xui.adjustRes((item.desc||item.caption||'') + (item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item) });
-                else xui.Tips.hide();
+                if(item.desc||item.caption||item.comment){
+                    t = item.desc||item.caption;
+                    xui.Tips.show(pos, {
+                        tips: xui.adjustRes(t + (t && item.comment?'<br/>':'') + (item.comment||''), true,false,null,null,item)
+                    });
+                }else
+                    xui.Tips.hide();
                 return false;
             }else
                 return true;
