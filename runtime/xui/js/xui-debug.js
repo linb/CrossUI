@@ -32741,7 +32741,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             className:'{_className} xui-ui-ellipsis {_cls}',
             LABEL:{
                 className:'{_required}',
-                style:'{labelShow};width:{_labelSize};{labelHAlign}',
+                style:'{labelShow};width:{_labelSize};{_labelHAlign};{_labelVAlign}',
                 text:'{labelCaption}'
             },
             BOX:{
