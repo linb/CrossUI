@@ -825,7 +825,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         RenderTrigger:function(){
             var prf=this;
             prf.boxing().adjustSize();
-            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["sub-pops"]=function(t){
+            (prf.$$afterDestroy=(prf.$$afterDestroy||{}))["sub-pops"]=function(t){
                 xui.each(prf.$allPops,function(pop){
                     if(pop && !pop.$noDestroyByParentMenu){
                         if(pop['xui.UI'] && !pop.isEmpty() && !pop.isDestroyed()){

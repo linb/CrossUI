@@ -313,6 +313,13 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 subId._dirty=mark;
             }
             return this;
+        },
+        getPaper:function(subId){
+            return xui.get(this.get(0), ["_svg_papers",subId]);
+        },
+        getSVGString:function(subId){
+            var paper = xui.get(this.get(0), ["_svg_papers",subId]);
+            return paper?paper.toSVG():"";
         }
     },
     Static:{
@@ -994,6 +1001,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(i=self.getItemByItemId(v))
                     ins.onItemSelected(self, i);
             }
+            // svg container
+            xui.UI.Div._for_svg_children(self);
         },
         _prepareData:function(profile){
             var data = arguments.callee.upper.call(this, profile);

@@ -4987,7 +4987,7 @@ xui.Class('xui.absProfile',null,{
         getParent:function(){
             return this.parent && this.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             return this.childrenId;
         },
         getByRef:function(ref){
@@ -5785,7 +5785,7 @@ xui.Class("xui.Timer","xui.absObj",{
         getParent:function(){
             return this.parent && this.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             return this.childrenId;
         }
     },
@@ -5849,7 +5849,7 @@ xui.Class("xui.MessageService","xui.absObj",{
             });
         },
         getParent:xui.Timer.prototype.getParent,
-        getChildrenId:xui.Timer.prototype.getChildrenId
+        getContainerId:xui.Timer.prototype.getContainerId
     },
     Static:{
         _objectProp:xui.Timer._objectProp,
@@ -6759,7 +6759,7 @@ xui.Class("xui.ExcelFormula",null,{
             });
         },
         getParent:xui.Timer.prototype.getParent,
-        getChildrenId:xui.Timer.prototype.getChildrenId,
+        getContainerId:xui.Timer.prototype.getContainerId,
 
         connect:function(){
             var prf=this.get(0),prop=prf.properties,t,p,
@@ -10588,6 +10588,7 @@ xui.Class('xui.Event',null,{
                     :"display:inline-block;")+
                 (b.ie?"zoom:1;":""),
             css =  ".xui-node{margin:0;padding:0;line-height:1.22;-webkit-text-size-adjust:none;}"+
+            ".xui-root-node-ini, .xui-node-willChange{visibility:hidden !important; content-visibility:hidden !important;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
@@ -10659,6 +10660,7 @@ xui.Class('xui.Event',null,{
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:.875rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
+            ".xui-svg-container{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden;}"+
             ".setting-uikey{font-family:'default'}"
            ;
 
@@ -11451,13 +11453,11 @@ xui.Class('xui.Dom','xui.absBox',{
             this[type](0);
             return true;
         },
-        scrollIntoView:function(){
+        scrollIntoView:function(no_anim){
             return  this.each(function(o){
                 xui.Dom.willChange(o,"scroll-position");
-                if(o.hasOwnProperty('scrollIntoViewIfNeeded'))
-                  o.scrollIntoViewIfNeeded();
-                else
-                  o.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                // only this can stop document weird scrollTop chang
+                o.scrollIntoView({ behavior: !no_anim?'smooth':'instant', block: 'nearest', inline: 'start' })
                 xui.Dom.unWillChange(o);
             });
         },
@@ -15711,7 +15711,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!profile.destroyed){
             //link
                 profile.parent = parentProfile;
-                profile.childrenId = linkId;
+                profile.containerId = linkId;
                 profile.link(parentProfile.children, '$parent', [profile, linkId], index);
             }
             return profile;
@@ -15719,7 +15719,7 @@ xui.Class('xui.Module','xui.absProfile',{
         unlinkParent:function(){
             var profile=this;
             delete profile.parent;
-            delete profile.childrenId;
+            delete profile.containerId;
             profile.unLink('$parent');
             return profile;
         },
@@ -16060,11 +16060,30 @@ xui.Class('xui.Module','xui.absProfile',{
                         parent.append(self.getUIComponents(false),subId);
                         // append and show
                         self.getUIComponents(true).each(function(o){
-                            o.boxing().show(parent, subId, null, null, null, function(){
-                              if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                                 try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                              }
-                            });
+                            // allow showing svg in root
+                            if(parent.get(0)==xui("body").get(0) && o.box && o.box['xui.svg']){
+                                var svg_id = '$xui_body:svg:',
+                                    svg = xui(svg_id);
+                                if(!svg.get(0)){
+                                    var paper = xui._xui_body_svg_paper = Raphael(document.body);
+                                    paper.canvas.id=svg_id;
+                                    paper.canvas.style.position = "absolute";
+                                    paper.canvas.style.left = 0;
+                                    paper.canvas.style.top = 0;
+                                    paper.canvas.style.width = "100vw";
+                                    paper.canvas.style.height = "100vh";
+
+                                    svg = xui(paper.canvas);
+                                }
+                                o._paper = xui._xui_body_svg_paper;
+                                svg.append(o);
+                            }else{
+                                o.boxing().show(parent, subId, null, null, null, function(){
+                                  if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                                     try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                                  }
+                                });
+                            }
                         });
                     }
                     self.renderId='ok';
@@ -16133,7 +16152,7 @@ xui.Class('xui.Module','xui.absProfile',{
             //keep parent
             if(b=!!firstUI.parent){
                 p=firstUI.parent.boxing();
-                childId=firstUI.childrenId;
+                childId=firstUI.containerId;
             }else{
                 p=firstUI.getParent();
                 if(!p) p=firstUI.getRoot().parent();
@@ -16185,9 +16204,9 @@ xui.Class('xui.Module','xui.absProfile',{
             var prf=this.getUIComponents().get(0);
             if(prf)return prf.parent && prf.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             var prf=this.getUIComponents().get(0);
-            if(prf)return prf.childrenId;
+            if(prf)return prf.containerId;
         },
         // onEnd(err, module, threadid)
         create:function(onEnd, threadid){
@@ -18190,7 +18209,7 @@ xui.Class('xui.DragDrop',null,{
         abort:function(){
             this._stop=true;
         },
-        _end:function(){
+        _end:function(init){
             var d=this,win=window,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
                 mm2,mu2;
             if(xui.browser.isTouch){
@@ -18211,14 +18230,14 @@ xui.Class('xui.DragDrop',null,{
                 if(d.$touchmove!='*')doc[mm2]=d.$touchmove;
                 if(d.$touchend!='*')doc[mu2]=d.$touchend;
             }
-
+            if(!init) xui.tryF(d.DDEnd);
             return  d;
         },
         startDrag:function(e, targetNode, profile, dragKey, dragData){
             var d=this,win=window,t;
             if(d._profile.isWorking)return false;
             //clear
-            d._end()._reset();
+            d._end(true)._reset();
             d._profile.isWorking=true;
             d.__touchingfordd = e.type=="xuitouchdown";
 
@@ -18285,6 +18304,7 @@ xui.Class('xui.DragDrop',null,{
 
                 d.onDragBegin && d.onDragBegin();
                 d._source.onDragbegin();
+                xui.tryF(d.DDBegin);
 
                 //set back first
                 if(p.dragDefer<1){
@@ -18847,9 +18867,7 @@ xui.Class('xui.DragDrop',null,{
                 };
                 dd._profile.dragKey = dragKey;
                 dd._profile.dragData = dragData;
-            }
-            function stopXUIDD(){
-
+                xui.tryF(dd.DDBegin);
             }
             function isXUIDroppable(src){
                 return src.$xid && xui.getNodeData(src.$xid, ["eHandlers","ondrop"]);
@@ -20396,7 +20414,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
             if(!profile.destroyed){
                 //link
                 profile.parent = parentProfile;
-                profile.childrenId = linkId;
+                profile.containerId = linkId;
                 profile.link(parentProfile.children, '$parent', [profile, linkId], index);
             }
             return profile;
@@ -20404,7 +20422,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
         unlinkParent:function(){
             var profile=this;
             delete profile.parent;
-            delete profile.childrenId;
+            delete profile.containerId;
             profile.unLink('$parent');
             return profile;
         },
@@ -20872,6 +20890,7 @@ xui.Class('xui.UIProfile','xui.Profile', {
 
 //UI Class
 xui.Class("xui.UI",  "xui.absObj", {
+    _syncResize:true,
     Before:function(key, parent_key, o){
         xui.absBox.$type[key.replace("xui.UI.","").replace("xui.","")]=xui.absBox.$type[key]=key;
         return true;
@@ -21510,7 +21529,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 //keep parent
                 if(b=!!o.parent){
                     p=o.parent.boxing();
-                    paras=o.childrenId;
+                    paras=o.containerId;
                 }else
                     p=o.getRoot().parent();
 
@@ -21620,9 +21639,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         append:function(target, subId, pre, base){
             var prf=this.get(0),prop=prf.properties;
             // default is append to last
-            var index,baseN,
-                inParent=arguments[4],
-                parentNode=arguments[5];
+            var index,baseN;
             // add to first, or previous of base
             pre=!!pre;
             if(base){
@@ -21675,7 +21692,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
                 if(!prf.$ignoreRender){
                     if(prf.renderId){
-                        parentNode=inParent?parentNode:prf.getContainer(subId);
+                        parentNode=prf.getContainer(subId);
                         if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
                             if(!base){
                                 parentNode[pre?'prepend':'append'](target);
@@ -21699,22 +21716,85 @@ xui.Class("xui.UI",  "xui.absObj", {
                 }
                 if(!prf.$ignoreRender){
                     if(prf.renderId){
-                        var oldp;
-                        parentNode=inParent?parentNode:prf.getContainer(subId);
-                        if(parentNode && (!parentNode.isEmpty()) && (!prop.lazyAppend || parentNode.css('display')!='none')){
-                            if(prf.parent && xui.get(prf,["properties","dock"])!='none' && 'absolute'==xui.get(prf,["properties","position"]) && !xui.get(prf,["properties","dockIgnore"]) && !prf._dockIgnore && !xui.get(prf,["properties","dockFloat"])){
-                                if(target['xui.absBox'])
-                                    oldp=target.reBoxing().parent();
+                        var oldp,
+                            parentNode=prf.getContainer(subId),
+                            svg_paper,
+                            hasSvg, isSvg;
+
+                        target.each(function(p){
+                            isSvg = p.box && p.box['xui.svg'];
+                            if(isSvg){
+                                hasSvg = 1;
+                                if(p.renderId){
+                                    p.clearCache();
+                                    xui.tryF(p.$beforeDestroy["svgClear"]);
+                                    delete p.renderId;
+                                    delete p.rendered;
+                                    p._rerender = 1;
+                                }
                             }
-                            if(!base){
-                                parentNode[pre?'prepend':'append'](target);
-                            }else if(baseN){
-                                baseN[pre?'addPrev':'addNext'](target);
+                        });
+                        if(hasSvg){
+                            var svg = parentNode.querySelector(":scope > svg"),
+                                cid=parentNode.id(),
+                                svg_id = cid.replace(/(-[A-Z]+)?(\:)/, '-SVG$2');
+                            if(!svg.get(0) || svg.id() != svg_id){
+                                if(!prf._svg_papers)prf._svg_papers={};
+                                if(!prf._svg_nodes)prf._svg_nodes={};
+
+                                var paper = Raphael(cid);
+                                paper.canvas.id=svg_id;
+                                paper.canvas.className = "xui-svg-container";
+                                paper.canvas.style.position = "absolute";
+                                paper.canvas.style.left = 0;
+                                paper.canvas.style.top = 0;
+                                paper.canvas.style.width = "100%";
+                                paper.canvas.style.height = "100%";
+
+                                prf._svg_papers[subId||"#"] = paper;
+                                prf._svg_nodes[subId||"#"] = paper.canvas;
+
+                                svg_paper = xui(paper.canvas);
+
+                                var bd = xui.get(prf,["$beforeDestroy", "svgClear"]);
+                                if(!bd){
+                                    (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["svgClear"]=function(){
+                                        if(prf._svg_papers){
+                                            xui.each(prf._svg_papers, function(paper){
+                                                paper.clear();
+                                                paper.remove();
+                                            });
+                                            prf._svg_papers = null;
+                                            prf._svg_nodes = null;
+                                        }
+                                    };
+                                }
+                            }else{
+                                svg_paper = svg;
                             }
-                            //adjust old parent
-                            if(oldp&&oldp.get(0))
-                                oldp.onSize();
+                        }
+                        target.each(function(p){
+                            isSvg = p.box && p.box['xui.svg'];
+                            pn = isSvg ? svg_paper : parentNode;
+                            if(pn && (!pn.isEmpty()) && (!prop.lazyAppend || pn.css('display')!='none')){
+                                if(prf.parent && xui.get(prf,["properties","dock"])!='none' && 'absolute'==xui.get(prf,["properties","position"]) && !xui.get(prf,["properties","dockIgnore"]) && !prf._dockIgnore && !xui.get(prf,["properties","dockFloat"])){
+                                    if(p.box && p.box['xui.absBox'])
+                                        oldp=p.getRoot().parent();
+                                }
+                                if(!base){
+                                    pn[pre?'prepend':'append'](p);
+                                }else if(baseN){
+                                    baseN[pre?'addPrev':'addNext'](p);
+                                }
+                                if(isSvg && p._rerender){
+                                    p.box._initAttr2UI(p);
+                                    delete p._rerender;
+                                }
+                                //adjust old parent
+                                if(oldp&&oldp.get(0))
+                                    oldp.onSize();
                             }
+                        });
                     }else{
                         if(!target['xui.UI']){
                             xui.arr.insertAny(prf.exchildren||(prf.exchildren=[]),[target,subId],index,true);
@@ -21733,9 +21813,9 @@ xui.Class("xui.UI",  "xui.absObj", {
             var prf=this.get(0);
             if(prf)return prf.parent && prf.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             var prf=this.get(0);
-            if(prf)return prf.childrenId;
+            if(prf)return prf.containerId;
         },
         // type: [true]/penetrate, all even in sub moudles
         // type: [false]/include, with moudles
@@ -23177,7 +23257,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                 'background-image':xui.UI.$oldBg('dirtymark.gif', 'no-repeat left top')
             },
             // Firefox will ignore input:read-only
-            '.xui-ui-ctrl-readonly, .xui-node-readonly, input[readonly], textarea[readonly], input:read-only, textarea:read-only, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node, xui-ui-inputreadonly input, xui-ui-inputreadonly textarea':{
+            'input[readonly], textarea[readonly], input:read-only, textarea:read-only':{
+            },
+            '.xui-ui-ctrl-readonly, .xui-node-readonly, .xui-ui-readonly, .xui-ui-itemreadonly, .xui-ui-readonly .xui-node, .xui-ui-itemreadonly .xui-node, xui-ui-inputreadonly input, xui-ui-inputreadonly textarea':{
                 $order:2,
                 color: '#666666 !important'
             },
@@ -24480,6 +24562,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(this.properties.readonly){
                 this.boxing().setReadonly(true, true);
             }
+            this.getRoot().removeClass("xui-root-node-ini");
         },
         addTemplateKeys:function(arr){
             var self=this, key=self.KEY, me=arguments.callee, reg=me._reg||(me._reg=/\./g);
@@ -25678,8 +25761,7 @@ xui.Class("xui.UI",  "xui.absObj", {
         },
         RenderTrigger:function(){
             var prf=this, b=prf.boxing(),p=prf.properties,t,
-                node=prf.getRootNode(),
-                style=node.style;
+                node=prf.getRootNode();
 
             if(p.sandboxTheme){
                 xui.UI._refreshSBTheme(prf, p.sandboxTheme);
@@ -25687,19 +25769,17 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             if(prf.box._onresize){
                 //avoid UI blazzing
-                if(!prf._syncResize && !prf.box._syncResize){
-                    style=prf.getRootNode().style;
-                    if((t=style.visibility)!='hidden'){
-                       prf._$visibility=t;
-                       style.visibility='hidden';
+                if(xui.UI._syncResize || prf._syncResize || prf.box._syncResize){
+                }else{
+                    if(!xui.UI.$nodeFreezed(prf)){
+                       xui.UI.$freezeNode(prf,'resize');
                     }
-                    style=null;
                 }
                 xui.UI.$tryResize(prf,p.width,p.height);
             }
             if(p.disabled) b.setDisabled(true,true);
             if(p.rotate) b.setRotate(p.rotate,true);
-             if(!prf.$inDesign && p.hoverPop){
+            if(!prf.$inDesign && p.hoverPop){
                 xui.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
                 });
@@ -25763,16 +25843,33 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
 
             //some control will set visible to recover the css class
-            if('_$visibility' in profile){
-                var node=profile.getRootNode(),
-                    style=node.style;
-                if(style.visibility!='visible' && !xui.getNodeData(node,'_setVisibility'))
-                    style.visibility=profile._$visibility;
-                node=style=null;
+            if(xui.UI._syncResize || profile._syncResize || profile.box._syncResize){
+            }else{
+                if(xui.UI.$nodeFreezed(profile)){
+                    xui.UI.$unfreezeNode(profile, 'resize');
+                }
+            }
+            if(profile._$rs_timer){
                 xui.clearTimeout(profile._$rs_timer);
                 delete profile._$rs_timer;
                 delete profile._$rs_args;
-                delete profile._$visibility;
+            }
+        },
+        $nodeFreezed:function(profile){
+            return profile.getRoot().hasClass("xui-node-willChange");
+        },
+        $freezeNode:function(profile,flag){
+            profile._last_apply_css_flag = flag;
+            profile.getRoot().addClass("xui-node-willChange");
+            //console.log("$freezeNode", flag, profile.getUid());
+        },
+        $unfreezeNode:function(profile,flag){
+            if(profile._last_apply_css_flag === flag){
+                profile.getRoot().removeClass("xui-node-willChange");
+                delete profile._last_apply_css_flag;
+                //console.log("$unfreezeNode", flag, profile.getUid());
+            }else{
+                //console.log("try $unfreezeNode", flag, profile.getUid());
             }
         },
         $tryResize:function(profile,w,h,force,key){
@@ -25784,29 +25881,31 @@ xui.Class("xui.UI",  "xui.absObj", {
                 h=((h===""||h=='auto')?"auto": ((xui.isFinite(h)||profile.$isPx(h))?(parseFloat(h)||0):h))||null;
 
                 //if it it has delay resize, overwrite arguments
-                if('_$visibility' in profile){
-                    var args=profile._$rs_args;
-                    // asyrun once only
-                    if(!args){
-                        args=profile._$rs_args=[profile,null,null];
-                        profile._$rs_timer=xui.asyRun(function(){
-                            // destroyed
-                            if(!profile.box)return;
-                            if(profile && profile._$rs_args)
-                                xui.UI._doResize.apply(null,profile._$rs_args);
-                        });
+                 if(xui.UI._syncResize || profile._syncResize || profile.box._syncResize){
+                     xui.UI._doResize(profile,w,h,force,key);
+                 }else{
+                     if(xui.UI.$nodeFreezed(profile)){
+                        var args=profile._$rs_args;
+                        // asyrun once only
+                        if(!args){
+                            args=profile._$rs_args=[profile,null,null];
+                            profile._$rs_timer=xui.asyRun(function(){
+                                // destroyed
+                                if(!profile.box)return;
+                                if(profile && profile._$rs_args)
+                                    xui.UI._doResize.apply(null,profile._$rs_args);
+                            });
+                        }
+                        //keep the last one, neglect zero and 'auto'
+                        args[1]=w;
+                        args[2]=h;
+                        args[3]=force;
+                        args[4]=key;
+                    //else, call resize right now
+                    }else{
+                        xui.UI._doResize(profile,w,h,force,key);
                     }
-                    //keep the last one, neglect zero and 'auto'
-                    args[1]=w;
-                    args[2]=h;
-                    args[3]=force;
-                    args[4]=key;
-                //else, call resize right now
-                }else{
-//for performance checking
-//console.log('resize',profile.$xid,w,h,force,key);
-                    xui.UI._doResize(profile,w,h,force,key);
-                }
+                 }
             }
         },
         LayoutTrigger:function(){
@@ -27088,19 +27187,15 @@ xui.Class("xui.UI",  "xui.absObj", {
              });
 
             //give border width
-            if('$hborder' in dm && dm.$hborder){
-                if(profile.$isEm(prop.width)){
-                    data.bWidth = profile.$px2em( profile.$em2px(prop.width) - prop.$hborder*2 ,null, true) + 'em';
-                }else{
-                    data.bWidth = (parseFloat(prop.width)||0) - prop.$hborder*2;
-                }
+            if(profile.$isEm(prop.width)){
+                data.bWidth = profile.$px2em( profile.$em2px(prop.width) - (('$hborder' in dm && dm.$hborder)?prop.$hborder*2:0) ,null, true) + 'em';
+            }else{
+                data.bWidth = (parseFloat(prop.width)||0) - prop.$hborder*2 ;
             }
-            if('$vborder' in dm && dm.$vborder){
-                if(profile.$isEm(prop.height)){
-                    data.bHeight = profile.$px2em( profile.$em2px(prop.height) - prop.$vborder*2 ,null,true) + 'em';
-                }else{
-                    data.bHeight = (parseFloat(prop.height)||0) - prop.$vborder*2;
-                }
+            if(profile.$isEm(prop.height)){
+                data.bHeight = profile.$px2em( profile.$em2px(prop.height) - (('$hborder' in dm && dm.$hborder)?prop.$hborder*2:0) ,null,true) + 'em';
+            }else{
+                data.bHeight = (parseFloat(prop.height)||0) - prop.$vborder*2+ "px";
             }
             //set left,top,bottom,right,width,height
             for(var j=0,i;i=map[j];j++){
@@ -27689,10 +27784,8 @@ xui.Class("xui.absList", "xui.absObj",{
         },
         scrollIntoView:function(itemId, no_anim){
             itemId=this.getSubNodeByItemId(this.constructor._scrollItemKey || this.constructor._focusNodeKey, itemId);
-            var elem = itemId.get(0);
-            if(elem){
-                //this.getSubNode("BOX").scrollTop(itemId.offsetTop());
-                elem.scrollIntoView({ behavior: !no_anim?'smooth':'auto', block: 'center', inline: 'nearest' });
+            if(itemId.get(0)){
+                itemId.scrollIntoView(no_anim);
             }
             return this;
         },
@@ -29154,6 +29247,13 @@ xui.Class("xui.UI.Div", "xui.UI",{
         fireClickEvent:function(){
             this.getRoot().onClick();
             return this;
+        },
+        getPaper:function(){
+            return xui.get(this.get(0), ["_svg_papers","#"]);
+        },
+        getSVGString:function(){
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
+            return paper?paper.toSVG():"";
         }
     },
     Static:{
@@ -29244,12 +29344,38 @@ xui.Class("xui.UI.Div", "xui.UI",{
               }
             }
         },
+        _for_svg_children:function(profile){
+            // contents
+            var svg_collection={};
+            xui.arr.each(profile.children,function(o){
+                if(o[0].box["xui.svg"]){
+                    var arr = svg_collection[o[1]||"#"] || (svg_collection[o[1]||"#"] = []);
+                    arr.push(o[0]);
+                }
+            });
+            if(!xui.isEmpty(svg_collection)){
+                for(var subId in svg_collection){
+                    profile.boxing().append(xui.svg.pack(svg_collection[subId]), subId=="#"?null:subId);
+                    // for IE
+                    if(!Raphael.svg){
+                        xui.setTimeout(function(){
+                            if(profile && !profile.destroyed){
+                                  // read again in IE
+                                profile.boxing().append(xui.svg.pack(svg_collection[subId]), subId=="#"?null:subId);
+                            }
+                        });
+                    }
+                }
+            }
+        },
         RenderTrigger:function(){
             // only div
             var ns=this;
             if(ns.box.KEY=="xui.UI.Div")
                 if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
                     ns.box._applyAutoLoad(this);
+            // svg container
+            xui.UI.Div._for_svg_children(ns);
         },
         Behaviors:{
             DroppableKeys:['KEY'],
@@ -29331,6 +29457,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 }, null, options).start();
             }
         },
+        _syncResize:true,
         _onresize:function(profile,width){
             if(width)xui.UI._adjustConW(profile, profile.getRoot(), profile);
         }
@@ -29596,7 +29723,7 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
                 }
             }
             if(parent = prf.parent){
-                subId = prf.childrenId;
+                subId = prf.containerId;
                 module.show(onEnd,parent,subId);
             }else if(prf.rendered && (parent = prf.getRoot().parent()) && !parent.isEmpty()){
                 module.show(onEnd,parent);
@@ -29736,7 +29863,7 @@ xui.Class("xui.AnimBinder","xui.absObj",{
              }
         },
         getParent:xui.Timer.prototype.getParent,
-        getChildrenId:xui.Timer.prototype.getChildrenId,
+        getContainerId:xui.Timer.prototype.getContainerId,
         destroy:function(){
             this.each(function(profile){
                 var box=profile.box,name=profile.properties.name;
@@ -31669,6 +31796,13 @@ xui.Class("xui.UI.Resizer","xui.UI",{
           }
           if(prf.onFiles)prf.boxing().onFiles(prf, prf.$files||[]);
           return prf.$files;
+        },
+        getPaper:function(){
+            return xui.get(this.get(0), ["_svg_papers","#"]);
+        },
+        getSVGString:function(){
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
+            return paper?paper.toSVG():"";
         }
     },
     Static:{
@@ -32038,6 +32172,8 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 input.click();
               }, false);
             }
+            // svg container
+            xui.UI.Div._for_svg_children(ns);
         },
         _sbicon:function(profile, sideBarStatus, type, ui){
             var target=sideBarStatus=='fold'
@@ -32647,6 +32783,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _ensureValue:function(profile,value){
             return Math.max(0, Math.min(100, ((/^\s*\=/.test(value||"")) ? xui.ExcelFormula.calculate(value||"") : parseInt(value,10)) || 0));
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
@@ -32656,12 +32793,12 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 inn = profile.getSubNode('INN'),
                 cap = profile.getSubNode('CAP'),
                 fill = profile.getSubNode('FILL'),
-                
+
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 innfz=inn._getEmSize(fzrate),
                 capfz=cap._getEmSize(fzrate),
                 fillfz=fill._getEmSize(fzrate);
-                
+
             // caculate by px
             if(size.width && size.width!='auto')size.width=profile.$px(size.width);
             if(size.height && size.height!='auto')size.height=profile.$px(size.height);
@@ -32670,16 +32807,16 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 if(size.height){
                     v=adjustunit(size.height, innfz);
                     inn.css({'line-height':v});
-                    
+
                     v=adjustunit(size.height, fillfz);
                     fill.css({height:v,'line-height':v});
-                    
+
                     v=adjustunit(size.height, capfz);
                     cap.css({height:v,'line-height':v});
                 }
             }else{
                 if(size.width){
-                    //inn.css({width:adjustunit(size.width, innfz)});                   
+                    //inn.css({width:adjustunit(size.width, innfz)});
                     fill.css({width:adjustunit(size.width, fillfz)});
                     cap.css({width:adjustunit(size.width, capfz)});
                 }
@@ -33261,6 +33398,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             task.task=fun;
             xui.Thread(id,[task],500,null,fun,null,true).start();
         },
+        _syncResize:true,
         _onresize:function(profile, width, height){
             var prop=profile.properties,
                 type=prop.type,
@@ -33541,7 +33679,6 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         this.setTemplate(t)
     },
     Static:{
-        _syncResize:true,
         _maskfixedChar:/^ $/,
         _maskMap:{
         '~':'[+-]',
@@ -34381,6 +34518,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             });
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             if(profile._$ignoreonsize)return;
 
@@ -35778,6 +35916,7 @@ xui.Class("xui.UI.HiddenInput", ["xui.UI", "xui.absValue"] ,{
             p.innerHTML="";
             return value;
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             if(width || height){
                 if(!height)
@@ -37526,6 +37665,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 value=value<prop.min?prop.min:value;
             return value;
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             if(profile._$ignoreonsize)return;
 
@@ -40740,6 +40880,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             var p=this.properties;
             xui.UI.$tryResize(this,p.width,p.height);
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px
@@ -41703,6 +41844,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 }
             }
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
            var prop=profile.properties,
                 // compare with px
@@ -41970,6 +42112,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 }
             }
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var prop=profile.properties,
 
@@ -42042,24 +42185,24 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                             n.attr('href', prop.uriTpl.replace('*',i));
                             n.attr('title', i);
                         }else if(t){
-                            n.attr('title', t);                        
+                            n.attr('title', t);
                         }
                         if(xui.isSet(j))
                             n.html(prop.textTpl.replace('*',j),false);
-                        
+
                         if(xui.isSet(k))
                             n.get(0)._real_page=k;
                     },
                     display = function(n,f){n.css('display',f?'':'none')}
                     ;
                 //change href and text
-                change(first, min, min);
+                change(first, min, prop.firstMark||min);
                 change(prem, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1, (min+1) + "~" + (cur-2));
                 change(prev, cur-1, prop.prevMark||(cur-1));
                 current.get(0).value = cur+"";
                 change(next, cur+1, prop.nextMark||(cur+1));
                 change(nextm, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1, (cur+2) + "~" + (max-1));
-                change(last, max, max);
+                change(last, max, prop.lastMark||max);
 
                 //show or hide
                 if((t=cur-min)<=0){
@@ -42096,7 +42239,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             return this.each(function(o){
                 if(!/^[1-9]\d*$/.test(value+""))return;
                 var p=o.properties,
-                    pc = p.pageCount, 
+                    pc = p.pageCount,
                     v=(p.$UIvalue||p.value||"")+"",
                     a=v.split(':'),
                     b=parseInt(a[1],10);
@@ -42155,7 +42298,8 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 tagName:"a",
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 href:'#',
-                tabindex: '{tabindex}'
+                tabindex: '{tabindex}',
+                text:'{firstMark}'
             },
             PREM:{
                 $order:2,
@@ -42179,7 +42323,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 tagName : 'input',
                 autocorrect:"off",
                 autocomplete:"off",
-                //autocapitalize:"off",                
+                //autocapitalize:"off",
                 tabindex:'{tabindex}',
                 style:'{_css}'
             },
@@ -42204,18 +42348,22 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
-                tabindex: '{tabindex}'
+                tabindex: '{tabindex}',
+                text:'{lastMark}'
             }
         },
         Appearances:{
             LABEL:{
-                padding:'.25em .5em 0 .5em',
-                'vertical-align':'top',                
+                padding:'.25em',
+                'vertical-align':'middle',
                 'white-space':'nowrap'
             },
             KEY:{
                 display:'inline',
                 overflow:'visible'
+            },
+            'KEY > a, KEY > input':{
+                'vertical-align':'bottom'
             },
             'KEY a:focus, POP a:focus':{
                 'outline-offset':'',
@@ -42369,10 +42517,10 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 action: function(v){
                     var i=this.getSubNode('CUR'),
                         cls="xui-ui-disabled";
-                    
+
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
-                        
+
                     if(!v && this.properties.readonly)
                         v=true;
                     // use 'readonly'(not 'disabled') for selection
@@ -42384,7 +42532,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                 action: function(v){
                     var i=this.getSubNode('CUR'),
                         cls="xui-ui-readonly";
-                    
+
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
@@ -42399,6 +42547,8 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             textTpl:"*",
             prevMark:'',
             nextMark:'',
+            firstMark:'',
+            lastMark:'',
             _moreStep:30
         },
         EventHandlers:{
@@ -42511,7 +42661,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             data._css=xui.browser.kde?'resize:none;':'';
             data._css2 = data.showMoreBtns?'':'display:none;';
             return data;
-        }   
+        }
     },
     Initialize:function(){
         this.addTemplateKeys(['POPI']);
@@ -42832,6 +42982,13 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 subId._dirty=mark;
             }
             return this;
+        },
+        getPaper:function(subId){
+            return xui.get(this.get(0), ["_svg_papers",subId]);
+        },
+        getSVGString:function(subId){
+            var paper = xui.get(this.get(0), ["_svg_papers",subId]);
+            return paper?paper.toSVG():"";
         }
     },
     Static:{
@@ -43513,6 +43670,8 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(i=self.getItemByItemId(v))
                     ins.onItemSelected(self, i);
             }
+            // svg container
+            xui.UI.Div._for_svg_children(self);
         },
         _prepareData:function(profile){
             var data = arguments.callee.upper.call(this, profile);
@@ -44081,7 +44240,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 width-=bw;
                 wc=width;
                 box.width(adjustunit(width));
-            }    
+            }
 
             panel.cssRegion({
                 width:wc?adjustunit(wc,panelfz):null,
@@ -44119,6 +44278,10 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             'LIST-attop, LIST-atbottom':{
                 $order:2,
                 position:'relative'
+            },
+            'LIST-attop > ITEMS, LIST-atbottom > ITEMS':{
+                $order:2,
+                overflow:'hidden'
             },
             'LIST-attop > ITEMS, LIST-atbottom > ITEMS, LIST-attop > ITEMS > ITEM, LIST-atbottom > ITEMS > ITEM':{
                 $order:2,
@@ -44413,9 +44576,6 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             .setBarHAlign(pro.barHAlign,true)
             .setBarVAlign(pro.barVAlign,true);
 
-            if(pro.barLocation=='top'||pro.barLocation=='bottom'){
-                this.getSubNode('ITEMS').addClass('xui-css-noscroll');
-            }
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
         _prepareData:function(profile){
@@ -46852,7 +47012,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         RenderTrigger:function(){
             var prf=this;
             prf.boxing().adjustSize();
-            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["sub-pops"]=function(t){
+            (prf.$$afterDestroy=(prf.$$afterDestroy||{}))["sub-pops"]=function(t){
                 xui.each(prf.$allPops,function(pop){
                     if(pop && !pop.$noDestroyByParentMenu){
                         if(pop['xui.UI'] && !pop.isEmpty() && !pop.isDestroyed()){
@@ -46946,6 +47106,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _pop:function(item,src){
             var self=this,
                 profile=self.get(0);
+            if(profile.$inDesign)return;
             //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
 
@@ -47972,6 +48133,13 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         fireCmdClickEvent:function(subId){
             this.getSubNodeByItemId('CMD', subId).onMousedown();
             return this;
+        },
+        getPaper:function(subId){
+            return xui.get(this.get(0), ["_svg_papers",subId]);
+        },
+        getSVGString:function(subId){
+            var paper = xui.get(this.get(0), ["_svg_papers",subId]);
+            return paper?paper.toSVG():"";
         }
     },
     Static:{
@@ -48588,7 +48756,10 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                         }
                 }
             });
+            // svg container
+            xui.UI.Div._for_svg_children(profile);
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var t=profile.properties,itemId,
                 key=profile.keys.ITEM,
@@ -51131,8 +51302,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         adjustRelWith:function(){
             return this.each(function(profile){
-                if(!profile.renderId)return;
-                profile.box._adjustRelWith(profile, true);
+                if(profile.renderId && profile.box._hasRelW(profile))
+                    profile.box._adjustRelWith(profile, true);
             });
         },
     },
@@ -51450,7 +51621,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
                                 $order:5,
-                                className:'xui-v-node',
+                                className:'xui-v-node {caption_class}',
                                 text:"{caption}"
                             },
                             SORT:{
@@ -51500,7 +51671,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:"{headerStyle};{colStyle}",
                             tabindex: '{_tabindex}',
                             HSCELLCAPTION:{
-                                className:"xui-v-node",
+                                className:"xui-v-node {caption_class}",
                                 text:"{caption}"
                             }
                         }
@@ -51516,7 +51687,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             tabindex: '{_tabindex}',
                             HCELLCAPTION:{
                                 $order:5,
-                                className:"xui-v-node",
+                                className:"xui-v-node {caption_class}",
                                 text:"{caption}"
                             },
                             HHANDLER : {
@@ -51676,7 +51847,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             ROWNUM:{
                                 $order:4,
-                                className:'xui-ui-readonly',
+                                className:'xui-ui-readonly {number_class}',
                                 style:'{_rowNumbDisplay}'
                             },
                             ROWTOGGLE:{
@@ -51687,7 +51858,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             },
                             FCELLCAPTION:{
                                 $order:6,
-                                className:"xui-v-node",
+                                className:"xui-v-node {caption_class}",
                                 text:"{caption}"
                             }
                         }
@@ -51750,7 +51921,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWNUM:{
                                 $order:4,
                                 $customId:1,
-                                className:'xui-ui-readonly',
+                                className:'xui-ui-readonly {number_class}',
                                 style:'{_rowNumbDisplay}'
                             },
                             ROWTOGGLE:{
@@ -51763,7 +51934,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             FCELLCAPTION:{
                                 $order:6,
                                 $customId:1,
-                                className:"xui-v-node",
+                                className:"xui-v-node {caption_class}",
                                 text:"{caption}"
                             }
                         }
@@ -51823,7 +51994,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ROWNUM:{
                                 $order:4,
                                 $customId:1,
-                                 className:'xui-ui-readonly',
+                                 className:'xui-ui-readonly {number_class}',
                                 style:'{_rowNumbDisplay}'
                             },
                             ROWTOGGLE:{
@@ -51836,7 +52007,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             CELLCAPTION:{
                                 $order:6,
                                 style:'{color}',
-                                className:'xui-v-node xui-treegrid-fcellcaption',
+                                className:'xui-v-node xui-treegrid-fcellcaption {caption_class}',
                                 text:"{_caption}"
                             }
                         }
@@ -51851,7 +52022,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{bgcolor};{cellStyle}',
                             tabindex: '{_tabindex}',
                             CELLCAPTION:{
-                                className:'xui-v-node',
+                                className:'xui-v-node {caption_class}',
                                 style:'{color}',
                                 text:"{_caption}"
                             }
@@ -51867,7 +52038,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{bgcolor};{cellStyle}',
                             tabindex: '{_tabindex}',
                             CELLCAPTION:{
-                                className:'xui-v-node',
+                                className:'xui-v-node {caption_class}',
                                 style:'{color}',
                                 text:"{_caption}"
                             }
@@ -51884,7 +52055,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CELLCAPTION:{
-                                className:'xui-v-node',
+                                className:'xui-v-node {caption_class}',
                                 text:"{_caption}"
                             }
                         }
@@ -51899,11 +52070,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             style:'{cellStyle}',
                             tabindex: '{_tabindex}',
                             CHECKBOX:{
-                                className:'xuifont xui-uicmd-check',
+                                className:'xuifont xui-uicmd-check {checkbox_class}',
                                 $fonticon:'{_fi_checkboxCls}'
                             },
                             CELLCAPTION:{
-                                className:'xui-v-node',
+                                className:'xui-v-node {caption_class}',
                                 text:"{_caption}"
                             }
                         }
@@ -51920,10 +52091,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             PROGRESS:{
                                 $order:2,
                                 tagName:'div',
-                                className:'xui-v-wrapper xui-uibar',
-                                style:'width:{progress};',
+                                className:'xui-v-wrapper xui-uibar {progress_class}',
+                                style:'width:{progress};{progress_style}',
                                 CELLCAPTION:{
-                                    className:'xui-v-node',
+                                    className:'xui-v-node {caption_class}',
                                     text:"{_caption}"
                                 }
                             }
@@ -55433,8 +55604,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         _setSub:function(profile, item, flag, recursive, stopanim, cb){
             var id=profile.domId,
                 ins=profile.boxing(),
-                prop=profile.properties,
-                itemId = profile.rowMap2[item.id],
+                prop=profile.properties;
+            if(!prop.treeMode || prop.treeMode=="none")return;
+            var itemId = profile.rowMap2[item.id],
                 markNode = profile.box._getToggleNode(profile, itemId),
                 subNs = profile.getSubNodes(['SUB1','SUB2'], itemId),
                 subNs1 = xui(subNs.get(0)),
@@ -56477,171 +56649,176 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _adjustBody:function(profile, trigger, callback){
             if(!profile.renderId || profile.destroyed)return;
+            xui.UI.$freezeNode(profile, 'adjustbody:' + trigger);
             xui.resetRun(profile.$xid+'4',function(){
                 // destroyed
-                if(!profile.renderId || profile.destroyed)return;
+                if(profile.renderId || !profile.destroyed){
+                    var prop = profile.properties,
+                        us = xui.$us(profile),
+                        adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
+                        size = profile.getSubNode("BORDER").cssSize(),
+                        _border = profile._$cache.hasOwnProperty('_root_b_w') ? profile._$cache._root_b_w : (profile._$cache._root_b_w = profile.getRoot().contentBox()?2:0),
+                        width = profile.$px(size.width),
+                        height = profile.$px(size.height),
 
-                var prop = profile.properties,
-                    us = xui.$us(profile),
-                    adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)},
-                    size = profile.getSubNode("BORDER").cssSize(),
-                    _border = profile._$cache.hasOwnProperty('_root_b_w') ? profile._$cache._root_b_w : (profile._$cache._root_b_w = profile.getRoot().contentBox()?2:0),
-                    width = profile.$px(size.width),
-                    height = profile.$px(size.height),
+                        //left region
+                        w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + _border):0,
+                        w2,
+                        h2 = profile.getSubNode('HEADER2'),
+                        b12 = profile.getSubNode('BODY12'),
+                        b21 = profile.getSubNode('BODY21'),
+                        s11 = profile.getSubNode('SCROLL11'),
+                        s12 = profile.getSubNode('SCROLL12'),
+                        s21 = profile.getSubNode('SCROLL21'),
+                        s22 = profile.getSubNode('SCROLL22'),
+                        rh = h2.height(),
+                        rr = b12.height();
 
-                    //left region
-                    w1 = prop.rowHandler?(profile.$px(prop.rowHandlerWidth) + _border):0,
-                    w2,
-                    h2 = profile.getSubNode('HEADER2'),
-                    b12 = profile.getSubNode('BODY12'),
-                    b21 = profile.getSubNode('BODY21'),
-                    s11 = profile.getSubNode('SCROLL11'),
-                    s12 = profile.getSubNode('SCROLL12'),
-                    s21 = profile.getSubNode('SCROLL21'),
-                    s22 = profile.getSubNode('SCROLL22'),
-                    rh = h2.height(),
-                    rr = b12.height();
-
-                // adjust width
-                // left region
-                if(prop.freezedColumn){
-                    xui.arr.each(prop.header,function(col,i){
-                        if(i==prop.freezedColumn)return false;
-                        if(!col.hidden)w1 += profile.$px(col.width) + _border;
-                    });
-                }
-                // for border-bottom
-                if(rr && prop.freezedRow)rr-=1;
-                // for border-right
-                if(w1 && prop.freezedColumn)w1-=1;
-
-                w2 = width - w1;
-                profile._leftregionw = w1;
-
-                //h1.width(adjustunit(w1));
-                //s21.width(adjustunit(w1));
-                h2.width(adjustunit(w2));
-                s22.width(adjustunit(w2));
-
-                // for scroll sync
-                xui.idleRun(function(){
-                    // separated read/write
-                    var b21e=b21.isEmpty(),
-                        s21e=s21.isEmpty(),
-                        b12e=b12.isEmpty(),
-                        s12e=s12.isEmpty(),
-                        fr=prop.freezedRow,
-                        pb=!s21e?((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) ):0,
-                        st=!s21e?s22.scrollTop():0,
-                        sl=(fr&&!s12e)?s22.scrollLeft():0,
-                        pr=(fr&&!b12e)?((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0)):0
-
-                    if(pb&&!b21e)b21.css('padding-bottom', pb+"px");
-                    if(pr&&fr&&!b12e)b12.css('padding-right', pr+"px");
-                    if(st&&!s21e)s21.scrollTop(st);
-                    if(sl&&fr&&!s12e)s12.scrollLeft(sl);
-                });
-
-                // adjust height
-                s11.height(rr?adjustunit(rr):0);
-                s12.height(rr?adjustunit(rr):0);
-                s21.height(adjustunit(height - rh - rr));
-                s22.height(adjustunit(height - rh - rr));
-
-                // avoid onmouseout of CELLS2 trigger CELLS1 scroll to top
-                s11.css('display',rr&&profile._leftregionw?'':'none');
-                s12.css('display',rr?'':'none');
-                s21.css('display',profile._leftregionw?'':'none');
-
-                // others
-                s22.css('overflow','hidden');
-                var overflowX=profile.box._adjustRelWith(profile);
-
-                var body12=profile.getSubNode('ROWS12'),
-                    body22=profile.getSubNode('ROWS22'),
-                    header=profile.getSubNode('HCELLS2'),
-                    scroll=profile.getSubNode('SCROLL22'),
-                    t,l,last1,last2,ww,bw=0,hiw,bodyw;
-
-                if(body22.get(0).clientHeight){
-                    if(header.get(0).clientHeight){
-                        if(t=header.get(0).childNodes){
-                            l=t.length;
-                            while(l){
-                                if(t[l-1].clientHeight){
-                                    last1=t[l-1];
-                                    break;
-                                }
-                                --l;
-                            }
-                        }
-                        ww=last1 && last1.offsetParent?(last1.offsetWidth+last1.offsetLeft):0;
-                        hiw = adjustunit(ww+100);
-                        bodyw = bw = last1.offsetLeft;
+                    // adjust width
+                    // left region
+                    if(prop.freezedColumn){
+                        xui.arr.each(prop.header,function(col,i){
+                            if(i==prop.freezedColumn)return false;
+                            if(!col.hidden)w1 += profile.$px(col.width) + _border;
+                        });
                     }
-                    if(t=body22.get(0).childNodes){
-                        l=t.length;
-                        while(l){
-                            if(t[l-1].clientHeight && !(t[l-1].firstChild && (t[l-1].firstChild.id+"").indexOf("-GCELL:")!=1)){
-                                last2=t[l-1];
-                                break;
-                            }
-                            --l;
-                        }
-                        if(last2){
-                            var sid=profile.getSubId(last2.id);
-                            t=profile.getSubNode('CELLS2',sid);
-                            last2 = null;
-                            if(t=t.get(0) && t.get(0).childNodes){
+                    // for border-bottom
+                    if(rr && prop.freezedRow)rr-=1;
+                    // for border-right
+                    if(w1 && prop.freezedColumn)w1-=1;
+
+                    w2 = width - w1;
+                    profile._leftregionw = w1;
+
+                    //h1.width(adjustunit(w1));
+                    //s21.width(adjustunit(w1));
+                    h2.width(adjustunit(w2));
+                    s22.width(adjustunit(w2));
+
+                    // for scroll sync
+                    xui.idleRun(function(){
+                        // separated read/write
+                        var b21e=b21.isEmpty(),
+                            s21e=s21.isEmpty(),
+                            b12e=b12.isEmpty(),
+                            s12e=s12.isEmpty(),
+                            fr=prop.freezedRow,
+                            pb=!s21e?((s22.isScrollBarShowed('x')?xui.Dom.getScrollBarSize():0) ):0,
+                            st=!s21e?s22.scrollTop():0,
+                            sl=(fr&&!s12e)?s22.scrollLeft():0,
+                            pr=(fr&&!b12e)?((s22.isScrollBarShowed('y')?xui.Dom.getScrollBarSize():0)):0
+
+                        if(pb&&!b21e)b21.css('padding-bottom', pb+"px");
+                        if(pr&&fr&&!b12e)b12.css('padding-right', pr+"px");
+                        if(st&&!s21e)s21.scrollTop(st);
+                        if(sl&&fr&&!s12e)s12.scrollLeft(sl);
+                    });
+
+                    // adjust height
+                    s11.height(rr?adjustunit(rr):0);
+                    s12.height(rr?adjustunit(rr):0);
+                    s21.height(adjustunit(height - rh - rr));
+                    s22.height(adjustunit(height - rh - rr));
+
+                    // avoid onmouseout of CELLS2 trigger CELLS1 scroll to top
+                    s11.css('display',rr&&profile._leftregionw?'':'none');
+                    s12.css('display',rr?'':'none');
+                    s21.css('display',profile._leftregionw?'':'none');
+
+                    // others
+                    s22.css('overflow','hidden');
+                    var overflowX="auto";
+                    if(profile.box._hasRelW(profile)){
+                        overflowX=profile.box._adjustRelWith(profile);
+                    }
+
+                    var body12=profile.getSubNode('ROWS12'),
+                        body22=profile.getSubNode('ROWS22'),
+                        header=profile.getSubNode('HCELLS2'),
+                        scroll=profile.getSubNode('SCROLL22'),
+                        t,l,last1,last2,ww,bw=0,hiw,bodyw;
+
+                    if(body22.get(0).clientHeight){
+                        if(header.get(0).clientHeight){
+                            if(t=header.get(0).childNodes){
                                 l=t.length;
                                 while(l){
                                     if(t[l-1].clientHeight){
-                                        last2=t[l-1];
+                                        last1=t[l-1];
                                         break;
                                     }
                                     --l;
                                 }
                             }
+                            ww=last1 && last1.offsetParent?(last1.offsetWidth+last1.offsetLeft):0;
+                            hiw = adjustunit(ww+100);
+                            bodyw = bw = last1.offsetLeft;
+                        }
+                        if(t=body22.get(0).childNodes){
+                            l=t.length;
+                            while(l){
+                                if(t[l-1].clientHeight && !(t[l-1].firstChild && (t[l-1].firstChild.id+"").indexOf("-GCELL:")!=1)){
+                                    last2=t[l-1];
+                                    break;
+                                }
+                                --l;
+                            }
+                            if(last2){
+                                var sid=profile.getSubId(last2.id);
+                                t=profile.getSubNode('CELLS2',sid);
+                                last2 = null;
+                                if(t=t.get(0) && t.get(0).childNodes){
+                                    l=t.length;
+                                    while(l){
+                                        if(t[l-1].clientHeight){
+                                            last2=t[l-1];
+                                            break;
+                                        }
+                                        --l;
+                                    }
+                                }
+                            }
                         }
                     }
+
+                    if(last2||last1){
+                        bodyw=adjustunit(bw = last2?last2.offsetLeft:last1.offsetLeft);
+                    }else{
+                        var prop = profile.properties,hd=prop.header,
+                        //defult
+                        w = 0;
+                        xui.arr.each(hd,function(o){
+                            if(o.hidden!==true)
+                                w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + _border);
+                        });
+                        bodyw = bw= w;
+                    }
+                    t=last1=last2=null;
+
+                    //HI
+                    if(hiw>100)header.parent().width(hiw);
+                    if(bodyw){
+                      body12.width(bodyw);
+                      body22.width(bodyw);
+                    }
+
+                    // must use 'auto' for Android
+                    scroll.css('overflow','auto');
+
+                    if(bw>scroll.width()+_border){
+                        overflowX="auto";
+                    }
+
+                    scroll.css('overflowX', overflowX);
+
+                    scroll.onScroll();
+
+                    if(profile.onBodyLayout)
+                        profile.boxing().onBodyLayout(profile, trigger);
+
+                    if(callback)callback();
                 }
-
-                if(last2||last1){
-                    bodyw=adjustunit(bw = last2?last2.offsetLeft:last1.offsetLeft);
-                }else{
-                    var prop = profile.properties,hd=prop.header,
-                    //defult
-                    w = 0;
-                    xui.arr.each(hd,function(o){
-                        if(o.hidden!==true)
-                            w += ('_colWidth' in o) ? profile.$px(o._colWidth) : (profile.$px(o.width) + _border);
-                    });
-                    bodyw = bw= w;
-                }
-                t=last1=last2=null;
-
-                //HI
-                if(hiw>100)header.parent().width(hiw);
-                if(bodyw){
-                  body12.width(bodyw);
-                  body22.width(bodyw);
-                }
-
-                // must use 'auto' for Android
-                scroll.css('overflow','auto');
-
-                if(bw>scroll.width()+_border){
-                    overflowX="auto";
-                }
-
-                scroll.css('overflowX', overflowX);
-
-                scroll.onScroll();
-
-                if(profile.onBodyLayout)
-                    profile.boxing().onBodyLayout(profile, trigger);
-
-                if(callback)callback();
+                xui.UI.$unfreezeNode(profile,'adjustbody:' + trigger);
             });
             // formula
             if(trigger!='render' && trigger!='rowhandler' && trigger!='foldrow' && trigger!='expandrow' && trigger!='setcol' && trigger!='resize')
@@ -57032,6 +57209,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             }else
                 return true;
         },
+        _hasRelW:function(profile){
+            for(var i in profile.colMap){
+                if(profile.colMap[i].flexSize){
+                    return true;
+                }
+            }
+            return false;
+        },
         _adjustRelWith:function(profile, force){
             var _ww,
                 t2=profile.getSubNode('SCROLL22'),
@@ -57305,9 +57490,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         root=profile.getRoot(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
-                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                        xui.UI.Div._applyAutoLoad(profile);
-
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
 
@@ -57434,6 +57616,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         isPinned:function(){
             return !!xui.get(this.get(0),['properties','pinned']);
+        },
+        getPaper:function(){
+            return xui.get(this.get(0), ["_svg_papers","#"]);
+        },
+        getSVGString:function(){
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
+            return paper?paper.toSVG():"";
         }
     },
     Initialize:function(){
@@ -57608,6 +57797,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         xui.prompt=ns.prompt;
     },
     Static:{
+        _syncResize:true,
         Appearances:{
             KEY:{
                 overflow:'visible'
@@ -58090,23 +58280,33 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             onCmd:function(profile,cmdkey,e,src){}
         },
         RenderTrigger:function(){
-            var ns=this;
+            var ns=this, t=ns.properties;
             ns.destroyTrigger = function(){
                 var s=this;
                 if(s.$inModal)s.box._unModal(s);
                 if(s.$resizer)
                     s.boxing()._unResizer();
             };
+            if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
+                ns.box._applyAutoLoad(this);
+            // ensure min/max
+            if(t.status=="min"){
+                ns.box._min(ns, null,null,true);
+            }else if(t.status=="max"){
+                ns.box._max(ns, null,null,true);
+            }
+            // svg container
+            xui.UI.Div._for_svg_children(ns);
         },
         LayoutTrigger:function(){
-            var self=this, t=self.properties;
+            var ns=this, t=ns.properties;
             // ensure modal
             if(t.modal){
-                var p=self.$modalDiv&&self.$modalDiv.parent(),b=self.box;
-                if(p&&p.get(0)&&p.get(0)!==self.getRootNode()){
-                    b._unModal(self);
+                var p=ns.$modalDiv&&ns.$modalDiv.parent(),b=ns.box;
+                if(p&&p.get(0)&&p.get(0)!==ns.getRootNode()){
+                    b._unModal(ns);
                 }
-                b._modal(self);
+                b._modal(ns);
             }
         },
         _prepareData:function(profile){
@@ -58157,13 +58357,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             // hide those
             profile.getSubNodes(['PANEL','BBAR']).css('display','none');
 
-            if(t.minBtn){
-                // show restore button
-                if(t.restoreBtn)
+            // show restore button
+            if(t.restoreBtn)
                 profile.getSubNode('RESTORE').setInlineBlock();
-                // hide min button
-                profile.getSubNode('MIN').css('display','none');
-            }
+            // hide min button
+            profile.getSubNode('MIN').css('display','none');
 
             // lockResize function
             if(t.resizer && profile.$resizer)
@@ -58891,6 +59089,13 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 item._show=!item._show
              }
             return this;
+        },
+        getPaper:function(subId){
+            return xui.get(this.get(0), ["_svg_papers",subId]);
+        },
+        getSVGString:function(subId){
+            var paper = xui.get(this.get(0), ["_svg_papers",subId]);
+            return paper?paper.toSVG():"";
         }
     },
     Initialize:function(){
@@ -59140,6 +59345,8 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 item=items[items.length-1];
                 self.boxing().fillContent(item.id, item._body);
             }
+            // svg container
+            xui.UI.Div._for_svg_children(self);
         },
         _prepareItems:function(profile, arr, pid){
             if(arr.length){
@@ -68512,8 +68719,8 @@ return /******/ (function(modules) { // webpackBootstrap
             return xui(arr);
         },
         getPaper:function(){
-            var prf=this.get(0);
-            return prf && prf.parent && prf.parent._paper;
+            var prf=this.get(0), cid=prf.containerId||"#";
+            return (prf && prf._paper) || (prf && prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[cid]);
         },
         elemsAnimate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
@@ -69024,8 +69231,8 @@ return /******/ (function(modules) { // webpackBootstrap
                                                 targetNode,anchors,anchorPath,centerPoint,
                                                 anchorShadow=paper._anchorShadow;
                                             if(esrc!==paper.canvas){
-                                                var tobj=xui.UIProfile.getFromDom(esrc.id);
-                                                if(tobj && tobj.parent&& tobj.parent._paper==paper){
+                                                var tobj=xui.UIProfile.getFromDom(esrc.id),cid=prf.containerId||"#";
+                                                if(tobj && tobj.parent&& tobj.parent._svg_papers[cid]==paper){
                                                     if(tobj.box['xui.svg']){
                                                         targetNode=tobj.getRootNode();
                                                         if(!tobj.box._CONNECTOR){
@@ -69966,9 +70173,12 @@ return /******/ (function(modules) { // webpackBootstrap
         },
         _RenderSVG:function(prf){
             prf._pathCached={};
-            var p=prf.parent;
-            if(p && p._paper && p._canvas){
-                prf._elset=this._draw(p._paper, prf, prf.properties);
+            var paper = prf._paper;
+            if(!paper){
+                paper = prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[prf.containerId||"#"];
+            }
+            if(paper){
+                prf._elset=this._draw(paper, prf, prf.properties);
                 for(var i=1,l=prf._elset.length;i<l;i++){
                     prf._elset._rootNode=prf._elset[0];
                 }
@@ -70398,7 +70608,7 @@ return /******/ (function(modules) { // webpackBootstrap
         _syncConnectors:function(prf){
             // find all connectors connected to me
             // redraw those connectors
-            if(prf.parent.key!=="xui.UI.SVGPaper")return;
+            if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
             var children=xui.get(prf,['parent','children']),
                 alias=prf.alias;
@@ -71660,33 +71870,11 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         this.addTemplateKeys(['SVG']);
     },
     Instance:{
-        append:function(target, pre, base){
-            if(xui.isHash(target) || xui.isStr(target))
-                target=xui.create(target);
-            if(target['xui.UIProfile'])target=target.boxing();
-
-            var ns=this,f=arguments.callee.upper,isSvg,rendersvg;
-            target.each(function(prf){
-                isSvg=!!prf.box['xui.svg'];
-                if(isSvg&&prf.renderId){
-                    prf.clearCache();
-                    prf.$beforeDestroy["svgClear"]();
-                    delete prf.renderId;
-                    delete prf.rendered;
-                    rendersvg=1;
-                }
-                f.call(ns, prf, null, pre, base, isSvg, ns.get(0)&&xui(ns.get(0)._canvas));
-                if(rendersvg){
-                    prf.box._initAttr2UI(prf);
-                }
-            });
-            return this;
-        },
         getPaper:function(){
-            return xui.get(this.get(0), ["_paper"]);
+            return xui.get(this.get(0), ["_svg_papers","#"]);
         },
         getSVGString:function(){
-            var paper = xui.get(this.get(0), ["_paper"]);
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
             return paper?paper.toSVG():"";
         }
     },
@@ -71715,60 +71903,45 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 }
             }
         },
-        RenderTrigger:function(){
+        BeforeRenderTrigger:function(){
             var profile=this,
                 root=profile.getRootNode(),
                 prop=profile.properties,
-            // force to px
-            w=xui.CSS.$px(prop.width,root,true),h=xui.CSS.$px(prop.height,root,true);
-            (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["svgClear"]=function(){
-                if(profile._paper){
-                    profile._paper.clear();
-                    profile._paper.remove();
-                }
-            };
-            profile._paper=Raphael(profile.$domId, w, h);
-            profile._canvas=profile._paper.canvas;
-            profile._canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
-            var s=profile._canvas.style;
-            s.position='absolute';
-            s.left=0;
-            s.top=0;
-            s.zIndex=prop.graphicZIndex;
+                // force to px
+                w=xui.CSS.$px(prop.width,root,true),
+                h=xui.CSS.$px(prop.height,root,true);
 
-            // contents
-            var a=[];
-            xui.arr.each(profile.children,function(o){
-                if(o[0].box["xui.svg"])a.push(o[0]);
-            });
-            if(a.length){
-                profile.boxing().append(xui.svg.pack(a));
-                // for IE
-                if(!Raphael.svg){
-                    xui.setTimeout(function(){
-                        if(profile && !profile.destroyed){
-                        	  // read again in IE
-                            profile.boxing().append(xui.svg.pack(a));
-                        }
-                    });
-                }
-            }
-            if(profile._paper){
-            	  xui.setTimeout(function(){
-            	      if(profile && !profile.destroyed){
-                      var size = profile._paper.getSize();
-            	  	    // ensure right position
-            	  	    if(profile.$designerRoot)
-                                 profile._frame=profile._paper.rect(0,0,1,1,0).attr({"stroke-width":"0px"});
-            	  	    else if(profile.$inDesign)
-                                profile._frame=profile._paper.rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
-                        if(profile._frame)profile._frame._decoration=1;
-                    }
-                });
-            }
+            profile._svg_papers = {};
+            profile._svg_nodes = {};
+
+            // add a default svg node
+            var paper = profile._svg_papers["#"] = Raphael(profile.$domId, w, h),
+                canvas = profile._svg_nodes["#"] = paper.canvas;
+            canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
+            canvas.className = "xui-svg-container";
+            // graphicZIndex > zInde
+            canvas.style.zIndex=prop.graphicZIndex;
+        },
+        RenderTrigger:function(){
+            var profile=this;
+
+            // svg container
+            xui.UI.Div._for_svg_children(profile);
+
+            xui.setTimeout(function(){
+              if(profile && !profile.destroyed){
+                var size = profile._svg_papers["#"].getSize();
+                  // ensure right position
+                  if(profile.$designerRoot)
+                         profile._frame=profile._svg_papers["#"].rect(0,0,1,1,0).attr({"stroke-width":"0px"});
+                  else if(profile.$inDesign)
+                        profile._frame=profile._svg_papers["#"].rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
+                  if(profile._frame)profile._frame._decoration=1;
+              }
+           });
         },
         _onresize:function(profile,width,height){
-            var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
+            var paper=profile._svg_papers["#"], scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
                 us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
@@ -71880,537 +72053,6 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                             }
                         });
                     }
-                }
-            }
-        }
-    }
-});/*
-xui.UI.FusionChartsXT is a CrossUI wrap for FusionChartsXT(www.FusionCharts.com), it is NOT part of Crossui products
-If you use this widget in commercial projects, please purchase it separately
-*/
-xui.Class("xui.UI.FusionChartsXT","xui.UI",{
-    Initialize:function(){
-        // for fusioncharts in IE<=7
-        if(!window.JSON)window.JSON={
-            parse:function(a){return xui.unserialize(a)},
-            stringify:function(a){return xui.stringify(a)}
-        };
-    },
-    Instance:{
-        initialize:function(){
-        },
-        refreshChart:function(dataFormat){
-            return this.each(function(prf){
-                if(!prf || !prf.box)return;
-                prf.boxing().busy(false,'');
-                if(prf.renderId){
-                    var fun=function(){
-                        if(!prf || !prf.box)return;
-                        var prop=prf.properties,t;
-                        if(prf._chartId && (t=window.FusionCharts(prf._chartId))){
-                            // dispose
-                            t.dispose();
-                            // clear node
-                            prf.getSubNode('BOX').html("",false);
-                        }
-
-                        // new one
-                        var fc=new window.FusionCharts(
-                                prop.chartType,
-                                prf._chartId,
-                                prf.$isEm(prop.width)?prf.$em2px(prop.width):prop.width,
-                                prf.$isEm(prop.height)?prf.$em2px(prop.height):prop.height
-                        ),
-                         flag;
-
-                        switch(dataFormat){
-                            case 'XMLUrl':
-                                var xml=xui.getFileSync(prop.XMLUrl);
-                                if(xml)fc.setXMLData(xml);
-                            break;
-                            case 'JSONUrl':
-                                var json=xui.getFileSync(prop.JSONUrl);
-                                if(json)fc.setJSONData(json);
-                            break;
-                            case 'XMLData':
-                                fc.setXMLData(prop.XMLData);
-                            break;
-                            default:
-                                if(prop.XMLUrl){
-                                    var xml=xui.getFileSync(prop.XMLUrl);
-                                    if(xml)fc.setXMLData(xml);
-                                }else if(prop.JSONUrl){
-                                    var json=xui.getFileSync(prop.JSONUrl);
-                                    if(json)fc.setJSONData(json);
-                                }else if(prop.XMLData){
-                                    fc.setXMLData(prop.XMLData);
-                                }else if(!xui.isEmpty(prop.JSONData)){
-                                    flag=1;
-                                    fc.setJSONData(prf.box._prepareFCData(prf,prop.JSONData));
-                                }
-                        }
-                        // ensure cursor pointer
-                        if(!flag){
-                            fc.setJSONData(prf.box._prepareFCData(prf,fc.getJSONData()));
-                        }
-                        fc.setTransparent(true);
-                        fc.render(prf.getSubNode('BOX').id());
-                        // attachEvents
-                        var t=window.FusionCharts(prf._chartId),
-                            f1=function(a,argsMap){
-                                if(prf.onDataClick)prf.boxing().onDataClick(prf,argsMap);
-                            },f2=function(a,argsMap){
-                                if(prf.onLabelClick)prf.boxing().onLabelClick(prf,argsMap);
-                            },f3=function(a,argsMap){
-                                if(prf.onAnnotationClick)prf.boxing().onAnnotationClick(prf,argsMap);
-                            };
-
-                        if(prf._f1)t.removeEventListener("dataplotClick",prf._f1);
-                        if(prf._f2)t.removeEventListener("dataLabelClick",prf._f2);
-                        if(prf._f3)t.removeEventListener("annotationClick",prf._f3);
-
-                        t.addEventListener("dataplotClick",prf._f1=f1);
-                        t.addEventListener("dataLabelClick",prf._f2=f1);
-                        t.addEventListener("annotationClick",prf._f3=f1);
-
-                        prf.boxing().free();
-                    };
-                    xui.resetRun('xui.UI.FusionChartsXT:'+prf.$xid,fun, 200);
-                }
-            });
-        },
-        setTransparent:function(isTransparent){
-           return this.each(function(prf){
-               var t;
-               xui.set(prf.properties,["JSONData","chart","bgalpha"], isTransparent?"0,0":"");
-               if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId))){
-                   t.setTransparent(isTransparent);
-               }
-           });
-        },
-        getChartAttribute:function(key){
-            var prf=this.get(0);
-            return xui.isStr(key)?xui.get(prf.properties,["JSONData","chart",key]):xui.get(prf.properties,["JSONData","chart"]);
-        },
-        setChartAttribute:function(key,value){
-            var h={};
-            if(xui.isStr(key)){
-                h[key]=value;
-            }else h=key;
-
-            return this.each(function(prf){
-                var t;
-                if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId))){
-                    t.setChartAttribute(h);
-                    // refresh memory in xui from real
-                    xui.set(prf.properties,["JSONData","chart"], t.getChartAttribute());
-                }else{
-                    // reset memory in xui only
-                    var opt=xui.get(prf.properties,["JSONData","chart"]);
-                    if(opt)xui.merge(opt, h, 'all');
-                }
-            });
-        },
-        getFCObject:function(){
-            var prf=this.get(0);
-            return prf.renderId && prf._chartId && window.FusionCharts(prf._chartId);
-        },
-        getSVGString:function(){
-            var prf=this.get(0), o=prf.renderId && prf._chartId && window.FusionCharts(prf._chartId);
-            return o?o.getSVGString():null;
-        },
-        fillData:function(data,index,isLineset){
-            this.each(function(prf){
-                var JSONData=prf.properties.JSONData;
-                data=xui.clone(data);
-                if(xui.isArr(data) && xui.isArr(data[0])){
-                    if(isLineset){
-                        JSONData.lineset=data;
-                    }else{
-                        if('dataset' in JSONData){
-                            JSONData.dataset=data;
-                        }else{
-                            JSONData.data=data[0];
-                        }
-                    }
-                }else{
-                    if(isLineset){
-                        if('lineset' in JSONData){
-                            xui.set(JSONData,["lineset",index||0,"data"],data);
-                        }
-                    }else{
-                        if('dataset' in JSONData){
-                            xui.set(JSONData,["dataset",index||0,"data"],data);
-                        }else{
-                            JSONData.data=data;
-                        }
-                    }
-                }
-            });
-            return this.refreshChart();
-        },
-        updateData:function(index, value){
-            return this.each(function(prf){
-                 var t;
-                 if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId))){
-                        if(t.setData)
-                            t.setData(index, value);
-                }
-            });
-        },
-        updateDataById:function(key, value){
-            return this.each(function(prf){
-                 var t;
-                 if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId)))
-                        if(t.setDataForId)
-                            t.setDataForId(key, value);
-            });
-        },
-        callFC:function(funName, params){
-            var fc;
-            if((fc=this.getFCObject())&&xui.isFun(fc[funName]))
-                return fc[funName].apply(fc, params||[]);
-        },
-        configure:function(options){
-            var prf=this.get(0),t;
-            if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId))){
-                t.configure(options);
-            }
-        },
-        setTheme:function(theme){
-            if(typeof theme!="string" || !theme)theme=null;
-            this.each(function(o){
-                if(theme!=o.theme){
-                    if(theme===null)
-                        delete o.theme;
-                    else
-                        o.theme=theme;
-                }
-            });
-            return this.setChartAttribute("theme",theme);
-        }
-    },
-    Static:{
-        _objectProp:{JSONData:1,configure:1,plotData:1,feedData:1},
-        Appearances:{
-            KEY:{
-                overflow:'hidden'
-            },
-            BOX:{
-                position:'absolute',
-                left:0,
-                top:0,
-                'z-index':1
-            },
-            COVER:{
-                position:'absolute',
-                left:'-1px',
-                top:'-1px',
-                width:0,
-                height:0,
-                'z-index':4
-            }
-        },
-        Templates:{
-            tagName:'div',
-            className:'{_className}',
-            style:'{_style}',
-            BOX:{
-                tagName:'div'
-            },
-            COVER:{
-                tagName:'div',
-                style:"background-image:url("+xui.ini.img_bg+");"
-            }
-        },
-        Behaviors:{
-            HotKeyAllowed:false
-        },
-        DataModel:{
-            tabindex:null,
-            defaultFocus:null,
-            disableClickEffect:null,
-            disableHoverEffect:null,
-            disableTips:null,
-            disabled:null,
-            renderer:null,
-            selectable:null,
-            tips:null,
-            width:{
-                $spaceunit:1,
-                ini:'30em'
-            },
-            height:{
-                $spaceunit:1,
-                ini:'25em'
-            },
-            chartCDN:"https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js",
-            chartType:{
-                ini:"Column2D",
-                //Single Series Charts
-                listbox:["Column2D","Column3D","Line","Area2D","Bar2D","Bar3D","Pie2D","Pie3D","Doughnut2D","Doughnut3D","Pareto2D","Pareto3D",
-                //Multi-series
-                         "MSColumn2D","MSColumn3D","MSLine","MSBar2D","MSBar3D","MSArea","Marimekko","ZoomLine",
-                //Stacked
-                         "StackedColumn3D","StackedColumn2D","StackedBar2D","StackedBar3D","StackedArea2D","MSStackedColumn2D",
-                //Combination
-                         "MSCombi3D","MSCombi2D","MSColumnLine3D","StackedColumn2DLine","StackedColumn3DLine","MSCombiDY2D","MSColumn3DLineDY","StackedColumn3DLineDY","MSStackedColumn2DLineDY",
-                //XYPlot
-                         "Scatter","Bubble",
-                //Scroll
-                         "ScrollColumn2D","ScrollLine2D","ScrollArea2D","ScrollStackedColumn2D","ScrollCombi2D","ScrollCombiDY2D",
-                // funnel
-                        "Funnel",
-               // real time
-                        "RealTimeLine", "RealTimeArea", "RealTimeColumn", "RealTimeLineDY", "RealTimeStackedArea", "RealTimeStackedColumn",
-               // Gauges
-                        "HLinearGauge","Cylinder","HLED","VLED","Thermometer","AngularGauge",
-               // others
-                        "Pyramid ","Radar"//,"MultiLevelPie"
-                ],
-                action:function(){
-                    if(this.renderId){
-                        this.boxing().refreshChart();
-                    }
-                }
-            },
-            JSONData:{
-                ini:{},
-                get:function(){
-                    var prf=this,prop=prf.properties,fc;
-                    if(!xui.isEmpty(prop.JSONData))
-                        return prop.JSONData;
-                    else if(fc=prf.boxing().getFCObject())
-                        return prf.box._cleanData(prf,fc.getJSONData());
-                },
-                set:function(data){
-                    var prf=this,prop=prf.properties;
-                    if(xui.isStr(data))data=xui.unserialize(data);
-                    if(data){
-                        prop.XMLData=prop.XMLUrl=prop.JSONUrl="";
-                        prop.JSONData=xui.clone(data);
-
-                        if(prf.renderId){
-                            prf.boxing().refreshChart('JSONData');
-                        }
-                    }
-                }
-            },
-            XMLUrl:{
-                ini:"",
-                set:function(url){
-                    var prf=this,prop=prf.properties;
-
-                    prop.XMLUrl=url;
-                    prop.JSONUrl=prop.XMLData="";
-                    prop.JSONData={};
-
-                    if(prf.renderId){
-                        prf.boxing().refreshChart('XMLUrl');
-                    }
-                }
-            },
-            XMLData:{
-                ini:"",
-                get:function(force){
-                    var prf=this,prop=prf.properties,fc;
-                    if(prop.XMLData)
-                        return prop.XMLData;
-                    else if(fc=prf.boxing().getFCObject())
-                        return fc.getXMLData();
-                },
-                set:function(url){
-                    var prf=this,prop=prf.properties;
-
-                    prop.XMLData=url;
-                    prop.XMLUrl=prop.JSONUrl="";
-                    prop.JSONData={};
-
-                    if(prf.renderId){
-                        prf.boxing().refreshChart('XMLData');
-                    }
-                }
-            },
-            JSONUrl :{
-                ini:"",
-                set:function(url){
-                    var prf=this,prop=prf.properties;
-
-                    prop.JSONUrl=url;
-                    prop.XMLUrl=prop.XMLData="";
-                    prop.JSONData={};
-
-                    if(prf.renderId){
-                        prf.boxing().refreshChart('JSONUrl');
-                    }
-                }
-            },
-            plotData:{
-                ini:{},
-                get:function(data){
-                    var data=this.properties.JSONData;
-                    return data.dataset||data.data||{};
-                },
-                set:function(data){
-                    var JSONData=this.properties.JSONData;
-                    if(('dataset' in JSONData) || (xui.isArr(data) && xui.isArr(data[0])) )
-                        JSONData.dataset=xui.clone(data);
-                    else
-                        JSONData.data=xui.clone(data);
-
-                    var bak=JSONData.chart.animation;
-                    JSONData.chart.animation='0';
-                     this.boxing().refreshChart();
-                     if(bak)JSONData.chart.animation=bak;else delete JSONData.chart.animation;
-                     return this;
-                }
-            },
-            feedData:{
-                ini:"",
-                set:function(data){
-                    var prf=this,t;
-                     if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId)) && t.feedData){
-                        if(xui.isFinite(data))data="value="+data;
-                        t.feedData(data||"");
-                    }
-                }
-            }
-        },
-        _cleanData:function(prf,data){
-            var hoder="Javascript:void(0)";
-            if(data.dataset){
-                xui.arr.each(data.dataset,function(o,i){
-                    xui.arr.each(o.dataset,function(v,j){
-                        xui.arr.each(v.data,function(w,k){
-                            if(w.link==hoder)delete w.link;
-                        });
-                    });
-                    xui.arr.each(o.data,function(v,j){
-                        if(v.link==hoder)delete v.link;
-                    });
-                });
-            }else if(data.data){
-                xui.arr.each(data.data,function(o,i){
-                    if(o.link==hoder)delete o.link;
-                    if(o.labelLink==hoder)delete o.labelLink;
-                });
-            }
-            if(data.categories){
-                xui.arr.each(data.categories,function(o,i){
-                    xui.arr.each(o.category,function(v,j){
-                       if(v.link==hoder)delete v.link;
-                    });
-                });
-            }
-            return data;
-        },
-        _prepareFCData:function(prf, data){
-            var id=prf.$xid,
-                data=xui.clone(data),
-                hoder="Javascript:void(0)";
-            //show cursor as pointer
-            if(data.dataset){
-                xui.arr.each(data.dataset,function(o,i){
-                    xui.arr.each(o.dataset,function(v,j){
-                        xui.arr.each(v.data,function(w,k){
-                            if(!w.link)w.link=hoder;
-                        });
-                    });
-                    xui.arr.each(o.data,function(v,j){
-                       if(!v.link)v.link=hoder;
-                    });
-                });
-            }else if(data.data){
-                xui.arr.each(data.data,function(o,i){
-                    if(!o.link)o.link=hoder;
-                    if(!o.labelLink)o.labelLink=hoder;
-                });
-            }
-            if(data.categories){
-                xui.arr.each(data.categories,function(o,i){
-                    xui.arr.each(o.category,function(v,j){
-                       if(!v.link)v.link=hoder;
-                    });
-                });
-            }
-            return data;
-        },
-        RenderTrigger:function(){
-            var prf=this,prop=prf.properties;
-            var fun=function(){
-                if(!prf || !prf.box)return;
-
-                // give chart dom id
-                prf._chartId="FC_"+prf.properties.chartType+"_"+prf.$xid;
-
-                if(!xui.isEmpty(prf.properties.configure)){
-                    prf.boxing().setConfigure(prf.properties.configure, true);
-                }
-                if(prf.theme)
-                    prf.boxing().setTheme(prf.theme);
-                // render it
-                prf.boxing().refreshChart();
-
-                // set before destroy function
-                (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unsubscribe"]=function(){
-                    var t;
-                    if(this._chartId && (t=window.FusionCharts(this._chartId))){
-                        t.removeEventListener("dataplotClick",prf._f1);
-                        t.removeEventListener("dataLabelClick",prf._f2);
-                        t.removeEventListener("annotationClick",prf._f3);
-                        prf._f1=prf._f2=prf._f3=null;
-                        t.dispose();
-                    }
-                }
-            };
-
-            if(window.FusionCharts)fun();
-            else{
-                prf.boxing().busy(false, "Loading charts ...");
-                xui.include("FusionCharts",prop.chartCDN,function(){
-                    if(prf && prf.box){
-                        prf.boxing().free();
-                        fun();
-                    }
-                },null,false,{cache:true});
-            }
-        },
-        EventHandlers:{
-            onFusionChartsEvent:function(profile, eventObject, argsObject){},
-            onDataClick:function(profile, argsMap){},
-            onLabelClick:function(profile, argsMap){},
-            onAnnotationClick:function(profile, argsMap){},
-            onShowTips:null
-        },
-        _onresize:function(prf,width,height){
-            var size = prf.getSubNode('BOX').cssSize(),
-                prop=prf.properties,
-                // compare with px
-                us = xui.$us(prf),
-                adjustunit = function(v,emRate){return prf.$forceu(v, us>0?'em':'px', emRate)},
-                root = prf.getRoot(),
-
-                // caculate by px
-                ww=width?prf.$px(width):width,
-                hh=height?prf.$px(height):height,
-                t;
-
-            if( (width && !xui.compareNumber(size.width,ww,6)) || (height && !xui.compareNumber(size.height,hh,6)) ){
-                // reset here
-                if(width)prop.width=adjustunit(ww);
-                if(height)prop.height=adjustunit(hh);
-
-                size={
-                    width:width?prop.width:null,
-                    height:height?prop.height:null
-                };
-                prf.getSubNode('BOX').cssSize(size,true);
-                if(prf.$inDesign || prop.cover){
-                    prf.getSubNode('COVER').cssSize(size,true);
-                }
-                if(prf.renderId && prf._chartId && (t=window.FusionCharts(prf._chartId))){
-                    // ensure by px
-                    t.resizeTo(ww||void 0, hh||void 0);
                 }
             }
         }

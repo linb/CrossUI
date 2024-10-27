@@ -779,13 +779,11 @@ xui.Class('xui.Dom','xui.absBox',{
             this[type](0);
             return true;
         },
-        scrollIntoView:function(){
+        scrollIntoView:function(no_anim){
             return  this.each(function(o){
                 xui.Dom.willChange(o,"scroll-position");
-                if(o.hasOwnProperty('scrollIntoViewIfNeeded'))
-                  o.scrollIntoViewIfNeeded();
-                else
-                  o.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                // only this can stop document weird scrollTop chang
+                o.scrollIntoView({ behavior: !no_anim?'smooth':'instant', block: 'nearest', inline: 'start' })
                 xui.Dom.unWillChange(o);
             });
         },

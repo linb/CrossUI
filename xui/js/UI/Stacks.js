@@ -198,7 +198,7 @@ xui.Class("xui.UI.Stacks", "xui.UI.Tabs",{
                 width-=bw;
                 wc=width;
                 box.width(adjustunit(width));
-            }    
+            }
 
             panel.cssRegion({
                 width:wc?adjustunit(wc,panelfz):null,

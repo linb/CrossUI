@@ -194,6 +194,7 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                 }
             }
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var prop=profile.properties,
 

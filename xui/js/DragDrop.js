@@ -296,7 +296,7 @@ xui.Class('xui.DragDrop',null,{
         abort:function(){
             this._stop=true;
         },
-        _end:function(){
+        _end:function(init){
             var d=this,win=window,doc=document,body=doc.body,md="onmousedown",mm="onmousemove",mu="onmouseup",
                 mm2,mu2;
             if(xui.browser.isTouch){
@@ -317,14 +317,14 @@ xui.Class('xui.DragDrop',null,{
                 if(d.$touchmove!='*')doc[mm2]=d.$touchmove;
                 if(d.$touchend!='*')doc[mu2]=d.$touchend;
             }
-
+            if(!init) xui.tryF(d.DDEnd);
             return  d;
         },
         startDrag:function(e, targetNode, profile, dragKey, dragData){
             var d=this,win=window,t;
             if(d._profile.isWorking)return false;
             //clear
-            d._end()._reset();
+            d._end(true)._reset();
             d._profile.isWorking=true;
             d.__touchingfordd = e.type=="xuitouchdown";
 
@@ -391,6 +391,7 @@ xui.Class('xui.DragDrop',null,{
 
                 d.onDragBegin && d.onDragBegin();
                 d._source.onDragbegin();
+                xui.tryF(d.DDBegin);
 
                 //set back first
                 if(p.dragDefer<1){
@@ -953,9 +954,7 @@ xui.Class('xui.DragDrop',null,{
                 };
                 dd._profile.dragKey = dragKey;
                 dd._profile.dragData = dragData;
-            }
-            function stopXUIDD(){
-
+                xui.tryF(dd.DDBegin);
             }
             function isXUIDroppable(src){
                 return src.$xid && xui.getNodeData(src.$xid, ["eHandlers","ondrop"]);

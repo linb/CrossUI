@@ -3,33 +3,11 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
         this.addTemplateKeys(['SVG']);
     },
     Instance:{
-        append:function(target, pre, base){
-            if(xui.isHash(target) || xui.isStr(target))
-                target=xui.create(target);
-            if(target['xui.UIProfile'])target=target.boxing();
-
-            var ns=this,f=arguments.callee.upper,isSvg,rendersvg;
-            target.each(function(prf){
-                isSvg=!!prf.box['xui.svg'];
-                if(isSvg&&prf.renderId){
-                    prf.clearCache();
-                    prf.$beforeDestroy["svgClear"]();
-                    delete prf.renderId;
-                    delete prf.rendered;
-                    rendersvg=1;
-                }
-                f.call(ns, prf, null, pre, base, isSvg, ns.get(0)&&xui(ns.get(0)._canvas));
-                if(rendersvg){
-                    prf.box._initAttr2UI(prf);
-                }
-            });
-            return this;
-        },
         getPaper:function(){
-            return xui.get(this.get(0), ["_paper"]);
+            return xui.get(this.get(0), ["_svg_papers","#"]);
         },
         getSVGString:function(){
-            var paper = xui.get(this.get(0), ["_paper"]);
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
             return paper?paper.toSVG():"";
         }
     },
@@ -58,60 +36,45 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                 }
             }
         },
-        RenderTrigger:function(){
+        BeforeRenderTrigger:function(){
             var profile=this,
                 root=profile.getRootNode(),
                 prop=profile.properties,
-            // force to px
-            w=xui.CSS.$px(prop.width,root,true),h=xui.CSS.$px(prop.height,root,true);
-            (profile.$beforeDestroy=(profile.$beforeDestroy||{}))["svgClear"]=function(){
-                if(profile._paper){
-                    profile._paper.clear();
-                    profile._paper.remove();
-                }
-            };
-            profile._paper=Raphael(profile.$domId, w, h);
-            profile._canvas=profile._paper.canvas;
-            profile._canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
-            var s=profile._canvas.style;
-            s.position='absolute';
-            s.left=0;
-            s.top=0;
-            s.zIndex=prop.graphicZIndex;
+                // force to px
+                w=xui.CSS.$px(prop.width,root,true),
+                h=xui.CSS.$px(prop.height,root,true);
 
-            // contents
-            var a=[];
-            xui.arr.each(profile.children,function(o){
-                if(o[0].box["xui.svg"])a.push(o[0]);
-            });
-            if(a.length){
-                profile.boxing().append(xui.svg.pack(a));
-                // for IE
-                if(!Raphael.svg){
-                    xui.setTimeout(function(){
-                        if(profile && !profile.destroyed){
-                        	  // read again in IE
-                            profile.boxing().append(xui.svg.pack(a));
-                        }
-                    });
-                }
-            }
-            if(profile._paper){
-            	  xui.setTimeout(function(){
-            	      if(profile && !profile.destroyed){
-                      var size = profile._paper.getSize();
-            	  	    // ensure right position
-            	  	    if(profile.$designerRoot)
-                                 profile._frame=profile._paper.rect(0,0,1,1,0).attr({"stroke-width":"0px"});
-            	  	    else if(profile.$inDesign)
-                                profile._frame=profile._paper.rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
-                        if(profile._frame)profile._frame._decoration=1;
-                    }
-                });
-            }
+            profile._svg_papers = {};
+            profile._svg_nodes = {};
+
+            // add a default svg node
+            var paper = profile._svg_papers["#"] = Raphael(profile.$domId, w, h),
+                canvas = profile._svg_nodes["#"] = paper.canvas;
+            canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
+            canvas.className = "xui-svg-container";
+            // graphicZIndex > zInde
+            canvas.style.zIndex=prop.graphicZIndex;
+        },
+        RenderTrigger:function(){
+            var profile=this;
+
+            // svg container
+            xui.UI.Div._for_svg_children(profile);
+
+            xui.setTimeout(function(){
+              if(profile && !profile.destroyed){
+                var size = profile._svg_papers["#"].getSize();
+                  // ensure right position
+                  if(profile.$designerRoot)
+                         profile._frame=profile._svg_papers["#"].rect(0,0,1,1,0).attr({"stroke-width":"0px"});
+                  else if(profile.$inDesign)
+                        profile._frame=profile._svg_papers["#"].rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
+                  if(profile._frame)profile._frame._decoration=1;
+              }
+           });
         },
         _onresize:function(profile,width,height){
-            var paper=profile._paper, scaleChildren=profile.properties.scaleChildren,ow,oh,
+            var paper=profile._svg_papers["#"], scaleChildren=profile.properties.scaleChildren,ow,oh,
                 prop=profile,properties,
                 us = xui.$us(profile),
                 adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};

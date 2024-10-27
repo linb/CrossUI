@@ -568,6 +568,7 @@ xui.Class("xui.UI.Slider", ["xui.UI","xui.absValue"],{
             task.task=fun;
             xui.Thread(id,[task],500,null,fun,null,true).start();
         },
+        _syncResize:true,
         _onresize:function(profile, width, height){
             var prop=profile.properties,
                 type=prop.type,

@@ -114,6 +114,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         _ensureValue:function(profile,value){
             return Math.max(0, Math.min(100, ((/^\s*\=/.test(value||"")) ? xui.ExcelFormula.calculate(value||"") : parseInt(value,10)) || 0));
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var size = arguments.callee.upper.apply(this,arguments),v,
                 p=profile.properties,
@@ -123,12 +124,12 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 inn = profile.getSubNode('INN'),
                 cap = profile.getSubNode('CAP'),
                 fill = profile.getSubNode('FILL'),
-                
+
                 fzrate=profile.getEmSize()/root._getEmSize(),
                 innfz=inn._getEmSize(fzrate),
                 capfz=cap._getEmSize(fzrate),
                 fillfz=fill._getEmSize(fzrate);
-                
+
             // caculate by px
             if(size.width && size.width!='auto')size.width=profile.$px(size.width);
             if(size.height && size.height!='auto')size.height=profile.$px(size.height);
@@ -137,16 +138,16 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 if(size.height){
                     v=adjustunit(size.height, innfz);
                     inn.css({'line-height':v});
-                    
+
                     v=adjustunit(size.height, fillfz);
                     fill.css({height:v,'line-height':v});
-                    
+
                     v=adjustunit(size.height, capfz);
                     cap.css({height:v,'line-height':v});
                 }
             }else{
                 if(size.width){
-                    //inn.css({width:adjustunit(size.width, innfz)});                   
+                    //inn.css({width:adjustunit(size.width, innfz)});
                     fill.css({width:adjustunit(size.width, fillfz)});
                     cap.css({width:adjustunit(size.width, capfz)});
                 }

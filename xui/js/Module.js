@@ -219,7 +219,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(!profile.destroyed){
             //link
                 profile.parent = parentProfile;
-                profile.childrenId = linkId;
+                profile.containerId = linkId;
                 profile.link(parentProfile.children, '$parent', [profile, linkId], index);
             }
             return profile;
@@ -227,7 +227,7 @@ xui.Class('xui.Module','xui.absProfile',{
         unlinkParent:function(){
             var profile=this;
             delete profile.parent;
-            delete profile.childrenId;
+            delete profile.containerId;
             profile.unLink('$parent');
             return profile;
         },
@@ -568,11 +568,30 @@ xui.Class('xui.Module','xui.absProfile',{
                         parent.append(self.getUIComponents(false),subId);
                         // append and show
                         self.getUIComponents(true).each(function(o){
-                            o.boxing().show(parent, subId, null, null, null, function(){
-                              if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                                 try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                              }
-                            });
+                            // allow showing svg in root
+                            if(parent.get(0)==xui("body").get(0) && o.box && o.box['xui.svg']){
+                                var svg_id = '$xui_body:svg:',
+                                    svg = xui(svg_id);
+                                if(!svg.get(0)){
+                                    var paper = xui._xui_body_svg_paper = Raphael(document.body);
+                                    paper.canvas.id=svg_id;
+                                    paper.canvas.style.position = "absolute";
+                                    paper.canvas.style.left = 0;
+                                    paper.canvas.style.top = 0;
+                                    paper.canvas.style.width = "100vw";
+                                    paper.canvas.style.height = "100vh";
+
+                                    svg = xui(paper.canvas);
+                                }
+                                o._paper = xui._xui_body_svg_paper;
+                                svg.append(o);
+                            }else{
+                                o.boxing().show(parent, subId, null, null, null, function(){
+                                  if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                                     try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                                  }
+                                });
+                            }
                         });
                     }
                     self.renderId='ok';
@@ -641,7 +660,7 @@ xui.Class('xui.Module','xui.absProfile',{
             //keep parent
             if(b=!!firstUI.parent){
                 p=firstUI.parent.boxing();
-                childId=firstUI.childrenId;
+                childId=firstUI.containerId;
             }else{
                 p=firstUI.getParent();
                 if(!p) p=firstUI.getRoot().parent();
@@ -693,9 +712,9 @@ xui.Class('xui.Module','xui.absProfile',{
             var prf=this.getUIComponents().get(0);
             if(prf)return prf.parent && prf.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             var prf=this.getUIComponents().get(0);
-            if(prf)return prf.childrenId;
+            if(prf)return prf.containerId;
         },
         // onEnd(err, module, threadid)
         create:function(onEnd, threadid){

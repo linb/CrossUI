@@ -444,6 +444,7 @@ xui.Class("xui.CSS", null,{
                     :"display:inline-block;")+
                 (b.ie?"zoom:1;":""),
             css =  ".xui-node{margin:0;padding:0;line-height:1.22;-webkit-text-size-adjust:none;}"+
+            ".xui-root-node-ini, .xui-node-willChange{visibility:hidden !important; content-visibility:hidden !important;}"+
             ".xui-node-highlight{color:#000;}"+
             ".xui-title-node{}"+
             ".xuifont-hover, .xuicon-hover{ color: #686868; }"+
@@ -515,6 +516,7 @@ xui.Class("xui.CSS", null,{
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:.875rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
+            ".xui-svg-container{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden;}"+
             ".setting-uikey{font-family:'default'}"
            ;
 

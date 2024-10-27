@@ -1666,6 +1666,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 value=value<prop.min?prop.min:value;
             return value;
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             if(profile._$ignoreonsize)return;
 

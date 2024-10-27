@@ -189,7 +189,6 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
         this.setTemplate(t)
     },
     Static:{
-        _syncResize:true,
         _maskfixedChar:/^ $/,
         _maskMap:{
         '~':'[+-]',
@@ -1029,6 +1028,7 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 }
             });
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             if(profile._$ignoreonsize)return;
 

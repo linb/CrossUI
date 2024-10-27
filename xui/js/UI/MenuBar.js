@@ -22,6 +22,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         _pop:function(item,src){
             var self=this,
                 profile=self.get(0);
+            if(profile.$inDesign)return;
             //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
 

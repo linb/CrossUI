@@ -4973,7 +4973,7 @@ xui.Class('xui.absProfile',null,{
         getParent:function(){
             return this.parent && this.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             return this.childrenId;
         },
         getByRef:function(ref){
@@ -5771,7 +5771,7 @@ xui.Class("xui.Timer","xui.absObj",{
         getParent:function(){
             return this.parent && this.parent.boxing();
         },
-        getChildrenId:function(){
+        getContainerId:function(){
             return this.childrenId;
         }
     },
@@ -5835,7 +5835,7 @@ xui.Class("xui.MessageService","xui.absObj",{
             });
         },
         getParent:xui.Timer.prototype.getParent,
-        getChildrenId:xui.Timer.prototype.getChildrenId
+        getContainerId:xui.Timer.prototype.getContainerId
     },
     Static:{
         _objectProp:xui.Timer._objectProp,

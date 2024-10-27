@@ -21,6 +21,10 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
                 $order:2,
                 position:'relative'
             },
+            'LIST-attop > ITEMS, LIST-atbottom > ITEMS':{
+                $order:2,
+                overflow:'hidden'
+            },
             'LIST-attop > ITEMS, LIST-atbottom > ITEMS, LIST-attop > ITEMS > ITEM, LIST-atbottom > ITEMS > ITEM':{
                 $order:2,
                 height:'100%'
@@ -314,9 +318,6 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
             .setBarHAlign(pro.barHAlign,true)
             .setBarVAlign(pro.barVAlign,true);
 
-            if(pro.barLocation=='top'||pro.barLocation=='bottom'){
-                this.getSubNode('ITEMS').addClass('xui-css-noscroll');
-            }
             if(pro.borderType&&pro.borderType!='none')this.boxing().setBorderType(pro.borderType,true);
         },
         _prepareData:function(profile){

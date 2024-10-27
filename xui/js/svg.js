@@ -524,8 +524,8 @@ xui.Class("xui.svg", "xui.UI",{
             return xui(arr);
         },
         getPaper:function(){
-            var prf=this.get(0);
-            return prf && prf.parent && prf.parent._paper;
+            var prf=this.get(0), cid=prf.containerId||"#";
+            return (prf && prf._paper) || (prf && prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[cid]);
         },
         elemsAnimate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
@@ -1036,8 +1036,8 @@ xui.Class("xui.svg", "xui.UI",{
                                                 targetNode,anchors,anchorPath,centerPoint,
                                                 anchorShadow=paper._anchorShadow;
                                             if(esrc!==paper.canvas){
-                                                var tobj=xui.UIProfile.getFromDom(esrc.id);
-                                                if(tobj && tobj.parent&& tobj.parent._paper==paper){
+                                                var tobj=xui.UIProfile.getFromDom(esrc.id),cid=prf.containerId||"#";
+                                                if(tobj && tobj.parent&& tobj.parent._svg_papers[cid]==paper){
                                                     if(tobj.box['xui.svg']){
                                                         targetNode=tobj.getRootNode();
                                                         if(!tobj.box._CONNECTOR){
@@ -1978,9 +1978,12 @@ xui.Class("xui.svg", "xui.UI",{
         },
         _RenderSVG:function(prf){
             prf._pathCached={};
-            var p=prf.parent;
-            if(p && p._paper && p._canvas){
-                prf._elset=this._draw(p._paper, prf, prf.properties);
+            var paper = prf._paper;
+            if(!paper){
+                paper = prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[prf.containerId||"#"];
+            }
+            if(paper){
+                prf._elset=this._draw(paper, prf, prf.properties);
                 for(var i=1,l=prf._elset.length;i<l;i++){
                     prf._elset._rootNode=prf._elset[0];
                 }
@@ -2410,7 +2413,7 @@ xui.Class("xui.svg", "xui.UI",{
         _syncConnectors:function(prf){
             // find all connectors connected to me
             // redraw those connectors
-            if(prf.parent.key!=="xui.UI.SVGPaper")return;
+            if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
             var children=xui.get(prf,['parent','children']),
                 alias=prf.alias;

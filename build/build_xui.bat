@@ -118,7 +118,6 @@ copy %relPath%xui\js\_begin.js /b ^
 + %relPath%xui\js\ThirdParty\raphael.js /b ^
 + %relPath%xui\js\svg.js /b ^
 + %relPath%xui\js\UI\SVGPaper.js /b ^
-+ %relPath%xui\js\UI\FusionChartsXT.js /b ^
 + %relPath%xui\js\UI\ECharts.js /b ^
 + %relPath%xui\js\UI\FormLayout.js /b ^
 + %relPath%xui\js\_end.js /b ^
@@ -136,7 +135,6 @@ rem ==================
 rem for extra classes
 rem ==================
 
-copy %relPath%xui\js\UI\FusionChartsXT.js  %outPath%xui\js\UI\FusionChartsXT.js
 copy %relPath%xui\js\UI\ECharts.js  %outPath%xui\js\UI\ECharts.js
 
 rem -----------------------

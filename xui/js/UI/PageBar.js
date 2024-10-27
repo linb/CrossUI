@@ -26,24 +26,24 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                             n.attr('href', prop.uriTpl.replace('*',i));
                             n.attr('title', i);
                         }else if(t){
-                            n.attr('title', t);                        
+                            n.attr('title', t);
                         }
                         if(xui.isSet(j))
                             n.html(prop.textTpl.replace('*',j),false);
-                        
+
                         if(xui.isSet(k))
                             n.get(0)._real_page=k;
                     },
                     display = function(n,f){n.css('display',f?'':'none')}
                     ;
                 //change href and text
-                change(first, min, min);
+                change(first, min, prop.firstMark||min);
                 change(prem, '','..' + xui.str.repeat('.',String(cur-1-min).length) , 1, (min+1) + "~" + (cur-2));
                 change(prev, cur-1, prop.prevMark||(cur-1));
                 current.get(0).value = cur+"";
                 change(next, cur+1, prop.nextMark||(cur+1));
                 change(nextm, '','..' + xui.str.repeat('.',String(max-cur-1).length) , 1, (cur+2) + "~" + (max-1));
-                change(last, max, max);
+                change(last, max, prop.lastMark||max);
 
                 //show or hide
                 if((t=cur-min)<=0){
@@ -80,7 +80,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             return this.each(function(o){
                 if(!/^[1-9]\d*$/.test(value+""))return;
                 var p=o.properties,
-                    pc = p.pageCount, 
+                    pc = p.pageCount,
                     v=(p.$UIvalue||p.value||"")+"",
                     a=v.split(':'),
                     b=parseInt(a[1],10);
@@ -139,7 +139,8 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 tagName:"a",
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 href:'#',
-                tabindex: '{tabindex}'
+                tabindex: '{tabindex}',
+                text:'{firstMark}'
             },
             PREM:{
                 $order:2,
@@ -163,7 +164,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 tagName : 'input',
                 autocorrect:"off",
                 autocomplete:"off",
-                //autocapitalize:"off",                
+                //autocapitalize:"off",
                 tabindex:'{tabindex}',
                 style:'{_css}'
             },
@@ -188,18 +189,22 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 className:'xui-ui-btn xui-uibar xui-uigradient xui-uiborder-radius',
                 tagName:'a',
                 href:'#',
-                tabindex: '{tabindex}'
+                tabindex: '{tabindex}',
+                text:'{lastMark}'
             }
         },
         Appearances:{
             LABEL:{
-                padding:'.25em .5em 0 .5em',
-                'vertical-align':'top',                
+                padding:'.25em',
+                'vertical-align':'middle',
                 'white-space':'nowrap'
             },
             KEY:{
                 display:'inline',
                 overflow:'visible'
+            },
+            'KEY > a, KEY > input':{
+                'vertical-align':'bottom'
             },
             'KEY a:focus, POP a:focus':{
                 'outline-offset':'',
@@ -353,10 +358,10 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 action: function(v){
                     var i=this.getSubNode('CUR'),
                         cls="xui-ui-disabled";
-                    
+
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
-                        
+
                     if(!v && this.properties.readonly)
                         v=true;
                     // use 'readonly'(not 'disabled') for selection
@@ -368,7 +373,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
                 action: function(v){
                     var i=this.getSubNode('CUR'),
                         cls="xui-ui-readonly";
-                    
+
                     if(v)this.getRoot().addClass(cls);
                     else this.getRoot().removeClass(cls);
 
@@ -383,6 +388,8 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             textTpl:"*",
             prevMark:'',
             nextMark:'',
+            firstMark:'',
+            lastMark:'',
             _moreStep:30
         },
         EventHandlers:{
@@ -495,7 +502,7 @@ xui.Class("xui.UI.PageBar",["xui.UI","xui.absValue"] ,{
             data._css=xui.browser.kde?'resize:none;':'';
             data._css2 = data.showMoreBtns?'':'display:none;';
             return data;
-        }   
+        }
     },
     Initialize:function(){
         this.addTemplateKeys(['POPI']);

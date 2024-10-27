@@ -27,7 +27,7 @@ xui.Class("xui.MQTT","xui.absObj",{
             });
         },
         getParent:xui.Timer.prototype.getParent,
-        getChildrenId:xui.Timer.prototype.getChildrenId,
+        getContainerId:xui.Timer.prototype.getContainerId,
 
         connect:function(){
             var prf=this.get(0),prop=prf.properties,t,p,

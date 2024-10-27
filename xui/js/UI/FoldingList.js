@@ -56,6 +56,13 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 item._show=!item._show
              }
             return this;
+        },
+        getPaper:function(subId){
+            return xui.get(this.get(0), ["_svg_papers",subId]);
+        },
+        getSVGString:function(subId){
+            var paper = xui.get(this.get(0), ["_svg_papers",subId]);
+            return paper?paper.toSVG():"";
         }
     },
     Initialize:function(){
@@ -305,6 +312,8 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
                 item=items[items.length-1];
                 self.boxing().fillContent(item.id, item._body);
             }
+            // svg container
+            xui.UI.Div._for_svg_children(self);
         },
         _prepareItems:function(profile, arr, pid){
             if(arr.length){

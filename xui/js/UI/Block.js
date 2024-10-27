@@ -73,6 +73,13 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
           }
           if(prf.onFiles)prf.boxing().onFiles(prf, prf.$files||[]);
           return prf.$files;
+        },
+        getPaper:function(){
+            return xui.get(this.get(0), ["_svg_papers","#"]);
+        },
+        getSVGString:function(){
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
+            return paper?paper.toSVG():"";
         }
     },
     Static:{
@@ -442,6 +449,8 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 input.click();
               }, false);
             }
+            // svg container
+            xui.UI.Div._for_svg_children(ns);
         },
         _sbicon:function(profile, sideBarStatus, type, ui){
             var target=sideBarStatus=='fold'

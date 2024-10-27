@@ -685,6 +685,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             var p=this.properties;
             xui.UI.$tryResize(this,p.width,p.height);
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             var prop=profile.properties,
                 // compare with px

@@ -1022,6 +1022,7 @@ xui.Class("xui.UI.RichEditor", ["xui.UI","xui.absValue"],{
             p.innerHTML="";
             return value;
         },
+        _syncResize:true,
         _onresize:function(profile,width,height){
             if(width || height){
                 if(!height)

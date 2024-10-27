@@ -49,9 +49,6 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                         root=profile.getRoot(),
                         adjustunit = function(v,emRate){return profile.$forceu(v, us>0?'em':'px', emRate)};
 
-                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                        xui.UI.Div._applyAutoLoad(profile);
-
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
 
@@ -178,6 +175,13 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         },
         isPinned:function(){
             return !!xui.get(this.get(0),['properties','pinned']);
+        },
+        getPaper:function(){
+            return xui.get(this.get(0), ["_svg_papers","#"]);
+        },
+        getSVGString:function(){
+            var paper = xui.get(this.get(0), ["_svg_papers","#"]);
+            return paper?paper.toSVG():"";
         }
     },
     Initialize:function(){
@@ -352,6 +356,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         xui.prompt=ns.prompt;
     },
     Static:{
+        _syncResize:true,
         Appearances:{
             KEY:{
                 overflow:'visible'
@@ -834,23 +839,33 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             onCmd:function(profile,cmdkey,e,src){}
         },
         RenderTrigger:function(){
-            var ns=this;
+            var ns=this, t=ns.properties;
             ns.destroyTrigger = function(){
                 var s=this;
                 if(s.$inModal)s.box._unModal(s);
                 if(s.$resizer)
                     s.boxing()._unResizer();
             };
+            if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
+                ns.box._applyAutoLoad(this);
+            // ensure min/max
+            if(t.status=="min"){
+                ns.box._min(ns, null,null,true);
+            }else if(t.status=="max"){
+                ns.box._max(ns, null,null,true);
+            }
+            // svg container
+            xui.UI.Div._for_svg_children(ns);
         },
         LayoutTrigger:function(){
-            var self=this, t=self.properties;
+            var ns=this, t=ns.properties;
             // ensure modal
             if(t.modal){
-                var p=self.$modalDiv&&self.$modalDiv.parent(),b=self.box;
-                if(p&&p.get(0)&&p.get(0)!==self.getRootNode()){
-                    b._unModal(self);
+                var p=ns.$modalDiv&&ns.$modalDiv.parent(),b=ns.box;
+                if(p&&p.get(0)&&p.get(0)!==ns.getRootNode()){
+                    b._unModal(ns);
                 }
-                b._modal(self);
+                b._modal(ns);
             }
         },
         _prepareData:function(profile){
@@ -901,13 +916,11 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             // hide those
             profile.getSubNodes(['PANEL','BBAR']).css('display','none');
 
-            if(t.minBtn){
-                // show restore button
-                if(t.restoreBtn)
+            // show restore button
+            if(t.restoreBtn)
                 profile.getSubNode('RESTORE').setInlineBlock();
-                // hide min button
-                profile.getSubNode('MIN').css('display','none');
-            }
+            // hide min button
+            profile.getSubNode('MIN').css('display','none');
 
             // lockResize function
             if(t.resizer && profile.$resizer)
