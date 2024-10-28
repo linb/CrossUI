@@ -795,7 +795,7 @@ xui.Class('xui.DragDrop',null,{
                     t='<table border="0" class="xui-node xui-node-table"><tr><td valign="top"><span class="xui-node xui-node-span" style="background:url('+p.dragIcon+') no-repeat left top;width:'+(xui.isNumb(p.targetWidth)?p.targetWidth:16)+'px;height:'+(xui.isNumb(p.targetHeight)?p.targetHeight:16)+'px;" ></span></td><td id="xui:dd:shadow" '+(p.shadowFrom?'style="border:solid 1px #e5e5e5;background:#fff;font-size:12px;line-height:14px;"':'')+'>'+(p.shadowFrom?
 
                     xui(p.shadowFrom).clone(true)
-                    .css({left:'auto',top:'auto', position:'relative'})
+                    .css({left:'auto',top:'auto',right:'auto',bottom:'auto',position:'relative'})
                     .outerHTML().replace(/\s*id\=[^\s\>]*/g,''):'')
 
                     +'</td></tr></table>';

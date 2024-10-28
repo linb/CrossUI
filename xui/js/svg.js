@@ -2413,7 +2413,7 @@ xui.Class("xui.svg", "xui.UI",{
         _syncConnectors:function(prf){
             // find all connectors connected to me
             // redraw those connectors
-            if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
+            // if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
             var children=xui.get(prf,['parent','children']),
                 alias=prf.alias;

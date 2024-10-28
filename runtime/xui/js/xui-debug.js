@@ -14744,7 +14744,7 @@ xui.Class('xui.Dom','xui.absBox',{
             })
         });
 
-        var p='padding',m='margin',b='border',c='inner',o='offset',r='outer',w='width',h='height',W='Width',H='Height',T='Top',L='Left',t='top',l='left',R='Right',B='Bottom';
+        var p='padding',m='margin',b='border',c='inner',o='offset',r='outer',w='width',h='height',W='Width',H='Height',T='Top',L='Left',t='top',l='left',rr='right',bb='bottom',R='Right',B='Bottom';
         //dimesion
         xui.arr.each([['_'+p+'H',p+T,p+B],
             ['_'+p+'W',p+L,p+R],
@@ -14896,7 +14896,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     });
             })
         });
-        xui.arr.each([[l+'By',l],[t+'By',t],[w+'By',w],[h+'By',h]],function(o){
+        xui.arr.each([[l+'By',l],[t+'By',t],[rr+'By',rr],[bb+'By',bb],[w+'By',w],[h+'By',h]],function(o){
             self.plugIn(o[0],function(offset,triggerEvent){
                 if(offset===0)return this;
                 var m,args,k=o[1];
@@ -14908,7 +14908,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(triggerEvent){
                         args={};args[k]=1;
                         var f=xui.Dom.$hasEventHandler;
-                        if((k=='left' || k=='top')&& f(node,'onmove'))
+                        if((k=='left' || k=='top' || k=='top' || k=='bottom')&& f(node,'onmove'))
                             xui([node]).onMove(true, args);
                         if((k=='width' || k=='height')&& f(node,'onsize')){
                             xui([node]).onSize(true, args);
@@ -14933,7 +14933,7 @@ xui.Class('xui.Dom','xui.absBox',{
                                                         : 0;
             })
         });
-        xui.arr.each('width,height,left,top'.split(','),function(o){
+        xui.arr.each([l,t,rr,bb,w,h],function(o){
             self.plugIn(o,function(value){
                 var self=this, node=self.get(0),b=xui.browser,type=typeof value,doc=document,t,style;
                 if(!node || node.nodeType==3)return;
@@ -14960,7 +14960,7 @@ xui.Class('xui.Dom','xui.absBox',{
                                 else if(o=='height')self._H(v,1,value);
                                 else{
                                     if(f(v, o, value))
-                                        if((o=='top' || o=='left') && xui.Dom.$hasEventHandler(node,'onmove')){
+                                        if((o=='top' || o=='left' || o=='right' || o=='bottom') && xui.Dom.$hasEventHandler(node,'onmove')){
                                             a={};a[o]=1;
                                             xui([v]).onMove(true, a);
                                         }
@@ -18708,7 +18708,7 @@ xui.Class('xui.DragDrop',null,{
                     t='<table border="0" class="xui-node xui-node-table"><tr><td valign="top"><span class="xui-node xui-node-span" style="background:url('+p.dragIcon+') no-repeat left top;width:'+(xui.isNumb(p.targetWidth)?p.targetWidth:16)+'px;height:'+(xui.isNumb(p.targetHeight)?p.targetHeight:16)+'px;" ></span></td><td id="xui:dd:shadow" '+(p.shadowFrom?'style="border:solid 1px #e5e5e5;background:#fff;font-size:12px;line-height:14px;"':'')+'>'+(p.shadowFrom?
 
                     xui(p.shadowFrom).clone(true)
-                    .css({left:'auto',top:'auto', position:'relative'})
+                    .css({left:'auto',top:'auto',right:'auto',bottom:'auto',position:'relative'})
                     .outerHTML().replace(/\s*id\=[^\s\>]*/g,''):'')
 
                     +'</td></tr></table>';
@@ -70608,7 +70608,7 @@ return /******/ (function(modules) { // webpackBootstrap
         _syncConnectors:function(prf){
             // find all connectors connected to me
             // redraw those connectors
-            if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
+            // if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
             var children=xui.get(prf,['parent','children']),
                 alias=prf.alias;
