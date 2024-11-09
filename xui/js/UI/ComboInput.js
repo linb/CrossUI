@@ -271,6 +271,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     pos = main.offset();
                 pos.top += main.offsetHeight();
 
+                if(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='cmdbox'||type=='dropbutton'){
+                    if(!ignoreEvent && profile.onInitPopup){
+                        if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), main, profile, null, null, e, src){
+                            return;
+                        }
+                    }
+                }
                 //special cmd type: getter, 'cmdbox' and 'popbox'
                 if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
@@ -1215,6 +1222,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         EventHandlers:{
             onFileDlgOpen:function(profile, src){},
             onCommand:function(profile, src, type){},
+            onInitPopup:function(profile){},
             beforeComboPop:function(profile, pos, e, src){},
             beforePopShow:function(profile, popPrf, items){},
             afterPopShow:function(profile, popPrf){},
@@ -1223,7 +1231,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             onInputClick:function(profile, e, src){},
             onClickIcon:function(profile, src){},
             beforeUnitUpdated:function(profile,unit){},
-            afterUnitUpdated:function(profile,unit){}
+            afterUnitUpdated:function(profile,unit){},
+
+            onInitList:function(profile, callback){}
         },
         DataModel:{
             cachePopWnd:true,

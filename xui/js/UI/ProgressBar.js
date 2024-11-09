@@ -69,6 +69,9 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     Static:{
         DataModel:{
             value:0,
+            isFormField:{
+                ini:false
+            },
             width:{
                 $spaceunit:1,
                 ini:'25em'

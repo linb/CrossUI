@@ -13,7 +13,7 @@ xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                     arr2=cls._v2a(value);
                 profile.$hour=arr2[0];
                 profile.$minute=arr2[1];
-                
+
                 profile.getSubNode('HI',true).removeClass(cls._excls_c3).removeClass(cls._excls_mo3);
                 profile.getSubNode('HI',arr2[0]).addClass(cls._excls_c3);
 
@@ -54,7 +54,7 @@ xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
         }
         m=a.join('');
         a.length=0;
-        
+
         this.setTemplate({
             tagName : 'div',
             //onselectstart:'return false',
@@ -93,13 +93,13 @@ xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         PRE2:{
                             $order:0,
                             className:'xuifont',
-                            $fonticon:'xui-icon-doubleleft',                                                        
+                            $fonticon:'xui-icon-doubleleft',
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
                             className:'xuifont',
-                            $fonticon:'xui-icon-singleleft',                                                        
+                            $fonticon:'xui-icon-singleleft',
                             tabindex: '{tabindex}'
                         },
                         HOUR:{
@@ -114,13 +114,13 @@ xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
                         NEXT:{
                             $order:6,
                             className:'xuifont',
-                            $fonticon:'xui-icon-singleright',                            
+                            $fonticon:'xui-icon-singleright',
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:7,
                             className:'xuifont',
-                            $fonticon:'xui-icon-doubleright',                            
+                            $fonticon:'xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     },
@@ -472,6 +472,9 @@ xui.Class('xui.UI.TimePicker', ['xui.UI',"xui.absValue"], {
             value:{
                 ini:'00:00',
                 format:'time'
+            },
+            isFormField:{
+                ini:false
             },
             closeBtn:{
                 ini:true,

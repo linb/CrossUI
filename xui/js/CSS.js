@@ -516,7 +516,8 @@ xui.Class("xui.CSS", null,{
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:.875rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
-            ".xui-svg-container{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden;}"+
+            ".xui-svg-container{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;overflow:visible;z-index:2;pointer-events:none;}"+
+            ".xui-svg-container * {pointer-events: auto;}"+
             ".setting-uikey{font-family:'default'}"
            ;
 

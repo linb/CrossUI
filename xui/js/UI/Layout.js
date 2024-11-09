@@ -668,7 +668,10 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         EventHandlers:{
             onClickPanel:function(profile, item, e, src){},
             beforeFold:function(profile, item, folded, e, src){},
-            onDragResized:function(profile, item, size, e, src){}
+            onDragResized:function(profile, item, size, e, src){},
+            onInitPanelView:function(profile, callback, id){},
+            onInitValues:function(profile, callback, id){},
+            afterAutoLoad:function(profile, item, text){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];
@@ -800,17 +803,16 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
         },
         RenderTrigger:function(){
-            var t, profile=this;
-            xui.arr.each(profile.properties.items,function(item){
+            var t, prf=this;
+            xui.arr.each(prf.properties.items,function(item){
                 if(item.id!='main'){
-                    if(item.folded && (t=profile.getSubIdByItemId(item.id))){
+                    if(item.folded && (t=prf.getSubIdByItemId(item.id))){
                             item.folded=false;
-                            profile.getSubNode('CMD',t).onMousedown();
+                            prf.getSubNode('CMD',t).onMousedown();
                         }
                 }
+                xui.UI.Div._after_con_render(prf, item);
             });
-            // svg container
-            xui.UI.Div._for_svg_children(profile);
         },
         _syncResize:true,
         _onresize:function(profile,width,height){

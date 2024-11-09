@@ -547,6 +547,9 @@ xui.Class('xui.UI.DatePicker', ['xui.UI',"xui.absValue"], {
                 ini:new Date,
                 format:'date'
             },
+            isFormField:{
+                ini:false
+            },
             closeBtn:{
                 ini:true,
                 action:function(v){

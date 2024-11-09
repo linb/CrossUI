@@ -836,7 +836,7 @@ new function(){
         isStr:function(target)   {return _to.call(target)==='[object String]'},
         isFile:function(target) {return _to.call(target)==='[object File]'},
         isArguments:function(target)   {return target && (_to.call(target)==='[object Arguments]' || Object.prototype.hasOwnProperty.call(target,"callee"))},
-        isEvent:function(target) {return target && ((/^(\[object (Keyboard|Mouse|Focus|Wheel|Composition|Storage)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!(target.$xuievent||target.$xuieventpara)))},
+        isEvent:function(target) {return target && ((/^(\[object ([A-Z][a-z]+)Event\])|(\[object Event\])$/.test(_to.call(target)))||(xui.isHash(target)&&!!(target.$xuievent||target.$xuieventpara)))},
         isElem:function(target) {return !!(target && target.nodeType === 1)},
         isNaN:function(target) {return typeof target == 'number' && target != +target;},
         //for handling String
@@ -6567,6 +6567,23 @@ xui.Class("xui.ExcelFormula",null,{
                 return ajax;
             else
                 ajax.start();
+            // TODO: mock dataset
+            /*  list/create/get/set/delete
+                mock_dataset = {
+                    // default:
+                    // "/obj_name/list" :  xui.mock_data > obj_name > list
+                    // "/obj_name/get" :  xui.mock_data > obj_name > get by id
+                    // "/obj_name/set" :  xui.mock_data > obj_name > set by id
+                    // "/obj_name/create" :  xui.mock_data > obj_name > create
+                    // "/obj_name/delete" :  xui.mock_data > obj_name > delete by i
+
+                    // function:
+                    "/object_name2/end_point2" : function(args, data){
+                        // xui.mock_data ....code ...
+                        // return {data:{}} or {error:""}
+                    }
+                };
+            */
         },
         getRPCInstance:function(){
           var ns=this,prf=ns.get(0);
@@ -7844,7 +7861,7 @@ xui.Class('xui.Event',null,{
         $dblcInterval:500,
         $lastClickFunMark:0,
         //collection
-        _events : ("mouseover,mouseout,mouseleave,mouseenter,mousedown,mouseup,mousemove,mousewheel,click,dblclick,contextmenu," +
+        _events : ("mouseover,mouseout,mouseleave,mouseenter,mousedown,mouseup,mousemove,mousewheel,wheel,click,dblclick,contextmenu," +
                 "keydown,keypress,keyup,scroll,"+
                 "blur,focus,"+
                 "load,unload,beforeunload,abort,"+
@@ -10660,7 +10677,8 @@ xui.Class('xui.Event',null,{
             // html(default 10px) > .xui-ui-ctrl(rem) > inner nodes(em)
             ".xui-ui-ctrl{cursor:default;font-size:.875rem;}"+
             ".xui-title-node{font-size:1.1667em  !important;}"+
-            ".xui-svg-container{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;overflow:hidden;}"+
+            ".xui-svg-container{position:absolute;left:0;top:0;right:0;bottom:0;width:100%;height:100%;overflow:visible;z-index:2;pointer-events:none;}"+
+            ".xui-svg-container * {pointer-events: auto;}"+
             ".setting-uikey{font-family:'default'}"
            ;
 
@@ -12010,7 +12028,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 r=ns;
             }else{
                 //for IE, firefox3(except document.body)
-                if(!(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
+                if( (xui.browser.ie || (xui.browser.gek && xui.browser.ver<=3)) && !(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
                     t = xui.Dom.$getBoundingClientRect(node,original);
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
@@ -12660,7 +12678,7 @@ xui.Class('xui.Dom','xui.absBox',{
             ns.popToTop(pos, type||"outer",parent).setBlurTrigger(id, function(){
                 if(typeof(trigger)=="function")xui.tryF(trigger);
                 else ns.hide();
-            });
+            }, group);
             return id;
         },
         popUp : function(pos, type, parent, trigger, group){
@@ -12708,7 +12726,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                     if(!beforePop || false!==beforePop(prf, node, e, src)){
                         if(xui(src).isDisplayed()){
-                            node.popToTop(src, type, parent,showEffects);
+                            node.popToTop(type=="cursor"?e:src, type, parent,showEffects);
                             node.onMouseover(function(){
                                 self.onMouseover(true)
                             },'hoverPop').onMouseout(function(){
@@ -14831,7 +14849,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             if(node===document||node===window){
                                 r=xui(node)[o[1]]();
                             }else{
-                                r=node.offsetParent?node[o[6]]:0;
+                                r=node[o[6]];
                                 //get from css setting before css applied
                                 if(!r){
                                     if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);
@@ -15035,18 +15053,34 @@ xui.Class('xui.Dom','xui.absBox',{
                         return false;
                     }
                 }
+                if(!keydown && xui.UIProfile){
+                    var n = document.activeElement;
+                    if(document.documentElement!==n && (n.tagName=="INPUT"||n.tagName=="TEXTAREA"||n.tagName=="BUTTON")){
+                        var prf = xui.UIProfile.getFromDom(n);
+                        if(prf){
+                            if(ks.key=="esc"){
+                                if(prf.onEsc)prf.boxing().onEsc(prf);
+                            }else if(ks.key=="enter"){
+                                if(prf.onEnter)prf.boxing().onEnter(prf);
+                            }
+                        }
+                    }
+                }
+
                 if(xui.Module){
                     xui.arr.each(xui.Module._cache,function(m){
                        // by created order
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
-                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
+                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                                   return false;
                        }
                        else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
-                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
+                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                                   return false;
                        }
                     });
                 }
@@ -15494,8 +15528,6 @@ xui.Class('xui.Dom','xui.absBox',{
     initialize
     beforeCreated
     onCreated
-    beforeShow
-    afterShow
     onLoadRequiredClass
     onLoadRequiredClassErr
     onIniResource
@@ -15505,7 +15537,14 @@ xui.Class('xui.Dom','xui.absBox',{
     afterIniComponents
         iniExModules (asy)
     onReady
+    onInitValues
     onRender
+    beforeShow
+    onShow
+    afterShow
+
+    onHide
+
     onDestroy
 
     onModulePropChange
@@ -16028,81 +16067,113 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.show(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
-            if(this.destroyed)return self;
-            xui.UI.$trytoApplyCSS();
+            var self=this;
+            if(self.destroyed)return self;
+            if(false===self._fireEvent('beforeShow'))return false;
 
-            if(false===this._fireEvent('beforeShow'))return false;
-            parent=parent||xui('body');
-
-            if(parent['xui.UIProfile'])parent=parent.boxing();
-
-            var self=this,f=function(){
-                var style=self.customStyle;
-                if(style && !xui.isEmpty(style)){
-                    var arr=[];
-                    xui.each(style,function(v,k){
-                        arr.push(k+" : "+v+";");
-                    });
-                    var txt=".xui-module-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
-                    xui.CSS.addStyleSheet(txt,"xui:css:module-"+self.$xid,1);
-                }
-                // no UI control in module
-                if(self.getUIComponents().isEmpty()){
-                    xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    xui.tryF(onEnd,[null, self, threadid], self);
-                }else{
-                    // if parent is an ui object without rendered, dont render the module
-                    if(!(parent && parent['xui.UI'] && parent.get(0) && !parent.get(0).renderId))
-                        self.render();
-
-                    if(false===xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
-                        //append only
-                        parent.append(self.getUIComponents(false),subId);
-                        // append and show
-                        self.getUIComponents(true).each(function(o){
-                            // allow showing svg in root
-                            if(parent.get(0)==xui("body").get(0) && o.box && o.box['xui.svg']){
-                                var svg_id = '$xui_body:svg:',
-                                    svg = xui(svg_id);
-                                if(!svg.get(0)){
-                                    var paper = xui._xui_body_svg_paper = Raphael(document.body);
-                                    paper.canvas.id=svg_id;
-                                    paper.canvas.style.position = "absolute";
-                                    paper.canvas.style.left = 0;
-                                    paper.canvas.style.top = 0;
-                                    paper.canvas.style.width = "100vw";
-                                    paper.canvas.style.height = "100vh";
-
-                                    svg = xui(paper.canvas);
-                                }
-                                o._paper = xui._xui_body_svg_paper;
-                                svg.append(o);
-                            }else{
-                                o.boxing().show(parent, subId, null, null, null, function(){
-                                  if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                                     try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                                  }
-                                });
-                            }
-                        });
-                    }
-                    self.renderId='ok';
-                    xui.tryF(onEnd,[null, self, threadid], self);
-                }
-                self._showed=1;
+            if(self._hidden){
+                this.getUIComponents(true).each(function(prf){
+                    prf.boxing().show();
+                });
+                self._hidden = 0;
+                xui.tryF(onEnd,[null, self, threadid], self);
+                 self._fireEvent('onShow');
                 self._fireEvent('afterShow');
-            };
+            }else{
+                xui.UI.$trytoApplyCSS();
+                parent=parent||xui('body');
+                if(parent['xui.UIProfile'])parent=parent.boxing();
 
-            self.threadid=threadid;
-            if(self.created) f();
-            else self.create(f,threadid);
+                var f=function(){
+                    var style=self.customStyle;
+                    if(style && !xui.isEmpty(style)){
+                        var arr=[];
+                        xui.each(style,function(v,k){
+                            arr.push(k+" : "+v+";");
+                        });
+                        var txt=".xui-module-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
+                        xui.CSS.addStyleSheet(txt,"xui:css:module-"+self.$xid,1);
+                    }
+                    // no UI control in module
+                    if(self.getUIComponents().isEmpty()){
+                        xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
+                        xui.tryF(onEnd,[null, self, threadid], self);
+                    }else{
+                        // if parent is an ui object without rendered, dont render the module
+                        if(!(parent && parent['xui.UI'] && parent.get(0) && !parent.get(0).renderId))
+                            self.render();
+
+                        if(false===xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
+                            //append only
+                            parent.append(self.getUIComponents(false),subId);
+                            var svg_added = null;
+                            // append and show
+                            self.getUIComponents(true).each(function(o){
+                                // allow showing svg in root
+                                if(parent.get(0)==xui("body").get(0) && o.box && o.box['xui.svg']){
+                                    svg_added = 1;
+                                    var svg_id = '$xui_body:svg:', svg = xui(svg_id);
+                                    if(!svg.get(0)){
+                                        var paper = self._svg_paper = Raphael(document.body),
+                                            canvas = self._svg_node = paper.canvas, style = canvas.style;
+                                        canvas.id=svg_id;
+                                        style.position=="relative";
+                                        style.left=style.top=style.border=style.padding=style.margin=0;
+                                        svg = xui(paper.canvas);
+
+                                        var bd = xui.get(self,["$afterDestroy", "svgClear"]);
+                                        if(!bd){
+                                            (self.$afterDestroy=(self.$afterDestroy||{}))["svgClear"]=function(){
+                                                if(prf._svg_paper){
+                                                    xui.each(prf._svg_paper, function(paper){
+                                                        paper.clear();
+                                                        paper.remove();
+                                                    });
+                                                    prf._svg_paper = prf._svg_node = null;
+                                                }
+                                            };
+                                        }
+                                    }
+                                    o._paper = self._svg_paper;
+                                    svg.append(o);
+                                }else{
+                                    o.boxing().show(parent, subId, null, null, null, function(){
+                                      if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                                         try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                                      }
+                                    });
+                                }
+                            });
+                        }
+                        self.renderId='ok';
+                        if(svg_added){
+                            var canvas = self._svg_node, box = canvas.getBBox();
+                            if(parseInt(canvas.style.width) != Math.ceil(box.x + box.width)) {
+                                canvas.style.width = Math.ceil(box.x + box.width) + "px";
+                            }
+                            if(parseInt(canvas.style.height) != Math.ceil(box.y + box.height)) {
+                                canvas.style.height = Math.ceil(box.y + box.height) + "px";
+                            }
+                        }
+                        xui.tryF(onEnd,[null, self, threadid], self);
+                    }
+                    self._hidden=0;
+                    self._fireEvent('onShow');
+                    self._fireEvent('afterShow');
+                };
+
+                self.threadid=threadid;
+                if(self.created) f();
+                else self.create(f,threadid);
+            }
             return self;
         },
-        hide:function(){
+        hide:function(ignoreEffects, callback){
             this.getUIComponents(true).each(function(prf){
-              prf.boxing().hide();
+                prf.boxing().hide();
             });
-            this._showed=0;
+            this._hidden=1;
+            xui.tryF(callback);
         },
         render:function(triggerLayout){
             if(this.destroyed)return self;
@@ -16321,6 +16392,15 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(self.background)
                     xui.SC.runInBG(self.background);
                 self._fireEvent('onReady');
+            });
+            funs.push(function(threadid){
+                var f=function(values){
+                    if(values && xui.isHash(values)){
+                        if(('values' in values) && xui.isHash(values.values)) values = values.values;
+                        self.setValue(values, true);
+                    }
+                }, values = self._fireEvent('onInitValues',[f]);
+                if(values) f(values);
             });
             funs.push(function(threadid){
                 self.created=true;
@@ -16814,8 +16894,8 @@ xui.Class('xui.Module','xui.absProfile',{
             return xui.absObj.pack(nodes,false);
         },
         // get first level UI children only
-        // flag:true => no  $initRootHidden
-        // flag:false => $initRootHidden
+        // flag:true => without $initRootHidden UI widgets
+        // flag:false => $initRootHidden UI widgets only
         // no flag: all
         getUIComponents:function(flag){
             var nodes = this.getComponents().get(),
@@ -16856,7 +16936,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
 
-
+            self._fireEvent('onHide', ['destroy']);
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
                 try{if(self.alias in self.host)delete self.host[self.alias];}catch(e){self.host[self.alias]=void(0)}
@@ -17247,6 +17327,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             beforeCreated:function(module, threadid){},
             beforeShow:function(module, threadid){},
+            onShow:function(module, threadid){},
             afterShow:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},
@@ -17256,7 +17337,9 @@ xui.Class('xui.Module','xui.absProfile',{
             afterIniComponents:function(module, threadid){},
             onModulePropChange:function(module, threadid, prop){},
             onReady:function(module, threadid){},
+            onInitValues:function(module, threadid, callback){},
             onRender:function(module, threadid){},
+            onHide:function(module, type){},
             onDestroy:function(module){}
         }
     }
@@ -19085,9 +19168,9 @@ xui.Class("xui.Tips", null,{
                 return rtn(rt);
             try{
                 //for inner renderer
-                while((!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
+                while(node && (!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
                     node=node.parentNode;
-                if(!(id=(typeof node.id=="string"?node.id:null))){
+                if(node && !(id=(typeof node.id=="string"?node.id:null))){
                     node=null;
                     return rtn(rt);
                 }
@@ -19176,9 +19259,9 @@ xui.Class("xui.Tips", null,{
                     //for firefox wearing anynomous div in input/textarea
                     try{
                         //for inner renderer
-                        while((!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
+                        while(node && (!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
                             node=node.parentNode;
-                        if(!(id=(typeof node.id=="string"?node.id:null))){
+                        if(node && !(id=(typeof node.id=="string"?node.id:null))){
                             node=null;
                             clear=1;
                         }
@@ -20842,13 +20925,13 @@ xui.Class('xui.UIProfile','xui.Profile', {
         },
 
         getItemByDom:function(src){
-            return this.SubSerialIdMapItem && this.SubSerialIdMapItem[
-                this.getSubId( typeof src=='string'
+            var prf = this;
+            src = prf.getSubId( typeof src=='string'
                     ? src.charAt(0)=='!'
                         ? ((src=xui.use(src).get(0))&&src.id)
                         : src
-                    : src.id )
-             ];
+                    : src.id );
+            return prf.SubSerialIdMapItem ? prf.SubSerialIdMapItem[src] : (xui.get(prf,["colMap",src]) || xui.get(prf,["rowMap",src]) || xui.get(prf,["cellMap",src]));
         },
         getItemIdByDom:function(src){
             var t;
@@ -21466,6 +21549,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                     root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.position=='absolute' && t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
+                    xui.tryF(callback);
                 //first call show
                 }else{
                     parent = parent || o.parent;
@@ -21479,8 +21563,8 @@ xui.Class("xui.UI",  "xui.absObj", {
                     else n=(p=xui(p))&&p._nodes[0];
                     if(n){
                         p.append(ins,subId);
-//                        if(t.visibility=="hidden")ins.setVisibility("",true);
-//                        if(t.display=="none")ins.setDisplay("",true);
+                        //  if(t.visibility=="hidden")ins.setVisibility("",true);
+                        //  if(t.display=="none")ins.setDisplay("",true);
                         if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), callback);
                         else xui.tryF(callback);
                     }
@@ -21735,22 +21819,22 @@ xui.Class("xui.UI",  "xui.absObj", {
                             }
                         });
                         if(hasSvg){
+                            xui.arr.stableSort(target._nodes,function(x,y){
+                                return x.box['xui.svg.connector']?1:y.box['xui.svg.connector']?-1:0;
+                            });
                             var svg = parentNode.querySelector(":scope > svg"),
-                                cid=parentNode.id(),
+                                cid = parentNode.id(),
                                 svg_id = cid.replace(/(-[A-Z]+)?(\:)/, '-SVG$2');
                             if(!svg.get(0) || svg.id() != svg_id){
                                 if(!prf._svg_papers)prf._svg_papers={};
                                 if(!prf._svg_nodes)prf._svg_nodes={};
 
-                                var paper = Raphael(cid);
-                                paper.canvas.id=svg_id;
-                                paper.canvas.className = "xui-svg-container";
-                                paper.canvas.style.position = "absolute";
-                                paper.canvas.style.left = 0;
-                                paper.canvas.style.top = 0;
-                                paper.canvas.style.width = "100%";
-                                paper.canvas.style.height = "100%";
-
+                                var paper = Raphael(cid),canvas=paper.canvas,style=canvas.style;
+                                canvas.id=svg_id;
+                                canvas.setAttribute("class", "xui-svg-container");
+                                style.position = "absolute";
+                                style.overflow = "visible";
+                                style.left=style.top=style.border=style.padding=style.margin=0;
                                 prf._svg_papers[subId||"#"] = paper;
                                 prf._svg_nodes[subId||"#"] = paper.canvas;
 
@@ -21764,8 +21848,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                                                 paper.clear();
                                                 paper.remove();
                                             });
-                                            prf._svg_papers = null;
-                                            prf._svg_nodes = null;
+                                            prf._svg_papers = prf._svg_nodes = null;
                                         }
                                     };
                                 }
@@ -21795,6 +21878,17 @@ xui.Class("xui.UI",  "xui.absObj", {
                                     oldp.onSize();
                             }
                         });
+                        if(hasSvg){
+                            var canvas = svg_paper.get(0), box = canvas.getBBox();
+                            if(box.width && box.height){
+                                if(parseInt(canvas.style.width) != Math.ceil(box.x + box.width)) {
+                                    canvas.style.width = Math.ceil(box.x + box.width) + "px";
+                                }
+                                if(parseInt(canvas.style.height) != Math.ceil(box.y + box.height)) {
+                                    canvas.style.height = Math.ceil(box.y + box.height) + "px";
+                                }
+                            }
+                        }
                     }else{
                         if(!target['xui.UI']){
                             xui.arr.insertAny(prf.exchildren||(prf.exchildren=[]),[target,subId],index,true);
@@ -22482,7 +22576,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             },
             '.xui-uibar-top td, .xui-uibar-top-s td, .xui-uibar-bottom td, .xui-uibar-bottom-s td':{
             },
-//uibar-top
+            //uibar-top
             '.xui-uibar-top':{
             },
             '.xui-uibar-top .xui-uibar-tdl':{
@@ -22572,7 +22666,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             '.xui-uicon-maini':{
                 'padding-right':'.3333em'
             },
-//uibar-bottom
+            //uibar-bottom
             '.xui-uibar-bottom':{
                 'padding':'3px 0'
             },
@@ -22601,7 +22695,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 bottom:0,
                 height:'100%'
             },
-//uibar-top-s
+            //uibar-top-s
             '.xui-uibar-top-s, .xui-uibar-bottom-s, .xui-uibar-top-s .xui-uibar-t':{
                 $order:3,
                 height:'5px'
@@ -22639,7 +22733,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 $order:3,
                 display:'none'
             },
-//uibar-bottom-s
+            //uibar-bottom-s
             '.xui-uibar-bottom-s .xui-uibar-tdl':{
                 $order:3,
                 position:'absolute',
@@ -22688,7 +22782,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 'touch-action':'auto'
             },
             '.xui-uiw-shell':{
-//                background:'transparent',
+                //                background:'transparent',
                 display:xui.$inlineBlock,
                 zoom:xui.browser.ie&&xui.browser.ver<=7?1:null,
                 //overflow:'hidden',
@@ -23483,6 +23577,40 @@ xui.Class("xui.UI",  "xui.absObj", {
             if(id=xui.UIProfile.getFromDom(id))
                 return id.boxing();
         },
+        _handleMdlPopup:function(cls, pos, profile, item, group, e, src){
+            if(xui.isStr(cls)){
+                var ins = xui.get(profile, ["host","_alias_pool",cls]);
+                if(!ins){
+                    var p = xui.get(profile, ["host","_ref_pool",cls]);
+                    if(p&&p.boxing)ins=p.boxing();
+                }
+                if(ins){
+                    ins.popUp(pos, null, null, function(){
+                        ins.hide();
+                    }, null);
+                    return true;
+                }else if(/^[a-zA-Z][\w]+(\.[a-zA-Z][\w]+)+$/.test(cls)){
+                    xui.getModule(cls, function(mdl){
+                        if(!mdl.renderId){
+                            mdl.$popup_source = {
+                                profile: profile,
+                                host: profile.host,
+                                e:e,
+                                src:src
+                            };
+                            mdl.render(true);
+                        }
+                        var root = mdl.getRootNode();
+                        xui(root).popUp(pos, null, null, function(){
+                            root.hide();
+                        }, null);
+                    });
+                    return true;
+                }
+            }
+            return false;
+        },
+
         _ensureValues:function(arr){
             var a=[],i=0,k=0,o,key=this.KEY,cache=xui.$cache.profileMap,getData=xui.getNodeData;
             if(arr['xui.absBox'])arr=arr._nodes;
@@ -25606,6 +25734,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                 'outerleft-middle','left-middle','center-middle','right-middle','outerright-middle',
                 'outerleft-bottom','left-bottom','center-bottom','right-bottom','outerright-bottom',
                 'outerleft-outerbottom','left-outerbottom','center-outerbottom','right-outerbottom','outerright-outerbottom',
+                'cursor',
                 'outer:-1'
                 ]
             },
@@ -27231,6 +27360,15 @@ xui.Class("xui.UI",  "xui.absObj", {
                 profile.ItemIdMapSubSerialId = {};
                 profile.SubSerialIdMapItem = {};
 
+                if(profile.onInitList){
+                    var ins = profile.boxing(),
+                    rst = ins.onInitList(profile, function(lst){
+                        ins.setItems(lst);
+                    });
+                    if(xui.isArr(rst)){
+                        prop.items = rst;
+                    }
+                }
                 prop.items=profile.box._adjustItems(prop.items);
                 data.items = this._prepareItems(profile, prop.items);
             }
@@ -28902,6 +29040,10 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
         Behaviors:{
             HoverEffected:{KEY:'KEY'}
         },
+        EventHandlers:{
+            onEsc:function(profile){},
+            onEnter:function(profile){}
+        },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
             data._style = data._style + (data.fontColor?(";color:"+data.fontColor):'')
@@ -29017,8 +29159,15 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
                 //onClick event
                 if(profile.onClick)
                     return b.onClick(profile, e, src, p.$UIvalue);
-                if(p.type=='drop' && profile.onClickDrop)
-                    return b.onClickDrop(profile, e, src, p.$UIvalue);
+                if(p.type=='drop'){
+                    if(profile.onInitPopup){
+                        if(xui.UI._handleMdlPopup(b.onInitPopup(profile)), profile.getRoot(), profile, null, null, e, src){
+                            return false;
+                        }
+                    }
+                    if(profile.onClickDrop)
+                        return b.onClickDrop(profile, e, src, p.$UIvalue);
+                }
             },
             onKeydown:function(profile, e, src){
                 var keys=xui.Event.getKey(e), key = keys.key;
@@ -29124,10 +29273,11 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
                         drop.css('display','none');
                     }
                 }
-            }
+            },
+            isFormField: false
         },
         _isFormField:function(profile){
-            return profile.properties.type=="status" && profile.properties.isFormField;
+            return profile.properties.isFormField && profile.properties.type=="status";
         },
         _ensureValue:function(profile,value){
             if(profile.properties.type=="status")
@@ -29153,8 +29303,11 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
         },
         EventHandlers:{
             onClick:function(profile, e, src, value){},
-            onClickDrop:function(profile, e, src, value){},
-            onChecked:function(profile, e, value){}
+            onInitPopup:function(profile){},
+            onClickDrop:function(profile, e, src){},
+            onChecked:function(profile, e, value){},
+            onEsc:function(profile){},
+            onEnter:function(profile){}
         }
     }
 });
@@ -29344,38 +29497,68 @@ xui.Class("xui.UI.Div", "xui.UI",{
               }
             }
         },
-        _for_svg_children:function(profile){
+        _for_svg_children:function(profile, subId){
+            if(!xui.isSet(subId))subId = '#';
             // contents
             var svg_collection={};
             xui.arr.each(profile.children,function(o){
-                if(o[0].box["xui.svg"]){
-                    var arr = svg_collection[o[1]||"#"] || (svg_collection[o[1]||"#"] = []);
+                if(o[0].box["xui.svg"] && !o[0].renderId && (subId=='#' || o[1]==subId)){
+                    var arr = svg_collection[subId] || (svg_collection[subId] = []);
                     arr.push(o[0]);
                 }
             });
             if(!xui.isEmpty(svg_collection)){
-                for(var subId in svg_collection){
-                    profile.boxing().append(xui.svg.pack(svg_collection[subId]), subId=="#"?null:subId);
-                    // for IE
-                    if(!Raphael.svg){
-                        xui.setTimeout(function(){
-                            if(profile && !profile.destroyed){
-                                  // read again in IE
-                                profile.boxing().append(xui.svg.pack(svg_collection[subId]), subId=="#"?null:subId);
-                            }
-                        });
+                for(var s in svg_collection){
+                    if(s == subId){
+                        profile.boxing().append(xui.svg.pack(svg_collection[subId]), subId=="#"?void(0):subId);
+                        // for IE
+                        if(!Raphael.svg){
+                            xui.setTimeout(function(){
+                                if(profile && !profile.destroyed){
+                                      // read again in IE
+                                    profile.boxing().append(xui.svg.pack(svg_collection[subId]), subId=="#"?void(0):subId);
+                                }
+                            });
+                        }
                     }
                 }
             }
         },
+        _after_con_render:function(prf, item){
+            var prop = item || prf.properties;
+            if(prop._$init)return;
+            prop._$init=true;
+
+            if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
+                xui.UI.Div._applyAutoLoad(prf, item);
+            if(prf.onInitPanelView){
+                var ins=prf.boxing(),
+                callback = function(obj){
+                    if(xui.isStr(ojb)){
+                        if(/^[a-zA-Z][\w]+(\.[a-zA-Z][\w]+)+$/.test(obj)){
+                            xui.newModule(obj, function(mdl){
+                                ins.append(mdl, item && item.id);
+                            });
+                        }
+                    }else{
+                        ins.append(obj, item && item.id);
+                    }
+                }, obj = ins.onInitPanelView(prf, item && item.id, callback);
+                if(obj) callback(obj);
+            }
+            xui.UI.Div._for_svg_children(prf, item && item.id);
+            if(prf.onInitValues){
+                var f=function(values){
+                    if(values && xui.isHash(values)){
+                        if(('values' in values) && xui.isHash(values.values)) values = values.values;
+                        prf.boxing().setFormValues(values, item && item.id, true);
+                    }
+                },values = prf.boxing().onInitValues(prf, f, item && item.id);
+                if(values) f(values);
+            }
+        },
         RenderTrigger:function(){
-            // only div
-            var ns=this;
-            if(ns.box.KEY=="xui.UI.Div")
-                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                    ns.box._applyAutoLoad(this);
-            // svg container
-            xui.UI.Div._for_svg_children(ns);
+            this.box._after_con_render(this);
         },
         Behaviors:{
             DroppableKeys:['KEY'],
@@ -29389,7 +29572,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         EventHandlers:{
             onClick:function(profile, e, value){},
-            afterAutoLoad:function(profile, text){}
+            afterAutoLoad:function(profile, text){},
+            onInitPanelView:function(profile, callback){},
+            onInitValues:function(profile, callback){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -29399,12 +29584,12 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;
         },
-        _applyAutoLoad:function(prf){
-            var prop=prf.properties, ins=prf.boxing();
+        _applyAutoLoad:function(prf, item){
+            var subId = item && item.id, prop = item || prf.properties, ins=prf.boxing();
             if(prop.iframeAutoLoad){
-                ins.getContainer().css('overflow','hidden');
+                ins.getContainer(subId).css('overflow','hidden');
                 var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
-                    id="biframe_"+xui.stamp(),
+                    id="diframe_"+prf.$xid+"_"+(subId?(subId+"_"):"")+xui.rand(),
                     e=xui.browser.ie && xui.browser.ver<9,
                     ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
 
@@ -29424,7 +29609,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 ifr.allowTransparency='true';
                 ifr.width='100%';
                 ifr.height='100%';
-                ins.getContainer().html("",false);
+                ins.getContainer(subId).html("",false);
                 ins.append(ifr);
 
                 if((_if.method||"").toLowerCase()=="post"){
@@ -31843,7 +32028,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             onClickPanel:function(profile, e, src){},
             onClickBackdrop:function(profile, e, src){},
             onFiles:function(profile, files){},
-            onFileError:function(profile, message, file){}
+            onFileError:function(profile, message, file){},
+            onInitPanelView:function(profile, callback){},
+            onInitValues:function(profile, callback){}
         },
         DataModel:{
             //delete those properties
@@ -31978,9 +32165,6 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         RenderTrigger:function(){
             // only div
             var ns=this;
-            if(ns.box.KEY=="xui.UI.Block")
-                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                    xui.UI.Div._applyAutoLoad(this);
             ns.destroyTrigger = function(){
                 var s=this,panel=this.getSubNode("PANEL").get(0);
                 if(s.$inModal)s.box._unModal(s);
@@ -32172,8 +32356,10 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 input.click();
               }, false);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(ns);
+
+            if(ns.box.KEY=="xui.UI.Block"){
+                xui.UI.Div._after_con_render(ns);
+            }
         },
         _sbicon:function(profile, sideBarStatus, type, ui){
             var target=sideBarStatus=='fold'
@@ -32738,6 +32924,9 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
     Static:{
         DataModel:{
             value:0,
+            isFormField:{
+                ini:false
+            },
             width:{
                 $spaceunit:1,
                 ini:'25em'
@@ -34190,6 +34379,10 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},
+
+            onEsc:function(profile){},
+            onEnter:function(profile){},
+
             onInputClick:function(profile, e, src){},
             beforeFormatCheck:function(profile, value){},
             beforeFormatMark:function(profile, isFormatErr){},
@@ -36270,6 +36463,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     pos = main.offset();
                 pos.top += main.offsetHeight();
 
+                if(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='cmdbox'||type=='dropbutton'){
+                    if(!ignoreEvent && profile.onInitPopup){
+                        if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), main, profile, null, null, e, src){
+                            return;
+                        }
+                    }
+                }
                 //special cmd type: getter, 'cmdbox' and 'popbox'
                 if(( !ignoreEvent && profile.beforeComboPop && false===box.beforeComboPop(profile, pos, e, src)))
                     return;
@@ -37214,6 +37414,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         EventHandlers:{
             onFileDlgOpen:function(profile, src){},
             onCommand:function(profile, src, type){},
+            onInitPopup:function(profile){},
             beforeComboPop:function(profile, pos, e, src){},
             beforePopShow:function(profile, popPrf, items){},
             afterPopShow:function(profile, popPrf){},
@@ -37222,7 +37423,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             onInputClick:function(profile, e, src){},
             onClickIcon:function(profile, src){},
             beforeUnitUpdated:function(profile,unit){},
-            afterUnitUpdated:function(profile,unit){}
+            afterUnitUpdated:function(profile,unit){},
+
+            onInitList:function(profile, callback){}
         },
         DataModel:{
             cachePopWnd:true,
@@ -38127,6 +38330,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             value:{
                 ini:"FFFFFF",
                 format:'color'
+            },
+            isFormField:{
+                ini:false
             },
             barDisplay : {
                 ini:true,
@@ -39410,6 +39616,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 ini:new Date,
                 format:'date'
             },
+            isFormField:{
+                ini:false
+            },
             closeBtn:{
                 ini:true,
                 action:function(v){
@@ -39670,7 +39879,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     arr2=cls._v2a(value);
                 profile.$hour=arr2[0];
                 profile.$minute=arr2[1];
-                
+
                 profile.getSubNode('HI',true).removeClass(cls._excls_c3).removeClass(cls._excls_mo3);
                 profile.getSubNode('HI',arr2[0]).addClass(cls._excls_c3);
 
@@ -39711,7 +39920,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         }
         m=a.join('');
         a.length=0;
-        
+
         this.setTemplate({
             tagName : 'div',
             //onselectstart:'return false',
@@ -39750,13 +39959,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         PRE2:{
                             $order:0,
                             className:'xuifont',
-                            $fonticon:'xui-icon-doubleleft',                                                        
+                            $fonticon:'xui-icon-doubleleft',
                             tabindex: '{tabindex}'
                         },
                         PRE:{
                             $order:1,
                             className:'xuifont',
-                            $fonticon:'xui-icon-singleleft',                                                        
+                            $fonticon:'xui-icon-singleleft',
                             tabindex: '{tabindex}'
                         },
                         HOUR:{
@@ -39771,13 +39980,13 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         NEXT:{
                             $order:6,
                             className:'xuifont',
-                            $fonticon:'xui-icon-singleright',                            
+                            $fonticon:'xui-icon-singleright',
                             tabindex: '{tabindex}'
                         },
                         NEXT2:{
                             $order:7,
                             className:'xuifont',
-                            $fonticon:'xui-icon-doubleright',                            
+                            $fonticon:'xui-icon-doubleright',
                             tabindex: '{tabindex}'
                         }
                     },
@@ -40129,6 +40338,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             value:{
                 ini:'00:00',
                 format:'time'
+            },
+            isFormField:{
+                ini:false
             },
             closeBtn:{
                 ini:true,
@@ -40760,6 +40972,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 action: function(v){
                     this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
                 }
+            },
+            isFormField:{
+                ini:false
             }
         },
         EventHandlers:{
@@ -40773,7 +40988,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
             onLabelClick:function(profile, e, src){},
             onLabelDblClick:function(profile, e, src){},
-            onLabelActive:function(profile, e, src){}
+            onLabelActive:function(profile, e, src){},
+
+            onInitList:function(profile, callback){}
         },
         _onStartDrag:function(profile, e, src, pos){
             var pos=xui.Event.getPos(e);
@@ -41314,7 +41531,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
-                    delete profile.$ini;
+                    delete profile._$init;
                     if(removeChildren){
                         ins=profile.boxing();
                         ins.removeChildren(true,destroyChildren);
@@ -41326,12 +41543,10 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         },
         iniPanelView:function(){
             return this.each(function(profile){
-                if(!profile.$ini){
-                    profile.$ini=true;
-                    var p=profile.properties;
-                    if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
-                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                        xui.UI.Div._applyAutoLoad(profile);
+                if(!profile._$init){
+                    profile._$init=true;
+                    if(profile.onIniPanelView)
+                        profile.boxing().onIniPanelView(profile);
                 }
             });
         }
@@ -41764,6 +41979,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         },
         EventHandlers:{
             onIniPanelView:function(profile){},
+
             beforeFold:function(profile){},
             beforeExpand:function(profile){},
             afterFold:function(profile){},
@@ -42791,6 +43007,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var profile = this.get(0);
             return profile.getSubNodeByItemId('PANEL', subId+'');
         },
+        getContainer:function(subId){
+            return this.getPanel(subId);
+        },
         ////
         addPanel:function(paras, children, item){
             var ns=this,
@@ -42859,7 +43078,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(profile.renderId){
                     xui.arr.each(profile.properties.items,function(o){
                         if(subId===true || (subId+'')===o.id)
-                            delete o._$ini;
+                            delete o._$init;
                     });
                     if(removeChildren)
                         profile.boxing().removeChildren(subId,destroyChildren)
@@ -43651,6 +43870,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         EventHandlers:{
             onCmd:function(profile,item,cmdkey,e,src){},
             onIniPanelView:function(profile, item){},
+            onInitPanelView:function(profile, callback, id){},
+            onInitValues:function(profile, callback, id){},
+
             beforePagePop:function(profile, item, options, e, src){},
             beforePageClose:function(profile, item, src){},
             afterPageClose:function(profile, item){},
@@ -43670,8 +43892,6 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(i=self.getItemByItemId(v))
                     ins.onItemSelected(self, i);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(self);
         },
         _prepareData:function(profile){
             var data = arguments.callee.upper.call(this, profile);
@@ -43802,64 +44022,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         _forIniPanelView:function(prf, item){
             if(!item)return;
-            var prop=prf.properties,box=prf.boxing();
-            if(!item._$ini){
-                item._$ini=true;
-                if(prf.onIniPanelView)box.onIniPanelView(prf,item);
-                if(item.iframeAutoLoad){
-                    box.getPanel(item.id).css('overflow','hidden');
-                    var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:xui.clone(item.iframeAutoLoad,true),
-                        id="diframe_"+xui.rand(),
-                        e=xui.browser.ie && xui.browser.ver<9,
-                        ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-
-                    _if.url=xui.adjustRes(_if.url,false,true);
-
-                    ifr.id=ifr.name=id;
-                    if(xui.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
-                    item._frameName=id;
-
-                    if(!_if.query)_if.query={};
-                    _if.query._rand=xui.rand();
-                    ifr.frameBorder='0';
-                    ifr.marginWidth='0';
-                    ifr.marginHeight='0';
-                    ifr.vspace='0';
-                    ifr.hspace='0';
-                    ifr.allowTransparency='true';
-                    ifr.width='100%';
-                    ifr.height='100%';
-
-                    if((_if.method||"").toLowerCase()=="post"){
-                        box.getPanel(item.id).html("").append(ifr);
-                        xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
-                    }else{
-                        ifr.src=_if.url;
-                        box.getPanel(item.id).html("").append(ifr);
-                    }
-                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
-                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,id);
-                }else if(item.ajaxAutoLoad){
-                    var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:xui.clone(item.ajaxAutoLoad,true),
-                        options={rspType:"text"};
-                    xui.merge(options, _ajax.options);
-                    if(!_ajax.query)_ajax.query={};
-                    _ajax.query._rand=xui.rand();
-                    box.busy(false,null,"PANEL",prf.getSubIdByItemId(item.id));
-                    var node=box.getPanel(item.id);
-                    xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        node.html(rsp,true,true);
-                        if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
-                        if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,rsp);
-                        box.free();
-                    }, function(err){
-                        node.html("<div>"+err+"</div>",true,false);
-                        if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
-                        if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,rsp);
-                        box.free();
-                    }, null, options).start();
-                }
-            }
+            xui.UI.Div._after_con_render(prf, item);
         },
         _showTips:function(profile, node, pos){
             if(profile.properties.disableTips)return;
@@ -45547,7 +45710,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             beforeFold:function(profile,item){},
             beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
-            afterExpand:function(profile,item){}
+            afterExpand:function(profile,item){},
+
+            onInitList:function(profile, callback){}
         },
         DataModel:{
             listKey:null,
@@ -46707,6 +46872,13 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         //don't fire events here
                         try{xui.use(src).get(0).focus()}catch(e){}
                     }
+                    if(!Cancel && item.sub){
+                        if(profile.onInitPopup){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, e, src){
+                                return;
+                            }
+                        }
+                    }
 
                     if(!Cancel && item.sub){
                         if(false===profile.boxing().beforeShowSubMenu(profile, item, src, e)){
@@ -47001,6 +47173,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $vborder:0
         }),
         EventHandlers:{
+            onInitPopup:function(profile, item){},
             beforeShowSubMenu:function(profile, item, src, e){},
             onShowSubMenu:function(profile, item, src, e){},
             beforeShow:function(profile, pos, type, conainer, ignoreEffects, e){},
@@ -47109,6 +47282,12 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             if(profile.$inDesign)return;
             //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
+
+            if(profile.onInitPopup){
+                if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, null, src){
+                    return;
+                }
+            }
 
             if(!item.sub)return ;
 
@@ -47467,6 +47646,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},
             onMenuBtnClick:function(profile, item, src){},
+            onInitPopup:function(profile, item){},
             beforePopMenu:function(profile, item, src){},
             beforeShowSubMenu:function(profile, popPrf, item, src){},
             onShowSubMenu:function(profile, popPrf, item, src){},
@@ -47782,7 +47962,13 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                     xui.use(src).focus(true);
                     if(item.type=="statusButton")
                         xui.use(src).tagClass('-checked',item.value=!item.value);
-
+                    else if(item.type=="dropButton"){
+                        if(profile.onInitPopup){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, item2, e, src){
+                                return;
+                            }
+                        }
+                    }
                     profile.boxing().onClick(profile, item, item2, e, src);
                     return false;
                 }
@@ -47828,7 +48014,8 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             }
         },
         EventHandlers:{
-            onClick:function(profile, item, group, e, src){}
+            onClick:function(profile, item, group, e, src){},
+            onInitPopup:function(profile, item, group){}
         },
         _adjustItems:function(arr){
             if(!arr)arr=[xui.stamp()+''];
@@ -48615,7 +48802,10 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
         EventHandlers:{
             onClickPanel:function(profile, item, e, src){},
             beforeFold:function(profile, item, folded, e, src){},
-            onDragResized:function(profile, item, size, e, src){}
+            onDragResized:function(profile, item, size, e, src){},
+            onInitPanelView:function(profile, callback, id){},
+            onInitValues:function(profile, callback, id){},
+            afterAutoLoad:function(profile, item, text){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];
@@ -48747,17 +48937,16 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
                 data._overflow = p.overflow.indexOf(':')!=-1?(p.overflow):(p.overflow?("overflow:"+p.overflow):"");
         },
         RenderTrigger:function(){
-            var t, profile=this;
-            xui.arr.each(profile.properties.items,function(item){
+            var t, prf=this;
+            xui.arr.each(prf.properties.items,function(item){
                 if(item.id!='main'){
-                    if(item.folded && (t=profile.getSubIdByItemId(item.id))){
+                    if(item.folded && (t=prf.getSubIdByItemId(item.id))){
                             item.folded=false;
-                            profile.getSubNode('CMD',t).onMousedown();
+                            prf.getSubNode('CMD',t).onMousedown();
                         }
                 }
+                xui.UI.Div._after_con_render(prf, item);
             });
-            // svg container
-            xui.UI.Div._for_svg_children(profile);
         },
         _syncResize:true,
         _onresize:function(profile,width,height){
@@ -50933,6 +51122,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 (type=='min'||type=='value')? 'value' in v?v.value:v :
                 type=='map'?( (m={})&&((m[colId]=v.value)||1)&&m):
                 v;
+        },
+        getSubNode:function(key, itemId, tag){
+            if(key.indexOf("CELL")===0 && /\d+-\d+/.test(itemId)){
+                var a = itemId.split("-");
+                a = this.getCellbyRowCol(parseInt(a[0],10), parseInt(a[1],10));
+                itemId = a._serialId;
+            }
+            return xui.UI.prototype.getSubNode.apply(this, [key, itemId, tag]);
         },
         getCells:function(rowId, colId, type){
             var map={};
@@ -54401,7 +54598,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeGridValueCalculated:function(profile){},
             afterGridValueCalculated:function(profile, value){},
 
-            onGetExcelCellValue:function(profile, excelCellId, dftValue){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){},
+
+            onInitList:function(profile, callback){}
         },
         RenderTrigger:function(){
             var ns=this,
@@ -54910,6 +55109,40 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 prop.grpCols = [];
             if(!prop.rows || !xui.isArr(prop.rows))
                 prop.rows = [];
+
+            if(profile.onInitList){
+                var ins = profile.boxing(),
+                rst = profile.boxing().onInitList(profile, function(rst){
+                    if(xui.isArr(rst)){
+                        ins.setRows(rst);
+                    }else{
+                        if(xui.isArr(rst.grpCols)){
+                            prop.grpCols = rst.grpCols;
+                        }
+                        if(xui.isArr(rst.columns||rst.header)){
+                            ins.setHeader(rst.columns||rst.header);
+                        }
+                        if(xui.isArr(rst.rows)){
+                            ins.setRows(rst);
+                        }
+                    }
+                });
+                if(rst){
+                    if(xui.isArr(rst)){
+                        prop.rows = rst;
+                    }else{
+                        if(xui.isArr(rst.grpCols)){
+                            prop.grpCols = rst.grpCols;
+                        }
+                        if(xui.isArr(rst.columns||rst.header)){
+                            prop.header = rst.columns||rst.header;
+                        }
+                        if(xui.isArr(rst.rows)){
+                            prop.rows = rst.rows;
+                        }
+                    }
+                }
+            }
 
             if(prop.hotRowMode=="none")prop.hotRowMode="hidden";
             if(prop.hotRowMode!="hidden"&&prop.hotRowMode!="before")prop.hotRowMode="after";
@@ -56649,7 +56882,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _adjustBody:function(profile, trigger, callback){
             if(!profile.renderId || profile.destroyed)return;
-            xui.UI.$freezeNode(profile, 'adjustbody:' + trigger);
+            //xui.UI.$freezeNode(profile, 'adjustbody:' + trigger);
             xui.resetRun(profile.$xid+'4',function(){
                 // destroyed
                 if(profile.renderId || !profile.destroyed){
@@ -56818,7 +57051,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(callback)callback();
                 }
-                xui.UI.$unfreezeNode(profile,'adjustbody:' + trigger);
+                //xui.UI.$unfreezeNode(profile,'adjustbody:' + trigger);
             });
             // formula
             if(trigger!='render' && trigger!='rowhandler' && trigger!='foldrow' && trigger!='expandrow' && trigger!='setcol' && trigger!='resize')
@@ -58264,7 +58497,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             $vborder:1
         },
         EventHandlers:{
-            onIniPanelView:function(profile){},
+            onInitPanelView:function(profile, callback){},
+            onInitValues:function(profile, callback){},
             onShow:function(profile){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},
@@ -58287,16 +58521,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(s.$resizer)
                     s.boxing()._unResizer();
             };
-            if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                ns.box._applyAutoLoad(this);
             // ensure min/max
             if(t.status=="min"){
                 ns.box._min(ns, null,null,true);
             }else if(t.status=="max"){
                 ns.box._max(ns, null,null,true);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(ns);
+
+            xui.UI.Div._after_con_render(ns);
         },
         LayoutTrigger:function(){
             var ns=this, t=ns.properties;
@@ -59339,14 +59571,12 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             onGetContent:function(profile,item,callback){},
             onShowOptions:function(profile,item,e,src){}
         },
-         RenderTrigger:function(){
+        RenderTrigger:function(){
             var self=this, pro=self.properties, items=pro.items, item;
             if(pro.activeLast && items.length>0){
                 item=items[items.length-1];
                 self.boxing().fillContent(item.id, item._body);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(self);
         },
         _prepareItems:function(profile, arr, pid){
             if(arr.length){
@@ -65792,7 +66022,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (key.substring(0, 6) == "xlink:") {
 	                    el.setAttributeNS(xlink, key.substring(6), Str(attr[key]));
 	                } else {
-	                    el.setAttribute(key, Str(attr[key]));
+                        if(Str(attr[key]).indexOf("NaN")==-1){
+    	                    el.setAttribute(key, Str(attr[key]));
+                        }
 	                }
 	            }
 	        } else {
@@ -68448,8 +68680,8 @@ return /******/ (function(modules) { // webpackBootstrap
             "clip-rect":1,
             "fill":1, // Radial gradients can only be applied to circles and ellipses.
             "fill-opacity":1,
-//            "href":1,
-//            "target":1,
+            //            "href":1,
+            //            "target":1,
             "title":1,
             "cursor":1,
             "transform":1,
@@ -68722,6 +68954,10 @@ return /******/ (function(modules) { // webpackBootstrap
             var prf=this.get(0), cid=prf.containerId||"#";
             return (prf && prf._paper) || (prf && prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[cid]);
         },
+        getPaperContainer:function(){
+            var paper = this.getPaper();
+            return paper && paper.canvas.parentNode;
+        },
         elemsAnimate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
             if(prf&&prf._elset){
@@ -68757,7 +68993,51 @@ return /******/ (function(modules) { // webpackBootstrap
         setHeight:function(value){
             return this._setBBox('height',parseFloat(value));
         },
+        show:function(parent,subId,left,top,ignoreEffects,callback){
+            return this.each(function(o){
+                var t=o.properties,
+                    ins=o.boxing(),
+                    b,
+                    elems=o.boxing().getAllNodes();
 
+                if(xui.getNodeData(o.renderId,'_xuihide')){
+                    b=1;
+                    o._dockIgnore=false;
+                    elems.show();
+                    xui.setNodeData(o, '_xuihide', 0);
+                    if(t.position=='absolute' && t.dock && t.dock!='none')
+                        xui.UI.$dock(o,false,true);
+                    xui.tryF(callback);
+                //first call show
+                }else{
+                    parent = parent || o.parent;
+                    if(!parent && (!o.renderId || (o.getRootNode().id || "").indexOf(xui.Dom._emptyDivId)===0))
+                        parent=xui('body');
+                }
+                var p=parent,n;
+                if(p){
+                    if(p['xui.UIProfile']){n=p.renderId;p=p.boxing()}
+                    else if(p['xui.UI'])n=(n=p.get(0))&&n.renderId;
+                    else n=(p=xui(p))&&p._nodes[0];
+                    if(n){
+                        p.append(ins,subId);
+                        //  if(t.visibility=="hidden")ins.setVisibility("",true);
+                        //  if(t.display=="none")ins.setDisplay("",true);
+                        xui.tryF(callback);
+                    }
+                }
+            });
+        },
+        hide:function(ignoreEffects, callback){
+            return this.each(function(o){
+                if(o.renderId){
+                    xui.setNodeData(o, '_xuihide', 1);
+                    o.boxing().getAllNodes().hide();
+                    o._dockIgnore=true;
+                    xui.tryF(callback);
+                }
+            });
+        },
         _getBBox:function(key, withTransform){
             var prf=this.get(0),el,bbox;
             if((el=prf._elset)&&el.length){
@@ -68784,108 +69064,6 @@ return /******/ (function(modules) { // webpackBootstrap
             }
         },
         _setBBox:function(key,value){
-        },
-        _getConnectAnchors:function(){
-            var prf=this.get(0),rst;
-            if(prf){
-                if(xui.get(prf._pathCached,['_connAnchors']))
-                    return xui.get(prf._pathCached,['_connAnchors']);
-
-                var ss=prf._elset;
-                if(ss&&ss[0]){
-                    ss[0]._.dirty=1;
-                    var tf=Raphael.parseTransformString(ss[0].transform()),
-                        matrix;
-                    if(tf && tf.length){
-                        matrix=ss[0].matrix;
-                    }
-
-                    var bbox=ss[0]._getBBox(true),
-                        r1=180,r2=270,r3=0,r4=90,
-                        x1=bbox.x ,y1=bbox.y+bbox.height/2 ,
-                        x2=bbox.x+bbox.width/2 ,y2=bbox.y ,
-                        x3=bbox.x+bbox.width ,y3=bbox.y+bbox.height/2 ,
-                        x4=bbox.x+bbox.width/2 ,y4=bbox.y+bbox.height;
-                    if(matrix){
-                        var xx1=x1,xx2=x2,xx3=x3,xx4=x4,yy1=y1,yy2=y2,yy3=y3,yy4=y4;
-                        x1=matrix.x(xx1,yy1);y1=matrix.y(xx1,yy1);
-                        x2=matrix.x(xx2,yy2);y2=matrix.y(xx2,yy2);
-                        x3=matrix.x(xx3,yy3);y3=matrix.y(xx3,yy3);
-                        x4=matrix.x(xx4,yy4);y4=matrix.y(xx4,yy4);
-
-                        var xc=(x1+x2+x3+x4)/4,
-                             yc=(y1+y2+y3+y4)/4;
-
-                        r1=Raphael.angle(x1,y1,xc,yc);
-                        r2=Raphael.angle(x2,y2,xc,yc);
-                        r3=Raphael.angle(x3,y3,xc,yc);
-                        r4=Raphael.angle(x4,y4,xc,yc);
-                    }
-
-                    rst={
-                        "left":{x:x1, y:y1, alpha:r1, solid:1},
-                        "top":{x:x2, y:y2, alpha:r2, solid:1},
-                        "right":{x:x3, y:y3, alpha:r3, solid:1},
-                        "bottom":{x:x4, y:y4,alpha:r4, solid:1}
-                    }
-
-                    if(prf._pathCached)xui.set(prf._pathCached,['_connAnchors'], rst);
-
-                    return rst;
-                }
-            }
-        },
-        _getConnectPath:function(){
-            var prf=this.get(0),ss;
-
-            if(xui.get(prf._pathCached,['_connPath']))
-                return xui.get(prf._pathCached,['_connPath']);
-
-            if(prf && (ss=prf._elset) && ss[0]){
-                var tf=Raphael.parseTransformString(ss[0].transform()),
-                        matrix;
-                    if(tf && tf.length){
-                        matrix=ss[0].matrix;
-                    }
-                var path=ss[0].getPath();
-                if(matrix){
-                    path=Raphael.mapPath(path,matrix);
-                }
-
-                if(prf._pathCached)xui.set(prf._pathCached,['_connPath'], path);
-
-                return path;
-            }
-        },
-        _getConnectPoint:function(anchor){
-            if(anchor){
-                var prf=this.get(0),rst;
-
-                if(xui.get(prf._pathCached,['_connPoint',anchor]))
-                    return xui.get(prf._pathCached,['_connPoint',anchor]);
-
-                if(/^[1-9][0-9]*:((1([.][0]+)?)|(0\.[0-9]+))$/.test(anchor)){
-                    var arr=anchor.split(":");
-                    arr[0]=+arr[0];
-                    arr[1]=+arr[1];
-                    if(arr[0]>=1 && arr[1]>=0 && arr[1]<=1){
-                        var prf=this.get(0),cp=this._getConnectPath();
-                        if(cp){
-                            var cv=Raphael.path2curve(cp),cur,prev;
-                            if((cur=cv[arr[0]])&&(prev=cv[arr[0]-1])){
-                                rst = Raphael.findDotsAtSegment(prev[prev.length-2],prev[prev.length-1], cur[1],cur[2],cur[3],cur[4],cur[5],cur[6],arr[1]);
-                            }
-                        }
-                    }
-                }else{
-                    var hash=this._getConnectAnchors();
-                    rst = hash && hash[anchor];
-                }
-
-                if(prf._pathCached)xui.set(prf._pathCached,['_connPoint',anchor],rst);
-
-                return rst;
-            }
         },
         _removeHandler:function(){
             return this.each(function(prf){
@@ -68919,6 +69097,7 @@ return /******/ (function(modules) { // webpackBootstrap
                 if(!prf._elset || !prf._elset[0])return;
 
                 var r=prf.boxing().getPaper(),
+                    parentNode=r.canvas.parentNode,
                     isCombo=prf.box.ISCOMBO,
                     el=prf._elset[0],
                     absPos,
@@ -68929,6 +69108,7 @@ return /******/ (function(modules) { // webpackBootstrap
                     dotAttr3 = {fill:"#fff",stroke:"#000",r:3},
                     dotAttr4 = {fill:"#fff",stroke:"#000",r:4},
                     dotAttr6 = {fill:"#bf5600",stroke:"#bf5600",r:5,"fill-opacity":0.5},
+                    pathAttr6 = {fill:"none",stroke:"#bf5600", "stroke-width" : 2},
 
                     lineAttr = {stroke:"#0000FF","stroke-dasharray":". "},
                     rectAttr = {stroke:"#0000FF","stroke-dasharray":"- "},
@@ -68936,17 +69116,18 @@ return /******/ (function(modules) { // webpackBootstrap
                     shadowAttr2 = {opacity:0.8},
 
                     magneticDistance1 = 16,
-                    magneticDistance2 = 16,
+                    magneticDistance2 = 10,
 
                     magneticPos,
                     magneticOffPos,
+                    scaleX = 1, scaleY = 1,
 
                     handlers = {
                         /*text:function (el){
                             el._.dirty=1;
                             var attr=el.attr(),handler={},bbox=el._getBBox(true);
-                            handler.rectBox=createDDElem(r.rect(bbox.x, bbox.y, bbox.width, bbox.height).attr(rectAttr),el);
-                            handler.dot = createDDElem(r.circle(bbox.cx, bbox.cy).attr(dotAttr1).attr('cursor','move'),
+                            handler.rectBox=createDDElem(prf,r.rect(bbox.x, bbox.y, bbox.width, bbox.height).attr(rectAttr),el);
+                            handler.dot = createDDElem(prf,r.circle(bbox.cx, bbox.cy).attr(dotAttr1).attr('cursor','move'),
                                 el,function (x, y){
                                     var rtn = moveFun(this, x,y);
 
@@ -68962,7 +69143,7 @@ return /******/ (function(modules) { // webpackBootstrap
                         },*/
                         rect:function (el){
                             var attr=el.attr(),handler={};
-                            handler.dot = createDDElem(r.circle(attr.x+attr.width/2, attr.y+attr.height/2).attr(dotAttr1).attr('cursor','move'),
+                            handler.dot = createDDElem(prf,r.circle(attr.x+attr.width/2, attr.y+attr.height/2).attr(dotAttr1).attr('cursor','move'),
                                 el, function (x, y, ax, ay){
                                     var pos = moveFun(this, x,y,ax,ay),nshape;
                                     attr.x+=pos.rx;
@@ -68972,7 +69153,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     el.attr(nshape);
 
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     moveFun(handler.dot1, x,y,ax,ay);
                                     moveFun(handler.dot2, x,y,ax,ay);
@@ -68980,7 +69161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'main');
-                            handler.dot1 = createDDElem(r.circle(attr.x, attr.y).attr(dotAttr2).attr('cursor','nw-resize'),
+                            handler.dot1 = createDDElem(prf,r.circle(attr.x, attr.y).attr(dotAttr2).attr('cursor','nw-resize'),
                                 el, function (x, y, ax, ay){
                                     var x2=el.attr("x")+el.attr("width"),
                                         y2=el.attr("y")+el.attr("height"),
@@ -68994,7 +69175,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={x:attr.x,y:attr.y,width:attr.width,height:attr.height};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     handler.dot.attr({cx:attr.x+attr.width/2, cy:attr.y+attr.height/2});
 
@@ -69002,7 +69183,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     if(el.attr("r")>m){
                                         el.attr("r",attr.r=m);
                                         if(el._shape)el._shape.attr("r",m);
-                                        xui.tryF(el.onShapeChanged,[{r:m}]);
+                                        xui.tryF(el.onShapeChanged,[{r:m}], el);
                                     }
                                     handler.dot3.attr({
                                         cx:el.attr("x")+el.attr("width")-el.attr("r"),
@@ -69011,7 +69192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'w');
-                            handler.dot2= createDDElem(r.circle(attr.x+attr.width, attr.y+attr.height).attr(dotAttr2).attr('cursor','se-resize'),
+                            handler.dot2= createDDElem(prf,r.circle(attr.x+attr.width, attr.y+attr.height).attr(dotAttr2).attr('cursor','se-resize'),
                                 el, function (x, y, ax, ay){
                                     var pos = moveFun(this, x,y,ax,ay,attr.x,null,attr.y,null),
                                         nshape;
@@ -69022,7 +69203,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={width:attr.width, height:attr.height};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     handler.dot.attr({cx:attr.x+attr.width/2, cy:attr.y+attr.height/2});
 
@@ -69030,7 +69211,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     if(el.attr("r")>m){
                                         el.attr("r",attr.r=m);
                                         if(el._shape)el._shape.attr("r",m);
-                                        xui.tryF(el.onShapeChanged,[{r:m}]);
+                                        xui.tryF(el.onShapeChanged,[{r:m}], el);
                                     }
                                     handler.dot3.attr({
                                         cx:el.attr("x")+el.attr("width")-el.attr("r"),
@@ -69038,7 +69219,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     });
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'h');
-                            handler.dot3= createDDElem(r.circle(attr.x+attr.width-(attr.r||0), attr.y).attr(dotAttr3).attr('cursor','e-resize'),
+                            handler.dot3= createDDElem(prf,r.circle(attr.x+attr.width-(attr.r||0), attr.y).attr(dotAttr3).attr('cursor','e-resize'),
                                 el, function (x, y, ax, ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,(attr.x+attr.width-Math.max(attr.width,attr.height)/2),attr.x+attr.width, attr.y,attr.y),
@@ -69046,7 +69227,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={r:attr.width-(pos.cx-attr.x)};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'r');
@@ -69057,7 +69238,7 @@ return /******/ (function(modules) { // webpackBootstrap
                         },
                         circle:function (el){
                             var attr=el.attr(),handler={};
-                            handler.dot = createDDElem(r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
+                            handler.dot = createDDElem(prf,r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
                                 el, function (x, y){
                                     var rtn = moveFun(this, x, y ),
                                         pos = {cx:rtn.cx,cy:rtn.cy};
@@ -69065,12 +69246,12 @@ return /******/ (function(modules) { // webpackBootstrap
                                     attr.cy=pos.cy;
                                     el.attr(pos);
                                     if(el._shape)el._shape.attr(pos);
-                                    xui.tryF(el.onShapeChanged,[pos]);
+                                    xui.tryF(el.onShapeChanged,[pos], el);
 
                                     pos.cx += el.attr("r");
                                     handler.dotr.attr(pos);
                                 },'main');
-                            handler.dotr = createDDElem(r.circle(attr.cx+attr.r, attr.cy).attr(dotAttr2).attr('cursor','e-resize'),
+                            handler.dotr = createDDElem(prf,r.circle(attr.cx+attr.r, attr.cy).attr(dotAttr2).attr('cursor','e-resize'),
                                 el, function (x, y,ax,ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,attr.cx,null,attr.cy,attr.cy),
@@ -69079,7 +69260,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={r:attr.r};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'r');
@@ -69090,7 +69271,7 @@ return /******/ (function(modules) { // webpackBootstrap
                         },
                         ellipse:function (el){
                             var attr=el.attr(),handler={},dot;
-                            handler.dot = createDDElem(r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
+                            handler.dot = createDDElem(prf,r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
                                 el, function (x, y){
                                     var rtn = moveFun(this, x,y),
                                         pos = {cx:rtn.cx,cy:rtn.cy};
@@ -69098,12 +69279,12 @@ return /******/ (function(modules) { // webpackBootstrap
                                     attr.cy=pos.cy;
                                     el.attr(pos);
                                     if(el._shape)el._shape.attr(pos);
-                                    xui.tryF(el.onShapeChanged,[pos]);
+                                    xui.tryF(el.onShapeChanged,[pos], el);
 
                                     handler.dotrx.attr({cx:pos.cx+el.attr("rx"),cy:pos.cy});
                                     handler.dotry.attr({cy:pos.cy-el.attr("ry"),cx:pos.cx});
                                 },'main');
-                            handler.dotrx = createDDElem(r.circle(attr.cx+attr.rx, attr.cy).attr(dotAttr2).attr('cursor','w-resize'),
+                            handler.dotrx = createDDElem(prf,r.circle(attr.cx+attr.rx, attr.cy).attr(dotAttr2).attr('cursor','w-resize'),
                                 el, function (x, y,ax,ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,attr.cx,null,attr.cy,attr.cy),
@@ -69112,10 +69293,10 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={rx:attr.rx};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'rx');
-                            handler.dotry = createDDElem(r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
+                            handler.dotry = createDDElem(prf,r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
                                 el,function (x, y,ax,ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,attr.cx,attr.cx,null,attr.cy),
@@ -69124,7 +69305,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={ry:attr.ry};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'ry');
@@ -69148,7 +69329,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     else
                                         circle.attr(dotAttr1).attr('cursor','move');
 
-                                    return createDDElem(circle, el, function (x, y, ax, ay, beForced, mx, my,ix,iy,event, callback) {
+                                    return createDDElem(prf,circle, el, function (x, y, ax, ay, beForced, mx, my,ix,iy,event, callback) {
                                         var paper=el.paper,
                                             ox = this.attr('cx'),
                                             oy = this.attr('cy'),
@@ -69182,6 +69363,13 @@ return /******/ (function(modules) { // webpackBootstrap
                                             });
                                             // get right object under mouse
                                             var esrc=d.elementFromPoint(mx, my);
+                                            if(esrc==el.paper.canvas){
+                                                var ope = el.paper.canvas.style.pointerEvents;
+                                                el.paper.canvas.style.pointerEvents = 'none';
+                                                esrc=d.elementFromPoint(mx, my);
+                                                el.paper.canvas.style.pointerEvents = ope;
+                                            }
+
                                             // show again
                                             this.show();
                                             prf._elset.show();
@@ -69227,34 +69415,92 @@ return /******/ (function(modules) { // webpackBootstrap
                                                 return;
 
                                             // has anchors or anchorPath
-                                            var magneticObj,anchorKey,
-                                                targetNode,anchors,anchorPath,centerPoint,
+                                            var magneticObj,anchorKey,ignoreMag,
+                                                targetNode,tobj,anchors,anchorPath,centerPoint,
+                                                locked = prf.properties[conType=='from'?'fromLocked':'toLocked'],
+                                                conf = prf.properties[conType=='from'?'fromObj':'toObj'],
+                                                a = conf && conf.split(":"),
                                                 anchorShadow=paper._anchorShadow;
                                             if(esrc!==paper.canvas){
-                                                var tobj=xui.UIProfile.getFromDom(esrc.id),cid=prf.containerId||"#";
-                                                if(tobj && tobj.parent&& tobj.parent._svg_papers[cid]==paper){
-                                                    if(tobj.box['xui.svg']){
-                                                        targetNode=tobj.getRootNode();
-                                                        if(!tobj.box._CONNECTOR){
-                                                            anchors=tobj.boxing()._getConnectAnchors();
-                                                            anchorPath=tobj.boxing()._getConnectPath();
-                                                            if(anchorPath){
-                                                                var anchorBBox;
-                                                                if(anchorBBox=xui.get(tobj._pathCached,['_connBBox'])){
-                                                                }else{
-                                                                    anchorBBox=Raphael.pathBBox(anchorPath);
-                                                                    xui.set(tobj._pathCached,['_connBBox'], anchorBBox);
+                                                tobj=xui.UIProfile.getFromDom(esrc.id), cid=prf.containerId||"#";
+                                                if(tobj){
+                                                    var alias = tobj.ref||tobj.alias, key = "", sid = "";
+                                                    targetNode = tobj.getRootNode();
+                                                    while(esrc!==targetNode){
+                                                        if(xui.getNodeData(esrc, 'isHotNode')){
+                                                            if(esrc.id){
+                                                                targetNode = esrc;
+                                                                key = tobj.getKey(esrc.id, true);
+                                                                if(key=="KEY")key="";
+                                                                if(tobj.getSubId(esrc.id)){
+                                                                    sid = tobj.getItemIdByDom(esrc) || "";
                                                                 }
-                                                                centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                                break;
                                                             }
-                                                            magneticObj=tobj.alias;
                                                         }
-                                                    }else if(tobj.box['xui.UI']){
-                                                        //console.log(esrc.id,tobj.getRoot().cssRegion(),X,Y,mx,my);
+                                                        esrc = esrc.parentNode;
+                                                        if(!esrc)
+                                                            return;
+                                                    }
+                                                    // inner hot node, inner hot node widget, or same level widgets
+                                                    if(key || xui.getNodeData(targetNode, 'isHotNode') || tobj.parent == prf.parent){
+                                                        // in the connection not-hot node for locked point
+                                                        if(locked && (alias != a[0] || key!==((a[1]=="KEY"?"":a[1])||"") || sid!==(a[2]||"") )) {
+                                                            tobj = xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                            if(tobj){
+                                                                targetNode = tobj.getSubNode(a[1], a[2]);
+                                                                if(targetNode.get(0)){
+                                                                    anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode.get(0));
+                                                                    anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode.get(0));
+                                                                    if(anchorPath){
+                                                                        var anchorBBox=Raphael.pathBBox(anchorPath);
+                                                                        centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                                    }
+                                                                    magneticObj = conf;
+                                                                    ignoreMag = true;
+                                                                }else{
+                                                                    return;
+                                                                }
+                                                            }
+                                                        }else{
+                                                            if(tobj.box['xui.svg'] || (tobj.box['xui.UI']&&targetNode)){
+                                                                if(!tobj.box._CONNECTOR){
+                                                                    anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode);
+                                                                    anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode);
+                                                                    if(anchorPath){
+                                                                        var anchorBBox=Raphael.pathBBox(anchorPath);
+                                                                        centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                                    }
+                                                                    magneticObj = tobj.ref || tobj.alias;
+                                                                    if(key){
+                                                                         magneticObj += ":" + key + ":" + sid;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-
+                                            // out of connection node for locked point
+                                            if(!magneticObj && locked){
+                                                // get the nearest anchor
+                                                tobj = xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                if(tobj){
+                                                    targetNode = tobj.getSubNode(a[1], a[2]);
+                                                    if(targetNode){
+                                                        anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode.get(0));
+                                                        anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode.get(0));
+                                                        if(anchorPath){
+                                                            var anchorBBox=Raphael.pathBBox(anchorPath);
+                                                            centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                        }
+                                                        magneticObj = conf;
+                                                        ignoreMag = true;
+                                                    }else{
+                                                        return;
+                                                    }
+                                                }
+                                            }
 
                                             // remove anchorShadow
                                             if(anchorShadow && ((!anchors && !anchorPath) || anchorShadow._attached!==targetNode)){
@@ -69271,6 +69517,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                                     anchorShadow._attached=targetNode;
 
                                                     var circle=paper.circle(-100,-100);
+                                                    circle.node.style.pointerEvents = "none";
                                                     circle._attached=targetNode;
                                                     circle.hide();
                                                     anchorShadow.push(circle);
@@ -69278,25 +69525,30 @@ return /******/ (function(modules) { // webpackBootstrap
                                                     // draw anchorShadow
                                                     for(var i in anchors){
                                                         o=anchors[i];
-                                                        circle=paper.circle(o.x, o.y);
+                                                        circle=paper.circle(o.x, o.y).attr(dotAttr6);
                                                         circle._attached=targetNode;
                                                         circle._anchorKey=i;
+                                                        circle.node.style.pointerEvents = "none";
                                                         anchorShadow.push(circle);
                                                     }
-
-                                                    anchorShadow.attr(dotAttr6);
+                                                    if(anchorPath){
+                                                        var path = paper.path(anchorPath).attr(pathAttr6);
+                                                        path.node.style.pointerEvents = "none";
+                                                        anchorShadow.push(path);
+                                                    }
                                                     paper._anchorShadow=anchorShadow;
                                                 }
-
-                                                // magnetic function
-                                                var minDis=null,distance;
-                                                for(var i in anchors){
-                                                    distance=Math.pow(Math.pow(Math.abs(ix-anchors[i].x),2)+Math.pow(Math.abs(iy-anchors[i].y),2),1/2);
-                                                    if(distance<=magneticDistance1){
-                                                        if(minDis===null || minDis>distance){
-                                                            minDis=distance;
-                                                            anchorPos=anchors[i];
-                                                            anchorKey=i;
+                                                if(!ignoreMag){
+                                                    // magnetic function
+                                                    var minDis=null,distance;
+                                                    for(var i in anchors){
+                                                        distance=Math.pow(Math.pow(Math.abs(ix-anchors[i].x),2)+Math.pow(Math.abs(iy-anchors[i].y),2),1/2);
+                                                        if(distance<=magneticDistance1){
+                                                            if(minDis===null || minDis>distance){
+                                                                minDis=distance;
+                                                                anchorPos=anchors[i];
+                                                                anchorKey=i;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -69338,48 +69590,49 @@ return /******/ (function(modules) { // webpackBootstrap
                                                         }
                                                     }
                                                 }
+                                            }
 
-                                                if(anchorPos){
-                                                    // hold
-                                                    if(magneticPos){
-                                                        // still the old magnetic
-                                                        if(magneticPos.x==anchorPos.x && magneticPos.y==anchorPos.y){
-//console.log('still the old magnetic');
-                                                            x=y=0;
-                                                            ax=magneticOffPos.x;
-                                                            ay=magneticOffPos.y;
-                                                        }
-                                                        // swtich to the new magnetic
-                                                        else{
-//console.log('swtich to the new magnetic');
-                                                            x = anchorPos.x-magneticPos.x;
-                                                            y = anchorPos.y-magneticPos.y;
-
-                                                            // need return to adjust
-                                                            ax = magneticOffPos.x + x;
-                                                            ay = magneticOffPos.y + y;
-                                                            magneticPos={x:anchorPos.x,y:anchorPos.y};
-                                                            magneticOffPos={x:ax,y:ay};
-                                                            if(anchorPos._path){
-                                                                anchorShadow[0].attr({cx:anchorPos.x,cy:anchorPos.y});
-                                                                anchorShadow[0].show();
-                                                            }else{
-                                                                anchorShadow[0].hide();
-                                                            }
+                                            if(!anchorPos){
+                                               // get the nearest anchor
+                                                if(anchors){
+                                                    var point = el.getPointAtLength(this._handlerIndex===1 ?0:el.getTotalLength()),
+                                                        len = {
+                                                            top : Math.pow(Math.pow(Math.abs(point.x-anchors.top.x),2)+Math.pow(Math.abs(point.y-anchors.top.y),2),1/2),
+                                                            left : Math.pow(Math.pow(Math.abs(point.x-anchors.left.x),2)+Math.pow(Math.abs(point.y-anchors.left.y),2),1/2),
+                                                            right : Math.pow(Math.pow(Math.abs(point.x-anchors.right.x),2)+Math.pow(Math.abs(point.y-anchors.right.y),2),1/2),
+                                                            bottom :Math.pow(Math.pow(Math.abs(point.x-anchors.bottom.x),2)+Math.pow(Math.abs(point.y-anchors.bottom.y),2),1/2)
+                                                        },
+                                                        min = Math.min(len.top, len.left, len.right, len.bottom);
+                                                    for(var i in len){
+                                                        if(len[i]==min){
+                                                            anchorPos = anchors[i];
+                                                            anchorKey = i;
+                                                            break;
                                                         }
                                                     }
-                                                    // first magnetic
+                                                }
+                                            }
+                                            if(anchorPos){
+                                                // hold
+                                                if(magneticPos){
+                                                    // still the old magnetic
+                                                    if(magneticPos.x==anchorPos.x && magneticPos.y==anchorPos.y){
+                                                        //console.log('still the old magnetic');
+                                                        x=y=0;
+                                                        ax=magneticOffPos.x;
+                                                        ay=magneticOffPos.y;
+                                                    }
+                                                    // swtich to the new magnetic
                                                     else{
-//console.log('first magnetic');
-                                                        x += anchorPos.x-ix;
-                                                        y += anchorPos.y-iy;
+                                                        //console.log('swtich to the new magnetic');
+                                                        x = anchorPos.x-magneticPos.x;
+                                                        y = anchorPos.y-magneticPos.y;
 
                                                         // need return to adjust
-                                                        ax += anchorPos.x-ix;
-                                                        ay += anchorPos.y-iy;
+                                                        ax = magneticOffPos.x + x;
+                                                        ay = magneticOffPos.y + y;
                                                         magneticPos={x:anchorPos.x,y:anchorPos.y};
                                                         magneticOffPos={x:ax,y:ay};
-
                                                         if(anchorPos._path){
                                                             anchorShadow[0].attr({cx:anchorPos.x,cy:anchorPos.y});
                                                             anchorShadow[0].show();
@@ -69387,12 +69640,31 @@ return /******/ (function(modules) { // webpackBootstrap
                                                             anchorShadow[0].hide();
                                                         }
                                                     }
-
-                                                    X = anchorPos.x;
-                                                    Y = anchorPos.y;
-
-                                                    pos={dx:ax,dy:ay};
                                                 }
+                                                // first magnetic
+                                                else{
+                                                    //console.log('first magnetic');
+                                                    x += anchorPos.x-ix;
+                                                    y += anchorPos.y-iy;
+
+                                                    // need return to adjust
+                                                    ax += anchorPos.x-ix;
+                                                    ay += anchorPos.y-iy;
+                                                    magneticPos={x:anchorPos.x,y:anchorPos.y};
+                                                    magneticOffPos={x:ax,y:ay};
+
+                                                    if(anchorPos._path){
+                                                        anchorShadow[0].attr({cx:anchorPos.x,cy:anchorPos.y});
+                                                        anchorShadow[0].show();
+                                                    }else{
+                                                        anchorShadow[0].hide();
+                                                    }
+                                                }
+
+                                                X = anchorPos.x;
+                                                Y = anchorPos.y;
+
+                                                pos={dx:ax,dy:ay};
                                             }
                                             // off-magnetic
                                             if(!anchorPos && magneticPos){
@@ -69515,7 +69787,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                             var nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            xui.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape], el);
                                         }
 
                                         // adjust angle for connector
@@ -69536,7 +69808,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     },'main',index);
                                 },
                                 addBezierAnchor2DD=function(r,el,x,y,index,conType,prf){
-                                    return createDDElem(r.circle(x, y).attr(dotAttr3),
+                                    return createDDElem(prf,r.circle(x, y).attr(dotAttr3),
                                         el, function (x, y) {
                                             var X = this.attr("cx") + x,
                                                 Y = this.attr("cy") + y,
@@ -69558,11 +69830,11 @@ return /******/ (function(modules) { // webpackBootstrap
                                             nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            xui.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape], el);
                                         },'path2',index);
                                 },
                                 addBezierAnchor1DD=function(r,el,x,y,index,conType,prf){
-                                    return createDDElem(r.circle(x, y).attr(dotAttr3),
+                                    return createDDElem(prf,r.circle(x, y).attr(dotAttr3),
                                         el, function (x, y) {
                                             var X = this.attr("cx") + x,
                                                 Y = this.attr("cy") + y,
@@ -69583,7 +69855,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                             nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            xui.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape], el);
                                         },'path1',index);
                                 },
                                 type1=1,type2=1,type3=0,prevtype2=1,
@@ -69753,6 +70025,8 @@ return /******/ (function(modules) { // webpackBootstrap
                             for(var i=0, ii=paths.length, l, handler; i<ii; i++){
                                 handler=handlers[i];
                                 if(handler.dot)handler.dot.toFront();
+                                if(handler.dotPrev)handler.dotPrev.toFront();
+                                if(handler.dotNext)handler.dotNext.toFront();
                             }
                             return {
                                 el:el,
@@ -69761,7 +70035,8 @@ return /******/ (function(modules) { // webpackBootstrap
                         }
                     },
                     move = function(dx, dy, mx, my, event) {
-                        var rtn = this.update(dx - (this.dx || 0), dy - (this.dy || 0), dx, dy, false, mx, my, mx-absPos.left, my-absPos.top, event);
+                        dx = dx/scaleX; dy = dy/scaleY;
+                        var rtn = this.update(dx - (this.dx || 0), dy - (this.dy || 0), dx, dy, false, mx, my, (mx-absPos.left)/scaleX, (my-absPos.top)/scaleY, event);
                         this.dx = (rtn&&rtn.dx)||dx;
                         this.dy = (rtn&&rtn.dy)||dy;
 
@@ -69770,12 +70045,20 @@ return /******/ (function(modules) { // webpackBootstrap
                     start = function(mx,my,event){
                         if(callback)callback(this, event, 'beforedragstart', this._attached);
                         this.toFront();
-
                         this.dx = this.dy = 0;
 
                         magneticPos=magneticOffPos=null;
 
-                        absPos = xui(this.paper.canvas.parentNode).offset(null);
+                        absPos = xui(parentNode).offset(null);
+                        var transform = window.getComputedStyle(parentNode).transform;
+                        if (transform && transform !== "none") {
+                            var matrix = transform.match(/matrix\(([^)]+)\)/);
+                            if (matrix) {
+                                var values = matrix[1].split(", ");
+                                scaleX = parseFloat(values[0]);
+                                scaleY = parseFloat(values[3]);
+                            }
+                        }
 
                         var cursor=this.attr('cursor'),t;
                         this._oldCursor = (t=r.canvas.style).cursor||"";
@@ -69795,6 +70078,7 @@ return /******/ (function(modules) { // webpackBootstrap
                     },
                     end=function(event){
                         if(callback)callback(this, event, 'beforedragend', this._attached);
+
                         absPos=null;
 
                         magneticPos=magneticOffPos=null;
@@ -69835,7 +70119,8 @@ return /******/ (function(modules) { // webpackBootstrap
                         }
                         if(callback)callback(this, event, 'dragend', this._attached);
                     },
-                    createDDElem=function(obj,el,update,key,index){
+                    createDDElem=function(prf,obj,el,update,key,index){
+                        obj.node.id=prf.box.KEY+"-DD:"+prf.serialId+":"+obj.id;
                         obj._handlerIndex=index||0;
                         obj._attached=el;
                         if(update){
@@ -69910,7 +70195,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                 nshape={path: paths};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                             case 'circle':{
@@ -69939,7 +70224,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                 rst={cx: X, cy: Y, rx:x, ry:y};
                                 el.attr(rst);
                                 if(el._shape)el._shape.attr(rst);
-                                xui.tryF(el.onShapeChanged,[rst]);
+                                xui.tryF(el.onShapeChanged,[rst], el);
                                 rst.dx=ax-lx;
                                 rst.dy=ay-ly;
                                 return rst;
@@ -69950,7 +70235,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={cx: X, cy: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                             case 'rect':{
@@ -69959,7 +70244,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={x: X, y: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                             case 'text':{
@@ -69968,7 +70253,7 @@ return /******/ (function(modules) { // webpackBootstrap
                                     nshape={x: X, y: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                         }
@@ -70172,7 +70457,6 @@ return /******/ (function(modules) { // webpackBootstrap
             });
         },
         _RenderSVG:function(prf){
-            prf._pathCached={};
             var paper = prf._paper;
             if(!paper){
                 paper = prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[prf.containerId||"#"];
@@ -70587,7 +70871,6 @@ return /******/ (function(modules) { // webpackBootstrap
             }
         },
         _syncAttr:function(prf,options,shapeChanged){
-            prf._pathCached={};
         },
         _notify:function(prf, options, shapeChanged){
             // sync attr
@@ -70605,24 +70888,25 @@ return /******/ (function(modules) { // webpackBootstrap
         },
         _draw:function(){},
 
-        _syncConnectors:function(prf){
+        _syncConnectors:function(prf, containerPrf){
             // find all connectors connected to me
             // redraw those connectors
             // if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
-            var children=xui.get(prf,['parent','children']),
-                alias=prf.alias;
-            if(children&&children.length){
+            var children=containerPrf ? containerPrf.children : xui.get(prf,['parent','children']),
+                alias=prf.alias, ref=prf.ref;
+            if((alias||ref) && children&&children.length){
                 xui.arr.each(children,function(o,i){
                     if(!o[0].destroyed && prf.renderCompleted && o[0].renderCompleted && o[0].key==="xui.svg.connector"){
-                        if(alias===xui.get(o[0],['properties','fromObj'])){
-                            // redraw from point
-                            o[0].box._reconnect(o[0],prf);
-                        }
-                        if(alias===xui.get(o[0],['properties','toObj'])){
-                            // redraw to point
-                            o[0].box._reconnect(o[0],null,prf);
-                        }
+                        var conf_f = xui.get(o[0],['properties','fromObj']),
+                            conf_t = xui.get(o[0],['properties','toObj']),
+                            fromPrf = null, toPrf = null;
+                        if(conf_f && ((ref&&ref===conf_f.split(":")[0])||(alias&&alias===conf_f.split(":")[0])))
+                            fromPrf = prf;
+                        if(conf_t && ((ref&&ref===conf_t.split(":")[0])||(alias&&alias===conf_t.split(":")[0])))
+                            toPrf = prf;
+                        if(fromPrf || toPrf)
+                            o[0].box._reconnect(o[0],fromPrf,toPrf);
                     }
                 });
             }
@@ -70633,14 +70917,262 @@ return /******/ (function(modules) { // webpackBootstrap
             if(children&&children.length){
                 xui.arr.each(children,function(o,i){
                     if(o[0].key==="xui.svg.connector"){
-                        if(oa===xui.get(o[0],['properties','fromObj'])){
+                        if(oa===xui.get(o[0],['properties','fromObj'].split(":")[0])){
                             xui.set(o[0],['properties','fromObj'],na);
                         }
-                        if(oa===xui.get(o[0],['properties','toObj'])){
+                        if(oa===xui.get(o[0],['properties','toObj'].split(":")[0])){
                             xui.set(o[0],['properties','toObj'],na);
                         }
                     }
                 });
+            }
+        },
+
+        _getDomNodeProp:function(elem, offsetParent) {
+            var pos = xui(elem).offset(null, offsetParent);
+            function convertMatrixToRaphael(matrixString, centerX, centerY) {
+                var values = matrixString.match(/matrix\(([^)]+)\)/)[1].split(',').map(parseFloat),
+                    a = values[0], b = values[1], c = values[2], d = values[3], e = values[4], f = values[5],
+                    angle = Math.atan2(b, a) * (180 / Math.PI),
+                    scaleX = Math.sqrt(a * a + b * b),
+                    scaleY = Math.sqrt(c * c + d * d),
+                    translateX = e,
+                    translateY = f;
+                return "t" + translateX + "," + translateY + "s" + scaleX + "," + scaleY + "," + centerX + "," + centerY + "r" + angle + "," + centerX + "," + centerY;
+            }
+            function transformStringToMatrix(transformString) {
+                var a = 1, b = 0, c = 0, d = 1, e = 0, f = 0,
+                    transforms = transformString.match(/([trs])([^,]*)(?:,([^,]*)(?:,([^,]*))?)?/g) || [];
+
+                transforms.forEach(transform => {
+                    var command = transform[0], // 't', 's' or 'r'
+                        params = transform.slice(1).split(',').map(parseFloat);
+
+                    switch (command) {
+                        case 't': // translate(x, y)
+                            var tx = params[0] || 0,
+                                ty = params[1] || 0;
+                            e += tx;
+                            f += ty;
+                            break;
+
+                        case 's': // scale(sx, sy, cx, cy)
+                            var sx = params[0] || 1,
+                                sy = params[1] || sx,
+                                cx = params[2] || 0,
+                                cy = params[3] || 0;
+
+                            // udpate matrix
+                            a *= sx;
+                            d *= sy;
+                            e = cx * (1 - sx) + e;
+                            f = cy * (1 - sy) + f;
+                            break;
+
+                        case 'r': // rotate(angle, cx, cy)
+                            var angle = (params[0] * Math.PI) / 180,
+                                cos = Math.cos(angle),
+                                sin = Math.sin(angle),
+                                cx_r = params[1] || 0,
+                                cy_r = params[2] || 0,
+                                newA = a * cos + c * sin,
+                                newB = b * cos + d * sin,
+                                newC = a * -sin + c * cos,
+                                newD = b * -sin + d * cos;
+                            a = newA;
+                            b = newB;
+                            c = newC;
+                            d = newD;
+                            e += cx_r - cx_r * cos + cy_r * sin;
+                            f += cy_r - cx_r * sin - cy_r * cos;
+                            break;
+                    }
+                });
+
+                return Raphael.matrix(a,b,c,d,e,f);
+            }
+            function applyMatrixToPoint(matrix, point) {
+                return {
+                    x: matrix.a * point.x + matrix.c * point.y + matrix.e,
+                    y: matrix.b * point.x + matrix.d * point.y + matrix.f
+                };
+            }
+            function createRoundedRectPath(x, y, width, height, borderRadius) {
+                borderRadius = Math.min(borderRadius, width / 2, height / 2);
+                if(borderRadius){
+                    var points = [
+                        { x: x + borderRadius, y: y },
+                        { x: x + width - borderRadius, y: y },
+                        { x: x + width, y: y + borderRadius },
+                        { x: x + width, y: y + height - borderRadius },
+                        { x: x + width - borderRadius, y: y + height },
+                        { x: x + borderRadius, y: y + height },
+                        { x: x, y: y + height - borderRadius },
+                        { x: x, y: y + borderRadius }
+                    ];
+                    return [
+                        "M" + points[0].x + "," + points[0].y,
+                        "H" + points[1].x,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[2].x + "," + points[2].y,
+                        "V" + points[3].y,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[4].x + "," + points[4].y,
+                        "H" + points[5].x,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[6].x + "," + points[6].y,
+                        "V" + points[7].y,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[0].x + "," + points[0].y,
+                        "Z"
+                    ].join(' ');
+                }else{
+                    var points = [
+                        { x: x, y: y },
+                        { x: x + width, y: y },
+                        { x: x + width, y: y + height },
+                        { x: x, y: y + height }
+                    ];
+                    return [
+                        "M" + points[0].x + "," + points[0].y,
+                        "H" + points[1].x,
+                        "V" + points[2].y,
+                        "H" + points[3].x,
+                        "Z"
+                    ].join(' ');
+                }
+            }
+
+            var x = pos.left,
+                y = pos.top,
+                width = elem.offsetWidth,
+                height = elem.offsetHeight,
+                style = window.getComputedStyle(elem),
+                transform = style.transform || style.webkitTransform || style.mozTransform,
+                borderRadius = Math.min(parseFloat(style.borderRadius), width / 2, height / 2),
+                transformString = transform && transform !== 'none' ? convertMatrixToRaphael(transform, x + width / 2, y + height / 2) : null,
+                corners = [
+                    { x: x, y: y },
+                    { x: x + width, y: y },
+                    { x: x + width, y: y + height },
+                    { x: x, y: y + height }
+                ],
+                matrix = null;
+
+            if (transformString) {
+                matrix = transformStringToMatrix(transformString);
+                corners = corners.map(corner => applyMatrixToPoint(matrix, corner));
+            }
+            corners.push({
+                x: (corners[0].x + corners[3].x) / 2, y: (corners[0].y + corners[3].y) / 2
+            });
+            corners.push({
+                x: (corners[0].x + corners[1].x) / 2, y: (corners[0].y + corners[1].y) / 2
+            });
+            corners.push({
+                x: (corners[1].x + corners[2].x) / 2, y: (corners[1].y + corners[2].y) / 2
+            });
+            corners.push({
+                x: (corners[2].x + corners[3].x) / 2, y: (corners[2].y + corners[3].y) / 2
+            });
+            corners.push({
+                x: (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4,
+                y: (corners[0].y + corners[1].y + corners[2].y + corners[3].y) / 4
+            });
+            return {
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                transformString: transformString,
+                matrix: matrix,
+                corners: corners,
+                path: createRoundedRectPath(x, y, width, height, borderRadius)
+            };
+        },
+        _getConnectAnchors:function(svgprf, prf, targetNode){
+            if(prf){
+                var bbox, matrix,rst,r1=180,r2=270,r3=0,r4=90;
+                if(prf.box['xui.svg']){
+                    prf._elset[0]._.dirty=1;
+
+                    bbox=prf._elset[0]._getBBox(true);
+                    var tf=Raphael.parseTransformString(prf._elset[0].transform());
+                    if(tf && tf.length){
+                        matrix=prf._elset[0].matrix;
+                    }
+                }else if(prf.box['xui.UI']){
+                    var pp = this._getDomNodeProp(targetNode || prf.getRootNode(), svgprf.boxing().getPaperContainer());
+                    bbox = pp;
+                    matrix = pp.matrix;
+                }
+                var x1=bbox.x ,y1=bbox.y+bbox.height/2 ,
+                    x2=bbox.x+bbox.width/2 ,y2=bbox.y ,
+                    x3=bbox.x+bbox.width ,y3=bbox.y+bbox.height/2 ,
+                    x4=bbox.x+bbox.width/2 ,y4=bbox.y+bbox.height;
+                if(matrix){
+                    var xx1=x1,xx2=x2,xx3=x3,xx4=x4,yy1=y1,yy2=y2,yy3=y3,yy4=y4;
+                    x1=matrix.x(xx1,yy1);y1=matrix.y(xx1,yy1);
+                    x2=matrix.x(xx2,yy2);y2=matrix.y(xx2,yy2);
+                    x3=matrix.x(xx3,yy3);y3=matrix.y(xx3,yy3);
+                    x4=matrix.x(xx4,yy4);y4=matrix.y(xx4,yy4);
+                    var xc=(x1+x2+x3+x4)/4, yc=(y1+y2+y3+y4)/4;
+                    r1=Raphael.angle(x1,y1,xc,yc);
+                    r2=Raphael.angle(x2,y2,xc,yc);
+                    r3=Raphael.angle(x3,y3,xc,yc);
+                    r4=Raphael.angle(x4,y4,xc,yc);
+                }
+
+                rst={
+                    "left":{x:x1, y:y1, alpha:r1, solid:1},
+                    "top":{x:x2, y:y2, alpha:r2, solid:1},
+                    "right":{x:x3, y:y3, alpha:r3, solid:1},
+                    "bottom":{x:x4, y:y4, alpha:r4, solid:1}
+                }
+
+                return rst;
+            }
+        },
+        _getConnectPath:function(svgprf, prf, targetNode){
+            if(prf){
+                var ss,matrix,path;
+
+                if(prf.box['xui.svg']){
+                    var tf=Raphael.parseTransformString(prf._elset[0].transform());
+                    if(tf && tf.length){
+                        matrix=prf._elset[0].matrix;
+                    }
+                    path=prf._elset[0].getPath();
+                }else if(prf.box['xui.UI']){
+                    var pp = this._getDomNodeProp(targetNode || prf.getRootNode(), svgprf.boxing().getPaperContainer());
+                    path=pp.path;
+                    matrix=pp.matrix;
+                }
+                if(path && matrix){
+                    path=Raphael.mapPath(path,matrix);
+                }
+                return path;
+            }
+        },
+        _getConnectPoint:function(svgprf, prf, conf, anchor){
+            if(anchor){
+                var rst, targetNode = svgprf.box._getHotNode(prf, conf);
+
+                if(/^[1-9][0-9]*:((1([.][0]+)?)|(0\.[0-9]+))$/.test(anchor)){
+                    var arr=anchor.split(":");
+                    arr[0]=+arr[0];
+                    arr[1]=+arr[1];
+                    if(arr[0]>=1 && arr[1]>=0 && arr[1]<=1){
+                        var cp=this._getConnectPath(svgprf, prf, targetNode);
+                        if(cp){
+                            var cv=Raphael.path2curve(cp),cur,prev;
+                            if((cur=cv[arr[0]])&&(prev=cv[arr[0]-1])){
+                                rst = Raphael.findDotsAtSegment(prev[prev.length-2],prev[prev.length-1], cur[1],cur[2],cur[3],cur[4],cur[5],cur[6],arr[1]);
+                            }
+                        }
+                    }
+                }else{
+                    var hash=this._getConnectAnchors(svgprf, prf, targetNode);
+                    rst = hash && hash[anchor];
+                }
+
+                return rst;
             }
         }
     }
@@ -70793,9 +71325,6 @@ xui.Class("xui.svg.path", "xui.svg",{
             var prf=this.get(0),prop=prf.properties;
             if(prf._elset && prf._elset[0])prop.path=prf._elset[0].attr('path').join('');
             return prop.path;
-        },
-        _getConnectAnchors:function(){
-            // no solid anchors
         },
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -71103,9 +71632,6 @@ xui.Class("xui.svg.imageComb", "xui.svg.absComb",{
 
 xui.Class("xui.svg.connector","xui.svg.absComb",{
     Instance:{
-        _getConnectAnchors:null,
-        _getConnectPath:null,
-        _getConnectPoint:null,
         toFront:function(){
             return this.each(function(prf){
                 if(prf=prf._elset){
@@ -71139,6 +71665,11 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                     }
                 }
             });
+        },
+        update:function(fromPrf, toPrf){
+            return this.each(function(prf){
+                prf.box._reconnect(prf, fromPrf, toPrf);
+            });
         }
     },
     Static:{
@@ -71150,6 +71681,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 delete prop.attr.BG['arrow-start'];
                 delete prop.attr.BG['arrow-end'];
             }
+            delete prop.attachment;
             return o;
         },
         DataModel:{
@@ -71185,17 +71717,24 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 ini:'',
                 combobox:['left','top','right','bottom']
             },
+            fromLocked:false,
             //fromDDKey:"default",
 
             toObj:"",
             toPoint:{
                 ini:'',
                 combobox:['left','top','right','bottom']
-            }//,
+            },
+            toLocked:false,
+
+            attachment:{
+               hidden: true,
+               ini:[]
+            }
+            //,
             //toDDKey:"default",
 
             //textPos:0.5
-
         },
         _type:'path',
         Templates:{
@@ -71210,14 +71749,18 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
         },
         _draw:function(paper, prf, prop){
-           var s=paper.set(),
+           var ns=this,
+               s=paper.set(),
                attr=prop.attr.KEY,//att2=prop.attr.TEXT,
                obj1,obj2;
 
             obj2 = paper.path(attr.path);
             obj2.node.id=prf.box.KEY+":"+prf.serialId+":";
             obj2.onShapeChanged=function(attr){
-                if(attr.path)obj1.attr({path:attr.path},null,false);
+                if(attr.path){
+                    obj1.attr({path:attr.path},null,false);
+                    ns._syncAtt(attr.path, prop.attachment);
+                }
             };
             s.push(obj2);
 
@@ -71229,8 +71772,42 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             s.push(obj1);
             obj1.insertBefore(obj2);
             prf._bg=obj1;
+            obj1.click(function(e){
+                if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, obj1))xui.Event.stopBubble(e);
+            });
+            obj1.dblclick(function(e){
+                if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, obj1))xui.Event.stopBubble(e);
+            });
+            if(prop.attachment){
+                /*path:string, attr:object, distance:0~1*/
+                xui.arr.each(prop.attachment,function(att){
+                    var elem;
+                    if(att.path){
+                        elem = paper.path(att.path);
+                    }else if(att.text){
+                        elem = paper.text(0,0,att.text);
+                    }
+                    if(elem){
+                        elem.node.id = prf.box.KEY+"-A:"+prf.serialId+":"+(att.id||xui.rand());
+                        att.elem = elem;
+                        if(att.attr)elem.attr(att.attr);
+                        elem.click(function(e){
+                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, elem))xui.Event.stopBubble(e);
+                        });
+                        elem.dblclick(function(e){
+                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, elem))xui.Event.stopBubble(e);
+                        });
+                        att.callback && att.callback(att);
+                    }
+                });
+            }
+            ns._syncAtt(attr.path, prop.attachment);
+
 
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unbind"]=function(){
+                xui.arr.each(prop.attachment,function(att){
+                    att.elem && att.elem.remove();
+                });
                 obj2.onShapeChanged=null;
                 obj2=null;
             };
@@ -71246,7 +71823,6 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             var upper=arguments.callee.upper,args=xui.toArr(arguments);
             upper.apply(this,args);
             upper=null;
-            prf._pathCached={};
 
             if(!prf._bg)return;
 
@@ -71294,80 +71870,104 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
         // have to set to null
         _reconnect:function(prf,fromPrf,toPrf){
             if(prf.destroyed)return;
-            var prop=prf.properties,
+            var ns=this,
+                prop=prf.properties,
                 type=prop.type,
                 path=Raphael.parsePathString(prop.attr.KEY.path),
                 conn=prf.boxing(),
-                ins,cp;
-            if(fromPrf && prop.fromObj && prop.fromPoint){
-                ins=fromPrf.boxing();
-                cp=ins._getConnectPoint(prop.fromPoint);
-                if(cp){
-                    switch(type){
-                        case 'flowchart':
-                            // need to redraw it
-                            var np=this._redrawBrokenLine(prf);
-                            if(np){
-                                // renew paths
-                                path.length=0;
-                                xui.arr.each(np,function(p){
-                                    path.push(p);
-                                });
-                            }
-                        break;
-                        case 'straight':
-                            path[0][1]=cp.x;
-                            path[0][2]=cp.y;
-                        break;
-                        case 'bezier':
-                            var ox=cp.x-path[0][1],
-                                oy=cp.y-path[0][2];
-                            path[0][1]=cp.x;
-                            path[0][2]=cp.y;
-                            path[1][1]+=ox;
-                            path[1][2]+=oy;
-                        break;
-                    }
-                    conn.setAttr("KEY",{path:path},false);
+                cp1,cp2;
+            if(xui.isHash(fromPrf) && ('x' in fromPrf) && ('y' in fromPrf)){
+                cp1 = fromPrf;
+            }else if(fromPrf && prop.fromObj && prop.fromPoint){
+                cp1 = xui.svg._getConnectPoint(prf, fromPrf, prop.fromObj, prop.fromPoint);
+            }
+            if(xui.isHash(toPrf) && ('x' in toPrf) && ('y' in toPrf)){
+                cp2 = toPrf;
+            }else if(toPrf && prop.toObj  && prop.toPoint){
+                cp2 = xui.svg._getConnectPoint(prf, toPrf, prop.toObj, prop.toPoint);
+            }
+
+            if(cp1){
+                switch(type){
+                    case 'flowchart':
+                        // need to redraw it
+                        var np=this._redrawBrokenLine(prf);
+                        if(np){
+                            // renew paths
+                            path.length=0;
+                            xui.arr.each(np,function(p){
+                                path.push(p);
+                            });
+                        }
+                    break;
+                    case 'straight':
+                        path[0][1]=cp1.x;
+                        path[0][2]=cp1.y;
+                    break;
+                    case 'bezier':
+                        var ox=cp1.x-path[0][1],
+                            oy=cp1.y-path[0][2];
+                        path[0][1]=cp1.x;
+                        path[0][2]=cp1.y;
+                        path[1][1]+=ox;
+                        path[1][2]+=oy;
+                    break;
                 }
             }
-            if(toPrf && prop.toObj  && prop.toPoint){
-                ins=toPrf.boxing();
-                cp=ins._getConnectPoint(prop.toPoint);
-                if(cp){
-                    var l=path.length-1;
-                    if( (path[l][0]||"").toUpperCase()=='Z')l--;
-                    switch(type){
-                        case 'flowchart':
-                            // need to redraw it
-                            var np=this._redrawBrokenLine(prf);
-                            if(np){
-                                // renew paths
-                                path.length=0;
-                                xui.arr.each(np,function(p){
-                                    path.push(p);
-                                });
-                            }
-                        break;
-                        case 'straight':
-                            path[l][1]=cp.x;
-                            path[l][2]=cp.y;
-                        break;
-                        case 'bezier':
-                            var ox=cp.x-path[l][5],
-                                oy=cp.y-path[l][6];
-                            path[l][5]=cp.x;
-                            path[l][6]=cp.y;
-                            path[l][3]+=ox;
-                            path[l][4]+=oy;
-                        break;
-                    }
-                    conn.setAttr("KEY",{path:path},false);
+            if(cp2){
+                var l=path.length-1;
+                if( (path[l][0]||"").toUpperCase()=='Z')l--;
+                switch(type){
+                    case 'flowchart':
+                        // need to redraw it
+                        var np=this._redrawBrokenLine(prf);
+                        if(np){
+                            // renew paths
+                            path.length=0;
+                            xui.arr.each(np,function(p){
+                                path.push(p);
+                            });
+                        }
+                    break;
+                    case 'straight':
+                        path[l][1]=cp2.x;
+                        path[l][2]=cp2.y;
+                    break;
+                    case 'bezier':
+                        var ox=cp2.x-path[l][5],
+                            oy=cp2.y-path[l][6];
+                        path[l][5]=cp2.x;
+                        path[l][6]=cp2.y;
+                        path[l][3]+=ox;
+                        path[l][4]+=oy;
+                    break;
                 }
+            }
+            if(cp1 || cp2){
+                conn.setAttr("KEY",{path:path},false);
+                ns._syncAtt(path, prop.attachment);
             }
         },
+        _syncAtt:function(path, attachment){
+            if(attachment){
+                xui.arr.each(attachment,function(att){
+                    var elem=att.elem;
+                    if(elem){
+                        var pos = Raphael.getPointAtLength(path, Raphael.getTotalLength(path) * Math.min(1,Math.max(0,att.distance||0))),
+                            bb = elem.type=="text"?{width:0,height:0}:elem.getBBox(true);
+                        elem.transform("T"+(pos.x-bb.width/2)+","+(pos.y-bb.height/2)+"R"+pos.alpha+","+pos.x+","+pos.y);
+                        att.callback && att.callback(att);
+                    }
+                });
+            }
+        },
+        _getHotNode:function(prf, conf){
+            conf = conf.split(":");
+            return conf[1] ? prf.getSubNode(conf[1], conf[2]) : prf.getRootNode();
+        },
         _redrawBrokenLine:function(prf,inputPoint,x,y){
-            var offset=30,
+            var ns=this,
+                offset=30,
                 offsetx=30,
                 offsety=30,
                 prop=prf.properties,
@@ -71390,15 +71990,12 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.fromObj){
                         ins=p[0].boxing();
-                        sPoint=ins._getConnectPoint(prop.fromPoint);
+                        sPoint=xui.svg._getConnectPoint(prf, p[0],prop.fromObj,prop.fromPoint);
                         if(sPoint){
-                            sPath=ins._getConnectPath();
+                            var hotNode = ns._getHotNode(p[0], prop.fromObj)
+                            sPath=xui.svg._getConnectPath(prf, p[0], hotNode);
 
-                            if(sBox=xui.get(p[0]._pathCached,['_connBBox'])){
-                            }else{
-                                sBox=Raphael.pathBBox(sPath);
-                                xui.set(p[0]._pathCached,['_connBBox'], sBox)
-                            }
+                            sBox=Raphael.pathBBox(sPath);
 
                             if(sPoint.solid){
                                 angle=sPoint.alpha;
@@ -71424,15 +72021,12 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.toObj){
                         ins=p[0].boxing();
-                        ePoint=ins._getConnectPoint(prop.toPoint);
+                        ePoint=xui.svg._getConnectPoint(prf, p[0],prop.toObj,prop.toPoint);
                         if(ePoint){
-                            ePath=ins._getConnectPath();
+                            var hotNode = ns._getHotNode(p[0],prop.toObj);
+                            ePath=xui.svg._getConnectPath(prf, p[0], hotNode);
 
-                            if(eBox=xui.get(p[0]._pathCached,['_connBBox'])){
-                            }else{
-                                eBox=Raphael.pathBBox(ePath);
-                                xui.set(p[0]._pathCached,['_connBBox'], eBox)
-                            }
+                            eBox=Raphael.pathBBox(ePath);
 
                             if(ePoint.solid){
                                 angle=ePoint.alpha;
@@ -71839,25 +72433,30 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                         if(prf.onTextClick)
                             rtn=prf.boxing().onTextClick(prf, e, src);
                         if(rtn!==false && prf.onClick)
-                            return prf.boxing().onClick(prf, e, src);
+                            if(false===prf.boxing().onClick(prf, e, src))
+                                xui.Event.stopBubble(e);
                     });
                 }else{
                     el.click(function(e){
                         if(prf.$inDesign)return false;
                         if(prf.properties.disabled)return false;
                         if(prf.onClick)
-                            return prf.boxing().onClick(prf, e, src);
+                            if(false===prf.boxing().onClick(prf, e, src))
+                                xui.Event.stopBubble(e);
                     });
                 }
                 el.dblclick(function(e){
                     if(prf.$inDesign)return false;
                     if(prf.properties.disabled)return false;
                     if(prf.onDblClick)
-                        return prf.boxing().onDblClick(prf, e, src);
+                        if(false===prf.boxing().onDblClick(prf, e, src))
+                            xui.Event.stopBubble(e);
                 });
                 el.contextmenu(function(e){
                     if(prf.onContextmenu)
                         return prf.boxing().onContextmenu(prf, e, src)!==false;
+                        if(false===prf.boxing().onContextmenu(prf, e, src))
+                            xui.Event.stopBubble(e);
                 });
                 el.node.id=prf.box.KEY+"-"+key+":"+prf.serialId+":";
                 s.push(el);
@@ -71906,39 +72505,21 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         BeforeRenderTrigger:function(){
             var profile=this,
                 root=profile.getRootNode(),
-                prop=profile.properties,
-                // force to px
-                w=xui.CSS.$px(prop.width,root,true),
-                h=xui.CSS.$px(prop.height,root,true);
-
+                prop=profile.properties;
             profile._svg_papers = {};
             profile._svg_nodes = {};
 
             // add a default svg node
-            var paper = profile._svg_papers["#"] = Raphael(profile.$domId, w, h),
-                canvas = profile._svg_nodes["#"] = paper.canvas;
+            var paper = profile._svg_papers["#"] = Raphael(profile.$domId),
+                canvas = profile._svg_nodes["#"] = paper.canvas,
+                style = canvas.style;
             canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
-            canvas.className = "xui-svg-container";
+            canvas.setAttribute("class", "xui-svg-container");
+            style.position = "absolute";
+            style.overflow = "visible";
+            style.left=style.top=style.border=style.padding=style.margin=0;
             // graphicZIndex > zInde
-            canvas.style.zIndex=prop.graphicZIndex;
-        },
-        RenderTrigger:function(){
-            var profile=this;
-
-            // svg container
-            xui.UI.Div._for_svg_children(profile);
-
-            xui.setTimeout(function(){
-              if(profile && !profile.destroyed){
-                var size = profile._svg_papers["#"].getSize();
-                  // ensure right position
-                  if(profile.$designerRoot)
-                         profile._frame=profile._svg_papers["#"].rect(0,0,1,1,0).attr({"stroke-width":"0px"});
-                  else if(profile.$inDesign)
-                        profile._frame=profile._svg_papers["#"].rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
-                  if(profile._frame)profile._frame._decoration=1;
-              }
-           });
+            style.zIndex=prop.graphicZIndex;
         },
         _onresize:function(profile,width,height){
             var paper=profile._svg_papers["#"], scaleChildren=profile.properties.scaleChildren,ow,oh,
@@ -71958,15 +72539,6 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 var pw=profile.$px(paper.width,null,true), ph=profile.$px(paper.height,null,true);
                 if( (width && pw!=width) || (height && ph!=height) ){
                     var args={},node=profile.getSubNode("SVG");
-                    paper.setSize(width,height);
-
-                    if(profile.$inDesign && profile._frame){
-                        if(width||width===0)
-                            profile._frame.attr('width',width);
-                        if(height||height===0)
-                            profile._frame.attr('height',height);
-                    }
-
                     if(!(width||width===0)){
                        width=pw;
                     }
@@ -72034,8 +72606,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                                     }
                                 };
                             // find root node
-                            if(profile._frame!==elem
-                                && elem.node.$xid
+                            if(elem.node.$xid
                                 && elem.node.id
                                 && !/^[^:]+-/.test(elem.node.id)
                                 ){

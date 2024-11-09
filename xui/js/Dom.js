@@ -1336,7 +1336,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 r=ns;
             }else{
                 //for IE, firefox3(except document.body)
-                if(!(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
+                if( (xui.browser.ie || (xui.browser.gek && xui.browser.ver<=3)) && !(xui.browser.gek && node===document.body) && node.getBoundingClientRect){
                     t = xui.Dom.$getBoundingClientRect(node,original);
                     pos = {left :t.left, top :t.top};
                     if(boundary.nodeType==1 && boundary!==document.body)
@@ -1986,7 +1986,7 @@ xui.Class('xui.Dom','xui.absBox',{
             ns.popToTop(pos, type||"outer",parent).setBlurTrigger(id, function(){
                 if(typeof(trigger)=="function")xui.tryF(trigger);
                 else ns.hide();
-            });
+            }, group);
             return id;
         },
         popUp : function(pos, type, parent, trigger, group){
@@ -2034,7 +2034,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     xui.setNodeData(node.get(0)||"empty",'$ui.hover.parent',src);
                     if(!beforePop || false!==beforePop(prf, node, e, src)){
                         if(xui(src).isDisplayed()){
-                            node.popToTop(src, type, parent,showEffects);
+                            node.popToTop(type=="cursor"?e:src, type, parent,showEffects);
                             node.onMouseover(function(){
                                 self.onMouseover(true)
                             },'hoverPop').onMouseout(function(){
@@ -4157,7 +4157,7 @@ xui.Class('xui.Dom','xui.absBox',{
                             if(node===document||node===window){
                                 r=xui(node)[o[1]]();
                             }else{
-                                r=node.offsetParent?node[o[6]]:0;
+                                r=node[o[6]];
                                 //get from css setting before css applied
                                 if(!r){
                                     if(!_in)r=_size(node,1,undefined,true)+(contentBox?t[o[2]]():0);
@@ -4361,18 +4361,34 @@ xui.Class('xui.Dom','xui.absBox',{
                         return false;
                     }
                 }
+                if(!keydown && xui.UIProfile){
+                    var n = document.activeElement;
+                    if(document.documentElement!==n && (n.tagName=="INPUT"||n.tagName=="TEXTAREA"||n.tagName=="BUTTON")){
+                        var prf = xui.UIProfile.getFromDom(n);
+                        if(prf){
+                            if(ks.key=="esc"){
+                                if(prf.onEsc)prf.boxing().onEsc(prf);
+                            }else if(ks.key=="enter"){
+                                if(prf.onEnter)prf.boxing().onEnter(prf);
+                            }
+                        }
+                    }
+                }
+
                 if(xui.Module){
                     xui.arr.each(xui.Module._cache,function(m){
                        // by created order
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
-                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
+                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                                   return false;
                        }
                        else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
-                               m.fireEvent('onHookKey', [m,ks, keydown, e]);
+                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                                   return false;
                        }
                     });
                 }

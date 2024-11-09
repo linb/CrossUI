@@ -39,39 +39,21 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
         BeforeRenderTrigger:function(){
             var profile=this,
                 root=profile.getRootNode(),
-                prop=profile.properties,
-                // force to px
-                w=xui.CSS.$px(prop.width,root,true),
-                h=xui.CSS.$px(prop.height,root,true);
-
+                prop=profile.properties;
             profile._svg_papers = {};
             profile._svg_nodes = {};
 
             // add a default svg node
-            var paper = profile._svg_papers["#"] = Raphael(profile.$domId, w, h),
-                canvas = profile._svg_nodes["#"] = paper.canvas;
+            var paper = profile._svg_papers["#"] = Raphael(profile.$domId),
+                canvas = profile._svg_nodes["#"] = paper.canvas,
+                style = canvas.style;
             canvas.id=profile.box.KEY+"-SVG:"+profile.serialId+":";
-            canvas.className = "xui-svg-container";
+            canvas.setAttribute("class", "xui-svg-container");
+            style.position = "absolute";
+            style.overflow = "visible";
+            style.left=style.top=style.border=style.padding=style.margin=0;
             // graphicZIndex > zInde
-            canvas.style.zIndex=prop.graphicZIndex;
-        },
-        RenderTrigger:function(){
-            var profile=this;
-
-            // svg container
-            xui.UI.Div._for_svg_children(profile);
-
-            xui.setTimeout(function(){
-              if(profile && !profile.destroyed){
-                var size = profile._svg_papers["#"].getSize();
-                  // ensure right position
-                  if(profile.$designerRoot)
-                         profile._frame=profile._svg_papers["#"].rect(0,0,1,1,0).attr({"stroke-width":"0px"});
-                  else if(profile.$inDesign)
-                        profile._frame=profile._svg_papers["#"].rect(0,0,size.width,size.height,8).attr({"stroke-dasharray": ". ", stroke: "#666"});
-                  if(profile._frame)profile._frame._decoration=1;
-              }
-           });
+            style.zIndex=prop.graphicZIndex;
         },
         _onresize:function(profile,width,height){
             var paper=profile._svg_papers["#"], scaleChildren=profile.properties.scaleChildren,ow,oh,
@@ -91,15 +73,6 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                 var pw=profile.$px(paper.width,null,true), ph=profile.$px(paper.height,null,true);
                 if( (width && pw!=width) || (height && ph!=height) ){
                     var args={},node=profile.getSubNode("SVG");
-                    paper.setSize(width,height);
-
-                    if(profile.$inDesign && profile._frame){
-                        if(width||width===0)
-                            profile._frame.attr('width',width);
-                        if(height||height===0)
-                            profile._frame.attr('height',height);
-                    }
-
                     if(!(width||width===0)){
                        width=pw;
                     }
@@ -167,8 +140,7 @@ xui.Class("xui.UI.SVGPaper", "xui.UI.Div",{
                                     }
                                 };
                             // find root node
-                            if(profile._frame!==elem
-                                && elem.node.$xid
+                            if(elem.node.$xid
                                 && elem.node.id
                                 && !/^[^:]+-/.test(elem.node.id)
                                 ){

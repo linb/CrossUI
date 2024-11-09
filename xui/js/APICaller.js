@@ -371,6 +371,23 @@ xui.Class("xui.APICaller","xui.absObj",{
                 return ajax;
             else
                 ajax.start();
+            // TODO: mock dataset
+            /*  list/create/get/set/delete
+                mock_dataset = {
+                    // default:
+                    // "/obj_name/list" :  xui.mock_data > obj_name > list
+                    // "/obj_name/get" :  xui.mock_data > obj_name > get by id
+                    // "/obj_name/set" :  xui.mock_data > obj_name > set by id
+                    // "/obj_name/create" :  xui.mock_data > obj_name > create
+                    // "/obj_name/delete" :  xui.mock_data > obj_name > delete by i
+
+                    // function:
+                    "/object_name2/end_point2" : function(args, data){
+                        // xui.mock_data ....code ...
+                        // return {data:{}} or {error:""}
+                    }
+                };
+            */
         },
         getRPCInstance:function(){
           var ns=this,prf=ns.get(0);

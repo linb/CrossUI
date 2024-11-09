@@ -120,7 +120,9 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             onClickPanel:function(profile, e, src){},
             onClickBackdrop:function(profile, e, src){},
             onFiles:function(profile, files){},
-            onFileError:function(profile, message, file){}
+            onFileError:function(profile, message, file){},
+            onInitPanelView:function(profile, callback){},
+            onInitValues:function(profile, callback){}
         },
         DataModel:{
             //delete those properties
@@ -255,9 +257,6 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
         RenderTrigger:function(){
             // only div
             var ns=this;
-            if(ns.box.KEY=="xui.UI.Block")
-                if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                    xui.UI.Div._applyAutoLoad(this);
             ns.destroyTrigger = function(){
                 var s=this,panel=this.getSubNode("PANEL").get(0);
                 if(s.$inModal)s.box._unModal(s);
@@ -449,8 +448,10 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
                 input.click();
               }, false);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(ns);
+
+            if(ns.box.KEY=="xui.UI.Block"){
+                xui.UI.Div._after_con_render(ns);
+            }
         },
         _sbicon:function(profile, sideBarStatus, type, ui){
             var target=sideBarStatus=='fold'

@@ -11,7 +11,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             var ins;
             return this.each(function(profile){
                 if(profile.renderId){
-                    delete profile.$ini;
+                    delete profile._$init;
                     if(removeChildren){
                         ins=profile.boxing();
                         ins.removeChildren(true,destroyChildren);
@@ -23,12 +23,10 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         },
         iniPanelView:function(){
             return this.each(function(profile){
-                if(!profile.$ini){
-                    profile.$ini=true;
-                    var p=profile.properties;
-                    if(profile.onIniPanelView)profile.boxing().onIniPanelView(profile);
-                    if(p.iframeAutoLoad||p.ajaxAutoLoad)
-                        xui.UI.Div._applyAutoLoad(profile);
+                if(!profile._$init){
+                    profile._$init=true;
+                    if(profile.onIniPanelView)
+                        profile.boxing().onIniPanelView(profile);
                 }
             });
         }
@@ -461,6 +459,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
         },
         EventHandlers:{
             onIniPanelView:function(profile){},
+
             beforeFold:function(profile){},
             beforeExpand:function(profile){},
             afterFold:function(profile){},

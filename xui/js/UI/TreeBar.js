@@ -546,7 +546,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
             beforeFold:function(profile,item){},
             beforeExpand:function(profile,item){},
             afterFold:function(profile,item){},
-            afterExpand:function(profile,item){}
+            afterExpand:function(profile,item){},
+
+            onInitList:function(profile, callback){}
         },
         DataModel:{
             listKey:null,

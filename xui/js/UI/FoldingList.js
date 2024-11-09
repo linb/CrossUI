@@ -306,14 +306,12 @@ xui.Class("xui.UI.FoldingList", ["xui.UI.List"],{
             onGetContent:function(profile,item,callback){},
             onShowOptions:function(profile,item,e,src){}
         },
-         RenderTrigger:function(){
+        RenderTrigger:function(){
             var self=this, pro=self.properties, items=pro.items, item;
             if(pro.activeLast && items.length>0){
                 item=items[items.length-1];
                 self.boxing().fillContent(item.id, item._body);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(self);
         },
         _prepareItems:function(profile, arr, pid){
             if(arr.length){

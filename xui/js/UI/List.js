@@ -565,6 +565,9 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 action: function(v){
                     this.getSubNode('LABEL').css('align-items',v=='bottom'?'flex-end':v=='middle'?'center':v=='top'?'flex-start':'');
                 }
+            },
+            isFormField:{
+                ini:false
             }
         },
         EventHandlers:{
@@ -578,7 +581,9 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
             onLabelClick:function(profile, e, src){},
             onLabelDblClick:function(profile, e, src){},
-            onLabelActive:function(profile, e, src){}
+            onLabelActive:function(profile, e, src){},
+
+            onInitList:function(profile, callback){}
         },
         _onStartDrag:function(profile, e, src, pos){
             var pos=xui.Event.getPos(e);

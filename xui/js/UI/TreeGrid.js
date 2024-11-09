@@ -1996,6 +1996,14 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 type=='map'?( (m={})&&((m[colId]=v.value)||1)&&m):
                 v;
         },
+        getSubNode:function(key, itemId, tag){
+            if(key.indexOf("CELL")===0 && /\d+-\d+/.test(itemId)){
+                var a = itemId.split("-");
+                a = this.getCellbyRowCol(parseInt(a[0],10), parseInt(a[1],10));
+                itemId = a._serialId;
+            }
+            return xui.UI.prototype.getSubNode.apply(this, [key, itemId, tag]);
+        },
         getCells:function(rowId, colId, type){
             var map={};
             xui.each(this.get(0).cellMap,function(v){
@@ -5463,7 +5471,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             beforeGridValueCalculated:function(profile){},
             afterGridValueCalculated:function(profile, value){},
 
-            onGetExcelCellValue:function(profile, excelCellId, dftValue){}
+            onGetExcelCellValue:function(profile, excelCellId, dftValue){},
+
+            onInitList:function(profile, callback){}
         },
         RenderTrigger:function(){
             var ns=this,
@@ -5972,6 +5982,40 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 prop.grpCols = [];
             if(!prop.rows || !xui.isArr(prop.rows))
                 prop.rows = [];
+
+            if(profile.onInitList){
+                var ins = profile.boxing(),
+                rst = profile.boxing().onInitList(profile, function(rst){
+                    if(xui.isArr(rst)){
+                        ins.setRows(rst);
+                    }else{
+                        if(xui.isArr(rst.grpCols)){
+                            prop.grpCols = rst.grpCols;
+                        }
+                        if(xui.isArr(rst.columns||rst.header)){
+                            ins.setHeader(rst.columns||rst.header);
+                        }
+                        if(xui.isArr(rst.rows)){
+                            ins.setRows(rst);
+                        }
+                    }
+                });
+                if(rst){
+                    if(xui.isArr(rst)){
+                        prop.rows = rst;
+                    }else{
+                        if(xui.isArr(rst.grpCols)){
+                            prop.grpCols = rst.grpCols;
+                        }
+                        if(xui.isArr(rst.columns||rst.header)){
+                            prop.header = rst.columns||rst.header;
+                        }
+                        if(xui.isArr(rst.rows)){
+                            prop.rows = rst.rows;
+                        }
+                    }
+                }
+            }
 
             if(prop.hotRowMode=="none")prop.hotRowMode="hidden";
             if(prop.hotRowMode!="hidden"&&prop.hotRowMode!="before")prop.hotRowMode="after";
@@ -7711,7 +7755,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         _adjustBody:function(profile, trigger, callback){
             if(!profile.renderId || profile.destroyed)return;
-            xui.UI.$freezeNode(profile, 'adjustbody:' + trigger);
+            //xui.UI.$freezeNode(profile, 'adjustbody:' + trigger);
             xui.resetRun(profile.$xid+'4',function(){
                 // destroyed
                 if(profile.renderId || !profile.destroyed){
@@ -7880,7 +7924,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
                     if(callback)callback();
                 }
-                xui.UI.$unfreezeNode(profile,'adjustbody:' + trigger);
+                //xui.UI.$unfreezeNode(profile,'adjustbody:' + trigger);
             });
             // formula
             if(trigger!='render' && trigger!='rowhandler' && trigger!='foldrow' && trigger!='expandrow' && trigger!='setcol' && trigger!='resize')

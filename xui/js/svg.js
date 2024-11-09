@@ -253,8 +253,8 @@ xui.Class("xui.svg", "xui.UI",{
             "clip-rect":1,
             "fill":1, // Radial gradients can only be applied to circles and ellipses.
             "fill-opacity":1,
-//            "href":1,
-//            "target":1,
+            //            "href":1,
+            //            "target":1,
             "title":1,
             "cursor":1,
             "transform":1,
@@ -527,6 +527,10 @@ xui.Class("xui.svg", "xui.UI",{
             var prf=this.get(0), cid=prf.containerId||"#";
             return (prf && prf._paper) || (prf && prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[cid]);
         },
+        getPaperContainer:function(){
+            var paper = this.getPaper();
+            return paper && paper.canvas.parentNode;
+        },
         elemsAnimate:function(endpoints, ms, easing, callback){
             var prf=this.get(0);
             if(prf&&prf._elset){
@@ -562,7 +566,51 @@ xui.Class("xui.svg", "xui.UI",{
         setHeight:function(value){
             return this._setBBox('height',parseFloat(value));
         },
+        show:function(parent,subId,left,top,ignoreEffects,callback){
+            return this.each(function(o){
+                var t=o.properties,
+                    ins=o.boxing(),
+                    b,
+                    elems=o.boxing().getAllNodes();
 
+                if(xui.getNodeData(o.renderId,'_xuihide')){
+                    b=1;
+                    o._dockIgnore=false;
+                    elems.show();
+                    xui.setNodeData(o, '_xuihide', 0);
+                    if(t.position=='absolute' && t.dock && t.dock!='none')
+                        xui.UI.$dock(o,false,true);
+                    xui.tryF(callback);
+                //first call show
+                }else{
+                    parent = parent || o.parent;
+                    if(!parent && (!o.renderId || (o.getRootNode().id || "").indexOf(xui.Dom._emptyDivId)===0))
+                        parent=xui('body');
+                }
+                var p=parent,n;
+                if(p){
+                    if(p['xui.UIProfile']){n=p.renderId;p=p.boxing()}
+                    else if(p['xui.UI'])n=(n=p.get(0))&&n.renderId;
+                    else n=(p=xui(p))&&p._nodes[0];
+                    if(n){
+                        p.append(ins,subId);
+                        //  if(t.visibility=="hidden")ins.setVisibility("",true);
+                        //  if(t.display=="none")ins.setDisplay("",true);
+                        xui.tryF(callback);
+                    }
+                }
+            });
+        },
+        hide:function(ignoreEffects, callback){
+            return this.each(function(o){
+                if(o.renderId){
+                    xui.setNodeData(o, '_xuihide', 1);
+                    o.boxing().getAllNodes().hide();
+                    o._dockIgnore=true;
+                    xui.tryF(callback);
+                }
+            });
+        },
         _getBBox:function(key, withTransform){
             var prf=this.get(0),el,bbox;
             if((el=prf._elset)&&el.length){
@@ -589,108 +637,6 @@ xui.Class("xui.svg", "xui.UI",{
             }
         },
         _setBBox:function(key,value){
-        },
-        _getConnectAnchors:function(){
-            var prf=this.get(0),rst;
-            if(prf){
-                if(xui.get(prf._pathCached,['_connAnchors']))
-                    return xui.get(prf._pathCached,['_connAnchors']);
-
-                var ss=prf._elset;
-                if(ss&&ss[0]){
-                    ss[0]._.dirty=1;
-                    var tf=Raphael.parseTransformString(ss[0].transform()),
-                        matrix;
-                    if(tf && tf.length){
-                        matrix=ss[0].matrix;
-                    }
-
-                    var bbox=ss[0]._getBBox(true),
-                        r1=180,r2=270,r3=0,r4=90,
-                        x1=bbox.x ,y1=bbox.y+bbox.height/2 ,
-                        x2=bbox.x+bbox.width/2 ,y2=bbox.y ,
-                        x3=bbox.x+bbox.width ,y3=bbox.y+bbox.height/2 ,
-                        x4=bbox.x+bbox.width/2 ,y4=bbox.y+bbox.height;
-                    if(matrix){
-                        var xx1=x1,xx2=x2,xx3=x3,xx4=x4,yy1=y1,yy2=y2,yy3=y3,yy4=y4;
-                        x1=matrix.x(xx1,yy1);y1=matrix.y(xx1,yy1);
-                        x2=matrix.x(xx2,yy2);y2=matrix.y(xx2,yy2);
-                        x3=matrix.x(xx3,yy3);y3=matrix.y(xx3,yy3);
-                        x4=matrix.x(xx4,yy4);y4=matrix.y(xx4,yy4);
-
-                        var xc=(x1+x2+x3+x4)/4,
-                             yc=(y1+y2+y3+y4)/4;
-
-                        r1=Raphael.angle(x1,y1,xc,yc);
-                        r2=Raphael.angle(x2,y2,xc,yc);
-                        r3=Raphael.angle(x3,y3,xc,yc);
-                        r4=Raphael.angle(x4,y4,xc,yc);
-                    }
-
-                    rst={
-                        "left":{x:x1, y:y1, alpha:r1, solid:1},
-                        "top":{x:x2, y:y2, alpha:r2, solid:1},
-                        "right":{x:x3, y:y3, alpha:r3, solid:1},
-                        "bottom":{x:x4, y:y4,alpha:r4, solid:1}
-                    }
-
-                    if(prf._pathCached)xui.set(prf._pathCached,['_connAnchors'], rst);
-
-                    return rst;
-                }
-            }
-        },
-        _getConnectPath:function(){
-            var prf=this.get(0),ss;
-
-            if(xui.get(prf._pathCached,['_connPath']))
-                return xui.get(prf._pathCached,['_connPath']);
-
-            if(prf && (ss=prf._elset) && ss[0]){
-                var tf=Raphael.parseTransformString(ss[0].transform()),
-                        matrix;
-                    if(tf && tf.length){
-                        matrix=ss[0].matrix;
-                    }
-                var path=ss[0].getPath();
-                if(matrix){
-                    path=Raphael.mapPath(path,matrix);
-                }
-
-                if(prf._pathCached)xui.set(prf._pathCached,['_connPath'], path);
-
-                return path;
-            }
-        },
-        _getConnectPoint:function(anchor){
-            if(anchor){
-                var prf=this.get(0),rst;
-
-                if(xui.get(prf._pathCached,['_connPoint',anchor]))
-                    return xui.get(prf._pathCached,['_connPoint',anchor]);
-
-                if(/^[1-9][0-9]*:((1([.][0]+)?)|(0\.[0-9]+))$/.test(anchor)){
-                    var arr=anchor.split(":");
-                    arr[0]=+arr[0];
-                    arr[1]=+arr[1];
-                    if(arr[0]>=1 && arr[1]>=0 && arr[1]<=1){
-                        var prf=this.get(0),cp=this._getConnectPath();
-                        if(cp){
-                            var cv=Raphael.path2curve(cp),cur,prev;
-                            if((cur=cv[arr[0]])&&(prev=cv[arr[0]-1])){
-                                rst = Raphael.findDotsAtSegment(prev[prev.length-2],prev[prev.length-1], cur[1],cur[2],cur[3],cur[4],cur[5],cur[6],arr[1]);
-                            }
-                        }
-                    }
-                }else{
-                    var hash=this._getConnectAnchors();
-                    rst = hash && hash[anchor];
-                }
-
-                if(prf._pathCached)xui.set(prf._pathCached,['_connPoint',anchor],rst);
-
-                return rst;
-            }
         },
         _removeHandler:function(){
             return this.each(function(prf){
@@ -724,6 +670,7 @@ xui.Class("xui.svg", "xui.UI",{
                 if(!prf._elset || !prf._elset[0])return;
 
                 var r=prf.boxing().getPaper(),
+                    parentNode=r.canvas.parentNode,
                     isCombo=prf.box.ISCOMBO,
                     el=prf._elset[0],
                     absPos,
@@ -734,6 +681,7 @@ xui.Class("xui.svg", "xui.UI",{
                     dotAttr3 = {fill:"#fff",stroke:"#000",r:3},
                     dotAttr4 = {fill:"#fff",stroke:"#000",r:4},
                     dotAttr6 = {fill:"#bf5600",stroke:"#bf5600",r:5,"fill-opacity":0.5},
+                    pathAttr6 = {fill:"none",stroke:"#bf5600", "stroke-width" : 2},
 
                     lineAttr = {stroke:"#0000FF","stroke-dasharray":". "},
                     rectAttr = {stroke:"#0000FF","stroke-dasharray":"- "},
@@ -741,17 +689,18 @@ xui.Class("xui.svg", "xui.UI",{
                     shadowAttr2 = {opacity:0.8},
 
                     magneticDistance1 = 16,
-                    magneticDistance2 = 16,
+                    magneticDistance2 = 10,
 
                     magneticPos,
                     magneticOffPos,
+                    scaleX = 1, scaleY = 1,
 
                     handlers = {
                         /*text:function (el){
                             el._.dirty=1;
                             var attr=el.attr(),handler={},bbox=el._getBBox(true);
-                            handler.rectBox=createDDElem(r.rect(bbox.x, bbox.y, bbox.width, bbox.height).attr(rectAttr),el);
-                            handler.dot = createDDElem(r.circle(bbox.cx, bbox.cy).attr(dotAttr1).attr('cursor','move'),
+                            handler.rectBox=createDDElem(prf,r.rect(bbox.x, bbox.y, bbox.width, bbox.height).attr(rectAttr),el);
+                            handler.dot = createDDElem(prf,r.circle(bbox.cx, bbox.cy).attr(dotAttr1).attr('cursor','move'),
                                 el,function (x, y){
                                     var rtn = moveFun(this, x,y);
 
@@ -767,7 +716,7 @@ xui.Class("xui.svg", "xui.UI",{
                         },*/
                         rect:function (el){
                             var attr=el.attr(),handler={};
-                            handler.dot = createDDElem(r.circle(attr.x+attr.width/2, attr.y+attr.height/2).attr(dotAttr1).attr('cursor','move'),
+                            handler.dot = createDDElem(prf,r.circle(attr.x+attr.width/2, attr.y+attr.height/2).attr(dotAttr1).attr('cursor','move'),
                                 el, function (x, y, ax, ay){
                                     var pos = moveFun(this, x,y,ax,ay),nshape;
                                     attr.x+=pos.rx;
@@ -777,7 +726,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     el.attr(nshape);
 
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     moveFun(handler.dot1, x,y,ax,ay);
                                     moveFun(handler.dot2, x,y,ax,ay);
@@ -785,7 +734,7 @@ xui.Class("xui.svg", "xui.UI",{
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'main');
-                            handler.dot1 = createDDElem(r.circle(attr.x, attr.y).attr(dotAttr2).attr('cursor','nw-resize'),
+                            handler.dot1 = createDDElem(prf,r.circle(attr.x, attr.y).attr(dotAttr2).attr('cursor','nw-resize'),
                                 el, function (x, y, ax, ay){
                                     var x2=el.attr("x")+el.attr("width"),
                                         y2=el.attr("y")+el.attr("height"),
@@ -799,7 +748,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={x:attr.x,y:attr.y,width:attr.width,height:attr.height};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     handler.dot.attr({cx:attr.x+attr.width/2, cy:attr.y+attr.height/2});
 
@@ -807,7 +756,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     if(el.attr("r")>m){
                                         el.attr("r",attr.r=m);
                                         if(el._shape)el._shape.attr("r",m);
-                                        xui.tryF(el.onShapeChanged,[{r:m}]);
+                                        xui.tryF(el.onShapeChanged,[{r:m}], el);
                                     }
                                     handler.dot3.attr({
                                         cx:el.attr("x")+el.attr("width")-el.attr("r"),
@@ -816,7 +765,7 @@ xui.Class("xui.svg", "xui.UI",{
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'w');
-                            handler.dot2= createDDElem(r.circle(attr.x+attr.width, attr.y+attr.height).attr(dotAttr2).attr('cursor','se-resize'),
+                            handler.dot2= createDDElem(prf,r.circle(attr.x+attr.width, attr.y+attr.height).attr(dotAttr2).attr('cursor','se-resize'),
                                 el, function (x, y, ax, ay){
                                     var pos = moveFun(this, x,y,ax,ay,attr.x,null,attr.y,null),
                                         nshape;
@@ -827,7 +776,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={width:attr.width, height:attr.height};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     handler.dot.attr({cx:attr.x+attr.width/2, cy:attr.y+attr.height/2});
 
@@ -835,7 +784,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     if(el.attr("r")>m){
                                         el.attr("r",attr.r=m);
                                         if(el._shape)el._shape.attr("r",m);
-                                        xui.tryF(el.onShapeChanged,[{r:m}]);
+                                        xui.tryF(el.onShapeChanged,[{r:m}], el);
                                     }
                                     handler.dot3.attr({
                                         cx:el.attr("x")+el.attr("width")-el.attr("r"),
@@ -843,7 +792,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     });
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'h');
-                            handler.dot3= createDDElem(r.circle(attr.x+attr.width-(attr.r||0), attr.y).attr(dotAttr3).attr('cursor','e-resize'),
+                            handler.dot3= createDDElem(prf,r.circle(attr.x+attr.width-(attr.r||0), attr.y).attr(dotAttr3).attr('cursor','e-resize'),
                                 el, function (x, y, ax, ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,(attr.x+attr.width-Math.max(attr.width,attr.height)/2),attr.x+attr.width, attr.y,attr.y),
@@ -851,7 +800,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={r:attr.width-(pos.cx-attr.x)};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'r');
@@ -862,7 +811,7 @@ xui.Class("xui.svg", "xui.UI",{
                         },
                         circle:function (el){
                             var attr=el.attr(),handler={};
-                            handler.dot = createDDElem(r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
+                            handler.dot = createDDElem(prf,r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
                                 el, function (x, y){
                                     var rtn = moveFun(this, x, y ),
                                         pos = {cx:rtn.cx,cy:rtn.cy};
@@ -870,12 +819,12 @@ xui.Class("xui.svg", "xui.UI",{
                                     attr.cy=pos.cy;
                                     el.attr(pos);
                                     if(el._shape)el._shape.attr(pos);
-                                    xui.tryF(el.onShapeChanged,[pos]);
+                                    xui.tryF(el.onShapeChanged,[pos], el);
 
                                     pos.cx += el.attr("r");
                                     handler.dotr.attr(pos);
                                 },'main');
-                            handler.dotr = createDDElem(r.circle(attr.cx+attr.r, attr.cy).attr(dotAttr2).attr('cursor','e-resize'),
+                            handler.dotr = createDDElem(prf,r.circle(attr.cx+attr.r, attr.cy).attr(dotAttr2).attr('cursor','e-resize'),
                                 el, function (x, y,ax,ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,attr.cx,null,attr.cy,attr.cy),
@@ -884,7 +833,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={r:attr.r};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'r');
@@ -895,7 +844,7 @@ xui.Class("xui.svg", "xui.UI",{
                         },
                         ellipse:function (el){
                             var attr=el.attr(),handler={},dot;
-                            handler.dot = createDDElem(r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
+                            handler.dot = createDDElem(prf,r.circle(attr.cx, attr.cy).attr(dotAttr1).attr('cursor','move'),
                                 el, function (x, y){
                                     var rtn = moveFun(this, x,y),
                                         pos = {cx:rtn.cx,cy:rtn.cy};
@@ -903,12 +852,12 @@ xui.Class("xui.svg", "xui.UI",{
                                     attr.cy=pos.cy;
                                     el.attr(pos);
                                     if(el._shape)el._shape.attr(pos);
-                                    xui.tryF(el.onShapeChanged,[pos]);
+                                    xui.tryF(el.onShapeChanged,[pos], el);
 
                                     handler.dotrx.attr({cx:pos.cx+el.attr("rx"),cy:pos.cy});
                                     handler.dotry.attr({cy:pos.cy-el.attr("ry"),cx:pos.cx});
                                 },'main');
-                            handler.dotrx = createDDElem(r.circle(attr.cx+attr.rx, attr.cy).attr(dotAttr2).attr('cursor','w-resize'),
+                            handler.dotrx = createDDElem(prf,r.circle(attr.cx+attr.rx, attr.cy).attr(dotAttr2).attr('cursor','w-resize'),
                                 el, function (x, y,ax,ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,attr.cx,null,attr.cy,attr.cy),
@@ -917,10 +866,10 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={rx:attr.rx};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'rx');
-                            handler.dotry = createDDElem(r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
+                            handler.dotry = createDDElem(prf,r.circle(attr.cx, attr.cy-attr.ry).attr(dotAttr2).attr('cursor','n-resize'),
                                 el,function (x, y,ax,ay){
                                     var attr=el.attr(),
                                         pos = moveFun(this, x,y,ax,ay,attr.cx,attr.cx,null,attr.cy),
@@ -929,7 +878,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={ry:attr.ry};
                                     el.attr(nshape);
                                     if(el._shape)el._shape.attr(nshape);
-                                    xui.tryF(el.onShapeChanged,[nshape]);
+                                    xui.tryF(el.onShapeChanged,[nshape], el);
 
                                     return {dx:pos.dx,dy:pos.dy};
                                 },'ry');
@@ -953,7 +902,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     else
                                         circle.attr(dotAttr1).attr('cursor','move');
 
-                                    return createDDElem(circle, el, function (x, y, ax, ay, beForced, mx, my,ix,iy,event, callback) {
+                                    return createDDElem(prf,circle, el, function (x, y, ax, ay, beForced, mx, my,ix,iy,event, callback) {
                                         var paper=el.paper,
                                             ox = this.attr('cx'),
                                             oy = this.attr('cy'),
@@ -987,6 +936,13 @@ xui.Class("xui.svg", "xui.UI",{
                                             });
                                             // get right object under mouse
                                             var esrc=d.elementFromPoint(mx, my);
+                                            if(esrc==el.paper.canvas){
+                                                var ope = el.paper.canvas.style.pointerEvents;
+                                                el.paper.canvas.style.pointerEvents = 'none';
+                                                esrc=d.elementFromPoint(mx, my);
+                                                el.paper.canvas.style.pointerEvents = ope;
+                                            }
+
                                             // show again
                                             this.show();
                                             prf._elset.show();
@@ -1032,34 +988,92 @@ xui.Class("xui.svg", "xui.UI",{
                                                 return;
 
                                             // has anchors or anchorPath
-                                            var magneticObj,anchorKey,
-                                                targetNode,anchors,anchorPath,centerPoint,
+                                            var magneticObj,anchorKey,ignoreMag,
+                                                targetNode,tobj,anchors,anchorPath,centerPoint,
+                                                locked = prf.properties[conType=='from'?'fromLocked':'toLocked'],
+                                                conf = prf.properties[conType=='from'?'fromObj':'toObj'],
+                                                a = conf && conf.split(":"),
                                                 anchorShadow=paper._anchorShadow;
                                             if(esrc!==paper.canvas){
-                                                var tobj=xui.UIProfile.getFromDom(esrc.id),cid=prf.containerId||"#";
-                                                if(tobj && tobj.parent&& tobj.parent._svg_papers[cid]==paper){
-                                                    if(tobj.box['xui.svg']){
-                                                        targetNode=tobj.getRootNode();
-                                                        if(!tobj.box._CONNECTOR){
-                                                            anchors=tobj.boxing()._getConnectAnchors();
-                                                            anchorPath=tobj.boxing()._getConnectPath();
-                                                            if(anchorPath){
-                                                                var anchorBBox;
-                                                                if(anchorBBox=xui.get(tobj._pathCached,['_connBBox'])){
-                                                                }else{
-                                                                    anchorBBox=Raphael.pathBBox(anchorPath);
-                                                                    xui.set(tobj._pathCached,['_connBBox'], anchorBBox);
+                                                tobj=xui.UIProfile.getFromDom(esrc.id), cid=prf.containerId||"#";
+                                                if(tobj){
+                                                    var alias = tobj.ref||tobj.alias, key = "", sid = "";
+                                                    targetNode = tobj.getRootNode();
+                                                    while(esrc!==targetNode){
+                                                        if(xui.getNodeData(esrc, 'isHotNode')){
+                                                            if(esrc.id){
+                                                                targetNode = esrc;
+                                                                key = tobj.getKey(esrc.id, true);
+                                                                if(key=="KEY")key="";
+                                                                if(tobj.getSubId(esrc.id)){
+                                                                    sid = tobj.getItemIdByDom(esrc) || "";
                                                                 }
-                                                                centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                                break;
                                                             }
-                                                            magneticObj=tobj.alias;
                                                         }
-                                                    }else if(tobj.box['xui.UI']){
-                                                        //console.log(esrc.id,tobj.getRoot().cssRegion(),X,Y,mx,my);
+                                                        esrc = esrc.parentNode;
+                                                        if(!esrc)
+                                                            return;
+                                                    }
+                                                    // inner hot node, inner hot node widget, or same level widgets
+                                                    if(key || xui.getNodeData(targetNode, 'isHotNode') || tobj.parent == prf.parent){
+                                                        // in the connection not-hot node for locked point
+                                                        if(locked && (alias != a[0] || key!==((a[1]=="KEY"?"":a[1])||"") || sid!==(a[2]||"") )) {
+                                                            tobj = xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                            if(tobj){
+                                                                targetNode = tobj.getSubNode(a[1], a[2]);
+                                                                if(targetNode.get(0)){
+                                                                    anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode.get(0));
+                                                                    anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode.get(0));
+                                                                    if(anchorPath){
+                                                                        var anchorBBox=Raphael.pathBBox(anchorPath);
+                                                                        centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                                    }
+                                                                    magneticObj = conf;
+                                                                    ignoreMag = true;
+                                                                }else{
+                                                                    return;
+                                                                }
+                                                            }
+                                                        }else{
+                                                            if(tobj.box['xui.svg'] || (tobj.box['xui.UI']&&targetNode)){
+                                                                if(!tobj.box._CONNECTOR){
+                                                                    anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode);
+                                                                    anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode);
+                                                                    if(anchorPath){
+                                                                        var anchorBBox=Raphael.pathBBox(anchorPath);
+                                                                        centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                                    }
+                                                                    magneticObj = tobj.ref || tobj.alias;
+                                                                    if(key){
+                                                                         magneticObj += ":" + key + ":" + sid;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-
+                                            // out of connection node for locked point
+                                            if(!magneticObj && locked){
+                                                // get the nearest anchor
+                                                tobj = xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                if(tobj){
+                                                    targetNode = tobj.getSubNode(a[1], a[2]);
+                                                    if(targetNode){
+                                                        anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode.get(0));
+                                                        anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode.get(0));
+                                                        if(anchorPath){
+                                                            var anchorBBox=Raphael.pathBBox(anchorPath);
+                                                            centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
+                                                        }
+                                                        magneticObj = conf;
+                                                        ignoreMag = true;
+                                                    }else{
+                                                        return;
+                                                    }
+                                                }
+                                            }
 
                                             // remove anchorShadow
                                             if(anchorShadow && ((!anchors && !anchorPath) || anchorShadow._attached!==targetNode)){
@@ -1076,6 +1090,7 @@ xui.Class("xui.svg", "xui.UI",{
                                                     anchorShadow._attached=targetNode;
 
                                                     var circle=paper.circle(-100,-100);
+                                                    circle.node.style.pointerEvents = "none";
                                                     circle._attached=targetNode;
                                                     circle.hide();
                                                     anchorShadow.push(circle);
@@ -1083,25 +1098,30 @@ xui.Class("xui.svg", "xui.UI",{
                                                     // draw anchorShadow
                                                     for(var i in anchors){
                                                         o=anchors[i];
-                                                        circle=paper.circle(o.x, o.y);
+                                                        circle=paper.circle(o.x, o.y).attr(dotAttr6);
                                                         circle._attached=targetNode;
                                                         circle._anchorKey=i;
+                                                        circle.node.style.pointerEvents = "none";
                                                         anchorShadow.push(circle);
                                                     }
-
-                                                    anchorShadow.attr(dotAttr6);
+                                                    if(anchorPath){
+                                                        var path = paper.path(anchorPath).attr(pathAttr6);
+                                                        path.node.style.pointerEvents = "none";
+                                                        anchorShadow.push(path);
+                                                    }
                                                     paper._anchorShadow=anchorShadow;
                                                 }
-
-                                                // magnetic function
-                                                var minDis=null,distance;
-                                                for(var i in anchors){
-                                                    distance=Math.pow(Math.pow(Math.abs(ix-anchors[i].x),2)+Math.pow(Math.abs(iy-anchors[i].y),2),1/2);
-                                                    if(distance<=magneticDistance1){
-                                                        if(minDis===null || minDis>distance){
-                                                            minDis=distance;
-                                                            anchorPos=anchors[i];
-                                                            anchorKey=i;
+                                                if(!ignoreMag){
+                                                    // magnetic function
+                                                    var minDis=null,distance;
+                                                    for(var i in anchors){
+                                                        distance=Math.pow(Math.pow(Math.abs(ix-anchors[i].x),2)+Math.pow(Math.abs(iy-anchors[i].y),2),1/2);
+                                                        if(distance<=magneticDistance1){
+                                                            if(minDis===null || minDis>distance){
+                                                                minDis=distance;
+                                                                anchorPos=anchors[i];
+                                                                anchorKey=i;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1143,48 +1163,49 @@ xui.Class("xui.svg", "xui.UI",{
                                                         }
                                                     }
                                                 }
+                                            }
 
-                                                if(anchorPos){
-                                                    // hold
-                                                    if(magneticPos){
-                                                        // still the old magnetic
-                                                        if(magneticPos.x==anchorPos.x && magneticPos.y==anchorPos.y){
-//console.log('still the old magnetic');
-                                                            x=y=0;
-                                                            ax=magneticOffPos.x;
-                                                            ay=magneticOffPos.y;
-                                                        }
-                                                        // swtich to the new magnetic
-                                                        else{
-//console.log('swtich to the new magnetic');
-                                                            x = anchorPos.x-magneticPos.x;
-                                                            y = anchorPos.y-magneticPos.y;
-
-                                                            // need return to adjust
-                                                            ax = magneticOffPos.x + x;
-                                                            ay = magneticOffPos.y + y;
-                                                            magneticPos={x:anchorPos.x,y:anchorPos.y};
-                                                            magneticOffPos={x:ax,y:ay};
-                                                            if(anchorPos._path){
-                                                                anchorShadow[0].attr({cx:anchorPos.x,cy:anchorPos.y});
-                                                                anchorShadow[0].show();
-                                                            }else{
-                                                                anchorShadow[0].hide();
-                                                            }
+                                            if(!anchorPos){
+                                               // get the nearest anchor
+                                                if(anchors){
+                                                    var point = el.getPointAtLength(this._handlerIndex===1 ?0:el.getTotalLength()),
+                                                        len = {
+                                                            top : Math.pow(Math.pow(Math.abs(point.x-anchors.top.x),2)+Math.pow(Math.abs(point.y-anchors.top.y),2),1/2),
+                                                            left : Math.pow(Math.pow(Math.abs(point.x-anchors.left.x),2)+Math.pow(Math.abs(point.y-anchors.left.y),2),1/2),
+                                                            right : Math.pow(Math.pow(Math.abs(point.x-anchors.right.x),2)+Math.pow(Math.abs(point.y-anchors.right.y),2),1/2),
+                                                            bottom :Math.pow(Math.pow(Math.abs(point.x-anchors.bottom.x),2)+Math.pow(Math.abs(point.y-anchors.bottom.y),2),1/2)
+                                                        },
+                                                        min = Math.min(len.top, len.left, len.right, len.bottom);
+                                                    for(var i in len){
+                                                        if(len[i]==min){
+                                                            anchorPos = anchors[i];
+                                                            anchorKey = i;
+                                                            break;
                                                         }
                                                     }
-                                                    // first magnetic
+                                                }
+                                            }
+                                            if(anchorPos){
+                                                // hold
+                                                if(magneticPos){
+                                                    // still the old magnetic
+                                                    if(magneticPos.x==anchorPos.x && magneticPos.y==anchorPos.y){
+                                                        //console.log('still the old magnetic');
+                                                        x=y=0;
+                                                        ax=magneticOffPos.x;
+                                                        ay=magneticOffPos.y;
+                                                    }
+                                                    // swtich to the new magnetic
                                                     else{
-//console.log('first magnetic');
-                                                        x += anchorPos.x-ix;
-                                                        y += anchorPos.y-iy;
+                                                        //console.log('swtich to the new magnetic');
+                                                        x = anchorPos.x-magneticPos.x;
+                                                        y = anchorPos.y-magneticPos.y;
 
                                                         // need return to adjust
-                                                        ax += anchorPos.x-ix;
-                                                        ay += anchorPos.y-iy;
+                                                        ax = magneticOffPos.x + x;
+                                                        ay = magneticOffPos.y + y;
                                                         magneticPos={x:anchorPos.x,y:anchorPos.y};
                                                         magneticOffPos={x:ax,y:ay};
-
                                                         if(anchorPos._path){
                                                             anchorShadow[0].attr({cx:anchorPos.x,cy:anchorPos.y});
                                                             anchorShadow[0].show();
@@ -1192,12 +1213,31 @@ xui.Class("xui.svg", "xui.UI",{
                                                             anchorShadow[0].hide();
                                                         }
                                                     }
-
-                                                    X = anchorPos.x;
-                                                    Y = anchorPos.y;
-
-                                                    pos={dx:ax,dy:ay};
                                                 }
+                                                // first magnetic
+                                                else{
+                                                    //console.log('first magnetic');
+                                                    x += anchorPos.x-ix;
+                                                    y += anchorPos.y-iy;
+
+                                                    // need return to adjust
+                                                    ax += anchorPos.x-ix;
+                                                    ay += anchorPos.y-iy;
+                                                    magneticPos={x:anchorPos.x,y:anchorPos.y};
+                                                    magneticOffPos={x:ax,y:ay};
+
+                                                    if(anchorPos._path){
+                                                        anchorShadow[0].attr({cx:anchorPos.x,cy:anchorPos.y});
+                                                        anchorShadow[0].show();
+                                                    }else{
+                                                        anchorShadow[0].hide();
+                                                    }
+                                                }
+
+                                                X = anchorPos.x;
+                                                Y = anchorPos.y;
+
+                                                pos={dx:ax,dy:ay};
                                             }
                                             // off-magnetic
                                             if(!anchorPos && magneticPos){
@@ -1320,7 +1360,7 @@ xui.Class("xui.svg", "xui.UI",{
                                             var nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            xui.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape], el);
                                         }
 
                                         // adjust angle for connector
@@ -1341,7 +1381,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     },'main',index);
                                 },
                                 addBezierAnchor2DD=function(r,el,x,y,index,conType,prf){
-                                    return createDDElem(r.circle(x, y).attr(dotAttr3),
+                                    return createDDElem(prf,r.circle(x, y).attr(dotAttr3),
                                         el, function (x, y) {
                                             var X = this.attr("cx") + x,
                                                 Y = this.attr("cy") + y,
@@ -1363,11 +1403,11 @@ xui.Class("xui.svg", "xui.UI",{
                                             nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            xui.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape], el);
                                         },'path2',index);
                                 },
                                 addBezierAnchor1DD=function(r,el,x,y,index,conType,prf){
-                                    return createDDElem(r.circle(x, y).attr(dotAttr3),
+                                    return createDDElem(prf,r.circle(x, y).attr(dotAttr3),
                                         el, function (x, y) {
                                             var X = this.attr("cx") + x,
                                                 Y = this.attr("cy") + y,
@@ -1388,7 +1428,7 @@ xui.Class("xui.svg", "xui.UI",{
                                             nshape={path: paths};
                                             el.attr(nshape);
                                             if(el._shape)el._shape.attr(nshape);
-                                            xui.tryF(el.onShapeChanged,[nshape]);
+                                            xui.tryF(el.onShapeChanged,[nshape], el);
                                         },'path1',index);
                                 },
                                 type1=1,type2=1,type3=0,prevtype2=1,
@@ -1558,6 +1598,8 @@ xui.Class("xui.svg", "xui.UI",{
                             for(var i=0, ii=paths.length, l, handler; i<ii; i++){
                                 handler=handlers[i];
                                 if(handler.dot)handler.dot.toFront();
+                                if(handler.dotPrev)handler.dotPrev.toFront();
+                                if(handler.dotNext)handler.dotNext.toFront();
                             }
                             return {
                                 el:el,
@@ -1566,7 +1608,8 @@ xui.Class("xui.svg", "xui.UI",{
                         }
                     },
                     move = function(dx, dy, mx, my, event) {
-                        var rtn = this.update(dx - (this.dx || 0), dy - (this.dy || 0), dx, dy, false, mx, my, mx-absPos.left, my-absPos.top, event);
+                        dx = dx/scaleX; dy = dy/scaleY;
+                        var rtn = this.update(dx - (this.dx || 0), dy - (this.dy || 0), dx, dy, false, mx, my, (mx-absPos.left)/scaleX, (my-absPos.top)/scaleY, event);
                         this.dx = (rtn&&rtn.dx)||dx;
                         this.dy = (rtn&&rtn.dy)||dy;
 
@@ -1575,12 +1618,20 @@ xui.Class("xui.svg", "xui.UI",{
                     start = function(mx,my,event){
                         if(callback)callback(this, event, 'beforedragstart', this._attached);
                         this.toFront();
-
                         this.dx = this.dy = 0;
 
                         magneticPos=magneticOffPos=null;
 
-                        absPos = xui(this.paper.canvas.parentNode).offset(null);
+                        absPos = xui(parentNode).offset(null);
+                        var transform = window.getComputedStyle(parentNode).transform;
+                        if (transform && transform !== "none") {
+                            var matrix = transform.match(/matrix\(([^)]+)\)/);
+                            if (matrix) {
+                                var values = matrix[1].split(", ");
+                                scaleX = parseFloat(values[0]);
+                                scaleY = parseFloat(values[3]);
+                            }
+                        }
 
                         var cursor=this.attr('cursor'),t;
                         this._oldCursor = (t=r.canvas.style).cursor||"";
@@ -1600,6 +1651,7 @@ xui.Class("xui.svg", "xui.UI",{
                     },
                     end=function(event){
                         if(callback)callback(this, event, 'beforedragend', this._attached);
+
                         absPos=null;
 
                         magneticPos=magneticOffPos=null;
@@ -1640,7 +1692,8 @@ xui.Class("xui.svg", "xui.UI",{
                         }
                         if(callback)callback(this, event, 'dragend', this._attached);
                     },
-                    createDDElem=function(obj,el,update,key,index){
+                    createDDElem=function(prf,obj,el,update,key,index){
+                        obj.node.id=prf.box.KEY+"-DD:"+prf.serialId+":"+obj.id;
                         obj._handlerIndex=index||0;
                         obj._attached=el;
                         if(update){
@@ -1715,7 +1768,7 @@ xui.Class("xui.svg", "xui.UI",{
                                 nshape={path: paths};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                             case 'circle':{
@@ -1744,7 +1797,7 @@ xui.Class("xui.svg", "xui.UI",{
                                 rst={cx: X, cy: Y, rx:x, ry:y};
                                 el.attr(rst);
                                 if(el._shape)el._shape.attr(rst);
-                                xui.tryF(el.onShapeChanged,[rst]);
+                                xui.tryF(el.onShapeChanged,[rst], el);
                                 rst.dx=ax-lx;
                                 rst.dy=ay-ly;
                                 return rst;
@@ -1755,7 +1808,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={cx: X, cy: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                             case 'rect':{
@@ -1764,7 +1817,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={x: X, y: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                             case 'text':{
@@ -1773,7 +1826,7 @@ xui.Class("xui.svg", "xui.UI",{
                                     nshape={x: X, y: Y};
                                 el.attr(nshape);
                                 if(el._shape)el._shape.attr(nshape);
-                                xui.tryF(el.onShapeChanged,[nshape]);
+                                xui.tryF(el.onShapeChanged,[nshape], el);
                                 break;
                             }
                         }
@@ -1977,7 +2030,6 @@ xui.Class("xui.svg", "xui.UI",{
             });
         },
         _RenderSVG:function(prf){
-            prf._pathCached={};
             var paper = prf._paper;
             if(!paper){
                 paper = prf.parent && prf.parent._svg_papers && prf.parent._svg_papers[prf.containerId||"#"];
@@ -2392,7 +2444,6 @@ xui.Class("xui.svg", "xui.UI",{
             }
         },
         _syncAttr:function(prf,options,shapeChanged){
-            prf._pathCached={};
         },
         _notify:function(prf, options, shapeChanged){
             // sync attr
@@ -2410,24 +2461,25 @@ xui.Class("xui.svg", "xui.UI",{
         },
         _draw:function(){},
 
-        _syncConnectors:function(prf){
+        _syncConnectors:function(prf, containerPrf){
             // find all connectors connected to me
             // redraw those connectors
             // if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
-            var children=xui.get(prf,['parent','children']),
-                alias=prf.alias;
-            if(children&&children.length){
+            var children=containerPrf ? containerPrf.children : xui.get(prf,['parent','children']),
+                alias=prf.alias, ref=prf.ref;
+            if((alias||ref) && children&&children.length){
                 xui.arr.each(children,function(o,i){
                     if(!o[0].destroyed && prf.renderCompleted && o[0].renderCompleted && o[0].key==="xui.svg.connector"){
-                        if(alias===xui.get(o[0],['properties','fromObj'])){
-                            // redraw from point
-                            o[0].box._reconnect(o[0],prf);
-                        }
-                        if(alias===xui.get(o[0],['properties','toObj'])){
-                            // redraw to point
-                            o[0].box._reconnect(o[0],null,prf);
-                        }
+                        var conf_f = xui.get(o[0],['properties','fromObj']),
+                            conf_t = xui.get(o[0],['properties','toObj']),
+                            fromPrf = null, toPrf = null;
+                        if(conf_f && ((ref&&ref===conf_f.split(":")[0])||(alias&&alias===conf_f.split(":")[0])))
+                            fromPrf = prf;
+                        if(conf_t && ((ref&&ref===conf_t.split(":")[0])||(alias&&alias===conf_t.split(":")[0])))
+                            toPrf = prf;
+                        if(fromPrf || toPrf)
+                            o[0].box._reconnect(o[0],fromPrf,toPrf);
                     }
                 });
             }
@@ -2438,14 +2490,262 @@ xui.Class("xui.svg", "xui.UI",{
             if(children&&children.length){
                 xui.arr.each(children,function(o,i){
                     if(o[0].key==="xui.svg.connector"){
-                        if(oa===xui.get(o[0],['properties','fromObj'])){
+                        if(oa===xui.get(o[0],['properties','fromObj'].split(":")[0])){
                             xui.set(o[0],['properties','fromObj'],na);
                         }
-                        if(oa===xui.get(o[0],['properties','toObj'])){
+                        if(oa===xui.get(o[0],['properties','toObj'].split(":")[0])){
                             xui.set(o[0],['properties','toObj'],na);
                         }
                     }
                 });
+            }
+        },
+
+        _getDomNodeProp:function(elem, offsetParent) {
+            var pos = xui(elem).offset(null, offsetParent);
+            function convertMatrixToRaphael(matrixString, centerX, centerY) {
+                var values = matrixString.match(/matrix\(([^)]+)\)/)[1].split(',').map(parseFloat),
+                    a = values[0], b = values[1], c = values[2], d = values[3], e = values[4], f = values[5],
+                    angle = Math.atan2(b, a) * (180 / Math.PI),
+                    scaleX = Math.sqrt(a * a + b * b),
+                    scaleY = Math.sqrt(c * c + d * d),
+                    translateX = e,
+                    translateY = f;
+                return "t" + translateX + "," + translateY + "s" + scaleX + "," + scaleY + "," + centerX + "," + centerY + "r" + angle + "," + centerX + "," + centerY;
+            }
+            function transformStringToMatrix(transformString) {
+                var a = 1, b = 0, c = 0, d = 1, e = 0, f = 0,
+                    transforms = transformString.match(/([trs])([^,]*)(?:,([^,]*)(?:,([^,]*))?)?/g) || [];
+
+                transforms.forEach(transform => {
+                    var command = transform[0], // 't', 's' or 'r'
+                        params = transform.slice(1).split(',').map(parseFloat);
+
+                    switch (command) {
+                        case 't': // translate(x, y)
+                            var tx = params[0] || 0,
+                                ty = params[1] || 0;
+                            e += tx;
+                            f += ty;
+                            break;
+
+                        case 's': // scale(sx, sy, cx, cy)
+                            var sx = params[0] || 1,
+                                sy = params[1] || sx,
+                                cx = params[2] || 0,
+                                cy = params[3] || 0;
+
+                            // udpate matrix
+                            a *= sx;
+                            d *= sy;
+                            e = cx * (1 - sx) + e;
+                            f = cy * (1 - sy) + f;
+                            break;
+
+                        case 'r': // rotate(angle, cx, cy)
+                            var angle = (params[0] * Math.PI) / 180,
+                                cos = Math.cos(angle),
+                                sin = Math.sin(angle),
+                                cx_r = params[1] || 0,
+                                cy_r = params[2] || 0,
+                                newA = a * cos + c * sin,
+                                newB = b * cos + d * sin,
+                                newC = a * -sin + c * cos,
+                                newD = b * -sin + d * cos;
+                            a = newA;
+                            b = newB;
+                            c = newC;
+                            d = newD;
+                            e += cx_r - cx_r * cos + cy_r * sin;
+                            f += cy_r - cx_r * sin - cy_r * cos;
+                            break;
+                    }
+                });
+
+                return Raphael.matrix(a,b,c,d,e,f);
+            }
+            function applyMatrixToPoint(matrix, point) {
+                return {
+                    x: matrix.a * point.x + matrix.c * point.y + matrix.e,
+                    y: matrix.b * point.x + matrix.d * point.y + matrix.f
+                };
+            }
+            function createRoundedRectPath(x, y, width, height, borderRadius) {
+                borderRadius = Math.min(borderRadius, width / 2, height / 2);
+                if(borderRadius){
+                    var points = [
+                        { x: x + borderRadius, y: y },
+                        { x: x + width - borderRadius, y: y },
+                        { x: x + width, y: y + borderRadius },
+                        { x: x + width, y: y + height - borderRadius },
+                        { x: x + width - borderRadius, y: y + height },
+                        { x: x + borderRadius, y: y + height },
+                        { x: x, y: y + height - borderRadius },
+                        { x: x, y: y + borderRadius }
+                    ];
+                    return [
+                        "M" + points[0].x + "," + points[0].y,
+                        "H" + points[1].x,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[2].x + "," + points[2].y,
+                        "V" + points[3].y,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[4].x + "," + points[4].y,
+                        "H" + points[5].x,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[6].x + "," + points[6].y,
+                        "V" + points[7].y,
+                        "A" + borderRadius + "," + borderRadius + " 0 0 1 " + points[0].x + "," + points[0].y,
+                        "Z"
+                    ].join(' ');
+                }else{
+                    var points = [
+                        { x: x, y: y },
+                        { x: x + width, y: y },
+                        { x: x + width, y: y + height },
+                        { x: x, y: y + height }
+                    ];
+                    return [
+                        "M" + points[0].x + "," + points[0].y,
+                        "H" + points[1].x,
+                        "V" + points[2].y,
+                        "H" + points[3].x,
+                        "Z"
+                    ].join(' ');
+                }
+            }
+
+            var x = pos.left,
+                y = pos.top,
+                width = elem.offsetWidth,
+                height = elem.offsetHeight,
+                style = window.getComputedStyle(elem),
+                transform = style.transform || style.webkitTransform || style.mozTransform,
+                borderRadius = Math.min(parseFloat(style.borderRadius), width / 2, height / 2),
+                transformString = transform && transform !== 'none' ? convertMatrixToRaphael(transform, x + width / 2, y + height / 2) : null,
+                corners = [
+                    { x: x, y: y },
+                    { x: x + width, y: y },
+                    { x: x + width, y: y + height },
+                    { x: x, y: y + height }
+                ],
+                matrix = null;
+
+            if (transformString) {
+                matrix = transformStringToMatrix(transformString);
+                corners = corners.map(corner => applyMatrixToPoint(matrix, corner));
+            }
+            corners.push({
+                x: (corners[0].x + corners[3].x) / 2, y: (corners[0].y + corners[3].y) / 2
+            });
+            corners.push({
+                x: (corners[0].x + corners[1].x) / 2, y: (corners[0].y + corners[1].y) / 2
+            });
+            corners.push({
+                x: (corners[1].x + corners[2].x) / 2, y: (corners[1].y + corners[2].y) / 2
+            });
+            corners.push({
+                x: (corners[2].x + corners[3].x) / 2, y: (corners[2].y + corners[3].y) / 2
+            });
+            corners.push({
+                x: (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4,
+                y: (corners[0].y + corners[1].y + corners[2].y + corners[3].y) / 4
+            });
+            return {
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                transformString: transformString,
+                matrix: matrix,
+                corners: corners,
+                path: createRoundedRectPath(x, y, width, height, borderRadius)
+            };
+        },
+        _getConnectAnchors:function(svgprf, prf, targetNode){
+            if(prf){
+                var bbox, matrix,rst,r1=180,r2=270,r3=0,r4=90;
+                if(prf.box['xui.svg']){
+                    prf._elset[0]._.dirty=1;
+
+                    bbox=prf._elset[0]._getBBox(true);
+                    var tf=Raphael.parseTransformString(prf._elset[0].transform());
+                    if(tf && tf.length){
+                        matrix=prf._elset[0].matrix;
+                    }
+                }else if(prf.box['xui.UI']){
+                    var pp = this._getDomNodeProp(targetNode || prf.getRootNode(), svgprf.boxing().getPaperContainer());
+                    bbox = pp;
+                    matrix = pp.matrix;
+                }
+                var x1=bbox.x ,y1=bbox.y+bbox.height/2 ,
+                    x2=bbox.x+bbox.width/2 ,y2=bbox.y ,
+                    x3=bbox.x+bbox.width ,y3=bbox.y+bbox.height/2 ,
+                    x4=bbox.x+bbox.width/2 ,y4=bbox.y+bbox.height;
+                if(matrix){
+                    var xx1=x1,xx2=x2,xx3=x3,xx4=x4,yy1=y1,yy2=y2,yy3=y3,yy4=y4;
+                    x1=matrix.x(xx1,yy1);y1=matrix.y(xx1,yy1);
+                    x2=matrix.x(xx2,yy2);y2=matrix.y(xx2,yy2);
+                    x3=matrix.x(xx3,yy3);y3=matrix.y(xx3,yy3);
+                    x4=matrix.x(xx4,yy4);y4=matrix.y(xx4,yy4);
+                    var xc=(x1+x2+x3+x4)/4, yc=(y1+y2+y3+y4)/4;
+                    r1=Raphael.angle(x1,y1,xc,yc);
+                    r2=Raphael.angle(x2,y2,xc,yc);
+                    r3=Raphael.angle(x3,y3,xc,yc);
+                    r4=Raphael.angle(x4,y4,xc,yc);
+                }
+
+                rst={
+                    "left":{x:x1, y:y1, alpha:r1, solid:1},
+                    "top":{x:x2, y:y2, alpha:r2, solid:1},
+                    "right":{x:x3, y:y3, alpha:r3, solid:1},
+                    "bottom":{x:x4, y:y4, alpha:r4, solid:1}
+                }
+
+                return rst;
+            }
+        },
+        _getConnectPath:function(svgprf, prf, targetNode){
+            if(prf){
+                var ss,matrix,path;
+
+                if(prf.box['xui.svg']){
+                    var tf=Raphael.parseTransformString(prf._elset[0].transform());
+                    if(tf && tf.length){
+                        matrix=prf._elset[0].matrix;
+                    }
+                    path=prf._elset[0].getPath();
+                }else if(prf.box['xui.UI']){
+                    var pp = this._getDomNodeProp(targetNode || prf.getRootNode(), svgprf.boxing().getPaperContainer());
+                    path=pp.path;
+                    matrix=pp.matrix;
+                }
+                if(path && matrix){
+                    path=Raphael.mapPath(path,matrix);
+                }
+                return path;
+            }
+        },
+        _getConnectPoint:function(svgprf, prf, conf, anchor){
+            if(anchor){
+                var rst, targetNode = svgprf.box._getHotNode(prf, conf);
+
+                if(/^[1-9][0-9]*:((1([.][0]+)?)|(0\.[0-9]+))$/.test(anchor)){
+                    var arr=anchor.split(":");
+                    arr[0]=+arr[0];
+                    arr[1]=+arr[1];
+                    if(arr[0]>=1 && arr[1]>=0 && arr[1]<=1){
+                        var cp=this._getConnectPath(svgprf, prf, targetNode);
+                        if(cp){
+                            var cv=Raphael.path2curve(cp),cur,prev;
+                            if((cur=cv[arr[0]])&&(prev=cv[arr[0]-1])){
+                                rst = Raphael.findDotsAtSegment(prev[prev.length-2],prev[prev.length-1], cur[1],cur[2],cur[3],cur[4],cur[5],cur[6],arr[1]);
+                            }
+                        }
+                    }
+                }else{
+                    var hash=this._getConnectAnchors(svgprf, prf, targetNode);
+                    rst = hash && hash[anchor];
+                }
+
+                return rst;
             }
         }
     }
@@ -2598,9 +2898,6 @@ xui.Class("xui.svg.path", "xui.svg",{
             var prf=this.get(0),prop=prf.properties;
             if(prf._elset && prf._elset[0])prop.path=prf._elset[0].attr('path').join('');
             return prop.path;
-        },
-        _getConnectAnchors:function(){
-            // no solid anchors
         },
         _setBBox:function(key,value){
             var bb=xui.svg.$adjustBB(key,value);
@@ -2908,9 +3205,6 @@ xui.Class("xui.svg.imageComb", "xui.svg.absComb",{
 
 xui.Class("xui.svg.connector","xui.svg.absComb",{
     Instance:{
-        _getConnectAnchors:null,
-        _getConnectPath:null,
-        _getConnectPoint:null,
         toFront:function(){
             return this.each(function(prf){
                 if(prf=prf._elset){
@@ -2944,6 +3238,11 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                     }
                 }
             });
+        },
+        update:function(fromPrf, toPrf){
+            return this.each(function(prf){
+                prf.box._reconnect(prf, fromPrf, toPrf);
+            });
         }
     },
     Static:{
@@ -2955,6 +3254,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 delete prop.attr.BG['arrow-start'];
                 delete prop.attr.BG['arrow-end'];
             }
+            delete prop.attachment;
             return o;
         },
         DataModel:{
@@ -2990,17 +3290,24 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 ini:'',
                 combobox:['left','top','right','bottom']
             },
+            fromLocked:false,
             //fromDDKey:"default",
 
             toObj:"",
             toPoint:{
                 ini:'',
                 combobox:['left','top','right','bottom']
-            }//,
+            },
+            toLocked:false,
+
+            attachment:{
+               hidden: true,
+               ini:[]
+            }
+            //,
             //toDDKey:"default",
 
             //textPos:0.5
-
         },
         _type:'path',
         Templates:{
@@ -3015,14 +3322,18 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
         },
         _draw:function(paper, prf, prop){
-           var s=paper.set(),
+           var ns=this,
+               s=paper.set(),
                attr=prop.attr.KEY,//att2=prop.attr.TEXT,
                obj1,obj2;
 
             obj2 = paper.path(attr.path);
             obj2.node.id=prf.box.KEY+":"+prf.serialId+":";
             obj2.onShapeChanged=function(attr){
-                if(attr.path)obj1.attr({path:attr.path},null,false);
+                if(attr.path){
+                    obj1.attr({path:attr.path},null,false);
+                    ns._syncAtt(attr.path, prop.attachment);
+                }
             };
             s.push(obj2);
 
@@ -3034,8 +3345,42 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             s.push(obj1);
             obj1.insertBefore(obj2);
             prf._bg=obj1;
+            obj1.click(function(e){
+                if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, obj1))xui.Event.stopBubble(e);
+            });
+            obj1.dblclick(function(e){
+                if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, obj1))xui.Event.stopBubble(e);
+            });
+            if(prop.attachment){
+                /*path:string, attr:object, distance:0~1*/
+                xui.arr.each(prop.attachment,function(att){
+                    var elem;
+                    if(att.path){
+                        elem = paper.path(att.path);
+                    }else if(att.text){
+                        elem = paper.text(0,0,att.text);
+                    }
+                    if(elem){
+                        elem.node.id = prf.box.KEY+"-A:"+prf.serialId+":"+(att.id||xui.rand());
+                        att.elem = elem;
+                        if(att.attr)elem.attr(att.attr);
+                        elem.click(function(e){
+                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, elem))xui.Event.stopBubble(e);
+                        });
+                        elem.dblclick(function(e){
+                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, elem))xui.Event.stopBubble(e);
+                        });
+                        att.callback && att.callback(att);
+                    }
+                });
+            }
+            ns._syncAtt(attr.path, prop.attachment);
+
 
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unbind"]=function(){
+                xui.arr.each(prop.attachment,function(att){
+                    att.elem && att.elem.remove();
+                });
                 obj2.onShapeChanged=null;
                 obj2=null;
             };
@@ -3051,7 +3396,6 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             var upper=arguments.callee.upper,args=xui.toArr(arguments);
             upper.apply(this,args);
             upper=null;
-            prf._pathCached={};
 
             if(!prf._bg)return;
 
@@ -3099,80 +3443,104 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
         // have to set to null
         _reconnect:function(prf,fromPrf,toPrf){
             if(prf.destroyed)return;
-            var prop=prf.properties,
+            var ns=this,
+                prop=prf.properties,
                 type=prop.type,
                 path=Raphael.parsePathString(prop.attr.KEY.path),
                 conn=prf.boxing(),
-                ins,cp;
-            if(fromPrf && prop.fromObj && prop.fromPoint){
-                ins=fromPrf.boxing();
-                cp=ins._getConnectPoint(prop.fromPoint);
-                if(cp){
-                    switch(type){
-                        case 'flowchart':
-                            // need to redraw it
-                            var np=this._redrawBrokenLine(prf);
-                            if(np){
-                                // renew paths
-                                path.length=0;
-                                xui.arr.each(np,function(p){
-                                    path.push(p);
-                                });
-                            }
-                        break;
-                        case 'straight':
-                            path[0][1]=cp.x;
-                            path[0][2]=cp.y;
-                        break;
-                        case 'bezier':
-                            var ox=cp.x-path[0][1],
-                                oy=cp.y-path[0][2];
-                            path[0][1]=cp.x;
-                            path[0][2]=cp.y;
-                            path[1][1]+=ox;
-                            path[1][2]+=oy;
-                        break;
-                    }
-                    conn.setAttr("KEY",{path:path},false);
+                cp1,cp2;
+            if(xui.isHash(fromPrf) && ('x' in fromPrf) && ('y' in fromPrf)){
+                cp1 = fromPrf;
+            }else if(fromPrf && prop.fromObj && prop.fromPoint){
+                cp1 = xui.svg._getConnectPoint(prf, fromPrf, prop.fromObj, prop.fromPoint);
+            }
+            if(xui.isHash(toPrf) && ('x' in toPrf) && ('y' in toPrf)){
+                cp2 = toPrf;
+            }else if(toPrf && prop.toObj  && prop.toPoint){
+                cp2 = xui.svg._getConnectPoint(prf, toPrf, prop.toObj, prop.toPoint);
+            }
+
+            if(cp1){
+                switch(type){
+                    case 'flowchart':
+                        // need to redraw it
+                        var np=this._redrawBrokenLine(prf);
+                        if(np){
+                            // renew paths
+                            path.length=0;
+                            xui.arr.each(np,function(p){
+                                path.push(p);
+                            });
+                        }
+                    break;
+                    case 'straight':
+                        path[0][1]=cp1.x;
+                        path[0][2]=cp1.y;
+                    break;
+                    case 'bezier':
+                        var ox=cp1.x-path[0][1],
+                            oy=cp1.y-path[0][2];
+                        path[0][1]=cp1.x;
+                        path[0][2]=cp1.y;
+                        path[1][1]+=ox;
+                        path[1][2]+=oy;
+                    break;
                 }
             }
-            if(toPrf && prop.toObj  && prop.toPoint){
-                ins=toPrf.boxing();
-                cp=ins._getConnectPoint(prop.toPoint);
-                if(cp){
-                    var l=path.length-1;
-                    if( (path[l][0]||"").toUpperCase()=='Z')l--;
-                    switch(type){
-                        case 'flowchart':
-                            // need to redraw it
-                            var np=this._redrawBrokenLine(prf);
-                            if(np){
-                                // renew paths
-                                path.length=0;
-                                xui.arr.each(np,function(p){
-                                    path.push(p);
-                                });
-                            }
-                        break;
-                        case 'straight':
-                            path[l][1]=cp.x;
-                            path[l][2]=cp.y;
-                        break;
-                        case 'bezier':
-                            var ox=cp.x-path[l][5],
-                                oy=cp.y-path[l][6];
-                            path[l][5]=cp.x;
-                            path[l][6]=cp.y;
-                            path[l][3]+=ox;
-                            path[l][4]+=oy;
-                        break;
-                    }
-                    conn.setAttr("KEY",{path:path},false);
+            if(cp2){
+                var l=path.length-1;
+                if( (path[l][0]||"").toUpperCase()=='Z')l--;
+                switch(type){
+                    case 'flowchart':
+                        // need to redraw it
+                        var np=this._redrawBrokenLine(prf);
+                        if(np){
+                            // renew paths
+                            path.length=0;
+                            xui.arr.each(np,function(p){
+                                path.push(p);
+                            });
+                        }
+                    break;
+                    case 'straight':
+                        path[l][1]=cp2.x;
+                        path[l][2]=cp2.y;
+                    break;
+                    case 'bezier':
+                        var ox=cp2.x-path[l][5],
+                            oy=cp2.y-path[l][6];
+                        path[l][5]=cp2.x;
+                        path[l][6]=cp2.y;
+                        path[l][3]+=ox;
+                        path[l][4]+=oy;
+                    break;
                 }
+            }
+            if(cp1 || cp2){
+                conn.setAttr("KEY",{path:path},false);
+                ns._syncAtt(path, prop.attachment);
             }
         },
+        _syncAtt:function(path, attachment){
+            if(attachment){
+                xui.arr.each(attachment,function(att){
+                    var elem=att.elem;
+                    if(elem){
+                        var pos = Raphael.getPointAtLength(path, Raphael.getTotalLength(path) * Math.min(1,Math.max(0,att.distance||0))),
+                            bb = elem.type=="text"?{width:0,height:0}:elem.getBBox(true);
+                        elem.transform("T"+(pos.x-bb.width/2)+","+(pos.y-bb.height/2)+"R"+pos.alpha+","+pos.x+","+pos.y);
+                        att.callback && att.callback(att);
+                    }
+                });
+            }
+        },
+        _getHotNode:function(prf, conf){
+            conf = conf.split(":");
+            return conf[1] ? prf.getSubNode(conf[1], conf[2]) : prf.getRootNode();
+        },
         _redrawBrokenLine:function(prf,inputPoint,x,y){
-            var offset=30,
+            var ns=this,
+                offset=30,
                 offsetx=30,
                 offsety=30,
                 prop=prf.properties,
@@ -3195,15 +3563,12 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.fromObj){
                         ins=p[0].boxing();
-                        sPoint=ins._getConnectPoint(prop.fromPoint);
+                        sPoint=xui.svg._getConnectPoint(prf, p[0],prop.fromObj,prop.fromPoint);
                         if(sPoint){
-                            sPath=ins._getConnectPath();
+                            var hotNode = ns._getHotNode(p[0], prop.fromObj)
+                            sPath=xui.svg._getConnectPath(prf, p[0], hotNode);
 
-                            if(sBox=xui.get(p[0]._pathCached,['_connBBox'])){
-                            }else{
-                                sBox=Raphael.pathBBox(sPath);
-                                xui.set(p[0]._pathCached,['_connBBox'], sBox)
-                            }
+                            sBox=Raphael.pathBBox(sPath);
 
                             if(sPoint.solid){
                                 angle=sPoint.alpha;
@@ -3229,15 +3594,12 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.toObj){
                         ins=p[0].boxing();
-                        ePoint=ins._getConnectPoint(prop.toPoint);
+                        ePoint=xui.svg._getConnectPoint(prf, p[0],prop.toObj,prop.toPoint);
                         if(ePoint){
-                            ePath=ins._getConnectPath();
+                            var hotNode = ns._getHotNode(p[0],prop.toObj);
+                            ePath=xui.svg._getConnectPath(prf, p[0], hotNode);
 
-                            if(eBox=xui.get(p[0]._pathCached,['_connBBox'])){
-                            }else{
-                                eBox=Raphael.pathBBox(ePath);
-                                xui.set(p[0]._pathCached,['_connBBox'], eBox)
-                            }
+                            eBox=Raphael.pathBBox(ePath);
 
                             if(ePoint.solid){
                                 angle=ePoint.alpha;
@@ -3644,25 +4006,30 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                         if(prf.onTextClick)
                             rtn=prf.boxing().onTextClick(prf, e, src);
                         if(rtn!==false && prf.onClick)
-                            return prf.boxing().onClick(prf, e, src);
+                            if(false===prf.boxing().onClick(prf, e, src))
+                                xui.Event.stopBubble(e);
                     });
                 }else{
                     el.click(function(e){
                         if(prf.$inDesign)return false;
                         if(prf.properties.disabled)return false;
                         if(prf.onClick)
-                            return prf.boxing().onClick(prf, e, src);
+                            if(false===prf.boxing().onClick(prf, e, src))
+                                xui.Event.stopBubble(e);
                     });
                 }
                 el.dblclick(function(e){
                     if(prf.$inDesign)return false;
                     if(prf.properties.disabled)return false;
                     if(prf.onDblClick)
-                        return prf.boxing().onDblClick(prf, e, src);
+                        if(false===prf.boxing().onDblClick(prf, e, src))
+                            xui.Event.stopBubble(e);
                 });
                 el.contextmenu(function(e){
                     if(prf.onContextmenu)
                         return prf.boxing().onContextmenu(prf, e, src)!==false;
+                        if(false===prf.boxing().onContextmenu(prf, e, src))
+                            xui.Event.stopBubble(e);
                 });
                 el.node.id=prf.box.KEY+"-"+key+":"+prf.serialId+":";
                 s.push(el);

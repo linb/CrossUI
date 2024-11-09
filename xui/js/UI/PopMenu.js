@@ -520,6 +520,13 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         //don't fire events here
                         try{xui.use(src).get(0).focus()}catch(e){}
                     }
+                    if(!Cancel && item.sub){
+                        if(profile.onInitPopup){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, e, src){
+                                return;
+                            }
+                        }
+                    }
 
                     if(!Cancel && item.sub){
                         if(false===profile.boxing().beforeShowSubMenu(profile, item, src, e)){
@@ -814,6 +821,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $vborder:0
         }),
         EventHandlers:{
+            onInitPopup:function(profile, item){},
             beforeShowSubMenu:function(profile, item, src, e){},
             onShowSubMenu:function(profile, item, src, e){},
             beforeShow:function(profile, pos, type, conainer, ignoreEffects, e){},

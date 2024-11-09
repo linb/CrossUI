@@ -180,7 +180,7 @@ xui.Class('xui.Event',null,{
         $dblcInterval:500,
         $lastClickFunMark:0,
         //collection
-        _events : ("mouseover,mouseout,mouseleave,mouseenter,mousedown,mouseup,mousemove,mousewheel,click,dblclick,contextmenu," +
+        _events : ("mouseover,mouseout,mouseleave,mouseenter,mousedown,mouseup,mousemove,mousewheel,wheel,click,dblclick,contextmenu," +
                 "keydown,keypress,keyup,scroll,"+
                 "blur,focus,"+
                 "load,unload,beforeunload,abort,"+

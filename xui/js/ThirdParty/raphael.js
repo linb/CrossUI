@@ -5902,7 +5902,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (key.substring(0, 6) == "xlink:") {
 	                    el.setAttributeNS(xlink, key.substring(6), Str(attr[key]));
 	                } else {
-	                    el.setAttribute(key, Str(attr[key]));
+                        // arrow too short bug
+                        if(Str(attr[key]).indexOf("NaN")==-1){
+    	                    el.setAttribute(key, Str(attr[key]));
+                        }
 	                }
 	            }
 	        } else {

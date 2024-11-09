@@ -122,6 +122,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             var profile = this.get(0);
             return profile.getSubNodeByItemId('PANEL', subId+'');
         },
+        getContainer:function(subId){
+            return this.getPanel(subId);
+        },
         ////
         addPanel:function(paras, children, item){
             var ns=this,
@@ -190,7 +193,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(profile.renderId){
                     xui.arr.each(profile.properties.items,function(o){
                         if(subId===true || (subId+'')===o.id)
-                            delete o._$ini;
+                            delete o._$init;
                     });
                     if(removeChildren)
                         profile.boxing().removeChildren(subId,destroyChildren)
@@ -982,6 +985,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         EventHandlers:{
             onCmd:function(profile,item,cmdkey,e,src){},
             onIniPanelView:function(profile, item){},
+            onInitPanelView:function(profile, callback, id){},
+            onInitValues:function(profile, callback, id){},
+
             beforePagePop:function(profile, item, options, e, src){},
             beforePageClose:function(profile, item, src){},
             afterPageClose:function(profile, item){},
@@ -1001,8 +1007,6 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 if(i=self.getItemByItemId(v))
                     ins.onItemSelected(self, i);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(self);
         },
         _prepareData:function(profile){
             var data = arguments.callee.upper.call(this, profile);
@@ -1133,64 +1137,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         },
         _forIniPanelView:function(prf, item){
             if(!item)return;
-            var prop=prf.properties,box=prf.boxing();
-            if(!item._$ini){
-                item._$ini=true;
-                if(prf.onIniPanelView)box.onIniPanelView(prf,item);
-                if(item.iframeAutoLoad){
-                    box.getPanel(item.id).css('overflow','hidden');
-                    var _if=typeof item.iframeAutoLoad=='string'?{url:item.iframeAutoLoad}:xui.clone(item.iframeAutoLoad,true),
-                        id="diframe_"+xui.rand(),
-                        e=xui.browser.ie && xui.browser.ver<9,
-                        ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
-
-                    _if.url=xui.adjustRes(_if.url,false,true);
-
-                    ifr.id=ifr.name=id;
-                    if(xui.isHash(item.iframeAutoLoad))item.iframeAutoLoad.frameName=id;
-                    item._frameName=id;
-
-                    if(!_if.query)_if.query={};
-                    _if.query._rand=xui.rand();
-                    ifr.frameBorder='0';
-                    ifr.marginWidth='0';
-                    ifr.marginHeight='0';
-                    ifr.vspace='0';
-                    ifr.hspace='0';
-                    ifr.allowTransparency='true';
-                    ifr.width='100%';
-                    ifr.height='100%';
-
-                    if((_if.method||"").toLowerCase()=="post"){
-                        box.getPanel(item.id).html("").append(ifr);
-                        xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
-                    }else{
-                        ifr.src=_if.url;
-                        box.getPanel(item.id).html("").append(ifr);
-                    }
-                    if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
-                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,id);
-                }else if(item.ajaxAutoLoad){
-                    var _ajax=typeof item.ajaxAutoLoad=='string'?{url:item.ajaxAutoLoad}:xui.clone(item.ajaxAutoLoad,true),
-                        options={rspType:"text"};
-                    xui.merge(options, _ajax.options);
-                    if(!_ajax.query)_ajax.query={};
-                    _ajax.query._rand=xui.rand();
-                    box.busy(false,null,"PANEL",prf.getSubIdByItemId(item.id));
-                    var node=box.getPanel(item.id);
-                    xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                        node.html(rsp,true,true);
-                        if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
-                        if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,rsp);
-                        box.free();
-                    }, function(err){
-                        node.html("<div>"+err+"</div>",true,false);
-                        if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf,item);
-                        if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,item,rsp);
-                        box.free();
-                    }, null, options).start();
-                }
-            }
+            xui.UI.Div._after_con_render(prf, item);
         },
         _showTips:function(profile, node, pos){
             if(profile.properties.disableTips)return;

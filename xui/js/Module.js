@@ -2,8 +2,6 @@
     initialize
     beforeCreated
     onCreated
-    beforeShow
-    afterShow
     onLoadRequiredClass
     onLoadRequiredClassErr
     onIniResource
@@ -13,7 +11,14 @@
     afterIniComponents
         iniExModules (asy)
     onReady
+    onInitValues
     onRender
+    beforeShow
+    onShow
+    afterShow
+
+    onHide
+
     onDestroy
 
     onModulePropChange
@@ -536,81 +541,113 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.show(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
-            if(this.destroyed)return self;
-            xui.UI.$trytoApplyCSS();
+            var self=this;
+            if(self.destroyed)return self;
+            if(false===self._fireEvent('beforeShow'))return false;
 
-            if(false===this._fireEvent('beforeShow'))return false;
-            parent=parent||xui('body');
-
-            if(parent['xui.UIProfile'])parent=parent.boxing();
-
-            var self=this,f=function(){
-                var style=self.customStyle;
-                if(style && !xui.isEmpty(style)){
-                    var arr=[];
-                    xui.each(style,function(v,k){
-                        arr.push(k+" : "+v+";");
-                    });
-                    var txt=".xui-module-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
-                    xui.CSS.addStyleSheet(txt,"xui:css:module-"+self.$xid,1);
-                }
-                // no UI control in module
-                if(self.getUIComponents().isEmpty()){
-                    xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
-                    xui.tryF(onEnd,[null, self, threadid], self);
-                }else{
-                    // if parent is an ui object without rendered, dont render the module
-                    if(!(parent && parent['xui.UI'] && parent.get(0) && !parent.get(0).renderId))
-                        self.render();
-
-                    if(false===xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
-                        //append only
-                        parent.append(self.getUIComponents(false),subId);
-                        // append and show
-                        self.getUIComponents(true).each(function(o){
-                            // allow showing svg in root
-                            if(parent.get(0)==xui("body").get(0) && o.box && o.box['xui.svg']){
-                                var svg_id = '$xui_body:svg:',
-                                    svg = xui(svg_id);
-                                if(!svg.get(0)){
-                                    var paper = xui._xui_body_svg_paper = Raphael(document.body);
-                                    paper.canvas.id=svg_id;
-                                    paper.canvas.style.position = "absolute";
-                                    paper.canvas.style.left = 0;
-                                    paper.canvas.style.top = 0;
-                                    paper.canvas.style.width = "100vw";
-                                    paper.canvas.style.height = "100vh";
-
-                                    svg = xui(paper.canvas);
-                                }
-                                o._paper = xui._xui_body_svg_paper;
-                                svg.append(o);
-                            }else{
-                                o.boxing().show(parent, subId, null, null, null, function(){
-                                  if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                                     try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                                  }
-                                });
-                            }
-                        });
-                    }
-                    self.renderId='ok';
-                    xui.tryF(onEnd,[null, self, threadid], self);
-                }
-                self._showed=1;
+            if(self._hidden){
+                this.getUIComponents(true).each(function(prf){
+                    prf.boxing().show();
+                });
+                self._hidden = 0;
+                xui.tryF(onEnd,[null, self, threadid], self);
+                 self._fireEvent('onShow');
                 self._fireEvent('afterShow');
-            };
+            }else{
+                xui.UI.$trytoApplyCSS();
+                parent=parent||xui('body');
+                if(parent['xui.UIProfile'])parent=parent.boxing();
 
-            self.threadid=threadid;
-            if(self.created) f();
-            else self.create(f,threadid);
+                var f=function(){
+                    var style=self.customStyle;
+                    if(style && !xui.isEmpty(style)){
+                        var arr=[];
+                        xui.each(style,function(v,k){
+                            arr.push(k+" : "+v+";");
+                        });
+                        var txt=".xui-module-"+self.$xid+"{\r\n"+arr.join("\r\n")+"\r\n}";
+                        xui.CSS.addStyleSheet(txt,"xui:css:module-"+self.$xid,1);
+                    }
+                    // no UI control in module
+                    if(self.getUIComponents().isEmpty()){
+                        xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self);
+                        xui.tryF(onEnd,[null, self, threadid], self);
+                    }else{
+                        // if parent is an ui object without rendered, dont render the module
+                        if(!(parent && parent['xui.UI'] && parent.get(0) && !parent.get(0).renderId))
+                            self.render();
+
+                        if(false===xui.tryF(self.customAppend,[parent,subId,left,top,threadid], self)){
+                            //append only
+                            parent.append(self.getUIComponents(false),subId);
+                            var svg_added = null;
+                            // append and show
+                            self.getUIComponents(true).each(function(o){
+                                // allow showing svg in root
+                                if(parent.get(0)==xui("body").get(0) && o.box && o.box['xui.svg']){
+                                    svg_added = 1;
+                                    var svg_id = '$xui_body:svg:', svg = xui(svg_id);
+                                    if(!svg.get(0)){
+                                        var paper = self._svg_paper = Raphael(document.body),
+                                            canvas = self._svg_node = paper.canvas, style = canvas.style;
+                                        canvas.id=svg_id;
+                                        style.position=="relative";
+                                        style.left=style.top=style.border=style.padding=style.margin=0;
+                                        svg = xui(paper.canvas);
+
+                                        var bd = xui.get(self,["$afterDestroy", "svgClear"]);
+                                        if(!bd){
+                                            (self.$afterDestroy=(self.$afterDestroy||{}))["svgClear"]=function(){
+                                                if(prf._svg_paper){
+                                                    xui.each(prf._svg_paper, function(paper){
+                                                        paper.clear();
+                                                        paper.remove();
+                                                    });
+                                                    prf._svg_paper = prf._svg_node = null;
+                                                }
+                                            };
+                                        }
+                                    }
+                                    o._paper = self._svg_paper;
+                                    svg.append(o);
+                                }else{
+                                    o.boxing().show(parent, subId, null, null, null, function(){
+                                      if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
+                                         try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                                      }
+                                    });
+                                }
+                            });
+                        }
+                        self.renderId='ok';
+                        if(svg_added){
+                            var canvas = self._svg_node, box = canvas.getBBox();
+                            if(parseInt(canvas.style.width) != Math.ceil(box.x + box.width)) {
+                                canvas.style.width = Math.ceil(box.x + box.width) + "px";
+                            }
+                            if(parseInt(canvas.style.height) != Math.ceil(box.y + box.height)) {
+                                canvas.style.height = Math.ceil(box.y + box.height) + "px";
+                            }
+                        }
+                        xui.tryF(onEnd,[null, self, threadid], self);
+                    }
+                    self._hidden=0;
+                    self._fireEvent('onShow');
+                    self._fireEvent('afterShow');
+                };
+
+                self.threadid=threadid;
+                if(self.created) f();
+                else self.create(f,threadid);
+            }
             return self;
         },
-        hide:function(){
+        hide:function(ignoreEffects, callback){
             this.getUIComponents(true).each(function(prf){
-              prf.boxing().hide();
+                prf.boxing().hide();
             });
-            this._showed=0;
+            this._hidden=1;
+            xui.tryF(callback);
         },
         render:function(triggerLayout){
             if(this.destroyed)return self;
@@ -829,6 +866,15 @@ xui.Class('xui.Module','xui.absProfile',{
                 if(self.background)
                     xui.SC.runInBG(self.background);
                 self._fireEvent('onReady');
+            });
+            funs.push(function(threadid){
+                var f=function(values){
+                    if(values && xui.isHash(values)){
+                        if(('values' in values) && xui.isHash(values.values)) values = values.values;
+                        self.setValue(values, true);
+                    }
+                }, values = self._fireEvent('onInitValues',[f]);
+                if(values) f(values);
             });
             funs.push(function(threadid){
                 self.created=true;
@@ -1322,8 +1368,8 @@ xui.Class('xui.Module','xui.absProfile',{
             return xui.absObj.pack(nodes,false);
         },
         // get first level UI children only
-        // flag:true => no  $initRootHidden
-        // flag:false => $initRootHidden
+        // flag:true => without $initRootHidden UI widgets
+        // flag:false => $initRootHidden UI widgets only
         // no flag: all
         getUIComponents:function(flag){
             var nodes = this.getComponents().get(),
@@ -1364,7 +1410,7 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this,con=self.constructor,ns=self._nodes;
             if(self.destroyed)return;
 
-
+            self._fireEvent('onHide', ['destroy']);
             self._fireEvent('onDestroy');
             if(self.alias && self.host && self.host[self.alias]){
                 try{if(self.alias in self.host)delete self.host[self.alias];}catch(e){self.host[self.alias]=void(0)}
@@ -1755,6 +1801,7 @@ xui.Class('xui.Module','xui.absProfile',{
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             beforeCreated:function(module, threadid){},
             beforeShow:function(module, threadid){},
+            onShow:function(module, threadid){},
             afterShow:function(module, threadid){},
             onLoadRequiredCSS:function(module, threadid, uri, index, layer){},
             onLoadRequiredClass:function(module, threadid, uri, key, layer){},
@@ -1764,7 +1811,9 @@ xui.Class('xui.Module','xui.absProfile',{
             afterIniComponents:function(module, threadid){},
             onModulePropChange:function(module, threadid, prop){},
             onReady:function(module, threadid){},
+            onInitValues:function(module, threadid, callback){},
             onRender:function(module, threadid){},
+            onHide:function(module, type){},
             onDestroy:function(module){}
         }
     }

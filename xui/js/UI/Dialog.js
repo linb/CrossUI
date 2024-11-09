@@ -823,7 +823,8 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             $vborder:1
         },
         EventHandlers:{
-            onIniPanelView:function(profile){},
+            onInitPanelView:function(profile, callback){},
+            onInitValues:function(profile, callback){},
             onShow:function(profile){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},
@@ -846,16 +847,14 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                 if(s.$resizer)
                     s.boxing()._unResizer();
             };
-            if(ns.properties.iframeAutoLoad||ns.properties.ajaxAutoLoad)
-                ns.box._applyAutoLoad(this);
             // ensure min/max
             if(t.status=="min"){
                 ns.box._min(ns, null,null,true);
             }else if(t.status=="max"){
                 ns.box._max(ns, null,null,true);
             }
-            // svg container
-            xui.UI.Div._for_svg_children(ns);
+
+            xui.UI.Div._after_con_render(ns);
         },
         LayoutTrigger:function(){
             var ns=this, t=ns.properties;

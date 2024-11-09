@@ -73,9 +73,9 @@ xui.Class("xui.Tips", null,{
                 return rtn(rt);
             try{
                 //for inner renderer
-                while((!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
+                while(node && (!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
                     node=node.parentNode;
-                if(!(id=(typeof node.id=="string"?node.id:null))){
+                if(node && !(id=(typeof node.id=="string"?node.id:null))){
                     node=null;
                     return rtn(rt);
                 }
@@ -164,9 +164,9 @@ xui.Class("xui.Tips", null,{
                     //for firefox wearing anynomous div in input/textarea
                     try{
                         //for inner renderer
-                        while((!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
+                        while(node && (!node.id || node.id==xui.$localeDomId) && node.parentNode!==document && index++<10)
                             node=node.parentNode;
-                        if(!(id=(typeof node.id=="string"?node.id:null))){
+                        if(node && !(id=(typeof node.id=="string"?node.id:null))){
                             node=null;
                             clear=1;
                         }

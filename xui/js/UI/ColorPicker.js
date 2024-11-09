@@ -257,6 +257,9 @@ xui.Class('xui.UI.ColorPicker', ['xui.UI',"xui.absValue"], {
                 ini:"FFFFFF",
                 format:'color'
             },
+            isFormField:{
+                ini:false
+            },
             barDisplay : {
                 ini:true,
                 action:function(v){
