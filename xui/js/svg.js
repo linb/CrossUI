@@ -3332,7 +3332,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             obj2.onShapeChanged=function(attr){
                 if(attr.path){
                     obj1.attr({path:attr.path},null,false);
-                    ns._syncAtt(attr.path, prop.attachment);
+                    ns._syncAttachment(attr.path, prop.attachment, "change");
                 }
             };
             s.push(obj2);
@@ -3370,15 +3370,15 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                         elem.dblclick(function(e){
                             if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, elem))xui.Event.stopBubble(e);
                         });
-                        att.callback && att.callback(att);
                     }
                 });
             }
-            ns._syncAtt(attr.path, prop.attachment);
+            ns._syncAttachment(attr.path, prop.attachment, "create");
 
 
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unbind"]=function(){
                 xui.arr.each(prop.attachment,function(att){
+                    att.callback && xui.tryF(att.callback,[att, 'destroy']);
                     att.elem && att.elem.remove();
                 });
                 obj2.onShapeChanged=null;
@@ -3404,6 +3404,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             if((k in options) || ('bBox' in options)){
                 h[k]=t.attr(k);
             }
+            /*
             k='arrow-start';
             if(k in options){
                 a=t.attr(k);
@@ -3418,6 +3419,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 if(a[0]!='none')h[k]=a[0]+"-narrow-short";
                 else h[k]='none';
             }
+            */
             prf._bg.attr(h,null,false);
 
             if(('bBox' in options) && prf.parent){
@@ -3518,25 +3520,42 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
             if(cp1 || cp2){
                 conn.setAttr("KEY",{path:path},false);
-                ns._syncAtt(path, prop.attachment);
+                ns._syncAttachment(path, prop.attachment, "change");
             }
         },
-        _syncAtt:function(path, attachment){
+        _syncAttachment:function(path, attachment, type){
             if(attachment){
                 xui.arr.each(attachment,function(att){
                     var elem=att.elem;
                     if(elem){
-                        var pos = Raphael.getPointAtLength(path, Raphael.getTotalLength(path) * Math.min(1,Math.max(0,att.distance||0))),
-                            bb = elem.type=="text"?{width:0,height:0}:elem.getBBox(true);
-                        elem.transform("T"+(pos.x-bb.width/2)+","+(pos.y-bb.height/2)+"R"+pos.alpha+","+pos.x+","+pos.y);
-                        att.callback && att.callback(att);
+                        var fl = Raphael.getTotalLength(path) ,
+                            l = fl* Math.min(1,Math.max(0,att.distance||0)),t;
+                        if(t=att.minDistance){
+                            if(att.distance<=.5&&l<t)l=t;
+                            else if(att.distance>.5&&fl-l<t)l=fl-t;
+                        }
+                        if(t=att.maxDistance){
+                            if(att.distance<=.5&&l>t)l=t;
+                            else if(att.distance>.5&&fl-l>t)l=fl-t;
+                        }
+
+                        var pos = Raphael.getPointAtLength(path, l),
+                            bb = (att.origin_centered || elem.type=="text") ? {width:0,height:0} : elem.getBBox(true);
+                        elem.transform("T"+(pos.x-bb.width/2-(att.offx||0))+","+(pos.y-bb.height/2-(att.offy||0))+"R"+pos.alpha+","+pos.x+","+pos.y);
+
+                        att.callback && xui.tryF(att.callback,[att, type||"change", pos, path]);
                     }
                 });
             }
         },
         _getHotNode:function(prf, conf){
             conf = conf.split(":");
-            return conf[1] ? prf.getSubNode(conf[1], conf[2]) : prf.getRootNode();
+            if(conf[1] && conf[1]!="KEY"){
+                prf = prf.getSubNode(conf[1], conf[2]);
+                return pf && prf.get(0);
+            }else{
+                return prf.getRootNode();
+            }
         },
         _redrawBrokenLine:function(prf,inputPoint,x,y){
             var ns=this,
