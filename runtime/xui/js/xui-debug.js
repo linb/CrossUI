@@ -18121,6 +18121,10 @@ heightIncrement|                      |                     |
     //for drag data
     [dragKey]
     [dragData]
+-------------------------
+onDragbegin
+onDrag
+onDragstop
 
 profile output: readonly
 ===========================
@@ -18284,7 +18288,11 @@ xui.Class('xui.DragDrop',null,{
                 restrictedRight:NULL,
                 restrictedTop:NULL,
                 restrictedBottom:NULL,
-                dropElement:NULL
+                dropElement:NULL,
+
+                onDragbegin:NULL,
+                onDrag:NULL,
+                onDragstop:NULL
             };
             d.__touchingfordd=0;
             return d;
@@ -18387,6 +18395,7 @@ xui.Class('xui.DragDrop',null,{
 
                 d.onDragBegin && d.onDragBegin();
                 d._source.onDragbegin();
+                p.onDragbegin && p.onDragbegin(xui.Event.getEventPara(e));
                 xui.tryF(d.DDBegin);
 
                 //set back first
@@ -18540,6 +18549,7 @@ xui.Class('xui.DragDrop',null,{
                     //d._source.onDrag(true); //shortcut for mousemove
                 }
 
+                p.onDrag && p.onDrag(xui.Event.getEventPara(e, _pos));
                 if(d._onDrag!=1){
                     if(d._onDrag)d._onDrag(e,d._source._get(0));
                     else{
@@ -18612,6 +18622,7 @@ xui.Class('xui.DragDrop',null,{
                     d.setDropFace();
 
                     var r = d._source.onDragstop(true,evt.getEventPara(e));
+                    p.onDragstop && p.onDragstop(xui.Event.getEventPara(e));
                     if(d._dropElement)
                         xui.use(d._dropElement).onDrop(true,evt.getEventPara(e));
                 }
@@ -18957,15 +18968,8 @@ xui.Class('xui.DragDrop',null,{
             }
             function ondragenter(e) {
                 if(!e.relatedTarget){
-                    var data = xui.unserialize(e.dataTransfer.getData('text/plain'));
-                    if(data){
-                        if(data.dragKey && data.dragData){
-                            startXUIDD(data.dragKey, data.dragData);
-                        }else{
-                            console.log("No XUI DD dragKey or dragData in dataTransfer");
-                        }
-                    }else if(dd._xui_dragging_data){
-                        data = dd._xui_dragging_data;
+                    if(dd._xui_dragging_data){
+                        var data = dd._xui_dragging_data;
                         if(data.dragKey && data.dragData){
                             startXUIDD(data.dragKey, data.dragData);
                         }else{
@@ -29531,7 +29535,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
 
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
                 xui.UI.Div._applyAutoLoad(prf, item);
-            if(prf.onInitPanelView){
+            if(prf.onInitPanelView||prf.onIniPanelView){
                 var ins=prf.boxing(),
                 callback = function(obj){
                     if(xui.isStr(ojb)){
@@ -29543,7 +29547,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     }else{
                         ins.append(obj, item && item.id);
                     }
-                }, obj = ins.onInitPanelView(prf, item && item.id, callback);
+                }, obj = (prf.onInitPanelView?ins.onInitPanelView:ins.onIniPanelView).apply(ins, [prf, item && item.id, callback]);
                 if(obj) callback(obj);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);
@@ -29585,11 +29589,11 @@ xui.Class("xui.UI.Div", "xui.UI",{
             return data;
         },
         _applyAutoLoad:function(prf, item){
-            var subId = item && item.id, prop = item || prf.properties, ins=prf.boxing();
+            var subId = item && item.id, prop = item || prf.properties, ins=prf.boxing(), con=ins.getContainer(subId);
             if(prop.iframeAutoLoad){
-                ins.getContainer(subId).css('overflow','hidden');
+                con.css('overflow','hidden');
                 var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
-                    id="diframe_"+prf.$xid+"_"+(subId?(subId+"_"):"")+xui.rand(),
+                    id="diframe_"+prf.$xid+"_"+xui.rand(),
                     e=xui.browser.ie && xui.browser.ver<9,
                     ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
 
@@ -29609,18 +29613,17 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 ifr.allowTransparency='true';
                 ifr.width='100%';
                 ifr.height='100%';
-                ins.getContainer(subId).html("",false);
-                ins.append(ifr);
+                con.html("",false);
 
                 if((_if.method||"").toLowerCase()=="post"){
-                    ins.append(ifr);
+                    con.append(ifr);
                     xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
                 }else{
                     ifr.src=_if.url;
-                    ins.append(ifr);
+                    con.append(ifr);
                 }
                 if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
-                if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,id);
+                if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,id,item);
             }else if(prop.ajaxAutoLoad){
                 var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
                     options={rspType:"text"};
@@ -29632,12 +29635,12 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                     node.html(rsp,true,true);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
-                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp,item);
                     ins.free();
                 }, function(err){
                     node.html("<div>"+err+"</div>",true,false);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
-                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp,item);
                     ins.free();
                 }, null, options).start();
             }
@@ -30794,7 +30797,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','ROTATE','L','R','T','B','LT','RT','LB','RB','REGION']);
         xui.each({
             // add resizer to xui.Dom plugin
-            addResizer:function(properties, onUpdate, onChange){
+            addResizer:function(properties, onUpdate, onChange, onInit){
                 var target=xui([this.get(0)]);
                 properties=properties||{};
                 xui.merge(properties,{
@@ -30804,6 +30807,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 var r = new xui.UI.Resizer(properties)._attachTo(target, target);
 
                 //set event
+                if(onInit) r.onInit(onInit);
                 if(onUpdate) r.onUpdate(onUpdate);
                 if(onChange) r.onChange(onChange);
                 return r;
@@ -31255,7 +31259,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             // attached to a dom node for resizer function.
             _attached:false,
 
-//<< can be used in addResizer({*})
+            //<< can be used in addResizer({*})
             // handler visible?
             forceVisible:false,
             // movable
@@ -31311,7 +31315,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     this.getSubNode('ROTATE').css('display',v?'':'none');
                 }
             },
-//>>
+            //>>
 
             left: 100,
             top: 100,
@@ -31323,8 +31327,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         },
         EventHandlers:{
             onDblclick:function(profile, e, src){},
+            onInit:function(profile, e, src, axis){},
             onUpdate:function(profile, target, size, cssPos, rotate){},
-            onChange:function(profile, proxy){},
+            onChange:function(profile, proxy, args, offset){},
             onConfig:function(profile, e, src,pos,type){}
         },
         _dynamicTemplate:function(profile){
@@ -31579,6 +31584,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 h = o.height(),
                 pos = o.offset(),
                 rotate;
+
             if(rotatable){
                 rotate = o.rotate();
                 if(o.get(0).getBoundingClientRect){
@@ -31612,6 +31618,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 //set proxy to itself
                 profile.proxy = o;
 
+            if(profile.onInit && false===profile.boxing().onInit(profile, e, src, axis)){
+               return;
+            }
 
             //get current w h from target
             profile.o_w2 =profile.o_w =w;
@@ -31853,8 +31862,11 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             if(!data.transform)delete data.transform;
             if(!xui.isEmpty(data)){
                 profile.proxy.css(data);
-                if(profile.onChange)
-                    profile.boxing().onChange(profile,profile.proxy);
+                if(profile.onChange){
+                    var r = profile.boxing().onChange(profile, profile.proxy, args, os);
+                    if(r===false)
+                        return;
+                }
                 var s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? ((parseInt(data.left,10)-xOff) + " : " + (parseInt(data.top,10)-yOff)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10));
                 xui.Tips.show(e,{tips:s});
             }
@@ -43882,7 +43894,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             afterItemClick:function(profile,item,e,src){},
             onCaptionActive:function(profile, item,e,src){},
             onClickPanel:function(profile, item, e, src){},
-            afterAutoLoad:function(profile, item, text){}
+            afterAutoLoad:function(profile, text, item){}
         },
         RenderTrigger:function(){
             var self=this,v,i,ins;
@@ -48805,7 +48817,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             onDragResized:function(profile, item, size, e, src){},
             onInitPanelView:function(profile, callback, id){},
             onInitValues:function(profile, callback, id){},
-            afterAutoLoad:function(profile, item, text){}
+            afterAutoLoad:function(profile, text, item){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];
@@ -72120,7 +72132,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             conf = conf.split(":");
             if(conf[1] && conf[1]!="KEY"){
                 prf = prf.getSubNode(conf[1], conf[2]);
-                return pf && prf.get(0);
+                return prf && prf.get(0);
             }else{
                 return prf.getRootNode();
             }

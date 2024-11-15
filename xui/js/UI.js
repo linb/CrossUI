@@ -9432,7 +9432,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
 
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
                 xui.UI.Div._applyAutoLoad(prf, item);
-            if(prf.onInitPanelView){
+            if(prf.onInitPanelView||prf.onIniPanelView){
                 var ins=prf.boxing(),
                 callback = function(obj){
                     if(xui.isStr(ojb)){
@@ -9444,7 +9444,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     }else{
                         ins.append(obj, item && item.id);
                     }
-                }, obj = ins.onInitPanelView(prf, item && item.id, callback);
+                }, obj = (prf.onInitPanelView?ins.onInitPanelView:ins.onIniPanelView).apply(ins, [prf, item && item.id, callback]);
                 if(obj) callback(obj);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);
@@ -9486,11 +9486,11 @@ xui.Class("xui.UI.Div", "xui.UI",{
             return data;
         },
         _applyAutoLoad:function(prf, item){
-            var subId = item && item.id, prop = item || prf.properties, ins=prf.boxing();
+            var subId = item && item.id, prop = item || prf.properties, ins=prf.boxing(), con=ins.getContainer(subId);
             if(prop.iframeAutoLoad){
-                ins.getContainer(subId).css('overflow','hidden');
+                con.css('overflow','hidden');
                 var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
-                    id="diframe_"+prf.$xid+"_"+(subId?(subId+"_"):"")+xui.rand(),
+                    id="diframe_"+prf.$xid+"_"+xui.rand(),
                     e=xui.browser.ie && xui.browser.ver<9,
                     ifr=document.createElement(e?"<iframe name='"+id+"'>":"iframe");
 
@@ -9510,18 +9510,17 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 ifr.allowTransparency='true';
                 ifr.width='100%';
                 ifr.height='100%';
-                ins.getContainer(subId).html("",false);
-                ins.append(ifr);
+                con.html("",false);
 
                 if((_if.method||"").toLowerCase()=="post"){
-                    ins.append(ifr);
+                    con.append(ifr);
                     xui.Dom.submit(_if.url, _if.query, "post", id, _if.enctype);
                 }else{
                     ifr.src=_if.url;
-                    ins.append(ifr);
+                    con.append(ifr);
                 }
                 if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
-                if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,id);
+                if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,id,item);
             }else if(prop.ajaxAutoLoad){
                 var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
                     options={rspType:"text"};
@@ -9533,12 +9532,12 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
                     node.html(rsp,true,true);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
-                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp,item);
                     ins.free();
                 }, function(err){
                     node.html("<div>"+err+"</div>",true,false);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
-                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp);
+                    if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp,item);
                     ins.free();
                 }, null, options).start();
             }

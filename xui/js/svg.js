@@ -3552,7 +3552,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             conf = conf.split(":");
             if(conf[1] && conf[1]!="KEY"){
                 prf = prf.getSubNode(conf[1], conf[2]);
-                return pf && prf.get(0);
+                return prf && prf.get(0);
             }else{
                 return prf.getRootNode();
             }

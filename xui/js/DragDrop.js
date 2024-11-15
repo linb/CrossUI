@@ -125,6 +125,10 @@ heightIncrement|                      |                     |
     //for drag data
     [dragKey]
     [dragData]
+-------------------------
+onDragbegin
+onDrag
+onDragstop
 
 profile output: readonly
 ===========================
@@ -288,7 +292,11 @@ xui.Class('xui.DragDrop',null,{
                 restrictedRight:NULL,
                 restrictedTop:NULL,
                 restrictedBottom:NULL,
-                dropElement:NULL
+                dropElement:NULL,
+
+                onDragbegin:NULL,
+                onDrag:NULL,
+                onDragstop:NULL
             };
             d.__touchingfordd=0;
             return d;
@@ -391,6 +399,7 @@ xui.Class('xui.DragDrop',null,{
 
                 d.onDragBegin && d.onDragBegin();
                 d._source.onDragbegin();
+                p.onDragbegin && p.onDragbegin(xui.Event.getEventPara(e));
                 xui.tryF(d.DDBegin);
 
                 //set back first
@@ -544,6 +553,7 @@ xui.Class('xui.DragDrop',null,{
                     //d._source.onDrag(true); //shortcut for mousemove
                 }
 
+                p.onDrag && p.onDrag(xui.Event.getEventPara(e, _pos));
                 if(d._onDrag!=1){
                     if(d._onDrag)d._onDrag(e,d._source._get(0));
                     else{
@@ -616,6 +626,7 @@ xui.Class('xui.DragDrop',null,{
                     d.setDropFace();
 
                     var r = d._source.onDragstop(true,evt.getEventPara(e));
+                    p.onDragstop && p.onDragstop(xui.Event.getEventPara(e));
                     if(d._dropElement)
                         xui.use(d._dropElement).onDrop(true,evt.getEventPara(e));
                 }
@@ -961,15 +972,8 @@ xui.Class('xui.DragDrop',null,{
             }
             function ondragenter(e) {
                 if(!e.relatedTarget){
-                    var data = xui.unserialize(e.dataTransfer.getData('text/plain'));
-                    if(data){
-                        if(data.dragKey && data.dragData){
-                            startXUIDD(data.dragKey, data.dragData);
-                        }else{
-                            console.log("No XUI DD dragKey or dragData in dataTransfer");
-                        }
-                    }else if(dd._xui_dragging_data){
-                        data = dd._xui_dragging_data;
+                    if(dd._xui_dragging_data){
+                        var data = dd._xui_dragging_data;
                         if(data.dragKey && data.dragData){
                             startXUIDD(data.dragKey, data.dragData);
                         }else{

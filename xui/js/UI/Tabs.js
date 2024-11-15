@@ -997,7 +997,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             afterItemClick:function(profile,item,e,src){},
             onCaptionActive:function(profile, item,e,src){},
             onClickPanel:function(profile, item, e, src){},
-            afterAutoLoad:function(profile, item, text){}
+            afterAutoLoad:function(profile, text, item){}
         },
         RenderTrigger:function(){
             var self=this,v,i,ins;

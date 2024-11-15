@@ -34,7 +34,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         this.addTemplateKeys(['HANDLER','HIDDEN','MOVE','CONF1','CONF2','ROTATE','L','R','T','B','LT','RT','LB','RB','REGION']);
         xui.each({
             // add resizer to xui.Dom plugin
-            addResizer:function(properties, onUpdate, onChange){
+            addResizer:function(properties, onUpdate, onChange, onInit){
                 var target=xui([this.get(0)]);
                 properties=properties||{};
                 xui.merge(properties,{
@@ -44,6 +44,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 var r = new xui.UI.Resizer(properties)._attachTo(target, target);
 
                 //set event
+                if(onInit) r.onInit(onInit);
                 if(onUpdate) r.onUpdate(onUpdate);
                 if(onChange) r.onChange(onChange);
                 return r;
@@ -495,7 +496,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             // attached to a dom node for resizer function.
             _attached:false,
 
-//<< can be used in addResizer({*})
+            //<< can be used in addResizer({*})
             // handler visible?
             forceVisible:false,
             // movable
@@ -551,7 +552,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     this.getSubNode('ROTATE').css('display',v?'':'none');
                 }
             },
-//>>
+            //>>
 
             left: 100,
             top: 100,
@@ -563,8 +564,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
         },
         EventHandlers:{
             onDblclick:function(profile, e, src){},
+            onInit:function(profile, e, src, axis){},
             onUpdate:function(profile, target, size, cssPos, rotate){},
-            onChange:function(profile, proxy){},
+            onChange:function(profile, proxy, args, offset){},
             onConfig:function(profile, e, src,pos,type){}
         },
         _dynamicTemplate:function(profile){
@@ -819,6 +821,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 h = o.height(),
                 pos = o.offset(),
                 rotate;
+
             if(rotatable){
                 rotate = o.rotate();
                 if(o.get(0).getBoundingClientRect){
@@ -852,6 +855,9 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                 //set proxy to itself
                 profile.proxy = o;
 
+            if(profile.onInit && false===profile.boxing().onInit(profile, e, src, axis)){
+               return;
+            }
 
             //get current w h from target
             profile.o_w2 =profile.o_w =w;
@@ -1093,8 +1099,11 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             if(!data.transform)delete data.transform;
             if(!xui.isEmpty(data)){
                 profile.proxy.css(data);
-                if(profile.onChange)
-                    profile.boxing().onChange(profile,profile.proxy);
+                if(profile.onChange){
+                    var r = profile.boxing().onChange(profile, profile.proxy, args, os);
+                    if(r===false)
+                        return;
+                }
                 var s = args.rotate ? (parseInt(rotate,10)+"°") : args.move? ((parseInt(data.left,10)-xOff) + " : " + (parseInt(data.top,10)-yOff)) :  (parseInt(data.width||cs.width,10) + " X " + parseInt(data.height||cs.height,10));
                 xui.Tips.show(e,{tips:s});
             }

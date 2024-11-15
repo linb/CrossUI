@@ -671,7 +671,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             onDragResized:function(profile, item, size, e, src){},
             onInitPanelView:function(profile, callback, id){},
             onInitValues:function(profile, callback, id){},
-            afterAutoLoad:function(profile, item, text){}
+            afterAutoLoad:function(profile, text, item){}
         },
         _adjustItems2:function(items, pos){
             var arr=[];
