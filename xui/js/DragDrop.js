@@ -953,8 +953,6 @@ xui.Class('xui.DragDrop',null,{
                     */
                 }
             }
-
-
             function startXUIDD(dragKey, dragData){
                 dd._end()._reset();
                 dd._profile.isWorking = true;

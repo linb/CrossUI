@@ -620,6 +620,7 @@ xui.Class('xui.Module','xui.absProfile',{
                             });
                         }
                         self.renderId='ok';
+                        self.renderCompleted = 1;
                         if(svg_added){
                             var canvas = self._svg_node, box = canvas.getBBox();
                             if(parseInt(canvas.style.width) != Math.ceil(box.x + box.width)) {
@@ -665,6 +666,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self.create(null,false)
             if(self.renderId!='ok'){
                 self.renderId='ok';
+                self.renderCompleted = 1;
                 self.getUIComponents().render(triggerLayout);
                 self._fireEvent('onRender');
                 checkSubMdls(self);
@@ -1439,6 +1441,7 @@ xui.Class('xui.Module','xui.absProfile',{
             }else{
                 // for refresh itself
                 delete self.renderId;
+                delete self.renderCompleted;
                 delete self.created;
                 delete self._innerModulesCreated;
             }
@@ -1795,7 +1798,7 @@ xui.Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
-            onHookKey:function(module, key, e, keyDown){},
+            onHookKey:function(module, key, keyDown, e){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},

@@ -822,7 +822,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 return this.each(function(o){
                     if(o.raphael&&o.id){
                         var prf=xui.Event._getProfile(o.id);
-                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid)))
+                        if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid)))
                             o.transform('r'+v);
                     }else{
                         v+='deg';
@@ -836,7 +836,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 var o=this.get(0);
                 if(o.raphael&&o.id){
                         var prf=xui.Event._getProfile(o.id);
-                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                        if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                             // for format
                             o=o.transform();
                             if(xui.isArr(o)){
@@ -866,7 +866,7 @@ xui.Class('xui.Dom','xui.absBox',{
                      if(o.raphael&&o.id){
                          v=v||0;
                         var prf=xui.Event._getProfile(o.id),t;
-                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                        if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                             t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
@@ -891,7 +891,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.raphael&&o.id){
                     v=1;
                     var prf=xui.Event._getProfile(o.id);
-                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                    if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                          xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[1];
                         });
@@ -914,7 +914,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     if(o.raphael&&o.id){
                         v=v||0;
                         var prf=xui.Event._getProfile(o.id),t;
-                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                        if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                             t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             // only for the first
                             if(t&&t[0]&&t[0][0]=="s"){
@@ -939,7 +939,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.raphael&&o.id){
                    v=1;
                     var prf=xui.Event._getProfile(o.id);
-                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                    if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                          xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="s")v*=t[2];
                         });
@@ -962,7 +962,7 @@ xui.Class('xui.Dom','xui.absBox',{
                         v=parseFloat(v)||0;
                         var prf=xui.Event._getProfile(o.id),t;
                         // modify the last 't'
-                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                        if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                             t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
                                 t[t.length-1][1]=v;
@@ -985,7 +985,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.raphael&&o.id){
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
-                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                    if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                          xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[1];
                         });
@@ -1003,7 +1003,7 @@ xui.Class('xui.Dom','xui.absBox',{
                      if(o.raphael&&o.id){
                         v=parseFloat(v)||0;
                         var prf=xui.Event._getProfile(o.id),t;
-                        if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                        if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                             t=xui.clone(window.Raphael.parseTransformString(o.transform()),true);
                             // modify the last 't'
                             if(t&&t.length&&t[t.length-1]&&(t[t.length-1][0]=="t")){
@@ -1027,7 +1027,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 if(o.raphael&&o.id){
                     v=0;
                     var prf=xui.Event._getProfile(o.id);
-                    if((prf = prf && prf.parent && prf.parent._paper) && (o=prf.getById(o.raphaelid))){
+                    if((prf && prf.parent && prf.parent._svg_papers) && (o=prf.boxing().getPaper().getById(o.raphaelid))){
                          xui.arr.each(window.Raphael.parseTransformString(o.transform()),function(t){
                             if(t[0]=="t")v+=t[2];
                         });
@@ -1303,7 +1303,7 @@ xui.Class('xui.Dom','xui.absBox',{
             node = ns.get(0),
             keepNode=node,
             parent =node.parentNode,
-            op=node.offsetParent,
+            op=node.offsetParent||node.parentNode,
             doc=node.ownerDocument,
             dd=doc.documentElement,
             db=doc.body,
@@ -4380,13 +4380,13 @@ xui.Class('xui.Dom','xui.absBox',{
                        // by created order
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
-                           if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
+                           if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type) || (xui.isStr(f) && xui.isFun(m[f])))
                                if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
                                    return false;
                        }
                        else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
                            // function or pseudocode
-                           if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type))
+                           if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type) || (xui.isStr(f) && xui.isFun(m[f])))
                                if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
                                    return false;
                        }

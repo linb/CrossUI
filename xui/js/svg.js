@@ -984,7 +984,7 @@ xui.Class("xui.svg", "xui.UI",{
                                                 esrc=esrc.parentNode;
                                             }
 
-                                            if(!esrc)
+                                            if(!esrc || esrc===paper.canvas.parentNode)
                                                 return;
 
                                             // has anchors or anchorPath
@@ -994,10 +994,25 @@ xui.Class("xui.svg", "xui.UI",{
                                                 conf = prf.properties[conType=='from'?'fromObj':'toObj'],
                                                 a = conf && conf.split(":"),
                                                 anchorShadow=paper._anchorShadow;
+
+                                            var getObjFromConf = function(prf, a){
+                                                // same level widget
+                                                if(a[0].indexOf(">")==-1){
+                                                    return xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                }
+                                                // widget in sub module
+                                                else{
+                                                    var arr = a[0].split(">"),
+                                                        tomdl = xui.get(prf,["host","_alias_pool",arr[0]]) || xui.get(prf,["host","_ref_pool",arr[0]]);
+                                                    return xui.get(tomdl, ["_alias_pool",arr[1]]) || xui.get(tomdl,["_ref_pool",arr[1]]);
+                                                }
+                                            };
+
                                             if(esrc!==paper.canvas){
                                                 tobj=xui.UIProfile.getFromDom(esrc.id), cid=prf.containerId||"#";
                                                 if(tobj){
-                                                    var alias = tobj.ref||tobj.alias, key = "", sid = "";
+                                                    // a special var for sub module - _parent_alias
+                                                    var alias = (tobj._parent_alias?(tobj._parent_alias+">"):"") + (tobj.alias||tobj.ref), key = "", sid = "";
                                                     targetNode = tobj.getRootNode();
                                                     while(esrc!==targetNode){
                                                         if(xui.getNodeData(esrc, 'isHotNode')){
@@ -1018,13 +1033,13 @@ xui.Class("xui.svg", "xui.UI",{
                                                     // inner hot node, inner hot node widget, or same level widgets
                                                     if(key || xui.getNodeData(targetNode, 'isHotNode') || tobj.parent == prf.parent){
                                                         // in the connection not-hot node for locked point
-                                                        if(locked && (alias != a[0] || key!==((a[1]=="KEY"?"":a[1])||"") || sid!==(a[2]||"") )) {
-                                                            tobj = xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                        if(locked && a[0] && (alias != a[0] || key!==((a[1]=="KEY"?"":a[1])||"") || sid!==(a[2]||"") )) {
+                                                            tobj = getObjFromConf(prf, a);
                                                             if(tobj){
-                                                                targetNode = tobj.getSubNode(a[1], a[2]);
+                                                                targetNode = tobj.getSubNode(a[1]||"KEY", a[2]);
                                                                 if(targetNode.get(0)){
-                                                                    anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode.get(0));
-                                                                    anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode.get(0));
+                                                                    anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
+                                                                    anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
                                                                     if(anchorPath){
                                                                         var anchorBBox=Raphael.pathBBox(anchorPath);
                                                                         centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
@@ -1038,13 +1053,13 @@ xui.Class("xui.svg", "xui.UI",{
                                                         }else{
                                                             if(tobj.box['xui.svg'] || (tobj.box['xui.UI']&&targetNode)){
                                                                 if(!tobj.box._CONNECTOR){
-                                                                    anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode);
-                                                                    anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode);
+                                                                    anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode);
+                                                                    anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode);
                                                                     if(anchorPath){
                                                                         var anchorBBox=Raphael.pathBBox(anchorPath);
                                                                         centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
                                                                     }
-                                                                    magneticObj = tobj.ref || tobj.alias;
+                                                                    magneticObj = alias;
                                                                     if(key){
                                                                          magneticObj += ":" + key + ":" + sid;
                                                                     }
@@ -1057,12 +1072,12 @@ xui.Class("xui.svg", "xui.UI",{
                                             // out of connection node for locked point
                                             if(!magneticObj && locked){
                                                 // get the nearest anchor
-                                                tobj = xui.get(prf,["host","_alias_pool",a[0]]) || xui.get(prf,["host","_ref_pool",a[0]]);
+                                                tobj = getObjFromConf(prf, a);
                                                 if(tobj){
-                                                    targetNode = tobj.getSubNode(a[1], a[2]);
+                                                    targetNode = tobj.getSubNode(a[1]||"KEY", a[2]);
                                                     if(targetNode){
-                                                        anchors = xui.svg._getConnectAnchors(prf, tobj, targetNode.get(0));
-                                                        anchorPath = xui.svg._getConnectPath(prf, tobj, targetNode.get(0));
+                                                        anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
+                                                        anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
                                                         if(anchorPath){
                                                             var anchorBBox=Raphael.pathBBox(anchorPath);
                                                             centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
@@ -2461,25 +2476,52 @@ xui.Class("xui.svg", "xui.UI",{
         },
         _draw:function(){},
 
-        _syncConnectors:function(prf, containerPrf){
+        _syncConnectors:function(prf, containerPrf, beforePos){
             // find all connectors connected to me
             // redraw those connectors
             // if((prf.parent && prf.parent.key)!=="xui.UI.SVGPaper")return;
 
-            var children=containerPrf ? containerPrf.children : xui.get(prf,['parent','children']),
+            var children = containerPrf && ( xui.isHash(containerPrf) ? containerPrf : containerPrf["xui.Module"] ? containerPrf._alias_pool : null),
                 alias=prf.alias, ref=prf.ref;
-            if((alias||ref) && children&&children.length){
-                xui.arr.each(children,function(o,i){
-                    if(!o[0].destroyed && prf.renderCompleted && o[0].renderCompleted && o[0].key==="xui.svg.connector"){
-                        var conf_f = xui.get(o[0],['properties','fromObj']),
-                            conf_t = xui.get(o[0],['properties','toObj']),
+            if(!children){
+                children = [];
+                xui.arr.each(xui.get(prf,["parent","children"]),function(o){
+                    children.push(o[0]);
+                });
+            }
+            if((alias||ref) && children){
+                xui.each(children,function(o,i){
+                    if(!o.destroyed && prf.renderCompleted && o.renderCompleted && o.key==="xui.svg.connector"){
+                        var conf_f = xui.get(o,['properties','fromObj']),
+                            alias_f = conf_f.split(":")[0],
+                            conf_t = xui.get(o,['properties','toObj']),
+                            alias_t = conf_t.split(":")[0], arr,
                             fromPrf = null, toPrf = null;
-                        if(conf_f && ((ref&&ref===conf_f.split(":")[0])||(alias&&alias===conf_f.split(":")[0])))
-                            fromPrf = prf;
-                        if(conf_t && ((ref&&ref===conf_t.split(":")[0])||(alias&&alias===conf_t.split(":")[0])))
-                            toPrf = prf;
-                        if(fromPrf || toPrf)
-                            o[0].box._reconnect(o[0],fromPrf,toPrf);
+                        if(conf_f && ((ref&&ref===alias_f.split(">")[0])||(alias&&alias===alias_f.split(">")[0]))){
+                            if(alias_f.indexOf(">")!=-1){
+                                arr = alias_f.split(">");
+                                fromPrf = prf._alias_pool[arr[1]];
+                                if(!fromPrf){
+                                    fromPrf = prf._ref_pool[arr[1]];
+                                }
+                            }else{
+                                fromPrf = prf;
+                            }
+                        }
+                        if(conf_t && ((ref&&ref===alias_t.split(">")[0])||(alias&&alias===alias_t.split(">")[0]))){
+                            if(alias_t.indexOf(">")!=-1){
+                                arr = alias_t.split(">");
+                                toPrf = prf._alias_pool[arr[1]];
+                                if(!toPrf){
+                                    toPrf = prf._ref_pool[arr[1]];
+                                }
+                            }else{
+                                toPrf = prf;
+                            }
+                        }
+                        if(fromPrf || toPrf){
+                            o.box._reconnect(o, fromPrf, toPrf, beforePos);
+                        }
                     }
                 });
             }
@@ -2502,7 +2544,6 @@ xui.Class("xui.svg", "xui.UI",{
         },
 
         _getDomNodeProp:function(elem, offsetParent) {
-            var pos = xui(elem).offset(null, offsetParent);
             function convertMatrixToRaphael(matrixString, centerX, centerY) {
                 var values = matrixString.match(/matrix\(([^)]+)\)/)[1].split(',').map(parseFloat),
                     a = values[0], b = values[1], c = values[2], d = values[3], e = values[4], f = values[5],
@@ -2612,21 +2653,35 @@ xui.Class("xui.svg", "xui.UI",{
                 }
             }
 
-            var x = pos.left,
-                y = pos.top,
-                width = elem.offsetWidth,
-                height = elem.offsetHeight,
-                style = window.getComputedStyle(elem),
-                transform = style.transform || style.webkitTransform || style.mozTransform,
-                borderRadius = Math.min(parseFloat(style.borderRadius), width / 2, height / 2),
-                transformString = transform && transform !== 'none' ? convertMatrixToRaphael(transform, x + width / 2, y + height / 2) : null,
-                corners = [
-                    { x: x, y: y },
-                    { x: x + width, y: y },
-                    { x: x + width, y: y + height },
-                    { x: x, y: y + height }
-                ],
-                matrix = null;
+            var x, y, width, height, transformString = "", borderRadius = 0;
+            if(elem instanceof SVGElement){
+                var prf = xui.Event._getProfile(elem.id),
+                    o = prf.boxing().getPaper().getById(elem.raphaelid),
+                    b = o.getBBox(),
+                    pos = xui(elem.ownerSVGElement).offset(null, offsetParent);
+                x = pos.left + b.x;
+                y = pos.top + b.y;
+                width = b.width;
+                height = b.height;
+            }else{
+                var pos = xui(elem).offset(null, offsetParent);
+                x = pos.left;
+                y = pos.top;
+                width = elem.offsetWidth;
+                height = elem.offsetHeight;
+                var style = window.getComputedStyle(elem),
+                    transform = style.transform || style.webkitTransform || style.mozTransform;
+                borderRadius = Math.min(parseFloat(style.borderRadius), width / 2, height / 2);
+                transformString = transform && transform !== 'none' ? convertMatrixToRaphael(transform, x + width / 2, y + height / 2) : null;
+            }
+
+            var corners = [
+                { x: x, y: y },
+                { x: x + width, y: y },
+                { x: x + width, y: y + height },
+                { x: x, y: y + height }
+            ],
+            matrix = null;
 
             if (transformString) {
                 matrix = transformStringToMatrix(transformString);
@@ -2659,13 +2714,14 @@ xui.Class("xui.svg", "xui.UI",{
                 path: createRoundedRectPath(x, y, width, height, borderRadius)
             };
         },
-        _getConnectAnchors:function(svgprf, prf, targetNode){
+        _getConnectAnchors:function(prf, svgprf, targetNode){
             if(prf){
                 var bbox, matrix,rst,r1=180,r2=270,r3=0,r4=90;
                 if(prf.box['xui.svg']){
                     prf._elset[0]._.dirty=1;
 
                     bbox=prf._elset[0]._getBBox(true);
+
                     var tf=Raphael.parseTransformString(prf._elset[0].transform());
                     if(tf && tf.length){
                         matrix=prf._elset[0].matrix;
@@ -2698,11 +2754,17 @@ xui.Class("xui.svg", "xui.UI",{
                     "right":{x:x3, y:y3, alpha:r3, solid:1},
                     "bottom":{x:x4, y:y4, alpha:r4, solid:1}
                 }
-
+                if(prf.box['xui.svg'] && svgprf && prf.parent != svgprf.parent){
+                    var pos = xui(prf.getRootNode().ownerSVGElement).offset(null, svgprf.boxing().getPaperContainer());
+                    rst.left.x += pos.left; rst.left.y += pos.top;
+                    rst.top.x += pos.left; rst.top.y += pos.top;
+                    rst.right.x += pos.left; rst.right.y += pos.top;
+                    rst.bottom.x += pos.left; rst.bottom.y += pos.top;
+                }
                 return rst;
             }
         },
-        _getConnectPath:function(svgprf, prf, targetNode){
+        _getConnectPath:function(prf, svgprf, targetNode){
             if(prf){
                 var ss,matrix,path;
 
@@ -2720,10 +2782,14 @@ xui.Class("xui.svg", "xui.UI",{
                 if(path && matrix){
                     path=Raphael.mapPath(path,matrix);
                 }
+                if(prf.box['xui.svg'] && svgprf && prf.parent != svgprf.parent){
+                    var pos = xui(prf.getRootNode().ownerSVGElement).offset(null, svgprf.boxing().getPaperContainer());
+                    path = Raphael.transformPath(path, 'T'+pos.left+","+pos.top);
+                }
                 return path;
             }
         },
-        _getConnectPoint:function(svgprf, prf, conf, anchor){
+        _getConnectPoint:function(prf, svgprf, conf, anchor){
             if(anchor){
                 var rst, targetNode = svgprf.box._getHotNode(prf, conf);
 
@@ -2732,7 +2798,7 @@ xui.Class("xui.svg", "xui.UI",{
                     arr[0]=+arr[0];
                     arr[1]=+arr[1];
                     if(arr[0]>=1 && arr[1]>=0 && arr[1]<=1){
-                        var cp=this._getConnectPath(svgprf, prf, targetNode);
+                        var cp=this._getConnectPath(prf, svgprf, targetNode);
                         if(cp){
                             var cv=Raphael.path2curve(cp),cur,prev;
                             if((cur=cv[arr[0]])&&(prev=cv[arr[0]-1])){
@@ -2741,7 +2807,7 @@ xui.Class("xui.svg", "xui.UI",{
                         }
                     }
                 }else{
-                    var hash=this._getConnectAnchors(svgprf, prf, targetNode);
+                    var hash=this._getConnectAnchors(prf, svgprf, targetNode);
                     rst = hash && hash[anchor];
                 }
 
@@ -3332,7 +3398,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             obj2.onShapeChanged=function(attr){
                 if(attr.path){
                     obj1.attr({path:attr.path},null,false);
-                    ns._syncAttachment(attr.path, prop.attachment, "change");
+                    ns._syncAttachment(prf, attr.path, prop.attachment, "change");
                 }
             };
             s.push(obj2);
@@ -3373,12 +3439,12 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                     }
                 });
             }
-            ns._syncAttachment(attr.path, prop.attachment, "create");
+            ns._syncAttachment(prf, attr.path, prop.attachment, "create");
 
 
             (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["unbind"]=function(){
                 xui.arr.each(prop.attachment,function(att){
-                    att.callback && xui.tryF(att.callback,[att, 'destroy']);
+                    att.callback && xui.tryF(att.callback,[prf, att, 'destroy']);
                     att.elem && att.elem.remove();
                 });
                 obj2.onShapeChanged=null;
@@ -3443,7 +3509,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
         },
         // have to set to null
-        _reconnect:function(prf,fromPrf,toPrf){
+        _reconnect:function(prf,fromPrf,toPrf,beforePos){
             if(prf.destroyed)return;
             var ns=this,
                 prop=prf.properties,
@@ -3454,14 +3520,14 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             if(xui.isHash(fromPrf) && ('x' in fromPrf) && ('y' in fromPrf)){
                 cp1 = fromPrf;
             }else if(fromPrf && prop.fromObj && prop.fromPoint){
-                cp1 = xui.svg._getConnectPoint(prf, fromPrf, prop.fromObj, prop.fromPoint);
+                cp1 = xui.svg._getConnectPoint(fromPrf, prf, prop.fromObj, prop.fromPoint);
             }
             if(xui.isHash(toPrf) && ('x' in toPrf) && ('y' in toPrf)){
                 cp2 = toPrf;
             }else if(toPrf && prop.toObj  && prop.toPoint){
-                cp2 = xui.svg._getConnectPoint(prf, toPrf, prop.toObj, prop.toPoint);
+                cp2 = xui.svg._getConnectPoint(toPrf, prf, prop.toObj, prop.toPoint);
             }
-
+            beforePos && beforePos(cp1, cp2);
             if(cp1){
                 switch(type){
                     case 'flowchart':
@@ -3520,10 +3586,10 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
             if(cp1 || cp2){
                 conn.setAttr("KEY",{path:path},false);
-                ns._syncAttachment(path, prop.attachment, "change");
+                ns._syncAttachment(prf, path, prop.attachment, "change");
             }
         },
-        _syncAttachment:function(path, attachment, type){
+        _syncAttachment:function(prf, path, attachment, type){
             if(attachment){
                 xui.arr.each(attachment,function(att){
                     var elem=att.elem;
@@ -3543,7 +3609,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                             bb = (att.origin_centered || elem.type=="text") ? {width:0,height:0} : elem.getBBox(true);
                         elem.transform("T"+(pos.x-bb.width/2-(att.offx||0))+","+(pos.y-bb.height/2-(att.offy||0))+"R"+pos.alpha+","+pos.x+","+pos.y);
 
-                        att.callback && xui.tryF(att.callback,[att, type||"change", pos, path]);
+                        att.callback && xui.tryF(att.callback,[prf, att, type||"change", pos, path]);
                     }
                 });
             }
@@ -3582,10 +3648,10 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.fromObj){
                         ins=p[0].boxing();
-                        sPoint=xui.svg._getConnectPoint(prf, p[0],prop.fromObj,prop.fromPoint);
+                        sPoint=xui.svg._getConnectPoint(p[0], prf, prop.fromObj,prop.fromPoint);
                         if(sPoint){
                             var hotNode = ns._getHotNode(p[0], prop.fromObj)
-                            sPath=xui.svg._getConnectPath(prf, p[0], hotNode);
+                            sPath=xui.svg._getConnectPath(p[0], prf, hotNode);
 
                             sBox=Raphael.pathBBox(sPath);
 
@@ -3613,10 +3679,10 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.toObj){
                         ins=p[0].boxing();
-                        ePoint=xui.svg._getConnectPoint(prf, p[0],prop.toObj,prop.toPoint);
+                        ePoint=xui.svg._getConnectPoint(p[0], prf, prop.toObj,prop.toPoint);
                         if(ePoint){
                             var hotNode = ns._getHotNode(p[0],prop.toObj);
-                            ePath=xui.svg._getConnectPath(prf, p[0], hotNode);
+                            ePath=xui.svg._getConnectPath(p[0], prf, hotNode);
 
                             eBox=Raphael.pathBBox(ePath);
 

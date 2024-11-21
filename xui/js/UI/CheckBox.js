@@ -84,9 +84,9 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
             ClickEffected:{KEY:'MARK'},
             NavKeys:{FOCUS:1},
             onClick:function(profile, e, src){
+                if(profile.$inDesign)return;
                 var p=profile.properties,b=profile.boxing();
-                if(p.disabled)return false;
-                if(p.readonly)return false;
+                if(p.disabled || p.readonly)return false;
                 b.setUIValue(!p.$UIvalue,null,null,'click');
                 if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
                 profile.getSubNode('FOCUS').focus(true);
