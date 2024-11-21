@@ -1036,7 +1036,7 @@ xui.Class("xui.svg", "xui.UI",{
                                                         if(locked && a[0] && (alias != a[0] || key!==((a[1]=="KEY"?"":a[1])||"") || sid!==(a[2]||"") )) {
                                                             tobj = getObjFromConf(prf, a);
                                                             if(tobj){
-                                                                targetNode = tobj.getSubNode(a[1]||"KEY", a[2]);
+                                                                targetNode = (a[1]&&a[2]) ? tobj. getSubNodeByItemId(a[1], a[2]) : tobj.getSubNode(a[1]||"KEY", a[2]);
                                                                 if(targetNode.get(0)){
                                                                     anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
                                                                     anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
@@ -1074,7 +1074,8 @@ xui.Class("xui.svg", "xui.UI",{
                                                 // get the nearest anchor
                                                 tobj = getObjFromConf(prf, a);
                                                 if(tobj){
-                                                    targetNode = tobj.getSubNode(a[1]||"KEY", a[2]);
+                                                    targetNode = (a[1]&&a[2]) ? tobj. getSubNodeByItemId(a[1], a[2]) : tobj.getSubNode(a[1]||"KEY", a[2]);
+
                                                     if(targetNode){
                                                         anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
                                                         anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
@@ -3615,9 +3616,13 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
         },
         _getHotNode:function(prf, conf){
-            conf = conf.split(":");
-            if(conf[1] && conf[1]!="KEY"){
-                prf = prf.getSubNode(conf[1], conf[2]);
+            var a = conf.split(":");
+            if(a[1] && a[1]!="KEY"){
+                if(a[2]){
+                    prf = prf.getSubNodeByItemId(a[1], a[2]);
+                }else{
+                    prf = prf.getSubNode(a[1]);
+                }
                 return prf && prf.get(0);
             }else{
                 return prf.getRootNode();

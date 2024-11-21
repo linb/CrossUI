@@ -1328,6 +1328,10 @@ xui.Class('xui.Dom','xui.absBox',{
 
             boundary=boundary?xui(boundary).get(0):doc;
 
+            if(node===boundary || !xui(boundary).contains(node)){
+                parent = op = null;
+            }
+
             if(pos){
                 //all null, return dir
                 if(pos.left===null&&pos.top===null)return ns;
@@ -1359,7 +1363,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                 }else{
                     pos = {left :0, top :0};
-                    add(pos, node.offsetLeft, node.offsetTop );
+                    if(op) add(pos, node.offsetLeft, node.offsetTop );
                     //get offset, stop by boundary or boundary.offsetParent
                     while(op && op!=boundary && op!=boundary.offsetParent){
                         add(pos, op.offsetLeft, op.offsetTop);

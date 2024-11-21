@@ -12020,6 +12020,10 @@ xui.Class('xui.Dom','xui.absBox',{
 
             boundary=boundary?xui(boundary).get(0):doc;
 
+            if(node===boundary || !xui(boundary).contains(node)){
+                parent = op = null;
+            }
+
             if(pos){
                 //all null, return dir
                 if(pos.left===null&&pos.top===null)return ns;
@@ -12051,7 +12055,7 @@ xui.Class('xui.Dom','xui.absBox',{
                     }
                 }else{
                     pos = {left :0, top :0};
-                    add(pos, node.offsetLeft, node.offsetTop );
+                    if(op) add(pos, node.offsetLeft, node.offsetTop );
                     //get offset, stop by boundary or boundary.offsetParent
                     while(op && op!=boundary && op!=boundary.offsetParent){
                         add(pos, op.offsetLeft, op.offsetTop);
@@ -20912,21 +20916,25 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return (itemId=this.getSubIdByItemId(itemId)) ? this.getSubNode(key, itemId, tag) : xui();
         },
         getItemByItemId:function(itemId){
-            var prf=this,t;
-            if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
-            if((t=prf.ItemIdMapSubSerialId) && (t=t[itemId]))
-                return prf.SubSerialIdMapItem[t];
-            t=prf.queryItems(prf.properties.items, function(v,k){
-                return v.id===itemId;
-            }, 1,1);
-            return t&&t[0];
+            if(this.box.KEY=='xui.UI.TreeGrid'){
+                return this.boxing().getRowbyRowId(itemId);
+            }else{
+                var prf=this,t;
+                if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
+                if((t=prf.ItemIdMapSubSerialId) && (t=t[itemId]))
+                    return prf.SubSerialIdMapItem[t];
+                t=prf.queryItems(prf.properties.items, function(v,k){
+                    return v.id===itemId;
+                }, 1,1);
+                return t&&t[0];
+            }
         },
         getSubIdByItemId:function(itemId){
             var prf=this,t;
-            if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
+            if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items || prf.properties.rows,[itemId,"id"]);
             // to ignore null/undefined
             // 0=>"0", false=>"false"
-            return (t=this.ItemIdMapSubSerialId) && xui.isSet(itemId)?t[itemId]:null;
+            return (t=this.ItemIdMapSubSerialId||this.rowMap2) && xui.isSet(itemId)?t[itemId]:null;
         },
 
         getItemByDom:function(src){
@@ -41745,6 +41753,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',CMD:'CMD',TOGGLE:'TOGGLE'},
             TOGGLE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(profile.properties.toggleBtn){
                         profile.box._toggle(profile, !profile.properties.toggle);
                         return false;
@@ -41753,6 +41762,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             CAPTION:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(!profile.onClickBar || false===profile.boxing().onClickBar(profile,src))
                         return xui.Event.getKey(e).shiftKey;
                 }
@@ -41783,6 +41793,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             CLOSE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var properties = profile.properties;
                     if(properties.disabled)return;
                     var instance = profile.boxing();
@@ -41794,6 +41805,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             POP:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var properties=profile.properties;
                     if(properties.disabled)return;
                     var pos = profile.getRoot().offset(), size=profile.getRoot().cssSize(),
@@ -48512,6 +48524,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             ClickEffected:{CMD:'CMD'},
             MOVE:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src);
@@ -48650,6 +48663,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             CMD:{
                 onMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var t=profile.properties,
                         itemId = profile.getSubId(src),
@@ -52683,6 +52697,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!xui(src).contains(xui.Event.getSrc(e)))
                   profile.box.$cancelHoverEditor(profile);
             },
+            onContextmenu:function(profile, e, src){
+                if(profile.onContextmenu){
+                    return profile.boxing().onContextmenu(profile, e, src)!==false;
+                }
+            },
             HFMARK:{
                 onClick:function(profile,e,src){
                     var prop=profile.properties;
@@ -52801,6 +52820,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //colomn resizer
             HHANDLER:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                         id = profile.getSubId(src),
@@ -52976,6 +52996,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //row resizer
             FHANDLER:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                     row = profile.rowMap[profile.getSubId(src)],
@@ -53121,6 +53142,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             HCELLA:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var p=profile.properties,
                       id = profile.getSubId(src),
                       col = profile.colMap[id];
@@ -53266,6 +53288,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().afterColSorted(profile, col);
                 },
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!='left')return;
 
                     var p=profile.properties;
@@ -53585,6 +53608,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
                     if(profile.onClickRow)
                         profile.boxing().onClickRow(profile, row, e, src);
+                },
+                onContextmenu:function(profile, e, src){
+                    if(profile.onContextmenu){
+                        var sid=profile.getSubId(src);
+                        // cell or row
+                        return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
+                    }
                 }
             },
             CELL:{
@@ -58223,6 +58253,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             PIN:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var key=profile.keys.PIN, t=profile.properties,ins=profile.boxing();
                     if( profile.beforePin && false === profile.boxing().beforePin(profile, t.pinned))
                         return;
@@ -58249,16 +58280,19 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             MIN:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.box._min(profile,null,null,true);
                 }
             },
             MAX:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.box._max(profile,null,null,true);
                 }
             },
             RESTORE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.box._restore(profile);
                 }
             },
@@ -58293,6 +58327,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             CLOSE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.boxing().close();
                 }
             },
@@ -69617,7 +69652,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                         if(locked && a[0] && (alias != a[0] || key!==((a[1]=="KEY"?"":a[1])||"") || sid!==(a[2]||"") )) {
                                                             tobj = getObjFromConf(prf, a);
                                                             if(tobj){
-                                                                targetNode = tobj.getSubNode(a[1]||"KEY", a[2]);
+                                                                targetNode = (a[1]&&a[2]) ? tobj. getSubNodeByItemId(a[1], a[2]) : tobj.getSubNode(a[1]||"KEY", a[2]);
                                                                 if(targetNode.get(0)){
                                                                     anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
                                                                     anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
@@ -69655,7 +69690,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                 // get the nearest anchor
                                                 tobj = getObjFromConf(prf, a);
                                                 if(tobj){
-                                                    targetNode = tobj.getSubNode(a[1]||"KEY", a[2]);
+                                                    targetNode = (a[1]&&a[2]) ? tobj. getSubNodeByItemId(a[1], a[2]) : tobj.getSubNode(a[1]||"KEY", a[2]);
+
                                                     if(targetNode){
                                                         anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
                                                         anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
@@ -72196,9 +72232,13 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             }
         },
         _getHotNode:function(prf, conf){
-            conf = conf.split(":");
-            if(conf[1] && conf[1]!="KEY"){
-                prf = prf.getSubNode(conf[1], conf[2]);
+            var a = conf.split(":");
+            if(a[1] && a[1]!="KEY"){
+                if(a[2]){
+                    prf = prf.getSubNodeByItemId(a[1], a[2]);
+                }else{
+                    prf = prf.getSubNode(a[1]);
+                }
                 return prf && prf.get(0);
             }else{
                 return prf.getRootNode();

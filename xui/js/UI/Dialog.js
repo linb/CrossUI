@@ -536,6 +536,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             PIN:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var key=profile.keys.PIN, t=profile.properties,ins=profile.boxing();
                     if( profile.beforePin && false === profile.boxing().beforePin(profile, t.pinned))
                         return;
@@ -562,16 +563,19 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             MIN:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.box._min(profile,null,null,true);
                 }
             },
             MAX:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.box._max(profile,null,null,true);
                 }
             },
             RESTORE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.box._restore(profile);
                 }
             },
@@ -606,6 +610,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             },
             CLOSE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     profile.boxing().close();
                 }
             },

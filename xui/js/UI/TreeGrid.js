@@ -3543,6 +3543,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!xui(src).contains(xui.Event.getSrc(e)))
                   profile.box.$cancelHoverEditor(profile);
             },
+            onContextmenu:function(profile, e, src){
+                if(profile.onContextmenu){
+                    return profile.boxing().onContextmenu(profile, e, src)!==false;
+                }
+            },
             HFMARK:{
                 onClick:function(profile,e,src){
                     var prop=profile.properties;
@@ -3661,6 +3666,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //colomn resizer
             HHANDLER:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                         id = profile.getSubId(src),
@@ -3836,6 +3842,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             //row resizer
             FHANDLER:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!='left')return;
                     var p=profile.properties,
                     row = profile.rowMap[profile.getSubId(src)],
@@ -3981,6 +3988,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             },
             HCELLA:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var p=profile.properties,
                       id = profile.getSubId(src),
                       col = profile.colMap[id];
@@ -4126,6 +4134,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().afterColSorted(profile, col);
                 },
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!='left')return;
 
                     var p=profile.properties;
@@ -4445,6 +4454,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(eid && xui.UIProfile.getFromDom(eid)!=profile)return false;
                     if(profile.onClickRow)
                         profile.boxing().onClickRow(profile, row, e, src);
+                },
+                onContextmenu:function(profile, e, src){
+                    if(profile.onContextmenu){
+                        var sid=profile.getSubId(src);
+                        // cell or row
+                        return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
+                    }
                 }
             },
             CELL:{

@@ -365,6 +365,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             ClickEffected:{CMD:'CMD'},
             MOVE:{
                 beforeMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var itemId = profile.getSubId(src),
                         item = profile.getItemByDom(src);
@@ -503,6 +504,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             },
             CMD:{
                 onMousedown:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(xui.Event.getBtn(e)!="left")return;
                     var t=profile.properties,
                         itemId = profile.getSubId(src),

@@ -212,6 +212,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             ClickEffected:{INFO:'INFO',OPT:'OPT', CLOSE:'CLOSE',POP:'POP', REFRESH:'REFRESH',CMD:'CMD',TOGGLE:'TOGGLE'},
             TOGGLE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(profile.properties.toggleBtn){
                         profile.box._toggle(profile, !profile.properties.toggle);
                         return false;
@@ -220,6 +221,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             CAPTION:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     if(!profile.onClickBar || false===profile.boxing().onClickBar(profile,src))
                         return xui.Event.getKey(e).shiftKey;
                 }
@@ -250,6 +252,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             CLOSE:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var properties = profile.properties;
                     if(properties.disabled)return;
                     var instance = profile.boxing();
@@ -261,6 +264,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
             },
             POP:{
                 onClick:function(profile, e, src){
+                    if(profile.$inDesign)return;
                     var properties=profile.properties;
                     if(properties.disabled)return;
                     var pos = profile.getRoot().offset(), size=profile.getRoot().cssSize(),

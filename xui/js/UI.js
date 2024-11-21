@@ -808,21 +808,25 @@ xui.Class('xui.UIProfile','xui.Profile', {
             return (itemId=this.getSubIdByItemId(itemId)) ? this.getSubNode(key, itemId, tag) : xui();
         },
         getItemByItemId:function(itemId){
-            var prf=this,t;
-            if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
-            if((t=prf.ItemIdMapSubSerialId) && (t=t[itemId]))
-                return prf.SubSerialIdMapItem[t];
-            t=prf.queryItems(prf.properties.items, function(v,k){
-                return v.id===itemId;
-            }, 1,1);
-            return t&&t[0];
+            if(this.box.KEY=='xui.UI.TreeGrid'){
+                return this.boxing().getRowbyRowId(itemId);
+            }else{
+                var prf=this,t;
+                if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
+                if((t=prf.ItemIdMapSubSerialId) && (t=t[itemId]))
+                    return prf.SubSerialIdMapItem[t];
+                t=prf.queryItems(prf.properties.items, function(v,k){
+                    return v.id===itemId;
+                }, 1,1);
+                return t&&t[0];
+            }
         },
         getSubIdByItemId:function(itemId){
             var prf=this,t;
-            if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items,[itemId,"id"]);
+            if(xui.isNumb(itemId))itemId=xui.get(prf.properties.items || prf.properties.rows,[itemId,"id"]);
             // to ignore null/undefined
             // 0=>"0", false=>"false"
-            return (t=this.ItemIdMapSubSerialId) && xui.isSet(itemId)?t[itemId]:null;
+            return (t=this.ItemIdMapSubSerialId||this.rowMap2) && xui.isSet(itemId)?t[itemId]:null;
         },
 
         getItemByDom:function(src){
