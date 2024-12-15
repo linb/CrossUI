@@ -282,18 +282,18 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelClick)
-                        profile.boxing().onLabelClick(profile, e, src);
+                        return profile.boxing().onLabelClick(profile, e, src);
                 },
                 onDblClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelDblClick)
-                        profile.boxing().onLabelDblClick(profile, e, src);
+                        return profile.boxing().onLabelDblClick(profile, e, src);
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     if(profile.properties.disabled)return false;
                      if(profile.onLabelActive)
-                        profile.boxing().onLabelActive(profile, e, src);
+                        return profile.boxing().onLabelActive(profile, e, src);
                 }
             },
             INPUT:{
@@ -700,10 +700,6 @@ xui.Class("xui.UI.Input", ["xui.UI.Widget","xui.absValue"] ,{
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},
-
-            onEsc:function(profile){},
-            onEnter:function(profile){},
-
             onInputClick:function(profile, e, src){},
             beforeFormatCheck:function(profile, value){},
             beforeFormatMark:function(profile, isFormatErr){},

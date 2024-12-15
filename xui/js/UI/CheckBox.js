@@ -6,10 +6,6 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         activate:function(){
             this.getSubNode('FOCUS').focus(true);
             return this;
@@ -89,6 +85,7 @@ xui.Class("xui.UI.CheckBox", ["xui.UI","xui.absValue"],{
                 if(p.disabled || p.readonly)return false;
                 b.setUIValue(!p.$UIvalue,null,null,'click');
                 if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
+                if(profile.onClick)b.onClick(profile, e, src);
                 profile.getSubNode('FOCUS').focus(true);
             },
             FOCUS:{

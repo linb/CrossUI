@@ -5,10 +5,6 @@ xui.Class("xui.UI.Image", "xui.UI",{
         ns.prototype._prepareItems  = function(a){return a;};
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
         }
@@ -55,15 +51,10 @@ xui.Class("xui.UI.Image", "xui.UI",{
             },
             onClick:function(profile, e, src){
                 var p=profile.properties;
-                if(p.disabled)return false;
+                if(p.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
-            },
-            onDblclick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onDblclick)
-                    profile.boxing().onDblclick(profile, e, src);
             }
         },
         RenderTrigger:function(){
@@ -74,11 +65,11 @@ xui.Class("xui.UI.Image", "xui.UI",{
             }else if(v)self.boxing().setSrc(v, v!=xui.ini.img_bg);
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
-            onDblclick:function(profile, e, src){},
             onError:function(profile){},
             beforeLoad:function(profile){},
-            afterLoad:function(profile, path, width, height){}
+            afterLoad:function(profile, path, width, height){},
+            onEsc:function(profile, e, src){},
+            onEnter:function(profile, e, src){}
         },
         _adjust:function(profile,width,height){
             var prop=profile.properties,
@@ -186,7 +177,8 @@ xui.Class("xui.UI.Image", "xui.UI",{
                 action:function(v){
                     this.getRoot().css('cursor',v);
                 }
-            }
+            },
+            submitDataForm:""
         }
     }
 });

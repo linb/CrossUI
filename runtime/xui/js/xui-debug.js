@@ -1179,8 +1179,8 @@ xui.merge(xui.Class, {
 
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:3.00,
-    versionDate:'02/03/2022',
+    version:3.10,
+    versionDate:'12/12/2024',
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,
@@ -12405,7 +12405,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
 //functions
         $canFocus:function(){
-            var me=arguments.callee, getStyle=xui.Dom.getStyle, map = me.map || (me.map={a:1,input:1,select:1,textarea:1,button:1,object:1}),t,node;
+            var me=arguments.callee, getStyle=xui.Dom.getStyle, map = me.map || (me.map={a:1,input:1,select:1,textarea:1,button:1,object:1}),node;
             return !!(
                 (node = this.get(0)) &&
                 // is displayed
@@ -12413,7 +12413,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 node.focus &&
                 //IE bug: It can't be focused with 'default tabIndex 0'; but if you set it to 0, it can be focused.
                 //So, for cross browser, don't set tabIndex to 0
-                (((t=map[node.nodeName.toLowerCase()]) && !(parseInt(node.tabIndex,10)<=-1)) || (!t && parseInt(node.tabIndex,10)>=(xui.browser.ie?1:0))) &&
+                (node.tabIndex >= 0 || map[node.nodeName.toLowerCase()]) &&
                 getStyle(node,'visibility')!='hidden'
             );
         },
@@ -15020,7 +15020,7 @@ xui.Class('xui.Dom','xui.absBox',{
             : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
                 : ['inline-block'];
-        var fun=function(p,e,cache,keydown){
+        var fun=function(p,e,src,cache,keydown){
              var event=xui.Event,set,hash,rtnf,rst,remove={}, f, arr,
                 ks=event.getKey(e);
             if(ks){
@@ -15059,13 +15059,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
                 if(!keydown && xui.UIProfile){
                     var n = document.activeElement;
-                    if(document.documentElement!==n && (n.tagName=="INPUT"||n.tagName=="TEXTAREA"||n.tagName=="BUTTON")){
+                    if(document.documentElement!==n && (n.tagName=="A"||n.tagName=="IMG"||n.tagName=="INPUT"||n.tagName=="TEXTAREA"||n.tagName=="BUTTON"||(n.tabIndex>=0 && xui.Dom.getStyle(n,'outline')!='none' ))){
                         var prf = xui.UIProfile.getFromDom(n);
                         if(prf){
+                            var item = prf.getItemByDom(n),r;
                             if(ks.key=="esc"){
-                                if(prf.onEsc)prf.boxing().onEsc(prf);
+                                if(item&&prf.onItemEsc)r=prf.boxing().onItemEsc(prf,item,e,src);
+                                if(r!==false && prf.onEsc)prf.boxing().onEsc(prf,e,src);
                             }else if(ks.key=="enter"){
-                                if(prf.onEnter)prf.boxing().onEnter(prf);
+                                if(item&&prf.onItemEnter)r=prf.boxing().onItemEnter(prf,item,e,src);
+                                if(r!==false&&prf.onEnter)prf.boxing().onEnter(prf,e,src);
                             }
                         }
                     }
@@ -15077,23 +15080,23 @@ xui.Class('xui.Dom','xui.absBox',{
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type) || (xui.isStr(f) && xui.isFun(m[f])))
-                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                               if(false===m.fireEvent('onHookKey', [m, ks, keydown, e, src]))
                                    return false;
                        }
                        else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type) || (xui.isStr(f) && xui.isFun(m[f])))
-                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                               if(false===m.fireEvent('onHookKey', [m, ks, keydown, e, src]))
                                    return false;
                        }
-                    });
+                    },null,true);
                 }
             }
             return true;
         };
         //hot keys
-        xui.doc.onKeydown(function(p,e){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,xui.$cache.hookKey,true)},"document")
-        .onKeyup(function(p,e){delete xui.Event.$keyboard; fun(p,e,xui.$cache.hookKeyUp,false)},"document");
+        xui.doc.onKeydown(function(p,e,src){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,src,xui.$cache.hookKey,true)},"document")
+        .onKeyup(function(p,e,src){delete xui.Event.$keyboard; fun(p,e,src,xui.$cache.hookKeyUp,false)},"document");
 
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)
@@ -17328,7 +17331,7 @@ xui.Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
-            onHookKey:function(module, key, keyDown, e){},
+            onHookKey:function(module, key, keyDown, e, src){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
@@ -21074,6 +21077,10 @@ xui.Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
         animate:function(key, callback){
             // only for the first profile
             var prf=this.get(0),t,
@@ -24302,7 +24309,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                               apicaller;
                             // call before event
                             if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId, penetrate, withCaption, withCaptionField)){
-                                    return;
+                                return;
                             }
 
                             if(p.formTarget=="Alert"){
@@ -25676,6 +25683,41 @@ xui.Class("xui.UI",  "xui.absObj", {
             onContextmenu:function(profile, e, src){
                 if(profile.onContextmenu)
                     return profile.boxing().onContextmenu(profile, e, src)!==false;
+            },
+            onClick:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onClick){
+                    return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            onDblclick:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onDblclick){
+                    return profile.boxing().onDblclick(profile, e, src);
+                }
+            },
+            onMousedown:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onMousedown)
+                    return profile.boxing().onMousedown(profile, e, src);
+            },
+            onMouseup:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onMouseup)
+                    return profile.boxing().onMouseup(profile, e, src);
+            },
+            onMouseover:function(profile, e, src){
+                if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                if(profile.properties.disabled)return;
+                if(profile.onHover)
+                    return profile.boxing().onHover(profile, true, e, src);
+            },
+            onMouseout:function(profile, e, src){
+                if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                if(profile.properties.disabled)return;
+                if(profile.onHover){
+                    return profile.boxing().onHover(profile, false, e, src);
+                }
             }
         },
         DataModel:{
@@ -25897,7 +25939,17 @@ xui.Class("xui.UI",  "xui.absObj", {
             beforeDestroy:function(profile){},
             afterDestroy:function(profile){},
             onShowTips:function(profile, node, pos){},
-            onContextmenu:function(profile, e, src, item){},
+
+            onEsc:function(profile, e, src){},
+            onEnter:function(profile, e, src){},
+
+            onContextmenu:function(profile, e, src){},
+            onClick: function(profile, e, src){},
+            onDblclick: function(profile, e, src){},
+            onMousedown: function(profile, e, src){},
+            onMouseup: function(profile, e, src){},
+            onHover: function(profile, hover, e, src){},
+
             beforeHoverPop:function(profile, item, node, e, src){},
             beforeHoverHide:function(profile, item, node, e, src){}
         },
@@ -28183,6 +28235,16 @@ xui.Class("xui.absList", "xui.absObj",{
             };
         },
         EventHandlers:{
+            onItemEsc:function(profile, item, e, src){},
+            onItemEnter:function(profile, item, e, src){},
+
+            onItemContextmenu:function(profile, item, e, src){},
+            onItemClick: function(profile, item, e, src){},
+            onItemDblclick: function(profile, item, e, src){},
+            onItemMousedown: function(profile, item, e, src){},
+            onItemMouseup: function(profile, item, e, src){},
+            onItemHover: function(profile, item, hover, e, src){},
+
             beforePrepareItem:function(profile, item, pid){},
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
@@ -28693,12 +28755,6 @@ xui.Class("xui.UI.Widget", "xui.UI",{
 });
 
 xui.Class("xui.UI.Link", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         Appearances:{
             KEY:{
@@ -28714,13 +28770,31 @@ xui.Class("xui.UI.Link", "xui.UI",{
             tabindex: '{tabindex}',
             text:'{caption}'
         },
+
+        $trySubmitForm(profile){
+            var host = profile.host,
+                arr = profile.properties.submitDataForm.split(":"),
+                ref = arr[0],
+                subId = arr[1] || null;
+            if (host && ref) {
+                var p = xui.get(host, ['_alias_pool', ref, '0']) || xui.get(host, ['_ref_pool', ref]);
+                // it's a container
+                if (p && xui.get(p, ["box", "$Behaviors", "PanelKeys"])) {
+                    p.boxing().formSubmit(false, subId, true, false, false);
+                    return true;
+                }
+            }
+        },
         Behaviors:{
             HoverEffected:{KEY:'KEY'},
             ClickEffected:{KEY:'KEY'},
             onClick:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 var r;
-                if(!profile.properties.disabled && profile.onClick)
+                if(profile.onClick){
                     r = profile.boxing().onClick(profile, e, src);
+                }
                 //**** if dont return false, this click will break jsonp in IE
                 //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading
                 var href=xui.use(src).attr('href');
@@ -28745,21 +28819,15 @@ xui.Class("xui.UI.Link", "xui.UI",{
                 action:function(v){
                     this.getRoot().attr('target',v);
                 }
-            }
+            },
+            submitDataForm:""
         },
         EventHandlers:{
-            onClick:function(profile, e){}
         }
     }
 });
 
 xui.Class("xui.UI.Element", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         _objectProp:{attributes:1},
         Templates:{
@@ -28810,7 +28878,8 @@ xui.Class("xui.UI.Element", "xui.UI",{
                     }
                 }
             },
-            tabindex:-1
+            tabindex:-1,
+            submitDataForm:""
         },
         Appearances:{
             KEY:{
@@ -28821,13 +28890,11 @@ xui.Class("xui.UI.Element", "xui.UI",{
             HoverEffected:{KEY:'KEY'},
             onClick:function(profile, e, src){
                 var p=profile.properties;
-                if(p.disabled)return false;
+                if(p.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
             }
-        },
-        EventHandlers:{
-            onClick:function(profile, e, value){}
         },
         RenderTrigger:function(){
             var v=this.properties.attributes;
@@ -28842,12 +28909,6 @@ xui.Class("xui.UI.Element", "xui.UI",{
 });
 
 xui.Class("xui.UI.Icon", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         Templates:{
             className:'xui-node xui-wrapper {_className}  {picClass}',
@@ -28921,7 +28982,8 @@ xui.Class("xui.UI.Icon", "xui.UI",{
               action:function(v,ov){
                 this.getSubNode('FLAG').removeClass(ov).addClass(v);
               }
-            }
+            },
+            submitDataForm:""
         },
         Appearances:{
             KEY:{
@@ -28942,13 +29004,13 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             ClickEffected:{ICON:'ICON'},
             onClick:function(profile, e, src){
                 var p=profile.properties;
-                if(p.disabled)return false;
+                if(p.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, src){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -29052,10 +29114,6 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY'}
-        },
-        EventHandlers:{
-            onEsc:function(profile){},
-            onEnter:function(profile){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -29318,20 +29376,12 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             onClick:function(profile, e, src, value){},
             onInitPopup:function(profile){},
             onClickDrop:function(profile, e, src){},
-            onChecked:function(profile, e, value){},
-            onEsc:function(profile){},
-            onEnter:function(profile){}
+            onChecked:function(profile, e, value){}
         }
     }
 });
 
 xui.Class("xui.UI.Span", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         Templates:{
             className:'{_className}',
@@ -29381,16 +29431,9 @@ xui.Class("xui.UI.Span", "xui.UI",{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY',ICON:'ICON'},
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
+            HoverEffected:{KEY:'KEY',ICON:'ICON'}
         },
         EventHandlers:{
-            onClick:function(profile, e, value){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -29410,10 +29453,6 @@ xui.Class("xui.UI.Div", "xui.UI",{
         this.$activeClass$='xui.UI.Div';
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         getPaper:function(){
             return xui.get(this.get(0), ["_svg_papers","#"]);
         },
@@ -29575,16 +29614,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         Behaviors:{
             DroppableKeys:['KEY'],
-            PanelKeys:['KEY'],
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
+            PanelKeys:['KEY']
         },
         EventHandlers:{
-            onClick:function(profile, e, value){},
             afterAutoLoad:function(profile, text){},
             onInitPanelView:function(profile, callback){},
             onInitValues:function(profile, callback){}
@@ -29835,6 +29867,12 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             beforeInputAlert:null,
             onContextmenu:null,
             onClick:null,
+            onDblclick:null,
+            onMousedown:null,
+            onMouseup:null,
+            onHover:null,
+            onEsc:null,
+            onEnter:null,
             onDock:null,
             onLayout:null,
             onMove:null,
@@ -30152,10 +30190,6 @@ xui.Class("xui.AnimBinder","xui.absObj",{
         ns.prototype._prepareItems  = function(a){return a;};
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         getRate:function(){
             return parseFloat(this.get(0)._rate) || 1;
         }
@@ -30202,15 +30236,10 @@ xui.Class("xui.AnimBinder","xui.absObj",{
             },
             onClick:function(profile, e, src){
                 var p=profile.properties;
-                if(p.disabled)return false;
+                if(p.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
-            },
-            onDblclick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onDblclick)
-                    profile.boxing().onDblclick(profile, e, src);
             }
         },
         RenderTrigger:function(){
@@ -30221,11 +30250,11 @@ xui.Class("xui.AnimBinder","xui.absObj",{
             }else if(v)self.boxing().setSrc(v, v!=xui.ini.img_bg);
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
-            onDblclick:function(profile, e, src){},
             onError:function(profile){},
             beforeLoad:function(profile){},
-            afterLoad:function(profile, path, width, height){}
+            afterLoad:function(profile, path, width, height){},
+            onEsc:function(profile, e, src){},
+            onEnter:function(profile, e, src){}
         },
         _adjust:function(profile,width,height){
             var prop=profile.properties,
@@ -30333,7 +30362,8 @@ xui.Class("xui.AnimBinder","xui.absObj",{
                 action:function(v){
                     this.getRoot().css('cursor',v);
                 }
-            }
+            },
+            submitDataForm:""
         }
     }
 });xui.Class("xui.UI.Flash", "xui.UI",{
@@ -32681,10 +32711,6 @@ xui.Class("xui.UI.Label", "xui.UI",{
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         // calculate the formula, and apply to the control
         _applyExcelFormula:function(cellsMap){
             var profile=this.get(0), prop=profile.properties,f,value;
@@ -32830,16 +32856,9 @@ xui.Class("xui.UI.Label", "xui.UI",{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY',ICON:'ICON'},
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
+            HoverEffected:{KEY:'KEY',ICON:'ICON'}
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
             beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
             afterApplyExcelFormula:function(profile, excelCellFormula, value){}
         },
@@ -33982,18 +34001,18 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelClick)
-                        profile.boxing().onLabelClick(profile, e, src);
+                        return profile.boxing().onLabelClick(profile, e, src);
                 },
                 onDblClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelDblClick)
-                        profile.boxing().onLabelDblClick(profile, e, src);
+                        return profile.boxing().onLabelDblClick(profile, e, src);
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     if(profile.properties.disabled)return false;
                      if(profile.onLabelActive)
-                        profile.boxing().onLabelActive(profile, e, src);
+                        return profile.boxing().onLabelActive(profile, e, src);
                 }
             },
             INPUT:{
@@ -34400,10 +34419,6 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
             onFocus:function(profile){},
             onBlur:function(profile){},
             onCancel:function(profile){},
-
-            onEsc:function(profile){},
-            onEnter:function(profile){},
-
             onInputClick:function(profile, e, src){},
             beforeFormatCheck:function(profile, value){},
             beforeFormatMark:function(profile, isFormatErr){},
@@ -34837,10 +34852,6 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         activate:function(){
             this.getSubNode('FOCUS').focus(true);
             return this;
@@ -34920,6 +34931,7 @@ xui.Class("xui.UI.ProgressBar", ["xui.UI.Widget","xui.absValue"] ,{
                 if(p.disabled || p.readonly)return false;
                 b.setUIValue(!p.$UIvalue,null,null,'click');
                 if(profile.onChecked)b.onChecked(profile, e, p.$UIvalue);
+                if(profile.onClick)b.onClick(profile, e, src);
                 profile.getSubNode('FOCUS').focus(true);
             },
             FOCUS:{
@@ -40686,10 +40698,11 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
             ITEM:{
-                onDblclick:function(profile, e, src){
-                    var properties = profile.properties,
-                        item = profile.getItemByDom(src);
-                    profile.boxing().onDblclick(profile, item, e, src);
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
                 },
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
@@ -40702,8 +40715,12 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     if(properties.disabled||item.disabled || item.type=='split')return false;
 
-                    if(profile.onClick)
-                        box.onClick(profile,item,e,src);
+
+                    if(profile.onItemClick)
+                        box.onItemClick(profile, item, e, src);
+                    // Override onClick for compatibility
+                    else if(profile.onClick)
+                        box.onClick(profile, item, e, src);
 
                     xui.use(src).focus(true);
 
@@ -40767,6 +40784,49 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     }
                     if(profile.afterClick)return box.afterClick(profile,item,e,src);
                 },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                    // Override onDblclick for compatibility
+                    else if(profile.onDblclick)
+                        return profile.boxing().onDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profile, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
+                },
+                onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
+                },
+                onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
+                },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys[0], shift=keys[2],
                     cur = xui(src),
@@ -40809,24 +40869,6 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                             cur.onClick(true);
                             break;
                     }
-                },
-                onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu)
-                        return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
-                },
-                onMouseover:function(profile, e, src){
-                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
-                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
-                },
-                onMouseout:function(profile, e, src){
-                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
-                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
             },
             OPT:{
@@ -40859,18 +40901,18 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelClick)
-                        profile.boxing().onLabelClick(profile, e, src);
+                        return profile.boxing().onLabelClick(profile, e, src);
                 },
                 onDblClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelDblClick)
-                        profile.boxing().onLabelDblClick(profile, e, src);
+                        return profile.boxing().onLabelDblClick(profile, e, src);
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     if(profile.properties.disabled)return false;
                      if(profile.onLabelActive)
-                        profile.boxing().onLabelActive(profile, e, src);
+                        return profile.boxing().onLabelActive(profile, e, src);
                 }
             }
         },
@@ -40999,11 +41041,9 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             }
         },
         EventHandlers:{
-            onClick:function(profile, item, e, src){},
             onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
-            onDblclick:function(profile, item, e, src){},
             onShowOptions:function(profile, item, e, src){},
             onItemSelected:function(profile, item, e, src, type){},
 
@@ -43531,7 +43571,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(profile.beforeItemClick && false===box.beforeItemClick (profile,item,e,src))return false;
 
                     if(prop.disabled || item.disabled)return false;
-                    if(prop.readonly || item.readonly)return false;
+
+                    if(profile.onItemClick)
+                        box.onItemClick(profile, item, e, src);
+
+                    if(prop.readonly || item.readonly)return;
 
                     //for some input onblur event
                     //profile.getSubNode('HANDLE', itemId).focus(true);
@@ -43580,6 +43624,38 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         }
                     }
                     if(profile.afterItemClick)return box.afterItemClick(profile,item,e,src);
+                },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profile, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
+                },
+                onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
+                },
+                onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
                 }
             },
             HANDLE:{
@@ -43631,6 +43707,12 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             },
             CMD:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
                 onClick:function(profile,e,src){
                     var prop=profile.properties,
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
@@ -45654,37 +45736,66 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
             },
             BAR:{
-                onDblclick:function(profile, e, src){
-                    var properties = profile.properties,
-                        item = profile.getItemByDom(src),
-                        rtn=profile.onDblclick && profile.boxing().onDblclick(profile, item, e, src);
-                    if(item.sub && rtn!==false){
-                        profile.getSubNode('TOGGLE',profile.getSubId(src)).onClick();
-                    }
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
                 },
                 onClick:function(profile, e, src){
                     return profile.box._onclickbar(profile,e,src);
                 },
-                onKeydown:function(profile, e, src){
-                    return profile.box._onkeydownbar(profile,e,src);
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    var rtn;
+                    if(profile.onItemDblclick)
+                        rtn=profile.boxing().onItemDblclick(profile, item, e, src);
+                    // Override onDblclick for compatibility
+                    else if(profile.onDblclick)
+                        rtn=profile.boxing().onDblclick(profile, item, e, src);
+
+                    if(item.sub && rtn!==false){
+                        profile.getSubNode('TOGGLE',profile.getSubId(src)).onClick();
+                    }
                 },
-                onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu)
-                        return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profilonItemMousedown, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
                 },
                 onMouseover:function(profile, e, src){
                     if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
                 },
                 onMouseout:function(profile, e, src){
                     if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
+                },
+                onKeydown:function(profile, e, src){
+                    return profile.box._onkeydownbar(profile,e,src);
                 }
             },
             OPT:{
@@ -45724,10 +45835,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         EventHandlers:{
             onShowOptions:function(profile, item, e, src){},
             beforeClick:function(profile, item, e, src){},
-            onClick:function(profile, item, e, src){},
+
             afterClick:function(profile, item, e, src){},
             onCmd:function(profile,item,cmdkey,e,src){},
-            onDblclick:function(profile, item, e, src){},
 
             onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
@@ -45829,8 +45939,13 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(properties.disabled|| item.disabled|| item.type=='split')return false;
 
-            if(!ignoreClick && profile.onClick)
-                box.onClick(profile,item,e,src);
+            if(!ignoreClick){
+                if(profile.onItemClick)
+                    box.onItemClick(profile,item,e,src);
+                // Override onClick for compatibility
+                else if(profile.onClick)
+                    box.onClick(profile,item,e,src);
+            }
 
             //group not fire event
             if(item.sub && (item.hasOwnProperty('group')?item.group:properties.group)){
@@ -47518,16 +47633,58 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         Behaviors:{
             ITEM:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
+                onClick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.$menuPop != item.id)
+                        if(profile.onMenuBtnClick)
+                            profile.boxing().onMenuBtnClick(profile, item, src);
+                    if(profile.onItemClick)
+                        return profile.boxing().onItemClick(profile, item, e, src);
+                },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(profile.onItemMousedown)
+                        profile.boxing().onItemMousedown(profile, item, e, src);
+
+                    xui.use(src).tagClass('-active');
+                    // if poped, stop to trigger document.body's onmousedown event
+                    return profile.boxing()._pop(item, src);
+                },
+                onMouseup:function(profile,e,src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(profile.onItemMouseup)
+                        profile.boxing().onItemMouseup(profile, item, e, src);
+
+                    if(profile.$menuPop != item.id)
+                        xui.use(src).tagClass('-active',false);
+                },
+
                 onMouseover:function(profile, e, src){
-                    var p = profile.properties, ns=src;
-                    if(p.disabled)return;
-                    var item = profile.getItemByDom(src),
-                        itemId = item.id;
-                    if(item.disabled)return;
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
                     xui.use(ns).tagClass('-hover');
 
                     if(profile.$menuPop){
-                        if(profile.$menuPop != itemId){
+                        if(profile.$menuPop != item.id){
                             //show current popmenu
                             profile.boxing()._pop(item, ns);
                         }
@@ -47538,12 +47695,15 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             },p.autoShowTime);
                         }
                     }
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
                 },
                 onMouseout:function(profile, e, src){
-                    var p = profile.properties;
-                    if(p.disabled)return;
-                    var item = profile.getItemByDom(src);
-                    if(item.disabled)return;
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
                     xui.use(src).tagClass('-hover',false);
 
                     if(p.autoShowTime){
@@ -47560,24 +47720,11 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         }
                         xui.resetRun(profile.$xid+':autoShowTime', null);
                     }
-                },
-                onMousedown:function(profile, e, src){
-                    var p = profile.properties;
-                    if(p.disabled)return;
-                    var item = profile.getItemByDom(src),
-                        itemId = item.id;
-                    if(item.disabled)return;
 
-                    xui.use(src).tagClass('-active');
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
+                },
 
-                    // if poped, stop to trigger document.body's onmousedown event
-                    return profile.boxing()._pop(item, src);
-                },
-                onMouseup:function(profile,e,src){
-                    var item = profile.getItemByDom(src);
-                    if(profile.$menuPop != item.id)
-                        xui.use(src).tagClass('-active',false);
-                },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey,
                     cur = xui(src),
@@ -47620,12 +47767,6 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             cur.onMousedown();
                             break;
                     }
-                },
-                onClick:function(profile, e, src){
-                    var item = profile.getItemByDom(src);
-                    if(profile.$menuPop != item.id)
-                        if(profile.onMenuBtnClick)
-                            profile.boxing().onMenuBtnClick(profile, item, src);
                 }
             }
         },
@@ -47975,6 +48116,12 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             DraggableKeys:["HANDLER"],
             DroppableKeys:["GROUP","ITEMS"],
             BTN:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     var id2=xui.use(src).parent(3).id(),
@@ -47994,8 +48141,47 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             }
                         }
                     }
-                    profile.boxing().onClick(profile, item, item2, e, src);
+
+                    if(profile.onItemClick)
+                        profile.boxing().onItemClick(profile, item, e, src);
+
+                    // Override onClick for compatibility
+                    if(profile.onClick)
+                        profile.boxing().onClick(profile, item, item2, e, src);
+
                     return false;
+                },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profile, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
+                },
+                onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
+                },
+                onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
                 }
             }
         },
@@ -48039,6 +48225,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             }
         },
         EventHandlers:{
+            // Override onClick for compatibility
             onClick:function(profile, item, group, e, src){},
             onInitPopup:function(profile, item, group){}
         },
@@ -52697,11 +52884,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!xui(src).contains(xui.Event.getSrc(e)))
                   profile.box.$cancelHoverEditor(profile);
             },
-            onContextmenu:function(profile, e, src){
-                if(profile.onContextmenu){
-                    return profile.boxing().onContextmenu(profile, e, src)!==false;
-                }
-            },
             HFMARK:{
                 onClick:function(profile,e,src){
                     var prop=profile.properties;
@@ -53509,7 +53691,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
-                        return profile.boxing().onContextmenu(profile, e, src, sid?profile.colMap[sid]:null)!==false;
+                        if(sid && profile.colMap[sid] && profile.onColumnContextmenu)
+                            return profile.boxing().onColumnContextmenu(profile, e, src, profile.colMap[sid]);
                     }
                 }
             },
@@ -53613,7 +53796,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
-                        return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
+                        if(sid){
+                            if(profile.cellMap[sid] && profile.onCellContextmenu){
+                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                if(r!==false){
+                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                }
+                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                        }
                     }
                 }
             },
@@ -54072,7 +54263,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
-                        return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
+                        if(sid){
+                            if(profile.cellMap[sid] && profile.onCellContextmenu){
+                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                if(r!==false){
+                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                }
+                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                        }
                     }
                 }
             },
@@ -54552,6 +54751,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             noCtrlKey:true
         },
         EventHandlers:{
+            onColumnContextmenu: function(profile, e, src, obj){},
+            onCellContextmenu: function(profile, e, src, obj){},
+            onRowContextmenu: function(profile, e, src, obj){},
+
             beforeAdjustPage:function(profile, type){},
             afterAdjustPage:function(profile, type, top, height, renderFrom, renderTo){},
             onBodyLayout:function(profile, type){},
@@ -70588,32 +70791,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
         Behaviors:{
             HotKeyAllowed:false,
             HoverEffected:{KEY:'KEY'},
-            ClickEffected:{KEY:'KEY'},
-            onClick:function(profile, e, src){
-                if(profile.$inDesign)return false;
-                var p=profile.properties;
-                if(p.disabled)return false;
-                //onClick event
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            },
-            onDblclick:function(profile, e, src){
-                if(profile.$inDesign)return false;
-                var p=profile.properties;
-                if(p.disabled)return false;
-                //onClick event
-                if(profile.onDblClick)
-                    return profile.boxing().onDblClick(profile, e, src);
-            },
-            onContextmenu:function(profile, e, src){
-                if(profile.onContextmenu)
-                    return profile.boxing().onContextmenu(profile, e, src)!==false;
-            }
+            ClickEffected:{KEY:'KEY'}
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
-            onDblClick:function(profile, e, src){},
-            onContextmenu:function(profile, e, src){},
+            onEsc:null,
+            onEnter:null,
+
             onHotKeydown:null,
             onHotKeypress:null,
             onHotKeyup:null

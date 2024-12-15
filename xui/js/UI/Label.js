@@ -6,10 +6,6 @@ xui.Class("xui.UI.Label", "xui.UI",{
         xui.absBox.$type[key.replace("xui.UI.","")]=xui.absBox.$type[key]=key;
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         // calculate the formula, and apply to the control
         _applyExcelFormula:function(cellsMap){
             var profile=this.get(0), prop=profile.properties,f,value;
@@ -155,16 +151,9 @@ xui.Class("xui.UI.Label", "xui.UI",{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY',ICON:'ICON'},
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
+            HoverEffected:{KEY:'KEY',ICON:'ICON'}
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
             beforeApplyExcelFormula:function(profile, excelCellFormula, value){},
             afterApplyExcelFormula:function(profile, excelCellFormula, value){}
         },

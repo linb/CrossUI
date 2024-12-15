@@ -3543,11 +3543,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 if(!xui(src).contains(xui.Event.getSrc(e)))
                   profile.box.$cancelHoverEditor(profile);
             },
-            onContextmenu:function(profile, e, src){
-                if(profile.onContextmenu){
-                    return profile.boxing().onContextmenu(profile, e, src)!==false;
-                }
-            },
             HFMARK:{
                 onClick:function(profile,e,src){
                     var prop=profile.properties;
@@ -4355,7 +4350,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 onContextmenu:function(profile, e, src){
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
-                        return profile.boxing().onContextmenu(profile, e, src, sid?profile.colMap[sid]:null)!==false;
+                        if(sid && profile.colMap[sid] && profile.onColumnContextmenu)
+                            return profile.boxing().onColumnContextmenu(profile, e, src, profile.colMap[sid]);
                     }
                 }
             },
@@ -4459,7 +4455,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
-                        return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
+                        if(sid){
+                            if(profile.cellMap[sid] && profile.onCellContextmenu){
+                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                if(r!==false){
+                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                }
+                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                        }
                     }
                 }
             },
@@ -4918,7 +4922,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
-                        return profile.boxing().onContextmenu(profile, e, src,sid?(profile.cellMap[sid]||profile.rowMap[sid]):null)!==false;
+                        if(sid){
+                            if(profile.cellMap[sid] && profile.onCellContextmenu){
+                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                if(r!==false){
+                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                }
+                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                        }
                     }
                 }
             },
@@ -5398,6 +5410,10 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             noCtrlKey:true
         },
         EventHandlers:{
+            onColumnContextmenu: function(profile, e, src, obj){},
+            onCellContextmenu: function(profile, e, src, obj){},
+            onRowContextmenu: function(profile, e, src, obj){},
+
             beforeAdjustPage:function(profile, type){},
             afterAdjustPage:function(profile, type, top, height, renderFrom, renderTo){},
             onBodyLayout:function(profile, type){},

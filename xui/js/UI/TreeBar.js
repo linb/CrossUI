@@ -465,37 +465,66 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 }
             },
             BAR:{
-                onDblclick:function(profile, e, src){
-                    var properties = profile.properties,
-                        item = profile.getItemByDom(src),
-                        rtn=profile.onDblclick && profile.boxing().onDblclick(profile, item, e, src);
-                    if(item.sub && rtn!==false){
-                        profile.getSubNode('TOGGLE',profile.getSubId(src)).onClick();
-                    }
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
                 },
                 onClick:function(profile, e, src){
                     return profile.box._onclickbar(profile,e,src);
                 },
-                onKeydown:function(profile, e, src){
-                    return profile.box._onkeydownbar(profile,e,src);
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    var rtn;
+                    if(profile.onItemDblclick)
+                        rtn=profile.boxing().onItemDblclick(profile, item, e, src);
+                    // Override onDblclick for compatibility
+                    else if(profile.onDblclick)
+                        rtn=profile.boxing().onDblclick(profile, item, e, src);
+
+                    if(item.sub && rtn!==false){
+                        profile.getSubNode('TOGGLE',profile.getSubId(src)).onClick();
+                    }
                 },
-                onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu)
-                        return profile.boxing().onContextmenu(profile, e, src, profile.getItemByDom(src) )!==false;
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profilonItemMousedown, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
                 },
                 onMouseover:function(profile, e, src){
                     if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
                 },
                 onMouseout:function(profile, e, src){
                     if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
                     profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
+                },
+                onKeydown:function(profile, e, src){
+                    return profile.box._onkeydownbar(profile,e,src);
                 }
             },
             OPT:{
@@ -535,10 +564,9 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
         EventHandlers:{
             onShowOptions:function(profile, item, e, src){},
             beforeClick:function(profile, item, e, src){},
-            onClick:function(profile, item, e, src){},
+
             afterClick:function(profile, item, e, src){},
             onCmd:function(profile,item,cmdkey,e,src){},
-            onDblclick:function(profile, item, e, src){},
 
             onGetContent:function(profile, item, callback){},
             onItemSelected:function(profile, item, e, src, type){},
@@ -640,8 +668,13 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(properties.disabled|| item.disabled|| item.type=='split')return false;
 
-            if(!ignoreClick && profile.onClick)
-                box.onClick(profile,item,e,src);
+            if(!ignoreClick){
+                if(profile.onItemClick)
+                    box.onItemClick(profile,item,e,src);
+                // Override onClick for compatibility
+                else if(profile.onClick)
+                    box.onClick(profile,item,e,src);
+            }
 
             //group not fire event
             if(item.sub && (item.hasOwnProperty('group')?item.group:properties.group)){

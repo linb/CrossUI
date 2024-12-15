@@ -283,6 +283,12 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             DraggableKeys:["HANDLER"],
             DroppableKeys:["GROUP","ITEMS"],
             BTN:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     var id2=xui.use(src).parent(3).id(),
@@ -302,8 +308,47 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                             }
                         }
                     }
-                    profile.boxing().onClick(profile, item, item2, e, src);
+
+                    if(profile.onItemClick)
+                        profile.boxing().onItemClick(profile, item, e, src);
+
+                    // Override onClick for compatibility
+                    if(profile.onClick)
+                        profile.boxing().onClick(profile, item, item2, e, src);
+
                     return false;
+                },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profile, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
+                },
+                onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
+                },
+                onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
                 }
             }
         },
@@ -347,6 +392,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
             }
         },
         EventHandlers:{
+            // Override onClick for compatibility
             onClick:function(profile, item, group, e, src){},
             onInitPopup:function(profile, item, group){}
         },

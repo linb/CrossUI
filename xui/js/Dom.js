@@ -1713,7 +1713,7 @@ xui.Class('xui.Dom','xui.absBox',{
 
 //functions
         $canFocus:function(){
-            var me=arguments.callee, getStyle=xui.Dom.getStyle, map = me.map || (me.map={a:1,input:1,select:1,textarea:1,button:1,object:1}),t,node;
+            var me=arguments.callee, getStyle=xui.Dom.getStyle, map = me.map || (me.map={a:1,input:1,select:1,textarea:1,button:1,object:1}),node;
             return !!(
                 (node = this.get(0)) &&
                 // is displayed
@@ -1721,7 +1721,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 node.focus &&
                 //IE bug: It can't be focused with 'default tabIndex 0'; but if you set it to 0, it can be focused.
                 //So, for cross browser, don't set tabIndex to 0
-                (((t=map[node.nodeName.toLowerCase()]) && !(parseInt(node.tabIndex,10)<=-1)) || (!t && parseInt(node.tabIndex,10)>=(xui.browser.ie?1:0))) &&
+                (node.tabIndex >= 0 || map[node.nodeName.toLowerCase()]) &&
                 getStyle(node,'visibility')!='hidden'
             );
         },
@@ -4328,7 +4328,7 @@ xui.Class('xui.Dom','xui.absBox',{
             : (xui.browser.ie&&xui.browser.ver<=6)
                 ? ['inline-block', 'inline']
                 : ['inline-block'];
-        var fun=function(p,e,cache,keydown){
+        var fun=function(p,e,src,cache,keydown){
              var event=xui.Event,set,hash,rtnf,rst,remove={}, f, arr,
                 ks=event.getKey(e);
             if(ks){
@@ -4367,13 +4367,16 @@ xui.Class('xui.Dom','xui.absBox',{
                 }
                 if(!keydown && xui.UIProfile){
                     var n = document.activeElement;
-                    if(document.documentElement!==n && (n.tagName=="INPUT"||n.tagName=="TEXTAREA"||n.tagName=="BUTTON")){
+                    if(document.documentElement!==n && (n.tagName=="A"||n.tagName=="IMG"||n.tagName=="INPUT"||n.tagName=="TEXTAREA"||n.tagName=="BUTTON"||(n.tabIndex>=0 && xui.Dom.getStyle(n,'outline')!='none' ))){
                         var prf = xui.UIProfile.getFromDom(n);
                         if(prf){
+                            var item = prf.getItemByDom(n),r;
                             if(ks.key=="esc"){
-                                if(prf.onEsc)prf.boxing().onEsc(prf);
+                                if(item&&prf.onItemEsc)r=prf.boxing().onItemEsc(prf,item,e,src);
+                                if(r!==false && prf.onEsc)prf.boxing().onEsc(prf,e,src);
                             }else if(ks.key=="enter"){
-                                if(prf.onEnter)prf.boxing().onEnter(prf);
+                                if(item&&prf.onItemEnter)r=prf.boxing().onItemEnter(prf,item,e,src);
+                                if(r!==false&&prf.onEnter)prf.boxing().onEnter(prf,e,src);
                             }
                         }
                     }
@@ -4385,23 +4388,23 @@ xui.Class('xui.Dom','xui.absBox',{
                        if(m._evsClsBuildIn && ('onHookKey' in m._evsClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type) || (xui.isStr(f) && xui.isFun(m[f])))
-                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                               if(false===m.fireEvent('onHookKey', [m, ks, keydown, e, src]))
                                    return false;
                        }
                        else if(m._evsPClsBuildIn && ('onHookKey' in m._evsPClsBuildIn)){
                            // function or pseudocode
                            if(xui.isFun(f = m._evsPClsBuildIn.onHookKey) || (xui.isArr(f) && f[0].type) || (xui.isStr(f) && xui.isFun(m[f])))
-                               if(false===m.fireEvent('onHookKey', [m,ks, keydown, e]))
+                               if(false===m.fireEvent('onHookKey', [m, ks, keydown, e, src]))
                                    return false;
                        }
-                    });
+                    },null,true);
                 }
             }
             return true;
         };
         //hot keys
-        xui.doc.onKeydown(function(p,e){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,xui.$cache.hookKey,true)},"document")
-        .onKeyup(function(p,e){delete xui.Event.$keyboard; fun(p,e,xui.$cache.hookKeyUp,false)},"document");
+        xui.doc.onKeydown(function(p,e,src){xui.Event.$keyboard=xui.Event.getKey(e); fun(p,e,src,xui.$cache.hookKey,true)},"document")
+        .onKeyup(function(p,e,src){delete xui.Event.$keyboard; fun(p,e,src,xui.$cache.hookKeyUp,false)},"document");
 
         //hook link(<a ...>xxx</a>) click action
         //if(xui.browser.ie || xui.browser.kde)

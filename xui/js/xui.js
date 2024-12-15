@@ -1165,8 +1165,8 @@ xui.merge(xui.Class, {
 
 //function Required: xui.Dom xui.Thread
 xui.merge(xui,{
-    version:3.00,
-    versionDate:'02/03/2022',
+    version:3.10,
+    versionDate:'12/12/2024',
     $DEFAULTHREF:'javascript:;',
     $IEUNSELECTABLE:function(){return xui.browser.ie?' onselectstart="return false;" ':''},
     SERIALIZEMAXLAYER:99,

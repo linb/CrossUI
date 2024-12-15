@@ -1972,32 +1972,12 @@ xui.Class("xui.svg", "xui.UI",{
         Behaviors:{
             HotKeyAllowed:false,
             HoverEffected:{KEY:'KEY'},
-            ClickEffected:{KEY:'KEY'},
-            onClick:function(profile, e, src){
-                if(profile.$inDesign)return false;
-                var p=profile.properties;
-                if(p.disabled)return false;
-                //onClick event
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            },
-            onDblclick:function(profile, e, src){
-                if(profile.$inDesign)return false;
-                var p=profile.properties;
-                if(p.disabled)return false;
-                //onClick event
-                if(profile.onDblClick)
-                    return profile.boxing().onDblClick(profile, e, src);
-            },
-            onContextmenu:function(profile, e, src){
-                if(profile.onContextmenu)
-                    return profile.boxing().onContextmenu(profile, e, src)!==false;
-            }
+            ClickEffected:{KEY:'KEY'}
         },
         EventHandlers:{
-            onClick:function(profile, e, src){},
-            onDblClick:function(profile, e, src){},
-            onContextmenu:function(profile, e, src){},
+            onEsc:null,
+            onEnter:null,
+
             onHotKeydown:null,
             onHotKeypress:null,
             onHotKeyup:null

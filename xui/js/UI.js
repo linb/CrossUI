@@ -966,6 +966,10 @@ xui.Class("xui.UI",  "xui.absObj", {
         }
     },
     Instance:{
+        fireClickEvent:function(){
+            this.getRoot().onClick();
+            return this;
+        },
         animate:function(key, callback){
             // only for the first profile
             var prf=this.get(0),t,
@@ -4194,7 +4198,7 @@ xui.Class("xui.UI",  "xui.absObj", {
                               apicaller;
                             // call before event
                             if(prf.beforeFormSubmit && false===prf.boxing().beforeFormSubmit(prf, data, subId, penetrate, withCaption, withCaptionField)){
-                                    return;
+                                return;
                             }
 
                             if(p.formTarget=="Alert"){
@@ -5568,6 +5572,41 @@ xui.Class("xui.UI",  "xui.absObj", {
             onContextmenu:function(profile, e, src){
                 if(profile.onContextmenu)
                     return profile.boxing().onContextmenu(profile, e, src)!==false;
+            },
+            onClick:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onClick){
+                    return profile.boxing().onClick(profile, e, src);
+                }
+            },
+            onDblclick:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onDblclick){
+                    return profile.boxing().onDblclick(profile, e, src);
+                }
+            },
+            onMousedown:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onMousedown)
+                    return profile.boxing().onMousedown(profile, e, src);
+            },
+            onMouseup:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.onMouseup)
+                    return profile.boxing().onMouseup(profile, e, src);
+            },
+            onMouseover:function(profile, e, src){
+                if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                if(profile.properties.disabled)return;
+                if(profile.onHover)
+                    return profile.boxing().onHover(profile, true, e, src);
+            },
+            onMouseout:function(profile, e, src){
+                if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                if(profile.properties.disabled)return;
+                if(profile.onHover){
+                    return profile.boxing().onHover(profile, false, e, src);
+                }
             }
         },
         DataModel:{
@@ -5789,7 +5828,17 @@ xui.Class("xui.UI",  "xui.absObj", {
             beforeDestroy:function(profile){},
             afterDestroy:function(profile){},
             onShowTips:function(profile, node, pos){},
-            onContextmenu:function(profile, e, src, item){},
+
+            onEsc:function(profile, e, src){},
+            onEnter:function(profile, e, src){},
+
+            onContextmenu:function(profile, e, src){},
+            onClick: function(profile, e, src){},
+            onDblclick: function(profile, e, src){},
+            onMousedown: function(profile, e, src){},
+            onMouseup: function(profile, e, src){},
+            onHover: function(profile, hover, e, src){},
+
             beforeHoverPop:function(profile, item, node, e, src){},
             beforeHoverHide:function(profile, item, node, e, src){}
         },
@@ -8075,6 +8124,16 @@ xui.Class("xui.absList", "xui.absObj",{
             };
         },
         EventHandlers:{
+            onItemEsc:function(profile, item, e, src){},
+            onItemEnter:function(profile, item, e, src){},
+
+            onItemContextmenu:function(profile, item, e, src){},
+            onItemClick: function(profile, item, e, src){},
+            onItemDblclick: function(profile, item, e, src){},
+            onItemMousedown: function(profile, item, e, src){},
+            onItemMouseup: function(profile, item, e, src){},
+            onItemHover: function(profile, item, hover, e, src){},
+
             beforePrepareItem:function(profile, item, pid){},
             beforeIniEditor:function(profile, item, captionNode){},
             onBeginEdit:function(profile, item, editor){},
@@ -8585,12 +8644,6 @@ xui.Class("xui.UI.Widget", "xui.UI",{
 });
 
 xui.Class("xui.UI.Link", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         Appearances:{
             KEY:{
@@ -8606,13 +8659,31 @@ xui.Class("xui.UI.Link", "xui.UI",{
             tabindex: '{tabindex}',
             text:'{caption}'
         },
+
+        $trySubmitForm(profile){
+            var host = profile.host,
+                arr = profile.properties.submitDataForm.split(":"),
+                ref = arr[0],
+                subId = arr[1] || null;
+            if (host && ref) {
+                var p = xui.get(host, ['_alias_pool', ref, '0']) || xui.get(host, ['_ref_pool', ref]);
+                // it's a container
+                if (p && xui.get(p, ["box", "$Behaviors", "PanelKeys"])) {
+                    p.boxing().formSubmit(false, subId, true, false, false);
+                    return true;
+                }
+            }
+        },
         Behaviors:{
             HoverEffected:{KEY:'KEY'},
             ClickEffected:{KEY:'KEY'},
             onClick:function(profile, e, src){
+                if(profile.properties.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 var r;
-                if(!profile.properties.disabled && profile.onClick)
+                if(profile.onClick){
                     r = profile.boxing().onClick(profile, e, src);
+                }
                 //**** if dont return false, this click will break jsonp in IE
                 //**** In IE, click a fake(javascript: or #) href(onclick not return false) will break the current script downloading
                 var href=xui.use(src).attr('href');
@@ -8637,21 +8708,15 @@ xui.Class("xui.UI.Link", "xui.UI",{
                 action:function(v){
                     this.getRoot().attr('target',v);
                 }
-            }
+            },
+            submitDataForm:""
         },
         EventHandlers:{
-            onClick:function(profile, e){}
         }
     }
 });
 
 xui.Class("xui.UI.Element", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         _objectProp:{attributes:1},
         Templates:{
@@ -8702,7 +8767,8 @@ xui.Class("xui.UI.Element", "xui.UI",{
                     }
                 }
             },
-            tabindex:-1
+            tabindex:-1,
+            submitDataForm:""
         },
         Appearances:{
             KEY:{
@@ -8713,13 +8779,11 @@ xui.Class("xui.UI.Element", "xui.UI",{
             HoverEffected:{KEY:'KEY'},
             onClick:function(profile, e, src){
                 var p=profile.properties;
-                if(p.disabled)return false;
+                if(p.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
             }
-        },
-        EventHandlers:{
-            onClick:function(profile, e, value){}
         },
         RenderTrigger:function(){
             var v=this.properties.attributes;
@@ -8734,12 +8798,6 @@ xui.Class("xui.UI.Element", "xui.UI",{
 });
 
 xui.Class("xui.UI.Icon", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         Templates:{
             className:'xui-node xui-wrapper {_className}  {picClass}',
@@ -8813,7 +8871,8 @@ xui.Class("xui.UI.Icon", "xui.UI",{
               action:function(v,ov){
                 this.getSubNode('FLAG').removeClass(ov).addClass(v);
               }
-            }
+            },
+            submitDataForm:""
         },
         Appearances:{
             KEY:{
@@ -8834,13 +8893,13 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             ClickEffected:{ICON:'ICON'},
             onClick:function(profile, e, src){
                 var p=profile.properties;
-                if(p.disabled)return false;
+                if(p.disabled)return;
+                if(profile.properties.submitDataForm && xui.UI.Link.$trySubmitForm(profile))return;
                 if(profile.onClick)
                     return profile.boxing().onClick(profile, e, src);
             }
         },
         EventHandlers:{
-            onClick:function(profile, e, src){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -8944,10 +9003,6 @@ xui.Class("xui.UI.HTMLButton", "xui.UI.Element",{
         },
         Behaviors:{
             HoverEffected:{KEY:'KEY'}
-        },
-        EventHandlers:{
-            onEsc:function(profile){},
-            onEnter:function(profile){}
         },
         _prepareData:function(profile){
             var data=arguments.callee.upper.call(this, profile);
@@ -9210,20 +9265,12 @@ xui.Class("xui.UI.Button", ["xui.UI.HTMLButton","xui.absValue"],{
             onClick:function(profile, e, src, value){},
             onInitPopup:function(profile){},
             onClickDrop:function(profile, e, src){},
-            onChecked:function(profile, e, value){},
-            onEsc:function(profile){},
-            onEnter:function(profile){}
+            onChecked:function(profile, e, value){}
         }
     }
 });
 
 xui.Class("xui.UI.Span", "xui.UI",{
-    Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        }
-    },
     Static:{
         Templates:{
             className:'{_className}',
@@ -9273,16 +9320,9 @@ xui.Class("xui.UI.Span", "xui.UI",{
             }
         },
         Behaviors:{
-            HoverEffected:{KEY:'KEY',ICON:'ICON'},
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
+            HoverEffected:{KEY:'KEY',ICON:'ICON'}
         },
         EventHandlers:{
-            onClick:function(profile, e, value){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -9302,10 +9342,6 @@ xui.Class("xui.UI.Div", "xui.UI",{
         this.$activeClass$='xui.UI.Div';
     },
     Instance:{
-        fireClickEvent:function(){
-            this.getRoot().onClick();
-            return this;
-        },
         getPaper:function(){
             return xui.get(this.get(0), ["_svg_papers","#"]);
         },
@@ -9467,16 +9503,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         Behaviors:{
             DroppableKeys:['KEY'],
-            PanelKeys:['KEY'],
-            onClick:function(profile, e, src){
-                var p=profile.properties;
-                if(p.disabled)return false;
-                if(profile.onClick)
-                    return profile.boxing().onClick(profile, e, src);
-            }
+            PanelKeys:['KEY']
         },
         EventHandlers:{
-            onClick:function(profile, e, value){},
             afterAutoLoad:function(profile, text){},
             onInitPanelView:function(profile, callback){},
             onInitValues:function(profile, callback){}
@@ -9727,6 +9756,12 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             beforeInputAlert:null,
             onContextmenu:null,
             onClick:null,
+            onDblclick:null,
+            onMousedown:null,
+            onMouseup:null,
+            onHover:null,
+            onEsc:null,
+            onEnter:null,
             onDock:null,
             onLayout:null,
             onMove:null,

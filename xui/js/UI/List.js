@@ -258,10 +258,11 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             DraggableKeys:["ITEM"],
             DroppableKeys:["ITEM","ITEMS"],
             ITEM:{
-                onDblclick:function(profile, e, src){
-                    var properties = profile.properties,
-                        item = profile.getItemByDom(src);
-                    profile.boxing().onDblclick(profile, item, e, src);
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
                 },
                 onClick:function(profile, e, src){
                     var properties = profile.properties,
@@ -274,8 +275,12 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
 
                     if(properties.disabled||item.disabled || item.type=='split')return false;
 
-                    if(profile.onClick)
-                        box.onClick(profile,item,e,src);
+
+                    if(profile.onItemClick)
+                        box.onItemClick(profile, item, e, src);
+                    // Override onClick for compatibility
+                    else if(profile.onClick)
+                        box.onClick(profile, item, e, src);
 
                     xui.use(src).focus(true);
 
@@ -339,6 +344,49 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     }
                     if(profile.afterClick)return box.afterClick(profile,item,e,src);
                 },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                    // Override onDblclick for compatibility
+                    else if(profile.onDblclick)
+                        return profile.boxing().onDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profile, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
+                },
+                onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
+                },
+                onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(!p.optBtn && !item.optBtn)return;
+                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
+                },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys[0], shift=keys[2],
                     cur = xui(src),
@@ -381,24 +429,6 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                             cur.onClick(true);
                             break;
                     }
-                },
-                onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu)
-                        return profile.boxing().onContextmenu(profile, e, src,profile.getItemByDom(src))!==false;
-                },
-                onMouseover:function(profile, e, src){
-                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
-                    profile.getSubNode('OPT',profile.getSubId(src)).setInlineBlock();
-                },
-                onMouseout:function(profile, e, src){
-                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
-                    var item = profile.getItemByDom(src);
-                    if(!item)return;
-                    if(!profile.properties.optBtn && !item.optBtn)return;
-                    profile.getSubNode('OPT',profile.getSubId(src)).css('display','none');
                 }
             },
             OPT:{
@@ -431,18 +461,18 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelClick)
-                        profile.boxing().onLabelClick(profile, e, src);
+                        return profile.boxing().onLabelClick(profile, e, src);
                 },
                 onDblClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     if(profile.onLabelDblClick)
-                        profile.boxing().onLabelDblClick(profile, e, src);
+                        return profile.boxing().onLabelDblClick(profile, e, src);
                 },
                 onMousedown:function(profile, e, src){
                     if(xui.Event.getBtn(e)!='left')return;
                     if(profile.properties.disabled)return false;
                      if(profile.onLabelActive)
-                        profile.boxing().onLabelActive(profile, e, src);
+                        return profile.boxing().onLabelActive(profile, e, src);
                 }
             }
         },
@@ -571,11 +601,9 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             }
         },
         EventHandlers:{
-            onClick:function(profile, item, e, src){},
             onCmd:function(profile,item,cmdkey,e,src){},
             beforeClick:function(profile, item, e, src){},
             afterClick:function(profile, item, e, src){},
-            onDblclick:function(profile, item, e, src){},
             onShowOptions:function(profile, item, e, src){},
             onItemSelected:function(profile, item, e, src, type){},
 

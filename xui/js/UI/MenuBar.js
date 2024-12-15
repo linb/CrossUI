@@ -236,16 +236,58 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         Behaviors:{
             ITEM:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
+                onClick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.$menuPop != item.id)
+                        if(profile.onMenuBtnClick)
+                            profile.boxing().onMenuBtnClick(profile, item, src);
+                    if(profile.onItemClick)
+                        return profile.boxing().onItemClick(profile, item, e, src);
+                },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(profile.onItemMousedown)
+                        profile.boxing().onItemMousedown(profile, item, e, src);
+
+                    xui.use(src).tagClass('-active');
+                    // if poped, stop to trigger document.body's onmousedown event
+                    return profile.boxing()._pop(item, src);
+                },
+                onMouseup:function(profile,e,src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
+                    if(profile.onItemMouseup)
+                        profile.boxing().onItemMouseup(profile, item, e, src);
+
+                    if(profile.$menuPop != item.id)
+                        xui.use(src).tagClass('-active',false);
+                },
+
                 onMouseover:function(profile, e, src){
-                    var p = profile.properties, ns=src;
-                    if(p.disabled)return;
-                    var item = profile.getItemByDom(src),
-                        itemId = item.id;
-                    if(item.disabled)return;
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
                     xui.use(ns).tagClass('-hover');
 
                     if(profile.$menuPop){
-                        if(profile.$menuPop != itemId){
+                        if(profile.$menuPop != item.id){
                             //show current popmenu
                             profile.boxing()._pop(item, ns);
                         }
@@ -256,12 +298,15 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                             },p.autoShowTime);
                         }
                     }
+
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
                 },
                 onMouseout:function(profile, e, src){
-                    var p = profile.properties;
-                    if(p.disabled)return;
-                    var item = profile.getItemByDom(src);
-                    if(item.disabled)return;
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+
                     xui.use(src).tagClass('-hover',false);
 
                     if(p.autoShowTime){
@@ -278,24 +323,11 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                         }
                         xui.resetRun(profile.$xid+':autoShowTime', null);
                     }
-                },
-                onMousedown:function(profile, e, src){
-                    var p = profile.properties;
-                    if(p.disabled)return;
-                    var item = profile.getItemByDom(src),
-                        itemId = item.id;
-                    if(item.disabled)return;
 
-                    xui.use(src).tagClass('-active');
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
+                },
 
-                    // if poped, stop to trigger document.body's onmousedown event
-                    return profile.boxing()._pop(item, src);
-                },
-                onMouseup:function(profile,e,src){
-                    var item = profile.getItemByDom(src);
-                    if(profile.$menuPop != item.id)
-                        xui.use(src).tagClass('-active',false);
-                },
                 onKeydown:function(profile, e, src){
                     var keys=xui.Event.getKey(e), key = keys.key, shift=keys.shiftKey,
                     cur = xui(src),
@@ -338,12 +370,6 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                             cur.onMousedown();
                             break;
                     }
-                },
-                onClick:function(profile, e, src){
-                    var item = profile.getItemByDom(src);
-                    if(profile.$menuPop != item.id)
-                        if(profile.onMenuBtnClick)
-                            profile.boxing().onMenuBtnClick(profile, item, src);
                 }
             }
         },

@@ -1798,7 +1798,7 @@ xui.Class('xui.Module','xui.absProfile',{
             value:""
         },
         $EventHandlers:{
-            onHookKey:function(module, key, keyDown, e){},
+            onHookKey:function(module, key, keyDown, e, src){},
             onFragmentChanged:function(module, fragment, init, newAdd){},
             onMessage:function(module, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},
             onGlobalMessage:function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, source){},

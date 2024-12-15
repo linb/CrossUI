@@ -621,7 +621,11 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                     if(profile.beforeItemClick && false===box.beforeItemClick (profile,item,e,src))return false;
 
                     if(prop.disabled || item.disabled)return false;
-                    if(prop.readonly || item.readonly)return false;
+
+                    if(profile.onItemClick)
+                        box.onItemClick(profile, item, e, src);
+
+                    if(prop.readonly || item.readonly)return;
 
                     //for some input onblur event
                     //profile.getSubNode('HANDLE', itemId).focus(true);
@@ -670,6 +674,38 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         }
                     }
                     if(profile.afterItemClick)return box.afterItemClick(profile,item,e,src);
+                },
+                onDblclick:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemDblclick)
+                        return profile.boxing().onItemDblclick(profile, item, e, src);
+                },
+                onMousedown:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMousedown)
+                        return profile.boxing().onItemMousedown(profile, item, e, src);
+                },
+                onMouseup:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemMouseup)
+                        return profile.boxing().onItemMouseup(profile, item, e, src);
+                },
+                onMouseover:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, true, e, src);
+                },
+                onMouseout:function(profile, e, src){
+                    if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemHover)
+                        return profile.boxing().onItemHover(profile, item, false, e, src);
                 }
             },
             HANDLE:{
@@ -721,6 +757,12 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                 }
             },
             CMD:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
                 onClick:function(profile,e,src){
                     var prop=profile.properties,
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
