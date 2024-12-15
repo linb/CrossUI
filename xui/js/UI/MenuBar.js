@@ -284,17 +284,17 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     var p = profile.properties,item = profile.getItemByDom(src);
                     if(p.disabled || !item || item.disabled)return;
 
-                    xui.use(ns).tagClass('-hover');
+                    xui.use(src).tagClass('-hover');
 
                     if(profile.$menuPop){
                         if(profile.$menuPop != item.id){
                             //show current popmenu
-                            profile.boxing()._pop(item, ns);
+                            profile.boxing()._pop(item, src);
                         }
                     }else{
                         if(p.autoShowTime){
                             xui.resetRun(profile.$xid+':autoShowTime', function(){
-                                profile.boxing()._pop(item, ns);
+                                profile.boxing()._pop(item, src);
                             },p.autoShowTime);
                         }
                     }
