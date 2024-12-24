@@ -672,8 +672,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(profile.onItemClick)
                     box.onItemClick(profile,item,e,src);
                 // Override onClick for compatibility
-                else if(profile.onClick)
+                else if(profile.onClick){
                     box.onClick(profile,item,e,src);
+                    // stop to trigger the top onClick
+                    return false;
+                }
             }
 
             //group not fire event

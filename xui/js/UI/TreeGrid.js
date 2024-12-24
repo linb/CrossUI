@@ -4351,7 +4351,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
                         if(sid && profile.colMap[sid] && profile.onColumnContextmenu)
-                            return profile.boxing().onColumnContextmenu(profile, e, src, profile.colMap[sid]);
+                            return profile.boxing().onColumnContextmenu(profile, profile.colMap[sid], e, src);
                     }
                 }
             },
@@ -4457,12 +4457,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
-                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
                                 if(r!==false){
-                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                    return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
                             }else if(profile.rowMap[sid] && profile.onCellContextmenu)
-                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                                return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
                 }
@@ -4924,12 +4924,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
-                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
                                 if(r!==false){
-                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                    return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
                             }else if(profile.rowMap[sid] && profile.onCellContextmenu)
-                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                                return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
                 }
@@ -5410,9 +5410,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             noCtrlKey:true
         },
         EventHandlers:{
-            onColumnContextmenu: function(profile, e, src, obj){},
-            onCellContextmenu: function(profile, e, src, obj){},
-            onRowContextmenu: function(profile, e, src, obj){},
+            onColumnContextmenu: function(profile, col, e, src){},
+            onCellContextmenu: function(profile, cell, e, src){},
+            onRowContextmenu: function(profile, row, e, src){},
 
             beforeAdjustPage:function(profile, type){},
             afterAdjustPage:function(profile, type, top, height, renderFrom, renderTo){},

@@ -3368,6 +3368,9 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 svg:1
             }
         },
+        EventHandlers:{
+            onShapeChanged : function(prf, attr){}
+        },
         _draw:function(paper, prf, prop){
            var ns=this,
                s=paper.set(),
@@ -3380,6 +3383,8 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 if(attr.path){
                     obj1.attr({path:attr.path},null,false);
                     ns._syncAttachment(prf, attr.path, prop.attachment, "change");
+                    if(prf.onShapeChanged)
+                        prf.boxing().onShapeChanged(prf, attr);
                 }
             };
             s.push(obj2);

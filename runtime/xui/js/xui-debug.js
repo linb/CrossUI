@@ -37164,8 +37164,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(type=='counter')return;
 
                     if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='dropbutton'){
-                        if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
-                            return;
+                        if(profile.onClick){
+                            profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue);
+                            return false;
+                        }
                     }
                     if(type=='file'){
                         profile.boxing().popFileSelector();
@@ -37182,7 +37184,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var prop=profile.properties;
                     if(prop.disabled || prop.readonly)return;
                     if(profile.onCommand && false===profile.boxing().onCommand(profile,src,prop.commandBtn))
-                        return;
+                        return false;
                     if(prop.commandBtn=='delete'||prop.commandBtn=='remove')
                         profile.boxing().setUIValue('',true,null,'cmd');
                 }
@@ -37191,8 +37193,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
                     if(prop.type=='cmdbox'||prop.type=='button'||prop.type=='dropbutton'){
-                        if(profile.onClick)
-                            return profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
+                        if(profile.onClick){
+                            profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
+                            return false;
+                        }
                     //DOM node's readOnly
                     }else if(prop.inputReadonly || profile.$inputReadonly){
                         if(prop.disabled || prop.readonly)return;
@@ -40719,8 +40723,11 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(profile.onItemClick)
                         box.onItemClick(profile, item, e, src);
                     // Override onClick for compatibility
-                    else if(profile.onClick)
+                    else if(profile.onClick){
                         box.onClick(profile, item, e, src);
+                        // stop to trigger the top onClick
+                        return false;
+                    }
 
                     xui.use(src).focus(true);
 
@@ -45943,8 +45950,11 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                 if(profile.onItemClick)
                     box.onItemClick(profile,item,e,src);
                 // Override onClick for compatibility
-                else if(profile.onClick)
+                else if(profile.onClick){
                     box.onClick(profile,item,e,src);
+                    // stop to trigger the top onClick
+                    return false;
+                }
             }
 
             //group not fire event
@@ -47681,17 +47691,17 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     var p = profile.properties,item = profile.getItemByDom(src);
                     if(p.disabled || !item || item.disabled)return;
 
-                    xui.use(ns).tagClass('-hover');
+                    xui.use(src).tagClass('-hover');
 
                     if(profile.$menuPop){
                         if(profile.$menuPop != item.id){
                             //show current popmenu
-                            profile.boxing()._pop(item, ns);
+                            profile.boxing()._pop(item, src);
                         }
                     }else{
                         if(p.autoShowTime){
                             xui.resetRun(profile.$xid+':autoShowTime', function(){
-                                profile.boxing()._pop(item, ns);
+                                profile.boxing()._pop(item, src);
                             },p.autoShowTime);
                         }
                     }
@@ -53692,7 +53702,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if(profile.onContextmenu){
                         var sid=profile.getSubId(src);
                         if(sid && profile.colMap[sid] && profile.onColumnContextmenu)
-                            return profile.boxing().onColumnContextmenu(profile, e, src, profile.colMap[sid]);
+                            return profile.boxing().onColumnContextmenu(profile, profile.colMap[sid], e, src);
                     }
                 }
             },
@@ -53798,12 +53808,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
-                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
                                 if(r!==false){
-                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                    return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
                             }else if(profile.rowMap[sid] && profile.onCellContextmenu)
-                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                                return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
                 }
@@ -54265,12 +54275,12 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
-                                var r =  profile.boxing().onCellContextmenu(profile, e, src, profile.cellMap[sid]);
+                                var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
                                 if(r!==false){
-                                    return profile.boxing().onRowContextmenu(profile, e, src, profile.cellMap[sid]._row);
+                                    return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
                             }else if(profile.rowMap[sid] && profile.onCellContextmenu)
-                                return profile.boxing().onRowContextmenu(profile, e, src, profile.rowMap[sid]);
+                                return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
                 }
@@ -54751,9 +54761,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             noCtrlKey:true
         },
         EventHandlers:{
-            onColumnContextmenu: function(profile, e, src, obj){},
-            onCellContextmenu: function(profile, e, src, obj){},
-            onRowContextmenu: function(profile, e, src, obj){},
+            onColumnContextmenu: function(profile, col, e, src){},
+            onCellContextmenu: function(profile, cell, e, src){},
+            onRowContextmenu: function(profile, row, e, src){},
 
             beforeAdjustPage:function(profile, type){},
             afterAdjustPage:function(profile, type, top, height, renderFrom, renderTo){},
@@ -72187,6 +72197,9 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 svg:1
             }
         },
+        EventHandlers:{
+            onShapeChanged : function(prf, attr){}
+        },
         _draw:function(paper, prf, prop){
            var ns=this,
                s=paper.set(),
@@ -72199,6 +72212,8 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 if(attr.path){
                     obj1.attr({path:attr.path},null,false);
                     ns._syncAttachment(prf, attr.path, prop.attachment, "change");
+                    if(prf.onShapeChanged)
+                        prf.boxing().onShapeChanged(prf, attr);
                 }
             };
             s.push(obj2);

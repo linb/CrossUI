@@ -939,8 +939,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     if(type=='counter')return;
 
                     if(type=='popbox' || type=='cmdbox' || type=='getter' || type=='dropbutton'){
-                        if(profile.onClick && false===profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue))
-                            return;
+                        if(profile.onClick){
+                            profile.boxing().onClick(profile, e, src, 'right', prop.$UIvalue);
+                            return false;
+                        }
                     }
                     if(type=='file'){
                         profile.boxing().popFileSelector();
@@ -957,7 +959,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     var prop=profile.properties;
                     if(prop.disabled || prop.readonly)return;
                     if(profile.onCommand && false===profile.boxing().onCommand(profile,src,prop.commandBtn))
-                        return;
+                        return false;
                     if(prop.commandBtn=='delete'||prop.commandBtn=='remove')
                         profile.boxing().setUIValue('',true,null,'cmd');
                 }
@@ -966,8 +968,10 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                 onClick : function(profile, e, src){
                     var prop=profile.properties;
                     if(prop.type=='cmdbox'||prop.type=='button'||prop.type=='dropbutton'){
-                        if(profile.onClick)
-                            return profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
+                        if(profile.onClick){
+                            profile.boxing().onClick(profile, e, src, 'left', prop.$UIvalue);
+                            return false;
+                        }
                     //DOM node's readOnly
                     }else if(prop.inputReadonly || profile.$inputReadonly){
                         if(prop.disabled || prop.readonly)return;
