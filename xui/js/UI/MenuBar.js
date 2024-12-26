@@ -21,13 +21,14 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         },
         _pop:function(item,src){
             var self=this,
-                profile=self.get(0);
+                profile=self.get(0),
+                box = profile.boxing();
             if(profile.$inDesign)return;
             //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
 
             if(profile.onInitPopup){
-                if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, null, src){
+                if(xui.UI._handleMdlPopup(box.onInitPopup(profile, item, e, src)), src, profile, item, null, null, src){
                     return;
                 }
             }
@@ -415,7 +416,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},
             onMenuBtnClick:function(profile, item, src){},
-            onInitPopup:function(profile, item){},
+            onInitPopup:function(profile, item, e, src){},
             beforePopMenu:function(profile, item, src){},
             beforeShowSubMenu:function(profile, popPrf, item, src){},
             onShowSubMenu:function(profile, popPrf, item, src){},

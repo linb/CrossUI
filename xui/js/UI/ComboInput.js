@@ -273,7 +273,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 if(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='cmdbox'||type=='dropbutton'){
                     if(!ignoreEvent && profile.onInitPopup){
-                        if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), main, profile, null, null, e, src){
+                        if(xui.UI._handleMdlPopup(box.onInitPopup(profile, e, src)), main, profile, null, null, e, src){
                             return;
                         }
                     }
@@ -1226,7 +1226,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         EventHandlers:{
             onFileDlgOpen:function(profile, src){},
             onCommand:function(profile, src, type){},
-            onInitPopup:function(profile){},
+            onInitPopup:function(profile, e, src){},
             beforeComboPop:function(profile, pos, e, src){},
             beforePopShow:function(profile, popPrf, items){},
             afterPopShow:function(profile, popPrf){},

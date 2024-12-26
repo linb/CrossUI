@@ -498,6 +498,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     profile[all] = profile[all] || {};
 
                     var properties = profile.properties,
+                        box = profile.boxing(),
                         item = profile.getItemByDom(src),
                         itemId = item.id,
                         Cancel = false,
@@ -522,7 +523,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     if(!Cancel && item.sub){
                         if(profile.onInitPopup){
-                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, e, src){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile, item, e, src)), src, profile, item, null, e, src){
                                 return;
                             }
                         }
@@ -821,7 +822,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $vborder:0
         }),
         EventHandlers:{
-            onInitPopup:function(profile, item){},
+            onInitPopup:function(profile, item, e, src){},
             beforeShowSubMenu:function(profile, item, src, e){},
             onShowSubMenu:function(profile, item, src, e){},
             beforeShow:function(profile, pos, type, conainer, ignoreEffects, e){},

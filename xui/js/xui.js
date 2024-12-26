@@ -2484,6 +2484,13 @@ new function(){
                 };
         },
         exec:function(_ns, conf, resumeFun, level){
+           var mode = xui.ini.$mode;
+           if(mode){
+               if( (xui.isStr(mode) && mode !== conf.mode) ||
+                   (xui.isArr(mode) && xui.arr.indexOf(mode, conf.mode) ===-1) ||
+                   (xui.isFun(mode) && !mode(conf.mode))
+               ) return;
+           }
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2549,6 +2556,12 @@ new function(){
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
                             jsondata=1;
+                        }
+                        // args[-1] > args[args.length]
+                        if(_ns.args.length && /\{\s*args\s*\[\s*-\d*\s*\]\s*\}/.test(o)){
+                            o=o.replace(/(\{\s*args\s*\[\s*)(-\d+)(\s*\]\s*\})/g, function(a,b,c,d){
+                                return b + (_ns.args.length + parseInt(c)) + d;
+                            });
                         }
                         o=xui.adjustVar(oo=o, _ns);
                         if(!xui.isDefined(o))o=xui.adjustVar(oo);

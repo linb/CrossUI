@@ -3401,7 +3401,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, obj1))xui.Event.stopBubble(e);
             });
             obj1.dblclick(function(e){
-                if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, obj1))xui.Event.stopBubble(e);
+                if(!(prf.$inDesign || prf.properties.disabled) && prf.onDblclick) if(false===prf.boxing().onDblclick(prf, e, obj1))xui.Event.stopBubble(e);
             });
             if(prop.attachment){
                 /*path:string, attr:object, distance:0~1*/
@@ -3420,7 +3420,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                             if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, elem))xui.Event.stopBubble(e);
                         });
                         elem.dblclick(function(e){
-                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, elem))xui.Event.stopBubble(e);
+                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onDblclick) if(false===prf.boxing().onDblclick(prf, e, elem))xui.Event.stopBubble(e);
                         });
                     }
                 });

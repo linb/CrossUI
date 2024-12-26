@@ -292,6 +292,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     var id2=xui.use(src).parent(3).id(),
+                        box = profile.boxing(),
                         item2 = profile.getItemByDom(id2);
                     if(item2.disabled)return false;
 
@@ -303,7 +304,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         xui.use(src).tagClass('-checked',item.value=!item.value);
                     else if(item.type=="dropButton"){
                         if(profile.onInitPopup){
-                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, item2, e, src){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile, item, e, src)), src, profile, item, item2, e, src){
                                 return;
                             }
                         }
@@ -394,7 +395,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         EventHandlers:{
             // Override onClick for compatibility
             onClick:function(profile, item, group, e, src){},
-            onInitPopup:function(profile, item, group){}
+            onInitPopup:function(profile, item, e, src){}
         },
         _adjustItems:function(arr){
             if(!arr)arr=[xui.stamp()+''];

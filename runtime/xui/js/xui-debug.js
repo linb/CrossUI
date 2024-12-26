@@ -2498,6 +2498,13 @@ new function(){
                 };
         },
         exec:function(_ns, conf, resumeFun, level){
+           var mode = xui.ini.$mode;
+           if(mode){
+               if( (xui.isStr(mode) && mode !== conf.mode) ||
+                   (xui.isArr(mode) && xui.arr.indexOf(mode, conf.mode) ===-1) ||
+                   (xui.isFun(mode) && !mode(conf.mode))
+               ) return;
+           }
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2563,6 +2570,12 @@ new function(){
                         if(xui.str.startWith(o,"[data]")){
                             o=o.replace("[data]","");
                             jsondata=1;
+                        }
+                        // args[-1] > args[args.length]
+                        if(_ns.args.length && /\{\s*args\s*\[\s*-\d*\s*\]\s*\}/.test(o)){
+                            o=o.replace(/(\{\s*args\s*\[\s*)(-\d+)(\s*\]\s*\})/g, function(a,b,c,d){
+                                return b + (_ns.args.length + parseInt(c)) + d;
+                            });
                         }
                         o=xui.adjustVar(oo=o, _ns);
                         if(!xui.isDefined(o))o=xui.adjustVar(oo);
@@ -16069,9 +16082,16 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         popUp:function(pos, type, parent, trigger, group){
             var module=this,
-                f=function(){module.getUIComponents(true).popUp(pos, type, parent, trigger, group);};
+                f=function(){
+                    var coms = module.getUIComponents(true),
+                        first = coms.get(0);
+                    if(first){
+                        if(!first.rendered)first.boxing().render(true);
+                        first.boxing().popUp(pos, type, parent, trigger, group);
+                    }
+                };
             if(self.created)f()
-            else this.show(f);
+            else this.create(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
             var self=this;
@@ -36498,7 +36518,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                 if(type=='combobox'||type=='listbox'||type=='helpinput'||type=='popbox'||type=='cmdbox'||type=='dropbutton'){
                     if(!ignoreEvent && profile.onInitPopup){
-                        if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), main, profile, null, null, e, src){
+                        if(xui.UI._handleMdlPopup(box.onInitPopup(profile, e, src)), main, profile, null, null, e, src){
                             return;
                         }
                     }
@@ -37451,7 +37471,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
         EventHandlers:{
             onFileDlgOpen:function(profile, src){},
             onCommand:function(profile, src, type){},
-            onInitPopup:function(profile){},
+            onInitPopup:function(profile, e, src){},
             beforeComboPop:function(profile, pos, e, src){},
             beforePopShow:function(profile, popPrf, items){},
             afterPopShow:function(profile, popPrf){},
@@ -47000,6 +47020,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     profile[all] = profile[all] || {};
 
                     var properties = profile.properties,
+                        box = profile.boxing(),
                         item = profile.getItemByDom(src),
                         itemId = item.id,
                         Cancel = false,
@@ -47024,7 +47045,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     if(!Cancel && item.sub){
                         if(profile.onInitPopup){
-                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, e, src){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile, item, e, src)), src, profile, item, null, e, src){
                                 return;
                             }
                         }
@@ -47323,7 +47344,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             $vborder:0
         }),
         EventHandlers:{
-            onInitPopup:function(profile, item){},
+            onInitPopup:function(profile, item, e, src){},
             beforeShowSubMenu:function(profile, item, src, e){},
             onShowSubMenu:function(profile, item, src, e){},
             beforeShow:function(profile, pos, type, conainer, ignoreEffects, e){},
@@ -47428,13 +47449,14 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         },
         _pop:function(item,src){
             var self=this,
-                profile=self.get(0);
+                profile=self.get(0),
+                box = profile.boxing();
             if(profile.$inDesign)return;
             //hide first, ignoreEffects false,true
             if(profile.$curPop)self.hide();
 
             if(profile.onInitPopup){
-                if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, null, null, src){
+                if(xui.UI._handleMdlPopup(box.onInitPopup(profile, item, e, src)), src, profile, item, null, null, src){
                     return;
                 }
             }
@@ -47822,7 +47844,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         EventHandlers:{
             onGetPopMenu:function(profile, item, callback){},
             onMenuBtnClick:function(profile, item, src){},
-            onInitPopup:function(profile, item){},
+            onInitPopup:function(profile, item, e, src){},
             beforePopMenu:function(profile, item, src){},
             beforeShowSubMenu:function(profile, popPrf, item, src){},
             onShowSubMenu:function(profile, popPrf, item, src){},
@@ -48135,6 +48157,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                 onClick:function(profile, e, src){
                     if(profile.properties.disabled)return false;
                     var id2=xui.use(src).parent(3).id(),
+                        box = profile.boxing(),
                         item2 = profile.getItemByDom(id2);
                     if(item2.disabled)return false;
 
@@ -48146,7 +48169,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
                         xui.use(src).tagClass('-checked',item.value=!item.value);
                     else if(item.type=="dropButton"){
                         if(profile.onInitPopup){
-                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile)), src, profile, item, item2, e, src){
+                            if(xui.UI._handleMdlPopup(box.onInitPopup(profile, item, e, src)), src, profile, item, item2, e, src){
                                 return;
                             }
                         }
@@ -48237,7 +48260,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         EventHandlers:{
             // Override onClick for compatibility
             onClick:function(profile, item, group, e, src){},
-            onInitPopup:function(profile, item, group){}
+            onInitPopup:function(profile, item, e, src){}
         },
         _adjustItems:function(arr){
             if(!arr)arr=[xui.stamp()+''];
@@ -72230,7 +72253,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, obj1))xui.Event.stopBubble(e);
             });
             obj1.dblclick(function(e){
-                if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, obj1))xui.Event.stopBubble(e);
+                if(!(prf.$inDesign || prf.properties.disabled) && prf.onDblclick) if(false===prf.boxing().onDblclick(prf, e, obj1))xui.Event.stopBubble(e);
             });
             if(prop.attachment){
                 /*path:string, attr:object, distance:0~1*/
@@ -72249,7 +72272,7 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                             if(!(prf.$inDesign || prf.properties.disabled) && prf.onClick) if(false===prf.boxing().onClick(prf, e, elem))xui.Event.stopBubble(e);
                         });
                         elem.dblclick(function(e){
-                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onDbllick) if(false===prf.boxing().onDbllick(prf, e, elem))xui.Event.stopBubble(e);
+                            if(!(prf.$inDesign || prf.properties.disabled) && prf.onDblclick) if(false===prf.boxing().onDblclick(prf, e, elem))xui.Event.stopBubble(e);
                         });
                     }
                 });

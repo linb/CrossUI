@@ -536,9 +536,16 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         popUp:function(pos, type, parent, trigger, group){
             var module=this,
-                f=function(){module.getUIComponents(true).popUp(pos, type, parent, trigger, group);};
+                f=function(){
+                    var coms = module.getUIComponents(true),
+                        first = coms.get(0);
+                    if(first){
+                        if(!first.rendered)first.boxing().render(true);
+                        first.boxing().popUp(pos, type, parent, trigger, group);
+                    }
+                };
             if(self.created)f()
-            else this.show(f);
+            else this.create(f);
         },
         show:function(onEnd,parent,subId,threadid,left,top){
             var self=this;
