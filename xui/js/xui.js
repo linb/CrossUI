@@ -265,7 +265,7 @@ new function(){
             if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
-                    if(!(t=path[i++]+''))continue;
+                    t=path[i++]+'';
                     if(!hash || (hash=t!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
                 }
                 return hash;
@@ -2674,7 +2674,7 @@ new function(){
                                         // get root only
                                         xui('body').children().each(function(xid){
                                             var module=xui.Module.getFromDom(xid);
-                                            if(module && module._showed){
+                                            if(module && module._hidden===0){
                                                 if(ar.cache)module.hide();else module.destroy();
                                             }
                                         });

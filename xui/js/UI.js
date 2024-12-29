@@ -9484,7 +9484,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     }else{
                         ins.append(obj, item && item.id);
                     }
-                }, obj = (prf.onInitPanelView?ins.onInitPanelView:ins.onIniPanelView).apply(ins, [prf, item && item.id, callback]);
+                }, obj = prf.onInitPanelView ? ins.onInitPanelView(prf, callback, item && item.id) : ins.onIniPanelView(prf, item);
                 if(obj) callback(obj);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);

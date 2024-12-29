@@ -153,6 +153,8 @@ xui.Class('xui.Module','xui.absProfile',{
         self.container = null;
 
         self.$UIvalue="";
+        // init
+        self._hidden=-1;
 
         self._nodes=[];
         self.events=events;
@@ -552,7 +554,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
 
-            if(self._hidden){
+            if(self._hidden===1){
                 this.getUIComponents(true).each(function(prf){
                     prf.boxing().show();
                 });
@@ -663,7 +665,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 xui.arr.each(m._nodes,function(o){
                     //Recursive call
                     if(o['xui.Module']){
-                      o._fireEvent('onRender');
+                      o.render(triggerLayout);
                       checkSubMdls(o);
                     }
                 });

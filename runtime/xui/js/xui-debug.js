@@ -279,7 +279,7 @@ new function(){
             if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
-                    if(!(t=path[i++]+''))continue;
+                    t=path[i++]+'';
                     if(!hash || (hash=t!=(t=t.replace("()","")) ? (typeof(hash[t])=="function" && 0!==t.indexOf("set"))? hash[t]() : undefined : hash[t])===undefined )return;
                 }
                 return hash;
@@ -2688,7 +2688,7 @@ new function(){
                                         // get root only
                                         xui('body').children().each(function(xid){
                                             var module=xui.Module.getFromDom(xid);
-                                            if(module && module._showed){
+                                            if(module && module._hidden===0){
                                                 if(ar.cache)module.hide();else module.destroy();
                                             }
                                         });
@@ -15699,6 +15699,8 @@ xui.Class('xui.Module','xui.absProfile',{
         self.container = null;
 
         self.$UIvalue="";
+        // init
+        self._hidden=-1;
 
         self._nodes=[];
         self.events=events;
@@ -16098,7 +16100,7 @@ xui.Class('xui.Module','xui.absProfile',{
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
 
-            if(self._hidden){
+            if(self._hidden===1){
                 this.getUIComponents(true).each(function(prf){
                     prf.boxing().show();
                 });
@@ -16209,7 +16211,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 xui.arr.each(m._nodes,function(o){
                     //Recursive call
                     if(o['xui.Module']){
-                      o._fireEvent('onRender');
+                      o.render(triggerLayout);
                       checkSubMdls(o);
                     }
                 });
@@ -29615,7 +29617,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     }else{
                         ins.append(obj, item && item.id);
                     }
-                }, obj = (prf.onInitPanelView?ins.onInitPanelView:ins.onIniPanelView).apply(ins, [prf, item && item.id, callback]);
+                }, obj = prf.onInitPanelView ? ins.onInitPanelView(prf, callback, item && item.id) : ins.onIniPanelView(prf, item);
                 if(obj) callback(obj);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);
@@ -69528,6 +69530,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                     absPos,
                     isConnector=prf.box._CONNECTOR,
                     connType=prf.properties.type,
+                    extendFrom=prf.properties.extendFrom,
+                    extendTo=prf.properties.extendTo,
                     dotAttr1 = {fill:"#fff",stroke:"#000",r:5},
                     dotAttr2 = {fill:"#fff",stroke:"#000",r:4},
                     dotAttr3 = {fill:"#fff",stroke:"#000",r:3},
@@ -69836,7 +69840,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                 esrc=esrc.parentNode;
                                             }
 
-                                            if(!esrc || esrc===paper.canvas.parentNode)
+                                            if(!esrc/* || esrc===paper.canvas.parentNode*/)
                                                 return;
 
                                             // has anchors or anchorPath
@@ -69890,8 +69894,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                             if(tobj){
                                                                 targetNode = (a[1]&&a[2]) ? tobj. getSubNodeByItemId(a[1], a[2]) : tobj.getSubNode(a[1]||"KEY", a[2]);
                                                                 if(targetNode.get(0)){
-                                                                    anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
-                                                                    anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
+                                                                    anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0), conType);
+                                                                    anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0), conType);
                                                                     if(anchorPath){
                                                                         var anchorBBox=Raphael.pathBBox(anchorPath);
                                                                         centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
@@ -69905,8 +69909,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                         }else{
                                                             if(tobj.box['xui.svg'] || (tobj.box['xui.UI']&&targetNode)){
                                                                 if(!tobj.box._CONNECTOR){
-                                                                    anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode);
-                                                                    anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode);
+                                                                    anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode, conType);
+                                                                    anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode, conType);
                                                                     if(anchorPath){
                                                                         var anchorBBox=Raphael.pathBBox(anchorPath);
                                                                         centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
@@ -69929,8 +69933,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                     targetNode = (a[1]&&a[2]) ? tobj. getSubNodeByItemId(a[1], a[2]) : tobj.getSubNode(a[1]||"KEY", a[2]);
 
                                                     if(targetNode){
-                                                        anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0));
-                                                        anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0));
+                                                        anchors = xui.svg._getConnectAnchors(tobj, prf, targetNode.get(0), "to");
+                                                        anchorPath = xui.svg._getConnectPath(tobj, prf, targetNode.get(0), "to");
                                                         if(anchorPath){
                                                             var anchorBBox=Raphael.pathBBox(anchorPath);
                                                             centerPoint={x:anchorBBox.x+anchorBBox.width/2,y:anchorBBox.y+anchorBBox.height/2};
@@ -70036,14 +70040,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                             if(!anchorPos){
                                                // get the nearest anchor
                                                 if(anchors){
-                                                    var point = el.getPointAtLength(this._handlerIndex===1 ?0:el.getTotalLength()),
-                                                        len = {
-                                                            top : Math.pow(Math.pow(Math.abs(point.x-anchors.top.x),2)+Math.pow(Math.abs(point.y-anchors.top.y),2),1/2),
-                                                            left : Math.pow(Math.pow(Math.abs(point.x-anchors.left.x),2)+Math.pow(Math.abs(point.y-anchors.left.y),2),1/2),
-                                                            right : Math.pow(Math.pow(Math.abs(point.x-anchors.right.x),2)+Math.pow(Math.abs(point.y-anchors.right.y),2),1/2),
-                                                            bottom :Math.pow(Math.pow(Math.abs(point.x-anchors.bottom.x),2)+Math.pow(Math.abs(point.y-anchors.bottom.y),2),1/2)
-                                                        },
-                                                        min = Math.min(len.top, len.left, len.right, len.bottom);
+                                                    var point = el.getPointAtLength(this._handlerIndex===1 ?0:el.getTotalLength()),min=Infinity,len={};
+                                                    xui.each(anchors,function(anchor,k){
+                                                        min = Math.min( min, len[k] = Math.pow(Math.pow(Math.abs(point.x-anchors[k].x),2)+Math.pow(Math.abs(point.y-anchors[k].y),2),1/2));
+                                                    });
                                                     for(var i in len){
                                                         if(len[i]==min){
                                                             anchorPos = anchors[i];
@@ -70244,6 +70244,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                                 dot.update(x1-x0, y1-y0, null, null, true);
                                             }
                                         }
+                                        if(conType=='to' && extendTo){
+                                            // Notice: only for straight
+                                            var extendToConn = xui.get(prf,["host","_alias_pool",extendTo]) || xui.get(prf,["host","_ref_pool",extendTo])
+                                            if(extendToConn){
+                                                extendToConn = extendToConn.boxing();
+                                                var path2 = extendToConn.getAttr("KEY").path;
+                                                path2[0][1] = X; path2[0][2] = Y;
+                                                extendToConn.setAttr("KEY",{path:path2},false);
+                                                prf.box._syncAttachment(extendToConn.get(0), path2, extendToConn.get(0).properties.attachment, "change");
+                                            }
+                                        }
                                         // adjust drag pos
                                         if(pos)return pos;
                                     },'main',index);
@@ -70439,12 +70450,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                                     // no dot
                                     // break;
                                     case 1:
-                                        // 1 dot
-                                        handlers[i].dot=addSegmentJunctionDD(r,el,zx,zy,i,type3,conType,prf);
+                                        if(extendFrom && i==0){
+                                        }else{
+                                           // 1 dot
+                                            handlers[i].dot=addSegmentJunctionDD(r,el,zx,zy,i,type3,conType,prf);
 
-                                        // hide this unmovable dot
-                                        if(isConnector && connType=="flowchart" && ii===3 && i===1){
-                                            handlers[i].dot.attr({opacity:0,r:0});
+                                            // hide this unmovable dot
+                                            if(isConnector && connType=="flowchart" && ii===3 && i===1){
+                                                handlers[i].dot.attr({opacity:0,r:0});
+                                            }
                                         }
                                     break;
                                     case 2:
@@ -71547,7 +71561,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                 path: createRoundedRectPath(x, y, width, height, borderRadius)
             };
         },
-        _getConnectAnchors:function(prf, svgprf, targetNode){
+        _getConnectAnchors:function(prf, svgprf, targetNode, conType){
             if(prf){
                 var bbox, matrix,rst,r1=180,r2=270,r3=0,r4=90;
                 if(prf.box['xui.svg']){
@@ -71585,7 +71599,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                     "left":{x:x1, y:y1, alpha:r1, solid:1},
                     "top":{x:x2, y:y2, alpha:r2, solid:1},
                     "right":{x:x3, y:y3, alpha:r3, solid:1},
-                    "bottom":{x:x4, y:y4, alpha:r4, solid:1}
+                    "bottom":{x:x4, y:y4, alpha:r4, solid:1},
+                    "center":{x:(x1+x2+x3+x4)/4, y:(y1+y2+y3+y4)/4, alpha:0, solid:1}
                 }
                 if(prf.box['xui.svg'] && svgprf && prf.parent != svgprf.parent){
                     var pos = xui(prf.getRootNode().ownerSVGElement).offset(null, svgprf.boxing().getPaperContainer());
@@ -71593,11 +71608,22 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                     rst.top.x += pos.left; rst.top.y += pos.top;
                     rst.right.x += pos.left; rst.right.y += pos.top;
                     rst.bottom.x += pos.left; rst.bottom.y += pos.top;
+                    rst.center.x += pos.left; rst.center.y += pos.top;
+                }
+                var anchorTypes=svgprf.properties[conType=="from"?"fromAnchorTypes":"toAnchorTypes"];
+                if(anchorTypes){
+                    var types = anchorTypes.replace(/\s/g,'').split(/[^\w]+/);
+                    rst = xui.copy(rst, function(v,i){return xui.arr.indexOf(types, i)!=-1 });
                 }
                 return rst;
             }
         },
-        _getConnectPath:function(prf, svgprf, targetNode){
+        _getConnectPath:function(prf, svgprf, targetNode, conType){
+            var anchorTypes=svgprf.properties[conType=="from"?"fromAnchorTypes":"toAnchorTypes"];
+            if(anchorTypes){
+                if(xui.arr.indexOf(anchorTypes.replace(/\s/g,'').split(/[^\w]+/), 'path')==-1)
+                    return null;
+            }
             if(prf){
                 var ss,matrix,path;
 
@@ -71622,7 +71648,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                 return path;
             }
         },
-        _getConnectPoint:function(prf, svgprf, conf, anchor){
+        _getConnectPoint:function(prf, svgprf, conf, anchor, conType){
             if(anchor){
                 var rst, targetNode = svgprf.box._getHotNode(prf, conf);
 
@@ -71631,7 +71657,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                     arr[0]=+arr[0];
                     arr[1]=+arr[1];
                     if(arr[0]>=1 && arr[1]>=0 && arr[1]<=1){
-                        var cp=this._getConnectPath(prf, svgprf, targetNode);
+                        var cp=this._getConnectPath(prf, svgprf, targetNode, conType);
                         if(cp){
                             var cv=Raphael.path2curve(cp),cur,prev;
                             if((cur=cv[arr[0]])&&(prev=cv[arr[0]-1])){
@@ -71640,7 +71666,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c)
                         }
                     }
                 }else{
-                    var hash=this._getConnectAnchors(prf, svgprf, targetNode);
+                    var hash=this._getConnectAnchors(prf, svgprf, targetNode, conType);
                     rst = hash && hash[anchor];
                 }
 
@@ -72190,7 +72216,11 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 combobox:['left','top','right','bottom']
             },
             fromLocked:false,
-            //fromDDKey:"default",
+            extendFrom:"",
+            extendTo:"",
+
+            fromAnchorTypes:"",
+            toAnchorTypes:"",
 
             toObj:"",
             toPoint:{
@@ -72358,12 +72388,12 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
             if(xui.isHash(fromPrf) && ('x' in fromPrf) && ('y' in fromPrf)){
                 cp1 = fromPrf;
             }else if(fromPrf && prop.fromObj && prop.fromPoint){
-                cp1 = xui.svg._getConnectPoint(fromPrf, prf, prop.fromObj, prop.fromPoint);
+                cp1 = xui.svg._getConnectPoint(fromPrf, prf, prop.fromObj, prop.fromPoint, "from");
             }
             if(xui.isHash(toPrf) && ('x' in toPrf) && ('y' in toPrf)){
                 cp2 = toPrf;
             }else if(toPrf && prop.toObj  && prop.toPoint){
-                cp2 = xui.svg._getConnectPoint(toPrf, prf, prop.toObj, prop.toPoint);
+                cp2 = xui.svg._getConnectPoint(toPrf, prf, prop.toObj, prop.toPoint, "to");
             }
             beforePos && beforePos(cp1, cp2);
             if(cp1){
@@ -72421,6 +72451,20 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                         path[l][4]+=oy;
                     break;
                 }
+
+                // Notice: only for straight
+                var extendTo = prf.properties.extendTo;
+                if(extendTo){
+                    var extendToConn = xui.get(prf,["host","_alias_pool",extendTo]) || xui.get(prf,["host","_ref_pool",extendTo])
+                    if(extendToConn){
+                        extendToConn = extendToConn.boxing();
+                        var path2 = extendToConn.getAttr("KEY").path;
+                        path2[0][1] = cp2.x; path2[0][2] = cp2.y;
+                        extendToConn.setAttr("KEY",{path:path2},false);
+                        ns._syncAttachment(extendToConn.get(0), path2, extendToConn.get(0).properties.attachment, "change");
+                    }
+                }
+
             }
             if(cp1 || cp2){
                 conn.setAttr("KEY",{path:path},false);
@@ -72490,10 +72534,10 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.fromObj){
                         ins=p[0].boxing();
-                        sPoint=xui.svg._getConnectPoint(p[0], prf, prop.fromObj,prop.fromPoint);
+                        sPoint=xui.svg._getConnectPoint(p[0], prf, prop.fromObj,prop.fromPoint, "from");
                         if(sPoint){
                             var hotNode = ns._getHotNode(p[0], prop.fromObj)
-                            sPath=xui.svg._getConnectPath(p[0], prf, hotNode);
+                            sPath=xui.svg._getConnectPath(p[0], prf, hotNode, "from");
 
                             sBox=Raphael.pathBBox(sPath);
 
@@ -72521,10 +72565,10 @@ xui.Class("xui.svg.connector","xui.svg.absComb",{
                 xui.arr.each(prf.parent.children,function(p){
                     if(p[0].alias==prop.toObj){
                         ins=p[0].boxing();
-                        ePoint=xui.svg._getConnectPoint(p[0], prf, prop.toObj,prop.toPoint);
+                        ePoint=xui.svg._getConnectPoint(p[0], prf, prop.toObj,prop.toPoint, "to");
                         if(ePoint){
                             var hotNode = ns._getHotNode(p[0],prop.toObj);
-                            ePath=xui.svg._getConnectPath(p[0], prf, hotNode);
+                            ePath=xui.svg._getConnectPath(p[0], prf, hotNode, "to");
 
                             eBox=Raphael.pathBBox(ePath);
 
