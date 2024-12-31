@@ -93,7 +93,7 @@ xui.Class('xui.ModuleFactory',null,{
                 }else
                     cls=config.cls || config;
 
-                var self=arguments.callee, 
+                var self=arguments.callee,
                     me=this,
                     task=function(cls,config,threadid){
                         if(!xui.isFun(cls))
@@ -152,28 +152,38 @@ xui.Class('xui.ModuleFactory',null,{
                             xui.Thread.abort(threadid);
                             throw e;
                         }
-                    },createModule = function(path, clsName){
-                        config.cls=clsName;
-                        if(path)
-                            f.call(this, threadid);
-                        else{
-                            var e=new Error("No class name");
-                            xui.tryF(onEnd,[e,null, threadid]);
-                            xui.Thread.abort(threadid);
-                            throw e;
-                        }
-                    };
+                    } ;
                     cls=cls+"";
                     if(/\//.test(cls) && !/\.js$/i.test(cls))
                         cls=cls+".js";
                     if(/\.js$/i.test(cls)){
-                        xui.fetchClass(cls,createModule,
+                        xui.fetchClass(cls,function(path, clsName){
+                                config.cls=clsName;
+                                if(clsName)
+                                    f.call(this, threadid);
+                                else{
+                                    var e=new Error("No class name");
+                                    xui.tryF(onEnd,[e,null, threadid]);
+                                    xui.Thread.abort(threadid);
+                                    throw e;
+                                }
+                            },
                             function(e){
                                 xui.tryF(onEnd,[e,null,threadid]);
                             },null,null,threadid, options);
                     }else{
                         //get app class
-                        xui.SC(cls,createModule,true,threadid,{
+                        xui.SC(cls,function(clsName){
+                                config.cls=clsName;
+                                if(clsName)
+                                    f.call(this, threadid);
+                                else{
+                                    var e=new Error("No class name");
+                                    xui.tryF(onEnd,[e,null, threadid]);
+                                    xui.Thread.abort(threadid);
+                                    throw e;
+                                }
+                            },true,threadid,{
                             retry:0,
                             onFail:function(e){
                                 xui.tryF(onEnd,[e,null,threadid]);

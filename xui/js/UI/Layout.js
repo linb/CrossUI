@@ -672,7 +672,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             beforeFold:function(profile, item, folded, e, src){},
             onDragResized:function(profile, item, size, e, src){},
             onInitContainer:function(profile, item){},
-            onInitValues:function(profile, callback, id){},
+            onInitValues:function(profile, item){},
             afterAutoLoad:function(profile, text, item){}
         },
         _adjustItems2:function(items, pos){

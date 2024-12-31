@@ -5598,13 +5598,16 @@ xui.Class("xui.UI",  "xui.absObj", {
             onMouseover:function(profile, e, src){
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
-                if(profile.onHover)
+                if(profile.onHover){
+                    console.log(888, src, e);
                     return profile.boxing().onHover(profile, true, e, src);
+                }
             },
             onMouseout:function(profile, e, src){
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
                 if(profile.onHover){
+                    console.log(999, src, e);
                     return profile.boxing().onHover(profile, false, e, src);
                 }
             }
@@ -9473,29 +9476,11 @@ xui.Class("xui.UI.Div", "xui.UI",{
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
                 xui.UI.Div._applyAutoLoad(prf, item);
             if(prf.onInitContainer||prf.onIniPanelView){
-                var ins=prf.boxing(),
-                callback = function(obj){
-                    if(xui.isStr(ojb)){
-                        if(/^[a-zA-Z][\w]+(\.[a-zA-Z][\w]+)+$/.test(obj)){
-                            xui.newModule(obj, function(mdl){
-                                ins.append(mdl, item && item.id);
-                            });
-                        }
-                    }else{
-                        ins.append(obj, item && item.id);
-                    }
-                }, obj = prf.onInitContainer ? ins.onInitContainer(prf, item) : ins.onIniPanelView(prf, item);
-                if(obj) callback(obj);
+                prf.onInitContainer ? prf.boxing().onInitContainer(prf, item) : prf.boxing().onIniPanelView(prf, item);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);
             if(prf.onInitValues){
-                var f=function(values){
-                    if(values && xui.isHash(values)){
-                        if(('values' in values) && xui.isHash(values.values)) values = values.values;
-                        prf.boxing().setFormValues(values, item && item.id, true);
-                    }
-                },values = prf.boxing().onInitValues(prf, f, item && item.id);
-                if(values) f(values);
+                 prf.boxing().onInitValues(prf, item);
             }
         },
         RenderTrigger:function(){
@@ -9508,7 +9493,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
         EventHandlers:{
             afterAutoLoad:function(profile, text){},
             onInitContainer:function(profile){},
-            onInitValues:function(profile, callback){}
+            onInitValues:function(profile){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);

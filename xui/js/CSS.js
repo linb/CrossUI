@@ -453,6 +453,7 @@ xui.Class("xui.CSS", null,{
 
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
+            ".xui-busy-cover{pointer-events:none;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
@@ -502,7 +503,7 @@ xui.Class("xui.CSS", null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"+
+           ".xui-node-tips{pointer-events:none;background-color:#FDF8D2;}"+
 
             // must here for get correct base font size
             ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+

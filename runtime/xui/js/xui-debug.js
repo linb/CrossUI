@@ -2730,12 +2730,13 @@ new function(){
                                 window.open('#!'+xui.urlEncode(hash));
                                 return;
                             }
+                            var ins;
                             // the current page
                             if(!target || target=="*"){
                               ins = _ns.page;
                             }else{
                                 // try to get module
-                                var cls=xui.get(window,target.split(".")),ins;
+                                var cls=xui.get(window,target.split("."));
                                 // TODO: now, only valid for the first one
                                 if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
                             }
@@ -10642,6 +10643,7 @@ xui.Class('xui.Event',null,{
 
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
+            ".xui-busy-cover{pointer-events:none;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
@@ -14605,7 +14607,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
-                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-cover-global xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
+                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-busy-cover xui-cover-global xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }
@@ -16148,7 +16150,10 @@ xui.Class('xui.Module','xui.absProfile',{
 
             if(self._hidden===1){
                 self.getUIComponents(true).each(function(prf){
-                    prf.boxing().show();
+                    parent=parent||xui('body');
+                    if(parent['xui.UIProfile'])parent=parent.boxing();
+                    if(ignoreFocus)prf._ignoreFocus=1;
+                    prf.boxing().show(parent,subId);
                 });
                 if(!ignoreFocus){
                     for(var i in self._alias_pool){
@@ -16168,7 +16173,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 parent=parent||xui('body');
                 if(parent['xui.UIProfile'])parent=parent.boxing();
                 if(xui.isHash(subId))subId=subId.id;
-
+                self._hidden=0;
                 var f=function(){
                     var style=self.customStyle;
                     if(style && !xui.isEmpty(style)){
@@ -16222,6 +16227,7 @@ xui.Class('xui.Module','xui.absProfile',{
                                     o._paper = self._svg_paper;
                                     svg.append(o);
                                 }else{
+                                    if(ignoreFocus)o._ignoreFocus=1;
                                     o.boxing().show(parent, subId);
                                 }
                             });
@@ -16248,7 +16254,6 @@ xui.Class('xui.Module','xui.absProfile',{
                         }
                         xui.tryF(onEnd,[null, self, threadid], self);
                     }
-                    self._hidden=0;
                     self._fireEvent('onShow');
                     self._fireEvent('afterShow');
                 };
@@ -19849,7 +19854,7 @@ xui.Class("xui.Tips", null,{
                 }else
                     cls=config.cls || config;
 
-                var self=arguments.callee, 
+                var self=arguments.callee,
                     me=this,
                     task=function(cls,config,threadid){
                         if(!xui.isFun(cls))
@@ -19908,28 +19913,38 @@ xui.Class("xui.Tips", null,{
                             xui.Thread.abort(threadid);
                             throw e;
                         }
-                    },createModule = function(path, clsName){
-                        config.cls=clsName;
-                        if(path)
-                            f.call(this, threadid);
-                        else{
-                            var e=new Error("No class name");
-                            xui.tryF(onEnd,[e,null, threadid]);
-                            xui.Thread.abort(threadid);
-                            throw e;
-                        }
-                    };
+                    } ;
                     cls=cls+"";
                     if(/\//.test(cls) && !/\.js$/i.test(cls))
                         cls=cls+".js";
                     if(/\.js$/i.test(cls)){
-                        xui.fetchClass(cls,createModule,
+                        xui.fetchClass(cls,function(path, clsName){
+                                config.cls=clsName;
+                                if(clsName)
+                                    f.call(this, threadid);
+                                else{
+                                    var e=new Error("No class name");
+                                    xui.tryF(onEnd,[e,null, threadid]);
+                                    xui.Thread.abort(threadid);
+                                    throw e;
+                                }
+                            },
                             function(e){
                                 xui.tryF(onEnd,[e,null,threadid]);
                             },null,null,threadid, options);
                     }else{
                         //get app class
-                        xui.SC(cls,createModule,true,threadid,{
+                        xui.SC(cls,function(clsName){
+                                config.cls=clsName;
+                                if(clsName)
+                                    f.call(this, threadid);
+                                else{
+                                    var e=new Error("No class name");
+                                    xui.tryF(onEnd,[e,null, threadid]);
+                                    xui.Thread.abort(threadid);
+                                    throw e;
+                                }
+                            },true,threadid,{
                             retry:0,
                             onFail:function(e){
                                 xui.tryF(onEnd,[e,null,threadid]);
@@ -25793,13 +25808,16 @@ xui.Class("xui.UI",  "xui.absObj", {
             onMouseover:function(profile, e, src){
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
-                if(profile.onHover)
+                if(profile.onHover){
+                    console.log(888, src, e);
                     return profile.boxing().onHover(profile, true, e, src);
+                }
             },
             onMouseout:function(profile, e, src){
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
                 if(profile.onHover){
+                    console.log(999, src, e);
                     return profile.boxing().onHover(profile, false, e, src);
                 }
             }
@@ -58069,7 +58087,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
 
-                    ins.activate();
+                    if(!profile._ignoreFocus){
+                        ins.activate();
+                    }else{
+                        delete profile._ignoreFocus;
+                    }
                     var tt=profile._$rs_args,fun=function(){
                         if(profile.onShow)profile.boxing().onShow(profile);
                         delete profile.inShowing;
@@ -58083,7 +58105,6 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                                     ins.setActiveAnim(p.activeAnim, true);
                             });
                         }
-
                     };
                     if(p.status=='min')
                         box._min(profile,'min', fun, true);

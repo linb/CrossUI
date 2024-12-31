@@ -52,7 +52,11 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                     if((modal || p.modal) && !profile.$inModal)
                         box._modal(profile);
 
-                    ins.activate();
+                    if(!profile._ignoreFocus){
+                        ins.activate();
+                    }else{
+                        delete profile._ignoreFocus;
+                    }
                     var tt=profile._$rs_args,fun=function(){
                         if(profile.onShow)profile.boxing().onShow(profile);
                         delete profile.inShowing;
@@ -66,7 +70,6 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                                     ins.setActiveAnim(p.activeAnim, true);
                             });
                         }
-
                     };
                     if(p.status=='min')
                         box._min(profile,'min', fun, true);
@@ -829,7 +832,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         },
         EventHandlers:{
             onInitContainer:function(profile){},
-            onInitValues:function(profile, callback){},
+            onInitValues:function(profile){},
             onShow:function(profile){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},

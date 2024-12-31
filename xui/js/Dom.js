@@ -3885,7 +3885,7 @@ xui.Class('xui.Dom','xui.absBox',{
                 o1,o2;
 
             if((o1=xui(id)).isEmpty()){
-                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-cover-global xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
+                xui('body').prepend(o1=xui.create('<button id="'+ id +'" class="xui-node xui-node-div xui-cover xui-busy-cover xui-cover-global xui-custom" style="position:absolute;display:none;text-align:center;left:0;top:0;border:0;padding:0;margin:0;padding-top:2em;"><div id="'+id2+'" class="xui-node xui-node-div xui-coverlabel xui-custom"></div></button>'));
                 o1.setSelectable(false);
                 xui.setNodeData(o1.get(0),'zIndexIgnore',1);
             }

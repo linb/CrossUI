@@ -550,6 +550,7 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.create(f);
         },
         replace: function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
+            if(parent)return;
             if(parent["xui.UI"])parent=parent.get(0);
             if(parent['xui.UIProfile']){
                 parent.boxing().dumpContainer(subId, true);
@@ -584,7 +585,10 @@ xui.Class('xui.Module','xui.absProfile',{
 
             if(self._hidden===1){
                 self.getUIComponents(true).each(function(prf){
-                    prf.boxing().show();
+                    parent=parent||xui('body');
+                    if(parent['xui.UIProfile'])parent=parent.boxing();
+                    if(ignoreFocus)prf._ignoreFocus=1;
+                    prf.boxing().show(parent,subId);
                 });
                 if(!ignoreFocus){
                     for(var i in self._alias_pool){
@@ -604,7 +608,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 parent=parent||xui('body');
                 if(parent['xui.UIProfile'])parent=parent.boxing();
                 if(xui.isHash(subId))subId=subId.id;
-
+                self._hidden=0;
                 var f=function(){
                     var style=self.customStyle;
                     if(style && !xui.isEmpty(style)){
@@ -658,6 +662,7 @@ xui.Class('xui.Module','xui.absProfile',{
                                     o._paper = self._svg_paper;
                                     svg.append(o);
                                 }else{
+                                    if(ignoreFocus)o._ignoreFocus=1;
                                     o.boxing().show(parent, subId);
                                 }
                             });
@@ -684,7 +689,6 @@ xui.Class('xui.Module','xui.absProfile',{
                         }
                         xui.tryF(onEnd,[null, self, threadid], self);
                     }
-                    self._hidden=0;
                     self._fireEvent('onShow');
                     self._fireEvent('afterShow');
                 };

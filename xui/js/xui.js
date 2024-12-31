@@ -258,10 +258,10 @@ new function(){
             xui.get({a:{b:{c:1}}},['a','b','c']) => 1;
             xui.get({a:{b:{c:1}}},['a','b','c','d']) => undefined;
         */
-        get:function(hash,path,deep){
+        get:function(hash,path,split){
             if(!path) return hash;
             if(!xui.isSet(hash))return undefined;
-            if(deep)path=xui._s2a(path);
+            if(split)path=xui._s2a(path);
             if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
@@ -277,9 +277,9 @@ new function(){
             xui.set({a:{b:{c:1}}},['a','b','c'],2) => {a:{b:{c:2}}}
             xui.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
         */
-        set:function(hash,path,value,deep){
+        set:function(hash,path,value,split){
             if(!hash)return;
-            if(deep)path=xui._s2a(path);
+            if(split)path=xui._s2a(path);
             if(typeof path!='string'){
                 var v,i=0,m,last=path.length-1;
                 for(;i<last;){
@@ -2716,12 +2716,13 @@ new function(){
                                 window.open('#!'+xui.urlEncode(hash));
                                 return;
                             }
+                            var ins;
                             // the current page
                             if(!target || target=="*"){
                               ins = _ns.page;
                             }else{
                                 // try to get module
-                                var cls=xui.get(window,target.split(".")),ins;
+                                var cls=xui.get(window,target.split("."));
                                 // TODO: now, only valid for the first one
                                 if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
                             }
@@ -6208,4 +6209,44 @@ xui.Class("xui.ExcelFormula",null,{
             return xui.isNaN(ret)?false:ret;
         }
     }
+});
+
+
+xui.Class("xui.LocalDataStorage", null, {
+    Constructor:function(){
+        if(!xui.$data_local)xui.$data_local={};
+    },
+    Static:{
+        get:function(path, split){
+            return xui.get(xui.$data_local, path, split);
+        },
+        set:function(path, value, split){
+            return xui.set(xui.$data_local, path, value, split);
+        },
+
+        updateUIData:function(key, target, subId, penetrate){
+            if(!key || !target)return;
+            var values = this.get(key, true);
+            if(values){
+                // container
+                if(target.setFormValues) target.setFormValues(values, subId, penetrate);
+                else if(xui.isFun(subId)) subId(values);
+                // module / absValue
+                else if(target.setValue) target.setVavlue(values, true);
+                // initList
+            }
+        },
+        saveUIData:function(key, target, subId, penetrate){
+            if(!key || !target)return;
+            var values;
+                // container
+            if(target.getFormValues){
+                if(target.checkValid(false, subId, penetrate)) values = target.getFormValues(subId, penetrate);
+                else return;
+            }
+            // module / absValue
+            else if(target.setValue) values = target.getVavlue(true);
+            if(values) this.set(key, values, true);
+        }
+   }
 });

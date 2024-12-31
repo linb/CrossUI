@@ -122,7 +122,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             onFiles:function(profile, files){},
             onFileError:function(profile, message, file){},
             onInitContainer:function(profile){},
-            onInitValues:function(profile, callback){}
+            onInitValues:function(profile){}
         },
         DataModel:{
             //delete those properties
