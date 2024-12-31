@@ -828,7 +828,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             $vborder:1
         },
         EventHandlers:{
-            onInitPanelView:function(profile, callback){},
+            onInitContainer:function(profile){},
             onInitValues:function(profile, callback){},
             onShow:function(profile){},
             onActivated:function(profile){},

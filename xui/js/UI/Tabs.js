@@ -1027,7 +1027,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
         EventHandlers:{
             onCmd:function(profile,item,cmdkey,e,src){},
             onIniPanelView:function(profile, item){},
-            onInitPanelView:function(profile, callback, id){},
+            onInitContainer:function(profile, item){},
             onInitValues:function(profile, callback, id){},
 
             beforePagePop:function(profile, item, options, e, src){},

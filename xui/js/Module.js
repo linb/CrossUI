@@ -512,7 +512,7 @@ xui.Class('xui.Module','xui.absProfile',{
 
                     if(xui.isStr(events)||xui.isFun(events))events=[events];
                     if(xui.isNumb(j=(events.actions||events)[0].event)  && xui.isObj(args[j]))args[j]=xui.Event.getEventPara(args[j]);
-                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder,((host&&host.alias)||(prf.$holder&&prf.$holder.alias)) + "."+ prf.alias + "."+ name);
+                    return xui.pseudocode._callFunctions(events, args, host,null,prf.$holder,((host&&(host.alias||('['+host.key+']')))||(prf.$holder&&prf.$holder.alias)) + "."+ prf.alias + "."+ name);
                 };
             self.$lastEvent=name;
             if(tp && (!xui.isArr(tp) || tp.length))r = applyEvents(self, tp, self, args);
@@ -549,23 +549,61 @@ xui.Class('xui.Module','xui.absProfile',{
             if(self.created)f()
             else this.create(f);
         },
-        show:function(onEnd,parent,subId,threadid,left,top){
+        replace: function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
+            if(parent["xui.UI"])parent=parent.get(0);
+            if(parent['xui.UIProfile']){
+                parent.boxing().dumpContainer(subId, true);
+                this.show(onEnd,parent,subId,threadid,left,top,ignoreFocus);
+            }
+        },
+        toggle:function(onEnd,parent,subId,threadid,left,top){
+            var self=this;
+            if(self.destroyed)return self;
+            if(self._hidden === 0){
+                self.hide();
+            }else{
+                self.show(onEnd,parent,subId,threadid,left,top,false);
+            }
+        },
+        toggleOverlay:function(onEnd,parent,subId,threadid,left,top){
+            var self=this;
+            if(self.destroyed)return self;
+            if(self._hidden === 0){
+                return self.hide();
+            }else{
+                return self.show(onEnd,parent,subId,threadid,left,top,true);
+            }
+        },
+        fill:function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
+            return show(onEnd,parent,subId,threadid,left,top,true);
+        },
+        show:function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
             var self=this;
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
 
             if(self._hidden===1){
-                this.getUIComponents(true).each(function(prf){
+                self.getUIComponents(true).each(function(prf){
                     prf.boxing().show();
                 });
+                if(!ignoreFocus){
+                    for(var i in self._alias_pool){
+                        i = self._alias_pool[i];
+                        if(i.box['xui.UI'] && i.boxing().getDefaultFocus && i.boxing().getDefaultFocus()){
+                            try{xui.asyRun(function(){i.boxing().activate()})}catch(e){}
+                            break;
+                        }
+                    }
+                }
                 self._hidden = 0;
                 xui.tryF(onEnd,[null, self, threadid], self);
-                 self._fireEvent('onShow');
+                self._fireEvent('onShow');
                 self._fireEvent('afterShow');
             }else{
                 xui.UI.$trytoApplyCSS();
                 parent=parent||xui('body');
                 if(parent['xui.UIProfile'])parent=parent.boxing();
+                if(xui.isHash(subId))subId=subId.id;
 
                 var f=function(){
                     var style=self.customStyle;
@@ -620,13 +658,18 @@ xui.Class('xui.Module','xui.absProfile',{
                                     o._paper = self._svg_paper;
                                     svg.append(o);
                                 }else{
-                                    o.boxing().show(parent, subId, null, null, null, function(){
-                                      if(o.KEY=='xui.UIProfile' && xui.get(o,['properties','defaultFocus'])){
-                                         try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                                      }
-                                    });
+                                    o.boxing().show(parent, subId);
                                 }
                             });
+                            if(!ignoreFocus){
+                                for(var i in self._alias_pool){
+                                    i = self._alias_pool[i];
+                                    if(i.box['xui.UI'] && i.boxing().getDefaultFocus && i.boxing().getDefaultFocus()){
+                                        try{xui.asyRun(function(){i.boxing().activate()})}catch(e){}
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         self.renderId='ok';
                         self.renderCompleted = 1;
@@ -665,8 +708,8 @@ xui.Class('xui.Module','xui.absProfile',{
                 xui.arr.each(m._nodes,function(o){
                     //Recursive call
                     if(o['xui.Module']){
-                      o.render(triggerLayout);
                       checkSubMdls(o);
+                      o.render(triggerLayout);
                     }
                 });
             };
@@ -674,11 +717,12 @@ xui.Class('xui.Module','xui.absProfile',{
                 // create synchronously
                 self.create(null,false)
             if(self.renderId!='ok'){
+                checkSubMdls(self);
+
                 self.renderId='ok';
                 self.renderCompleted = 1;
                 self.getUIComponents().render(triggerLayout);
                 self._fireEvent('onRender');
-                checkSubMdls(self);
             }
             return self;
         },

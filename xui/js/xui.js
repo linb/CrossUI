@@ -2624,6 +2624,21 @@ new function(){
                 for(var i=1,l=t.length;i<l;i++)
                     if(t[i])iparams[i-1]=t[i];
             }
+            // use sid(item id) as a inline condition
+            // NOTICE: the item/row/col/cell must be always the 2nd parameter, or must have a 'si' key
+            if('sid' in conf){
+                var item_index = xui.isNumb(conf.si)?conf.si:1,
+                    argi = _ns.args[item_index];
+                if(xui.isHash(argi) && ('id' in argi)){
+                    if(conf.sid !== argi.id){
+                        return;
+                    }
+                }else if(xui.isStr(argi)){
+                    if(conf.sid !== argi){
+                        return;
+                    }
+                }
+            }
             // handle conditions
             // currently, support and only
             // TODO: complex conditions
@@ -2713,7 +2728,7 @@ new function(){
                             if(method=="destroy"){
                                 if(ins)if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                                 return;
-                            }else if(method=="show"){
+                            }else if(method=="show"||method=="toggle"||method=="toggleOverlay"||method=="replace"){
                                 // special for xui.Module.show
                                 iparams.unshift(function(err,module){
                                     if(err){xui.message(err);}
@@ -5433,7 +5448,7 @@ xui.Class('xui.absObj',"xui.absBox",{
                                     if(xui.isStr(events)||xui.isFun(events))events=[events];
                                     if(xui.isArr(events.actions||events) && xui.isNumb(j=(events.actions||events)[0].event))args[j]=args[j]?xui.Event.getEventPara(args[j]):{};
 
-                                    return xui.pseudocode._callFunctions(events, args, host, null,prf.$holder, ((host&&host.alias)||(prf.$holder&&prf.$holder.alias))+"."+prf.alias+"."+i);
+                                    return xui.pseudocode._callFunctions(events,args,host,null,prf.$holder,((host&&(host.alias||('['+host.key+']')))||(prf.$holder&&prf.$holder.alias))+"."+prf.alias+"."+i);
                                 }
                             }
                         }

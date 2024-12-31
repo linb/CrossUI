@@ -5458,7 +5458,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             afterRowResized:function(profile, rowId, height){},
 
             beforePrepareRow:function(profile, row, pid){},
-            beforePrepareCol:function(profile,  col){},
+            beforePrepareCol:function(profile, col){},
 
             beforeRowActive:function(profile, row){},
             afterRowActive:function(profile, row){},

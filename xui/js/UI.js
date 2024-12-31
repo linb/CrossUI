@@ -9472,7 +9472,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
 
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
                 xui.UI.Div._applyAutoLoad(prf, item);
-            if(prf.onInitPanelView||prf.onIniPanelView){
+            if(prf.onInitContainer||prf.onIniPanelView){
                 var ins=prf.boxing(),
                 callback = function(obj){
                     if(xui.isStr(ojb)){
@@ -9484,7 +9484,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                     }else{
                         ins.append(obj, item && item.id);
                     }
-                }, obj = prf.onInitPanelView ? ins.onInitPanelView(prf, callback, item && item.id) : ins.onIniPanelView(prf, item);
+                }, obj = prf.onInitContainer ? ins.onInitContainer(prf, item) : ins.onIniPanelView(prf, item);
                 if(obj) callback(obj);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);
@@ -9507,7 +9507,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
         },
         EventHandlers:{
             afterAutoLoad:function(profile, text){},
-            onInitPanelView:function(profile, callback){},
+            onInitContainer:function(profile){},
             onInitValues:function(profile, callback){}
         },
         _prepareData:function(profile,data){

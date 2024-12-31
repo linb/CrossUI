@@ -1138,7 +1138,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         //left,top format: "23px"
         show:function(left,top,callback,showEffects,ignoreEffects){
-            var style,t,vv;
+            var style,t,vv,prf;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
@@ -1170,14 +1170,15 @@ xui.Class('xui.Dom','xui.absBox',{
                         style.wordWrap=t?'break-word':'normal'
                     })
                 }*/
-                showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','showEffects']);
+                prf=xui.UIProfile.getFromDom(o);
+                showEffects=(prf&&prf.$inDesign)||ignoreEffects?null:showEffects?showEffects:xui.get(prf,['properties','showEffects']);
                 if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
                 if(showEffects)xui.Dom._vAnimate(o,showEffects,callback);else if(callback)callback();
                 xui.Dom.afterNodeChange( );
             });
         },
         hide:function(callback,hideEffects,ignoreEffects){
-            var style,vv;
+            var style,vv,prf;
             return this.each(function(o){
                 if(o.nodeType != 1)return;
                 var tid=xui.getNodeData(o,'_inthread');
@@ -1204,7 +1205,8 @@ xui.Class('xui.Dom','xui.absBox',{
 
                     if(callback)callback();
                 };
-                hideEffects=ignoreEffects?null:hideEffects?hideEffects:xui.get(xui.UIProfile.getFromDom(o),['properties','hideEffects']);
+                prf=xui.UIProfile.getFromDom(o);
+                hideEffects=(prf&&prf.$inDesign)||ignoreEffects?null:hideEffects?hideEffects:xui.get(prf,['properties','hideEffects']);
                 if(hideEffects)hideEffects=xui.Dom._getEffects(hideEffects,0);
                 if(hideEffects)xui.Dom._vAnimate(o,hideEffects,fun);else fun();
             });
@@ -1998,7 +2000,7 @@ xui.Class('xui.Dom','xui.absBox',{
         },
         // pop to the top layer
         popToTop : function(pos, type, parent, callback, showEffects, ignoreEffects){
-            var region, target=this, t;
+            var region, target=this, t, prf;
             parent=xui(parent);
             if(parent.isEmpty())
                 parent=xui('body');
@@ -2016,7 +2018,8 @@ xui.Class('xui.Dom','xui.absBox',{
             target.css({visibility:'visible'});
             target.removeClass('xui-ui-hidden');
 
-            showEffects=ignoreEffects?null:showEffects?showEffects:xui.get(xui.UIProfile.getFromDom(target),['properties','showEffects']);
+            prf=xui.UIProfile.getFromDom(target);
+            showEffects=(prf&&prf.$inDesign)||ignoreEffects?null:showEffects?showEffects:xui.get(prf,['properties','showEffects']);
             if(showEffects)showEffects=xui.Dom._getEffects(showEffects,1);
             if(showEffects)xui.Dom._vAnimate(target,showEffects,callback);else if(callback)callback();
             return this;

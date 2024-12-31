@@ -671,7 +671,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             onClickPanel:function(profile, item, e, src){},
             beforeFold:function(profile, item, folded, e, src){},
             onDragResized:function(profile, item, size, e, src){},
-            onInitPanelView:function(profile, callback, id){},
+            onInitContainer:function(profile, item){},
             onInitValues:function(profile, callback, id){},
             afterAutoLoad:function(profile, text, item){}
         },

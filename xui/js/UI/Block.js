@@ -121,7 +121,7 @@ xui.Class("xui.UI.Block", "xui.UI.Widget",{
             onClickBackdrop:function(profile, e, src){},
             onFiles:function(profile, files){},
             onFileError:function(profile, message, file){},
-            onInitPanelView:function(profile, callback){},
+            onInitContainer:function(profile){},
             onInitValues:function(profile, callback){}
         },
         DataModel:{
