@@ -272,10 +272,10 @@ new function(){
             xui.get({a:{b:{c:1}}},['a','b','c']) => 1;
             xui.get({a:{b:{c:1}}},['a','b','c','d']) => undefined;
         */
-        get:function(hash,path,deep){
+        get:function(hash,path,split){
             if(!path) return hash;
             if(!xui.isSet(hash))return undefined;
-            if(deep)path=xui._s2a(path);
+            if(split)path=xui._s2a(path);
             if(typeof path=='string') return hash[path];
             else{
                 for(var i=0,l=path.length,t;i<l;){
@@ -291,9 +291,9 @@ new function(){
             xui.set({a:{b:{c:1}}},['a','b','c'],2) => {a:{b:{c:2}}}
             xui.set({a:{b:{c:1}}},['a','b','c']) => {a:{b:{}}}
         */
-        set:function(hash,path,value,deep){
+        set:function(hash,path,value,split){
             if(!hash)return;
-            if(deep)path=xui._s2a(path);
+            if(split)path=xui._s2a(path);
             if(typeof path!='string'){
                 var v,i=0,m,last=path.length-1;
                 for(;i<last;){
@@ -6223,7 +6223,54 @@ xui.Class("xui.ExcelFormula",null,{
             return xui.isNaN(ret)?false:ret;
         }
     }
-});xui.Class("xui.APICaller","xui.absObj",{
+});
+
+
+xui.Class("xui.LocalDataStorage", null, {
+    Constructor:function(){
+        if(!xui.$data_local)xui.$data_local={};
+    },
+    Static:{
+        get:function(path, split){
+            return xui.get(xui.$data_local, path, split);
+        },
+        set:function(path, value, split){
+            return xui.set(xui.$data_local, path, value, split);
+        },
+
+        updateUIData:function(key, target, subId, penetrate){
+            if(!key || !target)return;
+            if(target["xui.UIProfile"])target=target.boxing();
+            if(xui.isHash(subId))subId=subId.id;
+
+            var values = this.get(key);
+            if(values && values.data){
+                // for container
+                if(target.setFormValues) target.setFormValues(values.data, subId, penetrate);
+                // for initList (setItems, setRows, setHeader)
+                else if(xui.isFun(subId)) subId(values.data);
+                // for module / absValue
+                else if(target.setValue) target.setValue(values.data, true);
+            }
+        },
+        saveUIData:function(key, target, subId, penetrate){
+            if(!key || !target)return;
+            if(target["xui.UIProfile"])target=target.boxing();
+            if(xui.isHash(subId))subId=subId.id;
+
+            var values;
+            //for  container
+            if(target.getFormValues){
+                if(target.checkValid(false, subId, penetrate)) values = target.getFormValues(subId, penetrate);
+                else return;
+            }
+            // for module / absValue
+            else if(target.getVavlue) values = target.getVavlue(true);
+            if(values) this.set([key, 'data'], values);
+        }
+   }
+});
+xui.Class("xui.APICaller","xui.absObj",{
     Instance:{
         _ini:xui.Timer.prototype._ini,
         _after_ini:function(profile,ins,alias){
@@ -10693,7 +10740,7 @@ xui.Class('xui.Event',null,{
            ".xui-v-top > .xui-v-wrapper > .xui-v-node{vertical-align:top;}"+
            ".xui-v-bottom > .xui-v-wrapper:before{vertical-align:bottom;}"+
            ".xui-v-bottom > .xui-v-wrapper > .xui-v-node{vertical-align:bottom;}"))+
-            ".xui-node-tips{background-color:#FDF8D2;}"+
+           ".xui-node-tips{pointer-events:none;background-color:#FDF8D2;}"+
 
             // must here for get correct base font size
             ".xuifont, .xuicon{font-size:1.3333333333333333em;line-height:1em;}"+
@@ -16116,6 +16163,7 @@ xui.Class('xui.Module','xui.absProfile',{
             else this.create(f);
         },
         replace: function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
+            if(parent)return;
             if(parent["xui.UI"])parent=parent.get(0);
             if(parent['xui.UIProfile']){
                 parent.boxing().dumpContainer(subId, true);
@@ -29686,29 +29734,11 @@ xui.Class("xui.UI.Div", "xui.UI",{
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
                 xui.UI.Div._applyAutoLoad(prf, item);
             if(prf.onInitContainer||prf.onIniPanelView){
-                var ins=prf.boxing(),
-                callback = function(obj){
-                    if(xui.isStr(ojb)){
-                        if(/^[a-zA-Z][\w]+(\.[a-zA-Z][\w]+)+$/.test(obj)){
-                            xui.newModule(obj, function(mdl){
-                                ins.append(mdl, item && item.id);
-                            });
-                        }
-                    }else{
-                        ins.append(obj, item && item.id);
-                    }
-                }, obj = prf.onInitContainer ? ins.onInitContainer(prf, item) : ins.onIniPanelView(prf, item);
-                if(obj) callback(obj);
+                prf.onInitContainer ? prf.boxing().onInitContainer(prf, item) : prf.boxing().onIniPanelView(prf, item);
             }
             xui.UI.Div._for_svg_children(prf, item && item.id);
             if(prf.onInitValues){
-                var f=function(values){
-                    if(values && xui.isHash(values)){
-                        if(('values' in values) && xui.isHash(values.values)) values = values.values;
-                        prf.boxing().setFormValues(values, item && item.id, true);
-                    }
-                },values = prf.boxing().onInitValues(prf, f, item && item.id);
-                if(values) f(values);
+                 prf.boxing().onInitValues(prf, item);
             }
         },
         RenderTrigger:function(){
@@ -29721,7 +29751,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
         EventHandlers:{
             afterAutoLoad:function(profile, text){},
             onInitContainer:function(profile){},
-            onInitValues:function(profile, callback){}
+            onInitValues:function(profile){}
         },
         _prepareData:function(profile,data){
             data=arguments.callee.upper.call(this, profile,data);
@@ -32183,7 +32213,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
             onFiles:function(profile, files){},
             onFileError:function(profile, message, file){},
             onInitContainer:function(profile){},
-            onInitValues:function(profile, callback){}
+            onInitValues:function(profile){}
         },
         DataModel:{
             //delete those properties
@@ -44087,7 +44117,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             onCmd:function(profile,item,cmdkey,e,src){},
             onIniPanelView:function(profile, item){},
             onInitContainer:function(profile, item){},
-            onInitValues:function(profile, callback, id){},
+            onInitValues:function(profile, item){},
 
             beforePagePop:function(profile, item, options, e, src){},
             beforePageClose:function(profile, item, src){},
@@ -49133,7 +49163,7 @@ xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
             beforeFold:function(profile, item, folded, e, src){},
             onDragResized:function(profile, item, size, e, src){},
             onInitContainer:function(profile, item){},
-            onInitValues:function(profile, callback, id){},
+            onInitValues:function(profile, item){},
             afterAutoLoad:function(profile, text, item){}
         },
         _adjustItems2:function(items, pos){
@@ -55484,7 +55514,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ins.setHeader(rst.columns||rst.header);
                         }
                         if(xui.isArr(rst.rows)){
-                            ins.setRows(rst);
+                            ins.setRows(rst.rows);
                         }
                     }
                 });
@@ -58867,7 +58897,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         },
         EventHandlers:{
             onInitContainer:function(profile){},
-            onInitValues:function(profile, callback){},
+            onInitValues:function(profile){},
             onShow:function(profile){},
             onActivated:function(profile){},
             beforePin:function(profile, value){},

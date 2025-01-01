@@ -6028,7 +6028,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             ins.setHeader(rst.columns||rst.header);
                         }
                         if(xui.isArr(rst.rows)){
-                            ins.setRows(rst);
+                            ins.setRows(rst.rows);
                         }
                     }
                 });

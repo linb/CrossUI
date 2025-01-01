@@ -6226,27 +6226,33 @@ xui.Class("xui.LocalDataStorage", null, {
 
         updateUIData:function(key, target, subId, penetrate){
             if(!key || !target)return;
-            var values = this.get(key, true);
-            if(values){
-                // container
-                if(target.setFormValues) target.setFormValues(values, subId, penetrate);
-                else if(xui.isFun(subId)) subId(values);
-                // module / absValue
-                else if(target.setValue) target.setVavlue(values, true);
-                // initList
+            if(target["xui.UIProfile"])target=target.boxing();
+            if(xui.isHash(subId))subId=subId.id;
+
+            var values = this.get(key);
+            if(values && values.data){
+                // for container
+                if(target.setFormValues) target.setFormValues(values.data, subId, penetrate);
+                // for initList (setItems, setRows, setHeader)
+                else if(xui.isFun(subId)) subId(values.data);
+                // for module / absValue
+                else if(target.setValue) target.setValue(values.data, true);
             }
         },
         saveUIData:function(key, target, subId, penetrate){
             if(!key || !target)return;
+            if(target["xui.UIProfile"])target=target.boxing();
+            if(xui.isHash(subId))subId=subId.id;
+
             var values;
-                // container
+            //for  container
             if(target.getFormValues){
                 if(target.checkValid(false, subId, penetrate)) values = target.getFormValues(subId, penetrate);
                 else return;
             }
-            // module / absValue
-            else if(target.setValue) values = target.getVavlue(true);
-            if(values) this.set(key, values, true);
+            // for module / absValue
+            else if(target.getVavlue) values = target.getVavlue(true);
+            if(values) this.set([key, 'data'], values);
         }
    }
 });
