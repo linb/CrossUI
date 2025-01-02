@@ -49,7 +49,7 @@ xui.Class('xui.Module','xui.absProfile',{
         xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
             var arr=xui.toArr(arguments);
             xui.arr.each(xui.Module._cache,function(o){
-                 o.fireEvent('onGlobalMessage',  arr);
+                 o.fireEvent && o.fireEvent('onGlobalMessage',  arr);
             });
         };
     },
@@ -1482,6 +1482,8 @@ xui.Class('xui.Module','xui.absProfile',{
 
             //set once
             self.destroyed=true;
+            //disable autoDestroy
+            self.autoDestroy=self.properties.autoDestroy=false;
             if(ns && ns.length)
                 xui.arr.each(ns, function(o){
                     if(o && o.box)
@@ -1492,6 +1494,8 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._nodes.length=0;
 
             xui.absProfile.prototype.__gc.call(this);
+
+            self.unLinkAll();
 
             if(!keepStructure){
                 xui.breakO(self);

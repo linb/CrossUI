@@ -5599,7 +5599,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
                 if(profile.onHover){
-                    console.log(888, src, e);
                     return profile.boxing().onHover(profile, true, e, src);
                 }
             },
@@ -5607,7 +5606,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
                 if(profile.onHover){
-                    console.log(999, src, e);
                     return profile.boxing().onHover(profile, false, e, src);
                 }
             }
@@ -9468,9 +9466,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 }
             }
         },
-        _after_con_render:function(prf, item){
+        _after_con_render:function(prf, item, force){
             var prop = item || prf.properties;
-            if(prop._$init)return;
+            if(!force && prop._$init)return;
             prop._$init=true;
 
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)

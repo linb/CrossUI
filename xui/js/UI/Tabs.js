@@ -185,9 +185,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return arr;
         },
 
-        resetPanelView:function(subId, removeChildren, destroyChildren){
+        resetPanelView:function(subId, removeChildren, destroyChildren, purgeNow){
             if(!xui.isSet(removeChildren))removeChildren=true;
             if(!xui.isSet(destroyChildren))destroyChildren=true;
+            if(!xui.isSet(purgeNow))purgeNow=true;
             var ins,item;
             return this.each(function(profile){
                 if(profile.renderId){
@@ -196,20 +197,20 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             delete o._$init;
                     });
                     if(removeChildren)
-                        profile.boxing().removeChildren(subId,destroyChildren)
+                        profile.boxing().removeChildren(subId,destroyChildren, purgeNow)
                 }
             });
             return this;
         },
-        iniPanelView:function(subId){
+        iniPanelView:function(subId, force){
             return this.each(function(profile){
                 if(subId){
                     if(subId=profile.getItemByItemId(subId+'')){
-                        profile.box._forIniPanelView(profile, subId);
+                        profile.box._forIniPanelView(profile, subId, force);
                     }
                 }else{
                     xui.arr.each(profile.properties.items,function(item){
-                        profile.box._forIniPanelView(profile, item);
+                        profile.box._forIniPanelView(profile, item, force);
                     });
                 }
             });
@@ -1177,9 +1178,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                  });
             }
         },
-        _forIniPanelView:function(prf, item){
+        _forIniPanelView:function(prf, item, force){
             if(!item)return;
-            xui.UI.Div._after_con_render(prf, item);
+            xui.UI.Div._after_con_render(prf, item, force);
         },
         _showTips:function(profile, node, pos){
             if(profile.properties.disableTips)return;

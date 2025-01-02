@@ -15662,7 +15662,7 @@ xui.Class('xui.Module','xui.absProfile',{
         xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
             var arr=xui.toArr(arguments);
             xui.arr.each(xui.Module._cache,function(o){
-                 o.fireEvent('onGlobalMessage',  arr);
+                 o.fireEvent && o.fireEvent('onGlobalMessage',  arr);
             });
         };
     },
@@ -17095,6 +17095,8 @@ xui.Class('xui.Module','xui.absProfile',{
 
             //set once
             self.destroyed=true;
+            //disable autoDestroy
+            self.autoDestroy=self.properties.autoDestroy=false;
             if(ns && ns.length)
                 xui.arr.each(ns, function(o){
                     if(o && o.box)
@@ -17105,6 +17107,8 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._nodes.length=0;
 
             xui.absProfile.prototype.__gc.call(this);
+
+            self.unLinkAll();
 
             if(!keepStructure){
                 xui.breakO(self);
@@ -25857,7 +25861,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
                 if(profile.onHover){
-                    console.log(888, src, e);
                     return profile.boxing().onHover(profile, true, e, src);
                 }
             },
@@ -25865,7 +25868,6 @@ xui.Class("xui.UI",  "xui.absObj", {
                 if(xui.browser.fakeTouch || xui.browser.deviceType == 'touchOnly')return;
                 if(profile.properties.disabled)return;
                 if(profile.onHover){
-                    console.log(999, src, e);
                     return profile.boxing().onHover(profile, false, e, src);
                 }
             }
@@ -29726,9 +29728,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 }
             }
         },
-        _after_con_render:function(prf, item){
+        _after_con_render:function(prf, item, force){
             var prop = item || prf.properties;
-            if(prop._$init)return;
+            if(!force && prop._$init)return;
             prop._$init=true;
 
             if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
@@ -43274,9 +43276,10 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
             return arr;
         },
 
-        resetPanelView:function(subId, removeChildren, destroyChildren){
+        resetPanelView:function(subId, removeChildren, destroyChildren, purgeNow){
             if(!xui.isSet(removeChildren))removeChildren=true;
             if(!xui.isSet(destroyChildren))destroyChildren=true;
+            if(!xui.isSet(purgeNow))purgeNow=true;
             var ins,item;
             return this.each(function(profile){
                 if(profile.renderId){
@@ -43285,20 +43288,20 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                             delete o._$init;
                     });
                     if(removeChildren)
-                        profile.boxing().removeChildren(subId,destroyChildren)
+                        profile.boxing().removeChildren(subId,destroyChildren, purgeNow)
                 }
             });
             return this;
         },
-        iniPanelView:function(subId){
+        iniPanelView:function(subId, force){
             return this.each(function(profile){
                 if(subId){
                     if(subId=profile.getItemByItemId(subId+'')){
-                        profile.box._forIniPanelView(profile, subId);
+                        profile.box._forIniPanelView(profile, subId, force);
                     }
                 }else{
                     xui.arr.each(profile.properties.items,function(item){
-                        profile.box._forIniPanelView(profile, item);
+                        profile.box._forIniPanelView(profile, item, force);
                     });
                 }
             });
@@ -44266,9 +44269,9 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                  });
             }
         },
-        _forIniPanelView:function(prf, item){
+        _forIniPanelView:function(prf, item, force){
             if(!item)return;
-            xui.UI.Div._after_con_render(prf, item);
+            xui.UI.Div._after_con_render(prf, item, force);
         },
         _showTips:function(profile, node, pos){
             if(profile.properties.disableTips)return;
