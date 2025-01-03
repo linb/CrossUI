@@ -2500,11 +2500,12 @@ new function(){
         exec:function(_ns, conf, resumeFun, level){
            var mode = xui.ini.$mode;
            if(mode){
-               if( (xui.isStr(mode) && mode !== conf.mode) ||
+               if( (xui.isStr(mode) && mode !== conf.mode.replace(/only$/,'')) ||
                    (xui.isArr(mode) && xui.arr.indexOf(mode, conf.mode) ===-1) ||
                    (xui.isFun(mode) && !mode(conf.mode))
                ) return;
-           }
+           }else if(conf.sbonly)return;
+
            var  ns=this,t,tt,m,n,p,k,arr,type=conf.type||"other",
                 comparevars=function(x,y,s){
                     switch(xui.str.trim(s)){
@@ -2982,6 +2983,8 @@ new function(){
                         if(module && typeof fun=='string')fun=module[fun];
                         if(holder && typeof fun=='string')fun=holder[fun];
                         if(typeof fun=='function'){
+                            // do not trigger function in sb mode
+                            if(xui.ini.$mode) return;
                             // only function action can affect return
                             if(false===(irtn=xui.tryF(fun, _ns.args, _ns.page))){
                                 resume=j;break;
