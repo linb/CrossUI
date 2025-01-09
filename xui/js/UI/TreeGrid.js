@@ -4348,7 +4348,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                 },
                 onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu){
+                    if(profile.onColumnContextmenu){
                         var sid=profile.getSubId(src);
                         if(sid && profile.colMap[sid] && profile.onColumnContextmenu)
                             return profile.boxing().onColumnContextmenu(profile, profile.colMap[sid], e, src);
@@ -4452,16 +4452,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().onClickRow(profile, row, e, src);
                 },
                 onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu){
+                    if(profile.onCellContextmenu||profile.onRowContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
                                 var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
-                                if(r!==false){
+                                if(r!==false && profile.onRowContextmenu){
                                     return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
-                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                            }else if(profile.rowMap[sid] && profile.onRowContextmenu)
                                 return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
@@ -4919,16 +4919,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu){
+                    if(profile.onCellContextmenu||profile.onRowContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
                                 var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
-                                if(r!==false){
+                                if(r!==false && profile.onRowContextmenu){
                                     return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
-                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                            }else if(profile.rowMap[sid] && profile.onRowContextmenu)
                                 return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }

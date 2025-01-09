@@ -2973,18 +2973,19 @@ new function(){
                 innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
                 _ns=ns.getScope(args, module, temp),
                 recursive=function(data){
-                    var irtn;
+                    var irtn,funinconf;
                     // set prompt's global var
                     if(xui.isStr(this))_ns.temp[this+""]=data||"";
                     //callback from [resume]
                     for(var j=resume, l=funs.length;j<l;j++){
                         resume=j+1;
                         fun=funs[j];
-                        if(module && typeof fun=='string')fun=module[fun];
-                        if(holder && typeof fun=='string')fun=holder[fun];
+                        funinconf = typeof fun=='string';
+                        if(module && funinconf)fun=module[fun];
+                        if(holder && funinconf)fun=holder[fun];
                         if(typeof fun=='function'){
-                            // do not trigger function in sb mode
-                            if(xui.ini.$mode) return;
+                            // do not trigger function in actions for sb mode
+                            if(funinconf && xui.ini.$mode)continue;
                             // only function action can affect return
                             if(false===(irtn=xui.tryF(fun, _ns.args, _ns.page))){
                                 resume=j;break;
@@ -10694,6 +10695,7 @@ xui.Class('xui.Event',null,{
             ".xui-wrapper{color:#000;font-family:arial,helvetica,clean,sans-serif;font-style:normal;font-weight:normal;vertical-align:middle;}"+
             ".xui-cover{cursor:wait;background:url("+xui.ini.img_bg+") transparent repeat;opacity:1;}"+
             ".xui-busy-cover{pointer-events:none;}"+
+            ".xui-overlay, .xui-overlay *{pointer-events:none !important;}"+
             ".xui-node-table{border-collapse:collapse;border-spacing:0;empty-cells:show;font-size:inherit;"+(b.ie?"font:100%;":"")+"}"+
             ".xui-node-fieldset,.xui-node-img{border:0;}"+
             ".xui-node-ol,.xui-node-ul,.xui-node-li{list-style:none;}"+
@@ -16160,41 +16162,62 @@ xui.Class('xui.Module','xui.absProfile',{
                     if(first){
                         if(!first.rendered)first.boxing().render(true);
                         first.boxing().popUp(pos, type, parent, trigger, group);
+                        self._hidden = 0;
                     }
                 };
             if(self.created)f()
             else this.create(f);
         },
-        replace: function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
-            if(parent)return;
+        replace: function(onEnd,parent,subId,left,top,ignoreEffects,callback,ignoreFocus){
+            if(!parent)return;
             if(parent["xui.UI"])parent=parent.get(0);
             if(parent['xui.UIProfile']){
                 parent.boxing().dumpContainer(subId, true);
-                this.show(onEnd,parent,subId,threadid,left,top,ignoreFocus);
+                this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
             }
         },
-        toggle:function(onEnd,parent,subId,threadid,left,top){
+        toggle:function(onEnd,parent,subId,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
                 self.hide();
             }else{
-                self.show(onEnd,parent,subId,threadid,left,top,false);
+                self.show(onEnd,parent,subId,null,left,top,false,false,ignoreEffects,callback);
             }
         },
-        toggleOverlay:function(onEnd,parent,subId,threadid,left,top){
+        toggleOverlay:function(onEnd,target,type,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
                 return self.hide();
             }else{
-                return self.show(onEnd,parent,subId,threadid,left,top,true);
+                var module=this,
+                    f=function(){
+                        var coms = module.getUIComponents(true),
+                            first = coms.get(0);
+                        if(first){
+                            if(!first.rendered){
+                                first.boxing().render(true);
+                                first._ignoreCursor=first._ignoreFocus=1;
+                                first.getRoot().addClass("xui-overlay");
+                            }
+                            first.boxing().popUp(target, function(region, box, target, parent){
+                                var tr = target.cssRegion();
+                                //TODO: add more options for type
+                                // center
+                                target.cssPos({
+                                    left: (region.left + (region.width - tr.width) / 2 ) + "px",
+                                    top: (region.top + (region.height - tr.height) / 2 ) + "px"
+                                });
+                            },xui('body'), callback);
+                            self._hidden = 0;
+                        }
+                    };
+                if(self.created)f()
+                else this.create(f);
             }
         },
-        fill:function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
-            return show(onEnd,parent,subId,threadid,left,top,true);
-        },
-        show:function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
+        show:function(onEnd,parent,subId,threadid,left,top,ignoreFocus,ignoreCursor,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
@@ -16204,9 +16227,10 @@ xui.Class('xui.Module','xui.absProfile',{
                     parent=parent||xui('body');
                     if(parent['xui.UIProfile'])parent=parent.boxing();
                     if(ignoreFocus)prf._ignoreFocus=1;
-                    prf.boxing().show(parent,subId);
+                    if(ignoreCursor)prf._ignoreCursor=1;
+                    prf.boxing().show(parent,subId,left,top,ignoreEffects,callback);
                 });
-                if(!ignoreFocus){
+                if(!ignoreFocus && !ignoreCursor){
                     for(var i in self._alias_pool){
                         i = self._alias_pool[i];
                         if(i.box['xui.UI'] && i.boxing().getDefaultFocus && i.boxing().getDefaultFocus()){
@@ -16279,15 +16303,23 @@ xui.Class('xui.Module','xui.absProfile',{
                                     svg.append(o);
                                 }else{
                                     if(ignoreFocus)o._ignoreFocus=1;
-                                    o.boxing().show(parent, subId);
+                                    if(ignoreCursor)o._ignoreCursor=1;
+                                    o.boxing().show(parent, subId,left,top,ignoreEffects,callback);
                                 }
                             });
-                            if(!ignoreFocus){
+                            if(!ignoreFocus && !ignoreCursor){
                                 for(var i in self._alias_pool){
                                     i = self._alias_pool[i];
                                     if(i.box['xui.UI'] && i.boxing().getDefaultFocus && i.boxing().getDefaultFocus()){
                                         try{xui.asyRun(function(){i.boxing().activate()})}catch(e){}
                                         break;
+                                    }
+                                }
+                            }else if(ignoreCursor){
+                                for(var i in self._alias_pool){
+                                    i = self._alias_pool[i];
+                                    if(i.box['xui.UI']){
+                                        i.getRoot().addClass("xui-overlay");
                                     }
                                 }
                             }
@@ -21711,19 +21743,20 @@ xui.Class("xui.UI",  "xui.absObj", {
             return this.each(function(o){
                 var t=o.properties,
                     ins=o.boxing(),
-                    b,
+                    from_hidden,
                     root=o.getRoot();
                 left=(left||left===0)?(left||0):null;
                 top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
                 if(top!==null)t.top=top;
                 if(xui.getNodeData(o.renderId,'_xuihide')){
-                    b=1;
+                    from_hidden=1;
                     o._dockIgnore=false;
                     root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.position=='absolute' && t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
-                    xui.tryF(callback);
+                    // do not wait effects
+                    xui.tryF(callback,[o]);
                 //first call show
                 }else{
                     parent = parent || o.parent;
@@ -21739,8 +21772,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
                         //  if(t.visibility=="hidden")ins.setVisibility("",true);
                         //  if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), callback);
-                        else xui.tryF(callback);
+                        if(!from_hidden)root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
+                        // do not wait effects
+                        xui.tryF(callback,[o]);
                     }
                 }
             });
@@ -47579,7 +47613,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             }
 
-            if(!item.sub)return ;
+            if(!item.sub || !item.sub.length)return ;
 
             if(profile.beforePopMenu && false==profile.boxing().beforePopMenu(profile, item, src)){
                 return;
@@ -47811,7 +47845,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     if(profile.onItemMousedown)
                         profile.boxing().onItemMousedown(profile, item, e, src);
 
-                    xui.use(src).tagClass('-active');
+                    if(profile.$menuPop != item.id)
+                        xui.use(src).tagClass('-active');
+
                     // if poped, stop to trigger document.body's onmousedown event
                     return profile.boxing()._pop(item, src);
                 },
@@ -53840,7 +53876,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     });
                 },
                 onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu){
+                    if(profile.onColumnContextmenu){
                         var sid=profile.getSubId(src);
                         if(sid && profile.colMap[sid] && profile.onColumnContextmenu)
                             return profile.boxing().onColumnContextmenu(profile, profile.colMap[sid], e, src);
@@ -53944,16 +53980,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         profile.boxing().onClickRow(profile, row, e, src);
                 },
                 onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu){
+                    if(profile.onCellContextmenu||profile.onRowContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
                                 var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
-                                if(r!==false){
+                                if(r!==false && profile.onRowContextmenu){
                                     return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
-                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                            }else if(profile.rowMap[sid] && profile.onRowContextmenu)
                                 return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
@@ -54411,16 +54447,16 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                     }
                 },
                 onContextmenu:function(profile, e, src){
-                    if(profile.onContextmenu){
+                    if(profile.onCellContextmenu||profile.onRowContextmenu){
                         var sid=profile.getSubId(src);
                         // cell or row
                         if(sid){
                             if(profile.cellMap[sid] && profile.onCellContextmenu){
                                 var r =  profile.boxing().onCellContextmenu(profile, profile.cellMap[sid], e, src);
-                                if(r!==false){
+                                if(r!==false && profile.onRowContextmenu){
                                     return profile.boxing().onRowContextmenu(profile, profile.cellMap[sid]._row, e, src);
                                 }
-                            }else if(profile.rowMap[sid] && profile.onCellContextmenu)
+                            }else if(profile.rowMap[sid] && profile.onRowContextmenu)
                                 return profile.boxing().onRowContextmenu(profile, profile.rowMap[sid], e, src);
                         }
                     }
@@ -58071,10 +58107,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
     }
 });xui.Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
-        showModal:function(parent, left, top, callback, ignoreEffects){
-            this.show(parent, true, left, top, callback, ignoreEffects);
+        showModal:function(parent, subId, left, top, ignoreEffects, callback){
+            this.show(parent, subId, left, top, ignoreEffects, callback, true);
         },
-        show:function(parent, modal, left, top, callback,ignoreEffects){
+        // xui.UI show's parameters + modal
+        show:function(parent, subId, left, top, ignoreEffects, callback, modal){
             parent = parent || xui('body');
             return this.each(function(profile){
                 if(profile.inShowing)return;
@@ -58099,7 +58136,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             top=left.top+(left.height-profile.$px(p.height))/2;
                             left=left.left+(left.width-profile.$px(p.width))/2;
                         }else{
-                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent),
+                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getContainer(subId):parent),
                                 scale =  pr == xui.win && xui.ini.$zoomScale || 1;
                             // here, have to use global em
                             top=(top||top===0)?top:Math.max(0,(pr.height()/scale-profile.$px(p.height))/2 + pr.scrollTop()/scale);
@@ -58233,13 +58270,15 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
         activate:function(flag){
             var self=this, profile=this.get(0),ifocus;
             profile.box._active(profile,flag);
-            this.getChildren(null,true).each(function(o){
-                if(xui.get(o,['properties','defaultFocus'])){
-                    try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                    ifocus=1;
-                    return false;
-                }
-            });
+            if(!profile.$inDesign){
+                this.getChildren(null,true).each(function(o){
+                    if(xui.get(o,['properties','defaultFocus'])){
+                        try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                        ifocus=1;
+                        return false;
+                    }
+                });
+            }
             xui.asyRun(function(){
                 if(flag!==false && !ifocus){
                     try{profile.getSubNode('CAPTION').focus(true);}catch(e){}

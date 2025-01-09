@@ -544,41 +544,62 @@ xui.Class('xui.Module','xui.absProfile',{
                     if(first){
                         if(!first.rendered)first.boxing().render(true);
                         first.boxing().popUp(pos, type, parent, trigger, group);
+                        self._hidden = 0;
                     }
                 };
             if(self.created)f()
             else this.create(f);
         },
-        replace: function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
-            if(parent)return;
+        replace: function(onEnd,parent,subId,left,top,ignoreEffects,callback,ignoreFocus){
+            if(!parent)return;
             if(parent["xui.UI"])parent=parent.get(0);
             if(parent['xui.UIProfile']){
                 parent.boxing().dumpContainer(subId, true);
-                this.show(onEnd,parent,subId,threadid,left,top,ignoreFocus);
+                this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
             }
         },
-        toggle:function(onEnd,parent,subId,threadid,left,top){
+        toggle:function(onEnd,parent,subId,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
                 self.hide();
             }else{
-                self.show(onEnd,parent,subId,threadid,left,top,false);
+                self.show(onEnd,parent,subId,null,left,top,false,false,ignoreEffects,callback);
             }
         },
-        toggleOverlay:function(onEnd,parent,subId,threadid,left,top){
+        toggleOverlay:function(onEnd,target,type,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
                 return self.hide();
             }else{
-                return self.show(onEnd,parent,subId,threadid,left,top,true);
+                var module=this,
+                    f=function(){
+                        var coms = module.getUIComponents(true),
+                            first = coms.get(0);
+                        if(first){
+                            if(!first.rendered){
+                                first.boxing().render(true);
+                                first._ignoreCursor=first._ignoreFocus=1;
+                                first.getRoot().addClass("xui-overlay");
+                            }
+                            first.boxing().popUp(target, function(region, box, target, parent){
+                                var tr = target.cssRegion();
+                                //TODO: add more options for type
+                                // center
+                                target.cssPos({
+                                    left: (region.left + (region.width - tr.width) / 2 ) + "px",
+                                    top: (region.top + (region.height - tr.height) / 2 ) + "px"
+                                });
+                            },xui('body'), callback);
+                            self._hidden = 0;
+                        }
+                    };
+                if(self.created)f()
+                else this.create(f);
             }
         },
-        fill:function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
-            return show(onEnd,parent,subId,threadid,left,top,true);
-        },
-        show:function(onEnd,parent,subId,threadid,left,top,ignoreFocus){
+        show:function(onEnd,parent,subId,threadid,left,top,ignoreFocus,ignoreCursor,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
@@ -588,9 +609,10 @@ xui.Class('xui.Module','xui.absProfile',{
                     parent=parent||xui('body');
                     if(parent['xui.UIProfile'])parent=parent.boxing();
                     if(ignoreFocus)prf._ignoreFocus=1;
-                    prf.boxing().show(parent,subId);
+                    if(ignoreCursor)prf._ignoreCursor=1;
+                    prf.boxing().show(parent,subId,left,top,ignoreEffects,callback);
                 });
-                if(!ignoreFocus){
+                if(!ignoreFocus && !ignoreCursor){
                     for(var i in self._alias_pool){
                         i = self._alias_pool[i];
                         if(i.box['xui.UI'] && i.boxing().getDefaultFocus && i.boxing().getDefaultFocus()){
@@ -663,15 +685,23 @@ xui.Class('xui.Module','xui.absProfile',{
                                     svg.append(o);
                                 }else{
                                     if(ignoreFocus)o._ignoreFocus=1;
-                                    o.boxing().show(parent, subId);
+                                    if(ignoreCursor)o._ignoreCursor=1;
+                                    o.boxing().show(parent, subId,left,top,ignoreEffects,callback);
                                 }
                             });
-                            if(!ignoreFocus){
+                            if(!ignoreFocus && !ignoreCursor){
                                 for(var i in self._alias_pool){
                                     i = self._alias_pool[i];
                                     if(i.box['xui.UI'] && i.boxing().getDefaultFocus && i.boxing().getDefaultFocus()){
                                         try{xui.asyRun(function(){i.boxing().activate()})}catch(e){}
                                         break;
+                                    }
+                                }
+                            }else if(ignoreCursor){
+                                for(var i in self._alias_pool){
+                                    i = self._alias_pool[i];
+                                    if(i.box['xui.UI']){
+                                        i.getRoot().addClass("xui-overlay");
                                     }
                                 }
                             }

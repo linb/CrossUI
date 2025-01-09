@@ -33,7 +33,7 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                 }
             }
 
-            if(!item.sub)return ;
+            if(!item.sub || !item.sub.length)return ;
 
             if(profile.beforePopMenu && false==profile.boxing().beforePopMenu(profile, item, src)){
                 return;
@@ -265,7 +265,9 @@ xui.Class("xui.UI.MenuBar",["xui.UI","xui.absList" ],{
                     if(profile.onItemMousedown)
                         profile.boxing().onItemMousedown(profile, item, e, src);
 
-                    xui.use(src).tagClass('-active');
+                    if(profile.$menuPop != item.id)
+                        xui.use(src).tagClass('-active');
+
                     // if poped, stop to trigger document.body's onmousedown event
                     return profile.boxing()._pop(item, src);
                 },

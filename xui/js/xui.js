@@ -2959,18 +2959,19 @@ new function(){
                 innerE = funs.length==1&&(typeof(funs[0])=='function'||typeof(funs[0])=='string'),
                 _ns=ns.getScope(args, module, temp),
                 recursive=function(data){
-                    var irtn;
+                    var irtn,funinconf;
                     // set prompt's global var
                     if(xui.isStr(this))_ns.temp[this+""]=data||"";
                     //callback from [resume]
                     for(var j=resume, l=funs.length;j<l;j++){
                         resume=j+1;
                         fun=funs[j];
-                        if(module && typeof fun=='string')fun=module[fun];
-                        if(holder && typeof fun=='string')fun=holder[fun];
+                        funinconf = typeof fun=='string';
+                        if(module && funinconf)fun=module[fun];
+                        if(holder && funinconf)fun=holder[fun];
                         if(typeof fun=='function'){
-                            // do not trigger function in sb mode
-                            if(xui.ini.$mode) return;
+                            // do not trigger function in actions for sb mode
+                            if(funinconf && xui.ini.$mode)continue;
                             // only function action can affect return
                             if(false===(irtn=xui.tryF(fun, _ns.args, _ns.page))){
                                 resume=j;break;

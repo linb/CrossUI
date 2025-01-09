@@ -1446,19 +1446,20 @@ xui.Class("xui.UI",  "xui.absObj", {
             return this.each(function(o){
                 var t=o.properties,
                     ins=o.boxing(),
-                    b,
+                    from_hidden,
                     root=o.getRoot();
                 left=(left||left===0)?(left||0):null;
                 top=(top||top===0)?(top||0):null;
                 if(left!==null)t.left=left;
                 if(top!==null)t.top=top;
                 if(xui.getNodeData(o.renderId,'_xuihide')){
-                    b=1;
+                    from_hidden=1;
                     o._dockIgnore=false;
                     root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
                     if(t.position=='absolute' && t.dock && t.dock!='none')
                         xui.UI.$dock(o,false,true);
-                    xui.tryF(callback);
+                    // do not wait effects
+                    xui.tryF(callback,[o]);
                 //first call show
                 }else{
                     parent = parent || o.parent;
@@ -1474,8 +1475,9 @@ xui.Class("xui.UI",  "xui.absObj", {
                         p.append(ins,subId);
                         //  if(t.visibility=="hidden")ins.setVisibility("",true);
                         //  if(t.display=="none")ins.setDisplay("",true);
-                        if(!b)root.show(left&&o.$forceu(left), top&&o.$forceu(top), callback);
-                        else xui.tryF(callback);
+                        if(!from_hidden)root.show(left&&o.$forceu(left), top&&o.$forceu(top),null,ignoreEffects);
+                        // do not wait effects
+                        xui.tryF(callback,[o]);
                     }
                 }
             });

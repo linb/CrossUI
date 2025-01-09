@@ -1,9 +1,10 @@
 xui.Class("xui.UI.Dialog","xui.UI.Widget",{
     Instance:{
-        showModal:function(parent, left, top, callback, ignoreEffects){
-            this.show(parent, true, left, top, callback, ignoreEffects);
+        showModal:function(parent, subId, left, top, ignoreEffects, callback){
+            this.show(parent, subId, left, top, ignoreEffects, callback, true);
         },
-        show:function(parent, modal, left, top, callback,ignoreEffects){
+        // xui.UI show's parameters + modal
+        show:function(parent, subId, left, top, ignoreEffects, callback, modal){
             parent = parent || xui('body');
             return this.each(function(profile){
                 if(profile.inShowing)return;
@@ -28,7 +29,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
                             top=left.top+(left.height-profile.$px(p.height))/2;
                             left=left.left+(left.width-profile.$px(p.width))/2;
                         }else{
-                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getRoot():parent),
+                            var pr = parent.get(0)==xui('body').get(0)?xui.win:(parent['xui.UI']?parent.getContainer(subId):parent),
                                 scale =  pr == xui.win && xui.ini.$zoomScale || 1;
                             // here, have to use global em
                             top=(top||top===0)?top:Math.max(0,(pr.height()/scale-profile.$px(p.height))/2 + pr.scrollTop()/scale);
@@ -162,13 +163,15 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
         activate:function(flag){
             var self=this, profile=this.get(0),ifocus;
             profile.box._active(profile,flag);
-            this.getChildren(null,true).each(function(o){
-                if(xui.get(o,['properties','defaultFocus'])){
-                    try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
-                    ifocus=1;
-                    return false;
-                }
-            });
+            if(!profile.$inDesign){
+                this.getChildren(null,true).each(function(o){
+                    if(xui.get(o,['properties','defaultFocus'])){
+                        try{xui.asyRun(function(){o.boxing().activate()})}catch(e){}
+                        ifocus=1;
+                        return false;
+                    }
+                });
+            }
             xui.asyRun(function(){
                 if(flag!==false && !ifocus){
                     try{profile.getSubNode('CAPTION').focus(true);}catch(e){}
