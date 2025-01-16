@@ -319,6 +319,9 @@ xui.Class('xui.Module','xui.absProfile',{
                 return key?fs[key]:fs;
             }
         },
+        setModuleProperties:function(key,value,ignoreEvent,innerDataOnly){
+            return this.setProperties(key,value,ignoreEvent,innerDataOnly);
+        },
         setProperties:function(key,value,ignoreEvent,innerDataOnly){
             var self=this,
                 h=self.properties,
@@ -391,6 +394,9 @@ xui.Class('xui.Module','xui.absProfile',{
             if(xui.isFun(self._propGetter))prop=self._propGetter(prop);
             if(xui.isFun(self.propGetter))prop=self.propGetter(prop);
             return key?prop[key]:xui.copy(prop);
+        },
+        setModuleEvents:function(key,value){
+            return this.setEvents(key,value);
         },
         setEvents:function(key,value){
             var self=this;
@@ -552,11 +558,14 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         replace: function(onEnd,parent,subId,left,top,ignoreEffects,callback,ignoreFocus){
             if(!parent)return;
-            if(parent["xui.UI"])parent=parent.get(0);
-            if(parent['xui.UIProfile']){
-                parent.boxing().dumpContainer(subId, true);
-                this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
+            if(xui.isHash(subId))subId=subId.id;
+            if(parent['xui.UIProfile'])parent=parent.boxing();
+            if(parent["xui.UI"]){
+                parent.dumpContainer(subId, true);
+            }else if(parent["xui.Dom"]){
+                parent.emtpy(true, true);
             }
+            this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
         },
         toggle:function(onEnd,parent,subId,left,top,ignoreEffects,callback){
             var self=this;
@@ -567,7 +576,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self.show(onEnd,parent,subId,null,left,top,false,false,ignoreEffects,callback);
             }
         },
-        toggleOverlay:function(onEnd,target,type,left,top,ignoreEffects,callback){
+        toggleOverlay:function(onEnd,anchor_target,anchor_type,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
@@ -583,11 +592,11 @@ xui.Class('xui.Module','xui.absProfile',{
                                 first._ignoreCursor=first._ignoreFocus=1;
                                 first.getRoot().addClass("xui-overlay");
                             }
-                            first.boxing().popUp(target, function(region, box, target, parent){
-                                var tr = target.cssRegion();
-                                //TODO: add more options for type
-                                // center
-                                target.cssPos({
+                            first.boxing().popUp(anchor_target, function(region, pregion, pop_node, parent){
+                                var tr = pop_node.cssRegion();
+                                //TODO: add more options for pop_node
+                                // pop_node: center
+                                pop_node.cssPos({
                                     left: (region.left + (region.width - tr.width) / 2 ) + "px",
                                     top: (region.top + (region.height - tr.height) / 2 ) + "px"
                                 });
@@ -603,11 +612,12 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this;
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
+            if(xui.isHash(subId))subId=subId.id;
+            parent=parent||xui('body');
+            if(parent['xui.UIProfile'])parent=parent.boxing();
 
             if(self._hidden===1){
                 self.getUIComponents(true).each(function(prf){
-                    parent=parent||xui('body');
-                    if(parent['xui.UIProfile'])parent=parent.boxing();
                     if(ignoreFocus)prf._ignoreFocus=1;
                     if(ignoreCursor)prf._ignoreCursor=1;
                     prf.boxing().show(parent,subId,left,top,ignoreEffects,callback);
@@ -627,9 +637,6 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._fireEvent('afterShow');
             }else{
                 xui.UI.$trytoApplyCSS();
-                parent=parent||xui('body');
-                if(parent['xui.UIProfile'])parent=parent.boxing();
-                if(xui.isHash(subId))subId=subId.id;
                 self._hidden=0;
                 var f=function(){
                     var style=self.customStyle;

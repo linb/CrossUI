@@ -15529,8 +15529,10 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body')",
+                    "subId [必需参数] : String, 项的id",
                     "left [可选参数] Number, 对话框左边坐标",
                     "top [可选参数] Number, 对话框上边坐标",
+                    "ignoreEffects [可选参数} : 是否阻止显示动画",
                     "callback[可选参数] Fucntion, 回调函数"
                 ],
                 $snippet:[
@@ -15543,10 +15545,12 @@ xui.set(xui.Locale,["cn","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "parent [可选参数] : xui.Dom, 父对象. 默认为xui('body')",
-                    "modal [可选参数] : Boolean, 模式对话框,或者是非模式对话框.默认为非模式（false）",
+                    "subId [必需参数] : String, 项的id",
                     "left [可选参数] Number, 对话框左边坐标",
                     "top [可选参数] Number, 对话框上边坐标",
-                    "callback[可选参数] Fucntion, 回调函数"
+                    "ignoreEffects [可选参数} : 是否阻止显示动画",
+                    "callback[可选参数] Fucntion, 回调函数",
+                    "modal [可选参数] : Boolean, 模式对话框,或者是非模式对话框.默认为非模式（false）",
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100);",

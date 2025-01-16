@@ -547,7 +547,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
                     if(!item)return false;
 
-                    if(prop.disabled|| item.disabled|| item.type=='split')return false;
+                    if(!item.$item_exclude&&(prop.disabled||item.disabled||item.type=='split'))return false;
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
@@ -666,7 +666,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
 
-            if(properties.disabled|| item.disabled|| item.type=='split')return false;
+            if(!item.$item_exclude&&(properties.disabled||item.disabled||item.type=='split'))return false;
 
             if(!ignoreClick){
                 if(profile.onItemClick)

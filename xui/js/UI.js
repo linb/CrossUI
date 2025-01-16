@@ -5253,7 +5253,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             // ensure inline block
             c.each(function(n,i,prf,p){
                 //if(trigger && n!=trigger)return;
-                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
+                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile'] && !prf._ignore_lc){
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static')
                         xui(n).setInlineBlock();
@@ -5267,7 +5267,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             // set width
             c.each(function(n,i,prf,p,rw,css){
                 //if(trigger && n!=trigger)return;
-                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
+                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile'] && !prf._ignore_lc){
                     curCtrl=xui(n);
                     p=curCtrl.css('position');
                     if(p=='relative'||p=='static'){
@@ -9641,6 +9641,14 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             dock:null,
             dockStretch:null,
             dockIgnoreFlexFill:null,
+            dockIgnore:null,
+            dockOrder:null,
+            dockMargin:null,
+            dockFloat:null,
+            dockMinW:null,
+            dockMinH:null,
+            dockMaxW:null,
+            dockMaxH:null,
             renderer:null,
             html:null,
             selectable:null,
@@ -9652,14 +9660,6 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             disableTips:null,
             disabled:null,
             defaultFocus:null,
-            dockIgnore:null,
-            dockOrder:null,
-            dockMargin:null,
-            dockFloat:null,
-            dockMinW:null,
-            dockMinH:null,
-            dockMaxW:null,
-            dockMaxH:null,
             tips:null
         },
         $adjustProp:function(profile,force){
@@ -9940,17 +9940,18 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         // for parent UIProfile toHtml case
         RenderTrigger:function(){
             var prf=this;
+            prf._ignore_lc=1;
             if(prf.$inDesign)return;
-            var created;
             if(prf && !prf._replaced && (prf._module||prf.properties.moduleName)){
-                if(!prf._module){
-                    prf._module = xui.create(prf.properties.moduleName, "xui.Module");
-                    if(prf._module.KEY == prf.properties.moduleName){
+                var created;
+                if(!prf._module) prf._module = xui.create(prf.properties.moduleName, "xui.Module");
+                if(prf._module.KEY == prf.properties.moduleName){
+                    if(prf.host!==prf && prf.alias){
                         prf.boxing().detachHost();
                         prf._module.setHost(prf.host, prf.alias, prf.ref);
-                        prf._module.module_container = prf.getParent();
-                        created=1;
                     }
+                    prf._module.module_container = prf.getParent();
+                    created=1;
                 }
                 if(created){
                     prf.boxing().replaceWithModule(prf._module);

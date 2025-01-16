@@ -4944,7 +4944,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         cmdkey=id[id.length-1];
                     id.pop();
                     var row = profile.rowMap[profile.getSubId(id.join("_"))];
-                    if(p.disabled|| (row&&row.disabled))return false;
+                    if(!row)return false;
+                    if(!row.$item_exclude&&(p.disabled||row.disabled))return false;
 
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,row, cmdkey, e, src);

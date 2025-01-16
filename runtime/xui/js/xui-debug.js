@@ -2148,6 +2148,7 @@ xui.merge(xui,{
                 // use place holder to lazy bind
                 }else{
                     o = new xui.UI.ModulePlaceHolder();
+                    o.setModuleName(tag);
                     xui.require(tag,function(modules,key){
                          for(key in modules){
                              var module = modules[key];
@@ -15937,6 +15938,9 @@ xui.Class('xui.Module','xui.absProfile',{
                 return key?fs[key]:fs;
             }
         },
+        setModuleProperties:function(key,value,ignoreEvent,innerDataOnly){
+            return this.setProperties(key,value,ignoreEvent,innerDataOnly);
+        },
         setProperties:function(key,value,ignoreEvent,innerDataOnly){
             var self=this,
                 h=self.properties,
@@ -16009,6 +16013,9 @@ xui.Class('xui.Module','xui.absProfile',{
             if(xui.isFun(self._propGetter))prop=self._propGetter(prop);
             if(xui.isFun(self.propGetter))prop=self.propGetter(prop);
             return key?prop[key]:xui.copy(prop);
+        },
+        setModuleEvents:function(key,value){
+            return this.setEvents(key,value);
         },
         setEvents:function(key,value){
             var self=this;
@@ -16170,11 +16177,14 @@ xui.Class('xui.Module','xui.absProfile',{
         },
         replace: function(onEnd,parent,subId,left,top,ignoreEffects,callback,ignoreFocus){
             if(!parent)return;
-            if(parent["xui.UI"])parent=parent.get(0);
-            if(parent['xui.UIProfile']){
-                parent.boxing().dumpContainer(subId, true);
-                this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
+            if(xui.isHash(subId))subId=subId.id;
+            if(parent['xui.UIProfile'])parent=parent.boxing();
+            if(parent["xui.UI"]){
+                parent.dumpContainer(subId, true);
+            }else if(parent["xui.Dom"]){
+                parent.emtpy(true, true);
             }
+            this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
         },
         toggle:function(onEnd,parent,subId,left,top,ignoreEffects,callback){
             var self=this;
@@ -16185,7 +16195,7 @@ xui.Class('xui.Module','xui.absProfile',{
                 self.show(onEnd,parent,subId,null,left,top,false,false,ignoreEffects,callback);
             }
         },
-        toggleOverlay:function(onEnd,target,type,left,top,ignoreEffects,callback){
+        toggleOverlay:function(onEnd,anchor_target,anchor_type,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
@@ -16201,11 +16211,11 @@ xui.Class('xui.Module','xui.absProfile',{
                                 first._ignoreCursor=first._ignoreFocus=1;
                                 first.getRoot().addClass("xui-overlay");
                             }
-                            first.boxing().popUp(target, function(region, box, target, parent){
-                                var tr = target.cssRegion();
-                                //TODO: add more options for type
-                                // center
-                                target.cssPos({
+                            first.boxing().popUp(anchor_target, function(region, pregion, pop_node, parent){
+                                var tr = pop_node.cssRegion();
+                                //TODO: add more options for pop_node
+                                // pop_node: center
+                                pop_node.cssPos({
                                     left: (region.left + (region.width - tr.width) / 2 ) + "px",
                                     top: (region.top + (region.height - tr.height) / 2 ) + "px"
                                 });
@@ -16221,11 +16231,12 @@ xui.Class('xui.Module','xui.absProfile',{
             var self=this;
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
+            if(xui.isHash(subId))subId=subId.id;
+            parent=parent||xui('body');
+            if(parent['xui.UIProfile'])parent=parent.boxing();
 
             if(self._hidden===1){
                 self.getUIComponents(true).each(function(prf){
-                    parent=parent||xui('body');
-                    if(parent['xui.UIProfile'])parent=parent.boxing();
                     if(ignoreFocus)prf._ignoreFocus=1;
                     if(ignoreCursor)prf._ignoreCursor=1;
                     prf.boxing().show(parent,subId,left,top,ignoreEffects,callback);
@@ -16245,9 +16256,6 @@ xui.Class('xui.Module','xui.absProfile',{
                 self._fireEvent('afterShow');
             }else{
                 xui.UI.$trytoApplyCSS();
-                parent=parent||xui('body');
-                if(parent['xui.UIProfile'])parent=parent.boxing();
-                if(xui.isHash(subId))subId=subId.id;
                 self._hidden=0;
                 var f=function(){
                     var style=self.customStyle;
@@ -25550,7 +25558,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             // ensure inline block
             c.each(function(n,i,prf,p){
                 //if(trigger && n!=trigger)return;
-                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
+                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile'] && !prf._ignore_lc){
                     p=xui(n).css('position');
                     if(p=='relative'||p=='static')
                         xui(n).setInlineBlock();
@@ -25564,7 +25572,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             // set width
             c.each(function(n,i,prf,p,rw,css){
                 //if(trigger && n!=trigger)return;
-                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile']){
+                if(n.id && (prf=xui.$cache.profileMap[n.id]) && prf.Class && prf.Class['xui.UIProfile'] && !prf._ignore_lc){
                     curCtrl=xui(n);
                     p=curCtrl.css('position');
                     if(p=='relative'||p=='static'){
@@ -29938,6 +29946,14 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             dock:null,
             dockStretch:null,
             dockIgnoreFlexFill:null,
+            dockIgnore:null,
+            dockOrder:null,
+            dockMargin:null,
+            dockFloat:null,
+            dockMinW:null,
+            dockMinH:null,
+            dockMaxW:null,
+            dockMaxH:null,
             renderer:null,
             html:null,
             selectable:null,
@@ -29949,14 +29965,6 @@ xui.Class("xui.UI.CSSBox","xui.UI.Span",{
             disableTips:null,
             disabled:null,
             defaultFocus:null,
-            dockIgnore:null,
-            dockOrder:null,
-            dockMargin:null,
-            dockFloat:null,
-            dockMinW:null,
-            dockMinH:null,
-            dockMaxW:null,
-            dockMaxH:null,
             tips:null
         },
         $adjustProp:function(profile,force){
@@ -30237,17 +30245,18 @@ xui.Class("xui.UI.ModulePlaceHolder", "xui.UI",{
         // for parent UIProfile toHtml case
         RenderTrigger:function(){
             var prf=this;
+            prf._ignore_lc=1;
             if(prf.$inDesign)return;
-            var created;
             if(prf && !prf._replaced && (prf._module||prf.properties.moduleName)){
-                if(!prf._module){
-                    prf._module = xui.create(prf.properties.moduleName, "xui.Module");
-                    if(prf._module.KEY == prf.properties.moduleName){
+                var created;
+                if(!prf._module) prf._module = xui.create(prf.properties.moduleName, "xui.Module");
+                if(prf._module.KEY == prf.properties.moduleName){
+                    if(prf.host!==prf && prf.alias){
                         prf.boxing().detachHost();
                         prf._module.setHost(prf.host, prf.alias, prf.ref);
-                        prf._module.module_container = prf.getParent();
-                        created=1;
                     }
+                    prf._module.module_container = prf.getParent();
+                    created=1;
                 }
                 if(created){
                     prf.boxing().replaceWithModule(prf._module);
@@ -40888,7 +40897,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
 
                     if(profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
 
-                    if(properties.disabled||item.disabled || item.type=='split')return false;
+                    if(!item.$item_exclude&&(properties.disabled||item.disabled||item.type=='split'))return false;
 
 
                     if(profile.onItemClick)
@@ -41069,7 +41078,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
                     if(!item)return false;
 
-                    if(prop.disabled|| item.disabled || item.type=='split')return false;
+                    if(!item.$item_exclude&&(prop.disabled||item.disabled||item.type=='split'))return false;
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
@@ -43897,7 +43906,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
                     if(!item)return false;
 
-                    if(prop.disabled|| item.disabled || item.type=='split')return false;
+                    if(!item.$item_exclude&&(prop.disabled|| item.disabled))return false;
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
@@ -45997,7 +46006,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
                     if(!item)return false;
 
-                    if(prop.disabled|| item.disabled|| item.type=='split')return false;
+                    if(!item.$item_exclude&&(prop.disabled||item.disabled||item.type=='split'))return false;
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;
@@ -46116,7 +46125,7 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
 
             if(!ignoreClick && profile.beforeClick && false===box.beforeClick(profile,item,e,src))return false;
 
-            if(properties.disabled|| item.disabled|| item.type=='split')return false;
+            if(!item.$item_exclude&&(properties.disabled||item.disabled||item.type=='split'))return false;
 
             if(!ignoreClick){
                 if(profile.onItemClick)
@@ -46955,9 +46964,12 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
              },
             'items.split':{
-                ITEMSPLIT:{
-                    style:"{_itemDisplay}",
-                    className:'xui-uiborder-b'
+                ITEM:{
+                    style: 'padding:0;margion:0;cursor:default;',
+                    ITEMSPLIT:{
+                        style:"{_itemDisplay}",
+                        className:'xui-uiborder-b'
+                    }
                 }
             },
             'items.button':{
@@ -47050,7 +47062,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         this.prototype.popUp = this.prototype.pop;
     },
     Static:{
-        $initRootHidden:true,
+        // $initRootHidden:true,
         Appearances:{
             KEY:{
                 visibility:'hidden'
@@ -47105,7 +47117,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 margin:'.25em .25em .25em 2em'
             },
             ICON:{
-                margin:0
+                margin:0,
+                "min-width":"1em",
+                "min-height":"1em"
             },
             TOP:{
                 cursor:'pointer',
@@ -47161,12 +47175,19 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             },
             ITEM:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
                 onMouseover:function(profile, e, src){
                     var sms='$subPopMenuShowed',
                         all='$allPops',
                         hl='$highLight',
                         showp='$showpops',
                         popgrp='$popGrp';
+                    if(profile.$inDesign)return;
                     //for stop second trigger by focus event
                     if(profile[hl] == src)return;
                     profile[all] = profile[all] || {};
@@ -47276,6 +47297,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             pop.popUp(src, 2, profile._conainer);
                             profile[sms] = pop;
                         }
+
+                        if(profile.onItemHover)
+                            profile.boxing().onItemHover(profile, item, true, e, src);
                     }
                 },
                 onMouseout:function(profile, e, src){
@@ -47285,6 +47309,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         action = true,
                         hl='$highLight',
                         t;
+                    if(profile.$inDesign)return;
                     if(profile[hl] == src)return;
 
                     //if cursor move to submenu, keep the hover face
@@ -47300,11 +47325,15 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     xui.use(src).tagClass('-hover',false);
                     profile[hl] = null;
+
+                    if(profile.onItemHover)
+                        profile.boxing().onItemHover(profile, item, false, e, src);
                 },
                 onClick:function(profile, e, src){
                     var prop = profile.properties,
                         item = profile.getItemByDom(src),
                         itemId = item.id;
+                    if(profile.$inDesign)return;
                     if(prop.disabled || item.disabled)return false;
 
                     // give a change to click an item with sub popmenu
@@ -47321,6 +47350,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         }
 
                         if(profile.onMenuSelected)profile.boxing().onMenuSelected(profile, item, src);
+                        if(profile.onItemClick)profile.boxing().onItemClick(profile, item, e, src);
 
                         if(prop.hideAfterClick){
                             xui.use(src).tagClass('-hover',false);
@@ -47458,19 +47488,31 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             }
         },
         DataModel:({
+            lock:null,
             dock:null,
+            dockStretch:null,
+            dockIgnoreFlexFill:null,
+            dockIgnore:null,
+            dockOrder:null,
+            dockMargin:null,
+            dockFloat:null,
+            dockMinW:null,
+            dockMinH:null,
+            dockMaxW:null,
+            dockMaxH:null,
             tabindex:null,
             tips:null,
             border:null,
             resizer:null,
             dragSortable:null,
+            valueSeparator:null,
+
             showEffects:"Blur",
             hideEffects:"",
             autoTips:false,
             shadow:true,
             _maxHeight:360,
             _maxWidth:460,
-            left:-10000,
             parentID:'',
             hideAfterClick:true,
 
@@ -47478,12 +47520,14 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             height:{
                 $spaceunit:1,
-                ini:'auto'
+                ini:'auto',
+                readonly:true
             },
             //opera needs more space for initialize
             width:{
                 $spaceunit:1,
-                ini:'auto'
+                ini:'auto',
+                readonly:true
             },
             position:'absolute',
             noIcon:{
@@ -47525,7 +47569,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _beforeSerialized:function(profile){
             var o=arguments.callee.upper.call(this, profile),
                 op=o.properties;
-            delete op.left;delete op.top;delete op.right;delete op.bottom;delete op.width;delete op.height;
+            delete /*op.left;delete op.top;*/delete op.right;delete op.bottom;delete op.width;delete op.height;
             return o;
         },
         _mouseout:function(profile, e){
@@ -47567,6 +47611,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             item._iconDisplay=prop.noIcon?NONE:'';
 
             item.type=item.type||'button';
+            if(item.type=='command')item.type='button';
             if(item.type=='checkbox'){
                 item._fi_checkboxCls1 = 'xui-uicmd-check';
                 item._fi_checkboxCls2 = item.value?'xuicon-checked xui-uicmd-check-checked':'';
@@ -47959,6 +48004,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         DataModel:{
             listKey:null,
             dragSortable:null,
+            valueSeparator:null,
             autoTips:false,
             //can't change height
             height:{
@@ -54472,7 +54518,8 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         cmdkey=id[id.length-1];
                     id.pop();
                     var row = profile.rowMap[profile.getSubId(id.join("_"))];
-                    if(p.disabled|| (row&&row.disabled))return false;
+                    if(!row)return false;
+                    if(!row.$item_exclude&&(p.disabled||row.disabled))return false;
 
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,row, cmdkey, e, src);

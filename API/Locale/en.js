@@ -15609,8 +15609,10 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "parent [Optional] : xui.Dom Object. the parent node. Default is xui('body')",
+                    "subId [Required] : String, the id value of target item",
                     "left [Optional] Number, the left position",
                     "top [Optional] Number, the top position",
+                    "ignoreEffects [Optional} : determine whether ignore showing effects or not",
                     "callback[Optional] Fucntion, the callback fucntion"
                 ],
                 $snippet:[
@@ -15623,10 +15625,12 @@ xui.set(xui.Locale,["en","app"], {
                 $rtn:"[self]",
                 $paras:[
                     "parent [Optional] : xui.Dom Object. the parent node. Default is xui('body')",
-                    "modal [Optional] : Boolean, shows in modal mode or not Default is false",
+                    "subId [Required] : String, the id value of target item",
                     "left [Optional] Number, the left position",
                     "top [Optional] Number, the top position",
-                    "callback[Optional] Fucntion, the callback fucntion"
+                    "ignoreEffects [Optional} : determine whether ignore showing effects or not",
+                    "callback[Optional] Fucntion, the callback fucntion",
+                    "modal [Optional] : Boolean, shows in modal mode or not Default is false",
                 ],
                 $snippet:[
                     "var dlg=(new xui.UI.Dialog).show(null,false, 100,100);",

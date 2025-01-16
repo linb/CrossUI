@@ -2134,6 +2134,7 @@ xui.merge(xui,{
                 // use place holder to lazy bind
                 }else{
                     o = new xui.UI.ModulePlaceHolder();
+                    o.setModuleName(tag);
                     xui.require(tag,function(modules,key){
                          for(key in modules){
                              var module = modules[key];

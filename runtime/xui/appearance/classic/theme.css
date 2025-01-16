@@ -133,6 +133,11 @@
   background-color: #ededed;
 }
 
+/*xui.UI.PopMenu*/
+.xui-popmenu-sub{
+    top: .33333em;
+}
+
 /*xui.UI.Tabs*/
 .xui-tabs-items{
      padding:0;

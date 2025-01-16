@@ -769,7 +769,7 @@ xui.Class("xui.UI.Tabs", ["xui.UI", "xui.absList","xui.absValue"],{
                         item=profile.getItemByDom(xui.use(src).parent().get(0));
                     if(!item)return false;
 
-                    if(prop.disabled|| item.disabled || item.type=='split')return false;
+                    if(!item.$item_exclude&&(prop.disabled|| item.disabled))return false;
                     if(profile.onCmd)
                         profile.boxing().onCmd(profile,item, xui.use(src).id().split('_')[1],e,src);
                     return false;

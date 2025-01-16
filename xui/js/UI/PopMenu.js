@@ -281,9 +281,12 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
              },
             'items.split':{
-                ITEMSPLIT:{
-                    style:"{_itemDisplay}",
-                    className:'xui-uiborder-b'
+                ITEM:{
+                    style: 'padding:0;margion:0;cursor:default;',
+                    ITEMSPLIT:{
+                        style:"{_itemDisplay}",
+                        className:'xui-uiborder-b'
+                    }
                 }
             },
             'items.button':{
@@ -376,7 +379,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         this.prototype.popUp = this.prototype.pop;
     },
     Static:{
-        $initRootHidden:true,
+        // $initRootHidden:true,
         Appearances:{
             KEY:{
                 visibility:'hidden'
@@ -431,7 +434,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 margin:'.25em .25em .25em 2em'
             },
             ICON:{
-                margin:0
+                margin:0,
+                "min-width":"1em",
+                "min-height":"1em"
             },
             TOP:{
                 cursor:'pointer',
@@ -487,12 +492,19 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                 }
             },
             ITEM:{
+                onContextmenu:function(profile, e, src){
+                    var p = profile.properties,item = profile.getItemByDom(src);
+                    if(p.disabled || !item || item.disabled)return;
+                    if(profile.onItemContextmenu)
+                        return profile.boxing().onItemContextmenu(profile, item, e, src);
+                },
                 onMouseover:function(profile, e, src){
                     var sms='$subPopMenuShowed',
                         all='$allPops',
                         hl='$highLight',
                         showp='$showpops',
                         popgrp='$popGrp';
+                    if(profile.$inDesign)return;
                     //for stop second trigger by focus event
                     if(profile[hl] == src)return;
                     profile[all] = profile[all] || {};
@@ -602,6 +614,9 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                             pop.popUp(src, 2, profile._conainer);
                             profile[sms] = pop;
                         }
+
+                        if(profile.onItemHover)
+                            profile.boxing().onItemHover(profile, item, true, e, src);
                     }
                 },
                 onMouseout:function(profile, e, src){
@@ -611,6 +626,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         action = true,
                         hl='$highLight',
                         t;
+                    if(profile.$inDesign)return;
                     if(profile[hl] == src)return;
 
                     //if cursor move to submenu, keep the hover face
@@ -626,11 +642,15 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                     }
                     xui.use(src).tagClass('-hover',false);
                     profile[hl] = null;
+
+                    if(profile.onItemHover)
+                        profile.boxing().onItemHover(profile, item, false, e, src);
                 },
                 onClick:function(profile, e, src){
                     var prop = profile.properties,
                         item = profile.getItemByDom(src),
                         itemId = item.id;
+                    if(profile.$inDesign)return;
                     if(prop.disabled || item.disabled)return false;
 
                     // give a change to click an item with sub popmenu
@@ -647,6 +667,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
                         }
 
                         if(profile.onMenuSelected)profile.boxing().onMenuSelected(profile, item, src);
+                        if(profile.onItemClick)profile.boxing().onItemClick(profile, item, e, src);
 
                         if(prop.hideAfterClick){
                             xui.use(src).tagClass('-hover',false);
@@ -784,19 +805,31 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             }
         },
         DataModel:({
+            lock:null,
             dock:null,
+            dockStretch:null,
+            dockIgnoreFlexFill:null,
+            dockIgnore:null,
+            dockOrder:null,
+            dockMargin:null,
+            dockFloat:null,
+            dockMinW:null,
+            dockMinH:null,
+            dockMaxW:null,
+            dockMaxH:null,
             tabindex:null,
             tips:null,
             border:null,
             resizer:null,
             dragSortable:null,
+            valueSeparator:null,
+
             showEffects:"Blur",
             hideEffects:"",
             autoTips:false,
             shadow:true,
             _maxHeight:360,
             _maxWidth:460,
-            left:-10000,
             parentID:'',
             hideAfterClick:true,
 
@@ -804,12 +837,14 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
 
             height:{
                 $spaceunit:1,
-                ini:'auto'
+                ini:'auto',
+                readonly:true
             },
             //opera needs more space for initialize
             width:{
                 $spaceunit:1,
-                ini:'auto'
+                ini:'auto',
+                readonly:true
             },
             position:'absolute',
             noIcon:{
@@ -851,7 +886,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
         _beforeSerialized:function(profile){
             var o=arguments.callee.upper.call(this, profile),
                 op=o.properties;
-            delete op.left;delete op.top;delete op.right;delete op.bottom;delete op.width;delete op.height;
+            delete /*op.left;delete op.top;*/delete op.right;delete op.bottom;delete op.width;delete op.height;
             return o;
         },
         _mouseout:function(profile, e){
@@ -893,6 +928,7 @@ xui.Class("xui.UI.PopMenu",["xui.UI.Widget","xui.absList"],{
             item._iconDisplay=prop.noIcon?NONE:'';
 
             item.type=item.type||'button';
+            if(item.type=='command')item.type='button';
             if(item.type=='checkbox'){
                 item._fi_checkboxCls1 = 'xui-uicmd-check';
                 item._fi_checkboxCls2 = item.value?'xuicon-checked xui-uicmd-check-checked':'';
