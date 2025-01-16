@@ -542,7 +542,7 @@ xui.Class('xui.Module','xui.absProfile',{
         customAppend:function(parent,subId,left,top,threadid){
             return false;
         },
-        popUp:function(pos, type, parent, trigger, group){
+        popUp:function(pos, type, parent, properties,events, trigger, group){
             var module=this,
                 f=function(){
                     var coms = module.getUIComponents(true),
@@ -554,9 +554,9 @@ xui.Class('xui.Module','xui.absProfile',{
                     }
                 };
             if(self.created)f()
-            else this.create(f);
+            else this.create(f,null,properties,events);
         },
-        replace: function(onEnd,parent,subId,left,top,ignoreEffects,callback,ignoreFocus){
+        replace: function(onEnd,parent,subId,properties,events,left,top,ignoreEffects,callback,ignoreFocus){
             if(!parent)return;
             if(xui.isHash(subId))subId=subId.id;
             if(parent['xui.UIProfile'])parent=parent.boxing();
@@ -565,18 +565,18 @@ xui.Class('xui.Module','xui.absProfile',{
             }else if(parent["xui.Dom"]){
                 parent.emtpy(true, true);
             }
-            this.show(onEnd,parent,subId,null,left,top,ignoreFocus,false,ignoreEffects,callback);
+            this.show(onEnd,parent,subId,null,properties,events,left,top,ignoreFocus,false,ignoreEffects,callback);
         },
-        toggle:function(onEnd,parent,subId,left,top,ignoreEffects,callback){
+        toggle:function(onEnd,parent,subId,properties,events,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
                 self.hide();
             }else{
-                self.show(onEnd,parent,subId,null,left,top,false,false,ignoreEffects,callback);
+                self.show(onEnd,parent,subId,properties,events,null,left,top,false,false,ignoreEffects,callback);
             }
         },
-        toggleOverlay:function(onEnd,anchor_target,anchor_type,left,top,ignoreEffects,callback){
+        toggleOverlay:function(onEnd,anchor_target,anchor_type,properties,events,left,top,ignoreEffects,callback){
             var self=this;
             if(self.destroyed)return self;
             if(self._hidden === 0){
@@ -605,11 +605,13 @@ xui.Class('xui.Module','xui.absProfile',{
                         }
                     };
                 if(self.created)f()
-                else this.create(f);
+                else this.create(f,null,properties,events);
             }
         },
-        show:function(onEnd,parent,subId,threadid,left,top,ignoreFocus,ignoreCursor,ignoreEffects,callback){
+        show:function(onEnd,parent,subId,threadid,properties,events,left,top,ignoreFocus,ignoreCursor,ignoreEffects,callback){
             var self=this;
+            if(xui.isHash(properties)) xui.merge(self.properties, properties, 'all');
+            if(xui.isHash(events)) xui.merge(self.events, events, 'all');
             if(self.destroyed)return self;
             if(false===self._fireEvent('beforeShow'))return false;
             if(xui.isHash(subId))subId=subId.id;
@@ -850,9 +852,12 @@ xui.Class('xui.Module','xui.absProfile',{
             if(prf)return prf.containerId;
         },
         // onEnd(err, module, threadid)
-        create:function(onEnd, threadid){
+        create:function(onEnd, threadid, properties, events){
             //get paras
             var self=this;
+
+            if(xui.isHash(properties)) xui.merge(self.properties, properties, 'all');
+            if(xui.isHash(events)) xui.merge(self.events, events, 'all');
 
             if(self.created){
                 xui.tryF(onEnd,[null, self, threadid], self);

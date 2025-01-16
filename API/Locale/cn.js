@@ -5735,7 +5735,9 @@ xui.set(xui.Locale,["cn","app"], {
                 $desc:"使用异步方式生成Module对象",
                 $paras:[
                     "onEnd [Optiona] : Function. 回调函数,在Module对象成功生成后执行",
-                    "threadid [可选参数] : String, 内部线程id.  如本参数为 false, 表示生成Module的过程不会异步调用函数（不用xui.Thread）"
+                    "threadid [可选参数] : String, 内部线程id.  如本参数为 false, 表示生成Module的过程不会异步调用函数（不用xui.Thread）",
+                    "properties [可选参数] : Object, 键值对,module的属性",
+                    "events [可选参数] : Object, 键值对,module的事件"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert('created!')});},false);"
@@ -5771,7 +5773,9 @@ xui.set(xui.Locale,["cn","app"], {
                     "onEnd [Optiona] : Function. 回调函数,在Module对象成功显示后执行",
                     "parent [可选参数] : String/Element/xui.Dom, 父DOM节点或xui.UI对象",
                     "subId [可选参数] : String, 该参数在parent为xui.UI对象时有效.该子id. The sub id that Determines the [target] will be added to which sub DOM node. 该参数也可以设置成[false], that means the [target] will be appended to DOM only, no link created between the [target] UIProfiles and the parent UIProfile",
-                    "threadid [可选参数] : String, 内部线程id. 如本参数为 false, 表示显示Module的过程不会异步调用函数（不用xui.Thread）"
+                    "threadid [可选参数] : String, 内部线程id. 如本参数为 false, 表示显示Module的过程不会异步调用函数（不用xui.Thread）",
+                    "properties [可选参数] : Object, 键值对,module的属性",
+                    "events [可选参数] : Object, 键值对,module的事件"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; Module.show(function(){});},false);"

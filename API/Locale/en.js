@@ -5668,7 +5668,9 @@ xui.set(xui.Locale,["en","app"], {
                 $desc:"Creates the Module Object in async mode",
                 $paras:[
                     "onEnd [Optiona] : Function, the callback function, it will be executed once when the Module is created successfully",
-                    "threadid [Optional] : String, the inner thread id. If is 'false', system will create the Module in sync mode"
+                    "threadid [Optional] : String, the inner thread id. If is 'false', system will create the Module in sync mode",
+                    "properties [Optional] : Object, key/value pairs, module's properties",
+                    "events [Optional] : Object, key/value pairs, module's events"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.create(function(module){alert('created!')});},false);"
@@ -5704,7 +5706,9 @@ xui.set(xui.Locale,["en","app"], {
                     "onEnd [Optiona] : Function, the callback function, it will be executed once when the module is created successfully",
                     "parent [Optional] : String/Element/xui.Dom, the parent DOM node or xui.UI Object",
                     "subId [Optional] : String, this parameter valid when parent is xui.UI only. The sub id that determines the [target] will be added to which sub DOM node. This parameter can be [false] too, that means the [target] will be appended to DOM only, no link created between the [target] UIProfiles and the parent UIProfile",
-                    "threadid [Optional] : String, the inner thread id. If is 'false', system will show the module in sync mode"
+                    "threadid [Optional] : String, the inner thread id. If is 'false', system will show the module in sync mode",
+                    "properties [Optional] : Object, key/value pairs, module's properties",
+                    "events [Optional] : Object, key/value pairs, module's events"
                 ],
                 $snippet:[
                     "xui.SC('App.Test1',function(){var module=new this; module.show(function(){});},false);"
