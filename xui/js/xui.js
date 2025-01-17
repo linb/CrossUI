@@ -2718,15 +2718,14 @@ new function(){
                                 window.open('#!'+xui.urlEncode(hash));
                                 return;
                             }
-                            var ins;
+                            var ins, cls, cache_id;
                             // the current page
                             if(!target || target=="*"){
                               ins = _ns.page;
                             }else{
-                                // try to get module
-                                var cls=xui.get(window,target.split("."));
-                                // TODO: now, only valid for the first one
-                                if(cls)for(var i in cls._cache){ins=cls._cache[i];break;}
+                                cache_id = target.split(":");
+                                cls = cache_id[0];
+                                cache_id = cache_id[1]||'solo';
                             }
                             if(method=="destroy"){
                                 if(ins)if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
@@ -2749,9 +2748,9 @@ new function(){
                                 t2.push(function(ins,t){
                                     if(xui.isFun(t=xui.get(ins,[method])))t.apply(ins,iparams);
                                 });
-                                // Calling asyn call, but only for the first time
+                                // Ensure to call getModule only one time for dynamic module loading case
                                 if(t2.length===1){
-                                    xui.getModule(target,function(err,ins){
+                                    xui.getModule(cls,function(err,ins){
                                         if(err)return;
                                         if(ins)
                                             for(var i=0,l=t2.length;i<l;i++)
@@ -2759,7 +2758,7 @@ new function(){
                                         t2.length=0;
                                         t1=t2=null;
                                         delete _ns.temp._module_funs_[target];
-                                    });
+                                    },null,cache_id);
                                 }
                             }
                             break;

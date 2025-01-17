@@ -1,23 +1,23 @@
 xui.Class('xui.ModuleFactory',null,{
     Initialize:function(){
         var ns=this;
-        xui.getModule=function(cls, onEnd, threadid, cached, properties, events, options){
+        xui.getModule=function(cls, onEnd, threadid, cache_id, properties, events, options){
             return ns.getModule.apply(ns,arguments)
         };
         xui.newModule=function(cls, onEnd, threadid, properties, events, options){
             return ns.newModule.apply(ns,arguments)
         };
-        xui.showModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top, options){
+        xui.showModule=function(cls, beforeShow, onEnd, threadid, cache_id, properties, events, parent, subId, left, top, options){
             return ns.getModule(cls, function(err, module, threadid){
                 if(!err && false!==xui.tryF(beforeShow, [module, threadid], module)){
                     this.show.apply(module, [onEnd,parent,subId,threadid,left,top]);
                 }else{
                     xui.tryF(onEnd, [err, module, threadid], module);
                 }
-            }, threadid, cached, properties, events, options);
+            }, threadid, cache_id, properties, events, options);
         };
-        xui.showAlienModule=function(cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top){
-            return xui.showModule.apply(this, [cls, beforeShow, onEnd, threadid, cached, properties, events, parent, subId, left, top, {alien:true}]);
+        xui.showAlienModule=function(cls, beforeShow, onEnd, threadid, cache_id, properties, events, parent, subId, left, top){
+            return xui.showModule.apply(this, [cls, beforeShow, onEnd, threadid, cache_id, properties, events, parent, subId, left, top, {alien:true}]);
         };
 
         //compitable
@@ -62,8 +62,8 @@ xui.Class('xui.ModuleFactory',null,{
         getModuleFromCache:function(id){
             return this._cache[id]||null;
         },
-        //cached:false->don't get it from cache, and don't cache the result.
-        getModule:function(id, onEnd, threadid, cached, properties, events, options){
+        //cache_id:false->don't get it from cache, and don't cache the result.
+        getModule:function(id, onEnd, threadid, cache_id, properties, events, options){
             if(!id){
                 var e=new Error("No id");
                 xui.tryF(onEnd,[e,null,threadid]);
@@ -71,21 +71,21 @@ xui.Class('xui.ModuleFactory',null,{
                 throw e;
                 return;
             }
-            cached=cached!==false;
             var c=this._cache,
                 p=this._pro,
                 config,
-                cls;
+                cls,
+                cid = cache_id?(id+":"+cache_id):id;
 
-            if(cached && c[id] && !c[id].destroyed){
-                xui.tryF(onEnd, [null,c[id],threadid], c[id]);
-                return c[id];
+            if(cache_id && c[cid] && !c[cid].destroyed){
+                xui.tryF(onEnd, [null,c[cid],threadid], c[cid]);
+                return c[cid];
             }else{
                 // if no configure
-                if(!(config=p[id])){
+                if(!(config=p[cid])){
                     config={
                         cls:id,
-                        cached:cached,
+                        cache_id:cache_id,
                         properties:properties,
                         events:events
                     };
@@ -104,8 +104,8 @@ xui.Class('xui.ModuleFactory',null,{
                             xui.merge(o.properties,config.properties,'all');
                         if(config.events)
                             xui.merge(o.events,config.events,'all');
-                        if(config.cached!==false)
-                            xui.ModuleFactory.setModule(id, o);
+                        if(config.cache_id)
+                            xui.ModuleFactory.setModule(id+":"+config.cache_id, o);
 
                         var args = [function(err,module,threadid){
                             var arr = module.getUIComponents().get(),
