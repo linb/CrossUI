@@ -215,6 +215,7 @@ xui.Class("xui.UI.Gallery", "xui.UI.List",{
             lite: null,
             tagCmds:null,
             tagCmdsAlign:null,
+            optBtn:null,
             autoImgSize:{
                 ini:false,
                 action:function(){

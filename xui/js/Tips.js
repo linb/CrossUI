@@ -82,7 +82,9 @@ xui.Class("xui.Tips", null,{
             }catch(e){}
 
             //check id
-            if(_from=event._getProfile(id)){
+            _from=event._getProfile(id)
+            // not for xui.Template
+            if(_from && !_from["xui.Template"]){
                 var isuip = _from.box && _from.KEY=='xui.UIProfile';
                 if(isuip){
                     if(_from.properties.disableTips || _from.behavior.disableTips){
@@ -119,7 +121,7 @@ xui.Class("xui.Tips", null,{
                 //set mark id
                 tips._markId = tempid;
                 tips._pos=event.getPos(e);
-                tips._activeNode=xui(node);
+                tips._activeNode=node;
                 tips._activePrf=_from;
 
                 if(tips._showed){
@@ -197,7 +199,7 @@ xui.Class("xui.Tips", null,{
                         s=s.replace(/<[^>]*>/g,'');
                         if(t=xui.Tips._activePrf){
                             if(t.box&&t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
-                            else xui.Tips._activeNode.attr('title', s);
+                            else xui(xui.Tips._activeNode).attr('title', s);
                         }
                     }else{
                         var self=this,node,_ruler,w,h;
@@ -268,7 +270,7 @@ xui.Class("xui.Tips", null,{
                         var t=xui.Tips._activePrf;
                         if(t){
                             if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:null},false);
-                            else  xui.Tips._activeNode.attr('title', null);
+                            else  xui(xui.Tips._activeNode).attr('title', null);
                         }
                     }else{
                         this.node && this.node.css('zIndex',0).hide();
@@ -285,7 +287,7 @@ xui.Class("xui.Tips", null,{
         DELAYTIME:400,
         AUTOHIDETIME:5000,
         _getTipsTxt:function(h){
-            return h.desc || h.tips || h.caption || xui.getNodeData(xui.Tips._activeNode.get(0), "tips");
+            return h.desc || h.tips || h.caption || xui.getNodeData(xui.Tips._activeNode, "tips");
         },
         _showF:function(){
             if(xui.ini.disableTips)return;
@@ -326,7 +328,7 @@ xui.Class("xui.Tips", null,{
                     }
                 }
                 else{
-                    var t=xui.Tips._activeNode.get(0);
+                    var t=xui.Tips._activeNode;
                     if(t){
                         t = xui.getNodeData(t, "tips");
                         if(t){

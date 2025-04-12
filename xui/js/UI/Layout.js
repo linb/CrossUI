@@ -1,4 +1,4 @@
-xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
+xui.Class("xui.UI.Layout",["xui.UI"],{
     Instance:{
         getPanel:function(subId){
             return this.get(0).getSubNodeByItemId('PANEL', subId);

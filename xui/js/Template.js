@@ -138,15 +138,23 @@ xui.Class('xui.Template','xui.absProfile',{
         render:function(){
             var self=this;
             if(!self.renderId){
-                var div=xui.$getGhostDiv();
                 xui.$cache.profileMap[self.domId]=xui.$cache.profileMap[self.$domId]=this;
-                div.innerHTML = self.toHtml();
+
+                var root=xui(self.domId).get(0),rn=root,children;
+                if(!root){
+                    root=xui.$getGhostDiv();
+                    root.innerHTML = self.toHtml();
+                }
+                children=Array.prototype.slice.call(root.getElementsByTagName('*'));
+                if(rn){
+                    children.unshift(rn);
+                }else{
+                    rn=root.firstElementChild;
+                }
                 //add event handler
                 var ch=self.events,
                     eh=xui.Event._eventHandler,
-                    children=div.getElementsByTagName('*'),
-                    domId=self.$domId,
-                    f=xui.Event.$eventhandler,
+                    f=function(){return xui.Event(arguments[0], this, 0, self.$domId)},
                     i,l,j,k,o,key,id,t,v;
                 if(l=children.length){
                     for(i=0;i<l;i++){
@@ -173,12 +181,12 @@ xui.Class('xui.Template','xui.absProfile',{
                             o.removeAttribute('tpl_evid');
                         }
                     }
-                    if(!div.firstChild.$xid)
-                        xui.$registerNode(div.firstChild);
+                    if(!rn.$xid)
+                        xui.$registerNode(rn);
                     //the first
-                    self.renderId=div.firstChild.$xid;
+                    self.renderId=rn.$xid;
                 }
-                o=div=null;
+                o=root=rn=null;
             }
             return self;
         },

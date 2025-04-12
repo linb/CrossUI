@@ -291,15 +291,8 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
                     case 'none':
                         box.onItemSelected(profile, item, e, src, 0);
                         break;
-                    case 'multibycheckbox':
-                        if(properties.readonly|| item.readonly)return false;
-                        if(profile.keys.MARK){
-                            if(profile.getKey(xui.Event.getSrc(e).id||"")!=profile.keys.MARK){
-                                box.onItemSelected(profile, item, e, src, 0);
-                                break;
-                            }
-                        }
                     case 'multi':
+                    case 'multibycheckbox':
                         if(properties.readonly|| item.readonly)return false;
                         var value = box.getUIValue(),
                             arr = value?value.split(properties.valueSeparator):[],
@@ -489,7 +482,7 @@ xui.Class("xui.UI.List", ["xui.UI", "xui.absList","xui.absValue" ],{
             },
             selMode:{
                 ini:'single',
-                listbox:['single','none','multi','multibycheckbox'],
+                listbox:['single','none','multi'],
                 action:function(value){
                     if(!this.box._ITEMMARKED)
                         this.getSubNode('MARK',true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');

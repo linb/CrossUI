@@ -940,14 +940,14 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         barNode.tagClass('-expand',false).tagClass('-fold');
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
-                        if(prop.dynDestory || item.dynDestory){
-                            var bak=xui.clone(item.sub, true);
+                        if(prop.dynDestory||item.dynDestory){
+                            var bak=(prop.dynDestory||item.dynDestory===true)?true:xui.clone(item.sub, true);
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
                             profile.boxing().removeItems(arr);
-                            delete item._inited;
                             item.sub = bak;
+                            delete item._inited;
                         }
                         if(ins.afterFold)
                             ins.afterFold(profile,item);

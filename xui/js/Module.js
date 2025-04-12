@@ -45,13 +45,6 @@ xui.Class('xui.Module','xui.absProfile',{
         ns['xui.Com']=ns.prototype['xui.Com']=1;
         xui.Com=ns;
         ns.$activeClass$='xui.Module';
-
-        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
-            var arr=xui.toArr(arguments);
-            xui.arr.each(xui.Module._cache,function(o){
-                 o.fireEvent && o.fireEvent('onGlobalMessage',  arr);
-            });
-        };
     },
     After:function(){
         var self=this,k, e, t, b, i;

@@ -86,6 +86,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         DataModel:({
             lite: null,
             maxHeight:null,
+            optBtn:null,
             height:'auto',
 
             itemMargin:{

@@ -85,6 +85,12 @@ xui.Class("xui.UI.Group", "xui.UI.Panel",{
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
                     className:'xui-uicontainer xui-uiborder-radius-bl xui-uiborder-radius-br',
                     text:'{html}'+xui.UI.$childTag
+                },
+                FLAG:{
+                    $order:1,
+                    className:'xui-display-none xui-uiflag {flagClass}',
+                    style:'{_flagStyle};{flagStyle}',
+                    text:'{flagText}'
                 }
             },
             $submap:xui.UI.$getTagCmdsTpl()

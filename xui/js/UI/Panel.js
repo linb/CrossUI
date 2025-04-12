@@ -168,6 +168,12 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                         $order:2,
                         className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-br'
                     }
+                },
+                FLAG:{
+                    $order:1,
+                    className:'xui-display-none xui-uiflag {flagClass}',
+                    style:'{_flagStyle};{flagStyle}',
+                    text:'{flagText}'
                 }
             },
             $submap:xui.UI.$getTagCmdsTpl()
@@ -489,7 +495,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
 
             data.toggleDisplay = data.toggleBtn?'':nodisplay;
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
-            data._fi_toggleCls2 = data.toggleIcon + (data.toggleBtn&&data.toggle?' xuifont-checked ' + data.toggleIcon + '-checked':'');
+            data._fi_toggleCls2 = data.toggleIcon + (data.toggleBtn&&data.toggle?(' xuifont-checked ' + data.toggleIcon + '-checked'):'');
             profile._toggle = !!data.toggle;
 
             data.infoDisplay = data.infoBtn?'':nodisplay;

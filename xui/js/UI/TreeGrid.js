@@ -6765,12 +6765,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         markNode.tagClass('-checked', false);
                         item._checked = false;
 
-                        if(prop.dynDestory || item.dynDestory){
+                        if(prop.dynDestory||item.dynDestory){
+                            var bak=(prop.dynDestory||item.dynDestory===true)?true:xui.clone(item.sub, true);
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
                             profile.boxing().removeRows(arr);
-                            item.sub=true;
+                            item.sub=bak;
                             delete item._inited;
                         }
                         if(ins.afterFold)

@@ -1311,7 +1311,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
 
-            dialog.show(parent,true, left, top);
+            dialog.showModal(parent,null, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn.activate();
             });
@@ -1395,7 +1395,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
 
-            dialog.show(parent, true, left, top);
+            dialog.showModal(parent,null, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn2.activate();
             });
@@ -1537,7 +1537,7 @@ xui.Class("xui.UI.Dialog","xui.UI.Widget",{
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
 
-            dialog.show(parent, true, left, top);
+            dialog.showModal(parent,null, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog._$input.activate();
             });

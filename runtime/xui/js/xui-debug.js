@@ -74,7 +74,7 @@ xui.Class=function(key, pkey, obj){
     */
     var cf=function(){
         if(xui.Class.$instanceCreated)xui.Class.$instanceCreated(this);
-        if(typeof this.initialize=='function')this.initialize()
+        if(this.constructor.$xuiclass$ && typeof this.initialize=='function')this.initialize()
     };
     if(typeof obj.Constructor == 'function'){
         _this = env(obj.Constructor, 'Constructor', key, parent0||cf,'constructor');
@@ -1671,90 +1671,91 @@ xui.merge(xui,{
             cls = obj.id,
             attrs = obj.attrs;
         uri = obj.uri;
-
-        if(!force && xui.isSet( obj = (cls && xui.SC.get(cls)) || c[uri] ))
-            xui.tryF(onSuccess, [uri,obj&&obj.KEY], obj);
-        else{
-            // For fetching one class multiple times
-            if(!onFetching[uri]){
-                onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
-                if(!options.useAjax){
-                    xui.Class._ignoreNSCache=1;xui.Class._last=null;
-                    if(options.alien){ww=xui.window;xui.window={};}
-                    xui.JSONP(uri,rnd,function(){
-                        if(xui.Class._last)obj=c[uri]=xui.Class._last;
-                        xui.Class._ignoreNSCache=xui.Class._last=null;
-                        if(cls){
-                            if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
-                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
-                            var clsName=xui.getClassName(uri);
-                            if(obj&&clsName&&obj.KEY!=clsName){
-                                var msg="[xui] > The last class name in '"+uri+"' should be '"+clsName+"', but it's '"+obj.KEY+"'!";
-                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, clsName, obj.KEY]);
-                                xui.log( msg );
-                            }
-                        }else{
-                            for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);
-                        }
-                        if(options.alien){xui.window=ww;}
-                        // for Thread.group in fetchClasses
-                        clearFetching();
-                    },function(){
-                        if(options.alien){xui.window=ww;}
-                        xui.Class._ignoreNSCache=xui.Class._last=null;
-                        for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
-                        // for Thread.group in fetchClasses
-                        clearFetching();
-                    },threadid,{
-                        rspType : 'script',
-                        keepDomNode : !options.noDomNode,
-                        attrs : attrs,
-                        asy : !options.sync
-                    }).start();
-                }else{
-                    xui.Ajax(uri,rnd,function(rsp){
+        if(uri){
+            if(!force && xui.isSet( obj = (cls && xui.SC.get(cls)) || c[uri] ))
+                xui.tryF(onSuccess, [uri,obj&&obj.KEY], obj);
+            else{
+                // For fetching one class multiple times
+                if(!onFetching[uri]){
+                    onFetching[uri]=[onSuccess=onSuccess?[onSuccess]:[], onFail=onFail?[onFail]:[], onAlert=onAlert?[onAlert]:[],[]];
+                    if(!options.useAjax){
                         xui.Class._ignoreNSCache=1;xui.Class._last=null;
-                        var scriptnode,s=xui.getClassName(uri);
                         if(options.alien){ww=xui.window;xui.window={};}
-                        try{scriptnode=xui.exec(rsp, s)}catch(e){
-                            for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e]);
-                            xui.Class._last=null;
-                        }
-                        if(xui.Class._last)obj=c[uri]=xui.Class._last;
-                        xui.Class._ignoreNSCache=xui.Class._last=null;
-                        if(cls){
-                            if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
-                            else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
-                            var clsName=xui.getClassName(uri);
-                            if(obj&&clsName&&obj.KEY!=clsName){
-                                var msg="[xui] > The last class name in '"+uri+"' should be '"+clsName+"', but it's '"+obj.KEY+"'!";
-                                for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, clsName, obj.KEY]);
-                                xui.log( msg );
+                        xui.JSONP(uri,rnd,function(){
+                            if(xui.Class._last)obj=c[uri]=xui.Class._last;
+                            xui.Class._ignoreNSCache=xui.Class._last=null;
+                            if(cls){
+                                if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
+                                else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
+                                var clsName=xui.getClassName(uri);
+                                if(obj&&clsName&&obj.KEY!=clsName){
+                                    var msg="[xui] > The last class name in '"+uri+"' should be '"+clsName+"', but it's '"+obj.KEY+"'!";
+                                    for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, clsName, obj.KEY]);
+                                    xui.log( msg );
+                                }
+                            }else{
+                                for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);
                             }
-                        }else{
-                            for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);
-                        }
-                        if(options.alien){xui.window=ww;}
-                        // for Thread.group in fetchClasses
-                        clearFetching();
-                    },function(){
-                        if(options.alien){xui.window=ww;}
-                        xui.Class._ignoreNSCache=xui.Class._last=null;
-                        for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
-                        // for Thread.group in fetchClasses
-                        clearFetching();
-                    },threadid,{
-                        rspType : 'text',
-                        asy : !options.sync
-                    }).start();
-                }
-            }else{
-                if(onSuccess)onFetching[uri][0].push(onSuccess);
-                if(onFail)onFetching[uri][1].push(onFail);
-                if(onAlert)onFetching[uri][2].push(onAlert);
-                if(threadid){
-                    onFetching[uri][3].push(threadid);
-                    xui.Thread.suspend(threadid);
+                            if(options.alien){xui.window=ww;}
+                            // for Thread.group in fetchClasses
+                            clearFetching();
+                        },function(){
+                            if(options.alien){xui.window=ww;}
+                            xui.Class._ignoreNSCache=xui.Class._last=null;
+                            for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
+                            // for Thread.group in fetchClasses
+                            clearFetching();
+                        },threadid,{
+                            rspType : 'script',
+                            keepDomNode : !options.noDomNode,
+                            attrs : attrs,
+                            asy : !options.sync
+                        }).start();
+                    }else{
+                        xui.Ajax(uri,rnd,function(rsp){
+                            xui.Class._ignoreNSCache=1;xui.Class._last=null;
+                            var scriptnode,s=xui.getClassName(uri);
+                            if(options.alien){ww=xui.window;xui.window={};}
+                            try{scriptnode=xui.exec(rsp, s)}catch(e){
+                                for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],[e]);
+                                xui.Class._last=null;
+                            }
+                            if(xui.Class._last)obj=c[uri]=xui.Class._last;
+                            xui.Class._ignoreNSCache=xui.Class._last=null;
+                            if(cls){
+                                if(obj){for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);}
+                                else{for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i],  ['"'+uri+'" is not an xui class!']);}
+                                var clsName=xui.getClassName(uri);
+                                if(obj&&clsName&&obj.KEY!=clsName){
+                                    var msg="[xui] > The last class name in '"+uri+"' should be '"+clsName+"', but it's '"+obj.KEY+"'!";
+                                    for(var i=0,l=onAlert.length;i<l;i++)xui.tryF(onAlert[i], [msg, uri, clsName, obj.KEY]);
+                                    xui.log( msg );
+                                }
+                            }else{
+                                for(var i=0,l=onSuccess.length;i<l;i++)xui.tryF(onSuccess[i], [uri,obj&&obj.KEY],obj);
+                            }
+                            if(options.alien){xui.window=ww;}
+                            // for Thread.group in fetchClasses
+                            clearFetching();
+                        },function(){
+                            if(options.alien){xui.window=ww;}
+                            xui.Class._ignoreNSCache=xui.Class._last=null;
+                            for(var i=0,l=onFail.length;i<l;i++)xui.tryF(onFail[i], xui.toArr(arguments));
+                            // for Thread.group in fetchClasses
+                            clearFetching();
+                        },threadid,{
+                            rspType : 'text',
+                            asy : !options.sync
+                        }).start();
+                    }
+                }else{
+                    if(onSuccess)onFetching[uri][0].push(onSuccess);
+                    if(onFail)onFetching[uri][1].push(onFail);
+                    if(onAlert)onFetching[uri][2].push(onAlert);
+                    if(threadid){
+                        onFetching[uri][3].push(threadid);
+                        xui.Thread.suspend(threadid);
+                    }
                 }
             }
         }
@@ -5921,6 +5922,23 @@ xui.Class("xui.MessageService","xui.absObj",{
     }
 });
 
+new function(){
+    var receivers = [];
+    xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
+        var arr=xui.toArr(arguments);
+        for(var i=0,l=receivers.length; i<l; i++)
+            if(false===xui.tryF(receivers[i], arr))
+                return;
+        if(xui.Module){
+            xui.arr.each(xui.Module._cache,function(o){
+                 o.fireEvent && o.fireEvent('onGlobalMessage',  arr);
+            });
+        }
+    };
+    xui.registerReceiver = function(receiver){
+        xui.isFun(receiver) && receivers.push(receiver);
+    };
+};
 /*** xui.ExcelFormula.calculate
     * formula :
     *      "=FIXED(SUM(1:1, AVERAGE(A:A, B3)) + ROUND(B5)*C6 + MAX(A1:B2, B3) + MIN(10, B3)/ 1000, 2)"
@@ -12243,8 +12261,8 @@ xui.Class('xui.Dom','xui.absBox',{
         tagClass:function(tag, isAdd){
             var self=this,
                 me=arguments.callee,
-                r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("(xui-[-\\w]+" + tag + "((-[\w]*)+|$))")),
-                r2=me["_r2"]||(me["_r2"]=/(xui-[-\w]+)/g);
+                r1=me["_r1_"+tag]||(me["_r1_"+tag]=new RegExp("xui[-\\w]+" + tag + "[-\\w]*")),
+                r2=me["_r2"]||(me["_r2"]=/\b(xui[-\w]+)\b/g);
             self.removeClass(r1);
             isAdd=false!==isAdd;
             var r= isAdd ? self.replaceClass(r2, '$1 $1' + tag) : self;
@@ -15428,15 +15446,23 @@ xui.Class('xui.Dom','xui.absBox',{
         render:function(){
             var self=this;
             if(!self.renderId){
-                var div=xui.$getGhostDiv();
                 xui.$cache.profileMap[self.domId]=xui.$cache.profileMap[self.$domId]=this;
-                div.innerHTML = self.toHtml();
+
+                var root=xui(self.domId).get(0),rn=root,children;
+                if(!root){
+                    root=xui.$getGhostDiv();
+                    root.innerHTML = self.toHtml();
+                }
+                children=Array.prototype.slice.call(root.getElementsByTagName('*'));
+                if(rn){
+                    children.unshift(rn);
+                }else{
+                    rn=root.firstElementChild;
+                }
                 //add event handler
                 var ch=self.events,
                     eh=xui.Event._eventHandler,
-                    children=div.getElementsByTagName('*'),
-                    domId=self.$domId,
-                    f=xui.Event.$eventhandler,
+                    f=function(){return xui.Event(arguments[0], this, 0, self.$domId)},
                     i,l,j,k,o,key,id,t,v;
                 if(l=children.length){
                     for(i=0;i<l;i++){
@@ -15463,12 +15489,12 @@ xui.Class('xui.Dom','xui.absBox',{
                             o.removeAttribute('tpl_evid');
                         }
                     }
-                    if(!div.firstChild.$xid)
-                        xui.$registerNode(div.firstChild);
+                    if(!rn.$xid)
+                        xui.$registerNode(rn);
                     //the first
-                    self.renderId=div.firstChild.$xid;
+                    self.renderId=rn.$xid;
                 }
-                o=div=null;
+                o=root=rn=null;
             }
             return self;
         },
@@ -15665,13 +15691,6 @@ xui.Class('xui.Module','xui.absProfile',{
         ns['xui.Com']=ns.prototype['xui.Com']=1;
         xui.Com=ns;
         ns.$activeClass$='xui.Module';
-
-        xui.broadcast = function(id, msg1, msg2, msg3, msg4, msg5,  msg6, msg7, msg8, msg9, sender){
-            var arr=xui.toArr(arguments);
-            xui.arr.each(xui.Module._cache,function(o){
-                 o.fireEvent && o.fireEvent('onGlobalMessage',  arr);
-            });
-        };
     },
     After:function(){
         var self=this,k, e, t, b, i;
@@ -19379,7 +19398,9 @@ xui.Class("xui.Tips", null,{
             }catch(e){}
 
             //check id
-            if(_from=event._getProfile(id)){
+            _from=event._getProfile(id)
+            // not for xui.Template
+            if(_from && !_from["xui.Template"]){
                 var isuip = _from.box && _from.KEY=='xui.UIProfile';
                 if(isuip){
                     if(_from.properties.disableTips || _from.behavior.disableTips){
@@ -19416,7 +19437,7 @@ xui.Class("xui.Tips", null,{
                 //set mark id
                 tips._markId = tempid;
                 tips._pos=event.getPos(e);
-                tips._activeNode=xui(node);
+                tips._activeNode=node;
                 tips._activePrf=_from;
 
                 if(tips._showed){
@@ -19494,7 +19515,7 @@ xui.Class("xui.Tips", null,{
                         s=s.replace(/<[^>]*>/g,'');
                         if(t=xui.Tips._activePrf){
                             if(t.box&&t.box['xui.svg']) t.boxing().setAttr('KEY',{title:s},false);
-                            else xui.Tips._activeNode.attr('title', s);
+                            else xui(xui.Tips._activeNode).attr('title', s);
                         }
                     }else{
                         var self=this,node,_ruler,w,h;
@@ -19565,7 +19586,7 @@ xui.Class("xui.Tips", null,{
                         var t=xui.Tips._activePrf;
                         if(t){
                             if(t.box['xui.svg']) t.boxing().setAttr('KEY',{title:null},false);
-                            else  xui.Tips._activeNode.attr('title', null);
+                            else  xui(xui.Tips._activeNode).attr('title', null);
                         }
                     }else{
                         this.node && this.node.css('zIndex',0).hide();
@@ -19582,7 +19603,7 @@ xui.Class("xui.Tips", null,{
         DELAYTIME:400,
         AUTOHIDETIME:5000,
         _getTipsTxt:function(h){
-            return h.desc || h.tips || h.caption || xui.getNodeData(xui.Tips._activeNode.get(0), "tips");
+            return h.desc || h.tips || h.caption || xui.getNodeData(xui.Tips._activeNode, "tips");
         },
         _showF:function(){
             if(xui.ini.disableTips)return;
@@ -19623,7 +19644,7 @@ xui.Class("xui.Tips", null,{
                     }
                 }
                 else{
-                    var t=xui.Tips._activeNode.get(0);
+                    var t=xui.Tips._activeNode;
                     if(t){
                         t = xui.getNodeData(t, "tips");
                         if(t){
@@ -26099,6 +26120,12 @@ xui.Class("xui.UI",  "xui.absObj", {
                     }
                 }
             },
+            title:{
+                ini:'',
+                action:function(v){
+                    this.getRoot().attr('title', v);
+                }
+            },
             rotate:{
                 ini:0,
                 action:function(v){
@@ -26176,6 +26203,7 @@ xui.Class("xui.UI",  "xui.absObj", {
             }
             if(p.disabled) b.setDisabled(true,true);
             if(p.rotate) b.setRotate(p.rotate,true);
+            if(p.title) xui(node).attr('title', p.title);
             if(!prf.$inDesign && p.hoverPop){
                 xui.asyRun(function(){
                     b.setHoverPop(p.hoverPop,true);
@@ -27743,7 +27771,7 @@ xui.Class("xui.absList", "xui.absObj",{
     Instance:{
         activate:function(){
             var profile = this.get(0),
-                items = profile.getSubNode('ITEM',true);
+                items = profile.getSubNode(profile.box._ITEMKEY || 'ITEM',true);
             if(!items.isEmpty())
                 items.focus(true);
             return this;
@@ -27984,7 +28012,7 @@ xui.Class("xui.absList", "xui.absObj",{
                 //]]
 
                 //in dom already?
-                node=profile.getSubNodeByItemId('ITEM',nid || itemId);
+                node=profile.getSubNodeByItemId(profile.box._ITEMKEY || 'ITEM',nid || itemId);
                 if(!node.isEmpty()){
                     //for the sub node
                     if('sub' in options){
@@ -28149,6 +28177,7 @@ xui.Class("xui.absList", "xui.absObj",{
         showItems:function(itemId/*default is the current*/, show){
            var ns=this,
                 profile = ns.get(0),
+                box = profile.box,
                 showNodes=xui(),
                 hideNodes=xui(),
                 prop = profile.properties;
@@ -28158,9 +28187,9 @@ xui.Class("xui.absList", "xui.absObj",{
                 xui.arr.each(itemId, function(r, item){
                     if(item=ns.getItemByItemId(r)){
                         if(show===false){
-                            if(!item.hidden)hideNodes.merge(ns.getSubNodeByItemId('ITEM',item.id));
+                            if(!item.hidden)hideNodes.merge(ns.getSubNodeByItemId(box._ITEMKEY || 'ITEM',item.id));
                         }else{
-                            if(item.hidden)showNodes.merge(ns.getSubNodeByItemId('ITEM',item.id));
+                            if(item.hidden)showNodes.merge(ns.getSubNodeByItemId(box._ITEMKEY || 'ITEM',item.id));
                         }
                         item.hidden=show===false;
                     }
@@ -29176,7 +29205,7 @@ xui.Class("xui.UI.Icon", "xui.UI",{
             flagText:{
               ini:'',
               action:function(v){
-                this.getSubNode('FLAG').text(v).css("display",v?"":"none");
+                this.getSubNode('FLAG').text(v).css("display",v?"block":"none");
               }
             },
             flagClass:{
@@ -29696,13 +29725,19 @@ xui.Class("xui.UI.Div", "xui.UI",{
             iframeAutoLoad:{
                 ini:"",
                 action:function(){
-                    this.box._applyAutoLoad(this);
+                    var prf=this, prt = prf.getSubNode('FLAG'); xui.$getGhostDiv().append(prt);
+                    xui.UI.Div._applyAutoLoad(prf, null, function(){
+                        prf.getRoot().append(prt);
+                    });
                 }
             },
             ajaxAutoLoad:{
                 ini:"",
                 action:function(){
-                    this.box._applyAutoLoad(this);
+                    var prf=this, prt = prf.getSubNode('FLAG'); xui.$getGhostDiv().append(prt);
+                    xui.UI.Div._applyAutoLoad(prf, null, function(){
+                        prf.getRoot().append(prt);
+                    });
                 }
             },
             width:{
@@ -29717,7 +29752,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
             html:{
                 html:1,
                 action:function(v,ov,force){
-                    this.getRoot().html(xui.adjustRes(v,0,1),null,null,force);
+                    var prt = this.getSubNode('FLAG'); xui.$getGhostDiv().append(prt);
+                    this.getRoot().html(xui.adjustRes(v,0,1),false,false,force);
+                    this.getRoot().append(prt);
                 }
             },
             overflow:{
@@ -29741,7 +29778,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
             flagText:{
               ini:'',
               action:function(v){
-                this.getSubNode('FLAG').text(v).css("display",v?"":"none");
+                this.getSubNode('FLAG').text(v).css("display",v?"block":"none");
               }
             },
             flagClass:{
@@ -29784,8 +29821,12 @@ xui.Class("xui.UI.Div", "xui.UI",{
             if(!force && prop._$init)return;
             prop._$init=true;
 
-            if(prop.iframeAutoLoad||prop.ajaxAutoLoad)
-                xui.UI.Div._applyAutoLoad(prf, item);
+            if(prop.iframeAutoLoad||prop.ajaxAutoLoad){
+                var prt = prf.getSubNode('FLAG'); xui.$getGhostDiv().append(prt);
+                xui.UI.Div._applyAutoLoad(prf, item, function(){
+                    prf.getRoot().append(prt);
+                });
+            }
             if(prf.onInitContainer||prf.onIniPanelView){
                 prf.onInitContainer ? prf.boxing().onInitContainer(prf, item) : prf.boxing().onIniPanelView(prf, item);
             }
@@ -29814,8 +29855,9 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 data._overflow = data.overflow.indexOf(':')!=-1?(data.overflow):(data.overflow?("overflow:"+data.overflow):"");
             return data;
         },
-        _applyAutoLoad:function(prf, item){
+        _applyAutoLoad:function(prf, item, callback){
             var subId = item && item.id, prop = item || prf.properties, ins=prf.boxing(), con=ins.getContainer(subId);
+            con.html("",false,false,true).css('overflow','');
             if(prop.iframeAutoLoad){
                 con.css('overflow','hidden');
                 var _if=typeof prop.iframeAutoLoad=='string'?{url:prop.iframeAutoLoad}:xui.clone(prop.iframeAutoLoad,true),
@@ -29839,7 +29881,6 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 ifr.allowTransparency='true';
                 ifr.width='100%';
                 ifr.height='100%';
-                con.html("",false);
 
                 if((_if.method||"").toLowerCase()=="post"){
                     con.append(ifr);
@@ -29850,6 +29891,7 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 }
                 if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                 if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,id,item);
+                xui.tryF(callback,[prf,item,true,_if],prf);
             }else if(prop.ajaxAutoLoad){
                 var _ajax=typeof prop.ajaxAutoLoad=='string'?{url:prop.ajaxAutoLoad}:xui.clone(prop.ajaxAutoLoad,true),
                     options={rspType:"text"};
@@ -29857,18 +29899,21 @@ xui.Class("xui.UI.Div", "xui.UI",{
                 _ajax.query._rand=xui.rand();
                 xui.merge(options, _ajax.options);
                 ins.busy();
-                var node=ins.getContainer();
                 xui.Ajax(xui.adjustRes(_ajax.url,false,true), _ajax.query, function(rsp){
-                    node.html(rsp,true,true);
+                    con.html(rsp,true,true,true);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                     if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp,item);
                     ins.free();
+                    xui.tryF(callback,[prf,item,true,rsp],prf);
                 }, function(err){
-                    node.html("<div>"+err+"</div>",true,false);
+                    con.html("<div>"+err+"</div>",true,false,true);
                     if(prf.$afterAutoLoad)prf.$afterAutoLoad.call(prf.boxing(),prf);
                     if(prf.afterAutoLoad)prf.boxing().afterAutoLoad(prf,rsp,item);
                     ins.free();
+                    xui.tryF(callback,[prf,item,false,err],prf);
                 }, null, options).start();
+            }else{
+              xui.tryF(callback,[prf,item,false]);
             }
         },
         _syncResize:true,
@@ -31492,6 +31537,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
 
             // only show right/bottom handlers
             singleDir:false,
+            nodefilters:"",
             // can change width
             vertical :true,
             // can chang height
@@ -31564,6 +31610,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     '_attached:' + pro._attached + ';' +
                     'forceVisible:' + pro.forceVisible + ';' +
                     'singleDir:' + pro.singleDir + ';' +
+                    'nodefilters:' + pro.nodefilters + ';' +
                     'vertical:' + pro.vertical + ';' +
                     'horizontal:' + pro.horizontal + ';' +
                     'forceMovable:' + pro.forceMovable + ';'
@@ -31658,6 +31705,11 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     if(t=template.L)t.className += n;
                     if(t=template.LT)t.className += n;
 
+                }
+                if(pro.nodefilters){
+                    xui.arr.each(pro.nodefilters,function(k){
+                        delete template[k];
+                    });
                 }
                 // set template
                 profile.box.setTemplate(template, hash);
@@ -40921,15 +40973,8 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
                     case 'none':
                         box.onItemSelected(profile, item, e, src, 0);
                         break;
-                    case 'multibycheckbox':
-                        if(properties.readonly|| item.readonly)return false;
-                        if(profile.keys.MARK){
-                            if(profile.getKey(xui.Event.getSrc(e).id||"")!=profile.keys.MARK){
-                                box.onItemSelected(profile, item, e, src, 0);
-                                break;
-                            }
-                        }
                     case 'multi':
+                    case 'multibycheckbox':
                         if(properties.readonly|| item.readonly)return false;
                         var value = box.getUIValue(),
                             arr = value?value.split(properties.valueSeparator):[],
@@ -41119,7 +41164,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             },
             selMode:{
                 ini:'single',
-                listbox:['single','none','multi','multibycheckbox'],
+                listbox:['single','none','multi'],
                 action:function(value){
                     if(!this.box._ITEMMARKED)
                         this.getSubNode('MARK',true).css('display',(value=='multi'||value=='multibycheckbox')?'':'none');
@@ -41626,6 +41671,7 @@ xui.Class("xui.UI.ComboInput", "xui.UI.Input",{
             lite: null,
             tagCmds:null,
             tagCmdsAlign:null,
+            optBtn:null,
             autoImgSize:{
                 ini:false,
                 action:function(){
@@ -41942,6 +41988,12 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                         $order:2,
                         className:'xui-uibar-tdr xui-uibar xui-uiborder-radius-big-br'
                     }
+                },
+                FLAG:{
+                    $order:1,
+                    className:'xui-display-none xui-uiflag {flagClass}',
+                    style:'{_flagStyle};{flagStyle}',
+                    text:'{flagText}'
                 }
             },
             $submap:xui.UI.$getTagCmdsTpl()
@@ -42263,7 +42315,7 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
 
             data.toggleDisplay = data.toggleBtn?'':nodisplay;
             data.panelDisplay = data.toggleBtn&&!data.toggle?nodisplay:'';
-            data._fi_toggleCls2 = data.toggleIcon + (data.toggleBtn&&data.toggle?' xuifont-checked ' + data.toggleIcon + '-checked':'');
+            data._fi_toggleCls2 = data.toggleIcon + (data.toggleBtn&&data.toggle?(' xuifont-checked ' + data.toggleIcon + '-checked'):'');
             profile._toggle = !!data.toggle;
 
             data.infoDisplay = data.infoBtn?'':nodisplay;
@@ -42477,6 +42529,12 @@ xui.Class("xui.UI.Panel", "xui.UI.Div",{
                     style:'{panelDisplay};{_panelstyle};{_overflow};',
                     className:'xui-uicontainer xui-uiborder-radius-bl xui-uiborder-radius-br',
                     text:'{html}'+xui.UI.$childTag
+                },
+                FLAG:{
+                    $order:1,
+                    className:'xui-display-none xui-uiflag {flagClass}',
+                    style:'{_flagStyle};{flagStyle}',
+                    text:'{flagText}'
                 }
             },
             $submap:xui.UI.$getTagCmdsTpl()
@@ -45278,13 +45336,14 @@ xui.Class("xui.UI.ButtonViews", "xui.UI.Tabs",{
         DataModel:{
             lite: null,
             tagCmds:null,
+            optBtn:null,
             borderType:{
                 ini:'none'
             },
             checkBox:{
                 ini:false,
                 action:function(v){
-                    this.getSubNode('MARK',true).replaceClass(v ? /(uicmd-radio)|(\s+uicmd-radio)/g : /(^uicmd-check)|(\s+uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
+                    this.getSubNode('MARK',true).replaceClass(v ? /(^xui-uicmd-radio)|(\s+xui-uicmd-radio)/g : /(^xui-uicmd-check)|(\s+xui-uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
                 }
             }
         },
@@ -45389,6 +45448,7 @@ xui.Class("xui.UI.StatusButtons", ["xui.UI.List"],{
         DataModel:({
             lite: null,
             maxHeight:null,
+            optBtn:null,
             height:'auto',
 
             itemMargin:{
@@ -46405,14 +46465,14 @@ xui.Class("xui.UI.TreeBar",["xui.UI","xui.absList","xui.absValue"],{
                         barNode.tagClass('-expand',false).tagClass('-fold');
                         icon.tagClass('-expand',false).tagClass('-fold');
                         item._checked = false;
-                        if(prop.dynDestory || item.dynDestory){
-                            var bak=xui.clone(item.sub, true);
+                        if(prop.dynDestory||item.dynDestory){
+                            var bak=(prop.dynDestory||item.dynDestory===true)?true:xui.clone(item.sub, true);
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
                             profile.boxing().removeItems(arr);
-                            delete item._inited;
                             item.sub = bak;
+                            delete item._inited;
                         }
                         if(ins.afterFold)
                             ins.afterFold(profile,item);
@@ -48583,7 +48643,7 @@ xui.Class("xui.UI.ToolBar",["xui.UI","xui.absList"],{
         }
     }
 });
-xui.Class("xui.UI.Layout",["xui.UI", "xui.absList"],{
+xui.Class("xui.UI.Layout",["xui.UI"],{
     Instance:{
         getPanel:function(subId){
             return this.get(0).getSubNodeByItemId('PANEL', subId);
@@ -56345,12 +56405,13 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                         markNode.tagClass('-checked', false);
                         item._checked = false;
 
-                        if(prop.dynDestory || item.dynDestory){
+                        if(prop.dynDestory||item.dynDestory){
+                            var bak=(prop.dynDestory||item.dynDestory===true)?true:xui.clone(item.sub, true);
                             var s=item.sub, arr=[];
                             for(var i=0,l=s.length;i<l;i++)
                                 arr.push(s[i].id);
                             profile.boxing().removeRows(arr);
-                            item.sub=true;
+                            item.sub=bak;
                             delete item._inited;
                         }
                         if(ins.afterFold)
@@ -59471,7 +59532,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
 
-            dialog.show(parent,true, left, top);
+            dialog.showModal(parent,null, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn.activate();
             });
@@ -59555,7 +59616,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
 
-            dialog.show(parent, true, left, top);
+            dialog.showModal(parent,null, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog.$btn2.activate();
             });
@@ -59697,7 +59758,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
             if(parent && parent["xui.UI"])parent=parent.getContainer(subId);
             if(!xui.isSet(parent))parent=xui('body');
 
-            dialog.show(parent, true, left, top);
+            dialog.showModal(parent,null, left, top);
             xui.resetRun("dlg_focus:"+dialog.get(0).$xid,function(){
                 dialog._$input.activate();
             });
@@ -73822,9 +73883,9 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             }
         }
     }
-});xui.Class("xui.UI.FormLayout",["xui.UI","xui.absList"],{
+});xui.Class("xui.UI.FormLayout",["xui.UI"],{
     Initialize:function(){
-        this.addTemplateKeys(['ITEM','TABLE','CBORDER','CBT','CBL','HOLDER','HIDER','SPREADER']);
+        this.addTemplateKeys(['TABLE','CAPTION','TH', 'TR','TD','THF','THTF', 'TRF','THT','CBORDER','CBT','CBL','HOLDER','HIDER','SPREADER']);
     },
     Instance:{
         _isDesignMode:function(){
@@ -73837,11 +73898,48 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             }else{
                 return this.getSubNode("POOL");
             }
+        },
+        setMatrix:function(arr_arr, merged, keep_rows, keep_cols, colSetting, rowSetting){
+            if(!arr_arr)arr_arr=[];
+            keep_rows = keep_rows||0;
+            keep_cols = keep_cols||0;
+            return this.each(function(prf){
+                var layoutData = xui.copy(prf.properties.layoutData);
+                layoutData.cols = keep_rows ? layoutData.cols : ((arr_arr[0]?arr_arr[0].length:0) + keep_cols);
+                layoutData.rows = arr_arr.length + keep_rows;
+                if(colSetting)layoutData.colSetting = colSetting;
+                if(rowSetting)layoutData.rowSetting = rowSetting;
+                if(merged)layoutData.merged = merged;
+                var cells = {};
+                xui.arr.each(arr_arr, function(arr, i){
+                    xui.arr.each(arr, function(v, j){
+                        cells[xui.ExcelFormula.toCellId(j+keep_cols,i+keep_rows)] = v;
+                    });
+                });
+                if(keep_rows){
+                    xui.each(layoutData.cells, function(cell,id){
+                        if(parseInt(id.replace(/[^\d]/g,'')) <= keep_rows && xui.ExcelFormula.toColumnNum(id.replace(/[\d]/g,'')) <= layoutData.cols){
+                            cells[id] = xui.copy(cell);
+                        }
+                    });
+                }
+                if(keep_cols){
+                    xui.each(layoutData.cells, function(cell,id){
+                        if(xui.ExcelFormula.toColumnNum(id.replace(/[\d]/g,'')) <= keep_cols && layoutData.rows){
+                            cells[id] = xui.copy(cell);
+                        }
+                    });
+                }
+                layoutData.cells = cells;
+                prf.properties.layoutData = layoutData;
+                prf.box._rerender(prf);
+            });
         }
     },
     Static:{
         HasHtmlTableNode:1,
-        _CONTAINERKEY:"ITEM",
+        _ITEMKEY:"TD",
+        _CONTAINERKEY:"TD",
         _ITEMCONTAINER:1,
         _getActiveHanders:function(prf){
             return prf.boxing()._isDesignMode()?['KEY','HOLDER']:null;
@@ -73891,7 +73989,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 'max-width': 'none',
                 'max-height': 'none'
             },
-            "ITEM:empty:after":{
+            "TD:empty:after":{
                 'text-align': 'center',
                 color: '#ccc',
                 content: 'attr(data-coord)',
@@ -73910,34 +74008,34 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 'user-select':'none',
                 'touch-action':'none'
             },
-             // {{ for read/write mode (layoutcell)
-            "ITEM.layoutcell":{
+             // {{ for read/write mode (layout-cell)
+             "TD, THT, THTF":{
               "border-right": "1px solid transparent",
               "border-bottom": "1px solid transparent",
               "border-left": "none",
               "border-top": "none",
                $order:1
              },
-            "ITEM.layoutcell.firstrow":{
+            "TD.firstrow, THT, THTF":{
               "border-top": "1px solid transparent",
                $order:2
              },
-            "ITEM.layoutcell.firstcol":{
+            "TD.firstcol, THT.firstcol, THF, THTF":{
               "border-left": "1px solid transparent",
                $order:2
              },
-            "BOX.solidgridline ITEM.layoutcell":{
+            "BOX.solidgridline TD, BOX.solidgridline THT, BOX.solidgridline THF, BOX.solidgridline THTF":{
               "border-right": "1px solid #444",
               "border-bottom": "1px solid #444",
               "border-left": "none",
               "border-top": "none",
                $order:3
              },
-            "BOX.solidgridline ITEM.layoutcell.firstrow":{
+            "BOX.solidgridline TD.firstrow, BOX.solidgridline THF.firstrow, BOX.solidgridline THT, BOX.solidgridline THTF":{
               "border-top": "1px solid #444",
                $order:4
              },
-            "BOX.solidgridline ITEM.layoutcell.firstcol":{
+            "BOX.solidgridline TD.firstcol, BOX.solidgridline THT.firstcol, BOX.solidgridline THF, BOX.solidgridline THTF":{
               "border-left": "1px solid #444",
                $order:4
              },
@@ -73945,7 +74043,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
 
              // {{ for design mode (handsontable)
             // reset
-            "KEY ITEM": {
+            "KEY TD, KEY THT, KEY THF": {
               "position": "relative",
                 background:"transparent",
                 height: '22px',
@@ -74007,10 +74105,62 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             }
         },
         Behaviors:{
-            DroppableKeys:['ITEM'],
-            PanelKeys:['ITEM'],
+            HoverEffected:{TH:'TH',TD:'TD',TR:'TR'},
+            ClickEffected:{TH:'TH',TD:'TD',TR:'TR'},
+            DroppableKeys:['TD'],
+            PanelKeys:['TD'],
             HotKeyAllowed:false,
-            ITEM:{}
+            TR:{
+                onClick:function(profile,e,src){
+                    var n=xui(src).get(0), i = xui.arr.indexOf(n.closest('table').rows, n);
+                    if(profile.onClickRow && false == profile.boxing().onClickRow(profile, profile.SubSerialIdMapRow[profile.RowIdMapSubSerialId[i + 1]], e, src)){
+                        return false;
+                    }
+                },
+                onMouseover:function(profile, e, src){
+                    var n=xui(src).get(0), i = xui.arr.indexOf(n.closest('table').rows, n);
+                    if(profile.onHoverRow && false == profile.boxing().onHoverRow(profile, profile.SubSerialIdMapRow[profile.RowIdMapSubSerialId[i + 1]], e, src, true)){
+                        return false;
+                    }
+                },
+                onMouseout:function(profile, e, src){
+                    var n=xui(src).get(0), i = xui.arr.indexOf(n.closest('table').rows, n);
+                    if(profile.onHoverRow && false == profile.boxing().onHoverRow(profile, profile.SubSerialIdMapRow[profile.RowIdMapSubSerialId[i + 1]], e, src, false)){
+                        return false;
+                    }
+                }
+            },
+            TH:{
+                onClick:function(profile,e,src){
+                    var n=xui(src).get(0).parentNode, i;
+                    if(n.parentNode.tagName === 'THEAD'){
+                        if(n.firstElementChild.$xid == src){
+                            if(profile.onClickHeadTopCell && false == profile.boxing().onClickHeadTopCell(profile, profile.properties.layoutData, e, src)){
+                                return false;
+                            }
+                        }else{
+                            var col = profile.SubSerialIdMapCol[profile.getSubId(src)];
+                            if(profile.onClickColumn && false == profile.boxing().onClickColumn(profile, col, e, src)){
+                                return false;
+                            }
+                        }
+                    }else{
+                        i = xui.arr.indexOf(n.closest('table').rows, n);
+                        if(profile.onClickHeadCell && false == profile.boxing().onClickHeadCell(profile, profile.SubSerialIdMapRow[profile.RowIdMapSubSerialId[i + 1]], e, src)){
+                            return false;
+                        }
+                    }
+                }
+            },
+            TD:{
+                onClick:function(profile,e,src){
+                    var n=xui(src).get(0).parentNode,
+                        cell = profile.SubSerialIdMapItem[profile.getSubId(src)];
+                    if(profile.onClickCell && false == profile.boxing().onClickCell(profile, cell, e, src)){
+                        return false;
+                    }
+                }
+            }
         },
         DataModel:{
             tabindex:null,
@@ -74024,11 +74174,6 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             tips:null,
             autoTips:null,
             overflow:null,
-            items:{
-                hidden:true
-            },
-            listKey:null,
-            dragSortable:null,
             mode:{
                 ini:'write',
                 listbox:['design','write','read'],
@@ -74050,10 +74195,14 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             solidGridlines:{
                 ini:true,
                 action:function(value){
-                    var cls = value ? "solidgridline" : this.boxing()._isDesignMode() ? "" : "nogridline",
-                        node = this.getSubNode('BOX');
-                    node.removeClass("solidgridline nogridline");
-                    if(cls)node.addClass(cls);
+                    var des = this.boxing()._isDesignMode(),node = this.getSubNode('BOX');
+                    if(des){
+                        if(value)node.removeClass("nogridline");
+                        else node.addClass("nogridline");
+                    }else{
+                        if(value)node.addClass("solidgridline");
+                        else node.removeClass("solidgridline");
+                    }
                 }
             },
             stretchH:{
@@ -74096,11 +74245,17 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     }
                 }
             },
+
             defaultRowSize: 5,
             defaultColumnSize: 5,
-            defaultRowHeight: 50,
-            _defaultColumnWidth: 50,
 
+            defaultRowHeight: 30,
+            defaultColWidth: 30,
+
+            showH5Header: false,
+            showH5TH: false,
+            gridCaption:"",
+            gridHeaderCaption:"",
             // don't use handsometable's cell className - buggy (when moving row/column)
             // rows:5, cols:5, rowSetting:{'3':{}}, colSetting:{"B":{}}, cells:{A3:{type:"",value:"",,style:"",border:""}}, merged:[]
             layoutData:{
@@ -74119,8 +74274,25 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.css"
             }
         },
-        RenderTrigger:function(){
-            var prf=this,prop=prf.properties,cls=prf.box;
+        _rerender:function(prf){
+            var prop=prf.properties, cls=prf.box;
+
+            for(var i in prf.SubSerialIdMapItem)
+                prf.reclaimSubId(i, "td");
+            for(var i in prf.SubSerialIdMapCol)
+                prf.reclaimSubId(i, "tr");
+            for(var i in prf.SubSerialIdMapRow)
+                prf.reclaimSubId(i, "tr");
+
+            prf.ItemIdMapSubSerialId = {};
+            prf.SubSerialIdMapItem = {};
+
+            prf.ColIdMapSubSerialId = {};
+            prf.SubSerialIdMapCol = {};
+
+            prf.RowIdMapSubSerialId = {};
+            prf.SubSerialIdMapRow = {};
+
             if(prf.boxing()._isDesignMode()){
                 if(window.Handsontable)cls._renderAsHandsontable(prf);
                 else{
@@ -74160,9 +74332,18 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             }
             prf.boxing().setSolidGridlines(prop.solidGridlines, true);
         },
+        RenderTrigger:function(){
+            this.box._rerender(this);
+        },
         EventHandlers:{
             onShowTips: null,
-            onGetCellData: function(cellCoord, cellObj, cellChild){}
+            onGetCellData: function(cellCoord, cellObj, cellChild){},
+            onClickHeadTopCell: function(profile, data, e, src){},
+            onClickHeadCell: function(profile, row, e, src){},
+            onClickColumn: function(profile, column, e, src){},
+            onClickRow: function(profile, row, e, src){},
+            onClickCell: function(profile, cell, e, src){},
+            onHoverRow: function(profile, row, e, src, over){}
         },
         _getHeaderOffset:function(prf){
             var prop=prf.properties, offset = {left:0,top:0};
@@ -74200,17 +74381,27 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 p = t.getPlugin("ManualRowResize");
                 for(var i=0, l=layoutData.rows,h; i<l;i++){
                     var row=t.toPhysicalRow(i);
-                    if(p.manualRowHeights && p.manualRowHeights[row]) xui.set(rowSetting, [i+1, 'manualHeight'], p.manualRowHeights[row]);
-                    if(tmp = xui.isArr(s.rowHeights)?s.rowHeights[row]:s.rowHeights) xui.set(rowSetting, [i+1, 'height'], tmp);
+                    if(p.manualRowHeights && p.manualRowHeights[row] && p.manualRowHeights[row] !== prop.defaultRowHeight){
+                        xui.set(rowSetting, [i+1, 'height'], p.manualRowHeights[row]);
+                    }else{
+                        if(rowSetting[i+1]) delete rowSetting[i+1].height;
+                    }
+                    if(rowSetting[i+1]){
+                        if(xui.isEmpty(rowSetting[i+1]))delete rowSetting[i+1];
+                    }
                 }
                 if(!xui.isEmpty(rowSetting)) layoutData.rowSetting=rowSetting;
 
                 // colSetting:{"B":{}}
                 p = t.getPlugin("ManualColumnResize");
                 for(var i=0, l=layoutData.cols,w; i<l;i++){
-                    var col=t.toPhysicalColumn(i);
-                    if(p.manualColumnWidths && p.manualColumnWidths[col]) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'manualWidth'], p.manualColumnWidths[col]);
-//                    if(tmp = xui.isArr(s.colWidths)?s.colWidths[col]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
+                    var col=t.toPhysicalColumn(i),cr=xui.ExcelFormula.toColumnChr(i+1);
+                    if(p.manualColumnWidths && p.manualColumnWidths[col] && p.manualColumnWidths[col]!=prop.defaultColWidth){
+                        xui.set(colSetting, [cr, 'width'], p.manualColumnWidths[col]);
+                    }else{
+                        if(colSetting && colSetting[cr])delete colSetting[cr]['width'];
+                    }
+                    // if(tmp = xui.isArr(s.colWidths)?s.colWidths[col]:s.colWidths) xui.set(colSetting, [xui.ExcelFormula.toColumnChr(i+1), 'width'], tmp);
                 }
                 if(!xui.isEmpty(colSetting)) layoutData.colSetting=colSetting;
 
@@ -74234,8 +74425,8 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                         var col=t.toPhysicalColumn(m);
                         // align settings
                         // don't use className - buggy
-//                        if(rowMetas[col].className)
-//                            xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "className"], xui.str.trim(rowMetas[col].className));
+                        //  if(rowMetas[col].className)
+                        //      xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "className"], xui.str.trim(rowMetas[col].className));
                         // style: ignore empty {}
                         if(!xui.isEmpty(rowMetas[col].style))
                             xui.set(cells, [xui.ExcelFormula.toCellId(m,i), "style"], xui.copy(rowMetas[col].style));
@@ -74258,21 +74449,21 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 rowSize=layoutData.rows||prop.defaultRowSize,
                 colSize=layoutData.cols||prop.defaultColumnSize,
                 childrenMap={}, t, merged={}, merged2={},
-                getCellData = function(childrenMap, itemId){
-                    var data = prf.onGetCellData && prf.boxing().onGetCellData(prf, itemId, xui.get(layoutData, ["cells", itemId]), childrenMap[itemId]);
+                getCellData= function(childrenMap, type, itemId){
+                    var data = prf.onGetCellData && prf.boxing().onGetCellData(prf, itemId, xui.get(layoutData, [type, itemId]), childrenMap[itemId]);
                     if(!xui.isSet(data)){
-                        if(!childrenMap[itemId]){
-                            data = xui.get(layoutData, ["cells", itemId, "value"]);
-                        }else{
+                        data = xui.get(layoutData, [type, itemId]) || {};
+                        if(!xui.isHash(data)) data = {value:data||""};
+                        if(childrenMap[itemId]){
                             var childPrf = childrenMap[itemId], ins = childPrf && childPrf.boxing();
                             if(childPrf.key=='xui.UI.RichEditor'){
-                                data = '';
+                                data.value = '';
                             }else if(childPrf.key=='xui.UI.CheckBox'||childPrf.key=='xui.UI.SCheckBox'){
-                                data = '<input type="checkbox" disabled tabindex="-1"  onclick="javascript:return false;"'
+                                data.value = '<input type="checkbox" disabled tabindex="-1"  onclick="javascript:return false;"'
                                           + (ins.getUIValue()?"checked":"")
                                           +'>' + ins.getCaption();
                             }else{
-                                data = ins.getShowValue?ins.getShowValue():
+                                data.value = ins.getShowValue?ins.getShowValue():
                                     ins.getValue?('$UIvalue' in childPrf.properties?ins.getUIValue():ins.getValue()):
                                     ins.getCaption?ins.getCaption():
                                     ins.getHtml?ins.getHtml():
@@ -74281,9 +74472,9 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                             }
                         }
                     }
-                    return xui.isSet(data)?data:"";
+                    return data;
                 },
-                cellProp,subSerialId,item, itemId, domId, styles,tpl=[];
+                cellProp,subSerialId,item, itemId, domId, styles, rowid, tpl=[];
 
             xui.arr.each(prf.children,function(v){
                 childrenMap[v[1]]=v[0];
@@ -74301,47 +74492,109 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             tpl.push("<div id='"+prf.key+"-HOLDER:"+prf.serialId + ":" +"' class='"+prf.getClass("HOLDER")
                 +"' style='width:"+prop.width+"; height:"+prop.height
                 +"' >");
-            tpl.push("<table id='"+prf.key + "-TABLE:" + prf.serialId + ":" +"' class='"+prf.getClass("TABLE") +"'"
-                + (prop.stretchH!='none'?(" style='width:"+prop.width+";'"):"")
+            tpl.push("<table id='"+prf.key + "-TABLE:" + prf.serialId + ":" +"' class='layout-table "+prf.getClass("TABLE") +"'"
+                + (prop.stretchH!='none'?(" style='width:"+(prop.width=='auto'?'100%':prop.width)+";'"):"")
                 +">");
+            tpl.push("<caption class='layout-caption "+prf.getClass("CAPTION") +"'>"+ prop.gridCaption +"</caption>");
             // colgroup
             var colWidths = prf.box._getColWidths(prf, prf.$px(prop.width));
-            tpl.push("<colgroup><col style='width:0;border:0;margin:0;padding:0;'></col>");
+            tpl.push("<colgroup><col style='"+(prop.showH5TH?(prop.rowHeaderWidth=="auto"?"":("width:"+prop.rowHeaderWidth+"px;")):"width:0;border:0;margin:0;padding:0;")+"'></col>");
             for(var col=0,n=colSize;col<n;col++){
                 tpl.push("<col style='width:" + colWidths[col] + ";'></col>");
             }
             tpl.push("</colgroup>");
+            // thead
+            if(prop.showH5Header){
+                trid = prf.pickSubId('tr');
+                tpl.push("<thead>");
+                tpl.push("<tr id='"+prf.key + "-TRF:" + prf.serialId + ":" + trid + "'"
+                    +" class='header "+prf.getClass("TRF") + " " + (xui.get(layoutData, ['rowSetting', "0", 'className'])||"") + "'"
+                    +" title='" + (xui.get(layoutData, ['rowSetting', "0", 'tips'])||"")  + "'"
+                    + ">");
+                tpl.push("<th id='"+prf.key + "-TH:" + prf.serialId + ":" + trid + "' class='row-top col-0 layout-cell header "+ prf.getClass("THTF") +"' style='"+(prop.showH5TH?("width:"+prop.rowHeaderWidth+"px;"):"width:0;border:0;margin:0;padding:0;")+"");
+                if(t = xui.get(layoutData, ['headerSetting', 'height']) || prop.columnHeaderHeight){
+                    tpl.push(t=="auto"?"":("height:"+ (t - 1) + "px;"));
+                }
+                tpl.push("'>"+prop.gridHeaderCaption+"</th>");
+                for(var col=0,n=colSize;col<n;col++){
+                    // use tr here, avoid duplication with those TH in TBODY
+                    subSerialId = prf.pickSubId('tr');
+                    itemId = xui.ExcelFormula.toColumnChr(col + 1);
+                    item={
+                        _serialId:subSerialId,
+                        col:col+1,
+                        id:itemId,
+                        data: getCellData(childrenMap, "colSetting", itemId)
+                    };
+                    prf.ColIdMapSubSerialId[itemId] = subSerialId;
+                    prf.SubSerialIdMapCol[subSerialId] = item;
+
+                    domId = prf.key + "-TH:" + prf.serialId + ":" +subSerialId;
+                    styles = [];
+                    xui.each(item.data.style,function(v,k){
+                        styles.push(k.replace(/[A-Z]/g,function(a){return '-'+a.toLowerCase()}) + ":" + v);
+                    });
+                    tpl.push("<th id='" + domId + "'"
+                        + (item.data.tips ? ("title='" + item.data.tips +"' ") : "")
+                        + " class='row-top layout-cell " + (!prop.showH5TH && col===0?'firstcol ':'') +prf.getClass("THT")+ " " + (item.data.className||"") + " header col-" + itemId.toLowerCase() + "'"
+                        + " style='"+styles.join(";")+"' "+  (merged[row+":"+col]||"") +">");
+                    tpl.push(item.data.value||"");
+                    tpl.push("</th>");
+                }
+                tpl.push("</tr>");
+                tpl.push("</thead>");
+            }
             // tbody
             tpl.push("<tbody>");
             for(var row=0,l=rowSize;row<l;row++){
-                tpl.push("<tr><th style='width:0;border:0;margin:0;padding:0;");
-                if(t = xui.get(layoutData, ['rowSetting', row+1, 'height']) || xui.get(layoutData, ['rowSetting', row+1, 'manualHeight']) || prop.defaultRowHeight){
-                    tpl.push("height:"+ (t - (row===0?1/*2*/:1)) + "px;");
+                trid = prf.pickSubId('tr');
+                itemId = row+1;
+                item={
+                    _serialId:trid,
+                    row:itemId,
+                    id:itemId,
+                    data: getCellData(childrenMap, "rowSetting", itemId)
+                };
+                prf.RowIdMapSubSerialId[itemId] = subSerialId;
+                prf.SubSerialIdMapRow[subSerialId] = item;
+                tpl.push("<tr id='"+prf.key + "-TR:" + prf.serialId + ":" + trid + "'"
+                    + " class='row-" + (row+1) + " " + (item.data.className||"") + " " + prf.getClass("TR") + " " + prf.getClass("TR",(row%2==1?"-even":"-odd")) + "'"
+                    + (item.data.tips ? ("title='" + item.data.tips +"' ") : "")
+                    + ">");
+                tpl.push("<th id='"+prf.key + "-TH:" + prf.serialId + ":" + trid + "'"
+                    + " class='row-" + (row+1) +" col-0 layout-cell "+(!prop.showH5Header && row===0?'firstrow ':'') + prf.getClass("THF") + "'"
+                    + " style='"+(prop.showH5TH?("width:"+prop.rowHeaderWidth+"px;"):"width:0;border:0;margin:0;padding:0;"));
+                if(t = item.data.height || prop.defaultRowHeight){
+                    tpl.push(t=="auto"?"":("height:"+ (t - (row===0?1/*2*/:1)) + "px;"));
                 }
-                tpl.push("'></th>");
+                tpl.push("'");
+                tpl.push(item.data.tips ? (" title='" + item.data.tips +"'") : "");
+                tpl.push(">"+ (item.data.value||"") +"</th>");
                 for(var col=0,n=colSize;col<n;col++){
-                    subSerialId = prf.pickSubId('items');
+                    subSerialId = prf.pickSubId('td');
                     itemId = xui.ExcelFormula.toCellId(col,row);
                     item={
                         _serialId:subSerialId,
                         col:col,
                         row:row,
                         id:itemId,
-                        value: getCellData(childrenMap, itemId),
-                        style : xui.get(layoutData, ["cells", itemId,"style"]) || {}
+                        data: getCellData(childrenMap, "cells", itemId)
                     };
                     prf.ItemIdMapSubSerialId[itemId] = subSerialId;
                     prf.SubSerialIdMapItem[subSerialId] = item;
 
-                    domId = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
+                    domId = prf.key + "-TD:" + prf.serialId + ":" +subSerialId;
                     styles = [];
-                    xui.each(item.style,function(v,k){
+                    xui.each(item.data.style,function(v,k){
                         styles.push(k.replace(/[A-Z]/g,function(a){return '-'+a.toLowerCase()}) + ":" + v);
                     });
                     // layoutData.merged
                     if(!merged2[row+":"+col]){
-                        tpl.push("<td id='"+domId+"' class='layoutcell "+ (row===0?'firstrow ':'') + (col===0?'firstcol ':'') +prf.getClass("ITEM")+"' style='"+styles.join(";")+"' "+  (merged[row+":"+col]||"") +">");
-                        tpl.push(item.value);
+                        tpl.push("<td id='" + domId + "'"
+                            + (item.data.tips ? (" title='" + item.data.tips +"'") : "")
+                            + " class='layout-cell "+ (!prop.showH5Header && row===0?'firstrow ':'') + (!prop.showH5TH && col===0?'firstcol ':'') +prf.getClass("TD")+ " " + (item.data.className||"") + " col-" + itemId.replace(/\d/g,'').toLowerCase() + " row-" + (row+1) + " cell-" + itemId.toLowerCase() + "'"
+                            + " style='"+styles.join(";")+"' "+  (merged[row+":"+col]||"") +">");
+                        tpl.push(item.data.value||"");
                         tpl.push("</td>");
                     }
                 }
@@ -74351,7 +74604,14 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             tpl.push("<div id='"+prf.key+"-CBORDER:"+prf.serialId + ":" +"' class='"+prf.getClass("CBORDER") +"' ></div>");
             tpl.push("</div>");
 
-            elem.innerHTML = tpl.join("");
+            var frag = document.createDocumentFragment(), tempDiv = document.createElement('div');
+            tempDiv.innerHTML = tpl.join("");
+            while (tempDiv.firstChild) {
+              frag.appendChild(tempDiv.firstChild);
+            }
+            elem.innerHTML = '';
+            elem.append(frag);
+
             xui.UI.$addEventsHandler(prf, elem, false);
 
             // layoutData.customBorders
@@ -74413,7 +74673,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     /* cell render*/
                     // for xui dom id & event handler
                     beforeRenderer: function(TD, row, col, vprop, value, cellprop){
-                        var subSerialId = prf.pickSubId('items'),
+                        var subSerialId = prf.pickSubId('td'),
                               itemId = xui.ExcelFormula.toCellId(col,row);
                         // memory map
                         cellprop.oid=cellprop.id;
@@ -74430,14 +74690,14 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                             cellprop.style = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"style"]) || {};
                         }
                         // dom
-                        TD.id = prf.key + "-ITEM:" + prf.serialId + ":" +subSerialId;
+                        TD.id = prf.key + "-TD:" + prf.serialId + ":" +subSerialId;
                         xui.UI.$addEventsHandler(prf, TD, true);
                         for(var i in cellprop.style) TD.style[i] = cellprop.style[i];
                         // align class
-//                        if(!cellprop.className){
-//                            cellprop.className = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
-//                        }
-                        TD.className = (TD.className||"")  + prf.getClass("ITEM");
+                        //if(!cellprop.className){
+                        //    cellprop.className = xui.get(prop.layoutData, ["cells", xui.ExcelFormula.toCellId(col,row),"className"]) || "";
+                        //}
+                        TD.className = (TD.className||"")  + prf.getClass("TD");
                         if(designMode)
                             TD.setAttribute('data-coord', itemId);
                         if(cellprop._child_autoexpandH){
@@ -74471,10 +74731,6 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
 
                             // reset memory map
                             prf.children=[];
-                            for(var i in prf.SubSerialIdMapItem)
-                                prf.reclaimSubId(i, "items");
-                            prf.ItemIdMapSubSerialId={};
-                            prf.SubSerialIdMapItem={};
                         }
                     },
                     afterInit:function(){
@@ -74485,7 +74741,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                         //console.log('afterRender');
                         xui.tryF(prf.$onrender,[],prf);
 
-//                        onLayoutChanged(prf);
+                        //  onLayoutChanged(prf);
 
                         // Set id for important nodes, for getting profile from dom id
                         var node = prf.getSubNode("BOX");
@@ -74643,7 +74899,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                         var p = this.getPlugin("ManualColumnResize");
                         // new cols
                         var arr=[];
-                        for(var i=0;i<amount;i++) arr.push(prop._defaultColumnWidth);
+                        for(var i=0;i<amount;i++) arr.push(prop.defaultColWidth);
                         // ensure length
                         if(!p.manualColumnWidths) p.manualColumnWidths=[];
                         for(var i=0;i<index;i++) p.manualColumnWidths[i] = p.manualColumnWidths[i] || (void 0);
@@ -74710,7 +74966,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             // dft widht/height
             settings.rowHeaderWidth  = prop.rowHeaderWidth;
             settings.columnHeaderHeight = prop.columnHeaderHeight;
-            settings.defaultColumnWidth = prop._defaultColumnWidth;
+            settings.defaultColumnWidth = prop.defaultColWidth;
             // show header?
             settings.rowHeaders = designMode;
             settings.colHeaders =  designMode;
@@ -74730,13 +74986,13 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 var minRowHeights=[], colWidths=[], manualRowResize=[],manualColumnResize=[], data = [], row;
                 // manualRowResize (start from "1")
                 xui.each(layoutData.rowSetting,function(v,k){
-                    if(xui.isSet(v.manualHeight||v))manualRowResize[parseInt(k,10) - 1]=parseInt(v.manualHeight||v,10);
-                    if(xui.isSet(v.height||v))minRowHeights[parseInt(k,10) - 1]=parseInt(v.height||v,10);
+                    if(xui.isSet(v.height||v))manualRowResize[parseInt(k,10) - 1]=parseInt(v.height||v,10);
+                    if(xui.isSet(v.minHeight||v))minRowHeights[parseInt(k,10) - 1]=parseInt(v.minHeight||v,10);
                 });
                 // manualColumnResize (start from "A"=>"1")
                 xui.each(layoutData.colSetting,function(v,k){
                     k = xui.ExcelFormula.toColumnNum(k);
-                    if(xui.isSet(v.manualWidth||v))manualColumnResize[k - 1]=parseInt(v.manualWidth||v,10);
+                    if(xui.isSet(v.width||v))manualColumnResize[k - 1]=parseInt(v.width||v,10);
                     // if(xui.isSet(v.width||v))colWidths[k - 1]=parseInt(v.width||v,10);
                 });
                 // init data
@@ -74805,11 +75061,11 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         _getColWidths:function(prf, tableWidth){
             var prop=prf.properties, layoutData = prop.layoutData, t,
                 colSize=layoutData.cols||prop.defaultColumnSize,
-                reCalculated=[], colWidths=[], fix=0, count=0, per, off, rc=0, bW=0;
+                reCalculated=[], colWidths=[], fix=prop.showH5TH?prop.rowHeaderWidth:0, count=0, per, rc=0, bW=0;
             if(prop.stretchH=="all"){
                 for(var col=0,n=colSize;col<n;col++){
                     var chr = xui.ExcelFormula.toColumnChr(col+1);
-                    if(t = xui.get(layoutData, ['colSetting', chr,'manualWidth'])){
+                    if(t = xui.get(layoutData, ['colSetting', chr,'width'])){
                         fix += t;
                         reCalculated.push(t);
                     }else{
@@ -74818,17 +75074,16 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     }
                 }
                 per = (tableWidth - fix ) / count;
-                off = per - Math.round(per);
             }
             for(var col=0,n=colSize;col<n;col++){
                 var chr = xui.ExcelFormula.toColumnChr(col+1), aW;
                 rc++;
-                t = xui.get(layoutData, ['colSetting', chr,'manualWidth']) || (prop._defaultColumnWidth);
+                t = xui.get(layoutData, ['colSetting', chr,'width']) || (prop.defaultColWidth);
                 switch(prf.properties.stretchH){
                     case 'all':
-                        aW = reCalculated[col]===null?Math.max(prop._defaultColumnWidth, (Math.round(per) )):reCalculated[col];
+                        aW = reCalculated[col]===null?Math.max(prop.defaultColWidth, (Math.round(per) )):reCalculated[col];
                         bW += aW;
-                        colWidths.push((col==colSize-1?Math.round(tableWidth-bW+aW):aW)+"px");
+                        colWidths.push((col==colSize-1?Math.round(tableWidth-(prop.showH5TH?prop.rowHeaderWidth:0)-bW+aW):aW)+"px");
                         break;
                     case 'last':
                         colWidths.push(col==colSize-1?"100%":(t + "px"));
@@ -74847,7 +75102,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     var itemId = xui.ExcelFormula.toCellId(conf.col,conf.row),
                         subSerialId = prf.ItemIdMapSubSerialId[itemId],
                         table=prf.getSubNode("TABLE").get(0),
-                        td=prf.getSubNode("ITEM", subSerialId),
+                        td=prf.getSubNode("TD", subSerialId),
                         pos = td.offset(null, table),
                         id, div, style;
                      if(conf.top&&conf.top.width){
@@ -74886,7 +75141,9 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         },
         _resizeTable: function(prf,size,force){
             var node = prf.getSubNode("HOLDER"),
-                autoH = prf.properties.height=="auto";
+                prop = prf.properties,
+                autoW = prop.width=="auto",
+                autoH = prop.height=="auto";
             if(!node.get(0))return ;
 
             if(prf.boxing()._isDesignMode()){
@@ -74895,7 +75152,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     var holder = node.cssSize();
                     if(autoH) {
                         // handsontable must has height
-                        size.height = prf.getSubNode('HIDER').height();
+                        size.height = autoW?"auto":prf.getSubNode('HIDER').height();
                     }
                     if(holder.width!=size.width || holder.height!=size.height){
                         // for merged cells
@@ -74906,10 +75163,11 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 }
             }else{
                 if(autoH)size.height="auto";
+                if(autoW)size.width="auto";
                 node.cssSize(size);
                  var tb = prf.getSubNode("TABLE");
                  if(tb.get(0)){
-                     if(!autoH &&prf.properties.stretchH!='none'){
+                     if(!(autoW || autoH || prf.properties.stretchH=='none') ){
                          var rw = size.width - (tb.offsetHeight() > size.height ? xui.Dom.getScrollBarSize() : 0);
                          tb.width(rw);
                      }
@@ -74924,7 +75182,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                     }
                     // to trigger cells onsize
                     var cells=[];
-                    prf.getSubNodes("ITEM",true).each(function(cell){
+                    prf.getSubNodes("TD",true).each(function(cell){
                         if(xui.Dom.$hasEventHandler(cell,'onsize')) cells.push(cell);
                     });
                     if(cells.length) xui(cells).onSize(true);
@@ -74962,7 +75220,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             if(prf.renderId && target['xui.UI'] && target.size()==1){
                 var item = prf.getItemByItemId(subId), inputPrf = target.get(0), iProp=inputPrf.properties;
                 if(item){
-                    var cell = prf.getSubNode("ITEM", item._serialId),
+                    var cell = prf.getSubNode("TD", item._serialId),
                         isFormField = inputPrf.box._isFormField ? inputPrf.box._isFormField(inputPrf) : !!xui.get(inputPrf,['properties','isFormField']),
                         mode = prf.boxing().getMode(),
                         show = mode!='read' || target['xui.UI.RichEditor'];
@@ -75071,6 +75329,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
 */
         _onresize:function(prf,width,height){
             var prop=prf.properties,
+                autow=prop.width=="auto",
                 autoh=prop.height=="auto",
                 // compare with px
                 us = xui.$us(prf),
@@ -75082,8 +75341,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 ww=width?prf.$px(width):width,
                 hh=height?prf.$px(height):height,
                 t;
-            if(autoh)height=null;
-            if( width ||  height){
+            if( width || height){
                 // reset here
                 if(width)prop.width=adjustunit(ww);
                 if(height)prop.height=adjustunit(hh);
@@ -75091,7 +75349,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 boxNode.css({
                     marginLeft:-offset.left+"px",
                     marginTop:-offset.top+"px",
-                    width:width?(ww+offset.left+'px'):null,
+                    width:autow?"auto":width?(ww+offset.left+'px'):null,
                     height:autoh?"auto":height?(hh+offset.top+'px'):null
                 });
 

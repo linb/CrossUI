@@ -68,13 +68,14 @@ xui.Class("xui.UI.RadioBox", "xui.UI.List",{
         DataModel:{
             lite: null,
             tagCmds:null,
+            optBtn:null,
             borderType:{
                 ini:'none'
             },
             checkBox:{
                 ini:false,
                 action:function(v){
-                    this.getSubNode('MARK',true).replaceClass(v ? /(uicmd-radio)|(\s+uicmd-radio)/g : /(^uicmd-check)|(\s+uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
+                    this.getSubNode('MARK',true).replaceClass(v ? /(^xui-uicmd-radio)|(\s+xui-uicmd-radio)/g : /(^xui-uicmd-check)|(\s+xui-uicmd-check)/g , v ? ' xui-uicmd-check' : ' xui-uicmd-radio');
                 }
             }
         },

@@ -146,6 +146,20 @@
 .xui-uibar-top-focus .xui-uibar-tdr{
   background-color: #455164;
 }
+
+.xui-formlayout-box.solidgridline .xui-formlayout-td.firstcol, .xui-formlayout-box.solidgridline .xui-formlayout-tht.firstcol, .xui-formlayout-box.solidgridline .xui-formlayout-thf, .xui-formlayout-box.solidgridline .xui-formlayout-thtf {
+    border-left: 1px solid #BFBFBF;
+}
+.xui-formlayout-box.solidgridline .xui-formlayout-td.firstrow, .xui-formlayout-box.solidgridline .xui-formlayout-thf.firstrow, .xui-formlayout-box.solidgridline .xui-formlayout-tht, .xui-formlayout-box.solidgridline .xui-formlayout-thtf {
+    border-top: 1px solid #BFBFBF;
+}
+.xui-formlayout-box.solidgridline .xui-formlayout-td, .xui-formlayout-box.solidgridline .xui-formlayout-tht, .xui-formlayout-box.solidgridline .xui-formlayout-thf, .xui-formlayout-box.solidgridline .xui-formlayout-thtf {
+    border-right: 1px solid #BFBFBF;
+    border-bottom: 1px solid #BFBFBF;
+    border-left: none;
+    border-top: none;
+}
+#003f4b
 /*xui.UI.TreeGrid*/
 .xui-uicell,
 .xui-treegrid-cells1, .xui-treegrid-cells2{

@@ -504,6 +504,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
 
             // only show right/bottom handlers
             singleDir:false,
+            nodefilters:"",
             // can change width
             vertical :true,
             // can chang height
@@ -576,6 +577,7 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     '_attached:' + pro._attached + ';' +
                     'forceVisible:' + pro.forceVisible + ';' +
                     'singleDir:' + pro.singleDir + ';' +
+                    'nodefilters:' + pro.nodefilters + ';' +
                     'vertical:' + pro.vertical + ';' +
                     'horizontal:' + pro.horizontal + ';' +
                     'forceMovable:' + pro.forceMovable + ';'
@@ -670,6 +672,11 @@ xui.Class("xui.UI.Resizer","xui.UI",{
                     if(t=template.L)t.className += n;
                     if(t=template.LT)t.className += n;
 
+                }
+                if(pro.nodefilters){
+                    xui.arr.each(pro.nodefilters,function(k){
+                        delete template[k];
+                    });
                 }
                 // set template
                 profile.box.setTemplate(template, hash);
