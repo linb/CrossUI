@@ -32,7 +32,7 @@ xui.Class("xui.Tips", null,{
         },'$Tips',-1)
         .afterMousemove(function(obj, e){
             if(dd._profile.isWorking)return;
-            var event=xui.Event,p,n;
+            var event=xui.Event,p,n,_from;
 
             if((p=xui.resetRun.$cache) && p['$Tips']){
                 tips._pos=event.getPos(e);
@@ -40,9 +40,11 @@ xui.Class("xui.Tips", null,{
 
             //it's first show
             if(tips._from){
-                tips._pos=event.getPos(e);
-                tips._showF();
-                xui.resetRun('$Tips3');
+                if(!tips._from["xui.Template"]){
+                    tips._pos=event.getPos(e);
+                    tips._showF();
+                    xui.resetRun('$Tips3');
+                }
             //after show, before hide
             }else if(tips.MOVABLE && tips._showed){
                 if(tips._Node){
@@ -84,66 +86,68 @@ xui.Class("xui.Tips", null,{
             //check id
             _from=event._getProfile(id)
             // not for xui.Template
-            if(_from && !_from["xui.Template"]){
-                var isuip = _from.box && _from.KEY=='xui.UIProfile';
-                if(isuip){
-                    if(_from.properties.disableTips || _from.behavior.disableTips){
-                        node=null;
-                        return rtn(false);
-                    }
-
-                    var nt=_from.behavior.NoTips;
-                    if(nt){
-                        for(var i=0,l=nt.length;i<l;i++){
-                            if(id.indexOf(_from.keys[nt[i]])===0)
-                                return rtn(false);
+            if(_from){
+                if(!_from["xui.Template"]){
+                    var isuip = _from.box && _from.KEY=='xui.UIProfile';
+                    if(isuip){
+                        if(_from.properties.disableTips || _from.behavior.disableTips){
+                            node=null;
+                            return rtn(false);
                         }
-                    }
-                    nt=_from.behavior.PanelKeys;
-                    if(nt){
-                        for(var i=0,l=nt.length;i<l;i++){
-                            if(id.indexOf(_from.keys[nt[i]])===0)
-                                return rtn(false);
+
+                        var nt=_from.behavior.NoTips;
+                        if(nt){
+                            for(var i=0,l=nt.length;i<l;i++){
+                                if(id.indexOf(_from.keys[nt[i]])===0)
+                                    return rtn(false);
+                            }
                         }
+                        nt=_from.behavior.PanelKeys;
+                        if(nt){
+                            for(var i=0,l=nt.length;i<l;i++){
+                                if(id.indexOf(_from.keys[nt[i]])===0)
+                                    return rtn(false);
+                            }
+                        }
+                        nt=_from.behavior.HoverEffected;
+                        //if onShowTips exists, use seprated id, or use item scope id
+                        tempid=_from.onShowTips?id:id.replace(tips._reg,
+                        //if HoverEffected exists, use seprated id
+                        function(a,b){
+                            return nt&&(b in nt)?a:':';
+                        });
                     }
-                    nt=_from.behavior.HoverEffected;
-                    //if onShowTips exists, use seprated id, or use item scope id
-                    tempid=_from.onShowTips?id:id.replace(tips._reg,
-                    //if HoverEffected exists, use seprated id
-                    function(a,b){
-                        return nt&&(b in nt)?a:':';
-                    });
-                }
 
-                if(tips._markId && tempid==tips._markId)
-                    return rt;
+                    if(tips._markId && tempid==tips._markId)
+                        return rt;
 
-                //set mark id
-                tips._markId = tempid;
-                tips._pos=event.getPos(e);
-                tips._activeNode=node;
-                tips._activePrf=_from;
+                    //set mark id
+                    tips._markId = tempid;
+                    tips._pos=event.getPos(e);
+                    tips._activeNode=node;
+                    tips._activePrf=_from;
 
-                if(tips._showed){
-                    tips._from=_from;
-                    tips._enode=id;
-                    tips._showF();
-                }else{
-                    if(!tips.HTMLTips){
-                            tips._from=_from;
-                            tips._enode=id;
-                            if(tips._from)
-                                tips._showF();
+                    if(tips._showed){
+                        tips._from=_from;
+                        tips._enode=id;
+                        tips._showF();
                     }else{
-                        xui.resetRun('$Tips', function(){
-                            tips._from=_from;
-                            tips._enode=id;
-                            // if mouse stop move
-                            xui.resetRun('$Tips3', function(){
+                        if(!tips.HTMLTips){
+                                tips._from=_from;
+                                tips._enode=id;
                                 if(tips._from)
                                     tips._showF();
-                            });
-                        }, tips.DELAYTIME);
+                        }else{
+                            xui.resetRun('$Tips', function(){
+                                tips._from=_from;
+                                tips._enode=id;
+                                // if mouse stop move
+                                xui.resetRun('$Tips3', function(){
+                                    if(tips._from)
+                                        tips._showF();
+                                });
+                            }, tips.DELAYTIME);
+                        }
                     }
                 }
             }else{

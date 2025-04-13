@@ -47,7 +47,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI"],{
                 }
                 layoutData.cells = cells;
                 prf.properties.layoutData = layoutData;
-                prf.box._rerender(prf);
+                prf.box._rerender(prf, true);
             });
         }
     },
@@ -389,9 +389,36 @@ xui.Class("xui.UI.FormLayout",["xui.UI"],{
                 ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.css"
             }
         },
-        _rerender:function(prf){
-            var prop=prf.properties, cls=prf.box;
+        _clear:function(prf){
+            if(prf.onClear){
+                prf.boxing().onClear(prf);
+            }
+            // remove embedded ui
+            if(prf.children){
+                xui.arr.each(prf.children,function(v){
+                    v[1].destroy();
+                });
+            }
+            // must purge lazy-bound node here
+            var t, node=prf.getSubNode("BOX").get(0);
+            if(node)
+                xui.$purgeChildren(node);
 
+            // for design mode
+            if(t=prf.$htable){
+                if(!t.isDestroyed){
+                    window.Handsontable.hooks.destroy(t);
+                    t.destroy();
+                }
+                delete prf.$htable;
+            }
+            if(t = prf.$popmenu){
+                t.destroy();
+            }
+        },
+        _rerender:function(prf, clearFirst){
+            var prop=prf.properties, cls=prf.box;
+            if(clearFirst) this._clear(prf);
             for(var i in prf.SubSerialIdMapItem)
                 prf.reclaimSubId(i, "td");
             for(var i in prf.SubSerialIdMapCol)
@@ -452,7 +479,8 @@ xui.Class("xui.UI.FormLayout",["xui.UI"],{
         },
         EventHandlers:{
             onShowTips: null,
-            onGetCellData: function(cellCoord, cellObj, cellChild){},
+            onClear: function(profile){},
+            onGetCellData: function(profile, cellCoord, cellObj, cellChild){},
             onClickHeadTopCell: function(profile, data, e, src){},
             onClickHeadCell: function(profile, row, e, src){},
             onClickColumn: function(profile, column, e, src){},
@@ -741,13 +769,15 @@ xui.Class("xui.UI.FormLayout",["xui.UI"],{
             xui.arr.each(arr,function(v){
                 prf.boxing().append(v[0], v[1]);
             });
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyh5table"]=function(){this.box._clear(this)};
         },
         _renderAsHandsontable: function(prf){
             if(!prf || !prf.box)return;
             var onLayoutChanged = function(prf, force){
                 prf.box._layoutChanged(prf,force);
             };
-            var boxNode = prf.getSubNode("BOX"),
+            var box=prf.box,
+                boxNode = prf.getSubNode("BOX"),
                 elem = boxNode.get(0),
                 htable,
                 prop = prf.properties,
@@ -1154,24 +1184,7 @@ xui.Class("xui.UI.FormLayout",["xui.UI"],{
             }
 
             // set before destroy function
-            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){
-                var t;
-                if(t=this.$htable){
-                    // must purge lazy-bound node here
-                    var node=this.getSubNode("BOX").get(0);
-                    if(node)
-                        xui.$purgeChildren(node);
-
-                    if(!t.isDestroyed){
-                        window.Handsontable.hooks.destroy(t);
-                        t.destroy();
-                    }
-                    delete this.$htable;
-                }
-                if(t = this.$popmenu){
-                    t.destroy();
-                }
-            }
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){this.box._clear(this)};
         },
         _getColWidths:function(prf, tableWidth){
             var prop=prf.properties, layoutData = prop.layoutData, t,

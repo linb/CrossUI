@@ -2059,7 +2059,6 @@ xui.merge(xui,{
             if(!(v=children[i]))continue;
             if(t=v.$xid){
                 if(o=pdata[t]){
-
                     //clear event handler
                     if(w=o.eHandlers){
                         if(xui.browser.isTouch && w['onxuitouchdown'])
@@ -2481,7 +2480,7 @@ new function(){
                     'constant':xui.constant,
                     'global':xui.$cache.data,
                     // special functions
-                    getCookies:xui.Cookies.get,
+                    getCookies:xui.Cookies&&xui.Cookies.get||function(){},
                     getFI:function(key){var h=xui.getUrlParams();return h&&h[key]}
                 };
         },

@@ -2073,7 +2073,6 @@ xui.merge(xui,{
             if(!(v=children[i]))continue;
             if(t=v.$xid){
                 if(o=pdata[t]){
-
                     //clear event handler
                     if(w=o.eHandlers){
                         if(xui.browser.isTouch && w['onxuitouchdown'])
@@ -19348,7 +19347,7 @@ xui.Class("xui.Tips", null,{
         },'$Tips',-1)
         .afterMousemove(function(obj, e){
             if(dd._profile.isWorking)return;
-            var event=xui.Event,p,n;
+            var event=xui.Event,p,n,_from;
 
             if((p=xui.resetRun.$cache) && p['$Tips']){
                 tips._pos=event.getPos(e);
@@ -19356,9 +19355,11 @@ xui.Class("xui.Tips", null,{
 
             //it's first show
             if(tips._from){
-                tips._pos=event.getPos(e);
-                tips._showF();
-                xui.resetRun('$Tips3');
+                if(!tips._from["xui.Template"]){
+                    tips._pos=event.getPos(e);
+                    tips._showF();
+                    xui.resetRun('$Tips3');
+                }
             //after show, before hide
             }else if(tips.MOVABLE && tips._showed){
                 if(tips._Node){
@@ -19400,66 +19401,68 @@ xui.Class("xui.Tips", null,{
             //check id
             _from=event._getProfile(id)
             // not for xui.Template
-            if(_from && !_from["xui.Template"]){
-                var isuip = _from.box && _from.KEY=='xui.UIProfile';
-                if(isuip){
-                    if(_from.properties.disableTips || _from.behavior.disableTips){
-                        node=null;
-                        return rtn(false);
-                    }
-
-                    var nt=_from.behavior.NoTips;
-                    if(nt){
-                        for(var i=0,l=nt.length;i<l;i++){
-                            if(id.indexOf(_from.keys[nt[i]])===0)
-                                return rtn(false);
+            if(_from){
+                if(!_from["xui.Template"]){
+                    var isuip = _from.box && _from.KEY=='xui.UIProfile';
+                    if(isuip){
+                        if(_from.properties.disableTips || _from.behavior.disableTips){
+                            node=null;
+                            return rtn(false);
                         }
-                    }
-                    nt=_from.behavior.PanelKeys;
-                    if(nt){
-                        for(var i=0,l=nt.length;i<l;i++){
-                            if(id.indexOf(_from.keys[nt[i]])===0)
-                                return rtn(false);
+
+                        var nt=_from.behavior.NoTips;
+                        if(nt){
+                            for(var i=0,l=nt.length;i<l;i++){
+                                if(id.indexOf(_from.keys[nt[i]])===0)
+                                    return rtn(false);
+                            }
                         }
+                        nt=_from.behavior.PanelKeys;
+                        if(nt){
+                            for(var i=0,l=nt.length;i<l;i++){
+                                if(id.indexOf(_from.keys[nt[i]])===0)
+                                    return rtn(false);
+                            }
+                        }
+                        nt=_from.behavior.HoverEffected;
+                        //if onShowTips exists, use seprated id, or use item scope id
+                        tempid=_from.onShowTips?id:id.replace(tips._reg,
+                        //if HoverEffected exists, use seprated id
+                        function(a,b){
+                            return nt&&(b in nt)?a:':';
+                        });
                     }
-                    nt=_from.behavior.HoverEffected;
-                    //if onShowTips exists, use seprated id, or use item scope id
-                    tempid=_from.onShowTips?id:id.replace(tips._reg,
-                    //if HoverEffected exists, use seprated id
-                    function(a,b){
-                        return nt&&(b in nt)?a:':';
-                    });
-                }
 
-                if(tips._markId && tempid==tips._markId)
-                    return rt;
+                    if(tips._markId && tempid==tips._markId)
+                        return rt;
 
-                //set mark id
-                tips._markId = tempid;
-                tips._pos=event.getPos(e);
-                tips._activeNode=node;
-                tips._activePrf=_from;
+                    //set mark id
+                    tips._markId = tempid;
+                    tips._pos=event.getPos(e);
+                    tips._activeNode=node;
+                    tips._activePrf=_from;
 
-                if(tips._showed){
-                    tips._from=_from;
-                    tips._enode=id;
-                    tips._showF();
-                }else{
-                    if(!tips.HTMLTips){
-                            tips._from=_from;
-                            tips._enode=id;
-                            if(tips._from)
-                                tips._showF();
+                    if(tips._showed){
+                        tips._from=_from;
+                        tips._enode=id;
+                        tips._showF();
                     }else{
-                        xui.resetRun('$Tips', function(){
-                            tips._from=_from;
-                            tips._enode=id;
-                            // if mouse stop move
-                            xui.resetRun('$Tips3', function(){
+                        if(!tips.HTMLTips){
+                                tips._from=_from;
+                                tips._enode=id;
                                 if(tips._from)
                                     tips._showF();
-                            });
-                        }, tips.DELAYTIME);
+                        }else{
+                            xui.resetRun('$Tips', function(){
+                                tips._from=_from;
+                                tips._enode=id;
+                                // if mouse stop move
+                                xui.resetRun('$Tips3', function(){
+                                    if(tips._from)
+                                        tips._showF();
+                                });
+                            }, tips.DELAYTIME);
+                        }
                     }
                 }
             }else{
@@ -73932,7 +73935,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 }
                 layoutData.cells = cells;
                 prf.properties.layoutData = layoutData;
-                prf.box._rerender(prf);
+                prf.box._rerender(prf, true);
             });
         }
     },
@@ -74274,9 +74277,36 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
                 ini:"https://cdn.jsdelivr.net/gh/linb/handsontable622/handsontable.full.min.css"
             }
         },
-        _rerender:function(prf){
-            var prop=prf.properties, cls=prf.box;
+        _clear:function(prf){
+            if(prf.onClear){
+                prf.boxing().onClear(prf);
+            }
+            // remove embedded ui
+            if(prf.children){
+                xui.arr.each(prf.children,function(v){
+                    v[1].destroy();
+                });
+            }
+            // must purge lazy-bound node here
+            var t, node=prf.getSubNode("BOX").get(0);
+            if(node)
+                xui.$purgeChildren(node);
 
+            // for design mode
+            if(t=prf.$htable){
+                if(!t.isDestroyed){
+                    window.Handsontable.hooks.destroy(t);
+                    t.destroy();
+                }
+                delete prf.$htable;
+            }
+            if(t = prf.$popmenu){
+                t.destroy();
+            }
+        },
+        _rerender:function(prf, clearFirst){
+            var prop=prf.properties, cls=prf.box;
+            if(clearFirst) this._clear(prf);
             for(var i in prf.SubSerialIdMapItem)
                 prf.reclaimSubId(i, "td");
             for(var i in prf.SubSerialIdMapCol)
@@ -74337,7 +74367,8 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
         },
         EventHandlers:{
             onShowTips: null,
-            onGetCellData: function(cellCoord, cellObj, cellChild){},
+            onClear: function(profile){},
+            onGetCellData: function(profile, cellCoord, cellObj, cellChild){},
             onClickHeadTopCell: function(profile, data, e, src){},
             onClickHeadCell: function(profile, row, e, src){},
             onClickColumn: function(profile, column, e, src){},
@@ -74626,13 +74657,15 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             xui.arr.each(arr,function(v){
                 prf.boxing().append(v[0], v[1]);
             });
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyh5table"]=function(){this.box._clear(this)};
         },
         _renderAsHandsontable: function(prf){
             if(!prf || !prf.box)return;
             var onLayoutChanged = function(prf, force){
                 prf.box._layoutChanged(prf,force);
             };
-            var boxNode = prf.getSubNode("BOX"),
+            var box=prf.box,
+                boxNode = prf.getSubNode("BOX"),
                 elem = boxNode.get(0),
                 htable,
                 prop = prf.properties,
@@ -75039,24 +75072,7 @@ xui.Class("xui.svg.group", "xui.svg.absComb",{
             }
 
             // set before destroy function
-            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){
-                var t;
-                if(t=this.$htable){
-                    // must purge lazy-bound node here
-                    var node=this.getSubNode("BOX").get(0);
-                    if(node)
-                        xui.$purgeChildren(node);
-
-                    if(!t.isDestroyed){
-                        window.Handsontable.hooks.destroy(t);
-                        t.destroy();
-                    }
-                    delete this.$htable;
-                }
-                if(t = this.$popmenu){
-                    t.destroy();
-                }
-            }
+            (prf.$beforeDestroy=(prf.$beforeDestroy||{}))["destroyhtable"]=function(){this.box._clear(this)};
         },
         _getColWidths:function(prf, tableWidth){
             var prop=prf.properties, layoutData = prop.layoutData, t,
