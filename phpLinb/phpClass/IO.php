@@ -1,4 +1,5 @@
 <?php
+#[AllowDynamicProperties]
 class zip  {
 	public $compressedData = array();
 	public $centralDirectory = array(); // central directory
@@ -24,7 +25,7 @@ class zip  {
 		$feedArrayRow .= pack("V",0);
 		$feedArrayRow .= pack("V",0);
 		$feedArrayRow .= pack("V",0);
-		$feedArrayRow .= pack("v", strlen($directoryName) );
+		$feedArrayRow .= pack("v", strlen((string)$directoryName) );
 		$feedArrayRow .= pack("v", 0 );
 		$feedArrayRow .= $directoryName;
 
@@ -45,7 +46,7 @@ class zip  {
 		$addCentralRecord .= pack("V",0);
 		$addCentralRecord .= pack("V",0);
 		$addCentralRecord .= pack("V",0);
-		$addCentralRecord .= pack("v", strlen($directoryName) );
+		$addCentralRecord .= pack("v", strlen((string)$directoryName) );
 		$addCentralRecord .= pack("v", 0 );
 		$addCentralRecord .= pack("v", 0 );
 		$addCentralRecord .= pack("v", 0 );
@@ -79,15 +80,15 @@ class zip  {
 		$feedArrayRow .= "\x08\x00";
 		$feedArrayRow .= "\x00\x00\x00\x00";
 
-		$uncompressedLength = strlen($data);
-		$compression = crc32($data);
-		$gzCompressedData = gzcompress($data);
+		$uncompressedLength = strlen((string)$data);
+		$compression = crc32((string)$data);
+		$gzCompressedData = gzcompress((string)$data);
 		$gzCompressedData = substr( substr($gzCompressedData, 0, strlen($gzCompressedData) - 4), 2);
 		$compressedLength = strlen($gzCompressedData);
 		$feedArrayRow .= pack("V",$compression);
 		$feedArrayRow .= pack("V",$compressedLength);
 		$feedArrayRow .= pack("V",$uncompressedLength);
-		$feedArrayRow .= pack("v", strlen($directoryName) );
+		$feedArrayRow .= pack("v", strlen((string)$directoryName) );
 		$feedArrayRow .= pack("v", 0 );
 		$feedArrayRow .= $directoryName;
 
@@ -110,7 +111,7 @@ class zip  {
 		$addCentralRecord .= pack("V",$compression);
 		$addCentralRecord .= pack("V",$compressedLength);
 		$addCentralRecord .= pack("V",$uncompressedLength);
-		$addCentralRecord .= pack("v", strlen($directoryName) );
+		$addCentralRecord .= pack("v", strlen((string)$directoryName) );
 		$addCentralRecord .= pack("v", 0 );
 		$addCentralRecord .= pack("v", 0 );
 		$addCentralRecord .= pack("v", 0 );
@@ -161,11 +162,11 @@ class zip  {
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 		header("Cache-Control: private",false);
 		header("Content-Type: application/zip");
-		header("Content-Disposition: attachment; filename=\"".basename($archiveName)."\";" );
+		header("Content-Disposition: attachment; filename=\"".basename((string)$archiveName)."\";" );
 		header("Content-Transfer-Encoding: binary");
-		header("Content-Length: ".@filesize($archiveName));
+		header("Content-Length: ".@filesize((string)$archiveName));
 		set_time_limit(0);
-		@readfile("$archiveName");
+		if($archiveName) @readfile((string)$archiveName);
 	 }
 }
 
@@ -173,6 +174,7 @@ class zip  {
  * IO class for phpLINB
  * from SNakeVil and other code
  */
+#[AllowDynamicProperties]
 class IO{
 
 	/**
@@ -202,6 +204,8 @@ class IO{
 		if (!is_readable($path)) throw new LINB_E("$path is not readable");
 
 		$dh = @opendir($path);
+        if(!$dh) return array();
+
 		$result = array();
 		$path = realpath($path);
 		if ($path[strlen($path)-1]!=DIRECTORY_SEPARATOR) $path .= DIRECTORY_SEPARATOR;
@@ -229,10 +233,10 @@ class IO{
 	 * @return array
 	 */
 	function info($path=".") {
-		$path = realpath($path);
+		$path = realpath((string)$path);
 		if (!$path)  throw new LINB_E("$path is not a path");
 		$result = array(
-		"name" => substr($path, strrpos($path, DIRECTORY_SEPARATOR)+1),
+		"name" => substr($path, (int)strrpos($path, DIRECTORY_SEPARATOR)+1),
 		"location" => $path,
 		"type" => is_file($path) ? 1 : (is_dir($path) ? 0 : -1),
 		"size" => filesize($path),
@@ -277,11 +281,11 @@ class IO{
 		unset($is_error);
 		$result = array();
 		// === for  "rray() == FALSE"
-		if (FALSE===$i=$this->dirList($path)) return FALSE;
+		if (FALSE===$i=$this->dirList($path)) return array();
 		for ($j=0,$k=count($i);$j<$k;$j++) {
 			// not dir or file
 			if ($i[$j]["type"]==-1) continue;
-    			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/ui", $i[$j]["name"])) continue;
+    			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/ui", (string)$i[$j]["name"])) continue;
 
 			$sum++;
 			if($sum > $start + $limit) break;
@@ -290,7 +294,7 @@ class IO{
         			$td=$pid.'.'.(string)$id;
         			// for sub
         			if ($i[$j]["type"]==0&&$sub_dir_level) {
-        				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$limit, $start, $sum, $td)) return FALSE;
+        				if (FALSE===$l=$this->search($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$limit, $start, $sum, $td)) return array();
         				$result = array_merge($result, $l);
         			}
         			$i[$j]['layer']=$sub_dir_level;
@@ -310,16 +314,16 @@ class IO{
 		unset($is_error);
 		if(!isset($sum))$sum = 0;
 		// === for  "rray() == FALSE"
-		if (FALSE===$i=$this->dirList($path)) return FALSE;
+		if (FALSE===$i=$this->dirList($path)) return 0;
 		for ($j=0,$k=count($i);$j<$k;$j++) {
 			// not dir or file
 			if ($i[$j]["type"]==-1) continue;
-			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", $i[$j]["name"])) continue;
+			if ($type+$i[$j]["type"]==1||!preg_match("/^".$pattern."$/", (string)$i[$j]["name"])) continue;
 			$sum++;
 
 			// for sub
 			if ($i[$j]["type"]==0&&$sub_dir_level) {
-				if (FALSE===$l=$this->countFile($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$sum)) return FALSE;
+				if (FALSE===$l=$this->countFile($pattern,$i[$j]["location"],$type,($sub_dir_level - 1),$sum)) return 0;
 			}
 		}
 		unset($i, $j, $k, $l);
@@ -333,7 +337,7 @@ class IO{
 	 * @return string
 	 */
 	function delete($path="") {
-		$path = realpath($path);
+		$path = realpath((string)$path);
 		if (!$path)  throw new LINB_E("$path is not a path");
 		if (!is_dir($path)) {
 			if (@unlink($path)) return TRUE;
@@ -358,7 +362,7 @@ class IO{
 	function absPath($path="") {
 		$i = "/"==DIRECTORY_SEPARATOR ? "\\" : "/";
 		$path = str_replace($i, DIRECTORY_SEPARATOR, strval($path));
-		if ($path[strlen($path)-1]!=DIRECTORY_SEPARATOR) $path .= DIRECTORY_SEPARATOR;
+		if ($path !== "" && $path[strlen($path)-1]!=DIRECTORY_SEPARATOR) $path .= DIRECTORY_SEPARATOR;
 		// get the position of first seperator
 		$i = strpos($path, DIRECTORY_SEPARATOR);
 		$ext = substr($path, $i+1);
@@ -377,7 +381,7 @@ class IO{
 			while (count($ext)) {
 				$i = array_shift($ext);
 				if ($i==".."&&count($path)>1) array_pop($path);
-				elseif (""!=str_replace(".", "", $i)) $path[] = $i;
+				elseif (""!=str_replace(".", "", (string)$i)) $path[] = $i;
 			}
 			$path = implode(DIRECTORY_SEPARATOR, $path);
 		}
@@ -400,7 +404,7 @@ class IO{
 	    }else{
 	        if(!$abs)
 	            $path=$this->absPath($path);
-    		$i = explode(DIRECTORY_SEPARATOR, $path);
+    		$i = explode(DIRECTORY_SEPARATOR, (string)$path);
     		$path = array_shift($i);
     		for ($j=0,$k=count($i);$j<$k;$j++) {
     			$path .= DIRECTORY_SEPARATOR.$i[$j];
@@ -425,7 +429,7 @@ class IO{
 	 * @return bool
 	 */
 	function fileCompare($src="", $dst="", $bigger=TRUE) {
-		if (!is_file($src)||!is_file($dst))  throw new LINB_E("$src or $dst is not a file");
+		if (!is_file((string)$src)||!is_file((string)$dst))  throw new LINB_E("$src or $dst is not a file");
 		if (!is_readable($src))  throw new LINB_E("$src is not readable");
 		if (!is_readable($dst))  throw new LINB_E("$dst is not readable");
 		$i = filesize($src);
@@ -453,7 +457,7 @@ class IO{
 	 * @return bool
 	 */
 	function copy($src="", $dst="", $submap=FALSE) {
-		if (!$src=realpath($src)) throw new LINB_E("$src is not a path");
+		if (!$src=realpath((string)$src)) throw new LINB_E("$src is not a path");
 		$dst = $this->absPath($dst);
 		if (is_dir($src)) {
 			if (!is_readable($src))  throw new LINB_E("$src is not readalbe");
@@ -472,7 +476,7 @@ class IO{
 		} else {
 			if (!is_readable($src))  throw new LINB_E("$src is not readable");
 			if ( file_exists($dst) && $this->fileCompare($src,$dst)) return TRUE;
-			if (!copy($src,$dst))  throw new LINB_E("copy error.");
+			if (!@copy($src,$dst))  throw new LINB_E("copy error.");
 			if (!$this->fileCompare($src,$dst)) {
 				//fail, delete all
 				@unlink($dst);
@@ -492,7 +496,7 @@ class IO{
 	 * @return bool
 	 */
 	function move($src="", $dst="", $submap=FALSE) {
-		if (!$src=realpath($src))  throw new LINB_E("$src is not a path");
+		if (!$src=realpath((string)$src))  throw new LINB_E("$src is not a path");
 		$dst = $this->absPath($dst);
 		if (is_dir($src)) {
 			if (!is_readable($src))  throw new LINB_E("$src is not readable");
@@ -510,7 +514,7 @@ class IO{
 		} else {
 			if (!is_readable($src))  throw new LINB_E("$src is not readable");
 			if ($this->fileCompare($src,$dst)) return TRUE;
-			if (!copy($src,$dst))  throw new LINB_E("copy error");
+			if (!@copy($src,$dst))  throw new LINB_E("copy error");
 			if (!$this->fileCompare($src,$dst)) {
 				@unlink($dst);
 				throw new LINB_E("files are same");
@@ -526,7 +530,8 @@ class IO{
     * $dirname is relative path: URL like string
     */
     function is_dir_ex($dirname) {
-        $handle=opendir($dirname);
+        $handle=@opendir((string)$dirname);
+        if(!$handle) return false;
         if(readdir($handle)=='.')
             $result=true;
         else
@@ -547,7 +552,7 @@ class IO{
 	 * @param bool $path
 	 */
 	function exists($path){
-		return file_exists($path);
+		return file_exists((string)$path);
 	}
 
 	/**
@@ -557,7 +562,7 @@ class IO{
 	 * @return string
 	 */
 	function getString($path){
-		$path = realpath($path);
+		$path = realpath((string)$path);
 		if (!$path)  throw new LINB_E("$path is not a path");
 		return file_get_contents($path);
 	}
@@ -567,8 +572,8 @@ class IO{
 	 * @param string $path
 	 * @param string $s
 	 */
-	function setString($path,$s,$flag=false){
-		return file_put_contents($path,$s,$flag);
+	function setString($path,$s,$flag=0){
+		return file_put_contents((string)$path,(string)$s,$flag);
 	}
 	/**
 	 * get an array from a file
@@ -577,13 +582,13 @@ class IO{
 	 * @return Array
 	 */
 	function getObject($path){
-		$path = realpath($path);
+		$path = realpath((string)$path);
 		if (!$path)  throw new LINB_E("$path is not a path");
 		return unserialize(file_get_contents($path));
 	}
 
 	function getJSONObject($path){
-		$path = realpath($path);
+		$path = realpath((string)$path);
 		if (!$path)  throw new LINB_E("$path is not a path");
 		return LINB::$json->decode(file_get_contents($path));
 	}
@@ -594,10 +599,10 @@ class IO{
 	 * @param array $a
 	 */
 	function setObject($path,$a){
-		return file_put_contents($path, serialize($a));
+		return file_put_contents((string)$path, serialize($a));
 	}
 	function setJSONObject($path,$a){
-		return file_put_contents($path, LINB::$json->encode($a));
+		return file_put_contents((string)$path, LINB::$json->encode($a));
 	}
 
     function _zip($basepath, $path, $zip, $parentPath=null){
@@ -622,18 +627,20 @@ class IO{
 	    $f = NULL;
 	    $zip = new zip;
 
-        $arr = explode('/', $path);
+        $arr = explode('/', (string)$path);
         $name = array_pop($arr);
         $path=implode('/', $arr);
 
 	    $this->_zip($path, $name, $zip);
 
-        $fd = fopen ($fileName, "wb");
-        $out = fwrite ($fd, $zip -> getZippedfile());
-        fclose ($fd);
+        $fd = fopen ((string)$fileName, "wb");
+        if($fd){
+            fwrite ($fd, $zip -> getZippedfile());
+            fclose ($fd);
 
-        $zip -> forceDownload($fileName);
-        @unlink($fileName);
+            $zip -> forceDownload($fileName);
+            @unlink($fileName);
+        }
 	}
 }
 

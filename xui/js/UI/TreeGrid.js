@@ -6313,8 +6313,9 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                 f1=function(v,profile,cell){
                     return v ? xui.Date.getText(v, getPro(profile, cell, 'dateEditorTpl')||'ymd') : "";
                 },
-                f2=function(v){return v?(v+'').replace(reg1,'&lt;').replace(/ /g,'&nbsp;').replace(/\t/g,'    ').replace(/(\r\n|\n|\r)/g,"<br />"):""},
-                f8=function(v){return v?(v+'').replace(/ /g,'&nbsp;').replace(/\t/g,'    ').replace(/(\r\n|\n|\r)/g,"<br />"):""},
+                // max: show 1024
+                f2=function(v){return v?(v+'').replace(/(.{1024})..+/, "$1…").replace(reg1,'&lt;').replace(/ /g,'&nbsp;').replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;').replace(/(\r\n|\n|\r)/g,"<br/>"):""},
+                f8=function(v){return v?(v+'').replace(/(.{1024})..+/, "$1…").replace(/ /g,'&nbsp;').replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;').replace(/(\r\n|\n|\r)/g,"<br/>"):""},
                 f3=function(v){return (v||v===0) ? ((v*100).toFixed(2)+'%') : ""},
                 f4=function(v,profile,cell){
                     if(v||v===0){
@@ -6483,8 +6484,7 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
 
             cell._indom=1;
             if('_renderer' in cell)delete cell._renderer;
-            // max: show 1024
-            cell._caption = cell._$tips = cell._$tmpcap = caption.replace(/(.{1024})..+/, "$1…");
+            cell._caption = cell._$tips = cell._$tmpcap = caption;
 
             var t2=getPro(profile, cell, 'disabled'),
                 t3=getPro(profile, cell, 'readonly');
@@ -7643,10 +7643,11 @@ xui.Class("xui.UI.TreeGrid",["xui.UI","xui.absValue"],{
                             }
                         };
                         if(false!==(profile.beforeEditApply&&profile.boxing().beforeEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col, callback_endEdit))){
-                            profile._setFromEditor=1;
-                            grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
-                            delete profile._setFromEditor;
-
+                            if(false!==(beforeEditApply && beforeEditApply(options, cc, profile, editor))) {
+                                profile._setFromEditor=1;
+                                grid._updCell(profile, cc, options, profile.properties.dirtyMark, true, true);
+                                delete profile._setFromEditor;
+                            }
                             callback_endEdit();
                         }
                         profile.afterEditApply&&profile.boxing().afterEditApply(profile, cc, options, editor, tag, 'cell', cc._row, cc._col);

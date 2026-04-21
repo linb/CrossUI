@@ -3,6 +3,7 @@
 * file uploader class
 * @example
 * new Uploader()->save($_FILES['file'],$save_path,'new_name.jpg');
+* Updated for PHP 8.3 compatibility
 */
 class Uploader
 {
@@ -16,6 +17,11 @@ class Uploader
     * string - file destination path at server
     */
     public $save_path;
+    
+    /** @var array */
+    public $MIMETYPES;
+    /** @var array */
+    public $GROUPS;
 
     public function __construct(){
         $this->MIMETYPES = array(
@@ -108,9 +114,9 @@ class Uploader
         if(is_array($mime_types))
             $this->mime_types = $mime_types;
         //set to a group
-        elseif(array_key_exists($mime_types, $this->GROUPS)){
+        elseif(is_string($mime_types) && array_key_exists($mime_types, $this->GROUPS)){
             foreach($this->MIMETYPES as $key => $value)
-                if(in_array($key, $this->GROUPS))
+                if(in_array($key, $this->GROUPS[$mime_types]))
                     $this->mime_types[$key] = $value;
 
         }
@@ -124,7 +130,7 @@ class Uploader
             throw new Exception('file is too large!');
     }
     public function get_ext($file){
-        return pathinfo($file['name'],PATHINFO_EXTENSION);
+        return pathinfo((string)$file['name'],PATHINFO_EXTENSION);
     }
 
 
@@ -133,9 +139,9 @@ class Uploader
     */
     public function check_type($file){
         // get file type
-        $ext = strtolower(pathinfo($file['name'],PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo((string)$file['name'],PATHINFO_EXTENSION));
         // make sure the image is a valid file type and that they type matches the extention
-        if(!array_key_exists($ext,$this->mime_types))
+        if(!is_array($this->mime_types) || !array_key_exists($ext,$this->mime_types))
             throw new Exception('Mime type invalid!');
         elseif($this->mime_types[$ext] != $file['type']){
             if($file['type']=='image/pjpeg' && $this->mime_types[$ext]=='image/jpeg')
@@ -148,7 +154,7 @@ class Uploader
     * Make sure uploaded file exists
     */
     public function check_temp($path){
-        if(!is_file($path) || !is_uploaded_file($path))
+        if(!is_file((string)$path) || !is_uploaded_file((string)$path))
             throw new Exception('could not find uploaded file!');
     }
 
@@ -157,11 +163,12 @@ class Uploader
    * $file = $_FILE['upload_name'];
    */
     public function save($file, $save_path, $new_name=false){
-        switch($file['error']){
+        $error_code = isset($file['error']) ? $file['error'] : 4;
+        switch($error_code){
             case 0:
                 // check destination
-                if(is_dir($save_path)){
-                    if(is_writable($save_path))
+                if(is_dir((string)$save_path)){
+                    if(is_writable((string)$save_path))
                         $this->save_path = $save_path;
                     else
                         throw new Exception('Destination '.$save_path.' is not writable!');
@@ -175,18 +182,18 @@ class Uploader
 
                 // use original file name if a new one is not supplied, replace spaces with underscores
                 if(!$new_name)
-                    $new_name = str_replace(' ','_',$file['name']);
+                    $new_name = str_replace(' ','_',(string)$file['name']);
 
                 // build full file path for move
                 $uploadfile = $save_path.$new_name;
 
                 // if we're looking at an uploaded file and the file
                 // can be moved then we're OK
-                if(!move_uploaded_file($file['tmp_name'], $uploadfile))
+                if(!@move_uploaded_file($file['tmp_name'], $uploadfile))
                     throw new Exception('Could not move uploaded file - flog the webmaster');
                 else{
                     // change permissions on the file
-                    if(chmod($uploadfile,0755))
+                    if(@chmod($uploadfile,0755))
                         return $uploadfile;
                     else
                         throw new Exception('Could not change permissions on uploaded file - flog the webmaster');

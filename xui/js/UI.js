@@ -1658,7 +1658,9 @@ xui.Class("xui.UI",  "xui.absObj", {
 
             if(xui.isHash(target) || xui.isStr(target))
                 target=xui.create(target);
-            if(target['xui.UIProfile'])target=target.boxing();
+            else if(xui.isElem(target))
+                target=xui(target);
+            else if(target['xui.UIProfile'])target=target.boxing();
 
             // illegal nesting
             /* for performance
